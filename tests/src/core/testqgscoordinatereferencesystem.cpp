@@ -76,7 +76,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void validSrsIds();
 
   private:
-    void debugPrint( QgsCoordinateReferenceSystem &theCrs );
+    void debugPrint( QgsCoordinateReferenceSystem &crs );
     // these used by createFromESRIWkt()
     QStringList myWktStrings;
     QList<int> myGdalVersionOK;
@@ -84,7 +84,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     QStringList myProj4Strings;
     QStringList myTOWGS84Strings;
     QStringList myAuthIdStrings;
-    QString testESRIWkt( int i, QgsCoordinateReferenceSystem &theCrs );
+    QString testESRIWkt( int i, QgsCoordinateReferenceSystem &crs );
 };
 
 
@@ -107,7 +107,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
   {
     qDebug() << "Warning! GDAL_FIX_ESRI_WKT =" << CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" )
-    << "this might generate errors!";
+             << "this might generate errors!";
   }
 
 }
@@ -337,7 +337,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
   QString msg;
   QgsCoordinateReferenceSystem myCrs;
-  const char* configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
+  const char *configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
 
   // for more tests add definitions here
 
@@ -588,12 +588,12 @@ void TestQgsCoordinateReferenceSystem::readXml()
   //QgsCoordinateReferenceSystem myCrs;
   //myCrs.createFromSrid( GEOSRID );
   //QgsCoordinateReferenceSystem myCrs2;
-  //QVERIFY( myCrs2.readXml( QDomNode & theNode ) );
+  //QVERIFY( myCrs2.readXml( QDomNode & node ) );
 }
 void TestQgsCoordinateReferenceSystem::writeXml()
 {
   //QgsCoordinateReferenceSystem myCrs;
-  //bool writeXml( QDomNode & theNode, QDomDocument & theDoc ) const;
+  //bool writeXml( QDomNode & node, QDomDocument & doc ) const;
   //QVERIFY( myCrs.isValid() );
 }
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()
@@ -669,6 +669,9 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
   myCrs.createFromSrid( GEOSRID );
   QVERIFY( myCrs.mapUnits() == QgsUnitTypes::DistanceDegrees );
   debugPrint( myCrs );
+
+  // an invalid crs should return unknown unit
+  QCOMPARE( QgsCoordinateReferenceSystem().mapUnits(), QgsUnitTypes::DistanceUnknownUnit );
 }
 void TestQgsCoordinateReferenceSystem::setValidationHint()
 {
@@ -695,26 +698,26 @@ void TestQgsCoordinateReferenceSystem::hasAxisInverted()
 
 
 void TestQgsCoordinateReferenceSystem::debugPrint(
-  QgsCoordinateReferenceSystem &theCrs )
+  QgsCoordinateReferenceSystem &crs )
 {
   QgsDebugMsg( "***SpatialRefSystem***" );
-  QgsDebugMsg( "* Valid : " + ( theCrs.isValid() ? QString( "true" ) :
+  QgsDebugMsg( "* Valid : " + ( crs.isValid() ? QString( "true" ) :
                                 QString( "false" ) ) );
-  QgsDebugMsg( "* SrsId : " + QString::number( theCrs.srsid() ) );
-  QgsDebugMsg( "* EPSG ID : " + theCrs.authid() );
-  QgsDebugMsg( "* PGIS ID : " + QString::number( theCrs.postgisSrid() ) );
-  QgsDebugMsg( "* Proj4 : " + theCrs.toProj4() );
-  QgsDebugMsg( "* WKT   : " + theCrs.toWkt() );
-  QgsDebugMsg( "* Desc. : " + theCrs.description() );
-  if ( theCrs.mapUnits() == QgsUnitTypes::DistanceMeters )
+  QgsDebugMsg( "* SrsId : " + QString::number( crs.srsid() ) );
+  QgsDebugMsg( "* EPSG ID : " + crs.authid() );
+  QgsDebugMsg( "* PGIS ID : " + QString::number( crs.postgisSrid() ) );
+  QgsDebugMsg( "* Proj4 : " + crs.toProj4() );
+  QgsDebugMsg( "* WKT   : " + crs.toWkt() );
+  QgsDebugMsg( "* Desc. : " + crs.description() );
+  if ( crs.mapUnits() == QgsUnitTypes::DistanceMeters )
   {
     QgsDebugMsg( "* Units : meters" );
   }
-  else if ( theCrs.mapUnits() == QgsUnitTypes::DistanceFeet )
+  else if ( crs.mapUnits() == QgsUnitTypes::DistanceFeet )
   {
     QgsDebugMsg( "* Units : feet" );
   }
-  else if ( theCrs.mapUnits() == QgsUnitTypes::DistanceDegrees )
+  else if ( crs.mapUnits() == QgsUnitTypes::DistanceDegrees )
   {
     QgsDebugMsg( "* Units : degrees" );
   }

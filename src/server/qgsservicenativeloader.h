@@ -53,8 +53,8 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * @param registrar QgsServiceRegistry instance for registering services
      * @param serverIface QgsServerInterface instarce
      */
-    void loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
-                      QgsServerInterface* serverIface = nullptr );
+    void loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
+                      QgsServerInterface *serverIface = nullptr );
 
     /**
      * Unload all modules
@@ -67,7 +67,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * @param location QString location holding the module relalive path
      * @return a qgsservicemodule instance
      */
-    QgsServiceModule* loadNativeModule( const QString& location );
+    QgsServiceModule *loadNativeModule( const QString &location );
 
 
   private:
@@ -78,12 +78,12 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * @param path the module path
      * @return a module hook entry
      */
-    QgsServiceNativeModuleEntry* findModuleEntry( const QString& path );
+    QgsServiceNativeModuleEntry *findModuleEntry( const QString &path );
 
     /**
      *  Unload medule hook
      */
-    void unloadModuleEntry( QgsServiceNativeModuleEntry* entry );
+    void unloadModuleEntry( QgsServiceNativeModuleEntry *entry );
 
     //! Associative storage for module handles
     ModuleTable mModules;

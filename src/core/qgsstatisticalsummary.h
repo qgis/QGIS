@@ -93,7 +93,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Calculates summary statistics for a list of values
      * @param values list of doubles
      */
-    void calculate( const QList<double>& values );
+    void calculate( const QList<double> &values );
 
     /** Adds a single value to the statistics calculation. Calling this method
      * allows values to be added to the calculation one at a time. For large
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * @see finalize()
      * @note added in QGIS 2.16
      */
-    void addVariant( const QVariant& value );
+    void addVariant( const QVariant &value );
 
     /** Must be called after adding all values with addValues() and before retrieving
      * any calculated statistics.

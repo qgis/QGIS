@@ -43,11 +43,11 @@
 //non qt includes
 #include <cmath>
 
-QgsDecorationItem::QgsDecorationItem( QObject* parent )
-    : QObject( parent )
-    , mEnabled( false )
-    , mPlacement( TopLeft )
-    , mMarginUnit( QgsUnitTypes::RenderMillimeters )
+QgsDecorationItem::QgsDecorationItem( QObject *parent )
+  : QObject( parent )
+  , mEnabled( false )
+  , mPlacement( TopLeft )
+  , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 

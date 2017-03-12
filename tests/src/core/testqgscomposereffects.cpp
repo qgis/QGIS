@@ -31,9 +31,9 @@ class TestQgsComposerEffects : public QObject
 
   public:
     TestQgsComposerEffects()
-        : mComposition( 0 )
-        , mComposerRect1( 0 )
-        , mComposerRect2( 0 )
+      : mComposition( 0 )
+      , mComposerRect1( 0 )
+      , mComposerRect2( 0 )
     {}
 
   private slots:
@@ -45,7 +45,7 @@ class TestQgsComposerEffects : public QObject
     void transparency(); //test if composer transparency is functioning
 
   private:
-    QgsComposition* mComposition = nullptr;
+    QgsComposition *mComposition = nullptr;
     QgsComposerShape *mComposerRect1 = nullptr;
     QgsComposerShape *mComposerRect2 = nullptr;
     QString mReport;

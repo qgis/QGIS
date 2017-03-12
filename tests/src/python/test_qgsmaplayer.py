@@ -14,13 +14,11 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsMapRendererCache,
-                       QgsPathResolver,
-                       QgsRectangle,
+from qgis.core import (QgsPathResolver,
                        QgsVectorLayer,
                        QgsProject)
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 
@@ -46,7 +44,7 @@ class TestQgsMapLayer(unittest.TestCase):
         layer.setAutoRefreshEnabled(True)
         self.assertTrue(layer.hasAutoRefreshEnabled())
         self.assertEqual(layer.autoRefreshInterval(), 5)
-        layer.setAutoRefreshInterval(0) # should disable auto refresh
+        layer.setAutoRefreshInterval(0)  # should disable auto refresh
         self.assertFalse(layer.hasAutoRefreshEnabled())
         self.assertEqual(layer.autoRefreshInterval(), 0)
 

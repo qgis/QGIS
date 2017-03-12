@@ -26,7 +26,7 @@
  ****************************************************************************/
 
 QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
-    : mStatistics( stats )
+  : mStatistics( stats )
 {
   reset();
 }
@@ -84,7 +84,7 @@ void QgsStatisticalSummary::addValue( double value )
     mValues << value;
 }
 
-void QgsStatisticalSummary::addVariant( const QVariant& value )
+void QgsStatisticalSummary::addVariant( const QVariant &value )
 {
   bool convertOk = false;
   if ( !value.isValid() || value.isNull() )
@@ -150,7 +150,7 @@ void QgsStatisticalSummary::finalize()
   if ( mStatistics & QgsStatisticalSummary::FirstQuartile
        || mStatistics & QgsStatisticalSummary::InterQuartileRange )
   {
-    if (( mCount % 2 ) < 1 )
+    if ( ( mCount % 2 ) < 1 )
     {
       int halfCount = mCount / 2;
       bool even = ( halfCount % 2 ) < 1;
@@ -181,7 +181,7 @@ void QgsStatisticalSummary::finalize()
   if ( mStatistics & QgsStatisticalSummary::ThirdQuartile
        || mStatistics & QgsStatisticalSummary::InterQuartileRange )
   {
-    if (( mCount % 2 ) < 1 )
+    if ( ( mCount % 2 ) < 1 )
     {
       int halfCount = mCount / 2;
       bool even = ( halfCount % 2 ) < 1;

@@ -23,7 +23,7 @@
 #include "qgis_core.h"
 
 class QgsMessageOutput;
-typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
+typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )();
 
 
 /** \ingroup core
@@ -47,13 +47,13 @@ class CORE_EXPORT QgsMessageOutput
     virtual ~QgsMessageOutput() = default;
 
     //! set message, it won't be displayed until
-    virtual void setMessage( const QString& message, MessageType msgType ) = 0;
+    virtual void setMessage( const QString &message, MessageType msgType ) = 0;
 
     //! message to be appended to the current text
-    virtual void appendMessage( const QString& message ) = 0;
+    virtual void appendMessage( const QString &message ) = 0;
 
     //! set title for the messages
-    virtual void setTitle( const QString& title ) = 0;
+    virtual void setTitle( const QString &title ) = 0;
 
     //! display the message to the user and deletes itself
     virtual void showMessage( bool blocking = true ) = 0;
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsMessageOutput
     /** Display the blocking message to the user.
      *  @note added in 2.10
      */
-    static void showMessage( const QString& title, const QString& message, MessageType msgType );
+    static void showMessage( const QString &title, const QString &message, MessageType msgType );
 
     //! sets function that will be used to create message output
     //! @note not available in python bindings
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsMessageOutput
 
     //! function that returns new class derived from QgsMessageOutput
     //! (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
-    static QgsMessageOutput* createMessageOutput();
+    static QgsMessageOutput *createMessageOutput();
 
   private:
 
@@ -93,11 +93,11 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
 
     QgsMessageOutputConsole();
 
-    virtual void setMessage( const QString& message, MessageType msgType ) override;
+    virtual void setMessage( const QString &message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString& message ) override;
+    virtual void appendMessage( const QString &message ) override;
 
-    virtual void setTitle( const QString& title ) override;
+    virtual void setTitle( const QString &title ) override;
 
     //! sends the message to the standard output
     virtual void showMessage( bool blocking = true ) override;

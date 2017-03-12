@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
-#include <qgsfontutils.h>
-#include <qgslogger.h>
+#include "qgsfontutils.h"
+#include "qgslogger.h"
 #include "qgsfeatureiterator.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -25,14 +25,15 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsproperty.h"
+#include "qgssettings.h"
+
 #include <QColorDialog>
 #include <QFontDatabase>
-#include <QSettings>
 #include <QDialogButtonBox>
 
 
-QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QString& providerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
-    QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
+QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, int featureId, const QFont &labelFont, const QString &labelText, QWidget *parent, Qt::WindowFlags f ):
+  QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
   fillHaliComboBox();
@@ -40,14 +41,14 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, const QS
 
   init( layerId, providerId, featureId, labelText );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 }
 
 void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
@@ -58,10 +59,10 @@ void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
   }
 }
 
-void QgsLabelPropertyDialog::init( const QString& layerId, const QString& providerId, int featureId, const QString& labelText )
+void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, int featureId, const QString &labelText )
 {
   //get feature attributes
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !vlayer )
   {
     return;
@@ -99,7 +100,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, const QString& provid
       if ( mCurLabelField >= 0 )
       {
         mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
-        const QgsFields& layerFields = vlayer->fields();
+        const QgsFields &layerFields = vlayer->fields();
         switch ( layerFields.at( mCurLabelField ).type() )
         {
           case QVariant::Double:
@@ -208,7 +209,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mRotationSpinBox->blockSignals( block );
 }
 
-void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer* vlayer )
+void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 {
   //loop through data defined properties and set all the GUI widget values. We can do this
   //even if the data defined property is set to an expression, as it's useful to show
@@ -216,10 +217,10 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer* vlayer )
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::atlasScope( nullptr )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( vlayer );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+          << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
   Q_FOREACH ( int key, mDataDefinedProperties.propertyKeys() )
@@ -342,7 +343,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer* vlayer )
   }
 }
 
-void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
+void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
 {
   //loop through data defined properties, this time setting whether or not the widgets are enabled
   //this can only be done for properties which are assigned to fields
@@ -409,7 +410,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
       case QgsPalLayerSettings::Rotation:
         mRotationSpinBox->setEnabled( true );
         break;
-        //font related properties
+      //font related properties
       case QgsPalLayerSettings::Family:
         mFontFamilyCmbBx->setEnabled( true );
         break;
@@ -437,7 +438,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer* vlayer )
   }
 }
 
-void QgsLabelPropertyDialog::updateFont( const QFont& font, bool block )
+void QgsLabelPropertyDialog::updateFont( const QFont &font, bool block )
 {
   // update background reference font
   if ( font != mLabelFont )
@@ -545,14 +546,14 @@ void QgsLabelPropertyDialog::on_mYCoordSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::PositionY, y );
 }
 
-void QgsLabelPropertyDialog::on_mFontFamilyCmbBx_currentFontChanged( const QFont& f )
+void QgsLabelPropertyDialog::on_mFontFamilyCmbBx_currentFontChanged( const QFont &f )
 {
   mLabelFont.setFamily( f.family() );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Family, f.family() );
 }
 
-void QgsLabelPropertyDialog::on_mFontStyleCmbBx_currentIndexChanged( const QString & text )
+void QgsLabelPropertyDialog::on_mFontStyleCmbBx_currentIndexChanged( const QString &text )
 {
   QgsFontUtils::updateFontViaStyle( mLabelFont, text );
   updateFont( mLabelFont );
@@ -640,7 +641,7 @@ void QgsLabelPropertyDialog::on_mValiComboBox_currentIndexChanged( const int ind
   insertChangedValue( QgsPalLayerSettings::Vali, mValiComboBox->itemData( index ) );
 }
 
-void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& text )
+void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString &text )
 {
   if ( mCurLabelField != -1 )
   {
@@ -648,7 +649,7 @@ void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString& t
   }
 }
 
-void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p, const QVariant& value )
+void QgsLabelPropertyDialog::insertChangedValue( QgsPalLayerSettings::Property p, const QVariant &value )
 {
   if ( mDataDefinedProperties.isActive( p ) )
   {

@@ -32,7 +32,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent = nullptr );
 
     //! Reverses the command
     void undo() override;
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 
   protected:
     //! Target item of the command
-    QgsComposerItem* mItem = nullptr;
+    QgsComposerItem *mItem = nullptr;
     //! XML that saves the state before executing the command
     QDomDocument mPreviousState;
     //! XML containing the state after executing the command
@@ -65,14 +65,14 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 
     //! Parameters for frame items
     //! Parent multiframe
-    QgsComposerMultiFrame* mMultiFrame = nullptr;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
     int mFrameNumber;
 
     //! Flag to prevent the first redo() if the command is pushed to the undo stack
     bool mFirstRun;
 
-    void saveState( QDomDocument& stateDoc ) const;
-    void restoreState( QDomDocument& stateDoc ) const;
+    void saveState( QDomDocument &stateDoc ) const;
+    void restoreState( QDomDocument &stateDoc ) const;
 };
 
 /** \ingroup core
@@ -113,13 +113,13 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendBoxSpace,
       LegendColumnSpace,
       LegendLineSpacing,
-      LegendRasterBorderWidth,
+      LegendRasterStrokeWidth,
       LegendFontColor,
-      LegendRasterBorderColor,
+      LegendRasterStrokeColor,
       //composer picture
       ComposerPictureRotation,
       ComposerPictureFillColor,
-      ComposerPictureOutlineColor,
+      ComposerPictureStrokeColor,
       ComposerPictureNorthOffset,
       // composer scalebar
       ScaleBarLineWidth,
@@ -141,15 +141,15 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       TableGridStrokeWidth,
       //composer shape
       ShapeCornerRadius,
-      ShapeOutlineWidth,
+      ShapeStrokeWidth,
       //composer arrow
-      ArrowOutlineWidth,
+      ArrowStrokeWidth,
       ArrowHeadFillColor,
-      ArrowHeadOutlineColor,
+      ArrowHeadStrokeColor,
       ArrowHeadWidth,
       //item
-      ItemOutlineWidth,
-      ItemOutlineColor,
+      ItemStrokeWidth,
+      ItemStrokeColor,
       ItemBackgroundColor,
       ItemMove,
       ItemRotation,
@@ -157,9 +157,9 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ItemZoomContent
     };
 
-    QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
+    QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command ) override;
+    bool mergeWith( const QUndoCommand *command ) override;
     int id() const override { return static_cast< int >( mContext ); }
 
   private:

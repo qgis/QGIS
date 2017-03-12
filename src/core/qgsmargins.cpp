@@ -24,7 +24,7 @@ QString QgsMargins::toString() const
            qgsDoubleToString( mRight ), qgsDoubleToString( mBottom ) );
 }
 
-QgsMargins QgsMargins::fromString( const QString& string )
+QgsMargins QgsMargins::fromString( const QString &string )
 {
   QStringList margins = string.split( ',' );
   if ( margins.count() != 4 )

@@ -5,7 +5,7 @@ class QgsPalettedRendererWidget: QgsRasterRendererWidget
 %End
   public:
     QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) /Factory/;
     ~QgsPalettedRendererWidget();
 
     QgsRasterRenderer* renderer();

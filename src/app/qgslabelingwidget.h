@@ -36,7 +36,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
 {
     Q_OBJECT
   public:
-    QgsLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:
     void setLayer( QgsMapLayer *layer );
@@ -60,11 +60,11 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void showEngineConfigDialog();
 
   protected:
-    QgsVectorLayer* mLayer = nullptr;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QWidget* mWidget = nullptr;
-    QgsLabelingGui* mLabelGui = nullptr;
+    QWidget *mWidget = nullptr;
+    QgsLabelingGui *mLabelGui = nullptr;
     std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
     QgsPalLayerSettings mOldPalSettings;
 };

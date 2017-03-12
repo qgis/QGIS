@@ -21,14 +21,14 @@
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
-    : QgsPaintEffect()
-    , mBlurLevel( 10 )
-    , mOffsetAngle( 135 )
-    , mOffsetDist( 2.0 )
-    , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-    , mTransparency( 0.0 )
-    , mColor( Qt::black )
-    , mBlendMode( QPainter::CompositionMode_Multiply )
+  : QgsPaintEffect()
+  , mBlurLevel( 10 )
+  , mOffsetAngle( 135 )
+  , mOffsetDist( 2.0 )
+  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
+  , mTransparency( 0.0 )
+  , mColor( Qt::black )
+  , mBlendMode( QPainter::CompositionMode_Multiply )
 {
 
 }
@@ -40,7 +40,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   QImage colorisedIm = sourceAsImage( context )->copy();
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
   painter->save();
   painter->setCompositionMode( mBlendMode );
 
@@ -141,7 +141,7 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   }
 }
 
-QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //offset distance
   double spread = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
@@ -157,18 +157,18 @@ QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext
 
 QgsPaintEffect *QgsDropShadowEffect::create( const QgsStringMap &map )
 {
-  QgsDropShadowEffect* effect = new QgsDropShadowEffect();
+  QgsDropShadowEffect *effect = new QgsDropShadowEffect();
   effect->readProperties( map );
   return effect;
 }
 
 QgsDropShadowEffect::QgsDropShadowEffect()
-    : QgsShadowEffect()
+  : QgsShadowEffect()
 {
 
 }
 
-QgsDropShadowEffect* QgsDropShadowEffect::clone() const
+QgsDropShadowEffect *QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
 }
@@ -180,18 +180,18 @@ QgsDropShadowEffect* QgsDropShadowEffect::clone() const
 
 QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
 {
-  QgsInnerShadowEffect* effect = new QgsInnerShadowEffect();
+  QgsInnerShadowEffect *effect = new QgsInnerShadowEffect();
   effect->readProperties( map );
   return effect;
 }
 
 QgsInnerShadowEffect::QgsInnerShadowEffect()
-    : QgsShadowEffect()
+  : QgsShadowEffect()
 {
 
 }
 
-QgsInnerShadowEffect* QgsInnerShadowEffect::clone() const
+QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const
 {
   return new QgsInnerShadowEffect( *this );
 }

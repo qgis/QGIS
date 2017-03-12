@@ -38,9 +38,9 @@ class CORE_EXPORT QgsXmlUtils
      * @returns distance units
      * @see writeMapUnits()
      */
-    static QgsUnitTypes::DistanceUnit readMapUnits( const QDomElement& element );
+    static QgsUnitTypes::DistanceUnit readMapUnits( const QDomElement &element );
 
-    static QgsRectangle readRectangle( const QDomElement& element );
+    static QgsRectangle readRectangle( const QDomElement &element );
 
     /* writing */
 
@@ -50,9 +50,9 @@ class CORE_EXPORT QgsXmlUtils
      * @returns element containing encoded units
      * @see readMapUnits()
      */
-    static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc );
+    static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc );
 
-    static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );
 
     /**
      * Write a QVariant to a QDomElement.
@@ -65,12 +65,12 @@ class CORE_EXPORT QgsXmlUtils
      * - QVariant::String
      *
      */
-    static QDomElement writeVariant( const QVariant& value, QDomDocument& doc );
+    static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
 
     /**
      * Read a QVariant from a QDomElement.
      */
-    static QVariant readVariant( const QDomElement& element );
+    static QVariant readVariant( const QDomElement &element );
 };
 
 

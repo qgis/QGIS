@@ -55,24 +55,24 @@ class CORE_EXPORT QgsTransaction : public QObject
   public:
 
     //! QgsTransaction cannot be copied.
-    QgsTransaction( const QgsTransaction& other ) = delete;
+    QgsTransaction( const QgsTransaction &other ) = delete;
     //! QgsTransaction cannot be copied.
-    const QgsTransaction& operator=( const QgsTransaction& other ) = delete;
+    const QgsTransaction &operator=( const QgsTransaction &other ) = delete;
 
     //! Creates a transaction for the specified connection string and provider
-    static QgsTransaction* create( const QString& connString, const QString& providerKey );
+    static QgsTransaction *create( const QString &connString, const QString &providerKey );
 
     /** Creates a transaction which includes the specified layers. Connection string
      *  and data provider are taken from the first layer */
-    static QgsTransaction* create( const QStringList& layerIds );
+    static QgsTransaction *create( const QStringList &layerIds );
 
     virtual ~QgsTransaction();
 
     //! Add layer to the transaction. The layer must not be in edit mode.
-    bool addLayer( const QString& layerId );
+    bool addLayer( const QString &layerId );
 
     //! Add layer to the transaction. The layer must not be in edit mode.
-    bool addLayer( QgsVectorLayer* layer );
+    bool addLayer( QgsVectorLayer *layer );
 
     /** Begin transaction
      *  The statement timeout, in seconds, specifies how long an sql statement
@@ -82,21 +82,21 @@ class CORE_EXPORT QgsTransaction : public QObject
      *  statements block until the conflicting transaction is committed or
      *  rolled back.
      *  Some providers might not honour the statement timeout. */
-    bool begin( QString& errorMsg, int statementTimeout = 20 );
+    bool begin( QString &errorMsg, int statementTimeout = 20 );
 
     //! Commit transaction.
-    bool commit( QString& errorMsg );
+    bool commit( QString &errorMsg );
 
     //! Roll back transaction.
-    bool rollback( QString& errorMsg );
+    bool rollback( QString &errorMsg );
 
     //! Executes sql
-    virtual bool executeSql( const QString& sql, QString& error ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error ) = 0;
 
     /**
      * Checks if a the provider of a give layer supports transactions.
      */
-    static bool supportsTransaction( const QgsVectorLayer* layer );
+    static bool supportsTransaction( const QgsVectorLayer *layer );
 
   signals:
 
@@ -106,23 +106,23 @@ class CORE_EXPORT QgsTransaction : public QObject
     void afterRollback();
 
   private slots:
-    void onLayersDeleted( const QStringList& layerids );
+    void onLayersDeleted( const QStringList &layerids );
 
   protected:
-    QgsTransaction( const QString& connString );
+    QgsTransaction( const QString &connString );
 
     QString mConnString;
 
   private:
 
     bool mTransactionActive;
-    QSet<QgsVectorLayer*> mLayers;
+    QSet<QgsVectorLayer *> mLayers;
 
     void setLayerTransactionIds( QgsTransaction *transaction );
 
-    virtual bool beginTransaction( QString& error, int statementTimeout ) = 0;
-    virtual bool commitTransaction( QString& error ) = 0;
-    virtual bool rollbackTransaction( QString& error ) = 0;
+    virtual bool beginTransaction( QString &error, int statementTimeout ) = 0;
+    virtual bool commitTransaction( QString &error ) = 0;
+    virtual bool rollbackTransaction( QString &error ) = 0;
 };
 
 #endif // QGSTRANSACTION_H

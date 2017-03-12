@@ -45,11 +45,11 @@ class TestQgsPointPatternFillSymbol : public QObject
 
   public:
     TestQgsPointPatternFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mPointPatternFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mPointPatternFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -64,12 +64,12 @@ class TestQgsPointPatternFillSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer = nullptr;
-    QgsPointPatternFillSymbolLayer* mPointPatternFill = nullptr;
-    QgsFillSymbol* mFillSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsPointPatternFillSymbolLayer *mPointPatternFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -114,7 +114,7 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Point Pattern Fill Tests</h1>\n" );
 
 }
@@ -140,7 +140,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol* pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
 
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "symbol_pointfill" ) );
@@ -154,7 +154,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
-  QgsMarkerSymbol* pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
   pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
@@ -165,7 +165,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 //
 
 
-bool TestQgsPointPatternFillSymbol::imageCheck( const QString& theTestType )
+bool TestQgsPointPatternFillSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -173,9 +173,9 @@ bool TestQgsPointPatternFillSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_pointpatternfill" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

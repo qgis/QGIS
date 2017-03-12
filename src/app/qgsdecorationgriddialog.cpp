@@ -26,18 +26,17 @@
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
 #include "qgisgui.h"
+#include "qgssettings.h"
 
-#include <QSettings>
-
-QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
-    , mLineSymbol( nullptr )
-    , mMarkerSymbol( nullptr )
+QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
+  , mLineSymbol( nullptr )
+  , mMarkerSymbol( nullptr )
 {
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
 
   grpEnable->setChecked( mDeco.enabled() );
@@ -91,7 +90,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mLineSymbol;
   if ( mDeco.lineSymbol() )
   {
-    mLineSymbol = static_cast<QgsLineSymbol*>( mDeco.lineSymbol()->clone() );
+    mLineSymbol = static_cast<QgsLineSymbol *>( mDeco.lineSymbol()->clone() );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
@@ -99,7 +98,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     delete mMarkerSymbol;
   if ( mDeco.markerSymbol() )
   {
-    mMarkerSymbol = static_cast<QgsMarkerSymbol*>( mDeco.markerSymbol()->clone() );
+    mMarkerSymbol = static_cast<QgsMarkerSymbol *>( mDeco.markerSymbol()->clone() );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
@@ -168,7 +167,7 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 
 QgsDecorationGridDialog::~QgsDecorationGridDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
   if ( mLineSymbol )
     delete mLineSymbol;
@@ -213,7 +212,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
   if ( ! mLineSymbol )
     return;
 
-  QgsLineSymbol* lineSymbol = mLineSymbol->clone();
+  QgsLineSymbol *lineSymbol = mLineSymbol->clone();
   QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
@@ -236,7 +235,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
   if ( ! mMarkerSymbol )
     return;
 
-  QgsMarkerSymbol* markerSymbol = mMarkerSymbol->clone();
+  QgsMarkerSymbol *markerSymbol = mMarkerSymbol->clone();
   QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
   if ( dlg.exec() == QDialog::Rejected )
   {

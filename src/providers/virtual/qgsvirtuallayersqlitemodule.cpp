@@ -40,7 +40,7 @@ email                : hugo dot mercier at oslandia dot com
 /**
  * Create metadata tables if needed
  */
-void initVirtualLayerMetadata( sqlite3* db )
+void initVirtualLayerMetadata( sqlite3 *db )
 {
   bool create_meta = false;
 
@@ -65,9 +65,9 @@ void initVirtualLayerMetadata( sqlite3* db )
   }
 }
 
-void deleteGeometryBlob( void * p )
+void deleteGeometryBlob( void *p )
 {
-  delete[]( reinterpret_cast< unsigned char* >( p ) );
+  delete[]( reinterpret_cast< unsigned char * >( p ) );
 }
 
 //-----------------------------------------------------------------------
@@ -77,16 +77,16 @@ void deleteGeometryBlob( void * p )
 //-----------------------------------------------------------------------
 
 // function called when a lived layer is deleted
-void invalidateTable( void* b );
+void invalidateTable( void *b );
 
 struct VTable
 {
-  // minimal set of members (see sqlite3.h)
-  const sqlite3_module *pModule;  /* The module for this virtual table */
-  int nRef;                       /* NO LONGER USED */
-  char *zErrMsg;                  /* Error message from sqlite3_mprintf() */
+    // minimal set of members (see sqlite3.h)
+    const sqlite3_module *pModule;  /* The module for this virtual table */
+    int nRef;                       /* NO LONGER USED */
+    char *zErrMsg;                  /* Error message from sqlite3_mprintf() */
 
-  VTable( sqlite3* db, QgsVectorLayer* layer )
+    VTable( sqlite3 *db, QgsVectorLayer *layer )
       : pModule( nullptr )
       , nRef( 0 )
       , zErrMsg( nullptr )
@@ -98,15 +98,15 @@ struct VTable
       , mPkColumn( -1 )
       , mCrs( -1 )
       , mValid( true )
-  {
-    if ( mLayer )
     {
-      QObject::connect( layer, SIGNAL( destroyed() ), &mSlotToFunction, SLOT( onSignal() ) );
-      init_();
+      if ( mLayer )
+      {
+        QObject::connect( layer, SIGNAL( destroyed() ), &mSlotToFunction, SLOT( onSignal() ) );
+        init_();
+      }
     }
-  }
 
-  VTable( sqlite3* db, const QString& provider, const QString& source, const QString& name, const QString& encoding )
+    VTable( sqlite3 *db, const QString &provider, const QString &source, const QString &name, const QString &encoding )
       : pModule( nullptr )
       , nRef( 0 )
       , zErrMsg( nullptr )
@@ -117,136 +117,136 @@ struct VTable
       , mPkColumn( -1 )
       , mCrs( -1 )
       , mValid( true )
-  {
-    mProvider = static_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( provider, source ) );
-    if ( !mProvider )
     {
-      throw std::runtime_error( "Invalid provider" );
-    }
-    else if ( mProvider && !mProvider->isValid() )
-    {
-      throw std::runtime_error(( "Provider error:" + mProvider->error().message() ).toUtf8().constData() );
-    }
-    if ( mProvider->capabilities() & QgsVectorDataProvider::SelectEncoding )
-    {
-      mProvider->setEncoding( mEncoding );
-    }
-    init_();
-  }
-
-  ~VTable()
-  {
-    if ( mProvider )
-    {
-      delete mProvider;
-    }
-  }
-
-  QgsVectorDataProvider* provider() { return mProvider; }
-
-  QgsVectorLayer* layer() { return mLayer; }
-
-  QString name() const { return mName; }
-
-  QString creationString() const { return mCreationStr; }
-
-  long crs() const { return mCrs; }
-
-  sqlite3* sql() { return mSql; }
-
-  int pkColumn() const { return mPkColumn; }
-
-  void invalidate() { mValid = false; }
-
-  bool valid() const { return mValid; }
-
-  QgsFields fields() const { return mFields; }
-
-private:
-
-  VTable( const VTable& other );
-  VTable& operator=( const VTable& other );
-
-  // connection
-  sqlite3* mSql = nullptr;
-
-  // pointer to the underlying vector provider
-  QgsVectorDataProvider* mProvider = nullptr;
-  // pointer to the vector layer, for referenced layer
-  QgsVectorLayer* mLayer = nullptr;
-  // the QObjet responsible of receiving the deletion signal
-  QgsSlotToFunction mSlotToFunction;
-
-  QString mName;
-
-  QString mEncoding;
-
-  // primary key column (default = -1: none)
-  int mPkColumn;
-
-  // CREATE TABLE string
-  QString mCreationStr;
-
-  long mCrs;
-
-  bool mValid;
-
-  QgsFields mFields;
-
-  void init_()
-  {
-    mFields = mLayer ? mLayer->fields() : mProvider->fields();
-    QStringList sqlFields;
-
-    // add a hidden field for rtree filtering
-    sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
-
-    Q_FOREACH ( const QgsField& field, mFields )
-    {
-      QString typeName = QStringLiteral( "text" );
-      switch ( field.type() )
+      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( provider, source ) );
+      if ( !mProvider )
       {
-        case QVariant::Int:
-        case QVariant::UInt:
-        case QVariant::Bool:
-        case QVariant::LongLong:
-          typeName = QStringLiteral( "int" );
-          break;
-        case QVariant::Double:
-          typeName = QStringLiteral( "real" );
-          break;
-        case QVariant::String:
-        default:
-          typeName = QStringLiteral( "text" );
-          break;
+        throw std::runtime_error( "Invalid provider" );
       }
-      sqlFields << field.name() + " " + typeName;
+      else if ( mProvider && !mProvider->isValid() )
+      {
+        throw std::runtime_error( ( "Provider error:" + mProvider->error().message() ).toUtf8().constData() );
+      }
+      if ( mProvider->capabilities() & QgsVectorDataProvider::SelectEncoding )
+      {
+        mProvider->setEncoding( mEncoding );
+      }
+      init_();
     }
 
-    QgsVectorDataProvider* provider = mLayer ? mLayer->dataProvider() : mProvider;
-    if ( provider->wkbType() != QgsWkbTypes::NoGeometry )
+    ~VTable()
     {
-      // we have here a convenient hack
-      // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
-      // we are using them to set the geometry type and srid
-      // these will be reused by the provider when it will introspect the query to detect types
-      sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
+      if ( mProvider )
+      {
+        delete mProvider;
+      }
     }
 
-    QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
-    if ( pkAttributeIndexes.size() == 1 )
+    QgsVectorDataProvider *provider() { return mProvider; }
+
+    QgsVectorLayer *layer() { return mLayer; }
+
+    QString name() const { return mName; }
+
+    QString creationString() const { return mCreationStr; }
+
+    long crs() const { return mCrs; }
+
+    sqlite3 *sql() { return mSql; }
+
+    int pkColumn() const { return mPkColumn; }
+
+    void invalidate() { mValid = false; }
+
+    bool valid() const { return mValid; }
+
+    QgsFields fields() const { return mFields; }
+
+  private:
+
+    VTable( const VTable &other );
+    VTable &operator=( const VTable &other );
+
+    // connection
+    sqlite3 *mSql = nullptr;
+
+    // pointer to the underlying vector provider
+    QgsVectorDataProvider *mProvider = nullptr;
+    // pointer to the vector layer, for referenced layer
+    QgsVectorLayer *mLayer = nullptr;
+    // the QObjet responsible of receiving the deletion signal
+    QgsSlotToFunction mSlotToFunction;
+
+    QString mName;
+
+    QString mEncoding;
+
+    // primary key column (default = -1: none)
+    int mPkColumn;
+
+    // CREATE TABLE string
+    QString mCreationStr;
+
+    long mCrs;
+
+    bool mValid;
+
+    QgsFields mFields;
+
+    void init_()
     {
-      mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
+      mFields = mLayer ? mLayer->fields() : mProvider->fields();
+      QStringList sqlFields;
+
+      // add a hidden field for rtree filtering
+      sqlFields << QStringLiteral( "_search_frame_ HIDDEN BLOB" );
+
+      Q_FOREACH ( const QgsField &field, mFields )
+      {
+        QString typeName = QStringLiteral( "text" );
+        switch ( field.type() )
+        {
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::Bool:
+          case QVariant::LongLong:
+            typeName = QStringLiteral( "int" );
+            break;
+          case QVariant::Double:
+            typeName = QStringLiteral( "real" );
+            break;
+          case QVariant::String:
+          default:
+            typeName = QStringLiteral( "text" );
+            break;
+        }
+        sqlFields << field.name() + " " + typeName;
+      }
+
+      QgsVectorDataProvider *provider = mLayer ? mLayer->dataProvider() : mProvider;
+      if ( provider->wkbType() != QgsWkbTypes::NoGeometry )
+      {
+        // we have here a convenient hack
+        // the type of a column can be declared with two numeric arguments, usually for setting numeric precision
+        // we are using them to set the geometry type and srid
+        // these will be reused by the provider when it will introspect the query to detect types
+        sqlFields << QStringLiteral( "geometry geometry(%1,%2)" ).arg( provider->wkbType() ).arg( provider->crs().postgisSrid() );
+      }
+
+      QgsAttributeList pkAttributeIndexes = provider->pkAttributeIndexes();
+      if ( pkAttributeIndexes.size() == 1 )
+      {
+        mPkColumn = pkAttributeIndexes.at( 0 ) + 1;
+      }
+
+      mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QStringLiteral( "," ) ) + ")";
+
+      mCrs = provider->crs().postgisSrid();
     }
-
-    mCreationStr = "CREATE TABLE vtable (" + sqlFields.join( QStringLiteral( "," ) ) + ")";
-
-    mCrs = provider->crs().postgisSrid();
-  }
 };
 
 // function called when a lived layer is deleted
-void invalidateTable( void* p )
+void invalidateTable( void *p )
 {
   reinterpret_cast<VTable *>( p )->invalidate();
 }
@@ -262,11 +262,11 @@ struct VTableCursor
   bool mEof;
 
   explicit VTableCursor( VTable *vtab )
-      : mVtab( vtab )
-      , mEof( true )
+    : mVtab( vtab )
+    , mEof( true )
   {}
 
-  void filter( const QgsFeatureRequest& request )
+  void filter( const QgsFeatureRequest &request )
   {
     if ( !mVtab->valid() )
     {
@@ -301,10 +301,10 @@ struct VTableCursor
 
   QVariant currentAttribute( int column ) const { return mCurrentFeature.attribute( column ); }
 
-  QPair<char*, int> currentGeometry() const
+  QPair<char *, int> currentGeometry() const
   {
     int blob_len = 0;
-    char* blob = nullptr;
+    char *blob = nullptr;
     QgsGeometry g = mCurrentFeature.geometry();
     if ( ! g.isNull() )
     {
@@ -314,19 +314,19 @@ struct VTableCursor
   }
 };
 
-void getGeometryType( const QgsVectorDataProvider* provider, QString& geometryTypeStr, int& geometryDim, int& geometryWkbType, long& srid )
+void getGeometryType( const QgsVectorDataProvider *provider, QString &geometryTypeStr, int &geometryDim, int &geometryWkbType, long &srid )
 {
-  srid = const_cast<QgsVectorDataProvider*>( provider )->crs().postgisSrid();
+  srid = const_cast<QgsVectorDataProvider *>( provider )->crs().postgisSrid();
   QgsWkbTypes::Type t = provider->wkbType();
   geometryTypeStr = QgsWkbTypes::displayString( t );
   geometryDim = QgsWkbTypes::coordDimensions( t );
-  if (( t != QgsWkbTypes::NoGeometry ) && ( t != QgsWkbTypes::Unknown ) )
+  if ( ( t != QgsWkbTypes::NoGeometry ) && ( t != QgsWkbTypes::Unknown ) )
     geometryWkbType = static_cast<int>( t );
   else
     geometryWkbType = 0;
 }
 
-int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **outVtab, char** outErr, bool isCreated )
+int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **outVtab, char **outErr, bool isCreated )
 {
   Q_UNUSED( aux );
   Q_UNUSED( isCreated );
@@ -365,7 +365,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
       }
       return SQLITE_ERROR;
     }
-    newVtab.reset( new VTable( sql, static_cast<QgsVectorLayer*>( l ) ) );
+    newVtab.reset( new VTable( sql, static_cast<QgsVectorLayer *>( l ) ) );
 
   }
   else if ( argc == 5 || argc == 6 )
@@ -396,7 +396,7 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     {
       newVtab.reset( new VTable( sql, provider, source, QString::fromUtf8( argv[2] ), encoding ) );
     }
-    catch ( std::runtime_error& e )
+    catch ( std::runtime_error &e )
     {
       RETURN_CSTR_ERROR( e.what() );
       return SQLITE_ERROR;
@@ -410,29 +410,29 @@ int vtableCreateConnect( sqlite3* sql, void* aux, int argc, const char* const* a
     return r;
   }
 
-  *outVtab = reinterpret_cast< sqlite3_vtab* >( newVtab.release() );
+  *outVtab = reinterpret_cast< sqlite3_vtab * >( newVtab.release() );
   return SQLITE_OK;
 #undef RETURN_CSTR_ERROR
 #undef RETURN_CPPSTR_ERROR
 }
 
-void dbInit( sqlite3* db )
+void dbInit( sqlite3 *db )
 {
   // create metadata tables
   initVirtualLayerMetadata( db );
 }
 
-int vtableCreate( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **outVtab, char** outErr )
+int vtableCreate( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **outVtab, char **outErr )
 {
   try
   {
     dbInit( sql );
   }
-  catch ( std::runtime_error& e )
+  catch ( std::runtime_error &e )
   {
     if ( outErr )
     {
-      *outErr = reinterpret_cast< char* >( sqlite3_malloc( static_cast< int >( strlen( e.what() ) ) + 1 ) );
+      *outErr = reinterpret_cast< char * >( sqlite3_malloc( static_cast< int >( strlen( e.what() ) ) + 1 ) );
       strcpy( *outErr, e.what() );
     }
     return SQLITE_ERROR;
@@ -441,7 +441,7 @@ int vtableCreate( sqlite3* sql, void* aux, int argc, const char* const* argv, sq
   return vtableCreateConnect( sql, aux, argc, argv, outVtab, outErr, /* is_created */ true );
 }
 
-int vtableConnect( sqlite3* sql, void* aux, int argc, const char* const* argv, sqlite3_vtab **outVtab, char** outErr )
+int vtableConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **outVtab, char **outErr )
 {
   return vtableCreateConnect( sql, aux, argc, argv, outVtab, outErr, /* is_created */ false );
 }
@@ -450,7 +450,7 @@ int vtableDestroy( sqlite3_vtab *vtab )
 {
   if ( vtab )
   {
-    delete reinterpret_cast<VTable*>( vtab );
+    delete reinterpret_cast<VTable *>( vtab );
   }
   return SQLITE_OK;
 }
@@ -459,7 +459,7 @@ int vtableDisconnect( sqlite3_vtab *vtab )
 {
   if ( vtab )
   {
-    delete reinterpret_cast<VTable*>( vtab );
+    delete reinterpret_cast<VTable *>( vtab );
   }
   return SQLITE_OK;
 }
@@ -472,15 +472,15 @@ int vtableRename( sqlite3_vtab *vtab, const char *newName )
   return SQLITE_OK;
 }
 
-int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
+int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
 {
-  VTable *vtab = reinterpret_cast< VTable* >( pvtab );
+  VTable *vtab = reinterpret_cast< VTable * >( pvtab );
   for ( int i = 0; i < indexInfo->nConstraint; i++ )
   {
     // request for primary key filter with '='
-    if (( indexInfo->aConstraint[i].usable ) &&
-        ( vtab->pkColumn() == indexInfo->aConstraint[i].iColumn ) &&
-        ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
+    if ( ( indexInfo->aConstraint[i].usable ) &&
+         ( vtab->pkColumn() == indexInfo->aConstraint[i].iColumn ) &&
+         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
       indexInfo->aConstraintUsage[i].argvIndex = 1;
       indexInfo->aConstraintUsage[i].omit = 1;
@@ -492,18 +492,18 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
     }
 
     // request for filter with a comparison operator
-    if (( indexInfo->aConstraint[i].usable ) &&
-        ( indexInfo->aConstraint[i].iColumn > 0 ) &&
-        ( indexInfo->aConstraint[i].iColumn <= vtab->fields().count() ) &&
-        (( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) || // if no PK
-         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GT ) ||
-         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LE ) ||
-         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LT ) ||
-         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GE )
+    if ( ( indexInfo->aConstraint[i].usable ) &&
+         ( indexInfo->aConstraint[i].iColumn > 0 ) &&
+         ( indexInfo->aConstraint[i].iColumn <= vtab->fields().count() ) &&
+         ( ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) || // if no PK
+           ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GT ) ||
+           ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LE ) ||
+           ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LT ) ||
+           ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_GE )
 #ifdef SQLITE_INDEX_CONSTRAINT_LIKE
-         || ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LIKE )
+           || ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_LIKE )
 #endif
-        ) )
+         ) )
     {
       indexInfo->aConstraintUsage[i].argvIndex = 1;
       indexInfo->aConstraintUsage[i].omit = 1;
@@ -538,7 +538,7 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
       }
 
       QByteArray ba = expr.toUtf8();
-      char* cp = ( char* )sqlite3_malloc( ba.size() + 1 );
+      char *cp = ( char * )sqlite3_malloc( ba.size() + 1 );
       memcpy( cp, ba.constData(), ba.size() + 1 );
 
       indexInfo->idxStr = cp;
@@ -547,9 +547,9 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
     }
 
     // request for rtree filtering
-    if (( indexInfo->aConstraint[i].usable ) &&
-        ( 0 == indexInfo->aConstraint[i].iColumn ) &&
-        ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
+    if ( ( indexInfo->aConstraint[i].usable ) &&
+         ( 0 == indexInfo->aConstraint[i].iColumn ) &&
+         ( indexInfo->aConstraint[i].op == SQLITE_INDEX_CONSTRAINT_EQ ) )
     {
       indexInfo->aConstraintUsage[i].argvIndex = 1;
       // do not test for equality, since it is used for filtering, not to return an actual value
@@ -570,21 +570,21 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info* indexInfo )
 
 int vtableOpen( sqlite3_vtab *vtab, sqlite3_vtab_cursor **outCursor )
 {
-  VTableCursor *ncursor = new VTableCursor( reinterpret_cast< VTable* >( vtab ) );
-  *outCursor = reinterpret_cast< sqlite3_vtab_cursor* >( ncursor );
+  VTableCursor *ncursor = new VTableCursor( reinterpret_cast< VTable * >( vtab ) );
+  *outCursor = reinterpret_cast< sqlite3_vtab_cursor * >( ncursor );
   return SQLITE_OK;
 }
 
-int vtableClose( sqlite3_vtab_cursor * cursor )
+int vtableClose( sqlite3_vtab_cursor *cursor )
 {
   if ( cursor )
   {
-    delete reinterpret_cast<VTableCursor*>( cursor );
+    delete reinterpret_cast<VTableCursor *>( cursor );
   }
   return SQLITE_OK;
 }
 
-int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
+int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
 {
   Q_UNUSED( argc );
   Q_UNUSED( idxStr );
@@ -598,7 +598,7 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
   else if ( idxNum == 2 )
   {
     // rtree filter
-    const char* blob = reinterpret_cast< const char* >( sqlite3_value_blob( argv[0] ) );
+    const char *blob = reinterpret_cast< const char * >( sqlite3_value_blob( argv[0] ) );
     int bytes = sqlite3_value_bytes( argv[0] );
     QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
     request.setFilterRect( r );
@@ -619,7 +619,7 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
       case SQLITE_TEXT:
       {
         int n = sqlite3_value_bytes( argv[0] );
-        const char* t = reinterpret_cast<const char*>( sqlite3_value_text( argv[0] ) );
+        const char *t = reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) );
         QString str = QString::fromUtf8( t, n );
         expr += "'" + str.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) + "'";
         break;
@@ -632,35 +632,35 @@ int vtableFilter( sqlite3_vtab_cursor * cursor, int idxNum, const char *idxStr, 
     }
     request.setFilterExpression( expr );
   }
-  VTableCursor *c = reinterpret_cast<VTableCursor*>( cursor );
+  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
   c->filter( request );
   return SQLITE_OK;
 }
 
 int vtableNext( sqlite3_vtab_cursor *cursor )
 {
-  VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
+  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
   c->next();
   return SQLITE_OK;
 }
 
 int vtableEof( sqlite3_vtab_cursor *cursor )
 {
-  VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
+  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
   return c->eof();
 }
 
 int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *outRowid )
 {
-  VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
+  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
   *outRowid = c->currentId();
 
   return SQLITE_OK;
 }
 
-int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
+int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
 {
-  VTableCursor* c = reinterpret_cast<VTableCursor*>( cursor );
+  VTableCursor *c = reinterpret_cast<VTableCursor *>( cursor );
   if ( idx == 0 )
   {
     // _search_frame_, return null
@@ -669,7 +669,7 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
   }
   if ( idx == c->nColumns() + 1 )
   {
-    QPair<char*, int> g = c->currentGeometry();
+    QPair<char *, int> g = c->currentGeometry();
     if ( !g.first )
       sqlite3_result_null( ctxt );
     else
@@ -706,9 +706,9 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context* ctxt, int idx )
 }
 
 
-static QCoreApplication* sCoreApp = nullptr;
+static QCoreApplication *sCoreApp = nullptr;
 
-void moduleDestroy( void* )
+void moduleDestroy( void * )
 {
   if ( sCoreApp )
   {
@@ -719,7 +719,7 @@ void moduleDestroy( void* )
 // the expression context used for calling qgis functions
 QgsExpressionContext qgisFunctionExpressionContext;
 
-void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args )
+void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args )
 {
   // convert from sqlite3 value to QVariant and then call the qgis expression function
   // the 3 basic sqlite3 types (int, float, text) are converted to their QVariant equivalent
@@ -727,7 +727,7 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
   // geometries are converted between spatialite and QgsGeometry
   // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
 
-  QgsExpression::Function* foo = reinterpret_cast<QgsExpression::Function*>( sqlite3_user_data( ctxt ) );
+  QgsExpression::Function *foo = reinterpret_cast<QgsExpression::Function *>( sqlite3_user_data( ctxt ) );
 
   QVariantList variants;
   for ( int i = 0; i < nArgs; i++ )
@@ -744,7 +744,7 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
       case SQLITE_TEXT:
       {
         int n = sqlite3_value_bytes( args[i] );
-        const char* t = reinterpret_cast<const char*>( sqlite3_value_text( args[i] ) );
+        const char *t = reinterpret_cast<const char *>( sqlite3_value_text( args[i] ) );
         QString str = QString::fromUtf8( t, n );
         variants << QVariant( str );
         break;
@@ -752,7 +752,7 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
       case SQLITE_BLOB:
       {
         int n = sqlite3_value_bytes( args[i] );
-        const char* blob = reinterpret_cast<const char*>( sqlite3_value_blob( args[i] ) );
+        const char *blob = reinterpret_cast<const char *>( sqlite3_value_blob( args[i] ) );
         // spatialite blobs start with a 0 byte
         if ( n > 0 && blob[0] == 0 )
         {
@@ -815,7 +815,7 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
     {
       if ( ret.canConvert<QgsGeometry>() )
       {
-        char* blob = nullptr;
+        char *blob = nullptr;
         int size = 0;
         qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
         sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
@@ -842,14 +842,14 @@ void qgisFunctionWrapper( sqlite3_context* ctxt, int nArgs, sqlite3_value** args
   };
 }
 
-void registerQgisFunctions( sqlite3* db )
+void registerQgisFunctions( sqlite3 *db )
 {
   QStringList excludedFunctions;
   excludedFunctions << QStringLiteral( "min" ) << QStringLiteral( "max" ) << QStringLiteral( "coalesce" ) << QStringLiteral( "get_feature" ) << QStringLiteral( "getFeature" ) << QStringLiteral( "attribute" );
   QStringList reservedFunctions;
   reservedFunctions << QStringLiteral( "left" ) << QStringLiteral( "right" ) << QStringLiteral( "union" );
   // register QGIS expression functions
-  Q_FOREACH ( QgsExpression::Function* foo, QgsExpression::Functions() )
+  Q_FOREACH ( QgsExpression::Function *foo, QgsExpression::Functions() )
   {
     if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {
@@ -888,7 +888,7 @@ void registerQgisFunctions( sqlite3* db )
   qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 }
 
-int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void * unused /*const sqlite3_api_routines *pApi*/ )
+int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ )
 {
   Q_UNUSED( pzErrMsg );
   Q_UNUSED( unused );
@@ -901,7 +901,7 @@ int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void * unused /*const sql
     // if run standalone
     static int moduleArgc = 1;
     static char moduleName[] = "qgsvlayer_module";
-    static char* moduleArgv[] = { moduleName };
+    static char *moduleArgv[] = { moduleName };
     sCoreApp = new QCoreApplication( moduleArgc, moduleArgv );
     QgsApplication::init();
     QgsApplication::initQgis();

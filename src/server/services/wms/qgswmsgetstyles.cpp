@@ -24,20 +24,20 @@
 namespace QgsWms
 {
 
-  void writeGetStyles( QgsServerInterface* serverIface, const QString& version,
-                       const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetStyles( QgsServerInterface *serverIface, const QString &version,
+                       const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = getStyles( serverIface, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
-  QDomDocument getStyles( QgsServerInterface* serverIface, const QString& version,
-                          const QgsServerRequest& request )
+  QDomDocument getStyles( QgsServerInterface *serverIface, const QString &version,
+                          const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
-    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
     QgsServerRequest::Parameters parameters = request.parameters();
 
     QDomDocument doc;

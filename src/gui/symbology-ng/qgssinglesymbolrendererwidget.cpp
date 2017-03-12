@@ -24,14 +24,14 @@
 
 #include <QMenu>
 
-QgsRendererWidget* QgsSingleSymbolRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsSingleSymbolRendererWidget( layer, style, renderer );
 }
 
-QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
@@ -42,7 +42,7 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer* la
   }
   if ( !mRenderer )
   {
-    QgsSymbol* symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
+    QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
     mRenderer = new QgsSingleSymbolRenderer( symbol );
   }
@@ -53,14 +53,14 @@ QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer* la
   // setup ui
   mSelector = new QgsSymbolSelectorWidget( mSingleSymbol, mStyle, mLayer, nullptr );
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
-  connect( mSelector, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
+  connect( mSelector, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
 
-  QVBoxLayout* layout = new QVBoxLayout( this );
+  QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mSelector );
 
   // advanced actions - data defined rendering
-  QMenu* advMenu = mSelector->advancedMenu();
+  QMenu *advMenu = mSelector->advancedMenu();
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 }
@@ -75,12 +75,12 @@ QgsSingleSymbolRendererWidget::~QgsSingleSymbolRendererWidget()
 }
 
 
-QgsFeatureRenderer* QgsSingleSymbolRendererWidget::renderer()
+QgsFeatureRenderer *QgsSingleSymbolRendererWidget::renderer()
 {
   return mRenderer;
 }
 
-void QgsSingleSymbolRendererWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsSingleSymbolRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsRendererWidget::setContext( context );
   if ( mSelector )

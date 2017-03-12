@@ -53,10 +53,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     };
 
     //! Return pointer to the parent layer node
-    QgsLayerTreeLayer* layerNode() const { return mLayerNode; }
+    QgsLayerTreeLayer *layerNode() const { return mLayerNode; }
 
     //! Return pointer to model owning this legend node
-    QgsLayerTreeModel* model() const;
+    QgsLayerTreeModel *model() const;
 
     //! Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled.
     virtual Qt::ItemFlags flags() const;
@@ -65,13 +65,13 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     virtual QVariant data( int role ) const = 0;
 
     //! Set some data associated with the item. Default implementation does nothing and returns false.
-    virtual bool setData( const QVariant& value, int role );
+    virtual bool setData( const QVariant &value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
     virtual void setEmbeddedInParent( bool embedded ) { mEmbeddedInParent = embedded; }
 
     virtual QString userLabel() const { return mUserLabel; }
-    virtual void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; }
+    virtual void setUserLabel( const QString &userLabel ) { mUserLabel = userLabel; }
 
     virtual bool isScaleOK( double scale ) const { Q_UNUSED( scale ); return true; }
 
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     struct ItemContext
     {
       //! Painter
-      QPainter* painter = nullptr;
+      QPainter *painter = nullptr;
       //! Top-left corner of the legend item
       QPointF point;
       //! offset from the left side where label should start
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      *
      *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
      */
-    virtual ItemMetrics draw( const QgsLegendSettings& settings, ItemContext* ctx );
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 
     /**
      * Draws symbol on the left side of the item
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
      * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
      */
-    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
     /**
      * Draws label on the right side of the item
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
      * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
      * @return Size of the label (may span multiple lines)
      */
-    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const;
+    virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 
   signals:
     //! Emitted on internal data change so the layer tree model can forward the signal to views
@@ -126,10 +126,10 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 
   protected:
     //! Construct the node with pointer to its parent layer node
-    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent = nullptr );
+    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent = nullptr );
 
   protected:
-    QgsLayerTreeLayer* mLayerNode = nullptr;
+    QgsLayerTreeLayer *mLayerNode = nullptr;
     bool mEmbeddedInParent;
     QString mUserLabel;
 };
@@ -147,17 +147,17 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
-    QgsSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItem& item, QObject* parent = nullptr );
+    QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent = nullptr );
 
     virtual Qt::ItemFlags flags() const override;
     virtual QVariant data( int role ) const override;
-    virtual bool setData( const QVariant& value, int role ) override;
+    virtual bool setData( const QVariant &value, int role ) override;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const override;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
     virtual void setEmbeddedInParent( bool embedded ) override;
 
-    void setUserLabel( const QString& userLabel ) override { mUserLabel = userLabel; updateLabel(); }
+    void setUserLabel( const QString &userLabel ) override { mUserLabel = userLabel; updateLabel(); }
 
     virtual bool isScaleOK( double scale ) const override { return mItem.isScaleOK( scale ); }
 
@@ -184,13 +184,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * render context in advance and call this method instead of minimumIconSize().
      * @note added in QGIS 2.18
      */
-    QSize minimumIconSize( QgsRenderContext* context ) const;
+    QSize minimumIconSize( QgsRenderContext *context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()
      * @note added in QGIS 2.14
      */
-    const QgsSymbol* symbol() const;
+    const QgsSymbol *symbol() const;
 
     /** Sets the symbol to be used by the legend node. The symbol change is also propagated
      * to the associated vector layer's renderer.
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * @see symbol()
      * @note added in QGIS 2.14
      */
-    void setSymbol( QgsSymbol* symbol );
+    void setSymbol( QgsSymbol *symbol );
 
   public slots:
 
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     static const int INDENT_SIZE = 20;
 
     // return a temporary context or null if legendMapViewData are not valid
-    QgsRenderContext * createTemporaryRenderContext() const;
+    QgsRenderContext *createTemporaryRenderContext() const;
 
     /** Sets all items belonging to the same layer as this node to the same check state.
      * @param state check state
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent = nullptr, const QString& key = QString() );
+    QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent = nullptr, const QString &key = QString() );
 
     virtual QVariant data( int role ) const override;
 
@@ -269,11 +269,11 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
-    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent = nullptr );
+    QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const override;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
   private:
     QImage mImage;
@@ -289,11 +289,11 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
     Q_OBJECT
 
   public:
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent = nullptr );
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const override;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
   private:
     QColor mColor;
@@ -317,18 +317,18 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
      * @param nodeLayer layer node
      * @param parent parent object
      */
-    QgsWmsLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = nullptr );
+    QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent = nullptr );
 
     virtual QVariant data( int role ) const override;
 
-    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const override;
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
     virtual void invalidateMapBasedData() override;
 
   private slots:
 
-    void getLegendGraphicFinished( const QImage& );
-    void getLegendGraphicErrored( const QString& );
+    void getLegendGraphicFinished( const QImage & );
+    void getLegendGraphicErrored( const QString & );
     void getLegendGraphicProgress( qint64, qint64 );
 
   private:
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
     // Lazily initializes mImage
     QImage getLegendGraphic() const;
 
-    QImage renderMessage( const QString& msg ) const;
+    QImage renderMessage( const QString &msg ) const;
 
     QImage mImage;
 

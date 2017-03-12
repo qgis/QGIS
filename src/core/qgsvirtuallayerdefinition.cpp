@@ -22,14 +22,14 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString& filePath )
-    : mFilePath( filePath )
-    , mGeometryWkbType( QgsWkbTypes::Unknown )
-    , mGeometrySrid( 0 )
+QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
+  : mFilePath( filePath )
+  , mGeometryWkbType( QgsWkbTypes::Unknown )
+  , mGeometrySrid( 0 )
 {
 }
 
-QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl& url )
+QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
 {
   QgsVirtualLayerDefinition def;
 
@@ -171,7 +171,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   if ( !filePath().isEmpty() )
     url = QUrl::fromLocalFile( filePath() );
 
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, sourceLayers() )
   {
     if ( l.isReferenced() )
       url.addQueryItem( QStringLiteral( "layer_ref" ), QStringLiteral( "%1:%2" ).arg( l.reference(), l.name() ) );
@@ -201,7 +201,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
       url.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
   }
 
-  Q_FOREACH ( const QgsField& f, fields() )
+  Q_FOREACH ( const QgsField &f, fields() )
   {
     if ( f.type() == QVariant::Int )
       url.addQueryItem( QStringLiteral( "field" ), f.name() + ":int" );
@@ -219,19 +219,19 @@ QString QgsVirtualLayerDefinition::toString() const
   return QString( toUrl().toEncoded() );
 }
 
-void QgsVirtualLayerDefinition::addSource( const QString& name, const QString& ref )
+void QgsVirtualLayerDefinition::addSource( const QString &name, const QString &ref )
 {
   mSourceLayers.append( SourceLayer( name, ref ) );
 }
 
-void QgsVirtualLayerDefinition::addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding )
+void QgsVirtualLayerDefinition::addSource( const QString &name, const QString &source, const QString &provider, const QString &encoding )
 {
   mSourceLayers.append( SourceLayer( name, source, provider, encoding ) );
 }
 
-bool QgsVirtualLayerDefinition::hasSourceLayer( const QString& name ) const
+bool QgsVirtualLayerDefinition::hasSourceLayer( const QString &name ) const
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, sourceLayers() )
   {
     if ( l.name() == name )
     {
@@ -243,7 +243,7 @@ bool QgsVirtualLayerDefinition::hasSourceLayer( const QString& name ) const
 
 bool QgsVirtualLayerDefinition::hasReferencedLayers() const
 {
-  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer& l, sourceLayers() )
+  Q_FOREACH ( const QgsVirtualLayerDefinition::SourceLayer &l, sourceLayers() )
   {
     if ( l.isReferenced() )
     {

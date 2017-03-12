@@ -14,23 +14,23 @@
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QPainter>
-#include <QSettings>
 #include <cmath>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   // rotation
@@ -59,8 +59,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
@@ -80,14 +80,14 @@ void QgsDecorationNorthArrowDialog::on_buttonBox_rejected()
 }
 
 
-void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int spinAngle )
 {
-  Q_UNUSED( theInt );
+  Q_UNUSED( spinAngle );
 }
 
-void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int rotationValue )
 {
-  rotatePixmap( theInt );
+  rotatePixmap( rotationValue );
 }
 
 void QgsDecorationNorthArrowDialog::apply()
@@ -102,7 +102,7 @@ void QgsDecorationNorthArrowDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
+void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
 {
   QPixmap myQPixmap;
   QString myFileNameQString = QStringLiteral( ":/images/north_arrows/default.png" );
@@ -123,19 +123,19 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
 
     //rotate the canvas
-    myQPainter.rotate( theRotationInt );
+    myQPainter.rotate( rotationInt );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * theRotationInt;
-    int xShift = static_cast<int>((
-                                    ( centerXDouble * cos( myRadiansDouble ) ) +
-                                    ( centerYDouble * sin( myRadiansDouble ) )
-                                  ) - centerXDouble );
-    int yShift = static_cast<int>((
-                                    ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                    ( centerYDouble * cos( myRadiansDouble ) )
-                                  ) - centerYDouble );
+    double myRadiansDouble = ( PI / 180 ) * rotationInt;
+    int xShift = static_cast<int>( (
+                                     ( centerXDouble * cos( myRadiansDouble ) ) +
+                                     ( centerYDouble * sin( myRadiansDouble ) )
+                                   ) - centerXDouble );
+    int yShift = static_cast<int>( (
+                                     ( -centerXDouble * sin( myRadiansDouble ) ) +
+                                     ( centerYDouble * cos( myRadiansDouble ) )
+                                   ) - centerYDouble );
 
     //draw the pixmap in the proper position
     myQPainter.drawPixmap( xShift, yShift, myQPixmap );
@@ -165,8 +165,8 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 // Called when the widget has been resized.
 //
 
-void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *theResizeEvent )
+void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *resizeEvent )
 {
-  Q_UNUSED( theResizeEvent );
+  Q_UNUSED( resizeEvent );
   rotatePixmap( sliderRotation->value() );
 }

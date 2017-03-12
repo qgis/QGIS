@@ -67,7 +67,7 @@ QgsProjectFileTransform::TransformItem QgsProjectFileTransform::sTransformers[] 
   {PFV(), PFV( 2, 99, 0 ), &QgsProjectFileTransform::transform2990},
 };
 
-bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersion )
+bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion &newVersion )
 {
   Q_UNUSED( newVersion );
   bool returnValue = false;
@@ -76,7 +76,7 @@ bool QgsProjectFileTransform::updateRevision( const QgsProjectVersion& newVersio
   {
     for ( std::size_t i = 0; i < sizeof( sTransformers ) / sizeof( TransformItem ); i++ )
     {
-      const TransformItem& transformer = sTransformers[i];
+      const TransformItem &transformer = sTransformers[i];
       if ( transformer.from == mCurrentVersion || transformer.from.isNull() )
       {
         // Run the transformer, and update the revision in every case
@@ -207,8 +207,6 @@ void QgsProjectFileTransform::transform081to090()
       }
     }
   }
-  return;
-
 }
 
 void QgsProjectFileTransform::transform091to0100()
@@ -265,8 +263,6 @@ void QgsProjectFileTransform::transform091to0100()
     }
 
   }
-  return;
-
 }
 
 void QgsProjectFileTransform::transform0100to0110()
@@ -343,19 +339,19 @@ void QgsProjectFileTransform::transform0110to1000()
       QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
-      QgsVectorLayer* theLayer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
-      if ( !theLayer->isValid() )
+      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
+      if ( !layer->isValid() )
       {
-        delete theLayer;
+        delete layer;
         return;
       }
 
-      QgsVectorDataProvider* theProvider = theLayer->dataProvider();
-      if ( !theProvider )
+      QgsVectorDataProvider *provider = layer->dataProvider();
+      if ( !provider )
       {
         return;
       }
-      QgsFields theFields = theProvider->fields();
+      QgsFields fields = provider->fields();
 
       //read classificationfield
       QDomNodeList classificationFieldList = layerElem.elementsByTagName( QStringLiteral( "classificationfield" ) );
@@ -363,9 +359,9 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         QDomElement classificationFieldElem = classificationFieldList.at( j ).toElement();
         int fieldNumber = classificationFieldElem.text().toInt();
-        if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
+        if ( fieldNumber >= 0 && fieldNumber < fields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( theFields.at( fieldNumber ).name() );
+          QDomText fieldName = mDom.createTextNode( fields.at( fieldNumber ).name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }
@@ -735,8 +731,8 @@ void QgsProjectFileTransform::transform2990()
   }
 }
 
-void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,
-    QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer )
+void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNode &parentNode,
+    QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer )
 {
   //no data
   //TODO: We would need to set no data on all bands, but we don't know number of bands here
@@ -972,7 +968,7 @@ int QgsProjectFileTransform::rasterBandNumber( const QDomElement &rasterProperti
   return band;
 }
 
-void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem )
+void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument &doc, const QDomElement &rasterproperties, QDomElement &rendererElem )
 {
   if ( rasterproperties.isNull() || rendererElem.isNull() )
   {
@@ -1065,7 +1061,7 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, c
   }
 }
 
-void QgsProjectFileTransform::transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem )
+void QgsProjectFileTransform::transformRasterTransparency( QDomDocument &doc, const QDomElement &orig, QDomElement &rendererElem )
 {
   //soon...
   Q_UNUSED( doc );

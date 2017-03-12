@@ -24,18 +24,18 @@
 #include "qgsrendercontext.h"
 #include "qgscsexception.h"
 
-QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
-    : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( nullptr )
-    , mPipe( nullptr )
-    , mContext( rendererContext )
-    , mFeedback( new Feedback( this ) )
+QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
+  : QgsMapLayerRenderer( layer->id() )
+  , mRasterViewPort( nullptr )
+  , mPipe( nullptr )
+  , mContext( rendererContext )
+  , mFeedback( new Feedback( this ) )
 {
   mPainter = rendererContext.painter();
-  const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-  mMapToPixel = &theQgsMapToPixel;
+  const QgsMapToPixel &qgsMapToPixel = rendererContext.mapToPixel();
+  mMapToPixel = &qgsMapToPixel;
 
-  QgsMapToPixel mapToPixel = theQgsMapToPixel;
+  QgsMapToPixel mapToPixel = qgsMapToPixel;
   if ( mapToPixel.mapRotation() )
   {
     // unset rotation for the sake of local computations.
@@ -177,7 +177,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
-  QgsRasterRenderer* rasterRenderer = mPipe->renderer();
+  QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 }
@@ -225,14 +225,14 @@ bool QgsRasterLayerRenderer::render()
   return true;
 }
 
-QgsFeedback* QgsRasterLayerRenderer::feedback() const
+QgsFeedback *QgsRasterLayerRenderer::feedback() const
 {
   return mFeedback;
 }
 
 QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
-    : mR( r )
-    , mMinimalPreviewInterval( 250 )
+  : mR( r )
+  , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
 }

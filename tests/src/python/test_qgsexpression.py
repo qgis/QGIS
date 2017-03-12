@@ -127,13 +127,13 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertTrue(success)
 
     def testReferencedColumnsNoSet(self):
-        success = QgsExpression.registerFunction(self.no_referenced_columns_set)
+        QgsExpression.registerFunction(self.no_referenced_columns_set)
         exp = QgsExpression('no_referenced_columns_set()')
         self.assertEqual(exp.referencedColumns(),
                          {QgsFeatureRequest.ALL_ATTRIBUTES})
 
     def testReferencedColumnsSet(self):
-        success = QgsExpression.registerFunction(self.referenced_columns_set)
+        QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
         self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
 
@@ -195,6 +195,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertFalse(e.isValid())
         e.setExpression('1')
         self.assertTrue(e.isValid())
+
 
 if __name__ == "__main__":
     unittest.main()

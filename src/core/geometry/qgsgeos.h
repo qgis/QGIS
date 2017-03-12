@@ -37,41 +37,41 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @param geometry The geometry
      * @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
-    QgsGeos( const QgsAbstractGeometry* geometry, double precision = 0 );
+    QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
     ~QgsGeos();
 
     //! Removes caches
     void geometryChanged() override;
     void prepareGeometry() override;
 
-    QgsAbstractGeometry* intersection( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* difference( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* combine( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* combine( const QList< QgsAbstractGeometry*>&, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* symDifference( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* buffer( double distance, int segments, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* simplify( double tolerance, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* interpolate( double distance, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* envelope( QString* errorMsg = nullptr ) const override;
-    bool centroid( QgsPointV2& pt, QString* errorMsg = nullptr ) const override;
-    bool pointOnSurface( QgsPointV2& pt, QString* errorMsg = nullptr ) const override;
-    QgsAbstractGeometry* convexHull( QString* errorMsg = nullptr ) const override;
-    double distance( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool intersects( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool touches( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool crosses( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool within( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool overlaps( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool contains( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool disjoint( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    QString relate( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool relatePattern( const QgsAbstractGeometry& geom, const QString& pattern, QString* errorMsg = nullptr ) const override;
-    double area( QString* errorMsg = nullptr ) const override;
-    double length( QString* errorMsg = nullptr ) const override;
-    bool isValid( QString* errorMsg = nullptr ) const override;
-    bool isEqual( const QgsAbstractGeometry& geom, QString* errorMsg = nullptr ) const override;
-    bool isEmpty( QString* errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *intersection( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *difference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *symDifference( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *envelope( QString *errorMsg = nullptr ) const override;
+    bool centroid( QgsPointV2 &pt, QString *errorMsg = nullptr ) const override;
+    bool pointOnSurface( QgsPointV2 &pt, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
+    double distance( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool intersects( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool touches( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool crosses( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool within( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool overlaps( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool contains( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool disjoint( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    QString relate( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool relatePattern( const QgsAbstractGeometry &geom, const QString &pattern, QString *errorMsg = nullptr ) const override;
+    double area( QString *errorMsg = nullptr ) const override;
+    double length( QString *errorMsg = nullptr ) const override;
+    bool isValid( QString *errorMsg = nullptr ) const override;
+    bool isEqual( const QgsAbstractGeometry &geom, QString *errorMsg = nullptr ) const override;
+    bool isEmpty( QString *errorMsg = nullptr ) const override;
 
     /** Splits this geometry according to a given line.
     @param splitLine the line that splits the geometry
@@ -80,13 +80,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     @param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
     @param[out] errorMsg error messages emitted, if any
     @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry( const QgsLineString& splitLine,
-                       QList<QgsAbstractGeometry*>& newGeometries,
+    int splitGeometry( const QgsLineString &splitLine,
+                       QList<QgsAbstractGeometry *> &newGeometries,
                        bool topological,
                        QgsPointSequence &topologyTestPoints,
-                       QString* errorMsg = nullptr ) const override;
+                       QString *errorMsg = nullptr ) const override;
 
-    QgsAbstractGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg = nullptr ) const override;
 
     /**
      * Returns a single sided buffer for a geometry. The buffer is only
@@ -101,12 +101,12 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * calculated
      * @note added in QGIS 3.0
      */
-    QgsAbstractGeometry* singleSidedBuffer( double distance, int segments, int side,
+    QgsAbstractGeometry *singleSidedBuffer( double distance, int segments, int side,
                                             int joinStyle, double mitreLimit,
-                                            QString* errorMsg = nullptr ) const;
+                                            QString *errorMsg = nullptr ) const;
 
 
-    QgsAbstractGeometry* reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg = nullptr ) const;
+    QgsAbstractGeometry *reshapeGeometry( const QgsLineString &reshapeWithLine, int *errorCode, QString *errorMsg = nullptr ) const;
 
     /** Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
@@ -116,19 +116,19 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * LineString/MultiLineString geometry.
      * @note added in QGIS 3.0
      */
-    QgsGeometry mergeLines( QString* errorMsg = nullptr ) const;
+    QgsGeometry mergeLines( QString *errorMsg = nullptr ) const;
 
     /** Returns the closest point on the geometry to the other geometry.
      * @note added in QGIS 2.14
      * @see shortestLine()
      */
-    QgsGeometry closestPoint( const QgsGeometry& other, QString* errorMsg = nullptr ) const;
+    QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /** Returns the shortest line joining this geometry to the other geometry.
      * @note added in QGIS 2.14
      * @see closestPoint()
      */
-    QgsGeometry shortestLine( const QgsGeometry& other, QString* errorMsg = nullptr ) const;
+    QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /** Returns a distance representing the location along this linestring of the closest point
      * on this linestring geometry to the specified point. Ie, the returned value indicates
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @note only valid for linestring geometries
      * @return distance along line, or -1 on error
      */
-    double lineLocatePoint( const QgsPointV2& point, QString* errorMsg = nullptr ) const;
+    double lineLocatePoint( const QgsPointV2 &point, QString *errorMsg = nullptr ) const;
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * An empty geometry will be returned in the case of errors.
      * @note added in QGIS 3.0
      */
-    static QgsGeometry polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg = nullptr );
+    static QgsGeometry polygonize( const QList<QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * An empty geometry will be returned if the diagram could not be calculated.
      * @note added in QGIS 3.0
      */
-    QgsGeometry voronoiDiagram( const QgsAbstractGeometry* extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString* errorMsg = nullptr ) const;
+    QgsGeometry voronoiDiagram( const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
     /**
      * Returns the Delaunay triangulation for the vertices of the geometry.
@@ -178,21 +178,21 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * An empty geometry will be returned if the diagram could not be calculated.
      * @note added in QGIS 3.0
      */
-    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString* errorMsg = nullptr ) const;
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
     /** Create a geometry from a GEOSGeometry
      * @param geos GEOSGeometry. Ownership is NOT transferred.
      */
-    static QgsAbstractGeometry* fromGeos( const GEOSGeometry* geos );
-    static QgsPolygonV2* fromGeosPolygon( const GEOSGeometry* geos );
-    static GEOSGeometry* asGeos( const QgsAbstractGeometry* geom , double precision = 0 );
-    static QgsPointV2 coordSeqPoint( const GEOSCoordSequence* cs, int i, bool hasZ, bool hasM );
+    static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
+    static QgsPolygonV2 *fromGeosPolygon( const GEOSGeometry *geos );
+    static GEOSGeometry *asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
+    static QgsPointV2 coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
 
   private:
-    mutable GEOSGeometry* mGeos;
-    const GEOSPreparedGeometry* mGeosPrepared = nullptr;
+    mutable GEOSGeometry *mGeos;
+    const GEOSPreparedGeometry *mGeosPrepared = nullptr;
     double mPrecision;
 
     enum Overlay
@@ -216,34 +216,34 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    QgsAbstractGeometry* overlay( const QgsAbstractGeometry& geom, Overlay op, QString* errorMsg = nullptr ) const;
-    bool relation( const QgsAbstractGeometry& geom, Relation r, QString* errorMsg = nullptr ) const;
-    static GEOSCoordSequence* createCoordinateSequence( const QgsCurve* curve , double precision, bool forceClose = false );
-    static QgsLineString* sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM );
-    static int numberOfGeometries( GEOSGeometry* g );
-    static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
-    int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const;
+    QgsAbstractGeometry *overlay( const QgsAbstractGeometry &geom, Overlay op, QString *errorMsg = nullptr ) const;
+    bool relation( const QgsAbstractGeometry &geom, Relation r, QString *errorMsg = nullptr ) const;
+    static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
+    static QgsLineString *sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
+    static int numberOfGeometries( GEOSGeometry *g );
+    static GEOSGeometry *nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
+    int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const;
 
     /** Ownership of geoms is transferred
      */
-    static GEOSGeometry* createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms );
+    static GEOSGeometry *createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms );
 
-    static GEOSGeometry* createGeosPoint( const QgsAbstractGeometry* point, int coordDims , double precision );
-    static GEOSGeometry* createGeosLinestring( const QgsAbstractGeometry* curve, double precision );
-    static GEOSGeometry* createGeosPolygon( const QgsAbstractGeometry* poly, double precision );
+    static GEOSGeometry *createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision );
+    static GEOSGeometry *createGeosLinestring( const QgsAbstractGeometry *curve, double precision );
+    static GEOSGeometry *createGeosPolygon( const QgsAbstractGeometry *poly, double precision );
 
     //utils for geometry split
-    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg = nullptr ) const;
-    GEOSGeometry* linePointDifference( GEOSGeometry* GEOSsplitPoint ) const;
-    int splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
-    int splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const;
+    int topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
+    GEOSGeometry *linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
+    int splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
+    int splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
 
     //utils for reshape
-    static GEOSGeometry* reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos, double precision );
-    static GEOSGeometry* reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos , double precision );
-    static int lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 );
-    static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
-    static int geomDigits( const GEOSGeometry* geom );
+    static GEOSGeometry *reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );
+    static GEOSGeometry *reshapePolygon( const GEOSGeometry *polygon, const GEOSGeometry *reshapeLineGeos, double precision );
+    static int lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 );
+    static int pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry *line );
+    static int geomDigits( const GEOSGeometry *geom );
 };
 
 /// @cond PRIVATE
@@ -251,15 +251,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 class GEOSException // clazy:exclude=rule-of-three
 {
   public:
-    explicit GEOSException( const QString& theMsg )
+    explicit GEOSException( const QString &message )
     {
-      if ( theMsg == QLatin1String( "Unknown exception thrown" ) && lastMsg().isNull() )
+      if ( message == QLatin1String( "Unknown exception thrown" ) && lastMsg().isNull() )
       {
-        msg = theMsg;
+        msg = message;
       }
       else
       {
-        msg = theMsg;
+        msg = message;
         lastMsg() = msg;
       }
     }
@@ -283,7 +283,7 @@ class GEOSException // clazy:exclude=rule-of-three
 
   private:
     QString msg;
-    static QString& lastMsg() { static QString sLastMsg; return sLastMsg; }
+    static QString &lastMsg() { static QString sLastMsg; return sLastMsg; }
 };
 
 /// @endcond

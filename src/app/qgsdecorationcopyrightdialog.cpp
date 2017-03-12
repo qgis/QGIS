@@ -14,25 +14,25 @@
 #include "qgsdecorationcopyright.h"
 
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 //qt includes
 #include <QColorDialog>
 #include <QColor>
 #include <QFont>
-#include <QSettings>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyright &deco, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationCopyright/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   grpEnable->setChecked( mDeco.enabled() );
@@ -62,8 +62,8 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
 
 QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationCopyright/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DecorationCopyright/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
@@ -77,7 +77,7 @@ void QgsDecorationCopyrightDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor& c )
+void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor &c )
 {
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();

@@ -41,7 +41,6 @@ from qgis.analysis import (QgsVectorLayerDirector,
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import (ParameterVector,
                                         ParameterPoint,
@@ -203,7 +202,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
 
         director.addStrategy(strategy)
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
-                                  iface.mapCanvas().hasCrsTransformEnabled(),
+                                  True,
                                   tolerance)
 
         feedback.pushInfo(self.tr('Loading start points...'))

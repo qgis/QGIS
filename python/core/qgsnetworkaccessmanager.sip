@@ -48,10 +48,10 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
     //! Get name for QNetworkRequest::CacheLoadControl
-    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl );
+    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
     //! Get QNetworkRequest::CacheLoadControl from name
-    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
     //! Setup the NAM according to the user's settings #spellok
     void setupDefaultProxyAndCache();

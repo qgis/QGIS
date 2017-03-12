@@ -33,12 +33,12 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
   public:
 
-    QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsPalettedRendererWidget( layer, theExtent ); }
+    QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsPalettedRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer* renderer() override;
+    QgsRasterRenderer *renderer() override;
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 
   private:
 
@@ -49,12 +49,12 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
       LabelColumn = 2,
     };
 
-    QMenu* contextMenu = nullptr;
+    QMenu *contextMenu = nullptr;
 
   private slots:
 
-    void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
-    void on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column );
+    void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void on_mTreeWidget_itemChanged( QTreeWidgetItem *item, int column );
     void changeColor();
     void changeTransparency();
 };

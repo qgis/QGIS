@@ -40,9 +40,9 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsHtmlAnnotation.
      */
-    QgsHtmlAnnotation( QObject* parent = nullptr );
+    QgsHtmlAnnotation( QObject *parent = nullptr );
 
-    ~QgsHtmlAnnotation();
+    ~QgsHtmlAnnotation() = default;
 
     QSizeF minimumFrameSize() const override;
 
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      * Sets the file path for the source HTML file.
      * @see sourceFile()
      */
-    void setSourceFile( const QString& htmlFile );
+    void setSourceFile( const QString &htmlFile );
 
     /**
      * Returns the file path for the source HTML file.
@@ -58,26 +58,26 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      */
     QString sourceFile() const { return mHtmlFile; }
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    void setAssociatedFeature( const QgsFeature& feature ) override;
+    void setAssociatedFeature( const QgsFeature &feature ) override;
 
     /**
      * Returns a new QgsHtmlAnnotation object.
      */
-    static QgsHtmlAnnotation* create() { return new QgsHtmlAnnotation(); }
+    static QgsHtmlAnnotation *create() { return new QgsHtmlAnnotation(); }
 
   protected:
 
-    void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
+    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private slots:
 
     void javascript();
 
   private:
-    QgsWebPage* mWebPage = nullptr;
+    QgsWebPage *mWebPage = nullptr;
     QString mHtmlFile;
     QString mHtmlSource;
 

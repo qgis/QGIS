@@ -22,7 +22,7 @@ import tempfile
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QFileInfo, QRectF, qWarning
-from qgis.core import QgsUnitTypes, QgsVectorLayer, QgsProject, QgsMapSettings, QgsCoordinateReferenceSystem, \
+from qgis.core import QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, \
     QgsComposition, QgsFillSymbol, QgsSingleSymbolRenderer, QgsComposerLabel, QgsComposerMap, QgsFontUtils, \
     QgsRectangle, QgsComposerLegend, QgsFeature, QgsGeometry, QgsPoint, QgsRendererCategory, QgsCategorizedSymbolRenderer, QgsMarkerSymbol
 from qgscompositionchecker import QgsCompositionChecker

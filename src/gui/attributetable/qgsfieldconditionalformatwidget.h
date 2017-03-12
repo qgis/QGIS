@@ -48,20 +48,20 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     void viewRules();
 
     /** Sets the vector layer associated with the widget.
-     * @param theLayer vector layer
+     * @param layer vector layer
      */
-    void setLayer( QgsVectorLayer* theLayer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Switches the widget to the edit style mode for the specified style.
      * @param index index of conditional style to edit
      * @param style initial conditional styling options
      */
-    void editStyle( int index, const QgsConditionalStyle& style );
+    void editStyle( int index, const QgsConditionalStyle &style );
 
     /**
      * @param style initial conditional styling options
      */
-    void loadStyle( const QgsConditionalStyle& style );
+    void loadStyle( const QgsConditionalStyle &style );
 
     /** Resets the formatting options to their default state.
      */
@@ -71,7 +71,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      * @brief Set the presets that can be used for quick pick
      * @param styles A list of styles used as presets
      */
-    void setPresets( const QList<QgsConditionalStyle>& styles );
+    void setPresets( const QList<QgsConditionalStyle> &styles );
 
     /**
      * @brief The default presets for the widget.  Normally set when the widget is
@@ -85,35 +85,35 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     /** Emitted when the conditional styling rules are updated.
      * @param fieldName name of field whose rules have been modified.
      */
-    void rulesUpdated( const QString& fieldName );
+    void rulesUpdated( const QString &fieldName );
 
   public slots:
 
   private:
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     int mEditIndex;
     bool mEditing;
-    QStandardItemModel* mModel = nullptr;
-    QStandardItemModel* mPresetsModel = nullptr;
-    QgsSymbol* mSymbol = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QStandardItemModel *mPresetsModel = nullptr;
+    QgsSymbol *mSymbol = nullptr;
     QList<QgsConditionalStyle> mPresets;
 
     QList<QgsConditionalStyle> getStyles();
 
-    void setFormattingFromStyle( const QgsConditionalStyle& style );
+    void setFormattingFromStyle( const QgsConditionalStyle &style );
 
   private slots:
     void setExpression();
     void updateIcon();
     void presetSet( int index );
     bool isCustomSet();
-    void ruleClicked( const QModelIndex& index );
+    void ruleClicked( const QModelIndex &index );
     void reloadStyles();
     void cancelRule();
     void deleteRule();
     void saveRule();
     void addNewRule();
-    void fieldChanged( const QString& fieldName );
+    void fieldChanged( const QString &fieldName );
 
 };
 

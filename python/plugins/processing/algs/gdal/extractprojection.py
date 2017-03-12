@@ -49,7 +49,7 @@ class ExtractProjection(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract projection')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+        self.group, self.i18n_group = self.trAlgorithm('Raster projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
                                            self.tr('Create also .prj file'), False))
@@ -83,7 +83,9 @@ class ExtractProjection(GdalAlgorithm):
             wld.write('%0.8f\n' % geotransform[4])
             wld.write('%0.8f\n' % geotransform[2])
             wld.write('%0.8f\n' % geotransform[5])
-            wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
-                                   * geotransform[2]))
-            wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
-                                   * geotransform[5]))
+            wld.write('%0.8f\n' % (geotransform[0] +
+                                   0.5 * geotransform[1] +
+                                   0.5 * geotransform[2]))
+            wld.write('%0.8f\n' % (geotransform[3] +
+                                   0.5 * geotransform[4] +
+                                   0.5 * geotransform[5]))

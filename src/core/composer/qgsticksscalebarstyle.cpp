@@ -19,7 +19,7 @@
 #include "qgscomposerutils.h"
 #include <QPainter>
 
-QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
+QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar *bar ): QgsScaleBarStyle( bar )
 {
   mTickPosition = TicksMiddle;
 }
@@ -43,7 +43,7 @@ QString QgsTicksScaleBarStyle::name() const
   return QLatin1String( "" );  // to make gcc happy
 }
 
-void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
+void QgsTicksScaleBarStyle::draw( QPainter *p, double xOffset ) const
 {
   if ( !mScaleBar )
   {

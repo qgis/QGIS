@@ -48,9 +48,9 @@ class TestQgsDiagram : public QObject
 
   public:
     TestQgsDiagram()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mPointsLayer( 0 )
+      : mTestHasError( false )
+      , mMapSettings( 0 )
+      , mPointsLayer( 0 )
     {}
 
   private:
@@ -60,7 +60,7 @@ class TestQgsDiagram : public QObject
     QString mTestDataDir;
     QString mReport;
 
-    bool imageCheck( const QString& theTestType );
+    bool imageCheck( const QString &testType );
 
   private slots:
     // will be called before the first testfunction is executed.
@@ -93,13 +93,13 @@ class TestQgsDiagram : public QObject
       QgsStringMap symbolProps;
       symbolProps.insert( "color", "0,0,0,0" );
       symbolProps.insert( "outline_style", "no" );
-      QgsMarkerSymbol* symbol = QgsMarkerSymbol::createSimple( symbolProps );
-      QgsSingleSymbolRenderer* symbolRenderer = new QgsSingleSymbolRenderer( symbol );
+      QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps );
+      QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( symbol );
       mPointsLayer->setRenderer( symbolRenderer );
 
       // Create map composition to draw on
       QgsProject::instance()->addMapLayer( mPointsLayer );
-      mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
+      mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
       mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
@@ -252,7 +252,7 @@ class TestQgsDiagram : public QObject
       QVERIFY( imageCheck( "piediagram_datadefined_position" ) );
     }
 
-    void testDataDefinedOutline()
+    void testDataDefinedStroke()
     {
       QgsDiagramSettings ds;
       QColor col1 = Qt::red;
@@ -280,9 +280,9 @@ class TestQgsDiagram : public QObject
       dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
       dls.setShowAllDiagrams( true );
 
-      //setup data defined outline
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::OutlineColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,0,255','255,0,0,255')", true ) );
-      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::OutlineWidth, QgsProperty::fromExpression( "\"Staff\" / 2.0", true ) );
+      //setup data defined stroke
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::StrokeColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,0,255','255,0,0,255')", true ) );
+      dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::StrokeWidth, QgsProperty::fromExpression( "\"Staff\" / 2.0", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
 
@@ -536,7 +536,7 @@ class TestQgsDiagram : public QObject
       dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
       dls.setShowAllDiagrams( true );
 
-      //setup data defined outline
+      //setup data defined stroke
       dls.dataDefinedProperties().setProperty( QgsDiagramLayerSettings::BackgroundColor, QgsProperty::fromExpression( "if(\"Pilots\">1,'0,0,255,150','255,0,0,150')", true ) );
 
       mPointsLayer->setDiagramLayerSettings( dls );
@@ -546,7 +546,7 @@ class TestQgsDiagram : public QObject
 
 };
 
-bool TestQgsDiagram::imageCheck( const QString& theTestType )
+bool TestQgsDiagram::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -557,10 +557,10 @@ bool TestQgsDiagram::imageCheck( const QString& theTestType )
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( "diagrams" );
-  checker.setControlName( "expected_" + theTestType );
+  checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
   checker.setColorTolerance( 15 );
-  bool resultFlag = checker.runTest( theTestType, 200 );
+  bool resultFlag = checker.runTest( testType, 200 );
   mReport += checker.report();
   return resultFlag;
 }

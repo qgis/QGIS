@@ -41,9 +41,9 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
+    QgsLegendModel( QgsLayerTreeGroup *rootNode, QObject *parent = nullptr );
 
-    QVariant data( const QModelIndex& index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 };
@@ -57,17 +57,17 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     Q_OBJECT
 
   public:
-    QgsComposerLegend( QgsComposition* composition );
+    QgsComposerLegend( QgsComposition *composition );
     ~QgsComposerLegend();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }
 
     //! \brief Reimplementation of QCanvasItem::paint
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     //! Paints the legend and calculates its size. If painter is 0, only size is calculated
-    QSizeF paintAndDetermineSize( QPainter* painter );
+    QSizeF paintAndDetermineSize( QPainter *painter );
 
     //! Sets item box to the whole content
     void adjustBoxSize();
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**
      * Returns the legend model
      */
-    QgsLegendModel* model() { return mLegendModel; }
+    QgsLegendModel *model() { return mLegendModel; }
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool legendFilterOutAtlas() const;
 
     //setters and getters
-    void setTitle( const QString& t );
+    void setTitle( const QString &t );
     QString title() const;
 
     /** Returns the alignment of the legend title
@@ -137,14 +137,14 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     //! Returns reference to modifiable style
-    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
+    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
     //! Returns style
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
-    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
 
     QFont styleFont( QgsLegendStyle::Style s ) const;
     //! Set style font
-    void setStyleFont( QgsLegendStyle::Style s, const QFont& f );
+    void setStyleFont( QgsLegendStyle::Style s, const QFont &f );
 
     //! Set style margin
     void setStyleMargin( QgsLegendStyle::Style s, double margin );
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setColumnSpace( double s );
 
     QColor fontColor() const;
-    void setFontColor( const QColor& c );
+    void setFontColor( const QColor &c );
 
     double symbolWidth() const;
     void setSymbolWidth( double w );
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     double wmsLegendHeight() const;
     void setWmsLegendHeight( double h );
 
-    void setWrapChar( const QString& t );
+    void setWrapChar( const QString &t );
     QString wrapChar() const;
 
     int columnCount() const;
@@ -196,63 +196,63 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
-    /** Returns whether a border will be drawn around raster symbol items.
-     * @see setDrawRasterBorder()
-     * @see rasterBorderColor()
-     * @see rasterBorderWidth()
+    /** Returns whether a stroke will be drawn around raster symbol items.
+     * @see setDrawRasterStroke()
+     * @see rasterStrokeColor()
+     * @see rasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    bool drawRasterBorder() const;
+    bool drawRasterStroke() const;
 
-    /** Sets whether a border will be drawn around raster symbol items.
+    /** Sets whether a stroke will be drawn around raster symbol items.
      * @param enabled set to true to draw borders
-     * @see drawRasterBorder()
-     * @see setRasterBorderColor()
-     * @see setRasterBorderWidth()
+     * @see drawRasterStroke()
+     * @see setRasterStrokeColor()
+     * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setDrawRasterBorder( bool enabled );
+    void setDrawRasterStroke( bool enabled );
 
-    /** Returns the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderColor()
-     * @see drawRasterBorder()
-     * @see rasterBorderWidth()
+    /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @see setRasterStrokeColor()
+     * @see drawRasterStroke()
+     * @see rasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    QColor rasterBorderColor() const;
+    QColor rasterStrokeColor() const;
 
-    /** Sets the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param color border color
-     * @see rasterBorderColor()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderWidth()
+    /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @param color stroke color
+     * @see rasterStrokeColor()
+     * @see setDrawRasterStroke()
+     * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderColor( const QColor& color );
+    void setRasterStrokeColor( const QColor &color );
 
-    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderWidth()
-     * @see drawRasterBorder()
-     * @see rasterBorderColor()
+    /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @see setRasterStrokeWidth()
+     * @see drawRasterStroke()
+     * @see rasterStrokeColor()
      * @note added in QGIS 2.12
      */
-    double rasterBorderWidth() const;
+    double rasterStrokeWidth() const;
 
-    /** Sets the border width for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param width border width in millimeters
-     * @see rasterBorderWidth()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderColor()
+    /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @param width stroke width in millimeters
+     * @see rasterStrokeWidth()
+     * @see setDrawRasterStroke()
+     * @see setRasterStrokeColor()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderWidth( double width );
+    void setRasterStrokeWidth( double width );
 
-    void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const { return mComposerMap;}
+    void setComposerMap( const QgsComposerMap *map );
+    const QgsComposerMap *composerMap() const { return mComposerMap;}
 
     //! Updates the model and all legend entries
     void updateLegend();
@@ -261,13 +261,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //Overridden to show legend title
     virtual QString displayName() const override;
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      * Returns the legend's renderer settings object.
      * @note added in QGIS 3.0
      */
-    const QgsLegendSettings& legendSettings() const { return mSettings; }
+    const QgsLegendSettings &legendSettings() const { return mSettings; }
 
   public slots:
     //! Data changed
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
 
   private slots:
@@ -295,25 +295,25 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     //! react to atlas
     void onAtlasEnded();
-    void onAtlasFeature( QgsFeature* );
+    void onAtlasFeature( QgsFeature * );
 
-    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
+    void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
   private:
     QgsComposerLegend(); //forbidden
 
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
-    void setCustomLayerTree( QgsLayerTreeGroup* rootGroup );
+    void setCustomLayerTree( QgsLayerTreeGroup *rootGroup );
 
-    QgsLegendModel* mLegendModel = nullptr;
-    QgsLayerTreeGroup* mCustomLayerTree = nullptr;
+    QgsLegendModel *mLegendModel = nullptr;
+    QgsLayerTreeGroup *mCustomLayerTree = nullptr;
 
     QgsLegendSettings mSettings;
 
     QString mTitle;
     int mColumnCount = 1;
 
-    const QgsComposerMap* mComposerMap = nullptr;
+    const QgsComposerMap *mComposerMap = nullptr;
 
     bool mLegendFilterByMap;
     bool mLegendFilterByExpression;

@@ -25,17 +25,17 @@ class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
+    explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source );
 
   protected:
 
-    virtual QString quotedIdentifier( const QString& identifier ) override;
-    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
-    virtual Result compileNode( const QgsExpression::Node* node, QString& str ) override;
-    virtual QString sqlFunctionFromFunctionName( const QString& fnName ) const override;
-    virtual QStringList sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const override;
-    virtual QString castToReal( const QString& value ) const override;
-    virtual QString castToInt( const QString& value ) const override;
+    virtual QString quotedIdentifier( const QString &identifier ) override;
+    virtual QString quotedValue( const QVariant &value, bool &ok ) override;
+    virtual Result compileNode( const QgsExpression::Node *node, QString &str ) override;
+    virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
+    virtual QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const override;
+    virtual QString castToReal( const QString &value ) const override;
+    virtual QString castToInt( const QString &value ) const override;
 
     QString mGeometryColumn;
     QgsPostgresGeometryColumnType mSpatialColType;

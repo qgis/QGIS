@@ -22,7 +22,7 @@ QgsNetworkSpeedStrategy::QgsNetworkSpeedStrategy( int attributeId, double defaul
   mToMetricFactor = toMetricFactor;
 }
 
-QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature& f ) const
+QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature &f ) const
 {
   QgsAttributes attrs = f.attributes();
 

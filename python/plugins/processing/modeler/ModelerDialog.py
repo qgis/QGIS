@@ -31,12 +31,12 @@ import sys
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings, QByteArray, QSize, QSizeF, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow, QShortcut
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -86,7 +86,7 @@ class ModelerDialog(BASE, WIDGET):
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
-        settings = QSettings()
+        settings = QgsSettings()
         self.restoreState(settings.value("/Processing/stateModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
 
@@ -125,7 +125,7 @@ class ModelerDialog(BASE, WIDGET):
         def _wheelEvent(event):
             self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
 
-            settings = QSettings()
+            settings = QgsSettings()
             factor = settings.value('/qgis/zoom_favor', 2.0)
             if (event.modifiers() == Qt.ControlModifier):
                 factor = 1.0 + (factor - 1.0) / 20.0
@@ -138,10 +138,6 @@ class ModelerDialog(BASE, WIDGET):
 
         def _enterEvent(e):
             QGraphicsView.enterEvent(self.view, e)
-            self.view.viewport().setCursor(Qt.ArrowCursor)
-
-        def _mousePressEvent(e):
-            QGraphicsView.mousePressEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
 
         def _mouseReleaseEvent(e):
@@ -170,7 +166,6 @@ class ModelerDialog(BASE, WIDGET):
         self.view.dragMoveEvent = _dragMoveEvent
         self.view.wheelEvent = _wheelEvent
         self.view.enterEvent = _enterEvent
-        self.view.mousePressEvent = _mousePressEvent
         self.view.mousePressEvent = _mousePressEvent
         self.view.mouseMoveEvent = _mouseMoveEvent
 
@@ -249,7 +244,7 @@ class ModelerDialog(BASE, WIDGET):
         self.hasChanged = False
 
     def closeEvent(self, evt):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue("/Processing/stateModeler", self.saveState())
         settings.setValue("/Processing/geometryModeler", self.saveGeometry())
 
@@ -302,7 +297,7 @@ class ModelerDialog(BASE, WIDGET):
         self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
         point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
 
-        settings = QSettings()
+        settings = QgsSettings()
         factor = settings.value('/qgis/zoom_favor', 2.0)
 
         self.view.scale(factor, factor)
@@ -313,7 +308,7 @@ class ModelerDialog(BASE, WIDGET):
         self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
         point = self.view.mapToScene(QPoint(self.view.viewport().width() / 2, self.view.viewport().height() / 2))
 
-        settings = QSettings()
+        settings = QgsSettings()
         factor = settings.value('/qgis/zoom_favor', 2.0)
         factor = 1 / factor
 
@@ -460,7 +455,7 @@ class ModelerDialog(BASE, WIDGET):
             except:
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
-                                        self.tr('Unable to save edits. Reason:\n %s') % str(sys.exc_info()[1]))
+                                        self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
                 else:
                     QMessageBox.warning(self, self.tr("Can't save model"),
                                         self.tr("This model can't be saved in its "
@@ -491,13 +486,13 @@ class ModelerDialog(BASE, WIDGET):
                 self.hasChanged = False
             except WrongModelException as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Could not load model %s\n%s') % (filename, e.msg))
+                                       self.tr('Could not load model {0}\n{1}').format(filename, e.msg))
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))
             except Exception as e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       self.tr('Could not load model %s\n%s') % (filename, e.args[0]))
+                                       self.tr('Could not load model {0}\n{1}').format(filename, e.args[0]))
                 QMessageBox.critical(self, self.tr('Could not open model'),
                                      self.tr('The selected model could not be loaded.\n'
                                              'See the log for more information.'))
@@ -572,8 +567,8 @@ class ModelerDialog(BASE, WIDGET):
                 dlg.alg.pos = QPointF(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
             for i, out in enumerate(dlg.alg.outputs):
-                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5)
-                                                                 * ModelerGraphicItem.BOX_HEIGHT)
+                dlg.alg.outputs[out].pos = dlg.alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
+                                                                 ModelerGraphicItem.BOX_HEIGHT)
             self.alg.addAlgorithm(dlg.alg)
             self.repaintModel()
             self.hasChanged = True
@@ -586,8 +581,8 @@ class ModelerDialog(BASE, WIDGET):
             maxX = max([alg.pos.x() for alg in list(self.alg.algs.values())])
             maxY = max([alg.pos.y() for alg in list(self.alg.algs.values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
-                       - BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
+                       BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2

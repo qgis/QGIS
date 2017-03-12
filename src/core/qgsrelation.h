@@ -37,8 +37,8 @@ class CORE_EXPORT QgsRelation
     Q_GADGET
 
     Q_PROPERTY( QString id READ id WRITE setId )
-    Q_PROPERTY( QgsVectorLayer* referencingLayer READ referencingLayer )
-    Q_PROPERTY( QgsVectorLayer* referencedLayer READ referencedLayer )
+    Q_PROPERTY( QgsVectorLayer *referencingLayer READ referencingLayer )
+    Q_PROPERTY( QgsVectorLayer *referencedLayer READ referencedLayer )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( bool isValid READ isValid )
 
@@ -58,18 +58,18 @@ class CORE_EXPORT QgsRelation
       public:
         //! Default constructor: NULL strings
         FieldPair()
-            : QPair< QString, QString >() {}
+          : QPair< QString, QString >() {}
 
         //! Constructor which takes two fields
-        FieldPair( const QString& referencingField, const QString& referencedField )
-            : QPair< QString, QString >( referencingField, referencedField ) {}
+        FieldPair( const QString &referencingField, const QString &referencedField )
+          : QPair< QString, QString >( referencingField, referencedField ) {}
 
         //! Get the name of the referencing (child) field
         QString referencingField() const { return first; }
         //! Get the name of the referenced (parent) field
         QString referencedField() const { return second; }
 
-        bool operator==( const FieldPair& other ) const { return first == other.first && second == other.second; }
+        bool operator==( const FieldPair &other ) const { return first == other.first && second == other.second; }
     };
 
     /**
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return A relation
      */
-    static QgsRelation createFromXml( const QDomNode& node );
+    static QgsRelation createFromXml( const QDomNode &node );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
@@ -92,27 +92,27 @@ class CORE_EXPORT QgsRelation
      * @param node The parent node in which the relation will be created
      * @param doc  The document in which the relation will be saved
      */
-    void writeXml( QDomNode& node, QDomDocument& doc ) const;
+    void writeXml( QDomNode &node, QDomDocument &doc ) const;
 
     /**
      * Set an id for this relation
      */
-    void setId( const QString& id );
+    void setId( const QString &id );
 
     /**
      * Set a name for this relation
      */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
      */
-    void setReferencingLayer( const QString& id );
+    void setReferencingLayer( const QString &id );
 
     /**
      * Set the referenced (parent) layer id. This layer will be searched in the registry.
      */
-    void setReferencedLayer( const QString& id );
+    void setReferencedLayer( const QString &id );
 
     /**
      * Add a field pairs which is part of this relation
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsRelation
      * @param referencingField  The field name on the referencing (child) layer (FK)
      * @param referencedField   The field name on the referenced (parent) layer  (PK)
      */
-    void addFieldPair( const QString& referencingField, const QString& referencedField );
+    void addFieldPair( const QString &referencingField, const QString &referencedField );
 
     /**
      * Add a field pairs which is part of this relation
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsRelation
      * @param fieldPair A pair of two strings
      * @note not available in python bindings
      */
-    void addFieldPair( const FieldPair& fieldPair );
+    void addFieldPair( const FieldPair &fieldPair );
 
     /**
      * Creates an iterator which returns all the features on the referencing (child) layer
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsRelation
      * @see getRelatedFeaturesRequest()
      * @see getRelatedFeaturesFilter()
      */
-    QgsFeatureIterator getRelatedFeatures( const QgsFeature& feature ) const;
+    QgsFeatureIterator getRelatedFeatures( const QgsFeature &feature ) const;
 
     /**
      * Creates a request to return all the features on the referencing (child) layer
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsRelation
      * @see getRelatedFeatures()
      * @see getRelatedFeaturesFilter()
      */
-    QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
+    QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
 
     /** Returns a filter expression which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsRelation
      * @see getRelatedFeatures()
      * @see getRelatedFeaturesRequest()
      */
-    QString getRelatedFeaturesFilter( const QgsFeature& feature ) const;
+    QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 
     /**
      * Creates a request to return the feature on the referenced (parent) layer
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsRelation
      * @return A request the referenced feature
      * @note not available in python bindings
      */
-    QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes& attributes ) const;
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
 
     /**
      * Creates a request to return the feature on the referenced (parent) layer
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return A request the referenced feature
      */
-    QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature& feature ) const;
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature &feature ) const;
 
     /**
      * Creates a request to return the feature on the referenced (parent) layer
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return A request the referenced feature
      */
-    QgsFeature getReferencedFeature( const QgsFeature& feature ) const;
+    QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
 
     /**
      * Returns a human readable name for this relation. Mostly used as title for the children.
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return The referencing layer
      */
-    QgsVectorLayer* referencingLayer() const;
+    QgsVectorLayer *referencingLayer() const;
 
     /**
      * Access the referenced (parent) layer's id
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return referenced layer
      */
-    QgsVectorLayer* referencedLayer() const;
+    QgsVectorLayer *referencedLayer() const;
 
     /**
      * Returns the field pairs which form this relation
@@ -290,21 +290,21 @@ class CORE_EXPORT QgsRelation
      * @return true if they are similar
      * @note added in QGIS 3.0
      */
-    bool hasEqualDefinition( const QgsRelation& other ) const;
+    bool hasEqualDefinition( const QgsRelation &other ) const;
 
     /**
      * Get the referenced field counterpart given a referencing field.
      *
      * @note Added in QGIS 3.0
      */
-    Q_INVOKABLE QString resolveReferencedField( const QString& referencingField ) const;
+    Q_INVOKABLE QString resolveReferencedField( const QString &referencingField ) const;
 
     /**
      * Get the referencing field counterpart given a referenced field.
      *
      * @note Added in QGIS 3.0
      */
-    Q_INVOKABLE QString resolveReferencingField( const QString& referencedField ) const;
+    Q_INVOKABLE QString resolveReferencingField( const QString &referencedField ) const;
 
   private:
 
@@ -321,11 +321,11 @@ class CORE_EXPORT QgsRelation
     //! The child layer
     QString mReferencingLayerId;
     //! The child layer
-    QgsVectorLayer* mReferencingLayer = nullptr;
+    QgsVectorLayer *mReferencingLayer = nullptr;
     //! The parent layer id
     QString mReferencedLayerId;
     //! The parent layer
-    QgsVectorLayer* mReferencedLayer = nullptr;
+    QgsVectorLayer *mReferencedLayer = nullptr;
 
     /** A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values

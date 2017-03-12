@@ -30,10 +30,11 @@ import traceback
 import subprocess
 import copy
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsSettings)
 
 from builtins import str
 from builtins import object
@@ -41,7 +42,7 @@ from processing.gui.ParametersPanel import ParametersPanel
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter, ParameterExtent
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
@@ -300,7 +301,7 @@ class GeoAlgorithm(object):
                     orgFile = out.compatible
                     destFile = out.value
                     crsid = layer.crs().authid()
-                    settings = QSettings()
+                    settings = QgsSettings()
                     path = str(settings.value('/GdalTools/gdalPath', ''))
                     envval = str(os.getenv('PATH'))
                     if not path.lower() in envval.lower().split(os.pathsep):

@@ -37,16 +37,16 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsOSMXmlImport( const QString& xmlFileName = QString(), const QString& dbFileName = QString() );
+    explicit QgsOSMXmlImport( const QString &xmlFileName = QString(), const QString &dbFileName = QString() );
 
-    void setInputXmlFileName( const QString& xmlFileName ) { mXmlFileName = xmlFileName; }
+    void setInputXmlFileName( const QString &xmlFileName ) { mXmlFileName = xmlFileName; }
     QString inputXmlFileName() const { return mXmlFileName; }
 
     /**
      * Sets the filename for the output database.
      * @see outputDatabaseFileName()
      */
-    void setOutputDatabaseFileName( const QString& fileName ) { mDbFileName = fileName; }
+    void setOutputDatabaseFileName( const QString &fileName ) { mDbFileName = fileName; }
 
     /**
      * Returns the filename for the output database.
@@ -72,14 +72,14 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
     bool closeDatabase();
 
     //! @note not available in Python bindings
-    void deleteStatement( sqlite3_stmt*& stmt );
+    void deleteStatement( sqlite3_stmt *&stmt );
 
     bool createIndexes();
 
-    void readRoot( QXmlStreamReader& xml );
-    void readNode( QXmlStreamReader& xml );
-    void readWay( QXmlStreamReader& xml );
-    void readTag( bool way, QgsOSMId id, QXmlStreamReader& xml );
+    void readRoot( QXmlStreamReader &xml );
+    void readNode( QXmlStreamReader &xml );
+    void readWay( QXmlStreamReader &xml );
+    void readTag( bool way, QgsOSMId id, QXmlStreamReader &xml );
 
   private:
     QString mXmlFileName;
@@ -89,12 +89,12 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     QFile mInputFile;
 
-    sqlite3* mDatabase = nullptr;
-    sqlite3_stmt* mStmtInsertNode = nullptr;
-    sqlite3_stmt* mStmtInsertNodeTag = nullptr;
-    sqlite3_stmt* mStmtInsertWay = nullptr;
-    sqlite3_stmt* mStmtInsertWayNode = nullptr;
-    sqlite3_stmt* mStmtInsertWayTag = nullptr;
+    sqlite3 *mDatabase = nullptr;
+    sqlite3_stmt *mStmtInsertNode = nullptr;
+    sqlite3_stmt *mStmtInsertNodeTag = nullptr;
+    sqlite3_stmt *mStmtInsertWay = nullptr;
+    sqlite3_stmt *mStmtInsertWayNode = nullptr;
+    sqlite3_stmt *mStmtInsertWayTag = nullptr;
 };
 
 

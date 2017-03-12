@@ -58,36 +58,36 @@ class DRW_TableEntry
   public:
     //initializes default values
     DRW_TableEntry()
-        : tType( DRW::UNKNOWNT )
-        , parentHandle( 0 )
-        , flags( 0 )
-        , curr( nullptr )
-        , xDictFlag( 0 )
-        , numReactors( 0 )
-        , objSize( 0 )
+      : tType( DRW::UNKNOWNT )
+      , parentHandle( 0 )
+      , flags( 0 )
+      , curr( nullptr )
+      , xDictFlag( 0 )
+      , numReactors( 0 )
+      , objSize( 0 )
     {
     }
 
     virtual ~DRW_TableEntry()
     {
-      for ( std::vector<DRW_Variant*>::iterator it = extData.begin(); it != extData.end(); ++it )
+      for ( std::vector<DRW_Variant *>::iterator it = extData.begin(); it != extData.end(); ++it )
         delete *it;
 
       extData.clear();
     }
 
-    DRW_TableEntry( const DRW_TableEntry& e )
-        : tType( e.tType )
-        , handle( e.handle )
-        , parentHandle( e.parentHandle )
-        , name( e.name )
-        , flags( e.flags )
-        , curr( e.curr )
-        , xDictFlag( e.xDictFlag )
-        , numReactors( e.numReactors )
-        , objSize( e.objSize )
+    DRW_TableEntry( const DRW_TableEntry &e )
+      : tType( e.tType )
+      , handle( e.handle )
+      , parentHandle( e.parentHandle )
+      , name( e.name )
+      , flags( e.flags )
+      , curr( e.curr )
+      , xDictFlag( e.xDictFlag )
+      , numReactors( e.numReactors )
+      , objSize( e.objSize )
     {
-      for ( std::vector<DRW_Variant*>::const_iterator it = e.extData.begin(); it != e.extData.end(); ++it )
+      for ( std::vector<DRW_Variant *>::const_iterator it = e.extData.begin(); it != e.extData.end(); ++it )
       {
         extData.push_back( new DRW_Variant( *( *it ) ) );
       }
@@ -96,11 +96,11 @@ class DRW_TableEntry
   protected:
     void parseCode( int code, dxfReader *reader );
     virtual bool parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs = 0 ) = 0;
-    bool parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs = 0 );
+    bool parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf, duint32 bs = 0 );
     void reset()
     {
       flags = 0;
-      for ( std::vector<DRW_Variant*>::iterator it = extData.begin(); it != extData.end(); ++it )
+      for ( std::vector<DRW_Variant *>::iterator it = extData.begin(); it != extData.end(); ++it )
         delete *it;
       extData.clear();
     }
@@ -111,7 +111,7 @@ class DRW_TableEntry
     int parentHandle;                   //!< Soft-pointer ID/handle to owner object, code 330
     UTF8STRING name;                    //!< Entry name, code 2
     int flags;                          //!< Flags relevant to entry, code 70
-    std::vector<DRW_Variant*> extData;  //!< FIFO list of extended data, codes 1000 to 1071
+    std::vector<DRW_Variant *> extData; //!< FIFO list of extended data, codes 1000 to 1071
 
   private:
     DRW_Variant *curr = nullptr;

@@ -61,13 +61,13 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void setEmpty();
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event ) override;
+    virtual void resizeEvent( QResizeEvent *event ) override;
 
-    void mousePressEvent( QMouseEvent*event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
 
 
   private slots:
-    void changed( const QDateTime & dateTime );
+    void changed( const QDateTime &dateTime );
 
 
   private:
@@ -78,8 +78,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool mIsNull;
     bool mIsEmpty;
 
-    QLineEdit* mNullLabel = nullptr;
-    QToolButton* mClearButton = nullptr;
+    QLineEdit *mNullLabel = nullptr;
+    QToolButton *mClearButton = nullptr;
 
 };
 

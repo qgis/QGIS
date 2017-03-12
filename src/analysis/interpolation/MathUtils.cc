@@ -21,7 +21,7 @@
 
 #include <qmath.h>
 
-bool MathUtils::calcBarycentricCoordinates( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )
+bool MathUtils::calcBarycentricCoordinates( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3, Point3D *result )
 {
   if ( p1 && p2 && p3 && result )
   {
@@ -50,7 +50,7 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, Point3D* p1, Poi
   }
 }
 
-bool MathUtils::BarycentricToXY( double u, double v, double w, Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )//this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
+bool MathUtils::BarycentricToXY( double u, double v, double w, Point3D *p1, Point3D *p2, Point3D *p3, Point3D *result )//this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
 {
   Q_UNUSED( w );
 
@@ -65,11 +65,11 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, Point3D* p1, Poin
       return false;
     }
 
-    double denominator = (( p2->getY() - p3->getY() ) * ( p1->getX() - p3->getX() ) - ( p3->getY() - p1->getY() ) * ( p3->getX() - p2->getX() ) );
+    double denominator = ( ( p2->getY() - p3->getY() ) * ( p1->getX() - p3->getX() ) - ( p3->getY() - p1->getY() ) * ( p3->getX() - p2->getX() ) );
     if ( denominator != 0 )//drop out py in the two equations
     {
       px = ( 2 * u * area * ( p1->getX() - p3->getX() ) - 2 * v * area * ( p3->getX() - p2->getX() ) - p2->getX() * p3->getY() * ( p1->getX() - p3->getX() ) + p3->getX() * p1->getY() * ( p3->getX() - p2->getX() ) + p3->getX() * p2->getY() * ( p1->getX() - p3->getX() ) - p1->getX() * p3->getY() * ( p3->getX() - p2->getX() ) ) / denominator;
-      if (( p3->getX() - p2->getX() ) != 0 )
+      if ( ( p3->getX() - p2->getX() ) != 0 )
       {
         py = ( 2 * u * area - px * ( p2->getY() - p3->getY() ) - p2->getX() * p3->getY() + p3->getX() * p2->getY() ) / ( p3->getX() - p2->getX() );
       }
@@ -80,8 +80,8 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, Point3D* p1, Poin
     }
     else//dorp out px in the two equations(maybe this possibility occurs only, if p1, p2 and p3 are coplanar
     {
-      py = ( 2 * u * area * ( p3->getY() - p1->getY() ) - 2 * v * area * ( p2->getY() - p3->getY() ) - p2->getX() * p3->getY() * ( p3->getY() - p1->getY() ) + p3->getX() * p1->getY() * ( p2->getY() - p3->getY() ) + p3->getX() * p2->getY() * ( p3->getY() - p1->getY() ) - p1->getX() * p3->getY() * ( p2->getY() - p3->getY() ) ) / (( p3->getX() - p2->getX() ) * ( p3->getY() - p1->getY() ) - ( p1->getX() - p3->getX() ) * ( p2->getY() - p3->getY() ) );
-      if (( p2->getY() - p3->getY() ) != 0 )
+      py = ( 2 * u * area * ( p3->getY() - p1->getY() ) - 2 * v * area * ( p2->getY() - p3->getY() ) - p2->getX() * p3->getY() * ( p3->getY() - p1->getY() ) + p3->getX() * p1->getY() * ( p2->getY() - p3->getY() ) + p3->getX() * p2->getY() * ( p3->getY() - p1->getY() ) - p1->getX() * p3->getY() * ( p2->getY() - p3->getY() ) ) / ( ( p3->getX() - p2->getX() ) * ( p3->getY() - p1->getY() ) - ( p1->getX() - p3->getX() ) * ( p2->getY() - p3->getY() ) );
+      if ( ( p2->getY() - p3->getY() ) != 0 )
       {
         px = ( 2 * u * area - py * ( p3->getX() - p2->getX() ) - p2->getX() * p3->getY() + p3->getX() * p2->getY() ) / ( p2->getY() - p3->getY() );
       }
@@ -108,24 +108,24 @@ double MathUtils::calcBernsteinPoly( int n, int i, double t )
     return 0;
   }
 
-  return lower( n, i )*qPow( t, i )*qPow(( 1 - t ), ( n - i ) );
+  return lower( n, i ) * qPow( t, i ) * qPow( ( 1 - t ), ( n - i ) );
 }
 
 double MathUtils::cFDerBernsteinPoly( int n, int i, double t )
 {
-  return n*( calcBernsteinPoly( n - 1, i - 1, t ) - calcBernsteinPoly( n - 1, i, t ) );
+  return n * ( calcBernsteinPoly( n - 1, i - 1, t ) - calcBernsteinPoly( n - 1, i, t ) );
 }
 
-bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )//version using the property that the distances from p1, p2, p3 to the circumcenter have to be equal. Possibly there is a bug
+bool MathUtils::circumcenter( Point3D *p1, Point3D *p2, Point3D *p3, Point3D *result )//version using the property that the distances from p1, p2, p3 to the circumcenter have to be equal. Possibly there is a bug
 {
   if ( p1 && p2 && p3 && result )
   {
-    double distp1p2 = sqrt(( p1->getX() - p2->getX() ) * ( p1->getX() - p2->getX() ) + ( p1->getY() - p2->getY() ) * ( p1->getY() - p2->getY() ) );
-    double distp2p3 = sqrt(( p2->getX() - p3->getX() ) * ( p2->getX() - p3->getX() ) + ( p2->getY() - p3->getY() ) * ( p2->getY() - p3->getY() ) );
+    double distp1p2 = sqrt( ( p1->getX() - p2->getX() ) * ( p1->getX() - p2->getX() ) + ( p1->getY() - p2->getY() ) * ( p1->getY() - p2->getY() ) );
+    double distp2p3 = sqrt( ( p2->getX() - p3->getX() ) * ( p2->getX() - p3->getX() ) + ( p2->getY() - p3->getY() ) * ( p2->getY() - p3->getY() ) );
     if ( distp1p2 > distp2p3 )
     {
       //swap p1 and p3 to avoid round-off errors
-      Point3D* temp = p1;
+      Point3D *temp = p1;
       p1 = p3;
       p3 = temp;
     }
@@ -138,14 +138,14 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
     }
     else
     {
-      result->setX( 0.5*( p1->getX()*p1->getX()*p2->getY() - p1->getX()*p1->getX()*p3->getY() - p3->getX()*p3->getX()*p2->getY() - p1->getY()*p2->getX()*p2->getX() - p1->getY()*p1->getY()*p3->getY() - p3->getY()*p3->getY()*p2->getY() + p1->getY()*p1->getY()*p2->getY() + p3->getY()*p2->getX()*p2->getX() - p1->getY()*p2->getY()*p2->getY() + p1->getY()*p3->getY()*p3->getY() + p1->getY()*p3->getX()*p3->getX() + p3->getY()*p2->getY()*p2->getY() ) / denominator );
-      result->setY( -0.5*( p3->getX()*p2->getX()*p2->getX() + p2->getX()*p1->getY()*p1->getY() + p3->getX()*p2->getY()*p2->getY() - p3->getX()*p1->getX()*p1->getX() + p1->getX()*p3->getY()*p3->getY() - p3->getX()*p1->getY()*p1->getY() - p1->getX()*p2->getX()*p2->getX() - p2->getX()*p3->getY()*p3->getY() - p1->getX()*p2->getY()*p2->getY() - p2->getX()*p3->getX()*p3->getX() + p1->getX()*p3->getX()*p3->getX() + p2->getX()*p1->getX()*p1->getX() ) / denominator );
+      result->setX( 0.5 * ( p1->getX()*p1->getX()*p2->getY() - p1->getX()*p1->getX()*p3->getY() - p3->getX()*p3->getX()*p2->getY() - p1->getY()*p2->getX()*p2->getX() - p1->getY()*p1->getY()*p3->getY() - p3->getY()*p3->getY()*p2->getY() + p1->getY()*p1->getY()*p2->getY() + p3->getY()*p2->getX()*p2->getX() - p1->getY()*p2->getY()*p2->getY() + p1->getY()*p3->getY()*p3->getY() + p1->getY()*p3->getX()*p3->getX() + p3->getY()*p2->getY()*p2->getY() ) / denominator );
+      result->setY( -0.5 * ( p3->getX()*p2->getX()*p2->getX() + p2->getX()*p1->getY()*p1->getY() + p3->getX()*p2->getY()*p2->getY() - p3->getX()*p1->getX()*p1->getX() + p1->getX()*p3->getY()*p3->getY() - p3->getX()*p1->getY()*p1->getY() - p1->getX()*p2->getX()*p2->getX() - p2->getX()*p3->getY()*p3->getY() - p1->getX()*p2->getY()*p2->getY() - p2->getX()*p3->getX()*p3->getX() + p1->getX()*p3->getX()*p3->getX() + p2->getX()*p1->getX()*p1->getX() ) / denominator );
 
 #if 0
       //debugging: test, if the distances from p1, p2, p3 to result are equal
-      double dist1 = sqrt(( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
-      double dist2 = sqrt(( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
-      double dist3 = sqrt(( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
+      double dist1 = sqrt( ( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
+      double dist2 = sqrt( ( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
+      double dist3 = sqrt( ( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
 
       if ( dist1 - dist2 > 1 || dist2 - dist1 > 1 || dist1 - dist3 > 1 || dist3 - dist1 > 1 )
       {
@@ -164,12 +164,12 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
 }
 
 #if 0
-bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )//version imitating the geometric construction
+bool MathUtils::circumcenter( Point3D *p1, Point3D *p2, Point3D *p3, Point3D *result )//version imitating the geometric construction
 {
   if ( p1 && p2 && p3 && result )
   {
-    Point3D midpoint12(( p1->getX() + p2->getX() ) / 2, ( p1->getY() + p2->getY() ) / 2, 0 );
-    Point3D midpoint23(( p2->getX() + p3->getX() ) / 2, ( p2->getY() + p3->getY() ) / 2, 0 );
+    Point3D midpoint12( ( p1->getX() + p2->getX() ) / 2, ( p1->getY() + p2->getY() ) / 2, 0 );
+    Point3D midpoint23( ( p2->getX() + p3->getX() ) / 2, ( p2->getY() + p3->getY() ) / 2, 0 );
     Vector3D v12( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
     Vector3D v23( p3->getX() - p2->getX(), p3->getY() - p2->getY(), 0 );
     Vector3D n12;
@@ -181,9 +181,9 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
     MathUtils::lineIntersection( &midpoint12, &helppoint1, &midpoint23, &helppoint2, result );
 
     //debugging: test, if the distances from p1, p2, p3 to result are equal
-    double dist1 = sqrt(( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
-    double dist2 = sqrt(( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
-    double dist3 = sqrt(( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
+    double dist1 = sqrt( ( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
+    double dist2 = sqrt( ( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
+    double dist3 = sqrt( ( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
 
     if ( dist1 - dist2 > 1 || dist2 - dist1 > 1 || dist1 - dist3 > 1 || dist3 - dist1 > 1 )
     {
@@ -201,7 +201,7 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
 }
 #endif // 0
 
-double MathUtils::distPointFromLine( Point3D* thepoint, Point3D* p1, Point3D* p2 )
+double MathUtils::distPointFromLine( Point3D *thepoint, Point3D *p1, Point3D *p2 )
 {
   if ( thepoint && p1 && p2 )
   {
@@ -211,7 +211,7 @@ double MathUtils::distPointFromLine( Point3D* thepoint, Point3D* p1, Point3D* p2
     double a = normal.getX();
     double b = normal.getY();
     double c = -( normal.getX() * p2->getX() + normal.getY() * p2->getY() );
-    double distance = qAbs(( a * thepoint->getX() + b * thepoint->getY() + c ) / ( sqrt( a * a + b * b ) ) );
+    double distance = qAbs( ( a * thepoint->getX() + b * thepoint->getY() + c ) / ( sqrt( a * a + b * b ) ) );
     return distance;
   }
   else
@@ -232,7 +232,7 @@ int MathUtils::faculty( int n )
   int result = n;
 
   if ( n == 0 || n == 1 )
-    {return 1;}//faculty of 0 is 1!
+  {return 1;}//faculty of 0 is 1!
 
   for ( i = n - 1; i >= 2; i-- )
   {
@@ -241,7 +241,7 @@ int MathUtils::faculty( int n )
   return result;
 }
 
-bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 )
+bool MathUtils::inCircle( Point3D *testp, Point3D *p1, Point3D *p2, Point3D *p3 )
 {
   double tolerance = 0.0001;//if the amount of aValue is below this, testp is approximately on the circle and we have to define another criterion to tell, if it is inside or outside.
 
@@ -268,9 +268,9 @@ bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 
     py -= ymin;
 
     double aValue = ( ax * ax + ay * ay ) * triArea( p2, p3, testp );
-    aValue = aValue - (( bx * bx + by * by ) * triArea( p1, p3, testp ) );
-    aValue = aValue + (( cx * cx + cy * cy ) * triArea( p1, p2, testp ) );
-    aValue = aValue - (( px * px + py * py ) * triArea( p1, p2, p3 ) );
+    aValue = aValue - ( ( bx * bx + by * by ) * triArea( p1, p3, testp ) );
+    aValue = aValue + ( ( cx * cx + cy * cy ) * triArea( p1, p2, testp ) );
+    aValue = aValue - ( ( px * px + py * py ) * triArea( p1, p2, p3 ) );
 
     return aValue > tolerance;
   }
@@ -281,19 +281,19 @@ bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 
   }
 }
 
-bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
+bool MathUtils::inDiametral( Point3D *p1, Point3D *p2, Point3D *point )
 {
   return angle( p1, point, p2, point ) > 90;
 }
 
 #if 0
-bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
+bool MathUtils::inDiametral( Point3D *p1, Point3D *p2, Point3D *point )
 {
   if ( p1 && p2 && point )
   {
     Vector3D p1p2( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
     Vector3D orthogonalvec;//vector orthogonal to p1p2 (length radius)
-    Point3D midpoint(( p1->getX() + p2->getX() ) / 2, ( p1->getY() + p2->getY() ) / 2, 0 );
+    Point3D midpoint( ( p1->getX() + p2->getX() ) / 2, ( p1->getY() + p2->getY() ) / 2, 0 );
     double radius = p1p2.getLength() / 2;
     normalLeft( &p1p2, &orthogonalvec, radius );
     Point3D p3( midpoint.getX() + orthogonalvec.getX(), midpoint.getY() + orthogonalvec.getY(), 0 );
@@ -307,7 +307,7 @@ bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
 }
 #endif // 0
 
-double MathUtils::leftOf( Point3D* thepoint, Point3D* p1, Point3D* p2 )
+double MathUtils::leftOf( Point3D *thepoint, Point3D *p1, Point3D *p2 )
 {
   if ( thepoint && p1 && p2 )
   {
@@ -316,7 +316,7 @@ double MathUtils::leftOf( Point3D* thepoint, Point3D* p1, Point3D* p2 )
     double f2 = p2->getY() - p1->getY();
     double f3 = thepoint->getY() - p1->getY();
     double f4 = p2->getX() - p1->getX();
-    return f1*f2 - f3*f4;
+    return f1 * f2 - f3 * f4;
     //return thepoint->getX()-p1->getX())*(p2->getY()-p1->getY())-(thepoint->getY()-p1->getY())*(p2->getX()-p1->getX();//calculating the vectorproduct
   }
   else
@@ -326,19 +326,19 @@ double MathUtils::leftOf( Point3D* thepoint, Point3D* p1, Point3D* p2 )
   }
 }
 
-bool MathUtils::lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* p4 )
+bool MathUtils::lineIntersection( Point3D *p1, Point3D *p2, Point3D *p3, Point3D *p4 )
 {
   if ( p1 && p2 && p3 && p4 )
   {
     double t1, t2;
     Vector3D p1p2( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
     Vector3D p3p4( p4->getX() - p3->getX(), p4->getY() - p3->getY(), 0 );
-    if (( p3p4.getX()*p1p2.getY() - p3p4.getY()*p1p2.getX() ) != 0 && p1p2.getX() != 0 )//avoid division through zero
+    if ( ( p3p4.getX()*p1p2.getY() - p3p4.getY()*p1p2.getX() ) != 0 && p1p2.getX() != 0 ) //avoid division through zero
     {
       t2 = ( p1->getX() * p1p2.getY() - p1->getY() * p1p2.getX() + p3->getY() * p1p2.getX() - p3->getX() * p1p2.getY() ) / ( p3p4.getX() * p1p2.getY() - p3p4.getY() * p1p2.getX() );
       t1 = ( p3->getX() - p1->getX() + t2 * p3p4.getX() ) / p1p2.getX();
     }
-    else if (( p1p2.getX()*p3p4.getY() - p1p2.getY()*p3p4.getX() ) != 0 && p3p4.getX() != 0 )
+    else if ( ( p1p2.getX()*p3p4.getY() - p1p2.getY()*p3p4.getX() ) != 0 && p3p4.getX() != 0 )
     {
       t1 = ( p3->getX() * p3p4.getY() - p3->getY() * p3p4.getX() - p1->getX() * p3p4.getY() + p1->getY() * p3p4.getX() ) / ( p1p2.getX() * p3p4.getY() - p1p2.getY() * p3p4.getX() );
       t2 = ( p1->getX() + t1 * p1p2.getX() - p3->getX() ) / p3p4.getX();
@@ -348,9 +348,9 @@ bool MathUtils::lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D
       return false;
     }
 
-    if ( t1 > 0 && t1<1 && t2>0 && t2 < 1 )
+    if ( t1 > 0 && t1 < 1 && t2 > 0 && t2 < 1 )
     {
-      if (( *p1 ) == ( *p3 ) || ( *p1 ) == ( *p4 ) || ( *p2 ) == ( *p3 ) || ( *p2 ) == ( *p4 ) )//the lines touch each other, so they do not cross
+      if ( ( *p1 ) == ( *p3 ) || ( *p1 ) == ( *p4 ) || ( *p2 ) == ( *p3 ) || ( *p2 ) == ( *p4 ) ) //the lines touch each other, so they do not cross
       {
         return false;
       }
@@ -369,19 +369,19 @@ bool MathUtils::lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D
   }
 }
 
-bool MathUtils::lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* p4, Point3D* intersection_point )
+bool MathUtils::lineIntersection( Point3D *p1, Point3D *p2, Point3D *p3, Point3D *p4, Point3D *intersection_point )
 {
   if ( p1 && p2 && p3 && p4 )
   {
     double t1, t2;
     Vector3D p1p2( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
     Vector3D p3p4( p4->getX() - p3->getX(), p4->getY() - p3->getY(), 0 );
-    if (( p3p4.getX()*p1p2.getY() - p3p4.getY()*p1p2.getX() ) != 0 && p1p2.getX() != 0 )//avoid division through zero
+    if ( ( p3p4.getX()*p1p2.getY() - p3p4.getY()*p1p2.getX() ) != 0 && p1p2.getX() != 0 ) //avoid division through zero
     {
       t2 = ( p1->getX() * p1p2.getY() - p1->getY() * p1p2.getX() + p3->getY() * p1p2.getX() - p3->getX() * p1p2.getY() ) / ( p3p4.getX() * p1p2.getY() - p3p4.getY() * p1p2.getX() );
       t1 = ( p3->getX() - p1->getX() + t2 * p3p4.getX() ) / p1p2.getX();
     }
-    else if (( p1p2.getX()*p3p4.getY() - p1p2.getY()*p3p4.getX() ) != 0 && p3p4.getX() != 0 )
+    else if ( ( p1p2.getX()*p3p4.getY() - p1p2.getY()*p3p4.getX() ) != 0 && p3p4.getX() != 0 )
     {
       t1 = ( p3->getX() * p3p4.getY() - p3->getY() * p3p4.getX() - p1->getX() * p3p4.getY() + p1->getY() * p3p4.getX() ) / ( p1p2.getX() * p3p4.getY() - p1p2.getY() * p3p4.getX() );
       t2 = ( p1->getX() + t1 * p1p2.getX() - p3->getX() ) / p3p4.getX();
@@ -394,9 +394,9 @@ bool MathUtils::lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D
       return false;
     }
 
-    if ( t1 > 0 && t1<1 && t2>0 && t2 < 1 )
+    if ( t1 > 0 && t1 < 1 && t2 > 0 && t2 < 1 )
     {
-      if (( *p1 ) == ( *p3 ) || ( *p1 ) == ( *p4 ) || ( *p2 ) == ( *p3 ) || ( *p2 ) == ( *p4 ) )//the lines touch each other, so they do not cross
+      if ( ( *p1 ) == ( *p3 ) || ( *p1 ) == ( *p4 ) || ( *p2 ) == ( *p3 ) || ( *p2 ) == ( *p4 ) ) //the lines touch each other, so they do not cross
       {
         intersection_point->setX( 0 );
         intersection_point->setY( 0 );
@@ -404,8 +404,8 @@ bool MathUtils::lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D
         return false;
       }
       //calculate the intersection point
-      intersection_point->setX( p1->getX()*( 1 - t1 ) + p2->getX()*t1 );
-      intersection_point->setY( p1->getY()*( 1 - t1 ) + p2->getY()*t1 );
+      intersection_point->setX( p1->getX() * ( 1 - t1 ) + p2->getX()*t1 );
+      intersection_point->setY( p1->getY() * ( 1 - t1 ) + p2->getY()*t1 );
       intersection_point->setZ( 0 );
       return true;
     }
@@ -426,7 +426,7 @@ int MathUtils::lower( int n, int i )
 {
   if ( i >= 0 && i <= n )
   {
-    return faculty( n ) / ( faculty( i )*faculty( n - i ) );
+    return faculty( n ) / ( faculty( i ) * faculty( n - i ) );
   }
   else
   {
@@ -472,7 +472,7 @@ double MathUtils::power( double a, int b )
     return 1;
   }
   double tmp = a;
-  for ( int i = 2; i <= qAbs(( double )b ); i++ )
+  for ( int i = 2; i <= qAbs( ( double )b ); i++ )
   {
 
     a *= tmp;
@@ -487,12 +487,12 @@ double MathUtils::power( double a, int b )
   }
 }
 
-double MathUtils::triArea( Point3D* pa, Point3D* pb, Point3D* pc )
+double MathUtils::triArea( Point3D *pa, Point3D *pb, Point3D *pc )
 {
   if ( pa && pb && pc )
   {
     double deter = ( pa->getX() * pb->getY() + pb->getX() * pc->getY() + pc->getX() * pa->getY() - pa->getX() * pc->getY() - pb->getX() * pa->getY() - pc->getX() * pb->getY() );
-    return 0.5*deter;
+    return 0.5 * deter;
   }
   else//null pointer
   {
@@ -515,12 +515,12 @@ double MathUtils::calcCubicHermitePoly( int n, int i, double t )
 
   if ( n == 3 && i == 1 )
   {
-    return ( calcBernsteinPoly( 3, 1, t )*0.33333333 );
+    return ( calcBernsteinPoly( 3, 1, t ) * 0.33333333 );
   }
 
   if ( n == 3 && i == 2 )
   {
-    return ( calcBernsteinPoly( 3, 2, t )* -0.33333333 );
+    return ( calcBernsteinPoly( 3, 2, t ) * -0.33333333 );
   }
 
   if ( n == 3 && i == 3 )
@@ -573,7 +573,7 @@ double MathUtils::cFDerCubicHermitePoly( int n, int i, double t )
   }
 }
 
-bool MathUtils::derVec( const Vector3D* v1, const Vector3D* v2, Vector3D* result, double x, double y )
+bool MathUtils::derVec( const Vector3D *v1, const Vector3D *v2, Vector3D *result, double x, double y )
 {
   if ( v1 && v2 && result )//no null pointers
   {
@@ -581,14 +581,14 @@ bool MathUtils::derVec( const Vector3D* v1, const Vector3D* v2, Vector3D* result
     double v = ( x * v1->getY() - y * v1->getX() ) / ( v2->getX() * v1->getY() - v2->getY() * v1->getX() );
     result->setX( x );
     result->setY( y );
-    result->setZ( u*v1->getZ() + v*v2->getZ() );
+    result->setZ( u * v1->getZ() + v * v2->getZ() );
     return true;
   }
   return false;
 }
 
 
-bool MathUtils::normalLeft( Vector3D* v1, Vector3D* result, double length )
+bool MathUtils::normalLeft( Vector3D *v1, Vector3D *result, double length )
 {
   if ( v1 && result )//we don't like null pointers
   {
@@ -620,8 +620,8 @@ bool MathUtils::normalLeft( Vector3D* v1, Vector3D* result, double length )
       return false;
     }
 
-    result->setX(( -b + sqrt( d ) ) / ( 2*a ) );//take one of the two solutions of the quadratic equation
-    result->setY(( -result->getX()*v1->getX() ) / v1->getY() );
+    result->setX( ( -b + sqrt( d ) ) / ( 2 * a ) ); //take one of the two solutions of the quadratic equation
+    result->setY( ( -result->getX()*v1->getX() ) / v1->getY() );
 
     Point3D point1( 0, 0, 0 );
     Point3D point2( v1->getX(), v1->getY(), 0 );
@@ -644,7 +644,7 @@ bool MathUtils::normalLeft( Vector3D* v1, Vector3D* result, double length )
 
 
 
-bool MathUtils::normalRight( Vector3D* v1, Vector3D* result, double length )
+bool MathUtils::normalRight( Vector3D *v1, Vector3D *result, double length )
 {
   if ( v1 && result )//we don't like null pointers
   {
@@ -677,14 +677,14 @@ bool MathUtils::normalRight( Vector3D* v1, Vector3D* result, double length )
       return false;
     }
 
-    result->setX(( -b + sqrt( d ) ) / ( 2*a ) );//take one of the two solutions of the quadratic equation
-    result->setY(( -result->getX()*v1->getX() ) / v1->getY() );
+    result->setX( ( -b + sqrt( d ) ) / ( 2 * a ) ); //take one of the two solutions of the quadratic equation
+    result->setY( ( -result->getX()*v1->getX() ) / v1->getY() );
 
     Point3D point1( 0, 0, 0 );
     Point3D point2( v1->getX(), v1->getY(), 0 );
     Point3D point3( result->getX(), result->getY(), 0 );
 
-    if (( leftOf( &point1, &point2, &point3 ) < 0 ) )//if we took the solution on the right side, change the sign of the components of the result
+    if ( ( leftOf( &point1, &point2, &point3 ) < 0 ) ) //if we took the solution on the right side, change the sign of the components of the result
     {
       result->setX( -result->getX() );
       result->setY( -result->getY() );
@@ -700,7 +700,7 @@ bool MathUtils::normalRight( Vector3D* v1, Vector3D* result, double length )
 }
 
 
-void MathUtils::normalFromPoints( Point3D* p1, Point3D* p2, Point3D* p3, Vector3D* vec )
+void MathUtils::normalFromPoints( Point3D *p1, Point3D *p2, Point3D *p3, Vector3D *vec )
 {
   if ( p1 && p2 && p3 && vec )//no null pointers
   {
@@ -711,18 +711,18 @@ void MathUtils::normalFromPoints( Point3D* p1, Point3D* p2, Point3D* p3, Vector3
     double by = p3->getY() - p1->getY();
     double bz = p3->getZ() - p1->getZ();
 
-    vec->setX( ay*bz - az*by );
-    vec->setY( az*bx - ax*bz );
-    vec->setZ( ax*by - ay*bx );
+    vec->setX( ay * bz - az * by );
+    vec->setY( az * bx - ax * bz );
+    vec->setZ( ax * by - ay * bx );
   }
 
 }
 
-double MathUtils::crossVec( Point3D* first, Vector3D* vec1, Point3D* second, Vector3D* vec2 )
+double MathUtils::crossVec( Point3D *first, Vector3D *vec1, Point3D *second, Vector3D *vec2 )
 {
   if ( first && vec1 && second && vec2 )
   {
-    if (( vec2->getX()*vec1->getY() - vec2->getY()*vec1->getX() ) != 0 )
+    if ( ( vec2->getX()*vec1->getY() - vec2->getY()*vec1->getX() ) != 0 )
     {
       /*cout << "first: " << first->getX() << "//" << first->getY() << "//" << first->getZ() << endl << flush;
       cout << "vec1: " << vec1->getX() << "//" << vec1->getY() << "//" << vec1->getZ() << endl << flush;
@@ -730,7 +730,7 @@ double MathUtils::crossVec( Point3D* first, Vector3D* vec1, Point3D* second, Vec
       cout << "vec2: " << vec2->getX() << "//" << vec2->getY() << "//" << vec2->getZ() << endl << flush;
       cout << "t2: " << ((first->getX()*vec1->getY()-first->getY()*vec1->getX()-second->getX()*vec1->getY()+second->getY()*vec1->getX())/(vec2->getX()*vec1->getY()-vec2->getY()*vec1->getX())) << endl << flush;*/
 
-      return (( first->getX()*vec1->getY() - first->getY()*vec1->getX() - second->getX()*vec1->getY() + second->getY()*vec1->getX() ) / ( vec2->getX()*vec1->getY() - vec2->getY()*vec1->getX() ) );
+      return ( ( first->getX() * vec1->getY() - first->getY() * vec1->getX() - second->getX() * vec1->getY() + second->getY() * vec1->getX() ) / ( vec2->getX() * vec1->getY() - vec2->getY() * vec1->getX() ) );
 
     }
     else//if a division by zero would occur
@@ -748,7 +748,7 @@ double MathUtils::crossVec( Point3D* first, Vector3D* vec1, Point3D* second, Vec
   }
 }
 
-bool MathUtils::pointInsideTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 )
+bool MathUtils::pointInsideTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 )
 {
   Point3D thepoint( x, y, 0 );
   if ( MathUtils::leftOf( &thepoint, p1, p2 ) > 0 )
@@ -766,7 +766,7 @@ bool MathUtils::pointInsideTriangle( double x, double y, Point3D* p1, Point3D* p
   return true;
 }
 
-bool MathUtils::normalMinDistance( Vector3D* tangent, Vector3D* target, Vector3D* result )
+bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D *result )
 {
   if ( tangent && target && result )
   {
@@ -811,8 +811,8 @@ bool MathUtils::normalMinDistance( Vector3D* tangent, Vector3D* target, Vector3D
     zg1 = -sqrt( zgalpha1 ) * ( yt * yw * zt - yt * yt * zw + xw * zt * xt - xt * xt * zw );
     zg2 = sqrt( zgalpha1 ) * ( yt * yw * zt - yt * yt * zw + xw * zt * xt - xt * xt * zw );
 
-    double distance1 = sqrt(( xw - xg1 ) * ( xw - xg1 ) + ( yw - yg1 ) * ( yw - yg1 ) + ( zw - zg1 ) * ( zw - zg1 ) );
-    double distance2 = sqrt(( xw - xg2 ) * ( xw - xg2 ) + ( yw - yg2 ) * ( yw - yg2 ) + ( zw - zg2 ) * ( zw - zg2 ) );
+    double distance1 = sqrt( ( xw - xg1 ) * ( xw - xg1 ) + ( yw - yg1 ) * ( yw - yg1 ) + ( zw - zg1 ) * ( zw - zg1 ) );
+    double distance2 = sqrt( ( xw - xg2 ) * ( xw - xg2 ) + ( yw - yg2 ) * ( yw - yg2 ) + ( zw - zg2 ) * ( zw - zg2 ) );
 
     if ( distance1 <= distance2 )//find out, which solution is the maximum and which the minimum
     {
@@ -837,12 +837,12 @@ bool MathUtils::normalMinDistance( Vector3D* tangent, Vector3D* target, Vector3D
 }
 
 
-double MathUtils::planeTest( Point3D* test, Point3D* pt1, Point3D* pt2, Point3D* pt3 )
+double MathUtils::planeTest( Point3D *test, Point3D *pt1, Point3D *pt2, Point3D *pt3 )
 {
   if ( test && pt1 && pt2 && pt3 )
   {
-    double a = ( pt1->getZ() * ( pt2->getY() - pt3->getY() ) + pt2->getZ() * ( pt3->getY() - pt1->getY() ) + pt3->getZ() * ( pt1->getY() - pt2->getY() ) ) / (( pt1->getX() - pt2->getX() ) * ( pt2->getY() - pt3->getY() ) - ( pt2->getX() - pt3->getX() ) * ( pt1->getY() - pt2->getY() ) );
-    double b = ( pt1->getZ() * ( pt2->getX() - pt3->getX() ) + pt2->getZ() * ( pt3->getX() - pt1->getX() ) + pt3->getZ() * ( pt1->getX() - pt2->getX() ) ) / (( pt1->getY() - pt2->getY() ) * ( pt2->getX() - pt3->getX() ) - ( pt2->getY() - pt3->getY() ) * ( pt1->getX() - pt2->getX() ) );
+    double a = ( pt1->getZ() * ( pt2->getY() - pt3->getY() ) + pt2->getZ() * ( pt3->getY() - pt1->getY() ) + pt3->getZ() * ( pt1->getY() - pt2->getY() ) ) / ( ( pt1->getX() - pt2->getX() ) * ( pt2->getY() - pt3->getY() ) - ( pt2->getX() - pt3->getX() ) * ( pt1->getY() - pt2->getY() ) );
+    double b = ( pt1->getZ() * ( pt2->getX() - pt3->getX() ) + pt2->getZ() * ( pt3->getX() - pt1->getX() ) + pt3->getZ() * ( pt1->getX() - pt2->getX() ) ) / ( ( pt1->getY() - pt2->getY() ) * ( pt2->getX() - pt3->getX() ) - ( pt2->getY() - pt3->getY() ) * ( pt1->getX() - pt2->getX() ) );
     double c = pt1->getZ() - a * pt1->getX() - b * pt1->getY();
     double zpredicted = test->getX() * a + test->getY() * b + c;
     return ( test->getZ() - zpredicted );
@@ -854,13 +854,13 @@ double MathUtils::planeTest( Point3D* test, Point3D* pt1, Point3D* pt2, Point3D*
   }
 }
 
-double MathUtils::angle( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* p4 )
+double MathUtils::angle( Point3D *p1, Point3D *p2, Point3D *p3, Point3D *p4 )
 {
   if ( p1 && p2 && p3 && p4 )
   {
     Vector3D v1( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
     Vector3D v2( p4->getX() - p3->getX(), p4->getY() - p3->getY(), 0 );
-    double value = acos(( v1.getX() * v2.getX() + v1.getY() * v2.getY() ) / ( v1.getLength() * v2.getLength() ) ) * 180 / M_PI;
+    double value = acos( ( v1.getX() * v2.getX() + v1.getY() * v2.getY() ) / ( v1.getLength() * v2.getLength() ) ) * 180 / M_PI;
     return value;
   }
   else

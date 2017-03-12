@@ -28,17 +28,17 @@ class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-    explicit QgsComposerShapeWidget( QgsComposerShape* composerShape );
+    explicit QgsComposerShapeWidget( QgsComposerShape *composerShape );
     ~QgsComposerShapeWidget();
 
   private:
-    QgsComposerShape* mComposerShape = nullptr;
+    QgsComposerShape *mComposerShape = nullptr;
 
     //! Blocks / unblocks the signal of all GUI elements
     void blockAllSignals( bool block );
 
   private slots:
-    void on_mShapeComboBox_currentIndexChanged( const QString& text );
+    void on_mShapeComboBox_currentIndexChanged( const QString &text );
     void on_mCornerRadiusSpinBox_valueChanged( double val );
     void on_mShapeStyleButton_clicked();
 
@@ -48,9 +48,9 @@ class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void updateShapeStyle();
 
     //! Enables or disables the rounded radius spin box based on shape type
-    void toggleRadiusSpin( const QString& shapeText );
+    void toggleRadiusSpin( const QString &shapeText );
     void updateSymbolFromWidget();
-    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void cleanUpSymbolSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERSHAPEWIDGET_H

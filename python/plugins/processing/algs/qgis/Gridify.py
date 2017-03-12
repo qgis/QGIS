@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsPoint, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsFeature, QgsPoint, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -62,7 +62,7 @@ class Gridify(GeoAlgorithm):
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
+                self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields(), layer.wkbType(), layer.crs())
@@ -84,7 +84,7 @@ class Gridify(GeoAlgorithm):
                 points = self._gridify(geom.asPolyline(), hSpacing, vSpacing)
                 if len(points) < 2:
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID %s' % f.id()))
+                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolyline(points)
@@ -96,7 +96,7 @@ class Gridify(GeoAlgorithm):
                         polyline.append(points)
                 if len(polyline) <= 0:
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID %s' % f.id()))
+                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromMultiPolyline(polyline)
@@ -109,7 +109,7 @@ class Gridify(GeoAlgorithm):
                         polygon.append(points)
                 if len(polygon) <= 0:
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID %s' % f.id()))
+                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolygon(polygon)
@@ -127,7 +127,7 @@ class Gridify(GeoAlgorithm):
 
                 if len(multipolygon) <= 0:
                     ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Failed to gridify feature with FID %s' % f.id()))
+                                           self.tr('Failed to gridify feature with FID {0}').format(f.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromMultiPolygon(multipolygon)

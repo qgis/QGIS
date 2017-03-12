@@ -16,25 +16,23 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 
-#include "qgsprojectionselector.h"
-
+#include "qgssettings.h"
+#include "qgsprojectionselectiontreewidget.h"
 #include "qgsapplication.h"
 #include "qgsrasterlayer.h"
-
 #include "qgstransformsettingsdialog.h"
 #include "qgscoordinatereferencesystem.h"
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
-    : QDialog( parent )
-    , mSourceRasterFile( raster )
-    , mCountGCPpoints( countGCPpoints )
+  : QDialog( parent )
+  , mSourceRasterFile( raster )
+  , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
 
-  QSettings s;
+  QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ) ).toByteArray() );
 
   cmbTransformType->addItem( tr( "Linear" ), ( int )QgsGeorefTransform::Linear );
@@ -53,7 +51,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   mListCompression.append( QStringLiteral( "PACKBITS" ) );
   mListCompression.append( QStringLiteral( "DEFLATE" ) );
   QStringList listCompressionTr;
-  Q_FOREACH ( const QString& item, mListCompression )
+  Q_FOREACH ( const QString &item, mListCompression )
   {
     listCompressionTr.append( tr( item.toLatin1().data() ) );
   }
@@ -84,15 +82,15 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
 QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Plugin-GeoReferencer/TransformSettingsWindow/geometry" ), saveGeometry() );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QgsCoordinateReferenceSystem &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
-    double& resX, double& resY )
+    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,
+    double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
     tp = QgsGeorefTransform::InvalidTransform;
@@ -125,7 +123,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
 
 void QgsTransformSettingsDialog::resetSettings()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), -1 );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), 0 );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastcompression" ), 0 );
@@ -177,7 +175,7 @@ void QgsTransformSettingsDialog::accept()
     leOutputRaster->setText( outputFileInfo.absoluteFilePath() );
   }
 
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), cmbTransformType->currentIndex() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), cmbResampling->currentIndex() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastcompression" ), cmbCompressionComboBox->currentIndex() );
@@ -216,7 +214,7 @@ void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
 
 void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString myLastUsedDir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString();
   QString initialFile = !mMapFileLineEdit->text().isEmpty() ? mMapFileLineEdit->text() : myLastUsedDir;
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Map File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
@@ -232,7 +230,7 @@ void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
 
 void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString myLastUsedDir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString();
   QString initialFile = !mReportFileLineEdit->text().isEmpty() ? mReportFileLineEdit->text() : myLastUsedDir;
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Report File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
@@ -246,7 +244,7 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
   }
 }
 
-void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString& text )
+void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "Linear" ) )
   {
@@ -275,7 +273,7 @@ void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
 bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
-  georefTransform.selectTransformParametrisation(( QgsGeorefTransform::TransformParametrisation )count );
+  georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformParametrisation )count );
   minGCPpoints = georefTransform.getMinimumGCPCount();
   return ( mCountGCPpoints >= minGCPpoints );
 }
@@ -298,27 +296,27 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didn't want to make plugins on qgsapplication [TS]
-QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &theName )
+QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + theName );
+    return QIcon( QgsApplication::activeThemePath() + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + theName );
+    return QIcon( QgsApplication::defaultThemePath() + name );
   }
   else
   {
-    QSettings settings;
-    QString themePath = ":/icons/" + settings.value( QStringLiteral( "/Themes" ) ).toString() + theName;
+    QgsSettings settings;
+    QString themePath = ":/icons/" + settings.value( QStringLiteral( "Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
       return QIcon( themePath );
     }
     else
     {
-      return QIcon( ":/icons/default" + theName );
+      return QIcon( ":/icons/default" + name );
     }
   }
 }

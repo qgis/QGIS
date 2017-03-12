@@ -38,19 +38,19 @@ enum sections
 };
 #endif
 
-dxfRW::dxfRW( const char* name )
-    : fileName( name )
-    , binFile( false )
-    , reader( nullptr )
-    , writer( nullptr )
-    , iface( nullptr )
-    , entCount( 0 )
-    , wlayer0( false )
-    , dimstyleStd( false )
-    , applyExt( false )
-    , writingBlock( false )
-    , elParts( 128 )  //parts number when convert ellipse to polyline
-    , currHandle( 0 )
+dxfRW::dxfRW( const char *name )
+  : fileName( name )
+  , binFile( false )
+  , reader( nullptr )
+  , writer( nullptr )
+  , iface( nullptr )
+  , entCount( 0 )
+  , wlayer0( false )
+  , dimstyleStd( false )
+  , applyExt( false )
+  , writingBlock( false )
+  , elParts( 128 )  //parts number when convert ellipse to polyline
+  , currHandle( 0 )
 {
   DRW_DBGSL( DRW_dbg::NONE );
 }
@@ -59,7 +59,7 @@ dxfRW::~dxfRW()
 {
   delete reader;
   delete writer;
-  for ( std::vector<DRW_ImageDef*>::iterator it = imageDef.begin(); it != imageDef.end(); ++it )
+  for ( std::vector<DRW_ImageDef *>::iterator it = imageDef.begin(); it != imageDef.end(); ++it )
     delete *it;
 
   imageDef.clear();
@@ -223,7 +223,7 @@ bool dxfRW::writeLineType( DRW_LType *ent )
 {
   std::string strname = ent->name;
 
-  transform( strname.begin(), strname.end(), strname.begin(),::toupper );
+  transform( strname.begin(), strname.end(), strname.begin(), ::toupper );
 //do not write linetypes handled by library
   if ( strname == "BYLAYER" || strname == "BYBLOCK" || strname == "CONTINUOUS" )
   {
@@ -458,7 +458,7 @@ bool dxfRW::writeDimstyle( DRW_Dimstyle *ent )
   if ( !dimstyleStd )
   {
     std::string name = ent->name;
-    std::transform( name.begin(), name.end(), name.begin(),::toupper );
+    std::transform( name.begin(), name.end(), name.begin(), ::toupper );
     if ( name == "STANDARD" )
       dimstyleStd = true;
   }
@@ -590,7 +590,7 @@ bool dxfRW::writeDimstyle( DRW_Dimstyle *ent )
 bool dxfRW::writeAppId( DRW_AppId *ent )
 {
   std::string strname = ent->name;
-  transform( strname.begin(), strname.end(), strname.begin(),::toupper );
+  transform( strname.begin(), strname.end(), strname.begin(), ::toupper );
 //do not write mandatory ACAD appId, handled by library
   if ( strname == "ACAD" )
     return true;
@@ -747,8 +747,8 @@ bool dxfRW::writeArc( DRW_Arc *ent )
   {
     writer->writeString( 100, "AcDbArc" );
   }
-  writer->writeDouble( 50, ent->staangle*ARAD );
-  writer->writeDouble( 51, ent->endangle*ARAD );
+  writer->writeDouble( 50, ent->staangle * ARAD );
+  writer->writeDouble( 51, ent->endangle * ARAD );
   return true;
 }
 
@@ -954,7 +954,7 @@ bool dxfRW::writePolyline( DRW_Polyline *ent )
     writeEntity( ent );
     if ( version > DRW::AC1009 )
       writer->writeString( 100, "AcDbVertex" );
-    if (( v->flags & 128 ) && !( v->flags & 64 ) )
+    if ( ( v->flags & 128 ) && !( v->flags & 64 ) )
     {
       writer->writeDouble( 10, 0 );
       writer->writeDouble( 20, 0 );
@@ -1072,7 +1072,7 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
     {
       DRW_HatchLoop *loop = ent->looplist.at( i );
       writer->writeInt16( 92, loop->type );
-      if (( loop->type & 2 ) == 2 )
+      if ( ( loop->type & 2 ) == 2 )
       {
         //RLZ: polyline boundary writeme
       }
@@ -1083,12 +1083,12 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
         writer->writeInt16( 93, static_cast<int>( loop->numedges ) );
         for ( std::vector<DRW_Entity *>::size_type j = 0; j < loop->numedges; ++j )
         {
-          switch (( loop->objlist.at( j ) )->eType )
+          switch ( ( loop->objlist.at( j ) )->eType )
           {
             case DRW::LINE:
             {
               writer->writeInt16( 72, 1 );
-              DRW_Line* l = ( DRW_Line* )loop->objlist.at( j );
+              DRW_Line *l = ( DRW_Line * )loop->objlist.at( j );
               writer->writeDouble( 10, l->basePoint.x );
               writer->writeDouble( 20, l->basePoint.y );
               writer->writeDouble( 11, l->secPoint.x );
@@ -1098,27 +1098,27 @@ bool dxfRW::writeHatch( DRW_Hatch *ent )
             case DRW::ARC:
             {
               writer->writeInt16( 72, 2 );
-              DRW_Arc* a = ( DRW_Arc* )loop->objlist.at( j );
+              DRW_Arc *a = ( DRW_Arc * )loop->objlist.at( j );
               writer->writeDouble( 10, a->basePoint.x );
               writer->writeDouble( 20, a->basePoint.y );
               writer->writeDouble( 40, a->mRadius );
-              writer->writeDouble( 50, a->staangle*ARAD );
-              writer->writeDouble( 51, a->endangle*ARAD );
+              writer->writeDouble( 50, a->staangle * ARAD );
+              writer->writeDouble( 51, a->endangle * ARAD );
               writer->writeInt16( 73, a->isccw );
               break;
             }
             case DRW::ELLIPSE:
             {
               writer->writeInt16( 72, 3 );
-              DRW_Ellipse* a = ( DRW_Ellipse* )loop->objlist.at( j );
+              DRW_Ellipse *a = ( DRW_Ellipse * )loop->objlist.at( j );
               a->correctAxis();
               writer->writeDouble( 10, a->basePoint.x );
               writer->writeDouble( 20, a->basePoint.y );
               writer->writeDouble( 11, a->secPoint.x );
               writer->writeDouble( 21, a->secPoint.y );
               writer->writeDouble( 40, a->ratio );
-              writer->writeDouble( 50, a->staparam*ARAD );
-              writer->writeDouble( 51, a->endparam*ARAD );
+              writer->writeDouble( 50, a->staparam * ARAD );
+              writer->writeDouble( 51, a->endparam * ARAD );
               writer->writeInt16( 73, a->isccw );
               break;
             }
@@ -1227,7 +1227,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
       case DRW::DIMALIGNED:
       case DRW::DIMLINEAR:
       {
-        DRW_DimAligned * dd = ( DRW_DimAligned* )ent;
+        DRW_DimAligned *dd = ( DRW_DimAligned * )ent;
         writer->writeString( 100, "AcDbAlignedDimension" );
         DRW_Coord crd = dd->getClonepoint();
         if ( crd.x != 0 || crd.y != 0 || crd.z != 0 )
@@ -1244,7 +1244,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
         writer->writeDouble( 34, dd->getDef2Point().z );
         if ( ent->eType == DRW::DIMLINEAR )
         {
-          DRW_DimLinear * dl = ( DRW_DimLinear* )ent;
+          DRW_DimLinear *dl = ( DRW_DimLinear * )ent;
           if ( dl->getAngle() != 0 )
             writer->writeDouble( 50, dl->getAngle() );
           if ( dl->getOblique() != 0 )
@@ -1255,7 +1255,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
       }
       case DRW::DIMRADIAL:
       {
-        DRW_DimRadial * dd = ( DRW_DimRadial* )ent;
+        DRW_DimRadial *dd = ( DRW_DimRadial * )ent;
         writer->writeString( 100, "AcDbRadialDimension" );
         writer->writeDouble( 15, dd->getDiameterPoint().x );
         writer->writeDouble( 25, dd->getDiameterPoint().y );
@@ -1265,7 +1265,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
       }
       case DRW::DIMDIAMETRIC:
       {
-        DRW_DimDiametric * dd = ( DRW_DimDiametric* )ent;
+        DRW_DimDiametric *dd = ( DRW_DimDiametric * )ent;
         writer->writeString( 100, "AcDbDiametricDimension" );
         writer->writeDouble( 15, dd->getDiameter1Point().x );
         writer->writeDouble( 25, dd->getDiameter1Point().y );
@@ -1275,7 +1275,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
       }
       case DRW::DIMANGULAR:
       {
-        DRW_DimAngular * dd = ( DRW_DimAngular* )ent;
+        DRW_DimAngular *dd = ( DRW_DimAngular * )ent;
         writer->writeString( 100, "AcDb2LineAngularDimension" );
         writer->writeDouble( 13, dd->getFirstLine1().x );
         writer->writeDouble( 23, dd->getFirstLine1().y );
@@ -1293,7 +1293,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
       }
       case DRW::DIMANGULAR3P:
       {
-        DRW_DimAngular3p * dd = ( DRW_DimAngular3p* )ent;
+        DRW_DimAngular3p *dd = ( DRW_DimAngular3p * )ent;
         writer->writeDouble( 13, dd->getFirstLine().x );
         writer->writeDouble( 23, dd->getFirstLine().y );
         writer->writeDouble( 33, dd->getFirstLine().z );
@@ -1307,7 +1307,7 @@ bool dxfRW::writeDimension( DRW_Dimension *ent )
       }
       case DRW::DIMORDINATE:
       {
-        DRW_DimOrdinate * dd = ( DRW_DimOrdinate* )ent;
+        DRW_DimOrdinate *dd = ( DRW_DimOrdinate * )ent;
         writer->writeString( 100, "AcDbOrdinateDimension" );
         writer->writeDouble( 13, dd->getFirstLine().x );
         writer->writeDouble( 23, dd->getFirstLine().y );
@@ -1459,7 +1459,7 @@ bool dxfRW::writeViewport( DRW_Viewport *ent )
   return true;
 }
 
-DRW_ImageDef* dxfRW::writeImage( DRW_Image *ent, std::string name )
+DRW_ImageDef *dxfRW::writeImage( DRW_Image *ent, std::string name )
 {
   if ( version > DRW::AC1009 )
   {
@@ -1867,7 +1867,7 @@ bool dxfRW::writeTables()
       writer->writeInt16( 281, 0 );
     }
   }
-  /* allways call writeBlockRecords to iface for prepare unnamed blocks */
+  /* always call writeBlockRecords to iface for prepare unnamed blocks */
   iface->writeBlockRecords();
   if ( version > DRW::AC1009 )
   {
@@ -2073,11 +2073,11 @@ bool dxfRW::writeObjects()
   return true;
 }
 
-bool dxfRW::writeExtData( const std::vector<DRW_Variant*> &ed )
+bool dxfRW::writeExtData( const std::vector<DRW_Variant *> &ed )
 {
-  for ( std::vector<DRW_Variant*>::const_iterator it = ed.begin(); it != ed.end(); ++it )
+  for ( std::vector<DRW_Variant *>::const_iterator it = ed.begin(); it != ed.end(); ++it )
   {
-    switch (( *it )->code() )
+    switch ( ( *it )->code() )
     {
       case 1000:
       case 1001:
@@ -2087,7 +2087,7 @@ bool dxfRW::writeExtData( const std::vector<DRW_Variant*> &ed )
       case 1005:
       {
         int cc = ( *it )->code();
-        if (( *it )->type() == DRW_Variant::STRING )
+        if ( ( *it )->type() == DRW_Variant::STRING )
           writer->writeUtf8String( cc, *( *it )->content.s );
 //            writer->writeUtf8String((*it)->code, (*it)->content.s);
         break;
@@ -2096,26 +2096,26 @@ bool dxfRW::writeExtData( const std::vector<DRW_Variant*> &ed )
       case 1011:
       case 1012:
       case 1013:
-        if (( *it )->type() == DRW_Variant::COORD )
+        if ( ( *it )->type() == DRW_Variant::COORD )
         {
-          writer->writeDouble(( *it )->code(), ( *it )->content.v->x );
-          writer->writeDouble(( *it )->code() + 10 , ( *it )->content.v->y );
-          writer->writeDouble(( *it )->code() + 20 , ( *it )->content.v->z );
+          writer->writeDouble( ( *it )->code(), ( *it )->content.v->x );
+          writer->writeDouble( ( *it )->code() + 10, ( *it )->content.v->y );
+          writer->writeDouble( ( *it )->code() + 20, ( *it )->content.v->z );
         }
         break;
       case 1040:
       case 1041:
       case 1042:
-        if (( *it )->type() == DRW_Variant::DOUBLE )
-          writer->writeDouble(( *it )->code(), ( *it )->content.d );
+        if ( ( *it )->type() == DRW_Variant::DOUBLE )
+          writer->writeDouble( ( *it )->code(), ( *it )->content.d );
         break;
       case 1070:
-        if (( *it )->type() == DRW_Variant::INTEGER )
-          writer->writeInt16(( *it )->code(), ( *it )->content.i );
+        if ( ( *it )->type() == DRW_Variant::INTEGER )
+          writer->writeInt16( ( *it )->code(), ( *it )->content.i );
         break;
       case 1071:
-        if (( *it )->type() == DRW_Variant::INTEGER )
-          writer->writeInt32(( *it )->code(), ( *it )->content.i );
+        if ( ( *it )->type() == DRW_Variant::INTEGER )
+          writer->writeInt32( ( *it )->code(), ( *it )->content.i );
         break;
       default:
         break;

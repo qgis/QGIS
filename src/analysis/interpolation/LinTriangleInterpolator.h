@@ -29,33 +29,33 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
     //! Default constructor
     LinTriangleInterpolator();
     //! Constructor with reference to a DualEdgeTriangulation object
-    LinTriangleInterpolator( DualEdgeTriangulation* tin );
+    LinTriangleInterpolator( DualEdgeTriangulation *tin );
     virtual ~LinTriangleInterpolator();
     //! Calculates the normal vector and assigns it to vec
-    virtual bool calcNormVec( double x, double y, Vector3D* result ) override;
+    virtual bool calcNormVec( double x, double y, Vector3D *result ) override;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D* result ) override;
+    virtual bool calcPoint( double x, double y, Point3D *result ) override;
     //! Returns a pointer to the current Triangulation object
-    virtual DualEdgeTriangulation* getTriangulation() const;
+    virtual DualEdgeTriangulation *getTriangulation() const;
     //! Sets a Triangulation
-    virtual void setTriangulation( DualEdgeTriangulation* tin );
+    virtual void setTriangulation( DualEdgeTriangulation *tin );
 
 
   protected:
-    DualEdgeTriangulation* mTIN = nullptr;
+    DualEdgeTriangulation *mTIN = nullptr;
     //! Calculates the first derivative with respect to x for a linear surface and assigns it to vec
-    virtual bool calcFirstDerX( double x, double y, Vector3D* result );
+    virtual bool calcFirstDerX( double x, double y, Vector3D *result );
     //! Calculates the first derivative with respect to y for a linear surface and assigns it to vec
-    virtual bool calcFirstDerY( double x, double y, Vector3D* result );
+    virtual bool calcFirstDerY( double x, double y, Vector3D *result );
 };
 
 inline LinTriangleInterpolator::LinTriangleInterpolator()
-    : mTIN( nullptr )
+  : mTIN( nullptr )
 {
 
 }
 
-inline LinTriangleInterpolator::LinTriangleInterpolator( DualEdgeTriangulation* tin ): mTIN( tin )
+inline LinTriangleInterpolator::LinTriangleInterpolator( DualEdgeTriangulation *tin ): mTIN( tin )
 {
 
 }
@@ -65,12 +65,12 @@ inline LinTriangleInterpolator::~LinTriangleInterpolator()
 
 }
 
-inline DualEdgeTriangulation* LinTriangleInterpolator::getTriangulation() const
+inline DualEdgeTriangulation *LinTriangleInterpolator::getTriangulation() const
 {
   return mTIN;
 }
 
-inline void LinTriangleInterpolator::setTriangulation( DualEdgeTriangulation* tin )
+inline void LinTriangleInterpolator::setTriangulation( DualEdgeTriangulation *tin )
 {
   mTIN = tin;
 }

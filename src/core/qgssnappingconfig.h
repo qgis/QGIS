@@ -32,7 +32,7 @@ class CORE_EXPORT QgsSnappingConfig
 {
     Q_GADGET
 
-    Q_PROPERTY( QgsProject* project READ project WRITE setProject )
+    Q_PROPERTY( QgsProject *project READ project WRITE setProject )
 
   public:
 
@@ -108,9 +108,9 @@ class CORE_EXPORT QgsSnappingConfig
         /**
          * Compare this configuration to other.
          */
-        bool operator!= ( const IndividualLayerSettings& other ) const;
+        bool operator!= ( const IndividualLayerSettings &other ) const;
 
-        bool operator== ( const IndividualLayerSettings& other ) const;
+        bool operator== ( const IndividualLayerSettings &other ) const;
 
       private:
         bool mValid;
@@ -123,9 +123,9 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig( QgsProject* project = nullptr );
+    explicit QgsSnappingConfig( QgsProject *project = nullptr );
 
-    bool operator==( const QgsSnappingConfig& other ) const;
+    bool operator==( const QgsSnappingConfig &other ) const;
 
     //! reset to default values
     void reset();
@@ -167,32 +167,32 @@ class CORE_EXPORT QgsSnappingConfig
     void setIntersectionSnapping( bool enabled );
 
     //! return individual snapping settings for all layers
-    QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
 
     //! return individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer* vl ) const;
+    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 
     //! set individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    void setIndividualLayerSettings( QgsVectorLayer* vl, const IndividualLayerSettings &individualLayerSettings );
+    void setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings );
 
     /**
      * Compare this configuration to other.
      */
-    bool operator!= ( const QgsSnappingConfig& other ) const;
+    bool operator!= ( const QgsSnappingConfig &other ) const;
 
     /**
      * Reads the configuration from the specified QGIS project document.
      *
      * @note Added in QGIS 3.0
      */
-    void readProject( const QDomDocument& doc );
+    void readProject( const QDomDocument &doc );
 
     /**
      * Writes the configuration to the specified QGIS project document.
      *
      * @note Added in QGIS 3.0
      */
-    void writeProject( QDomDocument& doc );
+    void writeProject( QDomDocument &doc );
 
     /**
      * Adds the specified layers as individual layers to the configuration
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsSnappingConfig
      *
      * @note Added in QGIS 3.0
      */
-    bool addLayers( const QList<QgsMapLayer*>& layers );
+    bool addLayers( const QList<QgsMapLayer *> &layers );
 
 
     /**
@@ -216,27 +216,27 @@ class CORE_EXPORT QgsSnappingConfig
      *
      * @note Added in QGIS 3.0
      */
-    bool removeLayers( const QList<QgsMapLayer*>& layers );
+    bool removeLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * The project from which the snapped layers should be retrieved
      *
      * \note Added in QGIS 3.0
      */
-    QgsProject* project() const;
+    QgsProject *project() const;
 
     /**
      * The project from which the snapped layers should be retrieved
      *
      * \note Added in QGIS 3.0
      */
-    void setProject( QgsProject* project );
+    void setProject( QgsProject *project );
 
   private:
     void readLegacySettings();
 
     //! associated project for this snapping configuration
-    QgsProject* mProject = nullptr;
+    QgsProject *mProject = nullptr;
     bool mEnabled = false;
     SnappingMode mMode = ActiveLayer;
     SnappingType mType = Vertex;
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
 
-    QHash<QgsVectorLayer*, IndividualLayerSettings> mIndividualLayerSettings;
+    QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 
 };
 

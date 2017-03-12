@@ -16,11 +16,11 @@
 
 #include "Node.h"
 
-Node::Node( const Node& n )
+Node::Node( const Node &n )
 {
   if ( n.getPoint() )
   {
-    Point3D* point = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
+    Point3D *point = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
     mPoint = point;
   }
   else
@@ -32,9 +32,9 @@ Node::Node( const Node& n )
 }
 
 
-Node& Node::operator=( const Node & n )
+Node &Node::operator=( const Node &n )
 {
-  Point3D* tmp = mPoint;
+  Point3D *tmp = mPoint;
 
   if ( n.getPoint() )//mPoint of n is not a null pointer
   {

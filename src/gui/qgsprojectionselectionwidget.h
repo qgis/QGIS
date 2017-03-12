@@ -25,7 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_gui.h"
 
-class QgsGenericProjectionSelector;
+class QgsProjectionSelectionDialog;
 
 /**
  * \class QgsProjectionSelectionWidget
@@ -56,7 +56,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Can be used to modify how the projection selector dialog behaves.
      * @returns projection selector dialog
      */
-    QgsGenericProjectionSelector* dialog() { return mDialog; }
+    QgsProjectionSelectionDialog *dialog() { return mDialog; }
 
     /** Returns the currently selected CRS for the widget
      * @returns current CRS
@@ -82,13 +82,13 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * by default and must be set visible by calling setOptionVisible().
      * @note added in QGIS 3.0
      */
-    void setNotSetText( const QString& text );
+    void setNotSetText( const QString &text );
 
   signals:
 
     /** Emitted when the selected CRS is changed
      */
-    void crsChanged( const QgsCoordinateReferenceSystem& );
+    void crsChanged( const QgsCoordinateReferenceSystem & );
 
     /**
      * Emitted when the not set option is selected.
@@ -101,13 +101,13 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     /** Sets the current CRS for the widget
      * @param crs new CRS
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Sets the layer CRS for the widget. If set, this will be added as an option
      * to the preset CRSes shown in the widget.
      * @param crs layer CRS
      */
-    void setLayerCrs( const QgsCoordinateReferenceSystem& crs );
+    void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Opens the dialog for selecting a new CRS
      */
@@ -119,16 +119,16 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsCoordinateReferenceSystem mProjectCrs;
     QgsCoordinateReferenceSystem mDefaultCrs;
-    QComboBox* mCrsComboBox = nullptr;
-    QToolButton* mButton = nullptr;
-    QgsGenericProjectionSelector* mDialog = nullptr;
+    QComboBox *mCrsComboBox = nullptr;
+    QToolButton *mButton = nullptr;
+    QgsProjectionSelectionDialog *mDialog = nullptr;
     QString mNotSetText;
 
     void addNotSetOption();
     void addProjectCrsOption();
     void addDefaultCrsOption();
     void addCurrentCrsOption();
-    QString currentCrsOptionText( const QgsCoordinateReferenceSystem& crs ) const;
+    QString currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const;
     void addRecentCrs();
     bool crsIsShown( const long srsid ) const;
 

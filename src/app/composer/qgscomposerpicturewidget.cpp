@@ -23,6 +23,8 @@
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssvgcache.h"
+#include "qgssettings.h"
+
 #include <QDoubleValidator>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -30,10 +32,9 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QProgressDialog>
-#include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
   setPanelTitle( tr( "Picture properties" ) );
@@ -41,9 +42,9 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   mFillColorButton->setAllowAlpha( true );
   mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mOutlineColorButton->setAllowAlpha( true );
-  mOutlineColorButton->setColorDialogTitle( tr( "Select outline color" ) );
-  mOutlineColorButton->setContext( QStringLiteral( "composer" ) );
+  mStrokeColorButton->setAllowAlpha( true );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
   mNorthTypeComboBox->blockSignals( true );
   mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsComposerPicture::GridNorth );
@@ -53,14 +54,14 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   mPictureRotationSpinBox->setClearValue( 0.0 );
 
   //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
+  QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
   mainLayout->addWidget( itemPropertiesWidget );
 
   if ( mPicture->composition() )
   {
     mComposerMapComboBox->setComposition( mPicture->composition() );
     mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
+    connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
   }
 
   setGuiElementValues();
@@ -80,8 +81,8 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );
   registerDataDefinedButton( mSourceDDBtn, QgsComposerObject::PictureSource );
   registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
-  registerDataDefinedButton( mOutlineColorDDBtn, QgsComposerObject::PictureSvgOutlineColor );
-  registerDataDefinedButton( mOutlineWidthDDBtn, QgsComposerObject::PictureSvgOutlineWidth );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsComposerObject::PictureSvgStrokeColor );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsComposerObject::PictureSvgStrokeWidth );
 }
 
 QgsComposerPictureWidget::~QgsComposerPictureWidget()
@@ -91,7 +92,7 @@ QgsComposerPictureWidget::~QgsComposerPictureWidget()
 
 void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString openDir;
   QString lineEditText = mPictureLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -161,7 +162,7 @@ void QgsComposerPictureWidget::on_mPictureRotationSpinBox_valueChanged( double d
   }
 }
 
-void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
+void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
   Q_UNUSED( previous );
   if ( !mPicture || !current )
@@ -194,7 +195,7 @@ void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
   addDirectoryToPreview( directory );
 
   //update the image directory list in the settings
-  QSettings s;
+  QgsSettings s;
   QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   if ( !userDirList.contains( directory ) )
   {
@@ -215,15 +216,15 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
   //remove entries from back to front (to have the indices of existing items constant)
   for ( int i = ( mPreviewListWidget->count() - 1 ); i >= 0; --i )
   {
-    QListWidgetItem* currentItem = mPreviewListWidget->item( i );
+    QListWidgetItem *currentItem = mPreviewListWidget->item( i );
     if ( currentItem && currentItem->data( Qt::UserRole ).toString().startsWith( directoryToRemove ) )
     {
-      delete( mPreviewListWidget->takeItem( i ) );
+      delete ( mPreviewListWidget->takeItem( i ) );
     }
   }
 
   //update the image directory list in the settings
-  QSettings s;
+  QgsSettings s;
   QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   userDirList.removeOne( directoryToRemove );
   s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
@@ -237,7 +238,7 @@ void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int i
   }
 
   mPicture->beginCommand( tr( "Picture resize mode changed" ) );
-  mPicture->setResizeMode(( QgsComposerPicture::ResizeMode )index );
+  mPicture->setResizeMode( ( QgsComposerPicture::ResizeMode )index );
   mPicture->endCommand();
 
   //disable picture rotation for non-zoom modes
@@ -264,7 +265,7 @@ void QgsComposerPictureWidget::on_mAnchorPointComboBox_currentIndexChanged( int 
   }
 
   mPicture->beginCommand( tr( "Picture placement changed" ) );
-  mPicture->setPictureAnchor(( QgsComposerItem::ItemPositionMode )index );
+  mPicture->setPictureAnchor( ( QgsComposerItem::ItemPositionMode )index );
   mPicture->endCommand();
 }
 
@@ -287,7 +288,7 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
   }
   else
   {
-    const QgsComposerMap* map = dynamic_cast< const QgsComposerMap* >( mComposerMapComboBox->currentItem() );
+    const QgsComposerMap *map = dynamic_cast< const QgsComposerMap * >( mComposerMapComboBox->currentItem() );
     int mapId = map ? map->id() : -1;
     mPicture->setRotationMap( mapId );
     mPictureRotationSpinBox->setEnabled( false );
@@ -298,7 +299,7 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
   mPicture->endCommand();
 }
 
-void QgsComposerPictureWidget::composerMapChanged( QgsComposerItem* item )
+void QgsComposerPictureWidget::composerMapChanged( QgsComposerItem *item )
 {
   if ( !mPicture )
   {
@@ -306,13 +307,13 @@ void QgsComposerPictureWidget::composerMapChanged( QgsComposerItem* item )
   }
 
   //get composition
-  const QgsComposition* composition = mPicture->composition();
+  const QgsComposition *composition = mPicture->composition();
   if ( !composition )
   {
     return;
   }
 
-  QgsComposerMap* composerMap = dynamic_cast< QgsComposerMap*>( item );
+  QgsComposerMap *composerMap = dynamic_cast< QgsComposerMap *>( item );
   int id = composerMap ? composerMap->id() : -1;
   if ( !composerMap )
   {
@@ -345,13 +346,13 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mResizeModeComboBox->blockSignals( true );
     mAnchorPointComboBox->blockSignals( true );
     mFillColorButton->blockSignals( true );
-    mOutlineColorButton->blockSignals( true );
-    mOutlineWidthSpinBox->blockSignals( true );
+    mStrokeColorButton->blockSignals( true );
+    mStrokeWidthSpinBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
-    const QgsComposerMap* map = mPicture->composition()->getComposerMapById( mPicture->rotationMap() );
+    const QgsComposerMap *map = mPicture->composition()->getComposerMapById( mPicture->rotationMap() );
     if ( map )
       mComposerMapComboBox->setItem( map );
     else
@@ -376,12 +377,12 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mNorthTypeComboBox->setCurrentIndex( mNorthTypeComboBox->findData( mPicture->northMode() ) );
     mPictureRotationOffsetSpinBox->setValue( mPicture->northOffset() );
 
-    mResizeModeComboBox->setCurrentIndex(( int )mPicture->resizeMode() );
+    mResizeModeComboBox->setCurrentIndex( ( int )mPicture->resizeMode() );
     //disable picture rotation for non-zoom modes
     mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
                                    mPicture->resizeMode() == QgsComposerPicture::ZoomResizeFrame );
 
-    mAnchorPointComboBox->setCurrentIndex(( int )mPicture->pictureAnchor() );
+    mAnchorPointComboBox->setCurrentIndex( ( int )mPicture->pictureAnchor() );
     //disable anchor point control for certain zoom modes
     if ( mPicture->resizeMode() == QgsComposerPicture::Zoom ||
          mPicture->resizeMode() == QgsComposerPicture::Clip )
@@ -395,8 +396,8 @@ void QgsComposerPictureWidget::setGuiElementValues()
 
     updateSvgParamGui( false );
     mFillColorButton->setColor( mPicture->svgFillColor() );
-    mOutlineColorButton->setColor( mPicture->svgBorderColor() );
-    mOutlineWidthSpinBox->setValue( mPicture->svgBorderWidth() );
+    mStrokeColorButton->setColor( mPicture->svgStrokeColor() );
+    mStrokeWidthSpinBox->setValue( mPicture->svgStrokeWidth() );
 
     mRotationFromComposerMapCheckBox->blockSignals( false );
     mPictureRotationSpinBox->blockSignals( false );
@@ -407,38 +408,38 @@ void QgsComposerPictureWidget::setGuiElementValues()
     mResizeModeComboBox->blockSignals( false );
     mAnchorPointComboBox->blockSignals( false );
     mFillColorButton->blockSignals( false );
-    mOutlineColorButton->blockSignals( false );
-    mOutlineWidthSpinBox->blockSignals( false );
+    mStrokeColorButton->blockSignals( false );
+    mStrokeWidthSpinBox->blockSignals( false );
 
     populateDataDefinedButtons();
   }
 }
 
-QIcon QgsComposerPictureWidget::svgToIcon( const QString& filePath ) const
+QIcon QgsComposerPictureWidget::svgToIcon( const QString &filePath ) const
 {
-  QColor fill, outline;
-  double outlineWidth, fillOpacity, outlineOpacity;
-  bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
-  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+  QColor fill, stroke;
+  double strokeWidth, fillOpacity, strokeOpacity;
+  bool fillParam, fillOpacityParam, strokeParam, strokeWidthParam, strokeOpacityParam;
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false,
+       hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
   QgsApplication::svgCache()->containsParams( filePath, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
-      outlineParam, hasDefaultOutlineColor, outline,
-      outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
-      outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+      strokeParam, hasDefaultStrokeColor, stroke,
+      strokeWidthParam, hasDefaultStrokeWidth, strokeWidth,
+      strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
 
   //if defaults not set in symbol, use these values
   if ( !hasDefaultFillColor )
     fill = QColor( 200, 200, 200 );
   fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
-  if ( !hasDefaultOutlineColor )
-    outline = Qt::black;
-  outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
-  if ( !hasDefaultOutlineWidth )
-    outlineWidth = 0.6;
+  if ( !hasDefaultStrokeColor )
+    stroke = Qt::black;
+  stroke.setAlphaF( hasDefaultStrokeOpacity ? strokeOpacity : 1.0 );
+  if ( !hasDefaultStrokeWidth )
+    strokeWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  const QImage &img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }
@@ -452,21 +453,21 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
   if ( !picturePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
   {
     mFillColorButton->setEnabled( false );
-    mOutlineColorButton->setEnabled( false );
-    mOutlineWidthSpinBox->setEnabled( false );
+    mStrokeColorButton->setEnabled( false );
+    mStrokeWidthSpinBox->setEnabled( false );
     return;
   }
 
   //activate gui for svg parameters only if supported by the svg file
-  bool hasFillParam, hasFillOpacityParam, hasOutlineParam, hasOutlineWidthParam, hasOutlineOpacityParam;
-  QColor defaultFill, defaultOutline;
-  double defaultOutlineWidth, defaultFillOpacity, defaultOutlineOpacity;
-  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultOutlineColor, hasDefaultOutlineWidth, hasDefaultOutlineOpacity;
+  bool hasFillParam, hasFillOpacityParam, hasStrokeParam, hasStrokeWidthParam, hasStrokeOpacityParam;
+  QColor defaultFill, defaultStroke;
+  double defaultStrokeWidth, defaultFillOpacity, defaultStrokeOpacity;
+  bool hasDefaultFillColor, hasDefaultFillOpacity, hasDefaultStrokeColor, hasDefaultStrokeWidth, hasDefaultStrokeOpacity;
   QgsApplication::svgCache()->containsParams( picturePath, hasFillParam, hasDefaultFillColor, defaultFill,
       hasFillOpacityParam, hasDefaultFillOpacity, defaultFillOpacity,
-      hasOutlineParam, hasDefaultOutlineColor, defaultOutline,
-      hasOutlineWidthParam, hasDefaultOutlineWidth, defaultOutlineWidth,
-      hasOutlineOpacityParam, hasDefaultOutlineOpacity, defaultOutlineOpacity );
+      hasStrokeParam, hasDefaultStrokeColor, defaultStroke,
+      hasStrokeWidthParam, hasDefaultStrokeWidth, defaultStrokeWidth,
+      hasStrokeOpacityParam, hasDefaultStrokeOpacity, defaultStrokeOpacity );
 
   if ( resetValues )
   {
@@ -483,25 +484,25 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
   mFillColorButton->setAllowAlpha( hasFillOpacityParam );
   if ( resetValues )
   {
-    QColor outline = mOutlineColorButton->color();
-    double newOpacity = hasOutlineOpacityParam ? outline.alphaF() : 1.0;
-    if ( hasDefaultOutlineColor )
+    QColor stroke = mStrokeColorButton->color();
+    double newOpacity = hasStrokeOpacityParam ? stroke.alphaF() : 1.0;
+    if ( hasDefaultStrokeColor )
     {
-      outline = defaultOutline;
+      stroke = defaultStroke;
     }
-    outline.setAlphaF( hasDefaultOutlineOpacity ? defaultOutlineOpacity : newOpacity );
-    mOutlineColorButton->setColor( outline );
+    stroke.setAlphaF( hasDefaultStrokeOpacity ? defaultStrokeOpacity : newOpacity );
+    mStrokeColorButton->setColor( stroke );
   }
-  mOutlineColorButton->setEnabled( hasOutlineParam );
-  mOutlineColorButton->setAllowAlpha( hasOutlineOpacityParam );
-  if ( hasDefaultOutlineWidth && resetValues )
+  mStrokeColorButton->setEnabled( hasStrokeParam );
+  mStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  if ( hasDefaultStrokeWidth && resetValues )
   {
-    mOutlineWidthSpinBox->setValue( defaultOutlineWidth );
+    mStrokeWidthSpinBox->setValue( defaultStrokeWidth );
   }
-  mOutlineWidthSpinBox->setEnabled( hasOutlineWidthParam );
+  mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
 }
 
-int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
+int QgsComposerPictureWidget::addDirectoryToPreview( const QString &path )
 {
   //go through all files of a directory
   QDir directory( path );
@@ -545,7 +546,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       continue;
     }
 
-    QListWidgetItem * listItem = new QListWidgetItem( mPreviewListWidget );
+    QListWidgetItem *listItem = new QListWidgetItem( mPreviewListWidget );
     listItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
     if ( fileIsSvg )
@@ -608,7 +609,7 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
   }
 
   //include additional user-defined directories for images
-  QSettings s;
+  QgsSettings s;
   QStringList userDirList = s.value( QStringLiteral( "/Composer/PictureWidgetDirectories" ) ).toStringList();
   QStringList::const_iterator userDirIt = userDirList.constBegin();
   for ( ; userDirIt != userDirList.constEnd(); ++userDirIt )
@@ -620,7 +621,7 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
   mPreviewsLoaded = true;
 }
 
-bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
+bool QgsComposerPictureWidget::testSvgFile( const QString &filename ) const
 {
   //QSvgRenderer crashes with some (non-svg) xml documents.
   //So at least we try to sort out the ones with different suffixes
@@ -633,7 +634,7 @@ bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
   return svgRenderer.isValid();
 }
 
-bool QgsComposerPictureWidget::testImageFile( const QString& filename ) const
+bool QgsComposerPictureWidget::testImageFile( const QString &filename ) const
 {
   QString formatName = QString( QImageReader::imageFormat( filename ) );
   return !formatName.isEmpty(); //file is in a supported pixel format
@@ -656,7 +657,7 @@ void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
   }
 }
 
-void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& color )
+void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor &color )
 {
   mPicture->beginCommand( tr( "Picture fill color changed" ), QgsComposerMergeCommand::ComposerPictureFillColor );
   mPicture->setSvgFillColor( color );
@@ -664,18 +665,18 @@ void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor& c
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mOutlineColorButton_colorChanged( const QColor& color )
+void QgsComposerPictureWidget::on_mStrokeColorButton_colorChanged( const QColor &color )
 {
-  mPicture->beginCommand( tr( "Picture border color changed" ), QgsComposerMergeCommand::ComposerPictureOutlineColor );
-  mPicture->setSvgBorderColor( color );
+  mPicture->beginCommand( tr( "Picture stroke color changed" ), QgsComposerMergeCommand::ComposerPictureStrokeColor );
+  mPicture->setSvgStrokeColor( color );
   mPicture->endCommand();
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsComposerPictureWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
-  mPicture->beginCommand( tr( "Picture border width changed" ) );
-  mPicture->setSvgBorderWidth( d );
+  mPicture->beginCommand( tr( "Picture stroke width changed" ) );
+  mPicture->setSvgStrokeWidth( d );
   mPicture->endCommand();
   mPicture->update();
 }
@@ -696,7 +697,7 @@ void QgsComposerPictureWidget::on_mNorthTypeComboBox_currentIndexChanged( int in
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
+void QgsComposerPictureWidget::resizeEvent( QResizeEvent *event )
 {
   Q_UNUSED( event );
   mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
@@ -706,8 +707,8 @@ void QgsComposerPictureWidget::populateDataDefinedButtons()
 {
   updateDataDefinedButton( mSourceDDBtn );
   updateDataDefinedButton( mFillColorDDBtn );
-  updateDataDefinedButton( mOutlineColorDDBtn );
-  updateDataDefinedButton( mOutlineWidthDDBtn );
+  updateDataDefinedButton( mStrokeColorDDBtn );
+  updateDataDefinedButton( mStrokeWidthDDBtn );
 
   //initial state of controls - disable related controls when dd buttons are active
   mPictureLineEdit->setEnabled( !mSourceDDBtn->isActive() );

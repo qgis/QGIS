@@ -49,9 +49,9 @@ class TestQgsRasterFileWriter: public QObject
     void writeTest();
     void testCreateOneBandRaster();
   private:
-    bool writeTest( const QString& rasterName );
-    void log( const QString& msg );
-    void logError( const QString& msg );
+    bool writeTest( const QString &rasterName );
+    void log( const QString &msg );
+    void logError( const QString &msg );
     QString mTestDataDir;
     QString mReport;
 };
@@ -94,7 +94,7 @@ void TestQgsRasterFileWriter::writeTest()
   filters << QStringLiteral( "*.tif" );
   QStringList rasterNames = dir.entryList( filters, QDir::Files );
   bool allOK = true;
-  Q_FOREACH ( const QString& rasterName, rasterNames )
+  Q_FOREACH ( const QString &rasterName, rasterNames )
   {
     bool ok = writeTest( "raster/" + rasterName );
     if ( !ok ) allOK = false;
@@ -103,22 +103,22 @@ void TestQgsRasterFileWriter::writeTest()
   QVERIFY( allOK );
 }
 
-bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
+bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 {
-  mReport += "<h2>" + theRasterName + "</h2>\n";
+  mReport += "<h2>" + rasterName + "</h2>\n";
 
-  QString myFileName = mTestDataDir + '/' + theRasterName;
+  QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
   QFileInfo myRasterFileInfo( myFileName );
 
   std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
-  qDebug() << theRasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
 
   if ( !mpRasterLayer->isValid() ) return false;
 
   // Open provider only (avoid layer)?
-  QgsRasterDataProvider * provider = mpRasterLayer->dataProvider();
+  QgsRasterDataProvider *provider = mpRasterLayer->dataProvider();
 
   // I don't see any method to get only a name without opening file
   QTemporaryFile tmpFile;
@@ -131,7 +131,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString& theRasterName )
   mReport += "temporary output file: " + tmpName + "<br>";
 
   QgsRasterFileWriter fileWriter( tmpName );
-  QgsRasterPipe* pipe = new QgsRasterPipe();
+  QgsRasterPipe *pipe = new QgsRasterPipe();
   if ( !pipe->set( provider->clone() ) )
   {
     logError( QStringLiteral( "Cannot set pipe provider" ) );
@@ -191,7 +191,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   int width = 200, height = 100;
 
   QgsRasterFileWriter writer( filename );
-  QgsRasterDataProvider* dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QgsRasterDataProvider *dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -201,7 +201,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  QgsRasterLayer* rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -212,12 +212,12 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
 }
 
 
-void TestQgsRasterFileWriter::log( const QString& msg )
+void TestQgsRasterFileWriter::log( const QString &msg )
 {
   mReport += msg + "<br>";
 }
 
-void TestQgsRasterFileWriter::logError( const QString& msg )
+void TestQgsRasterFileWriter::logError( const QString &msg )
 {
   mReport += "Error:<font color='red'>" + msg + "</font><br>";
   qDebug() << msg;

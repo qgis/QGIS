@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 from builtins import range
 
 __author__ = 'Victor Olaya'
@@ -196,7 +195,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo(
-                self.tr('<b>Algorithm %s starting...</b>') % self.alg.name)
+                self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.name))
 
             if self.iterateParam:
                 if runalgIterating(self.alg, self.iterateParam, self.feedback):
@@ -224,7 +223,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             except:
                 pass
             self.bar.clearWidgets()
-            self.bar.pushMessage("", "Wrong or missing parameter value: %s" % e.parameter.description,
+            self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description),
                                  level=QgsMessageBar.WARNING, duration=5)
 
     def finish(self):
@@ -236,7 +235,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 return
 
         self.executed = True
-        self.setInfo('Algorithm %s finished' % self.alg.name)
+        self.setInfo(self.tr('Algorithm {0} finished').format(self.alg.name))
         QApplication.restoreOverrideCursor()
 
         if not keepOpen:

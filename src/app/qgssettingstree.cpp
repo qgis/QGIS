@@ -39,16 +39,15 @@
 ****************************************************************************/
 
 #include <QHeaderView>
-#include <QSettings>
 #include <QEvent>
 
 #include "qgssettingstree.h"
 #include "qgsvariantdelegate.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 QgsSettingsTree::QgsSettingsTree( QWidget *parent )
-    : QTreeWidget( parent )
+  : QTreeWidget( parent )
 {
   setItemDelegate( new QgsVariantDelegate( this ) );
 
@@ -74,7 +73,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
   connect( &refreshTimer, SIGNAL( timeout() ), this, SLOT( maybeRefresh() ) );
 }
 
-void QgsSettingsTree::setSettingsObject( QSettings *settings )
+void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
 {
   delete this->settings;
   this->settings = settings;
@@ -115,15 +114,6 @@ void QgsSettingsTree::setAutoRefresh( bool autoRefresh )
   }
 }
 
-void QgsSettingsTree::setFallbacksEnabled( bool enabled )
-{
-  if ( settings )
-  {
-    settings->setFallbacksEnabled( enabled );
-    refresh();
-  }
-}
-
 void QgsSettingsTree::maybeRefresh()
 {
   if ( state() != EditingState )
@@ -135,12 +125,12 @@ void QgsSettingsTree::refresh()
   if ( !settings )
     return;
 
-  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
-              this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
+  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
+              this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
 
   settings->sync();
 
-  // add any settings not in QSettings object, so it will show up in the tree view
+  // add any settings not in QgsSettings object, so it will show up in the tree view
   if ( settings )
   {
     QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();
@@ -156,8 +146,8 @@ void QgsSettingsTree::refresh()
 
   updateChildItems( nullptr );
 
-  connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
-           this, SLOT( updateSetting( QTreeWidgetItem* ) ) );
+  connect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
+           this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
 }
 
 bool QgsSettingsTree::event( QEvent *event )
@@ -185,7 +175,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
 {
   int dividerIndex = 0;
 
-  Q_FOREACH ( const QString& group, settings->childGroups() )
+  Q_FOREACH ( const QString &group, settings->childGroups() )
   {
     QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, group, dividerIndex );
@@ -209,7 +199,7 @@ void QgsSettingsTree::updateChildItems( QTreeWidgetItem *parent )
     settings->endGroup();
   }
 
-  Q_FOREACH ( const QString& key, settings->childKeys() )
+  Q_FOREACH ( const QString &key, settings->childKeys() )
   {
     QTreeWidgetItem *child = nullptr;
     int childIndex = findChild( parent, key, 0 );

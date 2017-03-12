@@ -47,107 +47,107 @@ bool TestQgsSQLComposerDialog::runTest()
   return true;
 }
 
-static QWidget* getQueryEdit( QgsSQLComposerDialog& d )
+static QWidget *getQueryEdit( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mQueryEdit" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mQueryEdit" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getColumnsEditor( QgsSQLComposerDialog& d )
+static QWidget *getColumnsEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mColumnsEditor" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mColumnsEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getTablesEditor( QgsSQLComposerDialog& d )
+static QWidget *getTablesEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mTablesEditor" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mTablesEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getWhereEditor( QgsSQLComposerDialog& d )
+static QWidget *getWhereEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mWhereEditor" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mWhereEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getOrderEditor( QgsSQLComposerDialog& d )
+static QWidget *getOrderEditor( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mOrderEditor" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mOrderEditor" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getTablesCombo( QgsSQLComposerDialog& d )
+static QComboBox *getTablesCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( QStringLiteral( "mTablesCombo" ) );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mTablesCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getColumnsCombo( QgsSQLComposerDialog& d )
+static QComboBox *getColumnsCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( QStringLiteral( "mColumnsCombo" ) );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mColumnsCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getFunctionsCombo( QgsSQLComposerDialog& d )
+static QComboBox *getFunctionsCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( QStringLiteral( "mFunctionsCombo" ) );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mFunctionsCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getSpatialPredicatesCombo( QgsSQLComposerDialog& d )
+static QComboBox *getSpatialPredicatesCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( QStringLiteral( "mSpatialPredicatesCombo" ) );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mSpatialPredicatesCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QComboBox* getOperatorsCombo( QgsSQLComposerDialog& d )
+static QComboBox *getOperatorsCombo( QgsSQLComposerDialog &d )
 {
-  QComboBox* widget = d.findChild<QComboBox*>( QStringLiteral( "mOperatorsCombo" ) );
+  QComboBox *widget = d.findChild<QComboBox *>( QStringLiteral( "mOperatorsCombo" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getResetButton( QgsSQLComposerDialog& d )
+static QWidget *getResetButton( QgsSQLComposerDialog &d )
 {
-  QDialogButtonBox* mButtonBox = d.findChild<QDialogButtonBox*>( QStringLiteral( "mButtonBox" ) );
+  QDialogButtonBox *mButtonBox = d.findChild<QDialogButtonBox *>( QStringLiteral( "mButtonBox" ) );
   Q_ASSERT( mButtonBox );
-  QPushButton* button = mButtonBox->button( QDialogButtonBox::Reset );
+  QPushButton *button = mButtonBox->button( QDialogButtonBox::Reset );
   Q_ASSERT( button );
   return button;
 }
 
-static QTableWidget* getTableJoins( QgsSQLComposerDialog& d )
+static QTableWidget *getTableJoins( QgsSQLComposerDialog &d )
 {
-  QTableWidget* widget = d.findChild<QTableWidget*>( QStringLiteral( "mTableJoins" ) );
+  QTableWidget *widget = d.findChild<QTableWidget *>( QStringLiteral( "mTableJoins" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getAddJoinButton( QgsSQLComposerDialog& d )
+static QWidget *getAddJoinButton( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mAddJoinButton" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mAddJoinButton" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static QWidget* getRemoveJoinButton( QgsSQLComposerDialog& d )
+static QWidget *getRemoveJoinButton( QgsSQLComposerDialog &d )
 {
-  QWidget* widget = d.findChild<QWidget*>( QStringLiteral( "mRemoveJoinButton" ) );
+  QWidget *widget = d.findChild<QWidget *>( QStringLiteral( "mRemoveJoinButton" ) );
   Q_ASSERT( widget );
   return widget;
 }
 
-static void gotoEndOfLine( QWidget* w )
+static void gotoEndOfLine( QWidget *w )
 {
 #ifdef Q_OS_MAC
   QTest::keyPress( w, Qt::Key_Right, Qt::ControlModifier );
@@ -179,7 +179,7 @@ void TestQgsSQLComposerDialog::testReciprocalEditorsUpdate()
   QCOMPARE( d.sql(), oriSql );
 }
 
-static void setFocusIn( QWidget* widget )
+static void setFocusIn( QWidget *widget )
 {
   QFocusEvent focusInEvent( QEvent::FocusIn );
   QApplication::sendEvent( widget, &focusInEvent );
@@ -416,7 +416,7 @@ void TestQgsSQLComposerDialog::testJoins()
   d.setSql( QStringLiteral( "SELECT * FROM my_table" ) );
   d.setSupportMultipleTables( true );
 
-  QTableWidget* table = getTableJoins( d );
+  QTableWidget *table = getTableJoins( d );
   QCOMPARE( table->rowCount(), 1 );
   QCOMPARE( table->item( 0, 0 ) != nullptr, true );
   table->item( 0, 0 )->setText( QStringLiteral( "join_table" ) );

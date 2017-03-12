@@ -39,16 +39,16 @@ class CORE_EXPORT QgsRectangle
     //! Constructor
     QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRectangle( const QgsPoint & p1, const QgsPoint & p2 );
+    QgsRectangle( const QgsPoint &p1, const QgsPoint &p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
-    QgsRectangle( const QRectF & qRectF );
+    QgsRectangle( const QRectF &qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
 
     ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
     //! normalised after construction.
-    void set( const QgsPoint& p1, const QgsPoint& p2 );
+    void set( const QgsPoint &p1, const QgsPoint &p2 );
     //! Set the rectangle from four points. The rectangle is
     //! normalised after construction.
     void set( double xmin, double ymin, double xmax, double ymax );
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsRectangle
     //! Grow the rectangle by the specified amount
     void grow( double delta );
     //! Updates the rectangle to include the specified point
-    void include( const QgsPoint& p );
+    void include( const QgsPoint &p );
 
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
@@ -93,13 +93,13 @@ class CORE_EXPORT QgsRectangle
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle
-    bool intersects( const QgsRectangle& rect ) const;
+    bool intersects( const QgsRectangle &rect ) const;
     //! return true when rectangle contains other rectangle
-    bool contains( const QgsRectangle& rect ) const;
+    bool contains( const QgsRectangle &rect ) const;
     //! return true when rectangle contains a point
     bool contains( const QgsPoint &p ) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
-    void combineExtentWith( const QgsRectangle& rect );
+    void combineExtentWith( const QgsRectangle &rect );
     //! expand the rectangle so that covers both the original rectangle and the given point
     void combineExtentWith( double x, double y );
     //! test if rectangle is empty.
@@ -137,10 +137,10 @@ class CORE_EXPORT QgsRectangle
     /** Assignment operator
      * @param r1 QgsRectangle to assign from
      */
-    QgsRectangle & operator=( const QgsRectangle &r1 );
+    QgsRectangle &operator=( const QgsRectangle &r1 );
 
     //! Updates rectangle to include passed argument
-    void unionRect( const QgsRectangle& rect );
+    void unionRect( const QgsRectangle &rect );
 
     /** Returns true if the rectangle has finite boundaries. Will
      * return false if any of the rectangle boundaries are NaN or Inf.
@@ -163,9 +163,9 @@ class CORE_EXPORT QgsRectangle
 };
 
 //! Writes the list rectangle to stream out. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsRectangle& rectangle );
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsRectangle &rectangle );
 //! Reads a rectangle from stream in into rectangle. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsRectangle& rectangle );
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsRectangle &rectangle );
 
 inline QgsRectangle::~QgsRectangle()
 {
@@ -225,7 +225,7 @@ inline QgsPoint QgsRectangle::center() const
 {
   return QgsPoint( xmin + width() / 2, ymin + height() / 2 );
 }
-inline std::ostream& operator << ( std::ostream& os, const QgsRectangle &r )
+inline std::ostream &operator << ( std::ostream &os, const QgsRectangle &r )
 {
   return os << r.toString().toLocal8Bit().data();
 }

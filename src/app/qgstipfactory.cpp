@@ -105,14 +105,17 @@ QgsTipFactory::QgsTipFactory() : QObject()
   addGuiTip( myTip );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
-  myTip.setTitle( tr( "Lock an element in the layout view" ) );
+  myTip.setTitle( tr( "Lock an item in the layout view" ) );
   myTip.setContent( tr( "Locking an element in the layout view prevents you to select or accidentally"
-                        " move it with the mouse. (Un)Locking an item is done by ticking its checkbox"
-                        " in the <strong>Items</strong> tab. While in a locked state, you can"
-                        " still get it selected from the <strong>Items</strong> tab, move it with the arrow keys"
-                        " or configure any of its properties in the <strong>Item Properties</strong> tab"
-                        " including precisely place it by setting its <strong>Position and Size</strong>."
-                      ) );
+                        " move it with the mouse. Locking an item is done by checking its"
+                        " <img src=\":/images/themes/default/locked.svg\"/> state in the"
+                        " <strong>%1</strong> tab. While in a locked state, you can still get it"
+                        " selected from the <strong>%1</strong> tab, and configure any of its"
+                        " properties in the <strong>%2</strong> tab, including precisely setting"
+                        " its position and size." )
+                    .arg( tr( "Items" ) )
+                    .arg( tr( "Item Properties" ) )
+                  );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann
   myTip.setTitle( tr( "Rotating a map and linking a north arrow" ) );
@@ -296,16 +299,16 @@ QgsTipFactory::~QgsTipFactory()
 
 }
 //private helper method
-void QgsTipFactory::addGuiTip( const QgsTip& theTip )
+void QgsTipFactory::addGuiTip( const QgsTip &tip )
 {
-  mGuiTips << theTip;
-  mAllTips << theTip;
+  mGuiTips << tip;
+  mAllTips << tip;
 }
 //private helper method
-void QgsTipFactory::addGenericTip( const QgsTip& theTip )
+void QgsTipFactory::addGenericTip( const QgsTip &tip )
 {
-  mGenericTips << theTip;
-  mAllTips << theTip;
+  mGenericTips << tip;
+  mAllTips << tip;
 }
 QgsTip QgsTipFactory::getTip()
 {
@@ -314,9 +317,9 @@ QgsTip QgsTipFactory::getTip()
   QgsTip myTip = mAllTips.at( myValue );
   return myTip;
 }
-QgsTip QgsTipFactory::getTip( int thePosition )
+QgsTip QgsTipFactory::getTip( int position )
 {
-  QgsTip myTip = mAllTips.at( thePosition );
+  QgsTip myTip = mAllTips.at( position );
   return myTip;
 }
 QgsTip QgsTipFactory::getGenericTip()
@@ -334,9 +337,9 @@ QgsTip QgsTipFactory::getGuiTip()
   return myTip;
 }
 
-int QgsTipFactory::randomNumber( int theMax )
+int QgsTipFactory::randomNumber( int max )
 {
-  Q_UNUSED( theMax );
+  Q_UNUSED( max );
   return 0;
 }
 

@@ -207,7 +207,7 @@ class ObservingObject : public QObject
     Q_OBJECT
   public:
     ObservingObject( AccessibleProxyModel  *proxy, QObject *parent = 0 )
-        : QObject( parent ),
+      : QObject( parent ),
         m_proxy( proxy )
     {
       connect( m_proxy, SIGNAL( layoutAboutToBeChanged() ), SLOT( storePersistent() ) );

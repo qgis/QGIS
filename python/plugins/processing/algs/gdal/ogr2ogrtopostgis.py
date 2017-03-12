@@ -80,7 +80,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (new connection)')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
@@ -184,6 +184,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         tsrs = str(self.getParameterValue(self.T_SRS))
         asrs = str(self.getParameterValue(self.A_SRS))
         table = str(self.getParameterValue(self.TABLE))
+        schema = str(self.getParameterValue(self.SCHEMA))
         pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)

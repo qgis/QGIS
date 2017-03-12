@@ -24,20 +24,16 @@ import os
 import glob
 import shutil
 
-from qgis.PyQt.QtCore import QSettings, qDebug
+from qgis.PyQt.QtCore import qDebug
 
-from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
+from qgis.core import QgsProject, QgsApplication, QgsSettings, QgsPalLabeling
 
 from utilities import mapSettingsString
 
 from qgis_local_server import getLocalServer
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from test_qgspallabeling_tests import (
-    TestPointBase,
-    TestLineBase,
-    suiteTests
-)
+from test_qgspallabeling_tests import TestPointBase, TestLineBase, suiteTests
 
 MAPSERV = getLocalServer()
 
@@ -68,7 +64,7 @@ class TestServerBase(TestQgsPalLabeling):
         # the blue background (set via layer style) to match renderchecker's
         TestQgsPalLabeling.loadFeatureLayer('background', True)
 
-        settings = QSettings()
+        settings = QgsSettings()
         # noinspection PyArgumentList
         cls._CacheDir = settings.value(
             "cache/directory",
@@ -236,6 +232,7 @@ class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
     def setUp(self):
         super(TestServerVsCanvasLine, self).setUp()
         self.configTest('pal_canvas_line', 'sp')
+
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

@@ -59,7 +59,7 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        #start_app()
+        # start_app()
         pass
 
     @classmethod
@@ -71,7 +71,6 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
 
         obj = Ogr2OgrToPostGis()
 
-        cs = obj.getConnectionString()
         # NOTE: defaults are debatable, see
         # https://github.com/qgis/QGIS/pull/3607#issuecomment-253971020
         self.assertEqual(obj.getConnectionString(),

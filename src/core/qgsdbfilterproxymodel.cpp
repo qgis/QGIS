@@ -17,12 +17,12 @@
 
 #include "qgsdbfilterproxymodel.h"
 
-QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject* parent ): QSortFilterProxyModel( parent )
+QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject *parent ): QSortFilterProxyModel( parent )
 {
 
 }
 
-bool QgsDatabaseFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
+bool QgsDatabaseFilterProxyModel::filterAcceptsRow( int row, const QModelIndex &source_parent ) const
 {
   //if parent is valid, we have a toplevel item that should be always shown
   if ( !source_parent.isValid() )
@@ -35,13 +35,13 @@ bool QgsDatabaseFilterProxyModel::filterAcceptsRow( int row, const QModelIndex &
   return QSortFilterProxyModel::filterAcceptsRow( row, source_parent );
 }
 
-void QgsDatabaseFilterProxyModel::_setFilterWildcard( const QString& pattern )
+void QgsDatabaseFilterProxyModel::_setFilterWildcard( const QString &pattern )
 {
   QSortFilterProxyModel::setFilterWildcard( pattern );
   emit layoutChanged();
 }
 
-void QgsDatabaseFilterProxyModel::_setFilterRegExp( const QString& pattern )
+void QgsDatabaseFilterProxyModel::_setFilterRegExp( const QString &pattern )
 {
   QSortFilterProxyModel::setFilterRegExp( pattern );
   emit layoutChanged();

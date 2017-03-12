@@ -53,7 +53,7 @@ void TestQgsDoubleSpinBox::cleanup()
 
 void TestQgsDoubleSpinBox::clear()
 {
-  QgsDoubleSpinBox* spinBox = new QgsDoubleSpinBox();
+  QgsDoubleSpinBox *spinBox = new QgsDoubleSpinBox();
   spinBox->setMaximum( 10.0 );
   spinBox->setMinimum( 1.0 );
   spinBox->setValue( 5.0 );
@@ -74,7 +74,7 @@ void TestQgsDoubleSpinBox::clear()
 
 void TestQgsDoubleSpinBox::expression()
 {
-  QgsDoubleSpinBox* spinBox = new QgsDoubleSpinBox();
+  QgsDoubleSpinBox *spinBox = new QgsDoubleSpinBox();
   spinBox->setMinimum( -10.0 );
   spinBox->setMaximum( 10.0 );
   spinBox->setValue( 1.0 );

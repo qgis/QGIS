@@ -38,6 +38,7 @@ from qgis.core import (
     QgsExpression,
     QgsMapLayerProxyModel,
     QgsWkbTypes,
+    QgsSettings
 )
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -56,11 +57,11 @@ from qgis.gui import (
     QgsFieldComboBox,
     QgsFieldExpressionWidget,
     QgsFieldProxyModel,
-    QgsGenericProjectionSelector,
+    QgsProjectionSelectionDialog,
     QgsMapLayerComboBox,
     QgsProjectionSelectionWidget,
 )
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, QSettings
+from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
@@ -81,7 +82,7 @@ from processing.core.parameters import (ParameterBoolean,
                                         _resolveLayers)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.core.outputs import (OutputFile, OutputRaster, OutputVector, OutputNumber,
+from processing.core.outputs import (OutputFile, OutputRaster, OutputVector,
                                      OutputString, OutputTable, OutputExtent)
 from processing.tools import dataobjects
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -173,7 +174,7 @@ class WidgetWrapper(QObject):
 
     def getFileName(self, initial_value=''):
         """Shows a file open dialog"""
-        settings = QSettings()
+        settings = QgsSettings()
         if os.path.isdir(initial_value):
             path = initial_value
         elif os.path.isdir(os.path.dirname(initial_value)):
@@ -311,13 +312,13 @@ class CrsWidgetWrapper(WidgetWrapper):
             return widget
 
     def selectProjection(self):
-        dialog = QgsGenericProjectionSelector(self.widget)
+        dialog = QgsProjectionSelectionDialog(self.widget)
         current_crs = QgsCoordinateReferenceSystem(self.combo.currentText())
         if current_crs.isValid():
-            dialog.setSelectedCrsId(current_crs.srsid())
+            dialog.setCrs(current_crs)
 
         if dialog.exec_():
-            self.setValue(dialog.selectedAuthId())
+            self.setValue(dialog.crs().authid())
 
     def setValue(self, value):
         if self.dialogType == DIALOG_MODELER:

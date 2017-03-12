@@ -30,9 +30,7 @@ import codecs
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSlot, QDir
-from qgis.PyQt.QtGui import (QIcon,
-                             QBrush,
-                             QColor)
+from qgis.PyQt.QtGui import QColor, QBrush
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QFileDialog,
                                  QMessageBox,

@@ -43,64 +43,64 @@ extern "C"
 {
 #endif
 
-  /*
-   * degree VS radian
-   */
+/*
+ * degree VS radian
+ */
 
-  double nmea_degree2radian( double val );
-  double nmea_radian2degree( double val );
+double nmea_degree2radian( double val );
+double nmea_radian2degree( double val );
 
-  /*
-   * NDEG (NMEA degree)
-   */
+/*
+ * NDEG (NMEA degree)
+ */
 
-  double nmea_ndeg2degree( double val );
-  double nmea_degree2ndeg( double val );
+double nmea_ndeg2degree( double val );
+double nmea_degree2ndeg( double val );
 
-  double nmea_ndeg2radian( double val );
-  double nmea_radian2ndeg( double val );
+double nmea_ndeg2radian( double val );
+double nmea_radian2ndeg( double val );
 
-  /*
-   * DOP
-   */
+/*
+ * DOP
+ */
 
-  double nmea_calc_pdop( double hdop, double vdop );
-  double nmea_dop2meters( double dop );
-  double nmea_meters2dop( double meters );
+double nmea_calc_pdop( double hdop, double vdop );
+double nmea_dop2meters( double dop );
+double nmea_meters2dop( double meters );
 
-  /*
-   * positions work
-   */
+/*
+ * positions work
+ */
 
-  void nmea_info2pos( const nmeaINFO *info, nmeaPOS *pos );
-  void nmea_pos2info( const nmeaPOS *pos, nmeaINFO *info );
+void nmea_info2pos( const nmeaINFO *info, nmeaPOS *pos );
+void nmea_pos2info( const nmeaPOS *pos, nmeaINFO *info );
 
-  double  nmea_distance(
-    const nmeaPOS *from_pos,
-    const nmeaPOS *to_pos
-  );
+double  nmea_distance(
+  const nmeaPOS *from_pos,
+  const nmeaPOS *to_pos
+);
 
-  double  nmea_distance_ellipsoid(
-    const nmeaPOS *from_pos,
-    const nmeaPOS *to_pos,
-    double *from_azimuth,
-    double *to_azimuth
-  );
+double  nmea_distance_ellipsoid(
+  const nmeaPOS *from_pos,
+  const nmeaPOS *to_pos,
+  double *from_azimuth,
+  double *to_azimuth
+);
 
-  int     nmea_move_horz(
-    const nmeaPOS *start_pos,
-    nmeaPOS *end_pos,
-    double azimuth,
-    double distance
-  );
+int     nmea_move_horz(
+  const nmeaPOS *start_pos,
+  nmeaPOS *end_pos,
+  double azimuth,
+  double distance
+);
 
-  int     nmea_move_horz_ellipsoid(
-    const nmeaPOS *start_pos,
-    nmeaPOS *end_pos,
-    double azimuth,
-    double distance,
-    double *end_azimuth
-  );
+int     nmea_move_horz_ellipsoid(
+  const nmeaPOS *start_pos,
+  nmeaPOS *end_pos,
+  double azimuth,
+  double distance,
+  double *end_azimuth
+);
 
 #ifdef  __cplusplus
 }

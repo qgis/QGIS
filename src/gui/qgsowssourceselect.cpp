@@ -24,7 +24,7 @@
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
@@ -37,6 +37,7 @@
 #include "qgsowssourceselect.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -48,19 +49,17 @@
 #include <QMap>
 #include <QMessageBox>
 #include <QPicture>
-#include <QSettings>
 #include <QUrl>
 #include <QValidator>
-
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mService( service )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mCurrentTileset( nullptr )
+QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QDialog( parent, fl )
+  , mService( service )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mCurrentTileset( nullptr )
 {
   setupUi( this );
 
@@ -115,16 +114,16 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString& service, QWidget * parent
   // set up the WMS connections we already know about
   populateConnectionList();
 
-  QSettings settings;
+  QgsSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsOWSSourceSelect::~QgsOWSSourceSelect()
 {
-  QSettings settings;
+  QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 void QgsOWSSourceSelect::clearFormats()
@@ -376,20 +375,20 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
       layers << layer;
   }
 
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
+  mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
   if ( defaultCRS.isValid() )
   {
-    mySelector->setSelectedCrsId( defaultCRS.srsid() );
+    mySelector->setCrs( defaultCRS );
   }
 
   if ( !mySelector->exec() )
     return;
 
-  mSelectedCRS = mySelector->selectedAuthId();
+  mSelectedCRS = mySelector->crs().authid();
   delete mySelector;
 
   mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
@@ -544,27 +543,27 @@ void QgsOWSSourceSelect::setConnectionListPosition()
   QgsOwsConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
-void QgsOWSSourceSelect::showStatusMessage( QString const &theMessage )
+void QgsOWSSourceSelect::showStatusMessage( QString const &message )
 {
-  mStatusLabel->setText( theMessage );
+  mStatusLabel->setText( message );
 
   // update the display of this widget
   update();
 }
 
 
-void QgsOWSSourceSelect::showError( QString const &theTitle, QString const &theFormat, QString const &theError )
+void QgsOWSSourceSelect::showError( QString const &title, QString const &format, QString const &error )
 {
-  QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( theTitle );
+  QgsMessageViewer *mv = new QgsMessageViewer( this );
+  mv->setWindowTitle( title );
 
-  if ( theFormat == QLatin1String( "text/html" ) )
+  if ( format == QLatin1String( "text/html" ) )
   {
-    mv->setMessageAsHtml( theError );
+    mv->setMessageAsHtml( error );
   }
   else
   {
-    mv->setMessageAsPlainText( tr( "Could not understand the response:\n%1" ).arg( theError ) );
+    mv->setMessageAsPlainText( tr( "Could not understand the response:\n%1" ).arg( error ) );
   }
   mv->showMessage( true ); // Is deleted when closed
 }
@@ -580,7 +579,7 @@ void QgsOWSSourceSelect::on_mAddDefaultButton_clicked()
   addDefaultServers();
 }
 
-QString QgsOWSSourceSelect::descriptionForAuthId( const QString& authId )
+QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
 {
   if ( mCrsNames.contains( authId ) )
     return mCrsNames[ authId ];
@@ -598,7 +597,7 @@ void QgsOWSSourceSelect::addDefaultServers()
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( "/Qgis/connections-" + mService.toLower() );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
@@ -620,7 +619,7 @@ void QgsOWSSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
-void QgsOWSSourceSelect::addWmsListRow( const QDomElement& item, int row )
+void QgsOWSSourceSelect::addWmsListRow( const QDomElement &item, int row )
 {
   QDomElement title = item.firstChildElement( QStringLiteral( "title" ) );
   addWmsListItem( title, row, 0 );
@@ -630,11 +629,11 @@ void QgsOWSSourceSelect::addWmsListRow( const QDomElement& item, int row )
   addWmsListItem( link, row, 2 );
 }
 
-void QgsOWSSourceSelect::addWmsListItem( const QDomElement& el, int row, int column )
+void QgsOWSSourceSelect::addWmsListItem( const QDomElement &el, int row, int column )
 {
   if ( !el.isNull() )
   {
-    QTableWidgetItem* tableItem = new QTableWidgetItem( el.text() );
+    QTableWidgetItem *tableItem = new QTableWidgetItem( el.text() );
     // TODO: add linebreaks to long tooltips?
     tableItem->setToolTip( el.text() );
     mSearchTableWidget->setItem( row, column, tableItem );
@@ -652,9 +651,9 @@ void QgsOWSSourceSelect::on_mSearchButton_clicked()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QSettings settings;
+  QgsSettings settings;
   // geopole.org (geopole.ch) 25.4.2012 : 503 Service Unavailable, archive: Recently added 20 Jul 2011
-  QString mySearchUrl = settings.value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
+  QString mySearchUrl = settings.value( QStringLiteral( "qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
   QUrl url( mySearchUrl.arg( mSearchTermLineEdit->text() ) );
   QgsDebugMsg( url.toString() );
 
@@ -724,7 +723,7 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
     return; //item not existing or already on top
   }
 
-  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  QTreeWidgetItem *selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
   mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex - 1, selectedItem );
   mLayerOrderTreeWidget->clearSelection();
   selectedItem->setSelected( true );
@@ -743,7 +742,7 @@ void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
     return; //item not existing or already at bottom
   }
 
-  QTreeWidgetItem* selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
+  QTreeWidgetItem *selectedItem = mLayerOrderTreeWidget->takeTopLevelItem( selectedIndex );
   mLayerOrderTreeWidget->insertTopLevelItem( selectedIndex + 1, selectedItem );
   mLayerOrderTreeWidget->clearSelection();
   selectedItem->setSelected( true );

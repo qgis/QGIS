@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import os
 
 from qgis.core import (QgsTextBufferSettings,
                        QgsTextBackgroundSettings,
@@ -22,10 +21,10 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsUnitTypes,
                        QgsMapUnitScale)
 from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
-from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
+from qgis.PyQt.QtGui import (QColor, QPainter)
+from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
 from qgis.testing import unittest, start_app
-from utilities import getTestFont, svgSymbolsPath
+from utilities import getTestFont
 
 start_app()
 
@@ -75,13 +74,13 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setRadiiUnit(QgsUnitTypes.RenderPixels)
         s.setRadiiMapUnitScale(QgsMapUnitScale(15, 16))
         s.setFillColor(QColor(255, 0, 0))
-        s.setBorderColor(QColor(0, 255, 0))
+        s.setStrokeColor(QColor(0, 255, 0))
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.RoundJoin)
         s.setBlendMode(QPainter.CompositionMode_Difference)
-        s.setBorderWidth(7)
-        s.setBorderWidthUnit(QgsUnitTypes.RenderMapUnits)
-        s.setBorderWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
+        s.setStrokeWidth(7)
+        s.setStrokeWidthUnit(QgsUnitTypes.RenderMapUnits)
+        s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
         return s
 
     def checkBackgroundSettings(self, s):
@@ -102,13 +101,13 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.radiiUnit(), QgsUnitTypes.RenderPixels)
         self.assertEqual(s.radiiMapUnitScale(), QgsMapUnitScale(15, 16))
         self.assertEqual(s.fillColor(), QColor(255, 0, 0))
-        self.assertEqual(s.borderColor(), QColor(0, 255, 0))
+        self.assertEqual(s.strokeColor(), QColor(0, 255, 0))
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_Difference)
-        self.assertEqual(s.borderWidth(), 7)
-        self.assertEqual(s.borderWidthUnit(), QgsUnitTypes.RenderMapUnits)
-        self.assertEqual(s.borderWidthMapUnitScale(), QgsMapUnitScale(25, 26))
+        self.assertEqual(s.strokeWidth(), 7)
+        self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderMapUnits)
+        self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
 
     def createShadowSettings(self):
         s = QgsTextShadowSettings()
@@ -189,6 +188,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s = self.createFormatSettings()
         d = QgsTextFormatDialog(s)
         self.checkTextFormat(d.format())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -32,10 +32,10 @@
 #include <QStandardItemModel>
 
 
-QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent, Mode mode )
-    : QDialog( parent )
-    , mDialogMode( mode )
-    , mStyle( style )
+QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
+  : QDialog( parent )
+  , mDialogMode( mode )
+  , mStyle( style )
 {
   setupUi( this );
 
@@ -49,10 +49,10 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle* style, QWidget
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
 
-  QStandardItemModel* model = new QStandardItemModel( listItems );
+  QStandardItemModel *model = new QStandardItemModel( listItems );
   listItems->setModel( model );
-  connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
-           this, SLOT( selectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( listItems->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
+           this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
   mTempStyle = new QgsStyle();
   mTempStyle->createMemoryDatabase();
@@ -162,7 +162,7 @@ void QgsStyleExportImportDialog::doExportImport()
     moveStyles( &selection, mTempStyle, mStyle );
 
     // clear model
-    QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
+    QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
     model->clear();
     accept();
   }
@@ -171,7 +171,7 @@ void QgsStyleExportImportDialog::doExportImport()
   mTempStyle->clear();
 }
 
-bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
+bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
 {
   // load symbols and color ramps from file
   if ( mDialogMode == Import )
@@ -185,7 +185,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
     }
   }
 
-  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
+  QStandardItemModel *model = qobject_cast<QStandardItemModel *>( listItems->model() );
   model->clear();
 
   // populate symbols
@@ -196,8 +196,8 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   {
     name = styleNames[i];
     QStringList tags = style->tagsOfSymbol( QgsStyle::SymbolEntity, name );
-    QgsSymbol* symbol = style->symbol( name );
-    QStandardItem* item = new QStandardItem( name );
+    QgsSymbol *symbol = style->symbol( name );
+    QStandardItem *item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
     item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
@@ -217,7 +217,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
     name = styleNames[i];
     std::unique_ptr< QgsColorRamp > ramp( style->colorRamp( name ) );
 
-    QStandardItem* item = new QStandardItem( name );
+    QStandardItem *item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::colorRampPreviewIcon( ramp.get(), listItems->iconSize(), 15 );
     item->setIcon( icon );
     model->appendRow( item );
@@ -225,10 +225,10 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle* style )
   return true;
 }
 
-void QgsStyleExportImportDialog::moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst )
+void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst )
 {
   QString symbolName;
-  QgsSymbol* symbol = nullptr;
+  QgsSymbol *symbol = nullptr;
   QStringList symbolTags;
   bool symbolFavorite;
   QgsColorRamp *ramp = nullptr;
@@ -381,11 +381,11 @@ void QgsStyleExportImportDialog::clearSelection()
   listItems->clearSelection();
 }
 
-void QgsStyleExportImportDialog::selectSymbols( const QStringList& symbolNames )
+void QgsStyleExportImportDialog::selectSymbols( const QStringList &symbolNames )
 {
   Q_FOREACH ( const QString &symbolName, symbolNames )
   {
-    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       listItems->selectionModel()->select( index, QItemSelectionModel::Select );
@@ -393,11 +393,11 @@ void QgsStyleExportImportDialog::selectSymbols( const QStringList& symbolNames )
   }
 }
 
-void QgsStyleExportImportDialog::deselectSymbols( const QStringList& symbolNames )
+void QgsStyleExportImportDialog::deselectSymbols( const QStringList &symbolNames )
 {
   Q_FOREACH ( const QString &symbolName, symbolNames )
   {
-    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName , 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+    QModelIndexList indexes = listItems->model()->match( listItems->model()->index( 0, 0 ), Qt::DisplayRole, symbolName, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       QItemSelection deselection( index, index );
@@ -406,19 +406,19 @@ void QgsStyleExportImportDialog::deselectSymbols( const QStringList& symbolNames
   }
 }
 
-void QgsStyleExportImportDialog::selectTag( const QString& tagName )
+void QgsStyleExportImportDialog::selectTag( const QString &tagName )
 {
   QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
   selectSymbols( symbolNames );
 }
 
-void QgsStyleExportImportDialog::deselectTag( const QString& tagName )
+void QgsStyleExportImportDialog::deselectTag( const QString &tagName )
 {
   QStringList symbolNames = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( tagName ) );
   deselectSymbols( symbolNames );
 }
 
-void QgsStyleExportImportDialog::selectSmartgroup( const QString& groupName )
+void QgsStyleExportImportDialog::selectSmartgroup( const QString &groupName )
 {
   QStringList symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, mStyle->smartgroupId( groupName ) );
   selectSymbols( symbolNames );
@@ -426,7 +426,7 @@ void QgsStyleExportImportDialog::selectSmartgroup( const QString& groupName )
   selectSymbols( symbolNames );
 }
 
-void QgsStyleExportImportDialog::deselectSmartgroup( const QString& groupName )
+void QgsStyleExportImportDialog::deselectSmartgroup( const QString &groupName )
 {
   QStringList symbolNames = mStyle->symbolsOfSmartgroup( QgsStyle::SymbolEntity, mStyle->smartgroupId( groupName ) );
   deselectSymbols( symbolNames );
@@ -504,7 +504,7 @@ void QgsStyleExportImportDialog::browse()
   }
 }
 
-void QgsStyleExportImportDialog::downloadStyleXml( const QUrl& url )
+void QgsStyleExportImportDialog::downloadStyleXml( const QUrl &url )
 {
   // XXX Try to move this code to some core Network interface,
   // HTTP downloading is a generic functionality that might be used elsewhere
@@ -578,7 +578,7 @@ void QgsStyleExportImportDialog::downloadCanceled()
   mFileName = QLatin1String( "" );
 }
 
-void QgsStyleExportImportDialog::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
+void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( selected );
   Q_UNUSED( deselected );

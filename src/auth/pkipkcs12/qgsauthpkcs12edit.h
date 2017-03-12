@@ -52,7 +52,7 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
 
   private slots:
     void clearPkiMessage( QLineEdit *lineedit );
-    void writePkiMessage( QLineEdit *lineedit, const QString& msg, Validity valid = Unknown );
+    void writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid = Unknown );
 
     void clearPkcs12BundlePath();
     void clearPkcs12BundlePass();

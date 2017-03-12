@@ -21,7 +21,7 @@ class QgsHighlight : QgsMapCanvasItem
 
     ~QgsHighlight();
 
-    /** Set line/outline to color, polygon fill to color with alpha = 63.
+    /** Set line/stroke to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
     void setColor( const QColor & color );
 
@@ -32,11 +32,11 @@ class QgsHighlight : QgsMapCanvasItem
     /** Set width. Ignored in feature mode. */
     void setWidth( int width );
 
-    /** Set line / outline buffer in millimeters.
+    /** Set line / stroke buffer in millimeters.
      *  @note: added in version 2.3 */
     void setBuffer( double buffer );
 
-    /** Set minimum line / outline width in millimeters.
+    /** Set minimum line / stroke width in millimeters.
      *  @note: added in version 2.3 */
     void setMinWidth( double width );
 

@@ -21,10 +21,10 @@
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
-    : QObject( nullptr )
+  : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy, QString* errorMsg ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )

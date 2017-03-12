@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -123,4 +122,4 @@ class RAlgorithmProvider(AlgorithmProvider):
                     except Exception as e:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
-                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, str(e))))
+                            self.tr('Could not load R script: {0}\n{1}').format(descriptionFile, str(e)))

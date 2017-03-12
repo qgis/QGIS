@@ -16,23 +16,23 @@
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsgpsdetector.h"
+#include "qgssettings.h"
 
 //qt includes
 #include <QFileDialog>
-#include <QSettings>
 
 //standard includes
 #include <cassert>
 #include <cstdlib>
 
-QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
-                                  std::map<QString, QgsGPSDevice*>& devices,
-                                  const std::vector<QgsVectorLayer*>& gpxMapLayers,
-                                  QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mGPXLayers( gpxMapLayers )
-    , mImporters( importers )
-    , mDevices( devices )
+QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
+                                  std::map<QString, QgsGPSDevice *> &devices,
+                                  const std::vector<QgsVectorLayer *> &gpxMapLayers,
+                                  QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mGPXLayers( gpxMapLayers )
+  , mImporters( importers )
+  , mDevices( devices )
 {
   setupUi( this );
 
@@ -51,25 +51,25 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
-  connect( leGPXFile, SIGNAL( textChanged( const QString& ) ),
+  connect( leGPXFile, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leIMPInput, SIGNAL( textChanged( const QString& ) ),
+  connect( leIMPInput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leIMPOutput, SIGNAL( textChanged( const QString& ) ),
+  connect( leIMPOutput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leIMPLayer, SIGNAL( textChanged( const QString& ) ),
+  connect( leIMPLayer, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leCONVInput, SIGNAL( textChanged( const QString& ) ),
+  connect( leCONVInput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leCONVOutput, SIGNAL( textChanged( const QString& ) ),
+  connect( leCONVOutput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leCONVLayer, SIGNAL( textChanged( const QString& ) ),
+  connect( leCONVLayer, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leDLOutput, SIGNAL( textChanged( const QString& ) ),
+  connect( leDLOutput, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( leDLBasename, SIGNAL( textChanged( const QString& ) ),
+  connect( leDLBasename, SIGNAL( textChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
-  connect( cmbULLayer, SIGNAL( editTextChanged( const QString& ) ),
+  connect( cmbULLayer, SIGNAL( editTextChanged( const QString & ) ),
            this, SLOT( enableRelevantControls() ) );
   connect( tabWidget, SIGNAL( currentChanged( int ) ),
            this, SLOT( enableRelevantControls() ) );
@@ -80,9 +80,9 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
 
 QgsGPSPluginGui::~QgsGPSPluginGui()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GPS/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastTab" ), tabWidget->currentIndex() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Plugin-GPS/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastTab" ), tabWidget->currentIndex() );
 }
 
 void QgsGPSPluginGui::on_buttonBox_accepted()
@@ -99,7 +99,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
     case 1:
     {
       // or import other file?
-      const QString& typeString( cmbIMPFeature->currentText() );
+      const QString &typeString( cmbIMPFeature->currentText() );
       emit importGPSFile( leIMPInput->text(),
                           mImporters.find( mImpFormat )->second,
                           typeString == tr( "Waypoints" ),
@@ -157,8 +157,8 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
 
 void QgsGPSPluginGui::on_pbnDLOutput_clicked()
 {
-  QSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
@@ -171,7 +171,7 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
       myFileNameQString += QLatin1String( ".gpx" );
     }
     leDLOutput->setText( myFileNameQString );
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }
 
@@ -180,7 +180,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // load GPX
   if ( tabWidget->currentIndex() == 0 )
   {
-    if (( leGPXFile->text() == QLatin1String( "" ) ) )
+    if ( ( leGPXFile->text() == QLatin1String( "" ) ) )
     {
       pbnOK->setEnabled( false );
       cbGPXWaypoints->setEnabled( false );
@@ -205,8 +205,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // import other file
   else if ( tabWidget->currentIndex() == 1 )
   {
-    if (( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
-        ( leIMPLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
+         ( leIMPLayer->text() == QLatin1String( "" ) ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -234,8 +234,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // convert between waypoint/routes
   else if ( tabWidget->currentIndex() == 4 )
   {
-    if (( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
-        ( leCONVLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
+         ( leCONVLayer->text() == QLatin1String( "" ) ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -250,8 +250,8 @@ void QgsGPSPluginGui::on_buttonBox_rejected()
 void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 {
   QgsLogger::debug( QStringLiteral( " GPS File Importer::pbnGPXSelectFile_clicked() " ) );
-  QSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString = QFileDialog::getOpenFileName(
                                 this,
                                 tr( "Select GPX file" ),
@@ -260,16 +260,16 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
   if ( !myFileNameQString.isEmpty() )
   {
     leGPXFile->setText( myFileNameQString );
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }
 
 void QgsGPSPluginGui::on_pbnIMPInput_clicked()
 {
-  QSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/importdirectory" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/importdirectory" ), QDir::homePath() ).toString();
   QString tf = mBabelFilter.split( QStringLiteral( ";;" ) ).first();
-  QString myFileType = settings.value( QStringLiteral( "/Plugin-GPS/lastImportFilter" ), tf ).toString();
+  QString myFileType = settings.value( QStringLiteral( "Plugin-GPS/lastImportFilter" ), tf ).toString();
   QString myFileName = QFileDialog::getOpenFileName(
                          this,
                          tr( "Select file and format to import" ),
@@ -279,11 +279,11 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
   if ( !myFileName.isEmpty() )
   {
     // save directory and file type
-    settings.setValue( QStringLiteral( "/Plugin-GPS/importdirectory" ), QFileInfo( myFileName ).absolutePath() );
-    settings.setValue( QStringLiteral( "/Plugin-GPS/lastImportFilter" ), myFileType );
+    settings.setValue( QStringLiteral( "Plugin-GPS/importdirectory" ), QFileInfo( myFileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/lastImportFilter" ), myFileType );
 
     mImpFormat = myFileType.left( myFileType.length() - 6 );
-    std::map<QString, QgsBabelFormat*>::const_iterator iter;
+    std::map<QString, QgsBabelFormat *>::const_iterator iter;
     iter = mImporters.find( mImpFormat );
     if ( iter == mImporters.end() )
     {
@@ -307,8 +307,8 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
 
 void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
 {
-  QSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
@@ -321,7 +321,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
       myFileNameQString += QLatin1String( ".gpx" );
     }
     leIMPOutput->setText( myFileNameQString );
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }
 
@@ -343,9 +343,9 @@ void QgsGPSPluginGui::populatePortComboBoxes()
   }
 
   // remember the last ports used
-  QSettings settings;
-  QString lastDLPort = settings.value( QStringLiteral( "/Plugin-GPS/lastdlport" ), "" ).toString();
-  QString lastULPort = settings.value( QStringLiteral( "/Plugin-GPS/lastulport" ), "" ).toString();
+  QgsSettings settings;
+  QString lastDLPort = settings.value( QStringLiteral( "Plugin-GPS/lastdlport" ), "" ).toString();
+  QString lastULPort = settings.value( QStringLiteral( "Plugin-GPS/lastulport" ), "" ).toString();
 
   int idx = cmbDLPort->findData( lastDLPort );
   cmbDLPort->setCurrentIndex( idx < 0 ? 0 : idx );
@@ -363,7 +363,7 @@ void QgsGPSPluginGui::populateCONVDialog()
 
 void QgsGPSPluginGui::populateULLayerComboBox()
 {
-  for ( std::vector<QgsVectorLayer*>::size_type i = 0; i < mGPXLayers.size(); ++i )
+  for ( std::vector<QgsVectorLayer *>::size_type i = 0; i < mGPXLayers.size(); ++i )
     cmbULLayer->addItem( mGPXLayers[i]->name() );
 }
 
@@ -372,15 +372,15 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
   mBabelFilter = QLatin1String( "" );
   cmbULDevice->clear();
   cmbDLDevice->clear();
-  QSettings settings;
-  QString lastDLDevice = settings.value( QStringLiteral( "/Plugin-GPS/lastdldevice" ), "" ).toString();
-  QString lastULDevice = settings.value( QStringLiteral( "/Plugin-GPS/lastuldevice" ), "" ).toString();
+  QgsSettings settings;
+  QString lastDLDevice = settings.value( QStringLiteral( "Plugin-GPS/lastdldevice" ), "" ).toString();
+  QString lastULDevice = settings.value( QStringLiteral( "Plugin-GPS/lastuldevice" ), "" ).toString();
   BabelMap::const_iterator iter;
   for ( iter = mImporters.begin(); iter != mImporters.end(); ++iter )
     mBabelFilter.append( iter->first ).append( " (*.*);;" );
   mBabelFilter.chop( 2 ); // Remove the trailing ;;, which otherwise leads to an empty filetype
   int u = -1, d = -1;
-  std::map<QString, QgsGPSDevice*>::const_iterator iter2;
+  std::map<QString, QgsGPSDevice *>::const_iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
   {
     cmbULDevice->addItem( iter2->first );
@@ -398,8 +398,8 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
 
 void QgsGPSPluginGui::on_pbnCONVInput_clicked()
 {
-  QSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString = QFileDialog::getOpenFileName(
                                 this,
                                 tr( "Select GPX file" ),
@@ -408,14 +408,14 @@ void QgsGPSPluginGui::on_pbnCONVInput_clicked()
   if ( !myFileNameQString.isEmpty() )
   {
     leCONVInput->setText( myFileNameQString );
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }
 
 void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
 {
-  QSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
@@ -428,13 +428,13 @@ void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
       myFileNameQString += QLatin1String( ".gpx" );
     }
     leCONVOutput->setText( myFileNameQString );
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }
 
 void QgsGPSPluginGui::openDeviceEditor()
 {
-  QgsGPSDeviceDialog* dlg = new QgsGPSDeviceDialog( mDevices );
+  QgsGPSDeviceDialog *dlg = new QgsGPSDeviceDialog( mDevices );
   dlg->show();
   connect( dlg, SIGNAL( devicesChanged() ), this, SLOT( devicesUpdated() ) );
 }
@@ -446,7 +446,7 @@ void QgsGPSPluginGui::devicesUpdated()
 
 void QgsGPSPluginGui::restoreState()
 {
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Plugin-GPS/geometry" ) ).toByteArray() );
-  tabWidget->setCurrentIndex( settings.value( QStringLiteral( "/Plugin-GPS/lastTab" ), 4 ).toInt() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Plugin-GPS/geometry" ) ).toByteArray() );
+  tabWidget->setCurrentIndex( settings.value( QStringLiteral( "Plugin-GPS/lastTab" ), 4 ).toInt() );
 }

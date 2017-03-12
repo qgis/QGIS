@@ -55,10 +55,10 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   public:
 
-    static const char* QGIS_ORGANIZATION_NAME;
-    static const char* QGIS_ORGANIZATION_DOMAIN;
-    static const char* QGIS_APPLICATION_NAME;
-    QgsApplication( int & argc, char ** argv, bool GUIenabled, const QString& customConfigPath = QString(), const QString& platformName = "desktop" );
+    static const char *QGIS_ORGANIZATION_NAME;
+    static const char *QGIS_ORGANIZATION_DOMAIN;
+    static const char *QGIS_APPLICATION_NAME;
+    QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &customConfigPath = QString(), const QString &platformName = "desktop" );
     virtual ~QgsApplication();
 
     /**
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * @note Added in QGIS 3.0
      */
-    static QgsApplication* instance();
+    static QgsApplication *instance();
 
     /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
@@ -77,13 +77,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent * event ) override;
+    virtual bool event( QEvent *event ) override;
 
     //! Catch exceptions when sending event to receiver.
-    virtual bool notify( QObject * receiver, QEvent * event ) override;
+    virtual bool notify( QObject *receiver, QEvent *event ) override;
 
     //! Set the FileOpen event receiver
-    static void setFileOpenEventReceiver( QObject * receiver );
+    static void setFileOpenEventReceiver( QObject *receiver );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName( const QString &theThemeName );
+    static void setThemeName( const QString &themeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -204,15 +204,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
-    static QString iconPath( const QString& iconFile );
+    static QString iconPath( const QString &iconFile );
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QIcon getThemeIcon( const QString &theName );
+    static QIcon getThemeIcon( const QString &name );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QPixmap getThemePixmap( const QString &theName );
+    static QPixmap getThemePixmap( const QString &name );
 
     //! Returns the path to user's style.
     static QString userStylePath();
@@ -265,25 +265,25 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );
+    static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath( const QString &thePluginPath );
+    static void setPluginPath( const QString &pluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath( const QString &thePkgDataPath );
+    static void setPkgDataPath( const QString &pkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps.
-    static void setDefaultSvgPaths( const QStringList& pathList );
+    static void setDefaultSvgPaths( const QStringList &pathList );
 
     //! Alters authentication data base directory path - used by 3rd party apps
-    static void setAuthDatabaseDirPath( const QString& theAuthDbDirPath );
+    static void setAuthDatabaseDirPath( const QString &authDbDirPath );
 
     //! loads providers
     static void initQgis();
 
     //! initialize qgis.db
-    static bool createDatabase( QString* errorMessage = nullptr );
+    static bool createDatabase( QString *errorMessage = nullptr );
 
     //! Create the users theme folder
     static bool createThemeFolder();
@@ -308,9 +308,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note not available in Python bindings
      */
     template<typename T>
-    static void endian_swap( T& value )
+    static void endian_swap( T &value )
     {
-      char* data = reinterpret_cast<char*>( &value );
+      char *data = reinterpret_cast<char *>( &value );
       std::size_t n = sizeof( value );
       for ( std::size_t i = 0, m = n / 2; i < m; ++i )
       {
@@ -341,9 +341,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void registerOgrDrivers();
 
     //! Converts absolute path to path relative to target
-    static QString absolutePathToRelativePath( const QString& apath, const QString& targetPath );
+    static QString absolutePathToRelativePath( const QString &apath, const QString &targetPath );
     //! Converts path relative to target to an absolute path
-    static QString relativePathToAbsolutePath( const QString& rpath, const QString& targetPath );
+    static QString relativePathToAbsolutePath( const QString &rpath, const QString &targetPath );
 
     //! Indicates whether running from build directory (not installed)
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
@@ -359,13 +359,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void skipGdalDriver( const QString& theDriver );
+    static void skipGdalDriver( const QString &driver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void restoreGdalDriver( const QString& theDriver );
+    static void restoreGdalDriver( const QString &driver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
@@ -392,88 +392,88 @@ class CORE_EXPORT QgsApplication : public QApplication
      * wide background task handling.
      * @note added in QGIS 3.0
      */
-    static QgsTaskManager* taskManager();
+    static QgsTaskManager *taskManager();
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
      * @note added in QGIS 3.0
      */
-    static QgsColorSchemeRegistry* colorSchemeRegistry();
+    static QgsColorSchemeRegistry *colorSchemeRegistry();
 
     /**
      * Returns the application's paint effect registry, used for managing paint effects.
      * @note added in QGIS 3.0
      */
-    static QgsPaintEffectRegistry* paintEffectRegistry();
+    static QgsPaintEffectRegistry *paintEffectRegistry();
 
     /**
      * Returns the application's renderer registry, used for managing vector layer renderers.
      * @note added in QGIS 3.0
      */
-    static QgsRendererRegistry* rendererRegistry();
+    static QgsRendererRegistry *rendererRegistry();
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
      * @note added in QGIS 3.0
      * @note not available in Python bindings
      */
-    static QgsRasterRendererRegistry* rasterRendererRegistry();
+    static QgsRasterRendererRegistry *rasterRendererRegistry();
 
     /**
      * Returns the application's data item provider registry, which keeps a list of data item
      * providers that may add items to the browser tree.
      * @note added in QGIS 3.0
      */
-    static QgsDataItemProviderRegistry* dataItemProviderRegistry();
+    static QgsDataItemProviderRegistry *dataItemProviderRegistry();
 
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
      * within SVG files.
      * @note added in QGIS 3.0
      */
-    static QgsSvgCache* svgCache();
+    static QgsSvgCache *svgCache();
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
      * @note added in QGIS 3.0
      */
-    static QgsSymbolLayerRegistry* symbolLayerRegistry();
+    static QgsSymbolLayerRegistry *symbolLayerRegistry();
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
      * @note added in QGIS 3.0
      */
-    static QgsGPSConnectionRegistry* gpsConnectionRegistry();
+    static QgsGPSConnectionRegistry *gpsConnectionRegistry();
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
      * @note added in QGIS 3.0
      */
-    static QgsPluginLayerRegistry* pluginLayerRegistry();
+    static QgsPluginLayerRegistry *pluginLayerRegistry();
 
     /**
      * Returns the application's message log.
      * @note added in QGIS 3.0
      */
-    static QgsMessageLog* messageLog();
+    static QgsMessageLog *messageLog();
 
     /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
      * @note added in QGIS 3.0
      */
-    static QgsProcessingRegistry* processingRegistry();
+    static QgsProcessingRegistry *processingRegistry();
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
      * @note added in QGIS 3.0
      * @note not available in Python bindings
      */
-    static QgsAnnotationRegistry* annotationRegistry();
+    static QgsAnnotationRegistry *annotationRegistry();
 
 #ifdef ANDROID
     //dummy method to workaround sip generation issue issue
-    bool x11EventFilter( XEvent * event )
+    bool x11EventFilter( XEvent *event )
     {
       Q_UNUSED( event );
       return 0;
@@ -485,18 +485,18 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * @note Added in QGIS 3.0
      */
-    static QgsActionScopeRegistry* actionScopeRegistry();
+    static QgsActionScopeRegistry *actionScopeRegistry();
 
     /**
      * Returns the application runtime profiler.
      * @note added in QGIS 3.0
      */
-    static QgsRuntimeProfiler* profiler();
+    static QgsRuntimeProfiler *profiler();
 
     /**
      * Get the registry of available field formatters.
      */
-    static QgsFieldFormatterRegistry* fieldFormatterRegistry();
+    static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.
@@ -511,7 +511,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * \copydoc nullRepresentation()
      */
-    static void setNullRepresentation( const QString& nullRepresentation );
+    static void setNullRepresentation( const QString &nullRepresentation );
 
     /**
      * Custom expression variables for this application.
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \see QgsExpressionContextUtils::globalVariables().
      * \note Added in QGIS 3.0
      */
-    static void setCustomVariables( const QVariantMap& customVariables );
+    static void setCustomVariables( const QVariantMap &customVariables );
 
 
     /**
@@ -537,11 +537,11 @@ class CORE_EXPORT QgsApplication : public QApplication
      *
      * \note Added in QGIS 3.0
      */
-    static void setCustomVariable( const QString& name, const QVariant& value );
+    static void setCustomVariable( const QString &name, const QVariant &value );
 
   signals:
     //! @note not available in python bindings
-    void preNotify( QObject * receiver, QEvent * event, bool * done );
+    void preNotify( QObject *receiver, QEvent *event, bool *done );
 
     /**
      * Emitted whenever a custom global variable changes.
@@ -557,8 +557,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
   private:
 
-    static void copyPath( const QString& src, const QString& dst );
-    static QObject* ABISYM( mFileOpenEventReceiver );
+    static void copyPath( const QString &src, const QString &dst );
+    static QObject *ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 
     static QString ABISYM( mUIThemeName );
@@ -602,25 +602,25 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     QMap<QString, QIcon> mIconCache;
 
-    QgsDataItemProviderRegistry* mDataItemProviderRegistry = nullptr;
+    QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
 
     struct ApplicationMembers
     {
-      QgsActionScopeRegistry* mActionScopeRegistry = nullptr;
-      QgsAnnotationRegistry* mAnnotationRegistry = nullptr;
-      QgsColorSchemeRegistry* mColorSchemeRegistry = nullptr;
-      QgsFieldFormatterRegistry* mFieldFormatterRegistry = nullptr;
-      QgsGPSConnectionRegistry* mGpsConnectionRegistry = nullptr;
-      QgsMessageLog* mMessageLog = nullptr;
-      QgsPaintEffectRegistry* mPaintEffectRegistry = nullptr;
-      QgsPluginLayerRegistry* mPluginLayerRegistry = nullptr;
-      QgsProcessingRegistry* mProcessingRegistry = nullptr;
-      QgsRasterRendererRegistry* mRasterRendererRegistry = nullptr;
-      QgsRendererRegistry* mRendererRegistry = nullptr;
-      QgsRuntimeProfiler* mProfiler = nullptr;
-      QgsSvgCache* mSvgCache = nullptr;
-      QgsSymbolLayerRegistry* mSymbolLayerRegistry = nullptr;
-      QgsTaskManager* mTaskManager = nullptr;
+      QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
+      QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
+      QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
+      QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
+      QgsGPSConnectionRegistry *mGpsConnectionRegistry = nullptr;
+      QgsMessageLog *mMessageLog = nullptr;
+      QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
+      QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
+      QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
+      QgsRendererRegistry *mRendererRegistry = nullptr;
+      QgsRuntimeProfiler *mProfiler = nullptr;
+      QgsSvgCache *mSvgCache = nullptr;
+      QgsSymbolLayerRegistry *mSymbolLayerRegistry = nullptr;
+      QgsTaskManager *mTaskManager = nullptr;
       QString mNullRepresentation;
 
       ApplicationMembers();
@@ -628,11 +628,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     };
 
     // Applications members which belong to an instance of QgsApplication
-    ApplicationMembers* mApplicationMembers = nullptr;
+    ApplicationMembers *mApplicationMembers = nullptr;
     // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static members
-    static ApplicationMembers* sApplicationMembers;
+    static ApplicationMembers *sApplicationMembers;
 
-    static ApplicationMembers* members();
+    static ApplicationMembers *members();
 };
 
 #endif

@@ -80,9 +80,9 @@ class QgisInterface : QObject
     virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
 
     //! Add a project
-    virtual bool addProject( const QString& theProject ) = 0;
+    virtual bool addProject( const QString& project ) = 0;
     //! Start a blank project
-    virtual void newProject( bool thePromptToSaveFlag = false ) = 0;
+    virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
@@ -296,53 +296,16 @@ class QgisInterface : QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
-    virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) = 0;
+    virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
+    virtual bool unregisterMainWindowAction( QAction *action ) = 0;
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
-    virtual bool unregisterMainWindowAction( QAction* action ) = 0;
-
-    /** Register a new tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
-     * @note Ownership of the factory is not transferred, and the factory must
-     *       be unregistered when plugin is unloaded.
-     * @see unregisterMapLayerPropertiesFactory() */
-    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
-
-    /** Unregister a previously registered tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
-     * @see registerMapLayerPropertiesFactory()
-    */
-    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
-
-    /** Register a new custom drop handler.
-     * @note added in QGIS 3.0
-     * @note Ownership of the factory is not transferred, and the factory must
-     *       be unregistered when plugin is unloaded.
-     * @see unregisterCustomDropHandler() */
-    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
-
-    /** Unregister a previously registered custom drop handler.
-     * @note added in QGIS 3.0
-     * @see registerCustomDropHandler() */
-    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
-
-    // @todo is this deprecated in favour of QgsContextHelp?
-    /** Open a url in the users browser. By default the QGIS doc directory is used
-     * as the base for the URL. To open a URL that is not relative to the installed
-     * QGIS documentation, set useQgisDocDirectory to false.
-     * @param url URL to open
-     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
-     * url to the QGIS documentation directory path (prefix/share/doc)
-     * @deprecated
-     */
-    virtual void openURL( const QString& url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
-
-    /** Accessors for inserting items into menus and toolbars.
-     * An item can be inserted before any existing action.
-     */
-
-    // Menus
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;

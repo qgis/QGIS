@@ -16,23 +16,23 @@
 #include "qgspostgresexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
 
-QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
-    , mGeometryColumn( source->mGeometryColumn )
-    , mSpatialColType( source->mSpatialColType )
-    , mDetectedGeomType( source->mDetectedGeomType )
-    , mRequestedGeomType( source->mRequestedGeomType )
-    , mRequestedSrid( source->mRequestedSrid )
-    , mDetectedSrid( source->mDetectedSrid )
+QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+  , mGeometryColumn( source->mGeometryColumn )
+  , mSpatialColType( source->mSpatialColType )
+  , mDetectedGeomType( source->mDetectedGeomType )
+  , mRequestedGeomType( source->mRequestedGeomType )
+  , mRequestedSrid( source->mRequestedSrid )
+  , mDetectedSrid( source->mDetectedSrid )
 {
 }
 
-QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   return QgsPostgresConn::quotedIdentifier( identifier );
 }
 
-QString QgsPostgresExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
   return QgsPostgresConn::quotedValue( value );
@@ -105,12 +105,12 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "upper", "upper" },
 };
 
-QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
   return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
 }
 
-QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const
+QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
   if ( fnName == "geom_from_wkt" )
@@ -133,25 +133,25 @@ QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const Q
   return args;
 }
 
-QString QgsPostgresExpressionCompiler::castToReal( const QString& value ) const
+QString QgsPostgresExpressionCompiler::castToReal( const QString &value ) const
 {
   return QStringLiteral( "((%1)::real)" ).arg( value );
 }
 
-QString QgsPostgresExpressionCompiler::castToInt( const QString& value ) const
+QString QgsPostgresExpressionCompiler::castToInt( const QString &value ) const
 {
   return QStringLiteral( "((%1)::int)" ).arg( value );
 }
 
-QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
 {
   switch ( node->nodeType() )
   {
     case QgsExpression::ntFunction:
     {
-      const QgsExpression::NodeFunction* n = static_cast<const QgsExpression::NodeFunction*>( node );
+      const QgsExpression::NodeFunction *n = static_cast<const QgsExpression::NodeFunction *>( node );
 
-      QgsExpression::Function* fd = QgsExpression::Functions()[n->fnIndex()];
+      QgsExpression::Function *fd = QgsExpression::Functions()[n->fnIndex()];
       if ( fd->name() == "$geometry" )
       {
         result = quotedIdentifier( mGeometryColumn );

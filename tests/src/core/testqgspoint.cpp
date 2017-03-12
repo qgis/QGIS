@@ -695,19 +695,19 @@ void TestQgsPoint::vector()
   QCOMPARE( v2.y(), 2.0 );
 
   // operator-
-  QCOMPARE(( -v2 ).x(), -1.0 );
-  QCOMPARE(( -v2 ).y(), -2.0 );
+  QCOMPARE( ( -v2 ).x(), -1.0 );
+  QCOMPARE( ( -v2 ).y(), -2.0 );
 
   // operator*
-  QCOMPARE(( v2 * 2.0 ).x(), 2.0 );
-  QCOMPARE(( v2 * 2.0 ).y(), 4.0 );
+  QCOMPARE( ( v2 * 2.0 ).x(), 2.0 );
+  QCOMPARE( ( v2 * 2.0 ).y(), 4.0 );
 
   // operator/
-  QCOMPARE(( v2 / 2.0 ).x(), 0.5 );
-  QCOMPARE(( v2 / 2.0 ).y(), 1.0 );
+  QCOMPARE( ( v2 / 2.0 ).x(), 0.5 );
+  QCOMPARE( ( v2 / 2.0 ).y(), 1.0 );
 
   // QgsVector * QgsVector
-  QCOMPARE(( v2 * v2 ), 5.0 );
+  QCOMPARE( ( v2 * v2 ), 5.0 );
 
   // length
   QCOMPARE( v1.length(), 0.0 );

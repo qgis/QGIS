@@ -28,15 +28,15 @@
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgsmapthemecollection.h"
 #include "qgsmapcanvas.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QPushButton>
-#include <QSettings>
 
 FieldSelectorDelegate::FieldSelectorDelegate( QObject *parent )
-    : QItemDelegate( parent )
+  : QItemDelegate( parent )
 {
 }
 
@@ -94,8 +94,8 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
   model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
 }
 
-QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent )
-    : QgsLayerTreeModel( rootNode, parent )
+QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
 {
 }
 
@@ -155,7 +155,7 @@ QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientati
   return QVariant();
 }
 
-QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role ) const
+QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role ) const
 {
   if ( idx.column() == 0 )
   {
@@ -312,7 +312,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
     }
   }
 
-  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QgsLayerTreeMapCanvasBridge *bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList< QPair<QgsVectorLayer *, int> > layersInROrder;
 
@@ -418,7 +418,7 @@ void QgsVectorLayerAndAttributeModel::deSelectAll()
 }
 
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
+  : QDialog( parent, f )
 {
   setupUi( this );
 
@@ -429,13 +429,13 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mTreeView->setItemDelegate( mFieldSelectorDelegate );
 
-  QgsLayerTreeModel* model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
+  QgsLayerTreeModel *model = new QgsVectorLayerAndAttributeModel( mLayerTreeGroup, this );
   model->setFlags( 0 );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
 
-  connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
+  connect( mFileLineEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
@@ -443,7 +443,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mFileLineEdit->setFocus();
 
   //last dxf symbology mode
-  QSettings s;
+  QgsSettings s;
   mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), s.value( QStringLiteral( "qgis/lastDxfSymbologyMode" ), "2" ).toString() ).toInt() );
 
   //last symbol scale
@@ -461,7 +461,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   restoreGeometry( s.value( QStringLiteral( "/Windows/DxfExport/geometry" ) ).toByteArray() );
 
   long crsid = QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ),
-               s.value( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toString()
+               s.value( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toString()
                                                 ).toLong();
   mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
   mCrsSelector->setCrs( mCRS );
@@ -478,7 +478,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
 {
   delete mLayerTreeGroup;
 
-  QSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
+  QgsSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
 }
 
 void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
@@ -566,7 +566,7 @@ QgsDxfExport::SymbologyExport QgsDxfExportDialog::symbologyMode() const
 void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 {
   //get last dxf save directory
-  QSettings s;
+  QgsSettings s;
   QString lastSavePath = s.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString();
 
   QString filePath = QFileDialog::getSaveFileName( nullptr, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
@@ -579,7 +579,7 @@ void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
 
 void QgsDxfExportDialog::setOkEnabled()
 {
-  QPushButton* btn = buttonBox->button( QDialogButtonBox::Ok );
+  QPushButton *btn = buttonBox->button( QDialogButtonBox::Ok );
 
   QString filePath = mFileLineEdit->text();
   if ( filePath.isEmpty() )
@@ -604,7 +604,7 @@ bool QgsDxfExportDialog::layerTitleAsName() const
 
 void QgsDxfExportDialog::saveSettings()
 {
-  QSettings s;
+  QgsSettings s;
   QFileInfo dxfFileInfo( mFileLineEdit->text() );
   s.setValue( QStringLiteral( "qgis/lastDxfDir" ), dxfFileInfo.absolutePath() );
   s.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );

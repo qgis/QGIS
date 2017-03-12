@@ -46,8 +46,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     struct RelationEditorConfiguration
     {
       RelationEditorConfiguration()
-          : showLinkButton( true )
-          , showUnlinkButton( true )
+        : showLinkButton( true )
+        , showUnlinkButton( true )
       {}
       bool showLinkButton;
       bool showUnlinkButton;
@@ -64,22 +64,22 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         };
 
         DesignerTreeItemData()
-            : mType( Field )
-            , mColumnCount( 1 )
-            , mShowAsGroupBox( false )
-            , mShowLabel( true )
+          : mType( Field )
+          , mColumnCount( 1 )
+          , mShowAsGroupBox( false )
+          , mShowLabel( true )
         {}
 
-        DesignerTreeItemData( Type type, const QString& name )
-            : mType( type )
-            , mName( name )
-            , mColumnCount( 1 )
-            , mShowAsGroupBox( false )
-            , mShowLabel( true )
+        DesignerTreeItemData( Type type, const QString &name )
+          : mType( type )
+          , mName( name )
+          , mColumnCount( 1 )
+          , mShowAsGroupBox( false )
+          , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
-        void setName( const QString& name ) { mName = name; }
+        void setName( const QString &name ) { mName = name; }
 
         Type type() const { return mType; }
         void setType( Type type ) { mType = type; }
@@ -96,7 +96,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         void setShowLabel( bool showLabel );
 
         QgsOptionalExpression visibilityExpression() const;
-        void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+        void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
         RelationEditorConfiguration relationEditorConfiguration() const;
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
@@ -118,7 +118,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     {
       public:
         FieldConfig();
-        FieldConfig( QgsVectorLayer* layer, int idx );
+        FieldConfig( QgsVectorLayer *layer, int idx );
 
         bool mEditable;
         bool mEditableEnabled;
@@ -127,13 +127,13 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
         QString mConstraint;
         QString mConstraintDescription;
-        QPushButton* mButton = nullptr;
+        QPushButton *mButton = nullptr;
         QString mEditorWidgetType;
         QMap<QString, QVariant> mEditorWidgetConfig;
     };
 
   public:
-    QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = nullptr );
+    QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     ~QgsFieldsProperties();
 
@@ -145,7 +145,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     /** Creates the a proper item to save from the tree
      * @return A widget definition. Containing another container or the final field
      */
-    QgsAttributeEditorElement* createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent, bool forceGroup = true );
+    QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
 
     void init();
     void apply();
@@ -156,7 +156,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void loadRelations();
 
     void loadAttributeEditorTree();
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent );
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent );
 
     /**
      * @brief setEditFormInit set the private ui fields
@@ -205,19 +205,19 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void updateButtons();
 
     FieldConfig configForRow( int row );
-    void setConfigForRow( int row, const FieldConfig& cfg );
+    void setConfigForRow( int row, const FieldConfig &cfg );
 
     QList<QgsRelation> mRelations;
 
-    QgsVectorLayer* mLayer = nullptr;
-    DesignerTree* mDesignerTree = nullptr;
-    DragList* mFieldsList = nullptr;
-    DragList* mRelationsList = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    DesignerTree *mDesignerTree = nullptr;
+    DragList *mFieldsList = nullptr;
+    DragList *mRelationsList = nullptr;
 
     // Holds all the first column items (header: id) of the table.
     // The index in the list is the fieldIdx, and therefore acts as a mapping
     // between fieldIdx and QTableWidgetItem->row()
-    QList<QTableWidgetItem*> mIndexedWidgets;
+    QList<QTableWidgetItem *> mIndexedWidgets;
 
     enum AttrColumns
     {
@@ -250,8 +250,8 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
 };
 
-QDataStream& operator<< ( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data );
-QDataStream& operator>> ( QDataStream& stream, QgsFieldsProperties::DesignerTreeItemData& data );
+QDataStream &operator<< ( QDataStream &stream, const QgsFieldsProperties::DesignerTreeItemData &data );
+QDataStream &operator>> ( QDataStream &stream, QgsFieldsProperties::DesignerTreeItemData &data );
 
 
 /**
@@ -266,15 +266,15 @@ class DragList : public QTableWidget
     Q_OBJECT
 
   public:
-    explicit DragList( QWidget* parent = nullptr )
-        : QTableWidget( parent )
+    explicit DragList( QWidget *parent = nullptr )
+      : QTableWidget( parent )
     {}
 
     // QTreeWidget interface
   protected:
     virtual QStringList mimeTypes() const override;
 
-    virtual QMimeData* mimeData( const QList<QTableWidgetItem *> items ) const override;
+    virtual QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const override;
 };
 
 /**
@@ -285,26 +285,26 @@ class DesignerTree : public QTreeWidget
     Q_OBJECT
 
   public:
-    explicit DesignerTree( QgsVectorLayer* layer, QWidget* parent = nullptr );
-    QTreeWidgetItem* addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data );
-    QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, const QString& title , int columnCount );
+    explicit DesignerTree( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsFieldsProperties::DesignerTreeItemData data );
+    QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount );
 
   protected:
     virtual void dragMoveEvent( QDragMoveEvent *event ) override;
     virtual void dropEvent( QDropEvent *event ) override;
-    virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
+    virtual bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
     /* Qt::DropActions supportedDropActions() const;*/
 
     // QTreeWidget interface
   protected:
     virtual QStringList mimeTypes() const override;
-    virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
+    virtual QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
 
   private slots:
-    void onItemDoubleClicked( QTreeWidgetItem* item, int column );
+    void onItemDoubleClicked( QTreeWidgetItem *item, int column );
 
   private:
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsFieldsProperties::FieldConfig )

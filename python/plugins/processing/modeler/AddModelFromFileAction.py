@@ -27,11 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QSettings, QFileInfo
+from qgis.PyQt.QtCore import QFileInfo
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
@@ -52,7 +51,7 @@ class AddModelFromFileAction(ToolboxAction):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
-        settings = QSettings()
+        settings = QgsSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
         filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
                                                                 self.tr('Open model', 'AddModelFromFileAction'), lastDir,

@@ -25,17 +25,17 @@
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
-QgsWfsRequest::QgsWfsRequest( const QString& theUri )
-    : mUri( theUri )
-    , mReply( nullptr )
-    , mErrorCode( QgsWfsRequest::NoError )
-    , mIsAborted( false )
-    , mForceRefresh( false )
-    , mTimedout( false )
-    , mGotNonEmptyResponse( false )
+QgsWfsRequest::QgsWfsRequest( const QString &uri )
+  : mUri( uri )
+  , mReply( nullptr )
+  , mErrorCode( QgsWfsRequest::NoError )
+  , mIsAborted( false )
+  , mForceRefresh( false )
+  , mTimedout( false )
+  , mGotNonEmptyResponse( false )
 {
-  QgsDebugMsg( "theUri = " + theUri );
-  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply* ) ), this, SLOT( requestTimedOut( QNetworkReply* ) ) );
+  QgsDebugMsg( "theUri = " + uri );
+  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply * ) ), this, SLOT( requestTimedOut( QNetworkReply * ) ) );
 }
 
 QgsWfsRequest::~QgsWfsRequest()
@@ -43,13 +43,13 @@ QgsWfsRequest::~QgsWfsRequest()
   abort();
 }
 
-void QgsWfsRequest::requestTimedOut( QNetworkReply* reply )
+void QgsWfsRequest::requestTimedOut( QNetworkReply *reply )
 {
   if ( reply == mReply )
     mTimedout = true;
 }
 
-bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefresh, bool cache )
+bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefresh, bool cache )
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -137,7 +137,7 @@ bool QgsWfsRequest::sendGET( const QUrl& url, bool synchronous, bool forceRefres
   return mErrorMessage.isEmpty();
 }
 
-bool QgsWfsRequest::sendPOST( const QUrl& url, const QString& contentTypeHeader, const QByteArray& data )
+bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data )
 {
   abort(); // cancel previous
   mIsAborted = false;
@@ -230,7 +230,7 @@ void QgsWfsRequest::replyFinished()
       {
         QgsDebugMsg( "Request redirected." );
 
-        const QUrl& toUrl = redirect.toUrl();
+        const QUrl &toUrl = redirect.toUrl();
         mReply->request();
         if ( toUrl == mReply->url() )
         {

@@ -52,19 +52,19 @@ class CORE_EXPORT QgsFields
     typedef struct Field
     {
       Field()
-          : origin( OriginUnknown )
-          , originIndex( -1 )
+        : origin( OriginUnknown )
+        , originIndex( -1 )
       {}
-      Field( const QgsField& f, FieldOrigin o, int oi )
-          : field( f )
-          , origin( o )
-          , originIndex( oi )
+      Field( const QgsField &f, FieldOrigin o, int oi )
+        : field( f )
+        , origin( o )
+        , originIndex( oi )
       {}
 
       //! @note added in 2.6
-      bool operator==( const Field& other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
+      bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
       //! @note added in 2.6
-      bool operator!=( const Field& other ) const { return !( *this == other ); }
+      bool operator!=( const Field &other ) const { return !( *this == other ); }
 
       QgsField field;      //!< Field
       FieldOrigin origin;  //!< Origin of the field
@@ -77,24 +77,24 @@ class CORE_EXPORT QgsFields
 
     /** Copy constructor
      */
-    QgsFields( const QgsFields& other );
+    QgsFields( const QgsFields &other );
 
     /** Assignment operator
      */
-    QgsFields& operator =( const QgsFields& other );
+    QgsFields &operator =( const QgsFields &other );
 
     virtual ~QgsFields();
 
     //! Remove all fields
     void clear();
     //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
-    bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
     //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
-    bool appendExpressionField( const QgsField& field, int originIndex );
+    bool appendExpressionField( const QgsField &field, int originIndex );
     //! Remove a field with the given index
     void remove( int fieldIdx );
     //! Extend with fields from another QgsFields container
-    void extend( const QgsFields& other );
+    void extend( const QgsFields &other );
 
     //! Check whether the container is empty
     bool isEmpty() const;
@@ -110,13 +110,13 @@ class CORE_EXPORT QgsFields
     //! Get field at particular index (must be in range 0..N-1)
     QgsField operator[]( int i ) const;
     //! Get field at particular index (must be in range 0..N-1)
-    QgsField& operator[]( int i );
+    QgsField &operator[]( int i );
     //! Get field at particular index (must be in range 0..N-1)
     QgsField at( int i ) const;
     //! Get field at particular index (must be in range 0..N-1)
     QgsField field( int fieldIdx ) const;
     //! Get field with matching name
-    QgsField field( const QString& name ) const;
+    QgsField field( const QString &name ) const;
 
     //! Get field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsFields
      * @return The field index if found or -1 in case it cannot be found.
      * @see lookupField For a more tolerant alternative.
      */
-    int indexFromName( const QString& fieldName ) const;
+    int indexFromName( const QString &fieldName ) const;
 
     /**
      * Get the field index from the field name.
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsFields
      * @see lookupField For a more tolerant alternative.
      * @note Added in QGIS 3.0
      */
-    int indexOf( const QString& fieldName ) const;
+    int indexOf( const QString &fieldName ) const;
 
     /**
      * Look up field's index from the field name.
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsFields
      * @see indexFromName For a more performant and precise but less tolerant alternative.
      * @note added in 2.4
      */
-    int lookupField( const QString& fieldName ) const;
+    int lookupField( const QString &fieldName ) const;
 
     //! Utility function to get list of attribute indexes
     //! @note added in 2.4
@@ -173,9 +173,9 @@ class CORE_EXPORT QgsFields
     QList<QgsField> toList() const;
 
     //! @note added in 2.6
-    bool operator==( const QgsFields& other ) const;
+    bool operator==( const QgsFields &other ) const;
     //! @note added in 2.6
-    bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
+    bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
 
     /** Returns an icon corresponding to a field index, based on the field's type and source
      * @note added in QGIS 2.14
@@ -195,35 +195,35 @@ class CORE_EXPORT QgsFields
     class iterator
     {
       public:
-        QgsFields::Field* d = nullptr;
+        QgsFields::Field *d = nullptr;
         typedef std::random_access_iterator_tag  iterator_category;
         typedef qptrdiff difference_type;
 
         inline iterator()
-            : d( nullptr )
+          : d( nullptr )
         {}
         inline iterator( QgsFields::Field *n )
-            : d( n )
+          : d( n )
         {}
 
-        inline QgsField& operator*() const { return d->field; }
-        inline QgsField* operator->() const { return &d->field; }
-        inline QgsField& operator[]( difference_type j ) const { return d[j].field; }
+        inline QgsField &operator*() const { return d->field; }
+        inline QgsField *operator->() const { return &d->field; }
+        inline QgsField &operator[]( difference_type j ) const { return d[j].field; }
         inline bool operator==( const iterator &o ) const noexcept { return d == o.d; } // clazy:exclude=function-args-by-value
         inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; } // clazy:exclude=function-args-by-value
-        inline bool operator<( const iterator& other ) const noexcept { return d < other.d; } // clazy:exclude=function-args-by-value
-        inline bool operator<=( const iterator& other ) const noexcept { return d <= other.d; } // clazy:exclude=function-args-by-value
-        inline bool operator>( const iterator& other ) const noexcept { return d > other.d; } // clazy:exclude=function-args-by-value
-        inline bool operator>=( const iterator& other ) const noexcept { return d >= other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator<( const iterator &other ) const noexcept { return d < other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator<=( const iterator &other ) const noexcept { return d <= other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>( const iterator &other ) const noexcept { return d > other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>=( const iterator &other ) const noexcept { return d >= other.d; } // clazy:exclude=function-args-by-value
 
-        inline iterator& operator++() { ++d; return *this; }
-        inline iterator operator++( int ) { QgsFields::Field* n = d; ++d; return n; }
-        inline iterator& operator--() { d--; return *this; }
-        inline iterator operator--( int ) { QgsFields::Field* n = d; d--; return n; }
-        inline iterator& operator+=( difference_type j ) { d += j; return *this; }
-        inline iterator& operator-=( difference_type j ) { d -= j; return *this; }
+        inline iterator &operator++() { ++d; return *this; }
+        inline iterator operator++( int ) { QgsFields::Field *n = d; ++d; return n; }
+        inline iterator &operator--() { d--; return *this; }
+        inline iterator operator--( int ) { QgsFields::Field *n = d; d--; return n; }
+        inline iterator &operator+=( difference_type j ) { d += j; return *this; }
+        inline iterator &operator-=( difference_type j ) { d -= j; return *this; }
         inline iterator operator+( difference_type j ) const { return iterator( d + j ); }
-        inline iterator operator-( difference_type j ) const { return iterator( d -j ); }
+        inline iterator operator-( difference_type j ) const { return iterator( d - j ); }
         inline int operator-( iterator j ) const { return int( d - j.d ); }
     };
     friend class iterator;
@@ -231,36 +231,36 @@ class CORE_EXPORT QgsFields
     class const_iterator // clazy:exclude=rule-of-three
     {
       public:
-        const QgsFields::Field* d = nullptr;
+        const QgsFields::Field *d = nullptr;
 
         typedef std::random_access_iterator_tag  iterator_category;
         typedef qptrdiff difference_type;
 
         inline const_iterator()
-            : d( nullptr ) {}
-        inline const_iterator( const QgsFields::Field* f )
-            : d( f ) {}
+          : d( nullptr ) {}
+        inline const_iterator( const QgsFields::Field *f )
+          : d( f ) {}
         inline const_iterator( const const_iterator &o )
-            : d( o.d ) {}
+          : d( o.d ) {}
         inline explicit const_iterator( const iterator &o ) // clazy:exclude=function-args-by-value
-            : d( o.d ) {}
-        inline const QgsField& operator*() const { return d->field; }
-        inline const QgsField* operator->() const { return &d->field; }
-        inline const QgsField& operator[]( difference_type j ) const noexcept { return d[j].field; }
+          : d( o.d ) {}
+        inline const QgsField &operator*() const { return d->field; }
+        inline const QgsField *operator->() const { return &d->field; }
+        inline const QgsField &operator[]( difference_type j ) const noexcept { return d[j].field; }
         inline bool operator==( const const_iterator &o ) const noexcept { return d == o.d; }
         inline bool operator!=( const const_iterator &o ) const noexcept { return d != o.d; }
-        inline bool operator<( const const_iterator& other ) const noexcept { return d < other.d; }
-        inline bool operator<=( const const_iterator& other ) const noexcept { return d <= other.d; }
-        inline bool operator>( const const_iterator& other ) const noexcept { return d > other.d; }
-        inline bool operator>=( const const_iterator& other ) const noexcept { return d >= other.d; }
-        inline const_iterator& operator++() { ++d; return *this; }
-        inline const_iterator operator++( int ) { const QgsFields::Field* n = d; ++d; return n; }
-        inline const_iterator& operator--() { d--; return *this; }
-        inline const_iterator operator--( int ) { const QgsFields::Field* n = d; --d; return n; }
-        inline const_iterator& operator+=( difference_type j ) { d += j; return *this; }
-        inline const_iterator& operator-=( difference_type j ) { d -= j; return *this; }
+        inline bool operator<( const const_iterator &other ) const noexcept { return d < other.d; }
+        inline bool operator<=( const const_iterator &other ) const noexcept { return d <= other.d; }
+        inline bool operator>( const const_iterator &other ) const noexcept { return d > other.d; }
+        inline bool operator>=( const const_iterator &other ) const noexcept { return d >= other.d; }
+        inline const_iterator &operator++() { ++d; return *this; }
+        inline const_iterator operator++( int ) { const QgsFields::Field *n = d; ++d; return n; }
+        inline const_iterator &operator--() { d--; return *this; }
+        inline const_iterator operator--( int ) { const QgsFields::Field *n = d; --d; return n; }
+        inline const_iterator &operator+=( difference_type j ) { d += j; return *this; }
+        inline const_iterator &operator-=( difference_type j ) { d -= j; return *this; }
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
-        inline const_iterator operator-( difference_type j ) const { return const_iterator( d -j ); }
+        inline const_iterator operator-( difference_type j ) const { return const_iterator( d - j ); }
         inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
     };
     friend class const_iterator;
@@ -325,8 +325,8 @@ class CORE_EXPORT QgsFields
 Q_DECLARE_METATYPE( QgsFields )
 
 //! Writes the fields to stream out. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFields &fields );
 //! Reads fields from stream in into fields. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFields& fields );
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFields &fields );
 
 #endif // QGSFIELDS_H

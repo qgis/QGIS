@@ -76,7 +76,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
       Atlas
     };
 
-    QgsComposer( QgisApp *qgis, const QString& title );
+    QgsComposer( QgisApp *qgis, const QString &title );
     ~QgsComposer();
 
     //! Set the pixmap / icons on the toolbar buttons
@@ -91,28 +91,28 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void zoomFull();
 
     //! Return pointer to map canvas
-    QgsMapCanvas* mapCanvas();
+    QgsMapCanvas *mapCanvas();
 
     //! Return pointer to composer view
-    QgsComposerView* view();
+    QgsComposerView *view();
 
     //! Return current composition
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition *composition() { return mComposition; }
 
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    QAction* windowAction() {return mWindowAction;}
+    QAction *windowAction() {return mWindowAction;}
 
     QString title() const {return mTitle;}
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /** Loads the contents of a template document into the composer's composition.
      * @param templateDoc template document to load
      * @param clearExisting set to true to remove all existing composition settings and items before loading template
      * @returns true if template load was successful
      */
-    bool loadFromTemplate( const QDomDocument& templateDoc, bool clearExisting );
+    bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );
 
   public slots:
 
@@ -122,7 +122,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
      * layer set with the new canvas layer set.
      * @note added in QGIS 3.0
      */
-    void onCanvasLayersChanged( const QList< QgsMapLayer* >& layers );
+    void onCanvasLayersChanged( const QList< QgsMapLayer * > &layers );
 
   protected:
     //! Move event
@@ -134,7 +134,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     virtual void resizeEvent( QResizeEvent * ) override;
 
 #ifdef Q_OS_MAC
-    virtual void showEvent( QShowEvent* event ) override;
+    virtual void showEvent( QShowEvent *event ) override;
 #endif
 
     virtual void changeEvent( QEvent *ev ) override;
@@ -143,9 +143,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Is emitted every time the view zoom has changed
     void zoomLevelChanged();
 
-    void composerAdded( QgsComposerView* v );
+    void composerAdded( QgsComposerView *v );
     //!Composer deletes the old composerview when loading a template
-    void composerWillBeRemoved( QgsComposerView* v );
+    void composerWillBeRemoved( QgsComposerView *v );
 
     //! Is emitted when the atlas preview feature changes
     void atlasPreviewFeatureChanged();
@@ -400,55 +400,55 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void saveWindowState();
 
     //! Add a composer arrow to the item/widget map and creates a configuration widget for it
-    void addComposerArrow( QgsComposerArrow* arrow );
+    void addComposerArrow( QgsComposerArrow *arrow );
 
     //! Add a composer polygon to the item/widget map and creates a configuration widget for it
-    void addComposerPolygon( QgsComposerPolygon* polygon );
+    void addComposerPolygon( QgsComposerPolygon *polygon );
 
     //! Add a composer polyline to the item/widget map and creates a configuration widget for it
-    void addComposerPolyline( QgsComposerPolyline* polyline );
+    void addComposerPolyline( QgsComposerPolyline *polyline );
 
     //! Add a composer map to the item/widget map and creates a configuration widget for it
-    void addComposerMap( QgsComposerMap* map );
+    void addComposerMap( QgsComposerMap *map );
 
     //! Adds a composer label to the item/widget map and creates a configuration widget for it
-    void addComposerLabel( QgsComposerLabel* label );
+    void addComposerLabel( QgsComposerLabel *label );
 
     //! Adds a composer scale bar to the item/widget map and creates a configuration widget for it
-    void addComposerScaleBar( QgsComposerScaleBar* scalebar );
+    void addComposerScaleBar( QgsComposerScaleBar *scalebar );
 
     //! Adds a composer legend to the item/widget map and creates a configuration widget for it
-    void addComposerLegend( QgsComposerLegend* legend );
+    void addComposerLegend( QgsComposerLegend *legend );
 
     //! Adds a composer picture to the item/widget map and creates a configuration widget
-    void addComposerPicture( QgsComposerPicture* picture );
+    void addComposerPicture( QgsComposerPicture *picture );
 
     //! Adds a composer shape to the item/widget map and creates a configuration widget
-    void addComposerShape( QgsComposerShape* shape );
+    void addComposerShape( QgsComposerShape *shape );
 
     //! Adds a composer table v2 to the item/widget map and creates a configuration widget
-    void addComposerTableV2( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
+    void addComposerTableV2( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
 
     //! Adds composer html and creates a configuration widget
-    void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
+    void addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame );
 
     //! Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself
-    void deleteItem( QgsComposerItem* item );
+    void deleteItem( QgsComposerItem *item );
 
     //! Shows the configuration widget for a composer item
-    void showItemOptions( QgsComposerItem* i );
+    void showItemOptions( QgsComposerItem *i );
 
     //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
 
     //! Stores state in Dom node
-    void writeXml( QDomDocument& doc );
+    void writeXml( QDomDocument &doc );
 
     //! Stores only template as base Dom node
-    void templateXml( QDomDocument& doc );
+    void templateXml( QDomDocument &doc );
 
     //! Sets state from Dom document
-    void readXml( const QDomDocument& doc );
-    void readXml( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate = false );
+    void readXml( const QDomDocument &doc );
+    void readXml( const QDomElement &composerElem, const QDomDocument &doc, bool fromTemplate = false );
 
     void setSelectionTool();
 
@@ -466,10 +466,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void statusZoomCombo_zoomEntered();
 
     //! Updates status bar composition message
-    void updateStatusCompositionMsg( const QString& message );
+    void updateStatusCompositionMsg( const QString &message );
 
     //! Updates status bar atlas message
-    void updateStatusAtlasMsg( const QString& message );
+    void updateStatusAtlasMsg( const QString &message );
 
   private:
 
@@ -504,7 +504,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void cleanupAfterTemplateRead();
 
     //! Writes state under DOM element
-    void writeXml( QDomNode& parentNode, QDomDocument& doc );
+    void writeXml( QDomNode &parentNode, QDomDocument &doc );
 
     //! Removes all the item from the graphics scene and deletes them
     void deleteItemWidgets();
@@ -517,7 +517,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void createComposerView();
 
     //! Write a world file
-    void writeWorldFile( const QString& fileName, double a, double b, double c, double d, double e, double f ) const;
+    void writeWorldFile( const QString &fileName, double a, double b, double c, double d, double e, double f ) const;
 
     //! Updates the grid/guide action status based on compositions grid/guide settings
     void restoreGridSettings();
@@ -540,29 +540,29 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
 
-    QPrinter* printer();
+    QPrinter *printer();
 
     //! Composer title
     QString mTitle;
 
     //! Labels in status bar which shows current mouse position
-    QLabel* mStatusCursorXLabel = nullptr;
-    QLabel* mStatusCursorYLabel = nullptr;
-    QLabel* mStatusCursorPageLabel = nullptr;
+    QLabel *mStatusCursorXLabel = nullptr;
+    QLabel *mStatusCursorYLabel = nullptr;
+    QLabel *mStatusCursorPageLabel = nullptr;
     //! Combobox in status bar which shows/adjusts current zoom level
-    QComboBox* mStatusZoomCombo = nullptr;
+    QComboBox *mStatusZoomCombo = nullptr;
     QList<double> mStatusZoomLevelsList;
     //! Label in status bar which shows messages from the composition
-    QLabel* mStatusCompositionLabel = nullptr;
+    QLabel *mStatusCompositionLabel = nullptr;
     //! Label in status bar which shows atlas details
-    QLabel* mStatusAtlasLabel = nullptr;
+    QLabel *mStatusAtlasLabel = nullptr;
 
     //! Pointer to composer view
     QgsComposerView *mView = nullptr;
-    QGridLayout* mViewLayout = nullptr;
-    QgsComposerRuler* mHorizontalRuler = nullptr;
-    QgsComposerRuler* mVerticalRuler = nullptr;
-    QWidget* mRulerLayoutFix = nullptr;
+    QGridLayout *mViewLayout = nullptr;
+    QgsComposerRuler *mHorizontalRuler = nullptr;
+    QgsComposerRuler *mVerticalRuler = nullptr;
+    QWidget *mRulerLayoutFix = nullptr;
 
     //! Current composition
     QgsComposition *mComposition = nullptr;
@@ -580,7 +580,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QSizeGrip *mSizeGrip = nullptr;
 
     //! To know which item to show if selection changes
-    QMap<QgsComposerItem*, QgsPanelWidget*> mItemWidgetMap;
+    QMap<QgsComposerItem *, QgsPanelWidget *> mItemWidgetMap;
 
     //! Window menu action to select this window
     QAction *mWindowAction = nullptr;
@@ -591,10 +591,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QAction *mActionPaste = nullptr;
 
     //! Page & Printer Setup
-    QPrinter* mPrinter = nullptr;
+    QPrinter *mPrinter = nullptr;
     bool mSetPageOrientation;
 
-    QUndoView* mUndoView = nullptr;
+    QUndoView *mUndoView = nullptr;
 
     //! Preview mode actions
     QAction *mActionPreviewModeOff = nullptr;
@@ -603,40 +603,40 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QAction *mActionPreviewProtanope = nullptr;
     QAction *mActionPreviewDeuteranope = nullptr;
 
-    QComboBox* mAtlasPageComboBox = nullptr;
+    QComboBox *mAtlasPageComboBox = nullptr;
 
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
-    QMap< QgsComposerMap*, int > mMapsToRestore;
+    QMap< QgsComposerMap *, int > mMapsToRestore;
 
-    QgsDockWidget* mItemDock = nullptr;
-    QgsPanelWidgetStack* mItemPropertiesStack = nullptr;
-    QgsDockWidget* mUndoDock = nullptr;
-    QgsDockWidget* mGeneralDock = nullptr;
-    QgsPanelWidgetStack* mGeneralPropertiesStack = nullptr;
-    QgsDockWidget* mAtlasDock = nullptr;
-    QgsDockWidget* mItemsDock = nullptr;
+    QgsDockWidget *mItemDock = nullptr;
+    QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
+    QgsDockWidget *mUndoDock = nullptr;
+    QgsDockWidget *mGeneralDock = nullptr;
+    QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
+    QgsDockWidget *mAtlasDock = nullptr;
+    QgsDockWidget *mItemsDock = nullptr;
 
-    QTreeView* mItemsTreeView = nullptr;
+    QTreeView *mItemsTreeView = nullptr;
 
-    QMenu* mPanelMenu = nullptr;
-    QMenu* mToolbarMenu = nullptr;
+    QMenu *mPanelMenu = nullptr;
+    QMenu *mToolbarMenu = nullptr;
 
     //! Print Composers menu as mirror of main app's
-    QMenu* mPrintComposersMenu = nullptr;
+    QMenu *mPrintComposersMenu = nullptr;
 
     //! Window menu as mirror of main app's (on Mac)
-    QMenu* mWindowMenu = nullptr;
+    QMenu *mWindowMenu = nullptr;
 
     //! Help menu as mirror of main app's (on Mac)
-    QMenu* mHelpMenu = nullptr;
+    QMenu *mHelpMenu = nullptr;
 
-    QgsMapLayerAction* mAtlasFeatureAction = nullptr;
+    QgsMapLayerAction *mAtlasFeatureAction = nullptr;
 
     struct PanelStatus
     {
       PanelStatus( bool visible = true, bool active = false )
-          : isVisible( visible )
-          , isActive( active )
+        : isVisible( visible )
+        , isActive( active )
       {}
       bool isVisible;
       bool isActive;
@@ -659,10 +659,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void populateHelpMenu();
 
     //! Populate one menu from another menu (for Mac)
-    void populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu );
+    void populateWithOtherMenu( QMenu *thisMenu, QMenu *otherMenu );
 
     //! Create a duplicate of a menu (for Mac)
-    QMenu* mirrorOtherMenu( QMenu* otherMenu );
+    QMenu *mirrorOtherMenu( QMenu *otherMenu );
 
     //! Toggles the state of the atlas preview and navigation controls
     //! @note added in 2.1
@@ -670,13 +670,13 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets the specified feature as the current atlas feature
     //! @note added in 2.1
-    void setAtlasFeature( QgsMapLayer* layer, const QgsFeature &feat );
+    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
 
     //! Updates the "set as atlas feature" map layer action when atlas coverage layer changes
-    void updateAtlasMapLayerAction( QgsVectorLayer* coverageLayer );
+    void updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer );
 
     //! Sets the printer page orientation when the page orientation changes
-    void pageOrientationChanged( const QString& orientation );
+    void pageOrientationChanged( const QString &orientation );
 
     void setPrinterPageOrientation();
 
@@ -687,7 +687,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void activateDeuteranopePreview();
 
     //! Sets the composition for the composer window
-    void setComposition( QgsComposition* composition );
+    void setComposition( QgsComposition *composition );
 
     void dockVisibilityChanged( bool visible );
 
@@ -695,7 +695,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
      */
     void updateAtlasPageComboBox( int pageCount );
 
-    void atlasFeatureChanged( QgsFeature* feature );
+    void atlasFeatureChanged( QgsFeature *feature );
 };
 
 #endif

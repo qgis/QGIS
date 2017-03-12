@@ -56,7 +56,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter ( prefix with 'the' )
+ *   variableName - a method parameter ( prefix with 'the' )
  *   myVariableName - a locally declared variable within a method ( 'my' prefix )
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -92,7 +92,7 @@ class eVis: public QObject, public QgisPlugin
   public:
 
     //! Constructor
-    explicit eVis( QgisInterface * theInterface );
+    explicit eVis( QgisInterface *interface );
 
     ~eVis();
 
@@ -112,21 +112,21 @@ class eVis: public QObject, public QgisPlugin
     void help();
 
     //! Add a vector layer given vectorLayerPath, baseName, providerKey ( "ogr" or "postgres" );
-    void drawVectorLayer( const QString&, const QString&, const QString& );
+    void drawVectorLayer( const QString &, const QString &, const QString & );
 
   private:
 
     QgisInterface *mQGisIface = nullptr;
 
-    QAction* mDatabaseConnectionActionPointer = nullptr;
+    QAction *mDatabaseConnectionActionPointer = nullptr;
 
-    QAction* mEventIdToolActionPointer = nullptr;
+    QAction *mEventIdToolActionPointer = nullptr;
 
-    QAction* mEventBrowserActionPointer = nullptr;
+    QAction *mEventBrowserActionPointer = nullptr;
 
-    eVisEventIdTool* mIdTool = nullptr;
+    eVisEventIdTool *mIdTool = nullptr;
 
     //! List of pointers to temporary files, files are created by database queries */
-    QList<QTemporaryFile*> mTemporaryFileList;
+    QList<QTemporaryFile *> mTemporaryFileList;
 };
 #endif //eVis_H

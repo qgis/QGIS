@@ -20,8 +20,8 @@
 #include "qgsmapcanvas.h"
 #include "qgscsexception.h"
 
-QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
@@ -32,12 +32,12 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
   }
 }
 
-void QgsGpsMarker::setSize( int theSize )
+void QgsGpsMarker::setSize( int size )
 {
-  mSize = theSize;
+  mSize = size;
 }
 
-void QgsGpsMarker::setCenter( const QgsPoint& point )
+void QgsGpsMarker::setCenter( const QgsPoint &point )
 {
   //transform to map crs
   if ( mMapCanvas )
@@ -62,7 +62,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
   setPos( pt );
 }
 
-void QgsGpsMarker::paint( QPainter* p )
+void QgsGpsMarker::paint( QPainter *p )
 {
   if ( ! mSvg.isValid() )
   {

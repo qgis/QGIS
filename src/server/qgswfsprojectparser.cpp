@@ -26,10 +26,10 @@
 
 
 QgsWfsProjectParser::QgsWfsProjectParser(
-  const QString& filePath
-  , const QgsAccessControl* ac
+  const QString &filePath
+  , const QgsAccessControl *ac
 )
-    : mAccessControl( ac )
+  : mAccessControl( ac )
 {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
   Q_UNUSED( mAccessControl );
@@ -42,14 +42,14 @@ QgsWfsProjectParser::~QgsWfsProjectParser()
   delete mProjectParser;
 }
 
-void QgsWfsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsWfsProjectParser::serviceCapabilities( QDomElement &parentElement, QDomDocument &doc ) const
 {
   mProjectParser->serviceCapabilities( parentElement, doc, QStringLiteral( "WFS" ) );
 }
 
-void QgsWfsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsWfsProjectParser::featureTypeList( QDomElement &parentElement, QDomDocument &doc ) const
 {
-  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
+  const QList<QDomElement> &projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return;
@@ -140,23 +140,23 @@ void QgsWfsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
       QDomElement queryElement = doc.createElement( QStringLiteral( "Query" )/*wfs:Query*/ );
       operationsElement.appendChild( queryElement );
 
-      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
-      QgsVectorDataProvider* provider = vlayer->dataProvider();
-      if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      QgsVectorDataProvider *provider = vlayer->dataProvider();
+      if ( ( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
       {
         //wfs:Insert element
         QDomElement insertElement = doc.createElement( QStringLiteral( "Insert" )/*wfs:Insert*/ );
         operationsElement.appendChild( insertElement );
       }
-      if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
-          ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
-          wfstUpdateLayersId.contains( layer->id() ) )
+      if ( ( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+           ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+           wfstUpdateLayersId.contains( layer->id() ) )
       {
         //wfs:Update element
         QDomElement updateElement = doc.createElement( QStringLiteral( "Update" )/*wfs:Update*/ );
         operationsElement.appendChild( updateElement );
       }
-      if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+      if ( ( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
       {
         //wfs:Delete element
         QDomElement deleteElement = doc.createElement( QStringLiteral( "Delete" )/*wfs:Delete*/ );
@@ -308,9 +308,9 @@ QSet<QString> QgsWfsProjectParser::wfstDeleteLayers() const
   return wfsList;
 }
 
-void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const
+void QgsWfsProjectParser::describeFeatureType( const QString &aTypeName, QDomElement &parentElement, QDomDocument &doc ) const
 {
-  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
+  const QList<QDomElement> &projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return;
@@ -336,7 +336,7 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
     if ( type == QLatin1String( "vector" ) )
     {
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
-      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
       if ( !layer )
         continue;
 
@@ -355,14 +355,14 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
       if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == QLatin1String( "" ) || typeNameList.contains( typeName ) ) )
       {
         //do a select with searchRect and go through all the features
-        QgsVectorDataProvider* provider = layer->dataProvider();
+        QgsVectorDataProvider *provider = layer->dataProvider();
         if ( !provider )
         {
           continue;
         }
 
         //hidden attributes for this layer
-        const QSet<QString>& layerExcludedAttributes = layer->excludeAttributesWfs();
+        const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
 
         //xsd:element
         QDomElement elementElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
@@ -441,7 +441,7 @@ void QgsWfsProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
         }
 
         //const QgsFields& fields = provider->fields();
-        const QgsFields& fields = layer->pendingFields();
+        const QgsFields &fields = layer->pendingFields();
         for ( int idx = 0; idx < fields.count(); ++idx )
         {
 
@@ -498,7 +498,7 @@ QSet<QString> QgsWfsProjectParser::wfsLayerSet() const
   return QSet<QString>::fromList( wfsLayers() );
 }
 
-int QgsWfsProjectParser::wfsLayerPrecision( const QString& aLayerId ) const
+int QgsWfsProjectParser::wfsLayerPrecision( const QString &aLayerId ) const
 {
   QStringList wfsLayersId = mProjectParser->wfsLayers();
   if ( !wfsLayersId.contains( aLayerId ) )
@@ -523,12 +523,12 @@ int QgsWfsProjectParser::wfsLayerPrecision( const QString& aLayerId ) const
   return prec;
 }
 
-QList<QgsMapLayer*> QgsWfsProjectParser::mapLayerFromTypeName( const QString& aTypeName, bool useCache ) const
+QList<QgsMapLayer *> QgsWfsProjectParser::mapLayerFromTypeName( const QString &aTypeName, bool useCache ) const
 {
   Q_UNUSED( useCache );
 
-  QList<QgsMapLayer*> layerList;
-  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
+  QList<QgsMapLayer *> layerList;
+  const QList<QDomElement> &projectLayerElements = mProjectParser->projectLayerElements();
 
   if ( projectLayerElements.size() < 1 )
   {
@@ -555,7 +555,7 @@ QList<QgsMapLayer*> QgsWfsProjectParser::mapLayerFromTypeName( const QString& aT
     if ( type == QLatin1String( "vector" ) )
     {
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
-      QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
       if ( !layer )
         continue;
 

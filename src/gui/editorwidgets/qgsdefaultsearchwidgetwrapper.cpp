@@ -19,15 +19,16 @@
 #include "qgsfieldvalidator.h"
 #include "qgsexpression.h"
 #include "qgsfieldvalueslineedit.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QHBoxLayout>
 
-QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mLineEdit( nullptr )
-    , mCheckbox( nullptr )
-    , mContainer( nullptr )
-    , mCaseString( QStringLiteral( "LIKE" ) )
+QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mLineEdit( nullptr )
+  , mCheckbox( nullptr )
+  , mContainer( nullptr )
+  , mCaseString( QStringLiteral( "LIKE" ) )
 {
 }
 
@@ -58,7 +59,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
@@ -79,7 +80,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   mExpression = str;
 }
 
-QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsDefaultSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QWidget( parent );
 }
@@ -246,7 +247,7 @@ void QgsDefaultSearchWidgetWrapper::setEnabled( bool enabled )
     mCheckbox->setEnabled( enabled );
 }
 
-void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
+void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
 {
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
@@ -257,8 +258,8 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   if ( fldType == QVariant::String )
   {
     mLineEdit = new QgsFieldValuesLineEdit();
-    static_cast< QgsFieldValuesLineEdit* >( mLineEdit )->setLayer( layer() );
-    static_cast< QgsFieldValuesLineEdit* >( mLineEdit )->setAttributeIndex( mFieldIdx );
+    static_cast< QgsFieldValuesLineEdit * >( mLineEdit )->setLayer( layer() );
+    static_cast< QgsFieldValuesLineEdit * >( mLineEdit )->setAttributeIndex( mFieldIdx );
   }
   else
   {
@@ -287,12 +288,12 @@ bool QgsDefaultSearchWidgetWrapper::valid() const
   return true;
 }
 
-QgsFilterLineEdit* QgsDefaultSearchWidgetWrapper::lineEdit()
+QgsFilterLineEdit *QgsDefaultSearchWidgetWrapper::lineEdit()
 {
   return mLineEdit;
 }
 
-QCheckBox* QgsDefaultSearchWidgetWrapper::caseSensitiveCheckBox()
+QCheckBox *QgsDefaultSearchWidgetWrapper::caseSensitiveCheckBox()
 {
   return mCheckbox;
 }
@@ -302,7 +303,7 @@ void QgsDefaultSearchWidgetWrapper::filterChanged()
   emit expressionChanged( mExpression );
 }
 
-void QgsDefaultSearchWidgetWrapper::textChanged( const QString& text )
+void QgsDefaultSearchWidgetWrapper::textChanged( const QString &text )
 {
   if ( text.isEmpty() )
     emit valueCleared();

@@ -48,7 +48,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsCptCityColorRampDialog( const QgsCptCityColorRamp& ramp, QWidget* parent = nullptr );
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsCptCityColorRamp& ramp );
+    void setRamp( const QgsCptCityColorRamp &ramp );
 
     /** Returns the name of the ramp currently selected in the dialog.
      */
@@ -83,7 +83,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void populateVariants();
 
     void on_mTreeView_clicked( const QModelIndex & );
-    void on_mListWidget_itemClicked( QListWidgetItem * item );
+    void on_mListWidget_itemClicked( QListWidgetItem *item );
     void on_mListWidget_itemSelectionChanged();
     void on_tabBar_currentChanged( int index );
     void on_pbtnLicenseDetails_pressed();
@@ -97,24 +97,24 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     void updateUi();
     void updatePreview( bool clear = false );
     void clearCopyingInfo();
-    void updateCopyingInfo( const QMap< QString, QString >& copyingMap );
+    void updateCopyingInfo( const QMap< QString, QString > &copyingMap );
     void updateTreeView( QgsCptCityDataItem *item, bool resetRamp = true );
     void updateListWidget( QgsCptCityDataItem *item );
 
     QgsCptCityColorRamp mRamp;
-    QgsCptCityArchive* mArchive = nullptr;
+    QgsCptCityArchive *mArchive = nullptr;
     QgsCptCityBrowserModel::ViewType mArchiveViewType;
 
     /* void refreshModel( const QModelIndex& index ); */
     bool updateRamp();
     void showAll();
-    void setTreeModel( QgsCptCityBrowserModel* model );
+    void setTreeModel( QgsCptCityBrowserModel *model );
 
-    QgsCptCityBrowserModel* mModel = nullptr;
-    QgsCptCityBrowserModel* mAuthorsModel = nullptr;
-    QgsCptCityBrowserModel* mSelectionsModel = nullptr;
-    TreeFilterProxyModel* mTreeFilter = nullptr;
-    QVector<QgsCptCityColorRampItem*> mListRamps;
+    QgsCptCityBrowserModel *mModel = nullptr;
+    QgsCptCityBrowserModel *mAuthorsModel = nullptr;
+    QgsCptCityBrowserModel *mSelectionsModel = nullptr;
+    TreeFilterProxyModel *mTreeFilter = nullptr;
+    QVector<QgsCptCityColorRampItem *> mListRamps;
 
 };
 
@@ -128,14 +128,14 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-    TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel* model );
+    TreeFilterProxyModel( QObject *parent, QgsCptCityBrowserModel *model );
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
   private:
-    QgsCptCityBrowserModel* mModel = nullptr;
+    QgsCptCityBrowserModel *mModel = nullptr;
 };
 
 ///@endcond

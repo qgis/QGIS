@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
@@ -24,9 +24,8 @@ from qgis.core import (QgsVectorLayer,
                        )
 from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
+
 import os
 import time
 import platform
@@ -195,6 +194,7 @@ class TestQgsActionManager(unittest.TestCase):
         self.manager.doActionFeature(id3, f, 1)
         time.sleep(0.5)
         self.assertEquals(self.check_action_result(temp_file), 'test : 1 : my_other_field : val')
+
 
 if __name__ == '__main__':
     unittest.main()

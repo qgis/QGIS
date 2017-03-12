@@ -35,8 +35,7 @@ from qgis.core import (
     QgsPolygonV2,
     QgsCoordinateTransform,
     QgsRectangle,
-    QgsWkbTypes,
-    Qgis
+    QgsWkbTypes
 )
 
 from qgis.testing import (
@@ -44,9 +43,8 @@ from qgis.testing import (
     unittest,
 )
 
-from utilities import(
+from utilities import (
     compareWkt,
-    doubleNear,
     unitTestDataPath,
     writeShape
 )
@@ -1058,7 +1056,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         assert polygon.deleteVertex(4), "Delete vertex 4 failed"
-        #"Polygon ((2 1, 2 2, 0 2, 2 1))" #several possibilities are correct here
+        # "Polygon ((2 1, 2 2, 0 2, 2 1))" #several possibilities are correct here
         expwkt = "Polygon ((0 2, 2 1, 2 2, 0 2))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1543,14 +1541,13 @@ class TestQgsGeometry(unittest.TestCase):
             [[QgsPoint(4, 0), QgsPoint(5, 0), QgsPoint(5, 2), QgsPoint(3, 2), QgsPoint(3, 1), QgsPoint(4, 1), QgsPoint(4, 0)], ],
             [[QgsPoint(10, 0), QgsPoint(13, 0), QgsPoint(13, 3), QgsPoint(10, 3), QgsPoint(10, 0)], [QgsPoint(11, 1), QgsPoint(12, 1), QgsPoint(12, 2), QgsPoint(11, 2), QgsPoint(11, 1)]]
         ]
-        ######## TO POINT ########
+        # ####### TO POINT ########
         # POINT TO POINT
         point = QgsGeometry.fromPoint(QgsPoint(1, 1))
         wkt = point.convertToType(QgsWkbTypes.PointGeometry, False).exportToWkt()
         expWkt = "Point (1 1)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to point. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # POINT TO MultiPoint
-        point = QgsGeometry.fromPoint(QgsPoint(1, 1))
         wkt = point.convertToType(QgsWkbTypes.PointGeometry, True).exportToWkt()
         expWkt = "MultiPoint ((1 1))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1575,7 +1572,7 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0),(4 0),(5 0),(5 2),(3 2),(3 1),(4 1),(4 0),(10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multipoylgon to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
-        ######## TO LINE ########
+        # ####### TO LINE ########
         # POINT TO LINE
         point = QgsGeometry.fromPoint(QgsPoint(1, 1))
         self.assertFalse(point.convertToType(QgsWkbTypes.LineGeometry, False)), "convertToType with a point should return a null geometry"
@@ -1625,7 +1622,7 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0), (4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0), (10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multipolygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
-        ######## TO Polygon ########
+        # ####### TO Polygon ########
         # MultiPoint TO Polygon
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(QgsWkbTypes.PolygonGeometry, False).exportToWkt()
@@ -3555,7 +3552,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertFalse(empty.interpolate(5))
 
         # not a linestring
-        point = QgsGeometry.fromWkt('Point(1 2)')
+        point = QgsGeometry.fromWkt('Point(1 2)')  # NOQA
         # no meaning, just test no crash!
         self.assertFalse(empty.interpolate(5))
 
@@ -3566,7 +3563,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001), "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
         # polygon
-        polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0))')
+        polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0))')  # NOQA
         exp = 'Point(10 5)'
         result = linestring.interpolate(15).exportToWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
@@ -3716,7 +3713,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
-        #line
+        # line
         line = QgsGeometry.fromWkt('LineString (-1.07445631048298162 -0.91619958829825165, 0.04022568180912156 -0.95572731852137571, 0.04741254184968957 -0.61794489661467789, 0.68704308546024517 -0.66106605685808595)')
         o = line.orthogonalize()
         exp = 'LineString (-1.07445631048298162 -0.91619958829825165, 0.04812855116470245 -0.96433184892270418, 0.06228000950284909 -0.63427853851139493, 0.68704308546024517 -0.66106605685808595)'
@@ -3896,6 +3893,7 @@ class TestQgsGeometry(unittest.TestCase):
         result = o.exportToWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "delaunay: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
 
 if __name__ == '__main__':
     unittest.main()

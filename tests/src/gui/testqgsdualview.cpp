@@ -34,9 +34,9 @@ class TestQgsDualView : public QObject
     Q_OBJECT
   public:
     TestQgsDualView()
-        : mCanvas( 0 )
-        , mPointsLayer( 0 )
-        , mDualView( 0 )
+      : mCanvas( 0 )
+      , mPointsLayer( 0 )
+      , mDualView( 0 )
     {}
 
   private slots:
@@ -50,18 +50,20 @@ class TestQgsDualView : public QObject
     void testColumnHeaders();
 
     void testData();
+    void testFilterSelected();
 
     void testSelectAll();
 
     void testSort();
 
     void testAttributeFormSharedValueScanning();
+    void testNoGeom();
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
-    QgsVectorLayer* mPointsLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
-    QgsDualView* mDualView = nullptr;
+    QgsDualView *mDualView = nullptr;
 };
 
 void TestQgsDualView::initTestCase()
@@ -133,6 +135,36 @@ void TestQgsDualView::testData()
   }
 }
 
+void TestQgsDualView::testFilterSelected()
+{
+  QgsFeature feature;
+  QList< QgsFeatureId > ids;
+  QgsFeatureIterator it = mPointsLayer->getFeatures( QgsFeatureRequest().setOrderBy( QgsFeatureRequest::OrderBy() << QgsFeatureRequest::OrderByClause( "Heading" ) ) );
+  while ( it.nextFeature( feature ) )
+    ids << feature.id();
+
+  // select some features
+  QList< QgsFeatureId > selected;
+  selected << ids.at( 1 ) << ids.at( 3 );
+  mPointsLayer->selectByIds( selected.toSet() );
+
+  mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
+  QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
+
+  int headingIdx = mPointsLayer->fields().lookupField( "Heading" );
+  QgsField fld = mPointsLayer->fields().at( headingIdx );
+  for ( int i = 0; i < selected.count(); ++i )
+  {
+    mPointsLayer->getFeatures( QgsFeatureRequest().setFilterFid( selected.at( i ) ) ).nextFeature( feature );
+    QModelIndex index = mDualView->tableView()->model()->index( i, headingIdx );
+    QCOMPARE( mDualView->tableView()->model()->data( index ).toString(), fld.displayString( feature.attribute( headingIdx ) ) );
+  }
+
+  // select none
+  mPointsLayer->removeSelection();
+  QCOMPARE( mDualView->tableView()->model()->rowCount(), 0 );
+}
+
 void TestQgsDualView::testSelectAll()
 {
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
@@ -153,22 +185,22 @@ void TestQgsDualView::testSort()
 
   QStringList classes;
   classes << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "B52" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Biplane" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" )
-  << QStringLiteral( "Jet" );
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "B52" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Biplane" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" )
+          << QStringLiteral( "Jet" );
 
   for ( int i = 0; i < classes.length(); ++i )
   {
@@ -178,22 +210,22 @@ void TestQgsDualView::testSort()
 
   QStringList headings;
   headings << QStringLiteral( "0" )
-  <<  QStringLiteral( "0" )
-  <<  QStringLiteral( "12" )
-  <<  QStringLiteral( "34" )
-  <<  QStringLiteral( "80" )
-  <<  QStringLiteral( "85" )
-  <<  QStringLiteral( "90" )
-  <<  QStringLiteral( "90" )
-  <<  QStringLiteral( "95" )
-  <<  QStringLiteral( "100" )
-  <<  QStringLiteral( "140" )
-  <<  QStringLiteral( "160" )
-  <<  QStringLiteral( "180" )
-  <<  QStringLiteral( "240" )
-  <<  QStringLiteral( "270" )
-  <<  QStringLiteral( "300" )
-  <<  QStringLiteral( "340" );
+           <<  QStringLiteral( "0" )
+           <<  QStringLiteral( "12" )
+           <<  QStringLiteral( "34" )
+           <<  QStringLiteral( "80" )
+           <<  QStringLiteral( "85" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "95" )
+           <<  QStringLiteral( "100" )
+           <<  QStringLiteral( "140" )
+           <<  QStringLiteral( "160" )
+           <<  QStringLiteral( "180" )
+           <<  QStringLiteral( "240" )
+           <<  QStringLiteral( "270" )
+           <<  QStringLiteral( "300" )
+           <<  QStringLiteral( "340" );
 
   mDualView->setSortExpression( QStringLiteral( "Heading" ) );
 
@@ -212,7 +244,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   QHash< int, QVariant > fieldSharedValues;
 
   // make a temporary layer to check through
-  QgsVectorLayer* layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer&field=col4:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer&field=col4:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
   QgsFeature f1( layer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 1 );
@@ -268,6 +300,36 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   QCOMPARE( fieldSharedValues.value( 2 ).toInt(), 3 );
   QCOMPARE( fieldSharedValues.value( 3 ).toInt(), 2 );
   QVERIFY( mixedValueFields.isEmpty() );
+}
+
+void TestQgsDualView::testNoGeom()
+{
+  //test that both the master model and cache for the dual view either both request geom or both don't request geom
+  std::unique_ptr< QgsDualView > dv( new QgsDualView() );
+
+  // request with geometry
+  QgsFeatureRequest req;
+  dv->init( mPointsLayer, mCanvas, req );
+  // check that both master model AND cache are using geometry
+  QgsAttributeTableModel *model = dv->masterModel();
+  QVERIFY( model->layerCache()->cacheGeometry() );
+  QVERIFY( !( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // request with NO geometry, but using filter rect (which should override and request geom)
+  req = QgsFeatureRequest().setFilterRect( QgsRectangle( 1, 2, 3, 4 ) );
+  dv.reset( new QgsDualView() );
+  dv->init( mPointsLayer, mCanvas, req );
+  model = dv->masterModel();
+  QVERIFY( model->layerCache()->cacheGeometry() );
+  QVERIFY( !( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // request with NO geometry
+  req = QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+  dv.reset( new QgsDualView() );
+  dv->init( mPointsLayer, mCanvas, req );
+  model = dv->masterModel();
+  QVERIFY( !model->layerCache()->cacheGeometry() );
+  QVERIFY( ( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
 }
 
 QGSTEST_MAIN( TestQgsDualView )

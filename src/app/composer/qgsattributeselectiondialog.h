@@ -59,7 +59,7 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpress
     Q_OBJECT
 
   public:
-    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = nullptr, const QgsComposerObject* composerObject = nullptr );
+    QgsComposerColumnSourceDelegate( QgsVectorLayer *vlayer, QObject *parent = nullptr, const QgsComposerObject *composerObject = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -67,8 +67,8 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpress
   public slots:
     void commitAndCloseEditor();
   private:
-    QgsVectorLayer* mVectorLayer = nullptr;
-    const QgsComposerObject* mComposerObject = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    const QgsComposerObject *mComposerObject = nullptr;
     QgsExpressionContext createExpressionContext() const override;
 };
 
@@ -113,7 +113,7 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
 {
     Q_OBJECT
   public:
-    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2 *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     ~QgsAttributeSelectionDialog();
 
@@ -129,15 +129,15 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
     void on_mSortColumnDownPushButton_clicked();
 
   private:
-    QgsComposerAttributeTableV2* mComposerTable = nullptr;
+    QgsComposerAttributeTableV2 *mComposerTable = nullptr;
 
-    const QgsVectorLayer* mVectorLayer = nullptr;
+    const QgsVectorLayer *mVectorLayer = nullptr;
 
-    QgsComposerAttributeTableColumnModelV2* mColumnModel = nullptr;
+    QgsComposerAttributeTableColumnModelV2 *mColumnModel = nullptr;
 
-    QgsComposerTableSortColumnsProxyModelV2* mSortedProxyModel = nullptr;
+    QgsComposerTableSortColumnsProxyModelV2 *mSortedProxyModel = nullptr;
 
-    QgsComposerTableSortColumnsProxyModelV2* mAvailableSortProxyModel = nullptr;
+    QgsComposerTableSortColumnsProxyModelV2 *mAvailableSortProxyModel = nullptr;
 
     QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate = nullptr;
     QgsComposerColumnSourceDelegate *mColumnSourceDelegate = nullptr;

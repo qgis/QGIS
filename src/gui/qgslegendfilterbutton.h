@@ -38,7 +38,7 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      *
      * @param parent The parent QWidget
      */
-    QgsLegendFilterButton( QWidget* parent = nullptr );
+    QgsLegendFilterButton( QWidget *parent = nullptr );
 
     /**
      * Returns the current text used as filter expression
@@ -49,19 +49,19 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
      * Sets the current text used as filter expression.
      * This will update the menu
      */
-    void setExpressionText( const QString& expression );
+    void setExpressionText( const QString &expression );
 
     /**
      * Returns the current associated vectorLayer
      * May be null
      */
-    QgsVectorLayer* vectorLayer() const;
+    QgsVectorLayer *vectorLayer() const;
 
     /**
      * Sets the associated vectorLayer
      * May be null
      */
-    void setVectorLayer( QgsVectorLayer* layer );
+    void setVectorLayer( QgsVectorLayer *layer );
 
   signals:
 
@@ -71,14 +71,14 @@ class GUI_EXPORT QgsLegendFilterButton: public QToolButton
     void expressionTextChanged();
 
   private:
-    QMenu* mMenu = nullptr;
-    QAction* mSetExpressionAction = nullptr;
-    QAction* mClearExpressionAction = nullptr;
+    QMenu *mMenu = nullptr;
+    QAction *mSetExpressionAction = nullptr;
+    QAction *mClearExpressionAction = nullptr;
     QString mExpression;
 
     void updateMenu();
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
   private slots:
     void onSetLegendFilterExpression();
     void onClearFilterExpression();

@@ -37,16 +37,16 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 
   public:
     QgsColorSwatchDelegate( QWidget *parent = nullptr );
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
-    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
-    bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    bool editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index ) override;
 
   private slots:
 
     void colorChanged();
 
   private:
-    QWidget* mParent = nullptr;
+    QWidget *mParent = nullptr;
 
     /** Generates a checkboard pattern for transparent color backgrounds
      * @returns checkboard pixmap
@@ -73,7 +73,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * @param baseColor base color for color scheme
      * @param parent parent object
      */
-    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent = nullptr );
+    explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent = nullptr );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -81,12 +81,12 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
      * @param context context for color scheme
      * @param baseColor base color for color scheme
      */
-    void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+    void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /** Get the current color scheme context for the model
      * @returns context string which is passed to scheme for color generation
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     };
 
     QgsNamedColorList mColors;
-    QgsColorScheme* mScheme = nullptr;
+    QgsColorScheme *mScheme = nullptr;
     QString mContext;
     QColor mBaseColor;
     bool mIsDirty;
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @param context context string provided to color scheme
      * @param baseColor base color for color scheme
      */
-    QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme* scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
+    QgsColorSchemeList( QWidget *parent = nullptr, QgsColorScheme *scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /** Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.
@@ -189,7 +189,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @note added in QGIS 3.0
      * @see setScheme()
      */
-    QgsColorScheme* scheme();
+    QgsColorScheme *scheme();
 
   public slots:
 
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      * @param baseColor base color for color scheme
      * @see scheme()
      */
-    void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+    void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /** Removes any selected colors from the list
      */
@@ -243,16 +243,16 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
   protected:
 
-    void keyPressEvent( QKeyEvent* event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
-    void mousePressEvent( QMouseEvent* event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
 
-    void mouseReleaseEvent( QMouseEvent* event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
-    QgsColorScheme* mScheme = nullptr;
-    QgsColorSchemeModel* mModel = nullptr;
-    QgsColorSwatchDelegate* mSwatchDelegate = nullptr;
+    QgsColorScheme *mScheme = nullptr;
+    QgsColorSchemeModel *mModel = nullptr;
+    QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
 
     QPoint mDragStartPosition;
 

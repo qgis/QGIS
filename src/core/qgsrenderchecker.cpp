@@ -31,17 +31,17 @@
 static int sRenderCounter = 0;
 
 QgsRenderChecker::QgsRenderChecker()
-    : mReport( QLatin1String( "" ) )
-    , mMatchTarget( 0 )
-    , mElapsedTime( 0 )
-    , mRenderedImageFile( QLatin1String( "" ) )
-    , mExpectedImageFile( QLatin1String( "" ) )
-    , mMismatchCount( 0 )
-    , mColorTolerance( 0 )
-    , mMaxSizeDifferenceX( 0 )
-    , mMaxSizeDifferenceY( 0 )
-    , mElapsedTimeTarget( 0 )
-    , mBufferDashMessages( false )
+  : mReport( QLatin1String( "" ) )
+  , mMatchTarget( 0 )
+  , mElapsedTime( 0 )
+  , mRenderedImageFile( QLatin1String( "" ) )
+  , mExpectedImageFile( QLatin1String( "" ) )
+  , mMismatchCount( 0 )
+  , mColorTolerance( 0 )
+  , mMaxSizeDifferenceX( 0 )
+  , mMaxSizeDifferenceY( 0 )
+  , mElapsedTimeTarget( 0 )
+  , mBufferDashMessages( false )
 {
 }
 
@@ -52,24 +52,24 @@ QString QgsRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
-void QgsRenderChecker::setControlName( const QString &theName )
+void QgsRenderChecker::setControlName( const QString &name )
 {
-  mControlName = theName;
-  mExpectedImageFile = controlImagePath() + theName + '/' + mControlPathSuffix + theName + ".png";
+  mControlName = name;
+  mExpectedImageFile = controlImagePath() + name + '/' + mControlPathSuffix + name + ".png";
 }
 
-void QgsRenderChecker::setControlPathSuffix( const QString& theName )
+void QgsRenderChecker::setControlPathSuffix( const QString &name )
 {
-  if ( !theName.isEmpty() )
-    mControlPathSuffix = theName + '/';
+  if ( !name.isEmpty() )
+    mControlPathSuffix = name + '/';
   else
     mControlPathSuffix.clear();
 }
 
-QString QgsRenderChecker::imageToHash( const QString& theImageFile )
+QString QgsRenderChecker::imageToHash( const QString &imageFile )
 {
   QImage myImage;
-  myImage.load( theImageFile );
+  myImage.load( imageFile );
   QByteArray myByteArray;
   QBuffer myBuffer( &myByteArray );
   myImage.save( &myBuffer, "PNG" );
@@ -79,12 +79,12 @@ QString QgsRenderChecker::imageToHash( const QString& theImageFile )
   return myHash.result().toHex().constData();
 }
 
-void QgsRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
+void QgsRenderChecker::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
 }
 
-void QgsRenderChecker::drawBackground( QImage* image )
+void QgsRenderChecker::drawBackground( QImage *image )
 {
   // create a 2x2 checker-board image
   uchar pixDataRGB[] = { 255, 255, 255, 255,
@@ -105,7 +105,7 @@ void QgsRenderChecker::drawBackground( QImage* image )
   p.end();
 }
 
-bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
+bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
 {
   QString myControlImageDir = controlImagePath() + mControlName + '/';
   QDir myDirectory = QDir( myControlImageDir );
@@ -117,7 +117,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
   //all files except the control file
   myList.removeAt( myList.indexOf( QFileInfo( mExpectedImageFile ).fileName() ) );
 
-  QString myImageHash = imageToHash( theDiffImageFile );
+  QString myImageHash = imageToHash( diffImageFile );
 
 
   for ( int i = 0; i < myList.size(); ++i )
@@ -132,7 +132,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
                             .arg( myFile,
                                   myAnomalyHash );
     myHashMessage += QStringLiteral( "&nbsp; matches %1 (hash %2)" )
-                     .arg( theDiffImageFile,
+                     .arg( diffImageFile,
                            myImageHash );
     //foo CDash
     emitDashMessage( QStringLiteral( "Anomaly check" ), QgsDartMeasurement::Text, myHashMessage );
@@ -152,7 +152,7 @@ bool QgsRenderChecker::isKnownAnomaly( const QString& theDiffImageFile )
   return false;
 }
 
-void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement& dashMessage )
+void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement &dashMessage )
 {
   if ( mBufferDashMessages )
     mDashMessages << dashMessage;
@@ -160,13 +160,13 @@ void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement& dashMessage )
     dashMessage.send();
 }
 
-void QgsRenderChecker::emitDashMessage( const QString& name, QgsDartMeasurement::Type type, const QString& value )
+void QgsRenderChecker::emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value )
 {
   emitDashMessage( QgsDartMeasurement( name, type, value ) );
 }
 
-bool QgsRenderChecker::runTest( const QString& theTestName,
-                                unsigned int theMismatchCount )
+bool QgsRenderChecker::runTest( const QString &testName,
+                                unsigned int mismatchCount )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -213,7 +213,7 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
   // Save the pixmap to disk so the user can make a
   // visual assessment if needed
   //
-  mRenderedImageFile = QDir::tempPath() + '/' + theTestName + "_result.png";
+  mRenderedImageFile = QDir::tempPath() + '/' + testName + "_result.png";
 
   myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
   myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
@@ -229,26 +229,26 @@ bool QgsRenderChecker::runTest( const QString& theTestName,
 
   //create a world file to go with the image...
 
-  QFile wldFile( QDir::tempPath() + '/' + theTestName + "_result.wld" );
+  QFile wldFile( QDir::tempPath() + '/' + testName + "_result.wld" );
   if ( wldFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QgsRectangle r = mMapSettings.extent();
 
     QTextStream stream( &wldFile );
     stream << QStringLiteral( "%1\r\n0 \r\n0 \r\n%2\r\n%3\r\n%4\r\n" )
-    .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
-          qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
-          qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
-          qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
+           .arg( qgsDoubleToString( mMapSettings.mapUnitsPerPixel() ),
+                 qgsDoubleToString( -mMapSettings.mapUnitsPerPixel() ),
+                 qgsDoubleToString( r.xMinimum() + mMapSettings.mapUnitsPerPixel() / 2.0 ),
+                 qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
-  return compareImages( theTestName, theMismatchCount );
+  return compareImages( testName, mismatchCount );
 }
 
 
-bool QgsRenderChecker::compareImages( const QString& theTestName,
-                                      unsigned int theMismatchCount,
-                                      const QString& theRenderedImageFile )
+bool QgsRenderChecker::compareImages( const QString &testName,
+                                      unsigned int mismatchCount,
+                                      const QString &renderedImageFile )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -259,9 +259,9 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
               "Image File not set.</td></tr></table>\n";
     return false;
   }
-  if ( ! theRenderedImageFile.isEmpty() )
+  if ( ! renderedImageFile.isEmpty() )
   {
-    mRenderedImageFile = theRenderedImageFile;
+    mRenderedImageFile = renderedImageFile;
 #ifdef Q_OS_WIN
     mRenderedImageFile = mRenderedImageFile.replace( '\\', '/' );
 #endif
@@ -294,14 +294,14 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
-  QString myDiffImageFile = QDir::tempPath() + '/' + theTestName + "_result_diff.png";
+  QString myDiffImageFile = QDir::tempPath() + '/' + testName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //check for mask
   QString maskImagePath = mExpectedImageFile;
   maskImagePath.chop( 4 ); //remove .png extension
   maskImagePath += QLatin1String( "_mask.png" );
-  QImage* maskImage = new QImage( maskImagePath );
+  QImage *maskImage = new QImage( maskImagePath );
   bool hasMask = !maskImage->isNull();
   if ( hasMask )
   {
@@ -324,7 +324,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
                       "Expected size: %2 w x %3 h (%4 pixels)<br>"
                       "Actual   size: %5 w x %6 h (%7 pixels)"
                       "</td></tr>" )
-             .arg( theTestName )
+             .arg( testName )
              .arg( myExpectedImage.width() ).arg( myExpectedImage.height() ).arg( mMatchTarget )
              .arg( myResultImage.width() ).arg( myResultImage.height() ).arg( myPixelCount );
   mReport += QString( "<tr><td colspan=2>\n"
@@ -352,7 +352,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
                              "</tr>"
                              "</table>\n"
                              "<script>\naddComparison(\"td-%1-%7\",\"file://%3\",\"file://%4\",%5,%6);\n</script>\n" )
-                           .arg( theTestName,
+                           .arg( testName,
                                  myDiffImageFile,
                                  mRenderedImageFile,
                                  mExpectedImageFile )
@@ -367,8 +367,8 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   //
   // To get the images into CDash
   //
-  emitDashMessage( "Rendered Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
-  emitDashMessage( "Expected Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, mExpectedImageFile );
+  emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
+  emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, mExpectedImageFile );
 
   //
   // Put the same info to debug too
@@ -379,13 +379,13 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
 
   if ( mMatchTarget != myPixelCount )
   {
-    qDebug( "Test image and result image for %s are different dimensions", theTestName.toLocal8Bit().constData() );
+    qDebug( "Test image and result image for %s are different dimensions", testName.toLocal8Bit().constData() );
 
     if ( qAbs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
          qAbs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
     {
       mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
+      mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
       delete maskImage;
@@ -394,7 +394,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
     else
     {
       mReport += QLatin1String( "<tr><td colspan=3>" );
-      mReport += "Expected image and result image for " + theTestName + " are different dimensions, but within tolerance";
+      mReport += "Expected image and result image for " + testName + " are different dimensions, but within tolerance";
       mReport += QLatin1String( "</td></tr>" );
     }
   }
@@ -411,10 +411,10 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   int colorTolerance = static_cast< int >( mColorTolerance );
   for ( int y = 0; y < maxHeight; ++y )
   {
-    const QRgb* expectedScanline = reinterpret_cast< const QRgb* >( myExpectedImage.constScanLine( y ) );
-    const QRgb* resultScanline = reinterpret_cast< const QRgb* >( myResultImage.constScanLine( y ) );
-    const QRgb* maskScanline = hasMask ? reinterpret_cast< const QRgb* >( maskImage->constScanLine( y ) ) : nullptr;
-    QRgb* diffScanline = reinterpret_cast< QRgb* >( myDifferenceImage.scanLine( y ) );
+    const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( myExpectedImage.constScanLine( y ) );
+    const QRgb *resultScanline = reinterpret_cast< const QRgb * >( myResultImage.constScanLine( y ) );
+    const QRgb *maskScanline = hasMask ? reinterpret_cast< const QRgb * >( maskImage->constScanLine( y ) ) : nullptr;
+    QRgb *diffScanline = reinterpret_cast< QRgb * >( myDifferenceImage.scanLine( y ) );
 
     for ( int x = 0; x < maxWidth; ++x )
     {
@@ -453,29 +453,29 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
   //save the diff image to disk
   //
   myDifferenceImage.save( myDiffImageFile );
-  emitDashMessage( "Difference Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
+  emitDashMessage( "Difference Image " + testName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
   delete maskImage;
 
   //
   // Send match result to debug
   //
-  qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, theMismatchCount );
+  qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, mismatchCount );
 
   //
   // Send match result to report
   //
   mReport += QStringLiteral( "<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>" )
-             .arg( mMismatchCount ).arg( mMatchTarget ).arg( theMismatchCount ).arg( mColorTolerance );
+             .arg( mMismatchCount ).arg( mMatchTarget ).arg( mismatchCount ).arg( mColorTolerance );
 
   //
   // And send it to CDash
   //
   emitDashMessage( QStringLiteral( "Mismatch Count" ), QgsDartMeasurement::Integer, QStringLiteral( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
 
-  if ( mMismatchCount <= theMismatchCount )
+  if ( mMismatchCount <= mismatchCount )
   {
     mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-    mReport += "Test image and result image for " + theTestName + " are matched<br>";
+    mReport += "Test image and result image for " + testName + " are matched<br>";
     mReport += QLatin1String( "</td></tr>" );
     if ( mElapsedTimeTarget != 0 && mElapsedTimeTarget < mElapsedTime )
     {
@@ -512,7 +512,7 @@ bool QgsRenderChecker::compareImages( const QString& theTestName,
                    "scripts/generate_test_mask_image.py '" + mExpectedImageFile + "' '" + mRenderedImageFile + "'\n" );
 
   mReport += QLatin1String( "<tr><td colspan = 3>\n" );
-  mReport += "<font color=red>Test image and result image for " + theTestName + " are mismatched</font><br>";
+  mReport += "<font color=red>Test image and result image for " + testName + " are mismatched</font><br>";
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
   return false;

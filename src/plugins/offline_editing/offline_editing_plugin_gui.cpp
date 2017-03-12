@@ -25,14 +25,14 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 
 
-QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent )
-    : QgsLayerTreeModel( rootNode, parent )
+QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::ShowLegend, false );
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
@@ -42,19 +42,19 @@ QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
 {
 }
 
-QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) const
+QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
   if ( role == Qt::CheckStateRole )
   {
-    QgsLayerTreeNode* node = index2node( index );
+    QgsLayerTreeNode *node = index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       return nodeLayer->isVisible();
     }
     else if ( QgsLayerTree::isGroup( node ) )
     {
-      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
+      QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
       return nodeGroup->isVisible();
     }
     else
@@ -66,8 +66,8 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) con
 }
 
 
-QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
@@ -76,8 +76,8 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
   mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  QgsLayerTreeGroup* rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
-  QgsLayerTreeModel* treeModel = new QgsSelectLayerTreeModel( rootNode, this );
+  QgsLayerTreeGroup *rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
+  QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
 
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
@@ -86,7 +86,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "Plugin-OfflineEditing/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), mOfflineDataPath );
 }
@@ -148,7 +148,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   }
 
   mSelectedLayerIds.clear();
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
   {
     if ( nodeLayer->isVisible() )
     {
@@ -172,20 +172,20 @@ void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 
 void QgsOfflineEditingPluginGui::restoreState()
 {
-  QSettings settings;
+  QgsSettings settings;
   mOfflineDataPath = settings.value( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), QDir::homePath() ).toString();
   restoreGeometry( settings.value( QStringLiteral( "Plugin-OfflineEditing/geometry" ) ).toByteArray() );
 }
 
 void QgsOfflineEditingPluginGui::selectAll()
 {
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setItemVisibilityChecked( true );
 }
 
 
 void QgsOfflineEditingPluginGui::deSelectAll()
 {
-  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
+  Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLayerTree->layerTreeModel()->rootGroup()->findLayers() )
     nodeLayer->setItemVisibilityChecked( false );
 }

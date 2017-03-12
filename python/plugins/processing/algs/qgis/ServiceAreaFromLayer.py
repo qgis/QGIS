@@ -31,7 +31,7 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsPoint, QgsField, QgsFields, QgsFeatureRequest
+from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
@@ -41,16 +41,13 @@ from qgis.analysis import (QgsVectorLayerDirector,
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import (ParameterVector,
                                         ParameterNumber,
                                         ParameterString,
                                         ParameterTableField,
                                         ParameterSelection
                                         )
-from processing.core.outputs import (OutputNumber,
-                                     OutputVector
-                                     )
+from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -209,7 +206,7 @@ class ServiceAreaFromLayer(GeoAlgorithm):
 
         director.addStrategy(strategy)
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
-                                  iface.mapCanvas().hasCrsTransformEnabled(),
+                                  True,
                                   tolerance)
 
         feedback.pushInfo(self.tr('Loading start points...'))
@@ -258,8 +255,8 @@ class ServiceAreaFromLayer(GeoAlgorithm):
             feat['start'] = origPoint
             writerPoints.addFeature(feat)
 
-            upperBoundary.append(startPoint)
-            lowerBoundary.append(startPoint)
+            upperBoundary.append(origPoint)
+            lowerBoundary.append(origPoint)
             geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
             geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 

@@ -16,13 +16,12 @@
  ***************************************************************************/
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
-#include "cpl_conv.h"
+#include <cpl_conv.h>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
@@ -32,22 +31,22 @@ QgsGdalProviderBase::QgsGdalProviderBase()
 }
 
 /**
- * @param theBandNumber the number of the band for which you want a color table
- * @param theList a pointer the object that will hold the color table
+ * @param bandNumber the number of the band for which you want a color table
+ * @param list a pointer the object that will hold the color table
  * @return true of a color table was able to be read, false otherwise
  */
-QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int theBandNumber )const
+QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber )const
 {
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   //Invalid band number, segfault prevention
-  if ( 0 >= theBandNumber )
+  if ( 0 >= bandNumber )
   {
     QgsDebugMsg( "Invalid parameter" );
     return ct;
   }
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, theBandNumber );
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
   GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
 
   if ( myGdalColorTable )
@@ -55,7 +54,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     QgsDebugMsg( "Color table found" );
 
     // load category labels
-    char ** categoryNames = GDALGetRasterCategoryNames( myGdalBand );
+    char **categoryNames = GDALGetRasterCategoryNames( myGdalBand );
     QVector<QString> labels;
     if ( categoryNames )
     {
@@ -73,7 +72,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
     QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
 
-    const GDALColorEntry* myColorEntry = nullptr;
+    const GDALColorEntry *myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
     {
       myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
@@ -132,7 +131,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
   else
   {
-    QgsDebugMsg( "No color table found for band " + QString::number( theBandNumber ) );
+    QgsDebugMsg( "No color table found for band " + QString::number( bandNumber ) );
     return ct;
   }
 
@@ -140,9 +139,9 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
+Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDataType ) const
 {
-  switch ( theGdalDataType )
+  switch ( gdalDataType )
   {
     case GDT_Byte:
       return Qgis::Byte;
@@ -218,7 +217,7 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdal
 void QgsGdalProviderBase::registerGdalDrivers()
 {
   GDALAllRegister();
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString myJoinedList = mySettings.value( QStringLiteral( "gdal/skipList" ), "" ).toString();
   if ( !myJoinedList.isEmpty() )
   {
@@ -271,16 +270,16 @@ int CPL_STDCALL _gdalProgressFnWithFeedback( double dfComplete, const char *pszM
   Q_UNUSED( dfComplete );
   Q_UNUSED( pszMessage );
 
-  QgsRasterBlockFeedback* feedback = static_cast<QgsRasterBlockFeedback*>( pProgressArg );
+  QgsRasterBlockFeedback *feedback = static_cast<QgsRasterBlockFeedback *>( pProgressArg );
   return !feedback->isCanceled();
 }
 
 
-CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void * pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback* feedback )
+CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWFlag, int nXOff, int nYOff, int nXSize, int nYSize, void *pData, int nBufXSize, int nBufYSize, GDALDataType eBufType, int nPixelSpace, int nLineSpace, QgsRasterBlockFeedback *feedback )
 {
   GDALRasterIOExtraArg extra;
   INIT_RASTERIO_EXTRA_ARG( extra );
-  if ( 0 && feedback )  // disabled!
+  if ( false && feedback )  // disabled!
   {
     // Currently the cancelation is disabled... When RasterIO call is canceled,
     // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
@@ -288,7 +287,7 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
     // caused by the cancelation and not that something dodgy is going on.
     // Are both error codes acceptable?
     extra.pfnProgress = _gdalProgressFnWithFeedback;
-    extra.pProgressData = ( void* ) feedback;
+    extra.pProgressData = ( void * ) feedback;
   }
   CPLErr err = GDALRasterIOEx( hBand, eRWFlag, nXOff, nYOff, nXSize, nYSize, pData, nBufXSize, nBufYSize, eBufType, nPixelSpace, nLineSpace, &extra );
 

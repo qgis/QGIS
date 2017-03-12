@@ -28,14 +28,15 @@
 #include <QPainter>
 
 
-QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation* annotation, QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
-    , mAnnotation( annotation )
+QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotation, QgsMapCanvas *mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
+  , mAnnotation( annotation )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ] { updatePosition(); } );
 
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 
@@ -62,8 +63,8 @@ void QgsMapCanvasAnnotationItem::updatePosition()
     {
       coord = t.transform( coord );
     }
-    catch ( QgsCsException& )
-      {}
+    catch ( QgsCsException & )
+    {}
     setPos( toCanvasCoordinates( coord ) );
   }
   else
@@ -131,7 +132,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
   if ( !mAnnotation || !mAnnotation->hasFixedMapPosition() )
     return;
 
-  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mAnnotation->mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mAnnotation->mapLayer() );
   if ( !vectorLayer )
     return;
 
@@ -160,7 +161,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
   mAnnotation->setAssociatedFeature( currentFeature );
 }
 
-void QgsMapCanvasAnnotationItem::drawSelectionBoxes( QPainter* p ) const
+void QgsMapCanvasAnnotationItem::drawSelectionBoxes( QPainter *p ) const
 {
   if ( !p )
   {
@@ -281,7 +282,7 @@ double QgsMapCanvasAnnotationItem::scaledSymbolSize() const
   return dpmm * mAnnotation->markerSymbol()->size();
 }
 
-void QgsMapCanvasAnnotationItem::paint( QPainter* painter )
+void QgsMapCanvasAnnotationItem::paint( QPainter *painter )
 {
   QgsRenderContext rc = QgsRenderContext::fromQPainter( painter );
   rc.setFlag( QgsRenderContext::Antialiasing, true );

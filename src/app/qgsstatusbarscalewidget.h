@@ -38,7 +38,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsStatusBarScaleWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
+    explicit QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
 
 
     virtual ~QgsStatusBarScaleWidget();
@@ -58,7 +58,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     /** Set the font of the text
       * @param font the font to use
       */
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
@@ -70,14 +70,14 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     void scaleLockChanged( bool );
 
   private:
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QHBoxLayout *mLayout = nullptr;
-    QToolButton* mLockButton = nullptr;
+    QToolButton *mLockButton = nullptr;
 
     //! Widget that will live on the statusbar to display "scale 1:"
-    QLabel* mLabel = nullptr;
+    QLabel *mLabel = nullptr;
     //! Widget that will live on the statusbar to display scale value
-    QgsScaleComboBox* mScale = nullptr;
+    QgsScaleComboBox *mScale = nullptr;
 };
 
 #endif // QGSSTATUSBARSCALEWIDGET_H

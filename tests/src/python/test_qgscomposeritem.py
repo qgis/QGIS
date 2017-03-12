@@ -20,14 +20,16 @@ from qgis.core import (QgsProject,
                        QgsComposerLabel,
                        QgsComposerObject,
                        QgsProperty)
-from qgis.PyQt.QtGui import (QColor)
+from qgis.PyQt.QtGui import QColor
+
+
 start_app()
 
 
 class TestQgsComposerItem(unittest.TestCase):
 
     def testDataDefinedFrameColor(self):
-        mapSettings = QgsMapSettings()
+        mapSettings = QgsMapSettings()  # NOQA
 
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
@@ -35,17 +37,17 @@ class TestQgsComposerItem(unittest.TestCase):
         item = QgsComposerLabel(composition)
         composition.addComposerLabel(item)
 
-        item.setFrameOutlineColor(QColor(255, 0, 0))
-        self.assertEqual(item.frameOutlineColor(), QColor(255, 0, 0))
+        item.setFrameStrokeColor(QColor(255, 0, 0))
+        self.assertEqual(item.frameStrokeColor(), QColor(255, 0, 0))
         self.assertEqual(item.pen().color().name(), QColor(255, 0, 0).name())
 
         item.dataDefinedProperties().setProperty(QgsComposerObject.FrameColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
-        self.assertEqual(item.frameOutlineColor(), QColor(255, 0, 0)) # should not change
+        self.assertEqual(item.frameStrokeColor(), QColor(255, 0, 0))  # should not change
         self.assertEqual(item.pen().color().name(), QColor(0, 0, 255).name())
 
     def testDataDefinedBackgroundColor(self):
-        mapSettings = QgsMapSettings()
+        mapSettings = QgsMapSettings()  # NOQA
 
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
@@ -59,8 +61,9 @@ class TestQgsComposerItem(unittest.TestCase):
 
         item.dataDefinedProperties().setProperty(QgsComposerObject.BackgroundColor, QgsProperty.fromExpression("'blue'"))
         item.refreshDataDefinedProperty()
-        self.assertEqual(item.backgroundColor(), QColor(255, 0, 0)) # should not change
+        self.assertEqual(item.backgroundColor(), QColor(255, 0, 0))  # should not change
         self.assertEqual(item.brush().color().name(), QColor(0, 0, 255).name())
+
 
 if __name__ == '__main__':
     unittest.main()

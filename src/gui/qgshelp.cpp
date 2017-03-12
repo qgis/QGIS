@@ -15,7 +15,11 @@
 
 #include "qgshelp.h"
 
-#include <QSettings>
+#include "qgis.h"
+#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgsexpressioncontext.h"
+
 #include <QUrl>
 #include <QFileInfo>
 #include <QTcpSocket>
@@ -23,22 +27,20 @@
 #include <QRegularExpression>
 #include <QNetworkProxy>
 #include <QNetworkProxyFactory>
+
 #include <memory>
 
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontext.h"
 
-void QgsHelp::openHelp( const QString& key )
+void QgsHelp::openHelp( const QString &key )
 {
   QDesktopServices::openUrl( QgsHelp::helpUrl( key ) );
 }
 
-QUrl QgsHelp::helpUrl( const QString& key )
+QUrl QgsHelp::helpUrl( const QString &key )
 {
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
-  QSettings settings;
+  QgsSettings settings;
   QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
@@ -51,7 +53,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
   QString helpPath, fullPath;
   bool helpFound = false;
 
-  Q_FOREACH ( const QString& path, paths )
+  Q_FOREACH ( const QString &path, paths )
   {
     if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
     {
@@ -62,7 +64,7 @@ QUrl QgsHelp::helpUrl( const QString& key )
       fullPath = path;
     }
 
-    Q_FOREACH ( const QString& var, scope->variableNames() )
+    Q_FOREACH ( const QString &var, scope->variableNames() )
     {
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
@@ -101,12 +103,12 @@ QUrl QgsHelp::helpUrl( const QString& key )
   return helpFound ? helpUrl : helpNotFound;
 }
 
-bool QgsHelp::urlExists( const QString& url )
+bool QgsHelp::urlExists( const QString &url )
 {
   QUrl helpUrl( url );
   QTcpSocket socket;
 
-  QSettings settings;
+  QgsSettings settings;
   bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
   if ( proxyEnabled )
   {

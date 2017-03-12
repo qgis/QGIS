@@ -43,12 +43,12 @@ class TestQgisAppPython : public QObject
     void evalString();
 
   private:
-    QgisApp * mQgisApp = nullptr;
+    QgisApp *mQgisApp = nullptr;
     QString mTestDataDir;
 };
 
 TestQgisAppPython::TestQgisAppPython()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -56,7 +56,7 @@ TestQgisAppPython::TestQgisAppPython()
 //runs before all tests
 void TestQgisAppPython::initTestCase()
 {
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );

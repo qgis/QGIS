@@ -51,7 +51,7 @@ defaultMenuEntries.update({'qgis:convexhull': geoprocessingToolsMenu,
                            'qgis:clip': geoprocessingToolsMenu,
                            'qgis:difference': geoprocessingToolsMenu,
                            'qgis:dissolve': geoprocessingToolsMenu,
-                           'qgis:eliminatesliverpolygons': geoprocessingToolsMenu})
+                           'qgis:eliminateselectedpolygons': geoprocessingToolsMenu})
 geometryToolsMenu = vectorMenu + "/" + Processing.tr('G&eometry Tools')
 defaultMenuEntries.update({'qgis:checkvalidity': geometryToolsMenu,
                            'qgis:exportaddgeometrycolumns': geometryToolsMenu,
@@ -201,7 +201,7 @@ def _executeAlgorithm(alg):
         dlg.setTitle(Processing.tr('Missing dependency'))
         dlg.setMessage(
             Processing.tr('<h3>Missing dependency. This algorithm cannot '
-                          'be run :-( </h3>\n%s') % message)
+                          'be run :-( </h3>\n{0}').format(message))
         dlg.exec_()
         return
     alg = alg.getCopy()

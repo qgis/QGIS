@@ -31,7 +31,7 @@ class QgisPlugin;
 class APP_EXPORT QgsPluginMetadata
 {
   public:
-    QgsPluginMetadata( const QString& _libraryPath, const QString& _name, QgisPlugin *_plugin );
+    QgsPluginMetadata( const QString &_libraryPath, const QString &_name, QgisPlugin *_plugin );
     QString name() const;
     QString library() const;
     QgisPlugin *plugin();

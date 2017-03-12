@@ -42,12 +42,12 @@ class TestQgsBlendModes : public QObject
 
   public:
     TestQgsBlendModes()
-        : mMapSettings( 0 )
-        , mpPointsLayer( 0 )
-        , mpPolysLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mRasterLayer1( 0 )
-        , mRasterLayer2( 0 )
+      : mMapSettings( 0 )
+      , mpPointsLayer( 0 )
+      , mpPolysLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mRasterLayer1( 0 )
+      , mRasterLayer2( 0 )
     {}
     ~TestQgsBlendModes()
     {
@@ -65,13 +65,13 @@ class TestQgsBlendModes : public QObject
     void vectorLayerTransparency();
     void rasterBlending();
   private:
-    bool imageCheck( const QString& theType ); //as above
+    bool imageCheck( const QString &type ); //as above
     QgsMapSettings *mMapSettings = nullptr;
-    QgsMapLayer * mpPointsLayer = nullptr;
-    QgsVectorLayer * mpPolysLayer = nullptr;
-    QgsVectorLayer * mpLinesLayer = nullptr;
-    QgsRasterLayer* mRasterLayer1 = nullptr;
-    QgsRasterLayer* mRasterLayer2 = nullptr;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsVectorLayer *mpLinesLayer = nullptr;
+    QgsRasterLayer *mRasterLayer1 = nullptr;
+    QgsRasterLayer *mRasterLayer2 = nullptr;
     QString mTestDataDir;
     QgsRectangle mExtent;
     QString mReport;
@@ -122,9 +122,9 @@ void TestQgsBlendModes::initTestCase()
                                       rasterFileInfo.completeBaseName() );
   mRasterLayer2 = new QgsRasterLayer( rasterFileInfo.filePath(),
                                       rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 1, 2, 3 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 1, 2, 3 );
   mRasterLayer1->setRenderer( rasterRenderer );
-  mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
+  mRasterLayer2->setRenderer( ( QgsRasterRenderer * ) rasterRenderer->clone() );
 
   // points extent was not always reliable
   mExtent = QgsRectangle( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
@@ -152,7 +152,7 @@ void TestQgsBlendModes::cleanupTestCase()
 void TestQgsBlendModes::vectorBlending()
 {
   //Add two vector layers
-  QList<QgsMapLayer*> myLayers;
+  QList<QgsMapLayer *> myLayers;
   myLayers << mpLinesLayer;
   myLayers << mpPolysLayer;
   mMapSettings->setLayers( myLayers );
@@ -173,7 +173,7 @@ void TestQgsBlendModes::vectorBlending()
 void TestQgsBlendModes::featureBlending()
 {
   //Add two vector layers
-  QList<QgsMapLayer*> myLayers;
+  QList<QgsMapLayer *> myLayers;
   myLayers << mpLinesLayer;
   myLayers << mpPolysLayer;
   mMapSettings->setLayers( myLayers );
@@ -192,7 +192,7 @@ void TestQgsBlendModes::featureBlending()
 void TestQgsBlendModes::vectorLayerTransparency()
 {
   //Add two vector layers
-  QList<QgsMapLayer*> myLayers;
+  QList<QgsMapLayer *> myLayers;
   myLayers << mpLinesLayer;
   myLayers << mpPolysLayer;
   mMapSettings->setLayers( myLayers );
@@ -211,7 +211,7 @@ void TestQgsBlendModes::vectorLayerTransparency()
 void TestQgsBlendModes::rasterBlending()
 {
   //Add two raster layers to map renderer
-  QList<QgsMapLayer*> myLayers;
+  QList<QgsMapLayer *> myLayers;
   myLayers << mRasterLayer1;
   myLayers << mRasterLayer2;
   mMapSettings->setLayers( myLayers );
@@ -226,16 +226,16 @@ void TestQgsBlendModes::rasterBlending()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsBlendModes::imageCheck( const QString& theTestType )
+bool TestQgsBlendModes::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
-  bool myResultFlag = myChecker.runTest( theTestType, 20 );
+  bool myResultFlag = myChecker.runTest( testType, 20 );
   mReport += myChecker.report();
   return myResultFlag;
 }

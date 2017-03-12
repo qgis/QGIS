@@ -20,14 +20,14 @@
 
 QgsCredentials *QgsCredentials::sInstance = nullptr;
 
-void QgsCredentials::setInstance( QgsCredentials *theInstance )
+void QgsCredentials::setInstance( QgsCredentials *instance )
 {
   if ( sInstance )
   {
     QgsDebugMsg( "already registered an instance of QgsCredentials" );
   }
 
-  sInstance = theInstance;
+  sInstance = instance;
 }
 
 QgsCredentials *QgsCredentials::instance()
@@ -42,7 +42,7 @@ QgsCredentials::QgsCredentials()
 {
 }
 
-bool QgsCredentials::get( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentials::get( const QString &realm, QString &username, QString &password, const QString &message )
 {
   if ( mCredentialCache.contains( realm ) )
   {
@@ -67,13 +67,13 @@ bool QgsCredentials::get( const QString& realm, QString &username, QString &pass
   }
 }
 
-void QgsCredentials::put( const QString& realm, const QString& username, const QString& password )
+void QgsCredentials::put( const QString &realm, const QString &username, const QString &password )
 {
   QgsDebugMsg( QString( "inserting realm:%1 username:%2 password:%3" ).arg( realm, username, password ) );
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
-bool QgsCredentials::getMasterPassword( QString &password , bool stored )
+bool QgsCredentials::getMasterPassword( QString &password, bool stored )
 {
   if ( requestMasterPassword( password, stored ) )
   {
@@ -102,7 +102,7 @@ QgsCredentialsNone::QgsCredentialsNone()
   setInstance( this );
 }
 
-bool QgsCredentialsNone::request( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentialsNone::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
   Q_UNUSED( realm );
   Q_UNUSED( username );
@@ -126,7 +126,7 @@ QgsCredentialsConsole::QgsCredentialsConsole()
   setInstance( this );
 }
 
-bool QgsCredentialsConsole::request( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentialsConsole::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
   QTextStream in( stdin, QIODevice::ReadOnly );
   QTextStream out( stdout, QIODevice::WriteOnly );

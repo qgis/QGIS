@@ -30,15 +30,15 @@
 #define LABEL_SIZE 20 //label rect height
 #define LABEL_MARGIN 4 //spacing between label box and text
 
-QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context, QWidget *parent )
-    : QWidget( parent )
-    , mScheme( scheme )
-    , mContext( context )
-    , mDrawBoxDepressed( false )
-    , mCurrentHoverBox( -1 )
-    , mFocused( false )
-    , mCurrentFocusBox( 0 )
-    , mPressedOnWidget( false )
+QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context, QWidget *parent )
+  : QWidget( parent )
+  , mScheme( scheme )
+  , mContext( context )
+  , mDrawBoxDepressed( false )
+  , mCurrentHoverBox( -1 )
+  , mFocused( false )
+  , mCurrentFocusBox( 0 )
+  , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -239,7 +239,7 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 
 int QgsColorSwatchGrid::calculateHeight() const
 {
-  int numberRows = ceil(( double )mColors.length() / NUMBER_COLORS_PER_ROW );
+  int numberRows = ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
   return numberRows * ( SWATCH_SIZE ) + ( numberRows - 1 ) * SWATCH_SPACING + TOP_MARGIN + LABEL_SIZE + BOTTOM_MARGIN;
 }
 
@@ -279,7 +279,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     }
 
     //start with checkboard pattern for semi-transparent colors
-    if (( *colorIt ).first.alpha() != 255 )
+    if ( ( *colorIt ).first.alpha() != 255 )
     {
       QBrush checkBrush = QBrush( transparentBackground() );
       painter.setPen( Qt::NoPen );
@@ -303,7 +303,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     {
       painter.setPen( highlight );
     }
-    else if (( *colorIt ).first.name() == mBaseColor.name() )
+    else if ( ( *colorIt ).first.name() == mBaseColor.name() )
     {
       //currently active color
       painter.setPen( QColor( 75, 75, 75 ) );
@@ -313,7 +313,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
       painter.setPen( QColor( 197, 197, 197 ) );
     }
 
-    painter.setBrush(( *colorIt ).first );
+    painter.setBrush( ( *colorIt ).first );
     painter.drawRect( swatchRect );
 
     index++;
@@ -353,11 +353,11 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 //
 
 
-QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu *menu, const QString& context, QWidget *parent )
-    : QWidgetAction( parent )
-    , mMenu( menu )
-    , mSuppressRecurse( false )
-    , mDismissOnColorSelection( true )
+QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu, const QString &context, QWidget *parent )
+  : QWidgetAction( parent )
+  , mMenu( menu )
+  , mSuppressRecurse( false )
+  , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 

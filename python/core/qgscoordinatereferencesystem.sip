@@ -168,20 +168,20 @@ class QgsCoordinateReferenceSystem
      * - "WKT:<wkt>" - handled with createFromWkt()
      *
      * If no prefix is specified, WKT definition is assumed.
-     * @param theDefinition A String containing a coordinate reference system definition.
+     * @param definition A String containing a coordinate reference system definition.
      * @see createFromString()
      */
     // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
-    explicit QgsCoordinateReferenceSystem( const QString& theDefinition );
+    explicit QgsCoordinateReferenceSystem( const QString& definition );
 
     /** Constructor a CRS object using a postgis SRID, an EPSG code or an internal QGIS CRS ID.
      * @note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
-     * @param theId The ID valid for the chosen CRS ID type
-     * @param theType One of the types described in CrsType
+     * @param id The ID valid for the chosen CRS ID type
+     * @param type One of the types described in CrsType
      */
-    // TODO QGIS 3: remove theType and always use EPSG code
-    QgsCoordinateReferenceSystem( const long theId, CrsType theType = PostgisCrsId );
+    // TODO QGIS 3: remove type and always use EPSG code
+    QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
 
     static QList< long > validSrsIds();
 
@@ -234,8 +234,8 @@ class QgsCoordinateReferenceSystem
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      * @return True on success else false
      */
-    // TODO QGIS 3: remove theType and always use EPSG code, rename to createFromEpsg
-    bool createFromId( const long theId, CrsType theType = PostgisCrsId );
+    // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
+    bool createFromId( const long id, CrsType type = PostgisCrsId );
 
     /**
      * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
@@ -247,14 +247,14 @@ class QgsCoordinateReferenceSystem
      * @return True on success else false
      */
     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
-    bool createFromOgcWmsCrs( const QString& theCrs );
+    bool createFromOgcWmsCrs( const QString& crs );
 
     /** Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
-     * @param theSrid The postgis SRID for the desired spatial reference system.
+     * @param srid The postgis SRID for the desired spatial reference system.
      * @return True on success else false
      */
     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
-    bool createFromSrid( const long theSrid );
+    bool createFromSrid( const long srid );
 
     /** Sets this CRS using a WKT definition.
      *
@@ -264,20 +264,20 @@ class QgsCoordinateReferenceSystem
      * set up the object.
      * @note Some members may be left blank if no match can be found in CRS database.
      * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
-     * @param theWkt The WKT for the desired spatial reference system.
+     * @param wkt The WKT for the desired spatial reference system.
      * @return True on success else false
      */
-    bool createFromWkt( const QString &theWkt );
+    bool createFromWkt( const QString &wkt );
 
     /** Sets this CRS by lookup of internal QGIS CRS ID in the CRS database.
      *
      * If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
      * user's local CRS database from home directory is used.
      * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
-     * @param theSrsId The internal QGIS CRS ID for the desired spatial reference system.
+     * @param srsId The internal QGIS CRS ID for the desired spatial reference system.
      * @return True on success else false
      */
-    bool createFromSrsId( const long theSrsId );
+    bool createFromSrsId( const long srsId );
 
     /** Sets this CRS by passing it a PROJ.4 style formatted string.
      *
@@ -297,10 +297,10 @@ class QgsCoordinateReferenceSystem
      *
      * @note Some members may be left blank if no match can be found in CRS database.
      * @note this method uses an internal cache. Call invalidateCache() to clear the cache.
-     * @param theProjString A proj4 format string
+     * @param projString A proj4 format string
      * @return True on success else false
      */
-    bool createFromProj4( const QString &theProjString );
+    bool createFromProj4( const QString &projString );
 
     /** Set up this CRS from a string definition.
      *
@@ -312,10 +312,10 @@ class QgsCoordinateReferenceSystem
      * - "WKT:<wkt>" - handled with createFromWkt()
      *
      * If no prefix is specified, WKT definition is assumed.
-     * @param theDefinition A String containing a coordinate reference system definition.
+     * @param definition A String containing a coordinate reference system definition.
      * @return True on success else false
      */
-    bool createFromString( const QString &theDefinition );
+    bool createFromString( const QString &definition );
 
     /** Set up this CRS from various text formats.
      *
@@ -328,11 +328,11 @@ class QgsCoordinateReferenceSystem
      * ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
      * @note this function generates a WKT string using OSRSetFromUserInput() and
      * passes it to createFromWkt() function.
-     * @param theDefinition A String containing a coordinate reference system definition.
+     * @param definition A String containing a coordinate reference system definition.
      * @return True on success else false
      */
     // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
-    bool createFromUserInput( const QString &theDefinition );
+    bool createFromUserInput( const QString &definition );
 
     /** Make sure that ESRI WKT import is done properly.
      * This is required for proper shapefile CRS import when using gdal>= 1.9.
@@ -372,24 +372,24 @@ class QgsCoordinateReferenceSystem
      *
      *  Internally it will use authid() for comparison.
      */
-    bool operator==( const QgsCoordinateReferenceSystem &theSrs ) const;
+    bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
     /** Overloaded != operator used to compare to CRS's.
      *
      *  Returns opposite bool value to operator ==
      */
-    bool operator!=( const QgsCoordinateReferenceSystem &theSrs ) const;
+    bool operator!=( const QgsCoordinateReferenceSystem &srs ) const;
 
     /** Restores state from the given DOM node.
-     * @param theNode The node from which state will be restored
+     * @param node The node from which state will be restored
      * @return bool True on success, False on failure
      */
-    bool readXml( const QDomNode & theNode );
+    bool readXml( const QDomNode & node );
     /** Stores state to the given Dom node in the given document.
-     * @param theNode The node in which state will be restored
-     * @param theDoc The document in which state will be stored
+     * @param node The node in which state will be restored
+     * @param doc The document in which state will be stored
      * @return bool True on success, False on failure
      */
-    bool writeXml( QDomNode & theNode, QDomDocument & theDoc ) const;
+    bool writeXml( QDomNode & node, QDomDocument & doc ) const;
 
 
     /** Sets custom function to force valid CRS

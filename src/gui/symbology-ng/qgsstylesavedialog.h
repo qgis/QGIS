@@ -38,7 +38,7 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
      * @param parent parent widget
      * @param type the QgsStyle entity type being saved
      */
-    QgsStyleSaveDialog( QWidget* parent = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
+    QgsStyleSaveDialog( QWidget *parent = nullptr, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 
     //! returns the text value of the name element
     QString name() const;

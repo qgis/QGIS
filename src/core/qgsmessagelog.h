@@ -52,16 +52,16 @@ class CORE_EXPORT QgsMessageLog : public QObject
     QgsMessageLog();
 
     //! add a message to the instance (and create it if necessary)
-    static void logMessage( const QString& message, const QString& tag = QString::null, MessageLevel level = WARNING );
+    static void logMessage( const QString &message, const QString &tag = QString::null, MessageLevel level = WARNING );
 
   signals:
-    void messageReceived( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
+    void messageReceived( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 
     void messageReceived( bool received );
 
   private:
 
-    void emitMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
+    void emitMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 
 };
 
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     QgsMessageLogConsole();
 
   public slots:
-    void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 };
 
 #endif

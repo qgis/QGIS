@@ -189,23 +189,16 @@ class QgsExpressionContextScope
      */
     QStringList functionNames() const;
 
-    /** Adds a function to the scope.
-     * @param name function name
-     * @param function function to insert. Ownership is transferred to the scope.
-     * @see addVariable()
-     */
     void addFunction( const QString& name, QgsScopedExpressionFunction* function /Transfer/ );
 
-    /** Convenience function for setting a feature for the scope. Any existing
-     * feature set by the scope will be overwritten.
-     * @param feature feature for scope
-     */
+    bool hasFeature() const;
+
+    QgsFeature feature() const;
+
     void setFeature( const QgsFeature& feature );
 
-    /** Convenience function for setting a fields for the scope. Any existing
-     * fields set by the scope will be overwritten.
-     * @param fields fields for scope
-     */
+    void removeFeature();
+
     void setFields( const QgsFields& fields );
 };
 
@@ -414,9 +407,7 @@ class QgsExpressionContext
      */
     void setFeature( const QgsFeature& feature );
 
-    /** Convenience function for retrieving the feature for the context, if set.
-     * @see setFeature
-     */
+    bool hasFeature() const;
     QgsFeature feature() const;
 
     /** Convenience function for setting a fields for the context. The fields
@@ -481,8 +472,6 @@ class QgsExpressionContext
 
     //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;
-    //! Inbuilt variable name for feature storage
-    static const QString EXPR_FEATURE;
     //! Inbuilt variable name for value original value variable
     static const QString EXPR_ORIGINAL_VALUE;
     //! Inbuilt variable name for symbol color variable

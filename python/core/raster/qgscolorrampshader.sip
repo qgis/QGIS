@@ -22,14 +22,14 @@ class QgsColorRampShader : QgsRasterShaderFunction
     };
 
     /** Creates a new color ramp shader.
-     * @param theMinimumValue minimum value for the raster shader
-     * @param theMaximumValue maximum value for the raster shader
-     * @param theType interpolation type used
-     * @param theClassificationMode method used to classify the color ramp shader
-     * @param theColorRamp vector color ramp used to classify the color ramp shader
+     * @param minimumValue minimum value for the raster shader
+     * @param maximumValue maximum value for the raster shader
+     * @param type interpolation type used
+     * @param classificationMode method used to classify the color ramp shader
+     * @param colorRamp vector color ramp used to classify the color ramp shader
      * @returns new QgsColorRampShader
      */
-    QgsColorRampShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0, QgsColorRamp* theColorRamp = nullptr, Type theType = Interpolated, ClassificationMode theClassificationMode = Continuous );
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp* colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 
     ~QgsColorRampShader();
 
@@ -74,13 +74,13 @@ class QgsColorRampShader : QgsRasterShaderFunction
     QString colorRampTypeAsQString();
 
     /** \brief Set custom colormap */
-    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
+    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& list ); //TODO: sort on set
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QgsColorRampShader::Type theColorRampType );
+    void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( const QString& theType );
+    void setColorRampType( const QString& type );
 
     /** Classify color ramp shader
      * @param classes number of classes

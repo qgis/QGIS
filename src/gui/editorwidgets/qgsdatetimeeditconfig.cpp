@@ -18,8 +18,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsdatetimefieldformatter.h"
 
-QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -77,7 +77,7 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 }
 
 
-void QgsDateTimeEditConfig::updateDisplayFormat( const QString& fieldFormat )
+void QgsDateTimeEditConfig::updateDisplayFormat( const QString &fieldFormat )
 {
   if ( mDisplayFormatComboBox->currentIndex() == 0 )
   {
@@ -146,6 +146,6 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
     mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ) , false ).toBool() );
+  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ), false ).toBool() );
   mAllowNullCheckBox->setChecked( config.value( QStringLiteral( "allow_null" ), true ).toBool() );
 }

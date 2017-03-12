@@ -21,11 +21,11 @@
 #include "qgsauthmanager.h"
 
 
-QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg , bool allowEmpty )
-    : QWidget( parent )
-    , mAuthCfgOrig( authcfg )
-    , mValid( false )
-    , mAllowEmpty( allowEmpty )
+QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
+  : QWidget( parent )
+  , mAuthCfgOrig( authcfg )
+  , mValid( false )
+  , mAllowEmpty( allowEmpty )
 {
   setupUi( this );
 
@@ -49,8 +49,8 @@ const QString QgsAuthConfigIdEdit::configId()
 bool QgsAuthConfigIdEdit::validate()
 {
   QString authcfg( leAuthCfg->text() );
-  bool curvalid = (( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
-                   || ( mAllowEmpty && authcfg.isEmpty() ) );
+  bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
+                    || ( mAllowEmpty && authcfg.isEmpty() ) );
 
   if ( !QgsAuthManager::instance()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
   {

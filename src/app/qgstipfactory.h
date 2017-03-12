@@ -43,13 +43,13 @@ class APP_EXPORT QgsTipFactory : public QObject
     QgsTip getTip();
 
     /** Get a specific tip (generic or gui-centric).
-     * @param thePosition The tip returned will be based on the
-     *        number passed in as thePosition. If the
+     * @param position The tip returned will be based on the
+     *        number passed in as position. If the
      *        position is invalid, an empty string will be
      *        returned.
      * @return An QgsTip containing the tip
      */
-    QgsTip getTip( int thePosition );
+    QgsTip getTip( int position );
 
     /** Get a random generic tip
      * @return An QgsTip containing the tip
@@ -65,9 +65,9 @@ class APP_EXPORT QgsTipFactory : public QObject
     int count();
 
   private:
-    void addGenericTip( const QgsTip& );
-    void addGuiTip( const QgsTip& );
-    int randomNumber( int theMax );
+    void addGenericTip( const QgsTip & );
+    void addGuiTip( const QgsTip & );
+    int randomNumber( int max );
     //@TODO move tipts into a sqlite db
     QList <QgsTip> mGenericTips;
     QList <QgsTip> mGuiTips;

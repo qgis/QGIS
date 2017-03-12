@@ -32,7 +32,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.tools import spatialite
 
-from qgis.core import QgsDataSourceUri, QgsMessageLog
+from qgis.core import QgsDataSourceUri
 
 
 class SpatialiteExecuteSQL(GeoAlgorithm):
@@ -59,4 +59,4 @@ class SpatialiteExecuteSQL(GeoAlgorithm):
             self.db._exec_sql_and_commit(str(sql))
         except spatialite.DbError as e:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error executing SQL:\n%s') % str(e))
+                self.tr('Error executing SQL:\n{0}').format(str(e)))

@@ -17,47 +17,47 @@
 
 #include "qgsdetaileditemdata.h"
 QgsDetailedItemData::QgsDetailedItemData()
-    : mCheckableFlag( false )
-    , mCheckedFlag( false )
-    , mEnabledFlag( true )
-    , mRenderAsWidgetFlag( false )
+  : mCheckableFlag( false )
+  , mCheckedFlag( false )
+  , mEnabledFlag( true )
+  , mRenderAsWidgetFlag( false )
 {
 
 }
 
-void QgsDetailedItemData::setTitle( const QString& theTitle )
+void QgsDetailedItemData::setTitle( const QString &title )
 {
-  mTitle = theTitle;
+  mTitle = title;
 }
 
-void QgsDetailedItemData::setDetail( const QString& theDetail )
+void QgsDetailedItemData::setDetail( const QString &detail )
 {
-  mDetail = theDetail;
+  mDetail = detail;
 }
 
-void QgsDetailedItemData::setCategory( const QString& theCategory )
+void QgsDetailedItemData::setCategory( const QString &category )
 {
-  mCategory = theCategory;
+  mCategory = category;
 }
 
-void QgsDetailedItemData::setIcon( const QPixmap& theIcon )
+void QgsDetailedItemData::setIcon( const QPixmap &icon )
 {
-  mPixmap = theIcon;
+  mPixmap = icon;
 }
 
-void QgsDetailedItemData::setCheckable( const bool theFlag )
+void QgsDetailedItemData::setCheckable( const bool flag )
 {
-  mCheckableFlag = theFlag;
+  mCheckableFlag = flag;
 }
 
-void QgsDetailedItemData::setChecked( const bool theFlag )
+void QgsDetailedItemData::setChecked( const bool flag )
 {
-  mCheckedFlag = theFlag;
+  mCheckedFlag = flag;
 }
 
-void QgsDetailedItemData::setRenderAsWidget( const bool theFlag )
+void QgsDetailedItemData::setRenderAsWidget( const bool flag )
 {
-  mRenderAsWidgetFlag = theFlag;
+  mRenderAsWidgetFlag = flag;
 }
 
 QString QgsDetailedItemData::title() const
@@ -95,9 +95,9 @@ bool QgsDetailedItemData::isRenderedAsWidget() const
   return mRenderAsWidgetFlag;
 }
 
-void QgsDetailedItemData::setEnabled( bool theFlag )
+void QgsDetailedItemData::setEnabled( bool flag )
 {
-  mEnabledFlag = theFlag;
+  mEnabledFlag = flag;
 }
 
 bool QgsDetailedItemData::isEnabled() const

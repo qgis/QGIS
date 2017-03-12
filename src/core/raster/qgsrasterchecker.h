@@ -36,13 +36,13 @@ class CORE_EXPORT QgsRasterChecker
 
     /**
      * Test using renderer to generate the image to be compared.
-     * @param theVerifiedKey verified provider key
-     * @param theVerifiedUri URI of the raster to be verified
-     * @param theExpectedKey expected provider key
-     * @param theExpectedUri URI of the expected (control) raster
+     * @param verifiedKey verified provider key
+     * @param verifiedUri URI of the raster to be verified
+     * @param expectedKey expected provider key
+     * @param expectedUri URI of the expected (control) raster
      */
-    bool runTest( const QString& theVerifiedKey, QString theVerifiedUri,
-                  const QString& theExpectedKey, QString theExpectedUri );
+    bool runTest( const QString &verifiedKey, QString verifiedUri,
+                  const QString &expectedKey, QString expectedUri );
   private:
     QString mReport;
     QString mExpectedUri;
@@ -54,13 +54,13 @@ class CORE_EXPORT QgsRasterChecker
     QString mErrMsgStyle;
 
     // Log error in html
-    void error( const QString& theMessage, QString &theReport );
+    void error( const QString &message, QString &report );
     // compare values and add table row in html report, set ok to false if not equal
     QString compareHead();
-    bool compare( double verifiedVal, double expectedVal, double theTolerance );
-    void compare( const QString& theParamName, int verifiedVal, int expectedVal, QString &theReport, bool &theOk );
-    void compare( const QString& theParamName, double verifiedVal, double expectedVal, QString &theReport, bool &theOk, double theTolerance = 0 );
-    void compareRow( const QString& theParamName, const QString& verifiedVal, const QString& expectedVal, QString &theReport, bool theOk, const QString& theDifference = "", const QString& theTolerance = "" );
+    bool compare( double verifiedVal, double expectedVal, double tolerance );
+    void compare( const QString &paramName, int verifiedVal, int expectedVal, QString &report, bool &ok );
+    void compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance = 0 );
+    void compareRow( const QString &paramName, const QString &verifiedVal, const QString &expectedVal, QString &report, bool ok, const QString &difference = "", const QString &tolerance = "" );
     double tolerance( double val, int places = 6 );
 }; // class QgsRasterChecker
 

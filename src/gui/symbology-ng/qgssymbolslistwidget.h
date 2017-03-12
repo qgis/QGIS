@@ -37,7 +37,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol* symbol, QgsStyle* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = nullptr );
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, const QgsVectorLayer *layer = nullptr );
 
 
     virtual ~QgsSymbolsListWidget();
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
      * @see context()
      * @note added in QGIS 3.0
      */
-    void setContext( const QgsSymbolWidgetContext& context );
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
@@ -58,19 +58,19 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* layer() const { return mLayer; }
+    const QgsVectorLayer *layer() const { return mLayer; }
 
   public slots:
 
-    void setSymbolFromStyle( const QModelIndex & index );
-    void setSymbolColor( const QColor& color );
+    void setSymbolFromStyle( const QModelIndex &index );
+    void setSymbolColor( const QColor &color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
     void saveSymbol();
 
-    void symbolAddedToStyle( const QString& name, QgsSymbol* symbol );
+    void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
     void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
@@ -94,16 +94,16 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateAssistantSymbol();
 
   private:
-    QgsSymbol* mSymbol = nullptr;
+    QgsSymbol *mSymbol = nullptr;
     std::shared_ptr< QgsSymbol > mAssistantSymbol;
-    QgsStyle* mStyle = nullptr;
-    QMenu* mAdvancedMenu = nullptr;
-    QAction* mClipFeaturesAction = nullptr;
-    const QgsVectorLayer* mLayer = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsStyle *mStyle = nullptr;
+    QMenu *mAdvancedMenu = nullptr;
+    QAction *mClipFeaturesAction = nullptr;
+    const QgsVectorLayer *mLayer = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     void populateSymbolView();
-    void populateSymbols( const QStringList& symbols );
+    void populateSymbols( const QStringList &symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
 
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsSymbolWidgetContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
-    void registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsSymbolLayer::Property key );
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H

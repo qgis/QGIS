@@ -31,16 +31,13 @@ import json
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QSize, QByteArray, QSettings
-from qgis.PyQt.QtGui import QIcon, QCursor
-from qgis.PyQt.QtWidgets import (QMenu,
-                                 QAction,
-                                 QToolButton,
-                                 QMessageBox,
+from qgis.PyQt.QtCore import Qt, QSize, QByteArray
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QFileDialog,
                                  QApplication)
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -49,6 +46,7 @@ from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
+from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -70,7 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
-        settings = QSettings()
+        settings = QgsSettings()
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
@@ -169,11 +167,20 @@ class ScriptEditorDialog(BASE, WIDGET):
                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No
                                        )
             if ret == QMessageBox.Yes:
+                self.updateProviders()
                 evt.accept()
             else:
                 evt.ignore()
         else:
+            self.updateProviders()
             evt.accept()
+
+    def updateProviders(self):
+        if self.update:
+            if self.algType == self.SCRIPT_PYTHON:
+                algList.reloadProvider('script')
+            elif self.algType == self.SCRIPT_R:
+                algList.reloadProvider('r')
 
     def editHelp(self):
         if self.alg is None:

@@ -47,12 +47,12 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      * Construct an optional expression with the provided expression.
      * It will be enabled.
      */
-    QgsOptionalExpression( const QgsExpression& expression );
+    QgsOptionalExpression( const QgsExpression &expression );
 
     /**
      * Construct an optional expression with the provided expression and enabled state.
      */
-    QgsOptionalExpression( const QgsExpression& expression, bool enabled );
+    QgsOptionalExpression( const QgsExpression &expression, bool enabled );
 
     /**
      * Save the optional expression to the provided QDomElement.
@@ -62,14 +62,14 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      *
      * @note Added in QGIS 2.18
      */
-    void writeXml( QDomElement& element );
+    void writeXml( QDomElement &element );
 
     /**
      * Read the optional expression from the provided QDomElement.
      *
      * @note Added in QGIS 2.18
      */
-    void readXml( const QDomElement& element );
+    void readXml( const QDomElement &element );
 };
 
 #if defined(Q_OS_WIN)

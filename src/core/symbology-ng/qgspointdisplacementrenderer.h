@@ -40,16 +40,16 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     /** Constructor for QgsPointDisplacementRenderer.
      * @param labelAttributeName optional attribute name for labeling points
      */
-    QgsPointDisplacementRenderer( const QString& labelAttributeName = QString() );
+    QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
-    QgsPointDisplacementRenderer* clone() const override;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-    void stopRender( QgsRenderContext& context ) override;
-    QDomElement save( QDomDocument& doc ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    QgsPointDisplacementRenderer *clone() const override;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    QDomElement save( QDomDocument &doc ) override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Create a renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& symbologyElem );
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem );
 
     /** Sets the line width for the displacement group circle.
      * @param width line width in mm
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
      * @see circleColor()
      * @see setCircleWidth()
      */
-    void setCircleColor( const QColor& color ) { mCircleColor = color; }
+    void setCircleColor( const QColor &color ) { mCircleColor = color; }
 
     /** Returns the color used for drawing the displacement group circle.
      * @see setCircleColor()
@@ -104,19 +104,19 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     /** Returns the symbol for the center of a displacement group (but not ownership of the symbol).
      * @see setCenterSymbol()
     */
-    QgsMarkerSymbol* centerSymbol();
+    QgsMarkerSymbol *centerSymbol();
 
     /** Sets the center symbol for a displacement group.
      * @param symbol new center symbol. Ownership is transferred to the renderer.
      * @see centerSymbol()
     */
-    void setCenterSymbol( QgsMarkerSymbol* symbol );
+    void setCenterSymbol( QgsMarkerSymbol *symbol );
 
     /** Creates a QgsPointDisplacementRenderer from an existing renderer.
      * @note added in 2.5
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointDisplacementRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 
@@ -133,12 +133,12 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     //! Addition to the default circle radius
     double mCircleRadiusAddition;
 
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group ) override;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override;
 
     //helper functions
-    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts , double &circleRadius ) const;
-    void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext& context, QPointF centerPoint, int nSymbols );
-    void drawSymbols( const ClusteredGroup& group, QgsRenderContext& context, const QList<QPointF>& symbolPositions );
+    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius ) const;
+    void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols );
+    void drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions );
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERER_H

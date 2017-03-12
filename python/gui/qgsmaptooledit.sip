@@ -30,6 +30,10 @@ class QgsMapToolEdit: QgsMapTool
     double defaultZValue() const;
   protected:
 
+    static QColor digitizingStrokeColor();
+    static int digitizingStrokeWidth();
+    static QColor digitizingFillColor();
+
     /** Creates a rubber band with the color/line width from
      *   the QGIS settings. The caller takes ownership of the
      *   returned object

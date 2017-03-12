@@ -44,11 +44,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     const QString editorWidgetText();
 
-    void setEditorWidgetType( const QString& type );
+    void setEditorWidgetType( const QString &type );
 
     const QVariantMap editorWidgetConfig();
 
-    void setEditorWidgetConfig( const QVariantMap& config );
+    void setEditorWidgetConfig( const QVariantMap &config );
 
     /**
      * Setter for checkbox to label on top
@@ -161,7 +161,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Sets the expression used for the field's default value
      */
-    void setDefaultValueExpression( const QString& expression );
+    void setDefaultValueExpression( const QString &expression );
 
   private slots:
 
@@ -180,7 +180,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     QVariantMap mWidgetConfig;
 
     //! Cached configuration dialog (lazy loaded)
-    QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;
+    QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
 
     QgsFeature mPreviewFeature;
 };

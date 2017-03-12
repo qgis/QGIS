@@ -613,3 +613,109 @@ tests:
       OUTPUT:
         hash: cbf7b8ca91e7d6cab5ef76eeed6ce80e5dbe173afb7b8eb4aed2e969
         type: rasterhash
+
+  - algorithm: gdal:proximity
+    name: Proximity raster
+    params:
+      BUF_VAL: -1
+      INPUT:
+        name: custom/dem_boolean.tif
+        type: raster
+      MAX_DIST: -1
+      NODATA: -1
+      RTYPE: '5'
+      UNITS: '0'
+      VALUES: '1'
+    results:
+      OUTPUT:
+        hash: a497763f44380ec33acab572a926a6516e875f2284fc55e702abbdfc
+        type: rasterhash
+
+  - algorithm: gdal:rastercalculator
+    name: Simple Raster Calculator test with only 1 raster
+    params:
+      BAND_A: '1'
+      FORMULA: A/2
+      INPUT_A:
+        name: dem.tif
+        type: raster
+      RTYPE: '5'
+    results:
+      OUTPUT:
+        hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
+        type: rasterhash
+
+  - algorithm: gdal:gridinvdist
+    name: IDW interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      MAX_POINTS: 0.0
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      POWER: 2.0
+      RADIUS_1: 0.0
+      RADIUS_2: 0.0
+      RTYPE: '5'
+      SMOTHING: 0.0
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 2033731d6fd653da391a2633158f0ea755d96e1b2b2c60a9100332b1
+        type: rasterhash
+
+  - algorithm: gdal:griddatametrics
+    name: Data Metrics interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      METRIC: '1'
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.02
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 220953299b18286b57ce093a054323e59add7c78c0429a02e51b4ad4
+        type: rasterhash
+
+  - algorithm: gdal:gridaverage
+    name: Moving Average interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.01
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
+        type: rasterhash
+
+  - algorithm: gdal:gridnearestneighbor
+    name: Nearest Neighbor interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.02
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
+        type: rasterhash

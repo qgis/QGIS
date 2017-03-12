@@ -14,9 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsAttributeTableConfig,
-                       QgsVectorLayer
-                       )
+from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -113,6 +111,7 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
 
     def testMapVisibleColumn(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -26,7 +26,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
 {
     Q_OBJECT
   public:
-    explicit QgsWfsCapabilities( const QString& theUri );
+    explicit QgsWfsCapabilities( const QString &uri );
     virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
@@ -58,7 +58,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QString type;
 
       //! constructor
-      Argument( const QString& nameIn = QString(), const QString& typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
+      Argument( const QString &nameIn = QString(), const QString &typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
     };
 
     //! description of server functions
@@ -76,9 +76,9 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QList<Argument> argumentList;
 
       //! constructor with name and fixed number of arguments
-      Function( const QString& nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
+      Function( const QString &nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
       //! constructor with name and min,max number of arguments
-      Function( const QString& nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
+      Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
       Function() : minArgs( -1 ), maxArgs( -1 ) {}
     };
@@ -103,11 +103,11 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QSet< QString > setAmbiguousUnprefixedTypename;
 
       void clear();
-      QString addPrefixIfNeeded( const QString& name ) const;
+      QString addPrefixIfNeeded( const QString &name ) const;
     };
 
     //! return parsed capabilities - requestCapabilities() must be called before
-    const Capabilities& capabilities() const { return mCaps; }
+    const Capabilities &capabilities() const { return mCaps; }
 
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred */
@@ -117,19 +117,19 @@ class QgsWfsCapabilities : public QgsWfsRequest
     void capabilitiesReplyFinished();
 
   protected:
-    virtual QString errorMessageWithReason( const QString& reason ) override;
+    virtual QString errorMessageWithReason( const QString &reason ) override;
     virtual int defaultExpirationInSec() override;
 
   private:
     Capabilities mCaps;
 
     //! Takes <Operations> element and updates the capabilities
-    void parseSupportedOperations( const QDomElement& operationsElem,
-                                   bool& insertCap,
-                                   bool& updateCap,
-                                   bool& deleteCap );
+    void parseSupportedOperations( const QDomElement &operationsElem,
+                                   bool &insertCap,
+                                   bool &updateCap,
+                                   bool &deleteCap );
 
-    void parseFilterCapabilities( const QDomElement& filterCapabilitiesElem );
+    void parseFilterCapabilities( const QDomElement &filterCapabilitiesElem );
 
     static QString NormalizeSRSName( QString crsName );
 };

@@ -24,7 +24,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
     /** Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
-    void setGradient( Gradient theGradient );
+    void setGradient( Gradient gradient );
     Gradient gradient() const;
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;

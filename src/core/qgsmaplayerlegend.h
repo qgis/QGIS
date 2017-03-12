@@ -45,18 +45,18 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
      * Return list of legend nodes to be used for a particular layer tree layer node.
      * Ownership is transferred to the caller.
      */
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) = 0;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0;
 
     // TODO: support for layer tree view delegates
 
     //! Create new legend implementation for vector layer
-    static QgsMapLayerLegend* defaultVectorLegend( QgsVectorLayer* vl );
+    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl );
 
     //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend* defaultRasterLegend( QgsRasterLayer* rl );
+    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl );
 
     //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend* defaultPluginLegend( QgsPluginLayer* pl );
+    static QgsMapLayerLegend *defaultPluginLegend( QgsPluginLayer *pl );
 
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
@@ -72,16 +72,16 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 class CORE_EXPORT QgsMapLayerLegendUtils
 {
   public:
-    static void setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, const QList<int>& order );
-    static QList<int> legendNodeOrder( QgsLayerTreeLayer* nodeLayer );
-    static bool hasLegendNodeOrder( QgsLayerTreeLayer* nodeLayer );
+    static void setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order );
+    static QList<int> legendNodeOrder( QgsLayerTreeLayer *nodeLayer );
+    static bool hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer );
 
-    static void setLegendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex, const QString& newLabel );
-    static QString legendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex );
-    static bool hasLegendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex );
+    static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
+    static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+    static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
     //! update according to layer node's custom properties (order of items, user labels for items)
-    static void applyLayerNodeProperties( QgsLayerTreeLayer* nodeLayer, QList<QgsLayerTreeModelLegendNode*>& nodes );
+    static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 };
 
 
@@ -96,12 +96,12 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     Q_OBJECT
 
   public:
-    explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
+    explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) override;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) override;
 
   private:
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 
@@ -114,12 +114,12 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
     Q_OBJECT
 
   public:
-    explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
+    explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) override;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) override;
 
   private:
-    QgsRasterLayer* mLayer = nullptr;
+    QgsRasterLayer *mLayer = nullptr;
 };
 
 
@@ -132,12 +132,12 @@ class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
     Q_OBJECT
 
   public:
-    explicit QgsDefaultPluginLayerLegend( QgsPluginLayer* pl );
+    explicit QgsDefaultPluginLayerLegend( QgsPluginLayer *pl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) override;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) override;
 
   private:
-    QgsPluginLayer* mLayer = nullptr;
+    QgsPluginLayer *mLayer = nullptr;
 };
 
 #endif // QGSMAPLAYERLEGEND_H

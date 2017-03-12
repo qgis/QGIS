@@ -31,26 +31,26 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 {
     Q_OBJECT
   public:
-    QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
-    QgsRasterRenderer* renderer() override;
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+    QgsRasterRenderer *renderer() override;
+    void setMapCanvas( QgsMapCanvas *canvas ) override;
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 
     QString min( int index = 0 ) override { Q_UNUSED( index ); return mMinLineEdit->text(); }
     QString max( int index = 0 ) override { Q_UNUSED( index ); return mMaxLineEdit->text(); }
-    void setMin( const QString& value, int index = 0 ) override;
-    void setMax( const QString& value, int index = 0 ) override;
+    void setMin( const QString &value, int index = 0 ) override;
+    void setMax( const QString &value, int index = 0 ) override;
     int selectedBand( int index = 0 ) override { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
     void doComputations() override;
-    QgsRasterMinMaxWidget* minMaxWidget() override { return mMinMaxWidget; }
+    QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
 
   public slots:
     //! called when new min/max values are loaded
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int bandNo, double min, double max );
 
   private slots:
     void on_mGrayBandComboBox_currentIndexChanged( int index );
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     void on_mMaxLineEdit_textChanged( const QString & );
 
   private:
-    QgsRasterMinMaxWidget * mMinMaxWidget = nullptr;
+    QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
     bool mDisableMinMaxWidgetRefresh;
 
     void minMaxModified();

@@ -33,30 +33,30 @@
 
 typedef struct Face_t
 {
-  const GEOSGeometry* geom = nullptr;
-  GEOSGeometry* env = nullptr;
+  const GEOSGeometry *geom = nullptr;
+  GEOSGeometry *env = nullptr;
   double envarea;
-  struct Face_t* parent; // if this face is an hole of another one, or NULL
+  struct Face_t *parent; // if this face is an hole of another one, or NULL
 } Face;
 
-static Face* newFace( const GEOSGeometry* g );
-static void delFace( Face* f );
-static unsigned int countParens( const Face* f );
-static void findFaceHoles( Face** faces, int nfaces );
+static Face *newFace( const GEOSGeometry *g );
+static void delFace( Face *f );
+static unsigned int countParens( const Face *f );
+static void findFaceHoles( Face **faces, int nfaces );
 
-static Face* newFace( const GEOSGeometry* g )
+static Face *newFace( const GEOSGeometry *g )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  Face* f = new Face;
+  Face *f = new Face;
   f->geom = g;
   f->env = GEOSEnvelope_r( handle, f->geom );
   GEOSArea_r( handle, f->env, &f->envarea );
-  f->parent = NULL;
+  f->parent = nullptr;
   return f;
 }
 
-static unsigned int countParens( const Face* f )
+static unsigned int countParens( const Face *f )
 {
   unsigned int pcount = 0;
   while ( f->parent )
@@ -68,7 +68,7 @@ static unsigned int countParens( const Face* f )
 }
 
 // Destroy the face and release memory associated with it
-static void delFace( Face* f )
+static void delFace( Face *f )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
   GEOSGeom_destroy_r( handle, f->env );
@@ -76,10 +76,10 @@ static void delFace( Face* f )
 }
 
 
-static int compare_by_envarea( const void* g1, const void* g2 )
+static int compare_by_envarea( const void *g1, const void *g2 )
 {
-  Face* f1 = *( Face** )g1;
-  Face* f2 = *( Face** )g2;
+  Face *f1 = *( Face ** )g1;
+  Face *f2 = *( Face ** )g2;
   double n1 = f1->envarea;
   double n2 = f2->envarea;
 
@@ -89,23 +89,23 @@ static int compare_by_envarea( const void* g1, const void* g2 )
 }
 
 // Find holes of each face
-static void findFaceHoles( Face** faces, int nfaces )
+static void findFaceHoles( Face **faces, int nfaces )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   // We sort by envelope area so that we know holes are only
   // after their shells
-  qsort( faces, nfaces, sizeof( Face* ), compare_by_envarea );
+  qsort( faces, nfaces, sizeof( Face * ), compare_by_envarea );
   for ( int i = 0; i < nfaces; ++i )
   {
-    Face* f = faces[i];
+    Face *f = faces[i];
     int nholes = GEOSGetNumInteriorRings_r( handle, f->geom );
     for ( int h = 0; h < nholes; ++h )
     {
       const GEOSGeometry *hole = GEOSGetInteriorRingN_r( handle, f->geom, h );
       for ( int j = i + 1; j < nfaces; ++j )
       {
-        Face* f2 = faces[j];
+        Face *f2 = faces[j];
         if ( f2->parent )
           continue; // hole already assigned
         /* TODO: can be optimized as the ring would have the
@@ -123,7 +123,7 @@ static void findFaceHoles( Face** faces, int nfaces )
   }
 }
 
-static GEOSGeometry* collectFacesWithEvenAncestors( Face** faces, int nfaces )
+static GEOSGeometry *collectFacesWithEvenAncestors( Face **faces, int nfaces )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
@@ -137,18 +137,18 @@ static GEOSGeometry* collectFacesWithEvenAncestors( Face** faces, int nfaces )
     geoms[ngeoms++] = GEOSGeom_clone_r( handle, f->geom );
   }
 
-  GEOSGeometry* ret = GEOSGeom_createCollection_r( handle, GEOS_MULTIPOLYGON, geoms, ngeoms );
+  GEOSGeometry *ret = GEOSGeom_createCollection_r( handle, GEOS_MULTIPOLYGON, geoms, ngeoms );
   delete [] geoms;
   return ret;
 }
 
-static GEOSGeometry* LWGEOM_GEOS_buildArea( const GEOSGeometry* geom_in, QString& errorMessage )
+static GEOSGeometry *LWGEOM_GEOS_buildArea( const GEOSGeometry *geom_in, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   GEOSGeometry *tmp = nullptr;
   GEOSGeometry *shp = nullptr;
-  GEOSGeometry* geos_result = nullptr;
+  GEOSGeometry *geos_result = nullptr;
   int srid = GEOSGetSRID_r( handle, geom_in );
 
   GEOSGeometry const *vgeoms[1];
@@ -157,7 +157,7 @@ static GEOSGeometry* LWGEOM_GEOS_buildArea( const GEOSGeometry* geom_in, QString
   {
     geos_result = GEOSPolygonize_r( handle, vgeoms, 1 );
   }
-  catch ( GEOSException& e )
+  catch ( GEOSException &e )
   {
     errorMessage = QString( "GEOSPolygonize(): %1" ).arg( e.what() );
     return nullptr;
@@ -227,7 +227,7 @@ static GEOSGeometry* LWGEOM_GEOS_buildArea( const GEOSGeometry* geom_in, QString
    */
 
   // Prepare face structures for later analysis
-  Face** geoms = new Face*[ngeoms];
+  Face **geoms = new Face*[ngeoms];
   for ( int i = 0; i < ngeoms; ++i )
     geoms[i] = newFace( GEOSGetGeometryN_r( handle, geos_result, i ) );
 
@@ -266,17 +266,17 @@ static GEOSGeometry* LWGEOM_GEOS_buildArea( const GEOSGeometry* geom_in, QString
 
 // Return Nth vertex in GEOSGeometry as a POINT.
 // May return NULL if the geometry has NO vertexex.
-static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n )
+static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   uint32_t dims;
-  const GEOSCoordSequence* seq_in = nullptr;
+  const GEOSCoordSequence *seq_in = nullptr;
   GEOSCoordSeq seq_out;
   double val;
   uint32_t sz;
   int gn;
-  GEOSGeometry* ret = nullptr;
+  GEOSGeometry *ret = nullptr;
 
   switch ( GEOSGeomTypeId_r( handle, g_in ) )
   {
@@ -287,7 +287,7 @@ static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n
     {
       for ( gn = 0; gn < GEOSGetNumGeometries_r( handle, g_in ); ++gn )
       {
-        const GEOSGeometry* g = GEOSGetGeometryN_r( handle, g_in, gn );
+        const GEOSGeometry *g = GEOSGetGeometryN_r( handle, g_in, gn );
         ret = LWGEOM_GEOS_getPointN( g, n );
         if ( ret ) return ret;
       }
@@ -300,7 +300,7 @@ static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n
       if ( ret ) return ret;
       for ( gn = 0; gn < GEOSGetNumInteriorRings_r( handle, g_in ); ++gn )
       {
-        const GEOSGeometry* g = GEOSGetInteriorRingN_r( handle, g_in, gn );
+        const GEOSGeometry *g = GEOSGetInteriorRingN_r( handle, g_in, gn );
         ret = LWGEOM_GEOS_getPointN( g, n );
         if ( ret ) return ret;
       }
@@ -315,36 +315,36 @@ static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n
   }
 
   seq_in = GEOSGeom_getCoordSeq_r( handle, g_in );
-  if ( ! seq_in ) return NULL;
-  if ( ! GEOSCoordSeq_getSize_r( handle, seq_in, &sz ) ) return NULL;
-  if ( ! sz ) return NULL;
+  if ( ! seq_in ) return nullptr;
+  if ( ! GEOSCoordSeq_getSize_r( handle, seq_in, &sz ) ) return nullptr;
+  if ( ! sz ) return nullptr;
 
-  if ( ! GEOSCoordSeq_getDimensions_r( handle, seq_in, &dims ) ) return NULL;
+  if ( ! GEOSCoordSeq_getDimensions_r( handle, seq_in, &dims ) ) return nullptr;
 
   seq_out = GEOSCoordSeq_create_r( handle, 1, dims );
-  if ( ! seq_out ) return NULL;
+  if ( ! seq_out ) return nullptr;
 
-  if ( ! GEOSCoordSeq_getX_r( handle, seq_in, n, &val ) ) return NULL;
-  if ( ! GEOSCoordSeq_setX_r( handle, seq_out, n, val ) ) return NULL;
-  if ( ! GEOSCoordSeq_getY_r( handle, seq_in, n, &val ) ) return NULL;
-  if ( ! GEOSCoordSeq_setY_r( handle, seq_out, n, val ) ) return NULL;
+  if ( ! GEOSCoordSeq_getX_r( handle, seq_in, n, &val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_setX_r( handle, seq_out, n, val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_getY_r( handle, seq_in, n, &val ) ) return nullptr;
+  if ( ! GEOSCoordSeq_setY_r( handle, seq_out, n, val ) ) return nullptr;
   if ( dims > 2 )
   {
-    if ( ! GEOSCoordSeq_getZ_r( handle, seq_in, n, &val ) ) return NULL;
-    if ( ! GEOSCoordSeq_setZ_r( handle, seq_out, n, val ) ) return NULL;
+    if ( ! GEOSCoordSeq_getZ_r( handle, seq_in, n, &val ) ) return nullptr;
+    if ( ! GEOSCoordSeq_setZ_r( handle, seq_out, n, val ) ) return nullptr;
   }
 
   return GEOSGeom_createPoint_r( handle, seq_out );
 }
 
 
-static bool lwline_make_geos_friendly( QgsLineString& line );
-static bool lwpoly_make_geos_friendly( QgsPolygonV2& poly );
-static bool lwcollection_make_geos_friendly( QgsGeometryCollection& g );
+static bool lwline_make_geos_friendly( QgsLineString &line );
+static bool lwpoly_make_geos_friendly( QgsPolygonV2 &poly );
+static bool lwcollection_make_geos_friendly( QgsGeometryCollection &g );
 
 
 // Ensure the geometry is "structurally" valid (enough for GEOS to accept it)
-static bool lwgeom_make_geos_friendly( QgsAbstractGeometry& geom )
+static bool lwgeom_make_geos_friendly( QgsAbstractGeometry &geom )
 {
   QgsDebugMsg( QString( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom.wkbType() ) );
   switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
@@ -357,18 +357,18 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry& geom )
 
     case QgsWkbTypes::LineString:
       // lines need at least 2 points
-      return lwline_make_geos_friendly( dynamic_cast<QgsLineString&>( geom ) );
+      return lwline_make_geos_friendly( dynamic_cast<QgsLineString &>( geom ) );
       break;
 
     case QgsWkbTypes::Polygon:
       // polygons need all rings closed and with npoints > 3
-      return lwpoly_make_geos_friendly( dynamic_cast<QgsPolygonV2&>( geom ) );
+      return lwpoly_make_geos_friendly( dynamic_cast<QgsPolygonV2 &>( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::GeometryCollection:
-      return lwcollection_make_geos_friendly( dynamic_cast<QgsGeometryCollection&>( geom ) );
+      return lwcollection_make_geos_friendly( dynamic_cast<QgsGeometryCollection &>( geom ) );
       break;
 
     default:
@@ -379,13 +379,13 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry& geom )
 }
 
 
-static bool ring_make_geos_friendly( QgsCurve& ring )
+static bool ring_make_geos_friendly( QgsCurve &ring )
 {
   if ( ring.nCoordinates() == 0 )
     return false;
 
   // earlier we allowed in only geometries with straight segments
-  QgsLineString& linestring = dynamic_cast<QgsLineString&>( ring );
+  QgsLineString &linestring = dynamic_cast<QgsLineString &>( ring );
 
   // close the ring if not already closed (2d only)
 
@@ -402,7 +402,7 @@ static bool ring_make_geos_friendly( QgsCurve& ring )
 }
 
 // Make sure all rings are closed and have > 3 points.
-static bool lwpoly_make_geos_friendly( QgsPolygonV2& poly )
+static bool lwpoly_make_geos_friendly( QgsPolygonV2 &poly )
 {
   // If the polygon has no rings there's nothing to do
   // TODO: in qgis representation there always is exterior ring
@@ -411,7 +411,7 @@ static bool lwpoly_make_geos_friendly( QgsPolygonV2& poly )
   // All rings must be closed and have > 3 points
   for ( int i = 0; i < poly.numInteriorRings(); i++ )
   {
-    if ( !ring_make_geos_friendly( *const_cast<QgsCurve*>( poly.interiorRing( i ) ) ) )
+    if ( !ring_make_geos_friendly( *const_cast<QgsCurve *>( poly.interiorRing( i ) ) ) )
       return false;
   }
 
@@ -419,7 +419,7 @@ static bool lwpoly_make_geos_friendly( QgsPolygonV2& poly )
 }
 
 // Need NO or >1 points. Duplicate first if only one.
-static bool lwline_make_geos_friendly( QgsLineString& line )
+static bool lwline_make_geos_friendly( QgsLineString &line )
 {
   if ( line.numPoints() == 1 ) // 0 is fine, 2 is fine
   {
@@ -428,7 +428,7 @@ static bool lwline_make_geos_friendly( QgsLineString& line )
   return true;
 }
 
-static bool lwcollection_make_geos_friendly( QgsGeometryCollection& g )
+static bool lwcollection_make_geos_friendly( QgsGeometryCollection &g )
 {
   for ( int i = 0; i < g.numGeometries(); i++ )
   {
@@ -441,7 +441,7 @@ static bool lwcollection_make_geos_friendly( QgsGeometryCollection& g )
 
 
 // Fully node given linework
-static GEOSGeometry* LWGEOM_GEOS_nodeLines( const GEOSGeometry* lines )
+static GEOSGeometry *LWGEOM_GEOS_nodeLines( const GEOSGeometry *lines )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
@@ -450,11 +450,11 @@ static GEOSGeometry* LWGEOM_GEOS_nodeLines( const GEOSGeometry* lines )
   //
   // TODO: substitute this with UnaryUnion?
 
-  GEOSGeometry* point = LWGEOM_GEOS_getPointN( lines, 0 );
+  GEOSGeometry *point = LWGEOM_GEOS_getPointN( lines, 0 );
   if ( ! point )
     return nullptr;
 
-  GEOSGeometry* noded = GEOSUnion_r( handle, lines, point );
+  GEOSGeometry *noded = GEOSUnion_r( handle, lines, point );
   if ( !noded )
   {
     GEOSGeom_destroy_r( handle, point );
@@ -466,7 +466,7 @@ static GEOSGeometry* LWGEOM_GEOS_nodeLines( const GEOSGeometry* lines )
 }
 
 // Will return NULL on error (expect error handler being called by then)
-static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QString& errorMessage )
+static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
@@ -496,14 +496,14 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
   // NOTE: the noding process may drop lines collapsing to points.
   //       We want to retrieve any of those
   {
-    GEOSGeometry* pi = nullptr;
-    GEOSGeometry* po = nullptr;
+    GEOSGeometry *pi = nullptr;
+    GEOSGeometry *po = nullptr;
 
     try
     {
       pi = GEOSGeom_extractUniquePoints_r( handle, geos_bound );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_bound );
       errorMessage = QString( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
@@ -514,7 +514,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       po = GEOSGeom_extractUniquePoints_r( handle, geos_cut_edges );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_bound );
       GEOSGeom_destroy_r( handle, pi );
@@ -526,7 +526,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       collapse_points = GEOSDifference_r( handle, pi, po );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_bound );
       GEOSGeom_destroy_r( handle, pi );
@@ -545,7 +545,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
   {
     geos_area = GEOSGeom_createEmptyPolygon_r( handle );
   }
-  catch ( GEOSException& e )
+  catch ( GEOSException &e )
   {
     errorMessage = QString( "GEOSGeom_createEmptyPolygon(): %1" ).arg( e.what() );
     GEOSGeom_destroy_r( handle, geos_cut_edges );
@@ -558,10 +558,10 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
   // with left-over edges.
   while ( GEOSGetNumGeometries_r( handle, geos_cut_edges ) )
   {
-    GEOSGeometry* new_area = 0;
-    GEOSGeometry* new_area_bound = 0;
-    GEOSGeometry* symdif = 0;
-    GEOSGeometry* new_cut_edges = 0;
+    GEOSGeometry *new_area = nullptr;
+    GEOSGeometry *new_area_bound = nullptr;
+    GEOSGeometry *symdif = nullptr;
+    GEOSGeometry *new_cut_edges = nullptr;
 
     // ASSUMPTION: cut_edges should already be fully noded
 
@@ -569,7 +569,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       new_area = LWGEOM_GEOS_buildArea( geos_cut_edges, errorMessage );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, geos_area );
@@ -592,7 +592,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       new_area_bound = GEOSBoundary_r( handle, new_area );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       // We did check for empty area already so
       // this must be some other error
@@ -607,7 +607,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       symdif = GEOSSymDifference_r( handle, geos_area, new_area );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, new_area );
@@ -620,7 +620,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     GEOSGeom_destroy_r( handle, geos_area );
     GEOSGeom_destroy_r( handle, new_area );
     geos_area = symdif;
-    symdif = 0;
+    symdif = nullptr;
 
     // Now let's re-set geos_cut_edges with what's left
     // from the original boundary.
@@ -634,7 +634,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       new_cut_edges = GEOSDifference_r( handle, geos_cut_edges, new_area_bound );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, new_area_bound );
@@ -686,7 +686,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
     {
       gout = GEOSGeom_createCollection_r( handle, GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms );
     }
-    catch ( GEOSException& e )
+    catch ( GEOSException &e )
     {
       errorMessage = QString( "GEOSGeom_createCollection() threw an error: %1" ).arg( e.what() );
       // TODO: cleanup!
@@ -698,27 +698,27 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin, QStr
 
 }
 
-static GEOSGeometry* LWGEOM_GEOS_makeValidLine( const GEOSGeometry* gin, QString& errorMessage )
+static GEOSGeometry *LWGEOM_GEOS_makeValidLine( const GEOSGeometry *gin, QString &errorMessage )
 {
   Q_UNUSED( errorMessage );
   return LWGEOM_GEOS_nodeLines( gin );
 }
 
-static GEOSGeometry* LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry* gin, QString& errorMessage )
+static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   int ngeoms = GEOSGetNumGeometries_r( handle, gin );
   uint32_t nlines_alloc = ngeoms;
-  QVector<GEOSGeometry*> lines;
-  QVector<GEOSGeometry*> points( ngeoms );
+  QVector<GEOSGeometry *> lines;
+  QVector<GEOSGeometry *> points( ngeoms );
   lines.reserve( nlines_alloc );
   points.reserve( ngeoms );
 
   for ( int i = 0; i < ngeoms; ++i )
   {
-    const GEOSGeometry* g = GEOSGetGeometryN_r( handle, gin, i );
-    GEOSGeometry* vg = LWGEOM_GEOS_makeValidLine( g, errorMessage );
+    const GEOSGeometry *g = GEOSGetGeometryN_r( handle, gin, i );
+    GEOSGeometry *vg = LWGEOM_GEOS_makeValidLine( g, errorMessage );
     if ( GEOSisEmpty_r( handle, vg ) )
     {
       // we don't care about this one
@@ -750,7 +750,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry* gin, QS
     }
   }
 
-  GEOSGeometry* mpoint_out = nullptr;
+  GEOSGeometry *mpoint_out = nullptr;
   if ( points.count() )
   {
     if ( points.count() > 1 )
@@ -763,7 +763,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry* gin, QS
     }
   }
 
-  GEOSGeometry* mline_out = nullptr;
+  GEOSGeometry *mline_out = nullptr;
   if ( lines.count() )
   {
     if ( lines.count() > 1 )
@@ -778,7 +778,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry* gin, QS
 
   if ( mline_out && mpoint_out )
   {
-    GEOSGeometry* collection[2];
+    GEOSGeometry *collection[2];
     collection[0] = mline_out;
     collection[1] = mpoint_out;
     return GEOSGeom_createCollection_r( handle, GEOS_GEOMETRYCOLLECTION, collection, 2 );
@@ -798,10 +798,10 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry* gin, QS
 }
 
 
-static GEOSGeometry* LWGEOM_GEOS_makeValid( const GEOSGeometry* gin, QString& errorMessage );
+static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &errorMessage );
 
 // Will return NULL on error (expect error handler being called by then)
-static GEOSGeometry* LWGEOM_GEOS_makeValidCollection( const GEOSGeometry* gin, QString& errorMessage )
+static GEOSGeometry *LWGEOM_GEOS_makeValidCollection( const GEOSGeometry *gin, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
@@ -812,7 +812,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidCollection( const GEOSGeometry* gin, Q
     return nullptr;
   }
 
-  QVector<GEOSGeometry*> vgeoms( nvgeoms );
+  QVector<GEOSGeometry *> vgeoms( nvgeoms );
   for ( int i = 0; i < nvgeoms; ++i )
   {
     vgeoms[i] = LWGEOM_GEOS_makeValid( GEOSGetGeometryN_r( handle, gin, i ), errorMessage );
@@ -830,7 +830,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidCollection( const GEOSGeometry* gin, Q
   {
     return GEOSGeom_createCollection_r( handle, GEOS_GEOMETRYCOLLECTION, vgeoms.data(), nvgeoms );
   }
-  catch ( GEOSException& e )
+  catch ( GEOSException &e )
   {
     // cleanup and throw
     for ( int i = 0; i < nvgeoms; ++i )
@@ -841,7 +841,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValidCollection( const GEOSGeometry* gin, Q
 }
 
 
-static GEOSGeometry* LWGEOM_GEOS_makeValid( const GEOSGeometry* gin, QString& errorMessage )
+static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
@@ -854,7 +854,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValid( const GEOSGeometry* gin, QString& er
       return GEOSGeom_clone_r( handle, gin );
     }
   }
-  catch ( GEOSException& e )
+  catch ( GEOSException &e )
   {
     // I don't think should ever happen
     errorMessage = QString( "GEOSisValid(): %1" ).arg( e.what() );
@@ -891,7 +891,7 @@ static GEOSGeometry* LWGEOM_GEOS_makeValid( const GEOSGeometry* gin, QString& er
 }
 
 
-QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_in, QString& errorMessage )
+QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry &lwgeom_in, QString &errorMessage )
 {
   //bool is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -899,12 +899,12 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
   // otherwise (adding only duplicates of existing points)
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry* geosgeom = QgsGeos::asGeos( &lwgeom_in );
+  GEOSGeometry *geosgeom = QgsGeos::asGeos( &lwgeom_in );
   if ( ! geosgeom )
   {
     QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
 
-    QgsAbstractGeometry* lwgeom_in_clone = lwgeom_in.clone();
+    QgsAbstractGeometry *lwgeom_in_clone = lwgeom_in.clone();
     if ( !lwgeom_make_geos_friendly( *lwgeom_in_clone ) )
     {
       QgsDebugMsg( "Could not make a valid geometry out of input" );
@@ -919,7 +919,7 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
     if ( ! geosgeom )
     {
       errorMessage = "Couldn't convert QGIS geom to GEOS";
-      return NULL;
+      return nullptr;
     }
   }
   else
@@ -927,20 +927,20 @@ QgsAbstractGeometry* _qgis_lwgeom_make_valid( const QgsAbstractGeometry& lwgeom_
     QgsDebugMsg( "original geom converted to GEOS" );
   }
 
-  GEOSGeometry* geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
+  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
   GEOSGeom_destroy_r( handle, geosgeom );
   if ( !geosout )
-    return NULL;
+    return nullptr;
 
-  QgsAbstractGeometry* lwgeom_out = QgsGeos::fromGeos( geosout );
+  QgsAbstractGeometry *lwgeom_out = QgsGeos::fromGeos( geosout );
   GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
-    return NULL;
+    return nullptr;
 
   // force multi-type if we had a multi-type before
   if ( QgsWkbTypes::isMultiType( lwgeom_in.wkbType() ) && !QgsWkbTypes::isMultiType( lwgeom_out->wkbType() ) )
   {
-    QgsGeometryCollection* collection = nullptr;
+    QgsGeometryCollection *collection = nullptr;
     switch ( QgsWkbTypes::multiType( lwgeom_out->wkbType() ) )
     {
       case QgsWkbTypes::MultiPoint:

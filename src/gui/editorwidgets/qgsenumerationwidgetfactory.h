@@ -27,14 +27,14 @@
 class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    explicit QgsEnumerationWidgetFactory( const QString& name );
+    explicit QgsEnumerationWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
-    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 };
 
 #endif // QGSENUMERATIONWIDGETFACTORY_H

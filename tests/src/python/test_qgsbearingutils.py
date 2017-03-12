@@ -12,16 +12,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.core import (QgsBearingUtils,
                        QgsCoordinateReferenceSystem,
                        QgsPoint
                        )
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 
 
 start_app()
@@ -54,6 +52,7 @@ class TestQgsBearingUtils(unittest.TestCase):
         crs = QgsCoordinateReferenceSystem.fromEpsgId(3575)
         self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(-780770, 652329)), 129.9, 1)
         self.assertAlmostEqual(QgsBearingUtils.bearingTrueNorth(crs, QgsPoint(513480, 873173)), -149.5, 1)
+
 
 if __name__ == '__main__':
     unittest.main()

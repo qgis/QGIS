@@ -24,13 +24,13 @@
 #include "qgscomposerutils.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mShape( Ellipse )
-    , mCornerRadius( 0 )
-    , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
-    , mShapeStyleSymbol( nullptr )
-    , mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( QgsComposition *composition )
+  : QgsComposerItem( composition )
+  , mShape( Ellipse )
+  , mCornerRadius( 0 )
+  , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
+  , mShapeStyleSymbol( nullptr )
+  , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
   createDefaultShapeStyleSymbol();
@@ -39,17 +39,17 @@ QgsComposerShape::QgsComposerShape( QgsComposition* composition )
   {
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
   }
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition )
-    : QgsComposerItem( x, y, width, height, composition )
-    , mShape( Ellipse )
-    , mCornerRadius( 0 )
-    , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
-    , mShapeStyleSymbol( nullptr )
-    , mMaxSymbolBleed( 0 )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition )
+  : QgsComposerItem( x, y, width, height, composition )
+  , mShape( Ellipse )
+  , mCornerRadius( 0 )
+  , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
+  , mShapeStyleSymbol( nullptr )
+  , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
@@ -59,7 +59,7 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   {
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
   }
 }
 
@@ -74,10 +74,10 @@ void QgsComposerShape::setUseSymbol( bool useSymbol )
   setFrameEnabled( !useSymbol );
 }
 
-void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol* symbol )
+void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol *symbol )
 {
   delete mShapeStyleSymbol;
-  mShapeStyleSymbol = static_cast<QgsFillSymbol*>( symbol->clone() );
+  mShapeStyleSymbol = static_cast<QgsFillSymbol *>( symbol->clone() );
   refreshSymbol();
 }
 
@@ -115,7 +115,7 @@ void QgsComposerShape::createDefaultShapeStyleSymbol()
   emit frameChanged();
 }
 
-void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerShape::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -138,7 +138,7 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 }
 
 
-void QgsComposerShape::drawShape( QPainter* p )
+void QgsComposerShape::drawShape( QPainter *p )
 {
   if ( mUseSymbol )
   {
@@ -177,7 +177,7 @@ void QgsComposerShape::drawShape( QPainter* p )
   p->restore();
 }
 
-void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
+void QgsComposerShape::drawShapeUsingSymbol( QPainter *p )
 {
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
@@ -248,7 +248,7 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
 }
 
 
-void QgsComposerShape::drawFrame( QPainter* p )
+void QgsComposerShape::drawFrame( QPainter *p )
 {
   if ( mFrame && p && !mUseSymbol )
   {
@@ -259,7 +259,7 @@ void QgsComposerShape::drawFrame( QPainter* p )
   }
 }
 
-void QgsComposerShape::drawBackground( QPainter* p )
+void QgsComposerShape::drawBackground( QPainter *p )
 {
   if ( p && ( mBackground || mUseSymbol ) )
   {
@@ -275,7 +275,7 @@ double QgsComposerShape::estimatedFrameBleed() const
   return mMaxSymbolBleed;
 }
 
-bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerShape::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( QStringLiteral( "ComposerShape" ) );
   composerShapeElem.setAttribute( QStringLiteral( "shapeType" ), mShape );
@@ -288,7 +288,7 @@ bool QgsComposerShape::writeXml( QDomElement& elem, QDomDocument & doc ) const
   return _writeXml( composerShapeElem, doc );
 }
 
-bool QgsComposerShape::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerShape::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   mShape = QgsComposerShape::Shape( itemElem.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
   mCornerRadius = itemElem.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble();
@@ -432,7 +432,7 @@ void QgsComposerShape::updateBoundingRect()
   }
 }
 
-void QgsComposerShape::setSceneRect( const QRectF& rectangle )
+void QgsComposerShape::setSceneRect( const QRectF &rectangle )
 {
   // Reimplemented from QgsComposerItem as we need to call updateBoundingRect after the shape's size changes
 

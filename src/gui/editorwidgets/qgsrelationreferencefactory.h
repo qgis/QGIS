@@ -31,7 +31,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
     /**
      * Override this in your implementation.
@@ -45,9 +45,9 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
 
-    QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
     /**
      * Override this in your implementation.
@@ -59,16 +59,16 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
     virtual QHash<const char *, int> supportedWidgetTypes() override;
 
-    virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
+    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 
   private:
     QgsAttributeEditorContext mEditorContext;
-    QgsMapCanvas* mCanvas = nullptr;
-    QgsMessageBar* mMessageBar = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 #endif // QGSRELATIONREFERENCEFACTORY_H

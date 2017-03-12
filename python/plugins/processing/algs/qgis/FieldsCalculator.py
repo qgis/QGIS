@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
-from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -36,7 +35,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector, system
+from processing.tools import dataobjects, vector
 
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
@@ -99,9 +98,8 @@ class FieldsCalculator(GeoAlgorithm):
         exp = QgsExpression(formula)
 
         da = QgsDistanceArea()
-        da.setSourceCrs(layer.crs().srsid())
-        da.setEllipsoidalMode(
-            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
+        da.setSourceCrs(layer.crs())
+        da.setEllipsoidalMode(True)
         da.setEllipsoid(QgsProject.instance().readEntry(
             'Measure', '/Ellipsoid', GEO_NONE)[0])
         exp.setGeomCalculator(da)
@@ -112,7 +110,7 @@ class FieldsCalculator(GeoAlgorithm):
 
         if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
-                self.tr('Evaluation error: %s' % exp.evalErrorString()))
+                self.tr('Evaluation error: {0}').format(exp.evalErrorString()))
 
         outFeature = QgsFeature()
         outFeature.initAttributes(len(fields))
@@ -147,7 +145,7 @@ class FieldsCalculator(GeoAlgorithm):
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
                 self.tr('An error occurred while evaluating the calculation '
-                        'string:\n%s' % error))
+                        'string:\n{0}').format(error))
 
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)

@@ -21,24 +21,24 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include <limits>
-#include <math.h>
+#include <cmath>
 
-QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
-    QgsComposition* c )
-    : QgsComposerItem( c )
-    , mTagName( tagName )
-    , mSelectedNode( -1 )
-    , mDrawNodes( false )
+QgsComposerNodesItem::QgsComposerNodesItem( const QString &tagName,
+    QgsComposition *c )
+  : QgsComposerItem( c )
+  , mTagName( tagName )
+  , mSelectedNode( -1 )
+  , mDrawNodes( false )
 {
 }
 
-QgsComposerNodesItem::QgsComposerNodesItem( const QString& tagName,
-    const QPolygonF& polygon,
-    QgsComposition* c )
-    : QgsComposerItem( c )
-    , mTagName( tagName )
-    , mSelectedNode( -1 )
-    , mDrawNodes( false )
+QgsComposerNodesItem::QgsComposerNodesItem( const QString &tagName,
+    const QPolygonF &polygon,
+    QgsComposition *c )
+  : QgsComposerItem( c )
+  , mTagName( tagName )
+  , mSelectedNode( -1 )
+  , mDrawNodes( false )
 {
   const QRectF boundingRect = polygon.boundingRect();
   setSceneRect( boundingRect );
@@ -68,7 +68,7 @@ bool QgsComposerNodesItem::addNode( QPointF pt,
     // get nodes of polyline
     const QPointF pt1 = mPolygon.at( i );
     QPointF pt2 = mPolygon.first();
-    if (( i + 1 ) != mPolygon.size() )
+    if ( ( i + 1 ) != mPolygon.size() )
       pt2 = mPolygon.at( i + 1 );
 
     // compute line eq
@@ -179,9 +179,9 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
   symbol->stopRender( context );
 }
 
-void QgsComposerNodesItem::paint( QPainter* painter,
-                                  const QStyleOptionGraphicsItem* itemStyle,
-                                  QWidget* pWidget )
+void QgsComposerNodesItem::paint( QPainter *painter,
+                                  const QStyleOptionGraphicsItem *itemStyle,
+                                  QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -264,8 +264,8 @@ bool QgsComposerNodesItem::moveNode( const int index, QPointF pt )
   return rc;
 }
 
-bool QgsComposerNodesItem::readXml( const QDomElement& itemElem,
-                                    const QDomDocument& doc )
+bool QgsComposerNodesItem::readXml( const QDomElement &itemElem,
+                                    const QDomDocument &doc )
 {
   // restore general composer item properties
   const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
@@ -345,7 +345,7 @@ void QgsComposerNodesItem::updateSceneRect()
   emit itemChanged();
 }
 
-bool QgsComposerNodesItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerNodesItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement composerPolygonElem = doc.createElement( mTagName );
 

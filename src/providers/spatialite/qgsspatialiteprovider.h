@@ -57,10 +57,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
   public:
     //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem& srs,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
@@ -75,12 +75,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     virtual ~ QgsSpatiaLiteProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
     virtual QString storageType() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     virtual bool supportsSubsetString() const override { return true; }
     QgsWkbTypes::Type wkbType() const override;
 
@@ -97,13 +97,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) const override;
-    virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
-        QgsFeedback* feedback = nullptr ) const override;
+    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+        QgsFeedback *feedback = nullptr ) const override;
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    bool addFeatures( QgsFeatureList & flist ) override;
-    bool deleteFeatures( const QgsFeatureIds & id ) override;
+    bool addFeatures( QgsFeatureList &flist ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -127,8 +127,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
-    void invalidateConnections( const QString& connection ) override;
-    QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
+    void invalidateConnections( const QString &connection ) override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
 
     // static functions
     static void convertToGeosWKB( const unsigned char *blob, int blob_size,
@@ -142,29 +142,29 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     struct SLException
     {
-      explicit SLException( char *msg ) : errMsg( msg )
-      {
-      }
+        explicit SLException( char *msg ) : errMsg( msg )
+        {
+        }
 
-      SLException( const SLException &e ) : errMsg( e.errMsg )
-      {
-      }
+        SLException( const SLException &e ) : errMsg( e.errMsg )
+        {
+        }
 
-      ~SLException()
-      {
-        if ( errMsg )
-          sqlite3_free( errMsg );
-      }
+        ~SLException()
+        {
+          if ( errMsg )
+            sqlite3_free( errMsg );
+        }
 
-      SLException& operator=( const SLException& other ) = delete;
+        SLException &operator=( const SLException &other ) = delete;
 
-      QString errorMessage() const
-      {
-        return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
-      }
+        QString errorMessage() const
+        {
+          return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
+        }
 
-    private:
-      char *errMsg = nullptr;
+      private:
+        char *errMsg = nullptr;
 
     };
 
@@ -219,7 +219,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * Search all the layers using the given table.
      */
-    static QList<QgsVectorLayer*> searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& tableName );
+    static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName );
 
     QgsFields mAttributeFields;
 
@@ -388,7 +388,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * Handles an error encountered while executing an sql statement.
      */
-    void handleError( const QString& sql, char* errorMessage, bool rollback = false );
+    void handleError( const QString &sql, char *errorMessage, bool rollback = false );
 
     friend class QgsSpatiaLiteFeatureSource;
 

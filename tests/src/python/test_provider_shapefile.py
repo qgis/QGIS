@@ -20,8 +20,8 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
-from qgis.core import QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
-from qgis.PyQt.QtCore import QSettings, QVariant
+from qgis.core import QgsSettings, QgsFeature, QgsField, QgsGeometry, QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider
+from qgis.PyQt.QtCore import QVariant
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
@@ -88,10 +88,10 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         return vl
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         filters = set(['name ILIKE \'QGIS\'',
@@ -232,7 +232,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(caps & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(caps & QgsVectorDataProvider.SelectAtId)
         self.assertTrue(caps & QgsVectorDataProvider.ChangeGeometries)
-        #self.assertTrue(caps & QgsVectorDataProvider.ChangeFeatures)
+        # self.assertTrue(caps & QgsVectorDataProvider.ChangeFeatures)
 
         # We should be really opened in read-only mode even if write capabilities are declared
         self.assertEqual(vl.dataProvider().property("_debug_open_mode"), "read-only")
@@ -446,7 +446,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         feature_count = vl.featureCount()
         # Start an iterator that will open a new connection
         iterator = vl.getFeatures()
-        f = next(iterator)
+        next(iterator)
 
         # Delete a feature
         self.assertTrue(vl.startEditing())
@@ -548,6 +548,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ds = osgeo.ogr.Open(datasource)
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
         ds = None
+
 
 if __name__ == '__main__':
     unittest.main()

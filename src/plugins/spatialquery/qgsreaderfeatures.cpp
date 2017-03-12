@@ -28,7 +28,7 @@ QgsReaderFeatures::QgsReaderFeatures( QgsVectorLayer *layer, bool useSelection )
 
 } // QgsReaderFeatures::QgsReaderFeatures(QgsVectorLayer *layer, bool useSelection)
 
-bool QgsReaderFeatures::nextFeature( QgsFeature & feature )
+bool QgsReaderFeatures::nextFeature( QgsFeature &feature )
 {
   return mFit.nextFeature( feature );
 } // bool QgsReaderFeatures::nextFeature(QgsFeature & feature)

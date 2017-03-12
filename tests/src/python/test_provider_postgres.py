@@ -19,21 +19,19 @@ import psycopg2
 import os
 
 from qgis.core import (
-    QgsGeometry,
-    QgsPoint,
     QgsVectorLayer,
     QgsVectorLayerImport,
     QgsFeatureRequest,
     QgsFeature,
-    QgsTransactionGroup,
-    QgsField,
     QgsFieldConstraints,
     QgsDataProvider,
     NULL,
-    QgsVectorLayerUtils
+    QgsVectorLayerUtils,
+    QgsSettings,
+    QgsTransactionGroup
 )
 from qgis.gui import QgsEditorWidgetRegistry
-from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant, QDir
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
@@ -88,10 +86,10 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         return vl
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         return set([])
@@ -222,7 +220,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             uri += ' estimatedmetadata="true"'
             test_layer(ql, att, val, fidval)
 
-        #### --- INT16 ----
+        # --- INT16 ----
         # zero
         test(self.dbconn, '(SELECT 0::int2 i, NULL::geometry(Point) g)', 'i', 0, 0)
         # low positive
@@ -234,7 +232,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # max negative signed 16bit integer
         test(self.dbconn, '(SELECT (-32768)::int2 i, NULL::geometry(Point) g)', 'i', -32768, 4294934528)
 
-        #### --- INT32 ----
+        # --- INT32 ----
         # zero
         test(self.dbconn, '(SELECT 0::int4 i, NULL::geometry(Point) g)', 'i', 0, 0)
         # low positive
@@ -246,7 +244,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # max negative signed 32bit integer
         test(self.dbconn, '(SELECT (-2147483648)::int4 i, NULL::geometry(Point) g)', 'i', -2147483648, 2147483648)
 
-        #### --- INT64 (FIDs are always 1 because assigned ex-novo) ----
+        # --- INT64 (FIDs are always 1 because assigned ex-novo) ----
         # zero
         test(self.dbconn, '(SELECT 0::int8 i, NULL::geometry(Point) g)', 'i', 0, 1)
         # low positive
@@ -287,7 +285,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         it = self.vl.getFeatures()
         f = next(it)
         f['pk'] = NULL
-        self.vl.addFeature(f) # Should not deadlock during an active iteration
+        self.vl.addFeature(f)  # Should not deadlock during an active iteration
         f = next(it)
 
     def testDomainTypes(self):
@@ -721,16 +719,17 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         return set([])
 
     def partiallyCompiledFilters(self):
         return set([])
+
 
 if __name__ == '__main__':
     unittest.main()

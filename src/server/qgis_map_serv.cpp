@@ -22,7 +22,7 @@
 #include "qgsfcgiserverresponse.h"
 
 #include <fcgi_stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 int fcgi_accept()
 {
@@ -36,7 +36,7 @@ int fcgi_accept()
 #endif
 }
 
-int main( int argc, char * argv[] )
+int main( int argc, char *argv[] )
 {
   QgsApplication app( argc, argv, getenv( "DISPLAY" ), QString(), QStringLiteral( "server" ) );
   QgsServer server;

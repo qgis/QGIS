@@ -91,5 +91,6 @@ class ModelerTest(unittest.TestCase):
         a2.params['INPUT'] = ValueFromOutput('QGISCLIP_1', 'OUTPUT')
         self.assertEqual(m.hasDependencies('QGISCLIP_1'), True)
 
+
 if __name__ == '__main__':
     unittest.main()

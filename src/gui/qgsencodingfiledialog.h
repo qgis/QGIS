@@ -28,9 +28,9 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT
   public:
-    QgsEncodingFileDialog( QWidget* parent = nullptr,
-                           const QString& caption = QString(), const QString& directory = QString(),
-                           const QString& filter = QString(), const QString& encoding = QString() );
+    QgsEncodingFileDialog( QWidget *parent = nullptr,
+                           const QString &caption = QString(), const QString &directory = QString(),
+                           const QString &filter = QString(), const QString &encoding = QString() );
     //! Returns a string describing the chosen encoding
     QString encoding() const;
     //! Adds a 'Cancel All' button for the user to click
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 
   private:
     //! Box to choose the encoding type
-    QComboBox* mEncodingComboBox = nullptr;
+    QComboBox *mEncodingComboBox = nullptr;
 
     /* The button to click */
     QPushButton *mCancelAllButton = nullptr;

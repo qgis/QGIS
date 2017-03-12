@@ -24,7 +24,7 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
+QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
   setPanelTitle( tr( "Scalebar properties" ) );
@@ -32,12 +32,12 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   connectUpdateSignal();
 
   //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
+  QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
   mainLayout->addWidget( itemPropertiesWidget );
 
   mSegmentSizeRadioGroup.addButton( mFixedSizeRadio );
   mSegmentSizeRadioGroup.addButton( mFitWidthRadio );
-  connect( &mSegmentSizeRadioGroup, SIGNAL( buttonClicked( QAbstractButton* ) ), this, SLOT( segmentSizeRadioChanged( QAbstractButton* ) ) );
+  connect( &mSegmentSizeRadioGroup, SIGNAL( buttonClicked( QAbstractButton * ) ), this, SLOT( segmentSizeRadioChanged( QAbstractButton * ) ) );
 
   blockMemberSignals( true );
 
@@ -82,14 +82,14 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mStrokeColorButton->setNoColorString( tr( "Transparent line" ) );
   mStrokeColorButton->setShowNoColor( true );
 
-  QgsComposition* scaleBarComposition = mComposerScaleBar->composition();
+  QgsComposition *scaleBarComposition = mComposerScaleBar->composition();
   if ( scaleBarComposition )
   {
     mMapItemComboBox->setComposition( scaleBarComposition );
     mMapItemComboBox->setItemType( QgsComposerItem::ComposerMap );
   }
 
-  connect( mMapItemComboBox, SIGNAL( itemChanged( QgsComposerItem* ) ), this, SLOT( composerMapChanged( QgsComposerItem* ) ) );
+  connect( mMapItemComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
 
   registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::ScalebarFillColor );
   registerDataDefinedButton( mFillColor2DDBtn, QgsComposerObject::ScalebarFillColor2 );
@@ -138,10 +138,10 @@ void QgsComposerScaleBarWidget::setGuiElements()
   toggleStyleSpecificControls( style );
 
   //alignment
-  mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
+  mAlignmentComboBox->setCurrentIndex( ( int )( mComposerScaleBar->alignment() ) );
 
   //units
-  mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData(( int )mComposerScaleBar->units() ) );
+  mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( ( int )mComposerScaleBar->units() ) );
 
   if ( mComposerScaleBar->segmentSizeMode() == QgsComposerScaleBar::SegmentSizeFixed )
   {
@@ -262,7 +262,7 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor& newColor )
+void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -277,7 +277,7 @@ void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor& 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor& newColor )
+void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -307,7 +307,7 @@ void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor& newColor )
+void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -322,7 +322,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged( const QString& text )
+void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged( const QString &text )
 {
   if ( !mComposerScaleBar )
   {
@@ -352,7 +352,7 @@ void QgsComposerScaleBarWidget::on_mMapUnitsPerBarUnitSpinBox_valueChanged( doub
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QString& text )
+void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerScaleBar )
   {
@@ -400,7 +400,7 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString& style )
+void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString &style )
 {
   if ( style == QLatin1String( "Numeric" ) )
   {
@@ -480,7 +480,7 @@ void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int i
 
   mComposerScaleBar->beginCommand( tr( "Scalebar alignment" ) );
   disconnectUpdateSignal();
-  mComposerScaleBar->setAlignment(( QgsComposerScaleBar::Alignment ) index );
+  mComposerScaleBar->setAlignment( ( QgsComposerScaleBar::Alignment ) index );
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }
@@ -499,7 +499,7 @@ void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index
   }
 
   disconnectUpdateSignal();
-  mComposerScaleBar->setUnits(( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
+  mComposerScaleBar->setUnits( ( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
   switch ( mUnitsComboBox->currentIndex() )
   {
     case 0:
@@ -605,7 +605,7 @@ void QgsComposerScaleBarWidget::on_mLineCapStyleCombo_currentIndexChanged( int i
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::segmentSizeRadioChanged( QAbstractButton* radio )
+void QgsComposerScaleBarWidget::segmentSizeRadioChanged( QAbstractButton *radio )
 {
   bool fixedSizeMode = radio == mFixedSizeRadio;
   mMinWidthSpinBox->setEnabled( !fixedSizeMode );
@@ -633,9 +633,9 @@ void QgsComposerScaleBarWidget::segmentSizeRadioChanged( QAbstractButton* radio 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem* item )
+void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem *item )
 {
-  QgsComposerMap* composerMap = dynamic_cast< QgsComposerMap* >( item );
+  QgsComposerMap *composerMap = dynamic_cast< QgsComposerMap * >( item );
   if ( !composerMap )
   {
     return;

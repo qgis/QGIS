@@ -21,34 +21,34 @@
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
-    : QgsLayerTreeNode( NodeLayer, true )
-    , mRef( layer )
-    , mLayerName( layer->name() )
+  : QgsLayerTreeNode( NodeLayer, true )
+  , mRef( layer )
+  , mLayerName( layer->name() )
 {
   attachToLayer();
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
-    : QgsLayerTreeNode( NodeLayer, true )
-    , mRef( layerId )
-    , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &name )
+  : QgsLayerTreeNode( NodeLayer, true )
+  , mRef( layerId )
+  , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
 {
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
-    : QgsLayerTreeNode( other )
-    , mRef( other.mRef )
-    , mLayerName( other.mLayerName )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
+  : QgsLayerTreeNode( other )
+  , mRef( other.mRef )
+  , mLayerName( other.mLayerName )
 {
   attachToLayer();
 }
 
-void QgsLayerTreeLayer::resolveReferences( const QgsProject* project )
+void QgsLayerTreeLayer::resolveReferences( const QgsProject *project )
 {
   if ( mRef.layer )
     return;  // already assigned
 
-  QgsMapLayer* layer = project->mapLayer( mRef.layerId );
+  QgsMapLayer *layer = project->mapLayer( mRef.layerId );
   if ( !layer )
     return;
 
@@ -73,7 +73,7 @@ QString QgsLayerTreeLayer::name() const
   return mRef.layer ? mRef.layer->name() : mLayerName;
 }
 
-void QgsLayerTreeLayer::setName( const QString& n )
+void QgsLayerTreeLayer::setName( const QString &n )
 {
   if ( mRef.layer )
   {
@@ -91,7 +91,7 @@ void QgsLayerTreeLayer::setName( const QString& n )
   }
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
+QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element )
 {
   if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
     return nullptr;
@@ -102,7 +102,7 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
 
   // needs to have the layer reference resolved later
-  QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
+  QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
 
   nodeLayer->readCommonXml( element );
 
@@ -111,15 +111,15 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
   return nodeLayer;
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element, const QgsProject* project )
+QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsProject *project )
 {
-  QgsLayerTreeLayer* node = readXml( element );
+  QgsLayerTreeLayer *node = readXml( element );
   if ( node )
     node->resolveReferences( project );
   return node;
 }
 
-void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
+void QgsLayerTreeLayer::writeXml( QDomElement &parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
@@ -138,7 +138,7 @@ QString QgsLayerTreeLayer::dump() const
   return QStringLiteral( "LAYER: %1 checked=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const
+QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const
 {
   return new QgsLayerTreeLayer( *this );
 }

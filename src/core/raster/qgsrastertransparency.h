@@ -67,23 +67,23 @@ class CORE_EXPORT QgsRasterTransparency
     void initializeTransparentPixelList( double, double, double );
 
     //! \brief Mutator for transparentSingleValuePixelList
-    void setTransparentSingleValuePixelList( const QList<TransparentSingleValuePixel>& theNewList );
+    void setTransparentSingleValuePixelList( const QList<TransparentSingleValuePixel> &newList );
 
     //! \brief Mutator for transparentThreeValuePixelList
-    void setTransparentThreeValuePixelList( const QList<TransparentThreeValuePixel>& theNewList );
+    void setTransparentThreeValuePixelList( const QList<TransparentThreeValuePixel> &newList );
 
     //! \brief Returns the transparency value for a single value Pixel
-    int alphaValue( double, int theGlobalTransparency = 255 ) const;
+    int alphaValue( double, int globalTransparency = 255 ) const;
 
     //! \brief Return the transparency value for a RGB Pixel
-    int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
+    int alphaValue( double, double, double, int globalTransparency = 255 ) const;
 
     //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
     //! \brief The list to hold transparency values for RGB layers

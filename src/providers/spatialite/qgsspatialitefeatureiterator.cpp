@@ -19,17 +19,16 @@
 #include "qgsspatialiteprovider.h"
 #include "qgssqliteexpressioncompiler.h"
 
-#include <qgsgeometry.h>
-#include <qgslogger.h>
-#include <qgsmessagelog.h>
-#include <qgsjsonutils.h>
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsjsonutils.h"
+#include "qgssettings.h"
 
-#include <QSettings>
-
-QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
-    , sqliteStatement( nullptr )
-    , mExpressionCompiled( false )
+QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
+  , sqliteStatement( nullptr )
+  , mExpressionCompiled( false )
 {
 
   mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath );
@@ -99,7 +98,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       mFetchGeometry = true;
     }
 
-    if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
     {
       QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
 
@@ -138,9 +137,9 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   mOrderByCompiled = true;
 
-  if ( QSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+  if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, request.orderBy() )
+    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {
       QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
       QgsExpression expression = clause.expression();
@@ -199,7 +198,7 @@ QgsSpatiaLiteFeatureIterator::~QgsSpatiaLiteFeatureIterator()
 }
 
 
-bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
@@ -225,7 +224,7 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
-bool QgsSpatiaLiteFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
+bool QgsSpatiaLiteFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 {
   if ( !mExpressionCompiled )
     return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
@@ -279,7 +278,7 @@ bool QgsSpatiaLiteFeatureIterator::close()
 ////
 
 
-bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString& whereClause, long limit, const QString& orderBy )
+bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause, long limit, const QString &orderBy )
 {
   if ( !mHandle )
     return false;
@@ -418,7 +417,7 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
 }
 
 
-QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle& rect )
+QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle &rect )
 {
   return QStringLiteral( "%1, %2, %3, %4" )
          .arg( qgsDoubleToString( rect.xMinimum() ),
@@ -428,7 +427,7 @@ QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle& rect )
 }
 
 
-QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField& fld )
+QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField &fld )
 {
   QString fieldname = QgsSpatiaLiteProvider::quotedIdentifier( fld.name() );
   const QString type = fld.typeName().toLower();
@@ -515,7 +514,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   return true;
 }
 
-QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, int ic, QVariant::Type type, QVariant::Type subType )
+QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, int ic, QVariant::Type type, QVariant::Type subType )
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {
@@ -540,9 +539,10 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, 
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_TEXT )
   {
     // TEXT value
-    const QString txt = QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, ic ) );
+    const QString txt = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, ic ) );
     if ( type == QVariant::List || type == QVariant::StringList )
-    { // assume arrays are stored as JSON
+    {
+      // assume arrays are stored as JSON
       QVariant result = QVariant( QgsJSONUtils::parseArray( txt, subType ) );
       result.convert( type );
       return result;
@@ -554,7 +554,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, 
   return QVariant( type );
 }
 
-void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int ic, QgsFeature& feature )
+void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt *stmt, int ic, QgsFeature &feature )
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
   {
@@ -562,7 +562,7 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
     int geom_size = 0;
     const void *blob = sqlite3_column_blob( stmt, ic );
     int blob_size = sqlite3_column_bytes( stmt, ic );
-    QgsSpatiaLiteProvider::convertToGeosWKB(( const unsigned char * )blob, blob_size, &featureGeom, &geom_size );
+    QgsSpatiaLiteProvider::convertToGeosWKB( ( const unsigned char * )blob, blob_size, &featureGeom, &geom_size );
     if ( featureGeom )
     {
       QgsGeometry g;
@@ -579,7 +579,7 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt* stmt, int i
   }
 }
 
-bool QgsSpatiaLiteFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys )
+bool QgsSpatiaLiteFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys )
 {
   Q_UNUSED( orderBys )
   // Preparation has already been done in the constructor, so we just communicate the result
@@ -587,24 +587,24 @@ bool QgsSpatiaLiteFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest
 }
 
 
-QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p )
-    : mGeometryColumn( p->mGeometryColumn )
-    , mSubsetString( p->mSubsetString )
-    , mFields( p->mAttributeFields )
-    , mQuery( p->mQuery )
-    , mIsQuery( p->mIsQuery )
-    , mViewBased( p->mViewBased )
-    , mVShapeBased( p->mVShapeBased )
-    , mIndexTable( p->mIndexTable )
-    , mIndexGeometry( p->mIndexGeometry )
-    , mPrimaryKey( p->mPrimaryKey )
-    , mSpatialIndexRTree( p->mSpatialIndexRTree )
-    , mSpatialIndexMbrCache( p->mSpatialIndexMbrCache )
-    , mSqlitePath( p->mSqlitePath )
+QgsSpatiaLiteFeatureSource::QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p )
+  : mGeometryColumn( p->mGeometryColumn )
+  , mSubsetString( p->mSubsetString )
+  , mFields( p->mAttributeFields )
+  , mQuery( p->mQuery )
+  , mIsQuery( p->mIsQuery )
+  , mViewBased( p->mViewBased )
+  , mVShapeBased( p->mVShapeBased )
+  , mIndexTable( p->mIndexTable )
+  , mIndexGeometry( p->mIndexGeometry )
+  , mPrimaryKey( p->mPrimaryKey )
+  , mSpatialIndexRTree( p->mSpatialIndexRTree )
+  , mSpatialIndexMbrCache( p->mSpatialIndexMbrCache )
+  , mSqlitePath( p->mSqlitePath )
 {
 }
 
-QgsFeatureIterator QgsSpatiaLiteFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsSpatiaLiteFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsSpatiaLiteFeatureIterator( this, false, request ) );
 }

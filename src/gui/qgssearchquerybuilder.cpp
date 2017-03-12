@@ -20,9 +20,10 @@
 #include <QInputDialog>
 #include <QListView>
 #include <QMessageBox>
-#include <QSettings>
 #include <QStandardItem>
 #include <QTextStream>
+
+#include "qgssettings.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
@@ -31,10 +32,10 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
-QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
+QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mLayer( layer )
+  : QDialog( parent, fl )
+  , mLayer( layer )
 {
   setupUi( this );
   setupListViews();
@@ -69,7 +70,7 @@ void QgsSearchQueryBuilder::populateFields()
   if ( !mLayer )
     return;
 
-  const QgsFields& fields = mLayer->fields();
+  const QgsFields &fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString fieldName = fields.at( idx ).name();
@@ -178,7 +179,7 @@ void QgsSearchQueryBuilder::on_btnTest_clicked()
 }
 
 // This method tests the number of records that would be returned
-long QgsSearchQueryBuilder::countRecords( const QString& searchString )
+long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 {
   QgsExpression search( searchString );
   if ( search.hasParserError() )
@@ -299,7 +300,7 @@ QString QgsSearchQueryBuilder::searchString()
   return txtSQL->text();
 }
 
-void QgsSearchQueryBuilder::setSearchString( const QString& searchString )
+void QgsSearchQueryBuilder::setSearchString( const QString &searchString )
 {
   txtSQL->setText( searchString );
 }
@@ -356,7 +357,7 @@ void QgsSearchQueryBuilder::on_btnILike_clicked()
 
 void QgsSearchQueryBuilder::saveQuery()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
   //save as qqt (QGIS query file)
   QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Save query to file" ), lastQueryFileDir, QStringLiteral( "*.qqf" ) );
@@ -392,7 +393,7 @@ void QgsSearchQueryBuilder::saveQuery()
 
 void QgsSearchQueryBuilder::loadQuery()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastQueryFileDir = s.value( QStringLiteral( "/UI/lastQueryFileDir" ), QDir::homePath() ).toString();
 
   QString queryFileName = QFileDialog::getOpenFileName( nullptr, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
@@ -466,11 +467,11 @@ void QgsSearchQueryBuilder::loadQuery()
   }
 
   //Now replace all the string in the query
-  QList<QgsSearchTreeNode*> columnRefList = searchTree->columnRefNodes();
-  QList<QgsSearchTreeNode*>::iterator columnIt = columnRefList.begin();
+  QList<QgsSearchTreeNode *> columnRefList = searchTree->columnRefNodes();
+  QList<QgsSearchTreeNode *>::iterator columnIt = columnRefList.begin();
   for ( ; columnIt != columnRefList.end(); ++columnIt )
   {
-    QMap< QString, QString>::const_iterator replaceIt = attributesToReplace.find(( *columnIt )->columnRef() );
+    QMap< QString, QString>::const_iterator replaceIt = attributesToReplace.find( ( *columnIt )->columnRef() );
     if ( replaceIt != attributesToReplace.constEnd() )
     {
       ( *columnIt )->setColumnRef( replaceIt.value() );

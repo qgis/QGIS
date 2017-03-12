@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
-typedef QList<QgsDataItemProvider*> dataItemProviders_t();
+typedef QList<QgsDataItemProvider *> dataItemProviders_t();
 
 
 /**
@@ -36,23 +36,23 @@ typedef QList<QgsDataItemProvider*> dataItemProviders_t();
 class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 {
   public:
-    QgsDataItemProviderFromPlugin( const QString& name, dataCapabilities_t* capabilitiesFunc, dataItem_t* dataItemFunc )
-        : mName( name )
-        , mCapabilitiesFunc( capabilitiesFunc )
-        , mDataItemFunc( dataItemFunc )
+    QgsDataItemProviderFromPlugin( const QString &name, dataCapabilities_t *capabilitiesFunc, dataItem_t *dataItemFunc )
+      : mName( name )
+      , mCapabilitiesFunc( capabilitiesFunc )
+      , mDataItemFunc( dataItemFunc )
     {
     }
 
-    virtual QString name() override { return mName; }
+    QString name() override { return mName; }
 
-    virtual int capabilities() override { return mCapabilitiesFunc(); }
+    int capabilities() override { return mCapabilitiesFunc(); }
 
-    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override { return mDataItemFunc( path, parentItem ); }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override { return mDataItemFunc( path, parentItem ); }
 
   protected:
     QString mName;
-    dataCapabilities_t* mCapabilitiesFunc = nullptr;
-    dataItem_t* mDataItemFunc = nullptr;
+    dataCapabilities_t *mCapabilitiesFunc = nullptr;
+    dataItem_t *mDataItemFunc = nullptr;
 };
 
 
@@ -60,7 +60,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 {
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
 
-  Q_FOREACH ( const QString& key, providersList )
+  Q_FOREACH ( const QString &key, providersList )
   {
     std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
@@ -68,7 +68,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
     // new / better way of returning data items from providers
 
-    dataItemProviders_t* dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
+    dataItemProviders_t *dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
     if ( dataItemProvidersFn )
     {
       // the function is a factory - we keep ownership of the returned providers
@@ -77,7 +77,7 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
     // legacy support - using dataItem() and dataCapabilities() methods
 
-    dataCapabilities_t * dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
+    dataCapabilities_t *dataCapabilities = reinterpret_cast< dataCapabilities_t * >( cast_to_fptr( library->resolve( "dataCapabilities" ) ) );
     if ( !dataCapabilities )
     {
       QgsDebugMsg( library->fileName() + " does not have dataCapabilities" );
@@ -100,12 +100,12 @@ QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
   qDeleteAll( mProviders );
 }
 
-void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider* provider )
+void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider *provider )
 {
   mProviders.append( provider );
 }
 
-void QgsDataItemProviderRegistry::removeProvider( QgsDataItemProvider* provider )
+void QgsDataItemProviderRegistry::removeProvider( QgsDataItemProvider *provider )
 {
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )

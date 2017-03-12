@@ -22,9 +22,9 @@
 #include "qgsvectorlayer.h"
 
 QgsRelation::QgsRelation()
-    : mReferencingLayer( nullptr )
-    , mReferencedLayer( nullptr )
-    , mValid( false )
+  : mReferencingLayer( nullptr )
+  , mReferencedLayer( nullptr )
+  , mValid( false )
 {
 }
 
@@ -44,10 +44,10 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString id = elem.attribute( QStringLiteral( "id" ) );
   QString name = elem.attribute( QStringLiteral( "name" ) );
 
-  const QMap<QString, QgsMapLayer*>& mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
-  QgsMapLayer* referencingLayer = mapLayers[referencingLayerId];
-  QgsMapLayer* referencedLayer = mapLayers[referencedLayerId];
+  QgsMapLayer *referencingLayer = mapLayers[referencingLayerId];
+  QgsMapLayer *referencedLayer = mapLayers[referencedLayerId];
 
   if ( !referencingLayer )
   {
@@ -68,9 +68,9 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   }
 
   relation.mReferencingLayerId = referencingLayerId;
-  relation.mReferencingLayer = qobject_cast<QgsVectorLayer*>( referencingLayer );
+  relation.mReferencingLayer = qobject_cast<QgsVectorLayer *>( referencingLayer );
   relation.mReferencedLayerId = referencedLayerId;
-  relation.mReferencedLayer = qobject_cast<QgsVectorLayer*>( referencedLayer );
+  relation.mReferencedLayer = qobject_cast<QgsVectorLayer *>( referencedLayer );
   relation.mRelationId = id;
   relation.mRelationName = name;
 
@@ -98,7 +98,7 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "referencingLayer" ), mReferencingLayerId );
   elem.setAttribute( QStringLiteral( "referencedLayer" ), mReferencedLayerId );
 
-  Q_FOREACH ( const FieldPair& fields, mFieldPairs )
+  Q_FOREACH ( const FieldPair &fields, mFieldPairs )
   {
     QDomElement referenceElem = doc.createElement( QStringLiteral( "fieldRef" ) );
     referenceElem.setAttribute( QStringLiteral( "referencingField" ), fields.first );
@@ -109,50 +109,50 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   node.appendChild( elem );
 }
 
-void QgsRelation::setId( const QString& id )
+void QgsRelation::setId( const QString &id )
 {
   mRelationId = id;
 
   updateRelationStatus();
 }
 
-void QgsRelation::setName( const QString& name )
+void QgsRelation::setName( const QString &name )
 {
   mRelationName = name;
 }
 
-void QgsRelation::setReferencingLayer( const QString& id )
+void QgsRelation::setReferencingLayer( const QString &id )
 {
   mReferencingLayerId = id;
 
   updateRelationStatus();
 }
 
-void QgsRelation::setReferencedLayer( const QString& id )
+void QgsRelation::setReferencedLayer( const QString &id )
 {
   mReferencedLayerId = id;
 
   updateRelationStatus();
 }
 
-void QgsRelation::addFieldPair( const QString& referencingField, const QString& referencedField )
+void QgsRelation::addFieldPair( const QString &referencingField, const QString &referencedField )
 {
   mFieldPairs << FieldPair( referencingField, referencedField );
   updateRelationStatus();
 }
 
-void QgsRelation::addFieldPair( const FieldPair& fieldPair )
+void QgsRelation::addFieldPair( const FieldPair &fieldPair )
 {
   mFieldPairs << fieldPair;
   updateRelationStatus();
 }
 
-QgsFeatureIterator QgsRelation::getRelatedFeatures( const QgsFeature& feature ) const
+QgsFeatureIterator QgsRelation::getRelatedFeatures( const QgsFeature &feature ) const
 {
   return referencingLayer()->getFeatures( getRelatedFeaturesRequest( feature ) );
 }
 
-QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature& feature ) const
+QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature &feature ) const
 {
   QString filter = getRelatedFeaturesFilter( feature );
   QgsDebugMsg( QString( "Filter conditions: '%1'" ).arg( filter ) );
@@ -162,11 +162,11 @@ QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature& feat
   return myRequest;
 }
 
-QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature& feature ) const
+QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
 {
   QStringList conditions;
 
-  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
+  Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mFieldPairs )
   {
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
     QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
@@ -192,11 +192,11 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature& feature ) const
   return conditions.join( QStringLiteral( " AND " ) );
 }
 
-QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes& attributes ) const
+QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes &attributes ) const
 {
   QStringList conditions;
 
-  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
+  Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mFieldPairs )
   {
     int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
@@ -224,12 +224,12 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
   return myRequest;
 }
 
-QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsFeature& feature ) const
+QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsFeature &feature ) const
 {
   return getReferencedFeatureRequest( feature.attributes() );
 }
 
-QgsFeature QgsRelation::getReferencedFeature( const QgsFeature& feature ) const
+QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
 {
   QgsFeatureRequest request = getReferencedFeatureRequest( feature );
 
@@ -263,7 +263,7 @@ QString QgsRelation::referencingLayerId() const
   return mReferencingLayerId;
 }
 
-QgsVectorLayer* QgsRelation::referencingLayer() const
+QgsVectorLayer *QgsRelation::referencingLayer() const
 {
   return mReferencingLayer;
 }
@@ -273,7 +273,7 @@ QString QgsRelation::referencedLayerId() const
   return mReferencedLayerId;
 }
 
-QgsVectorLayer* QgsRelation::referencedLayer() const
+QgsVectorLayer *QgsRelation::referencedLayer() const
 {
   return mReferencedLayer;
 }
@@ -287,7 +287,7 @@ QgsAttributeList QgsRelation::referencedFields() const
 {
   QgsAttributeList attrs;
 
-  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+  Q_FOREACH ( const FieldPair &pair, mFieldPairs )
   {
     attrs << mReferencedLayer->fields().lookupField( pair.second );
   }
@@ -298,7 +298,7 @@ QgsAttributeList QgsRelation::referencingFields() const
 {
   QgsAttributeList attrs;
 
-  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+  Q_FOREACH ( const FieldPair &pair, mFieldPairs )
   {
     attrs << mReferencingLayer->fields().lookupField( pair.first );
   }
@@ -311,14 +311,14 @@ bool QgsRelation::isValid() const
   return mValid;
 }
 
-bool QgsRelation::hasEqualDefinition( const QgsRelation& other ) const
+bool QgsRelation::hasEqualDefinition( const QgsRelation &other ) const
 {
   return mReferencedLayerId == other.mReferencedLayerId && mReferencingLayerId == other.mReferencingLayerId && mFieldPairs == other.mFieldPairs;
 }
 
-QString QgsRelation::resolveReferencedField( const QString& referencingField ) const
+QString QgsRelation::resolveReferencedField( const QString &referencingField ) const
 {
-  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+  Q_FOREACH ( const FieldPair &pair, mFieldPairs )
   {
     if ( pair.first == referencingField )
       return pair.second;
@@ -326,9 +326,9 @@ QString QgsRelation::resolveReferencedField( const QString& referencingField ) c
   return QString();
 }
 
-QString QgsRelation::resolveReferencingField( const QString& referencedField ) const
+QString QgsRelation::resolveReferencingField( const QString &referencedField ) const
 {
-  Q_FOREACH ( const FieldPair& pair, mFieldPairs )
+  Q_FOREACH ( const FieldPair &pair, mFieldPairs )
   {
     if ( pair.second == referencedField )
       return pair.first;
@@ -338,10 +338,10 @@ QString QgsRelation::resolveReferencingField( const QString& referencedField ) c
 
 void QgsRelation::updateRelationStatus()
 {
-  const QMap<QString, QgsMapLayer*>& mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
-  mReferencingLayer = qobject_cast<QgsVectorLayer*>( mapLayers[mReferencingLayerId] );
-  mReferencedLayer = qobject_cast<QgsVectorLayer*>( mapLayers[mReferencedLayerId] );
+  mReferencingLayer = qobject_cast<QgsVectorLayer *>( mapLayers[mReferencingLayerId] );
+  mReferencedLayer = qobject_cast<QgsVectorLayer *>( mapLayers[mReferencedLayerId] );
 
   mValid = true;
 
@@ -370,7 +370,7 @@ void QgsRelation::updateRelationStatus()
         mValid = false;
       }
 
-      Q_FOREACH ( const FieldPair& fieldPair, mFieldPairs )
+      Q_FOREACH ( const FieldPair &fieldPair, mFieldPairs )
       {
         if ( -1 == mReferencingLayer->fields().lookupField( fieldPair.first ) )
         {

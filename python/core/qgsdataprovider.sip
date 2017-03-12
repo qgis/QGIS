@@ -329,8 +329,8 @@ class QgsDataProvider : QObject
   protected:
 
     /** Add error message */
-    void appendError( const QgsErrorMessage & theMessage );
+    void appendError( const QgsErrorMessage & message );
 
     /** Set error message */
-    void setError( const QgsError & theError );
+    void setError( const QgsError & error );
 };

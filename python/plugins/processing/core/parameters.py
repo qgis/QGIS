@@ -19,6 +19,7 @@
 from builtins import str
 from builtins import range
 from builtins import object
+from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -584,7 +585,6 @@ class ParameterFixedTable(Parameter):
         isOptional, name, definition = _splitParameterOptions(line)
         if definition.startswith("fixedtable"):
             descName = _createDescriptiveName(name)
-            default = definition.strip()[len('fixedtable') + 1:] or None
             return ParameterFixedTable(name, descName, optional=isOptional)
 
 
@@ -748,7 +748,7 @@ class ParameterMultipleInput(ParameterDataObject):
         else:
             exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'ParameterMultipleInput') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterMultipleInput').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def dataType(self):
@@ -1037,7 +1037,7 @@ class ParameterRaster(ParameterDataObject):
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'ParameterRaster') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getAsScriptCode(self):
@@ -1114,7 +1114,7 @@ class ParameterSelection(Parameter):
                     v = int(v)
                 except:
                     pass
-                if not v in self.values:
+                if v not in self.values:
                     return False
                 values.append(v)
             if not self.optional and len(values) == 0:
@@ -1129,7 +1129,7 @@ class ParameterSelection(Parameter):
                 value = int(value)
             except:
                 pass
-            if not value in self.values:
+            if value not in self.values:
                 return False
             self.value = value
             return True
@@ -1352,7 +1352,7 @@ class ParameterTable(ParameterDataObject):
     def getFileFilter(self):
         exts = ['csv', 'dbf']
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'ParameterTable') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterTable').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getAsScriptCode(self):
@@ -1520,7 +1520,7 @@ class ParameterVector(ParameterDataObject):
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files(*.%s)', 'ParameterVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def dataType(self):

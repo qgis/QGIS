@@ -27,7 +27,7 @@ from builtins import object
 #
 ###############################################################################
 
-#avoid PendingDeprecationWarning from PyQt4.uic
+# avoid PendingDeprecationWarning from PyQt4.uic
 import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
 
@@ -44,11 +44,11 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QUrl, QUrlQuery
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.uic import loadUiType
 
-from qgis.core import Qgis, QgsWkbTypes
+from qgis.core import Qgis, QgsSettings
 
 
 LOGGER = logging.getLogger('MetaSearch')
@@ -96,10 +96,10 @@ def get_connections_from_file(parent, filename):
             msg = parent.tr('Invalid CSW connections XML.')
     except etree.ParseError as err:
         error = 1
-        msg = parent.tr('Cannot parse XML file: %s' % err)
+        msg = parent.tr('Cannot parse XML file: {0}').format(err)
     except IOError as err:
         error = 1
-        msg = parent.tr('Cannot open file: %s' % err)
+        msg = parent.tr('Cannot open file: {0}').format(err)
 
     if error == 1:
         QMessageBox.information(parent, parent.tr('Loading Connections'), msg)
@@ -110,14 +110,17 @@ def get_connections_from_file(parent, filename):
 def prettify_xml(xml):
     """convenience function to prettify XML"""
 
-    if xml.count('\n') > 5:  # likely already pretty printed
+    if isinstance(xml, bytes):
+        xml = xml.decode('utf-8')
+
+    if xml.count('\n') > 20:  # likely already pretty printed
+        return xml
+
+    # check if it's a GET request
+    if xml.startswith('http'):
         return xml
     else:
-        # check if it's a GET request
-        if xml.startswith('http'):
-            return xml
-        else:
-            return parseString(xml).toprettyxml()
+        return parseString(xml).toprettyxml()
 
 
 def highlight_xml(context, xml):
@@ -137,8 +140,13 @@ def highlight_xml(context, xml):
 def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
-    locale_name = QSettings().value('locale/userLocale')[0:2]
-    version = Qgis.QGIS_VERSION.rsplit('.', 1)[0]
+    locale_name = QgsSettings().value('locale/userLocale')[0:2]
+    major, minor = Qgis.QGIS_VERSION.split('.')[:2]
+
+    if minor == '99':  # master
+        version = 'testing'
+    else:
+        version = '.'.join([major, minor])
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
            (version, locale_name)
@@ -172,3 +180,20 @@ def serialize_string(input_string):
         value = '%s 1' % input_string
 
     return value
+
+
+def clean_ows_url(url):
+    """clean an OWS URL of added basic service parameters"""
+
+    url = QUrl(url)
+    query_string = url.query()
+
+    if query_string:
+        query_string = QUrlQuery(query_string)
+        query_string.removeQueryItem('service')
+        query_string.removeQueryItem('SERVICE')
+        query_string.removeQueryItem('request')
+        query_string.removeQueryItem('REQUEST')
+        url.setQuery(query_string)
+
+    return url.toString()

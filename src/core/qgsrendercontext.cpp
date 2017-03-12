@@ -27,32 +27,32 @@
 #define INCH_TO_MM 25.4
 
 QgsRenderContext::QgsRenderContext()
-    : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
+  : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
-QgsRenderContext::QgsRenderContext( const QgsRenderContext& rh )
-    : mFlags( rh.mFlags )
-    , mPainter( rh.mPainter )
-    , mCoordTransform( rh.mCoordTransform )
-    , mExtent( rh.mExtent )
-    , mMapToPixel( rh.mMapToPixel )
-    , mRenderingStopped( rh.mRenderingStopped )
-    , mScaleFactor( rh.mScaleFactor )
-    , mRendererScale( rh.mRendererScale )
-    , mLabelingEngine( rh.mLabelingEngine )
-    , mSelectionColor( rh.mSelectionColor )
-    , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
-    , mExpressionContext( rh.mExpressionContext )
-    , mGeometry( rh.mGeometry )
-    , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
-    , mSegmentationTolerance( rh.mSegmentationTolerance )
-    , mSegmentationToleranceType( rh.mSegmentationToleranceType )
+QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
+  : mFlags( rh.mFlags )
+  , mPainter( rh.mPainter )
+  , mCoordTransform( rh.mCoordTransform )
+  , mExtent( rh.mExtent )
+  , mMapToPixel( rh.mMapToPixel )
+  , mRenderingStopped( rh.mRenderingStopped )
+  , mScaleFactor( rh.mScaleFactor )
+  , mRendererScale( rh.mRendererScale )
+  , mLabelingEngine( rh.mLabelingEngine )
+  , mSelectionColor( rh.mSelectionColor )
+  , mVectorSimplifyMethod( rh.mVectorSimplifyMethod )
+  , mExpressionContext( rh.mExpressionContext )
+  , mGeometry( rh.mGeometry )
+  , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
+  , mSegmentationTolerance( rh.mSegmentationTolerance )
+  , mSegmentationToleranceType( rh.mSegmentationToleranceType )
 {
 }
 
-QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
+QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
 {
   mFlags = rh.mFlags;
   mPainter = rh.mPainter;
@@ -73,7 +73,7 @@ QgsRenderContext&QgsRenderContext::operator=( const QgsRenderContext & rh )
   return *this;
 }
 
-QgsRenderContext QgsRenderContext::fromQPainter( QPainter* painter )
+QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
 {
   QgsRenderContext context;
   context.setPainter( painter );
@@ -111,7 +111,7 @@ bool QgsRenderContext::testFlag( QgsRenderContext::Flag flag ) const
   return mFlags.testFlag( flag );
 }
 
-QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings& mapSettings )
+QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSettings )
 {
   QgsRenderContext ctx;
   ctx.setMapToPixel( mapSettings.mapToPixel() );
@@ -165,7 +165,7 @@ bool QgsRenderContext::showSelection() const
   return mFlags.testFlag( DrawSelection );
 }
 
-void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform& t )
+void QgsRenderContext::setCoordinateTransform( const QgsCoordinateTransform &t )
 {
   mCoordTransform = t;
 }
@@ -195,7 +195,7 @@ void QgsRenderContext::setUseRenderingOptimization( bool enabled )
   setFlag( UseRenderingOptimization, enabled );
 }
 
-void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
+void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp )
 {
   if ( ffp )
   {
@@ -207,12 +207,12 @@ void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider*
   }
 }
 
-const QgsFeatureFilterProvider* QgsRenderContext::featureFilterProvider() const
+const QgsFeatureFilterProvider *QgsRenderContext::featureFilterProvider() const
 {
   return mFeatureFilterProvider.get();
 }
 
-double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const
+double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
   double conversionFactor = 1.0;
   switch ( unit )
@@ -267,7 +267,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
   return convertedSize;
 }
 
-double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale ) const
+double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale ) const
 {
   double mup = mMapToPixel.mapUnitsPerPixel();
 

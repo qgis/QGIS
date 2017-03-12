@@ -28,7 +28,7 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
 fi
 
 # ARGUMENTS
-INTERACTIVE=$(tty -s && echo YES || echo NO)
+INTERACTIVE=$( tty -s && echo YES || echo NO)
 DEBUG=NO
 OUTPUTLOG=""
 while getopts ":rdl:" opt; do
@@ -50,8 +50,8 @@ while getopts ":rdl:" opt; do
 done
 shift $(expr $OPTIND - 1)
 
-if [ ! $# -eq 0 ]; then
-  EXCLUDE=$(cat $AGIGNORE |${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' | tr '\n' '|' |${GP}sed -e 's/|$//')
+if [ $# -ne 0 ]; then
+  EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
   INPUTFILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | egrep -iv "$EXCLUDE" | tr '\n' ' ' )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
@@ -77,7 +77,7 @@ declare -A GLOBREP_IGNORE=()
 ERRORFOUND=NO
 
 for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
-  [[ "$INTERACTIVE" =~ YES ]] && printf "Progress: %d/%d\n" $I $SPLIT
+  ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\n" $I $SPLIT
   SPELLFILE=spelling$I~
 
   # if correction contains an uppercase letter and is the same as the error character wise, this means that the error is searched as a full word and case sensitive (not incorporated in a bigger one)
@@ -124,10 +124,10 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
   IGNORECASE=$(echo "(${IGNORECASE_FIXSPECIALCHAR}|${IGNORECASE_INWORD}|${IGNORECASE_WHOLEWORD})" |${GP}sed -r 's/\(\|/(/' |${GP}sed -r 's/\|\|/|/g' |${GP}sed -r 's/\|\)/)/')'(?!.*'"${SPELLOKRX}"')'
   CASEMATCH=$(echo "(${CASEMATCH_FIXCASE}|${MATCHCASE_INWORD})" |${GP}sed -r 's/\(\|/(/' |${GP}sed -r 's/\|\|/|/g' |${GP}sed -r 's/\|\)/)/')'(?!.*'"${SPELLOKRX}"')'
 
-  FILE=$INPUTFILES  # init with input files (if ag is run with single file, file path is now in output)
+  FILE=$INPUTFILES  # init with input files (if ag is run with single file, file path is not written in output)
 
   while read -u 3 -r LINE; do
-    echo "$LINE"
+    echo -e "$LINE"
     ERRORFOUND=YES
     NOCOLOR=$(echo "$LINE" | ${GP}sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
     if [[ "$NOCOLOR" =~ ^[[:alnum:]][[:alnum:]\/\._-]+$ ]]; then
@@ -141,7 +141,9 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
       fi
       NUMBER=$(echo "$NOCOLOR" | cut -d: -f1)
       ERRORLINE=$(echo "$NOCOLOR" | cut -d: -f2)
-      ERROR=$(echo "$LINE" | ${GP}sed -r 's/^.*?\x1B\[30;43m(.*?)\x1B\[0m.*$/\1/')
+      ERROR=$(echo "$LINE" | ${GP}sed -r 's/^.*?\x1B\[30;43m(.*?)\x1B\[0m.*?$/\1/')
+      PREVCHAR=$(echo "$LINE" | cut -d: -f2 | ${GP}sed -r 's/^(.*?)\x1B\[30;43m.*?\x1B\[0m.*?$/\1/' | ${GP}sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' | tail -c 2)
+      NEXTCHAR=$(echo "$LINE" | cut -d: -f2 | ${GP}sed -r 's/^.*?\x1B\[30;43m.*?\x1B\[0m(.*?)$/\1/' | ${GP}sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g' | head -c 1)
 
       ERRORNOCOLOR=$(echo "$ERROR" | ${GP}sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g')
       if [[ "$ERRORNOCOLOR" =~ ^[[:digit:]]+: ]]; then
@@ -151,11 +153,15 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
         # also make error small case and escape special chars: ( ) |
         ERRORSMALLCASE=$(echo ${ERROR,,} |${GP}sed -r 's/\(/\\(/g' |${GP}sed -r 's/\)/\\)/g' |${GP}sed -r 's/\|/\\|/g')
         if [[ ! "${ERRORSMALLCASE}" =~ $IGNORECASE_INWORD ]]; then
-         if [[ ! -z $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE:1:-1}${ERRORSMALLCASE: -1}?:" scripts/spell_check/spelling.dat) ]]; then
+           PREVCHAR=${ERROR::1}
+           # remove first character
            ERRORSMALLCASE=${ERRORSMALLCASE#?}
            ERROR=${ERROR#?}
          fi
-         if [[ ! -z $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
+         if [[ -n $(ag --nonumbers --case-sensitive "^${ERRORSMALLCASE::-1}:" scripts/spell_check/spelling.dat) ]]; then
+           NEXTCHAR=${ERROR:${#ERROR}-1:1}
+           # remove last character
            ERRORSMALLCASE=${ERRORSMALLCASE::-1}
            ERROR=${ERROR::-1}
          fi
@@ -170,16 +176,16 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
           MATCHCASE="$ERROR:$CORRECTION"
           CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
 
-          if [[ ! -z $OUTPUTLOG ]]; then
+          if [[ -n $OUTPUTLOG ]]; then
             echo "$FILE $NUMBER $ERROR $CORRECTIONCASE" >> $OUTPUTLOG
           fi
           if [[ "$INTERACTIVE" =~ YES ]]; then
             # Skip global replace
-            if [[ !  -z  ${GLOBREP_ALLFILES["$ERROR"]} ]]; then
+            if [[ -n ${GLOBREP_ALLFILES["$ERROR"]} ]]; then
               echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
-              ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
+              ${GP}sed -i -r "/${SPELLOKRX}/! s/${PREVCHAR}${ERROR}${NEXTCHAR}/${PREVCHAR}$CORRECTIONCASE${NEXTCHAR}/g" $FILE
               continue
-            elif [[ ( ! -z  ${GLOBREP_CURRENTFILE["$ERROR"]} ) || ( ! -z  ${GLOBREP_IGNORE["$ERROR"]} ) ]]; then
+            elif [[ ( -n ${GLOBREP_CURRENTFILE["$ERROR"]} ) || ( -n ${GLOBREP_IGNORE["$ERROR"]} ) ]]; then
               echo "skipping occurrence"
               continue
             else
@@ -190,6 +196,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
               fi
               if [[ "$FILE" =~ \.(h|cpp|sip)$ ]]; then
                 if [[ "$ERRORLINE" =~ ^\s*(\/*\|\/\/) ]]; then
+                  # line is already commented
                   SPELLOKSTR='#spellok'
                 fi
               fi
@@ -215,20 +222,20 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
                 case $n in
                     r)
                       echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
-                      ${GP}sed -i "${NUMBER}s/$ERROR/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i "${NUMBER}s/${PREVCHAR}${ERROR}${NEXTCHAR}/${PREVCHAR}$CORRECTIONCASE${NEXTCHAR}/g" $FILE
                       break
                       ;;
                     f)
                       GLOBREP_CURRENTFILE+=(["$ERROR"]=1)
                       echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
-                      ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i -r "/${SPELLOKRX}/! s/${PREVCHAR}${ERROR}${NEXTCHAR}/${PREVCHAR}$CORRECTIONCASE${NEXTCHAR}/g" $FILE
                       break
                       ;;
                     a)
                       GLOBREP_CURRENTFILE+=(["$ERROR"]=1)
                       GLOBREP_ALLFILES+=(["$ERROR"]=1)
                       echo -e "replace \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m"
-                      ${GP}sed -i -r "/${SPELLOKRX}/! s/$ERROR/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i -r "/${SPELLOKRX}/! s/${PREVCHAR}${ERROR}${NEXTCHAR}/${PREVCHAR}$CORRECTIONCASE${NEXTCHAR}/g" $FILE
                       break
                       ;;
                     p)
@@ -242,7 +249,7 @@ for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
                       MATCHCASE="$ERROR:$CORRECTION"
                       CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
                       echo -e "replacing \x1B[33m$ERROR\x1B[0m by \x1B[33m$CORRECTIONCASE\x1B[0m in \x1B[33m$FILE\x1B[0m at line \x1B[33m$NUMBER\x1B[0m"
-                      ${GP}sed -i "${NUMBER}s/$ERROR/$CORRECTIONCASE/g" $FILE
+                      ${GP}sed -i "${NUMBER}s/${PREVCHAR}${ERROR}${NEXTCHAR}/${PREVCHAR}$CORRECTIONCASE${NEXTCHAR}/g" $FILE
                       break
                       ;;
                     c)

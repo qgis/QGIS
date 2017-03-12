@@ -51,6 +51,7 @@
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
 %Include qgscustomdrophandler.sip
+%Include qgscurveeditorwidget.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdetaileditemwidget.sip
@@ -80,7 +81,6 @@
 %Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
 %Include qgsformannotation.sip
-%Include qgsgenericprojectionselector.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
@@ -129,6 +129,7 @@
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnewgeopackagelayerdialog.sip
 %Include qgsoptionsdialogbase.sip
+%Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
 %Include qgspanelwidget.sip
@@ -137,8 +138,9 @@
 %Include qgspluginmanagerinterface.sip
 %Include qgspresetcolorrampdialog.sip
 %Include qgsprevieweffect.sip
+%Include qgsprojectionselectiondialog.sip
+%Include qgsprojectionselectiontreewidget.sip
 %Include qgsprojectionselectionwidget.sip
-%Include qgsprojectionselector.sip
 %Include qgspropertyassistantwidget.sip
 %Include qgspropertyoverridebutton.sip
 %Include qgsquerybuilder.sip

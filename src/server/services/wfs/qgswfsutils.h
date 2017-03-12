@@ -46,12 +46,12 @@ namespace QgsWfs
    * XXX This is needed in the current implementation.
    * This should disappear as soon we get rid of singleton.
    */
-  QgsWfsProjectParser* getConfigParser( QgsServerInterface* serverIface );
+  QgsWfsProjectParser *getConfigParser( QgsServerInterface *serverIface );
 
   /**
    * Service URL string
    */
-  QString serviceUrl( const QgsServerRequest& request, const QgsProject* project );
+  QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );

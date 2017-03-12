@@ -15,9 +15,9 @@
 #include "qgsrulebasedlabeling.h"
 
 
-QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling& rules, QgsVectorLayer* layer, bool withFeatureLoop )
-    : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop )
-    , mRules( rules )
+QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
+  : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop )
+  , mRules( rules )
 {
   mRules.rootRule()->createSubProviders( layer, mSubProviders, this );
 }
@@ -27,14 +27,14 @@ QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
   // sub-providers owned by labeling engine
 }
 
-QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
+QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
   return new QgsVectorLayerLabelProvider( layer, providerId, withFeatureLoop, settings );
 }
 
-bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QSet<QString>& attributeNames )
+bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
 {
-  Q_FOREACH ( QgsVectorLayerLabelProvider* provider, mSubProviders )
+  Q_FOREACH ( QgsVectorLayerLabelProvider *provider, mSubProviders )
     provider->setEngine( mEngine );
 
   // populate sub-providers
@@ -42,16 +42,16 @@ bool QgsRuleBasedLabelProvider::prepare( const QgsRenderContext& context, QSet<Q
   return true;
 }
 
-void QgsRuleBasedLabelProvider::registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry )
+void QgsRuleBasedLabelProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry )
 {
   // will register the feature to relevant sub-providers
   mRules.rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry );
 }
 
-QList<QgsAbstractLabelProvider*> QgsRuleBasedLabelProvider::subProviders()
+QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
 {
-  QList<QgsAbstractLabelProvider*> lst;
-  Q_FOREACH ( QgsVectorLayerLabelProvider* subprovider, mSubProviders )
+  QList<QgsAbstractLabelProvider *> lst;
+  Q_FOREACH ( QgsVectorLayerLabelProvider *subprovider, mSubProviders )
     lst << subprovider;
   return lst;
 }
@@ -59,16 +59,16 @@ QList<QgsAbstractLabelProvider*> QgsRuleBasedLabelProvider::subProviders()
 
 ////////////////////
 
-QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings* settings, int scaleMinDenom, int scaleMaxDenom, const QString& filterExp, const QString& description, bool elseRule )
-    : mParent( nullptr )
-    , mSettings( settings )
-    , mScaleMinDenom( scaleMinDenom )
-    , mScaleMaxDenom( scaleMaxDenom )
-    , mFilterExp( filterExp )
-    , mDescription( description )
-    , mElseRule( elseRule )
-    , mIsActive( true )
-    , mFilter( nullptr )
+QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &description, bool elseRule )
+  : mParent( nullptr )
+  , mSettings( settings )
+  , mScaleMinDenom( scaleMinDenom )
+  , mScaleMaxDenom( scaleMaxDenom )
+  , mFilterExp( filterExp )
+  , mDescription( description )
+  , mElseRule( elseRule )
+  , mIsActive( true )
+  , mFilter( nullptr )
 {
   mRuleKey = QUuid::createUuid().toString();
   initFilter();
@@ -82,7 +82,7 @@ QgsRuleBasedLabeling::Rule::~Rule()
   // do NOT delete parent
 }
 
-void QgsRuleBasedLabeling::Rule::setSettings( QgsPalLayerSettings* settings )
+void QgsRuleBasedLabeling::Rule::setSettings( QgsPalLayerSettings *settings )
 {
   if ( mSettings == settings )
     return;
@@ -112,7 +112,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
 void QgsRuleBasedLabeling::Rule::updateElseRules()
 {
   mElseRules.clear();
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
   {
     if ( rule->isElse() )
       mElseRules << rule;
@@ -124,7 +124,7 @@ bool QgsRuleBasedLabeling::Rule::requiresAdvancedEffects() const
   if ( mSettings && mSettings->format().containsAdvancedEffects() )
     return true;
 
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
   {
     if ( rule->requiresAdvancedEffects() )
       return true;
@@ -133,9 +133,9 @@ bool QgsRuleBasedLabeling::Rule::requiresAdvancedEffects() const
   return false;
 }
 
-void QgsRuleBasedLabeling::Rule::subProviderIds( QStringList& list ) const
+void QgsRuleBasedLabeling::Rule::subProviderIds( QStringList &list ) const
 {
-  Q_FOREACH ( const Rule* rule, mChildren )
+  Q_FOREACH ( const Rule *rule, mChildren )
   {
     if ( rule->settings() )
       list << rule->ruleKey();
@@ -145,14 +145,14 @@ void QgsRuleBasedLabeling::Rule::subProviderIds( QStringList& list ) const
 }
 
 
-void QgsRuleBasedLabeling::Rule::appendChild( QgsRuleBasedLabeling::Rule* rule )
+void QgsRuleBasedLabeling::Rule::appendChild( QgsRuleBasedLabeling::Rule *rule )
 {
   mChildren.append( rule );
   rule->mParent = this;
   updateElseRules();
 }
 
-void QgsRuleBasedLabeling::Rule::insertChild( int i, QgsRuleBasedLabeling::Rule* rule )
+void QgsRuleBasedLabeling::Rule::insertChild( int i, QgsRuleBasedLabeling::Rule *rule )
 {
   mChildren.insert( i, rule );
   rule->mParent = this;
@@ -166,36 +166,36 @@ void QgsRuleBasedLabeling::Rule::removeChildAt( int i )
   updateElseRules();
 }
 
-const QgsRuleBasedLabeling::Rule* QgsRuleBasedLabeling::Rule::findRuleByKey( const QString& key ) const
+const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QString &key ) const
 {
   // we could use a hash / map for search if this will be slow...
 
   if ( key == mRuleKey )
     return this;
 
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
   {
-    const Rule* r = rule->findRuleByKey( key );
+    const Rule *r = rule->findRuleByKey( key );
     if ( r )
       return r;
   }
   return nullptr;
 }
 
-QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::clone() const
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone() const
 {
-  QgsPalLayerSettings* s = mSettings ? new QgsPalLayerSettings( *mSettings ) : nullptr;
-  Rule* newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mDescription );
+  QgsPalLayerSettings *s = mSettings ? new QgsPalLayerSettings( *mSettings ) : nullptr;
+  Rule *newrule = new Rule( s, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
     newrule->appendChild( rule->clone() );
   return newrule;
 }
 
-QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement& ruleElem )
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::create( const QDomElement &ruleElem )
 {
-  QgsPalLayerSettings* settings = nullptr;
+  QgsPalLayerSettings *settings = nullptr;
   QDomElement settingsElem = ruleElem.firstChildElement( QStringLiteral( "settings" ) );
   if ( !settingsElem.isNull() )
   {
@@ -208,7 +208,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
   int scaleMinDenom = ruleElem.attribute( QStringLiteral( "scalemindenom" ), QStringLiteral( "0" ) ).toInt();
   int scaleMaxDenom = ruleElem.attribute( QStringLiteral( "scalemaxdenom" ), QStringLiteral( "0" ) ).toInt();
   QString ruleKey = ruleElem.attribute( QStringLiteral( "key" ) );
-  Rule* rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
+  Rule *rule = new Rule( settings, scaleMinDenom, scaleMaxDenom, filterExp, description );
 
   if ( !ruleKey.isEmpty() )
     rule->mRuleKey = ruleKey;
@@ -218,7 +218,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
   QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
   while ( !childRuleElem.isNull() )
   {
-    Rule* childRule = create( childRuleElem );
+    Rule *childRule = create( childRuleElem );
     if ( childRule )
     {
       rule->appendChild( childRule );
@@ -233,7 +233,7 @@ QgsRuleBasedLabeling::Rule*QgsRuleBasedLabeling::Rule::create( const QDomElement
   return rule;
 }
 
-QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
+QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument &doc ) const
 {
   QDomElement ruleElem = doc.createElement( QStringLiteral( "rule" ) );
 
@@ -255,13 +255,13 @@ QDomElement QgsRuleBasedLabeling::Rule::save( QDomDocument& doc ) const
 
   for ( RuleList::const_iterator it = mChildren.constBegin(); it != mChildren.constEnd(); ++it )
   {
-    Rule* rule = *it;
+    Rule *rule = *it;
     ruleElem.appendChild( rule->save( doc ) );
   }
   return ruleElem;
 }
 
-void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsRuleBasedLabeling::RuleToProviderMap& subProviders, QgsRuleBasedLabelProvider *provider )
+void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer *layer, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider )
 {
   if ( mSettings )
   {
@@ -272,17 +272,17 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer* layer, QgsR
   }
 
   // call recursively
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
   {
     rule->createSubProviders( layer, subProviders, provider );
   }
 }
 
-void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext& context, QSet<QString>& attributeNames, QgsRuleBasedLabeling::RuleToProviderMap& subProviders )
+void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, QgsRuleBasedLabeling::RuleToProviderMap &subProviders )
 {
   if ( mSettings )
   {
-    QgsVectorLayerLabelProvider* p = subProviders[this];
+    QgsVectorLayerLabelProvider *p = subProviders[this];
     if ( !p->prepare( context, attributeNames ) )
     {
       subProviders.remove( this );
@@ -297,13 +297,13 @@ void QgsRuleBasedLabeling::Rule::prepare( const QgsRenderContext& context, QSet<
   }
 
   // call recursively
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
   {
     rule->prepare( context, attributeNames, subProviders );
   }
 }
 
-QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap& subProviders, QgsGeometry* obstacleGeometry )
+QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, QgsGeometry *obstacleGeometry )
 {
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
@@ -321,7 +321,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   bool willRegisterSomething = false;
 
   // call recursively
-  Q_FOREACH ( Rule* rule, mChildren )
+  Q_FOREACH ( Rule *rule, mChildren )
   {
     // Don't process else rules yet
     if ( !rule->isElse() )
@@ -336,7 +336,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
   // If none of the rules passed then we jump into the else rules and process them.
   if ( !willRegisterSomething )
   {
-    Q_FOREACH ( Rule* rule, mElseRules )
+    Q_FOREACH ( Rule *rule, mElseRules )
     {
       registered |= rule->registerFeature( feature, context, subProviders, obstacleGeometry ) != Filtered;
     }
@@ -350,7 +350,7 @@ QgsRuleBasedLabeling::Rule::RegisterResult QgsRuleBasedLabeling::Rule::registerF
     return Filtered;
 }
 
-bool QgsRuleBasedLabeling::Rule::isFilterOK( QgsFeature& f, QgsRenderContext& context ) const
+bool QgsRuleBasedLabeling::Rule::isFilterOK( QgsFeature &f, QgsRenderContext &context ) const
 {
   if ( ! mFilter || mElseRule )
     return true;
@@ -375,13 +375,13 @@ bool QgsRuleBasedLabeling::Rule::isScaleOK( double scale ) const
 
 ////////////////////
 
-QgsRuleBasedLabeling::QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule* root )
-    : mRootRule( root )
+QgsRuleBasedLabeling::QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root )
+  : mRootRule( root )
 {
 
 }
 
-QgsRuleBasedLabeling::QgsRuleBasedLabeling( const QgsRuleBasedLabeling& other )
+QgsRuleBasedLabeling::QgsRuleBasedLabeling( const QgsRuleBasedLabeling &other )
 {
   mRootRule = other.mRootRule->clone();
 
@@ -401,15 +401,15 @@ QgsRuleBasedLabeling::~QgsRuleBasedLabeling()
 }
 
 
-QgsRuleBasedLabeling*QgsRuleBasedLabeling::create( const QDomElement& element )
+QgsRuleBasedLabeling *QgsRuleBasedLabeling::create( const QDomElement &element )
 {
   QDomElement rulesElem = element.firstChildElement( QStringLiteral( "rules" ) );
 
-  Rule* root = Rule::create( rulesElem );
+  Rule *root = Rule::create( rulesElem );
   if ( !root )
     return nullptr;
 
-  QgsRuleBasedLabeling* rl = new QgsRuleBasedLabeling( root );
+  QgsRuleBasedLabeling *rl = new QgsRuleBasedLabeling( root );
   return rl;
 }
 
@@ -418,7 +418,7 @@ QString QgsRuleBasedLabeling::type() const
   return QStringLiteral( "rule-based" );
 }
 
-QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc ) const
+QDomElement QgsRuleBasedLabeling::save( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
   elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "rule-based" ) );
@@ -430,7 +430,7 @@ QDomElement QgsRuleBasedLabeling::save( QDomDocument& doc ) const
   return elem;
 }
 
-QgsVectorLayerLabelProvider* QgsRuleBasedLabeling::provider( QgsVectorLayer* layer ) const
+QgsVectorLayerLabelProvider *QgsRuleBasedLabeling::provider( QgsVectorLayer *layer ) const
 {
   return new QgsRuleBasedLabelProvider( *this, layer, false );
 }
@@ -442,17 +442,17 @@ QStringList QgsRuleBasedLabeling::subProviders() const
   return lst;
 }
 
-QgsPalLayerSettings QgsRuleBasedLabeling::settings( QgsVectorLayer* layer, const QString& providerId ) const
+QgsPalLayerSettings QgsRuleBasedLabeling::settings( QgsVectorLayer *layer, const QString &providerId ) const
 {
   Q_UNUSED( layer );
-  const Rule* rule = mRootRule->findRuleByKey( providerId );
+  const Rule *rule = mRootRule->findRuleByKey( providerId );
   if ( rule && rule->settings() )
     return *rule->settings();
 
   return QgsPalLayerSettings();
 }
 
-bool QgsRuleBasedLabeling::requiresAdvancedEffects( QgsVectorLayer* ) const
+bool QgsRuleBasedLabeling::requiresAdvancedEffects( QgsVectorLayer * ) const
 {
   return mRootRule->requiresAdvancedEffects();
 }

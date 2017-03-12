@@ -27,7 +27,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 {
     Q_OBJECT
   public:
-    QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame );
+    QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame );
     ~QgsComposerHtmlWidget();
 
   private slots:
@@ -61,8 +61,8 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     QgsComposerHtmlWidget();
     void blockSignals( bool block );
 
-    QgsComposerHtml* mHtml = nullptr;
-    QgsComposerFrame* mFrame = nullptr;
+    QgsComposerHtml *mHtml = nullptr;
+    QgsComposerFrame *mFrame = nullptr;
     QgsCodeEditorHTML *mHtmlEditor = nullptr;
     QgsCodeEditorCSS *mStylesheetEditor = nullptr;
 };

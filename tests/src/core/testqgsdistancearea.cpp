@@ -227,12 +227,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   daCRS.createFromSrsId( da.sourceCrsId() );
   QgsPolyline ring;
   ring << QgsPoint( 0, 0 )
-  << QgsPoint( 1, 0 )
-  << QgsPoint( 1, 1 )
-  << QgsPoint( 2, 1 )
-  << QgsPoint( 2, 2 )
-  << QgsPoint( 0, 2 )
-  << QgsPoint( 0, 0 );
+       << QgsPoint( 1, 0 )
+       << QgsPoint( 1, 1 )
+       << QgsPoint( 2, 1 )
+       << QgsPoint( 2, 2 )
+       << QgsPoint( 0, 2 )
+       << QgsPoint( 0, 0 );
   QgsPolygon poly;
   poly << ring;
 
@@ -245,16 +245,16 @@ void TestQgsDistanceArea::measureAreaAndUnits()
 
   QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
 
-  QVERIFY(( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::AreaSquareDegrees )
-          || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::AreaSquareMeters ) );
+  QVERIFY( ( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::AreaSquareDegrees )
+           || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::AreaSquareMeters ) );
 
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
   area = da.measureArea( &polygon );
   units = da.areaUnits();
 
   QgsDebugMsg( QString( "measured %1 in %2" ).arg( area ).arg( QgsUnitTypes::toString( units ) ) );
-  QVERIFY(( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::AreaSquareDegrees )
-          || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::AreaSquareMeters ) );
+  QVERIFY( ( qgsDoubleNear( area, 3.0, 0.00000001 ) && units == QgsUnitTypes::AreaSquareDegrees )
+           || ( qgsDoubleNear( area, 37176087091.5, 0.1 ) && units == QgsUnitTypes::AreaSquareMeters ) );
 
   da.setEllipsoidalMode( true );
   area = da.measureArea( &polygon );
@@ -272,12 +272,12 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   // now try with a source CRS which is in feet
   ring.clear();
   ring << QgsPoint( 1850000, 4423000 )
-  << QgsPoint( 1851000, 4423000 )
-  << QgsPoint( 1851000, 4424000 )
-  << QgsPoint( 1852000, 4424000 )
-  << QgsPoint( 1852000, 4425000 )
-  << QgsPoint( 1851000, 4425000 )
-  << QgsPoint( 1850000, 4423000 );
+       << QgsPoint( 1851000, 4423000 )
+       << QgsPoint( 1851000, 4424000 )
+       << QgsPoint( 1852000, 4424000 )
+       << QgsPoint( 1852000, 4425000 )
+       << QgsPoint( 1851000, 4425000 )
+       << QgsPoint( 1850000, 4423000 );
   poly.clear();
   poly << ring;
   polygon = QgsGeometry::fromPolygon( poly );

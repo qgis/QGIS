@@ -74,7 +74,7 @@ def processCommand(alg):
     outputNames = ['output_{}'.format(f) for f in ['red', 'green', 'blue']]
     outputs = [alg.getOutputFromName(f) for f in outputNames]
     for output in outputNames:
-        alg.exportedLayers[alg.getOutputValue(output)] = 'output' + alg.uniqueSufix
+        alg.exportedLayers[alg.getOutputValue(output)] = 'output' + alg.uniqueSuffix
         alg.removeOutputFromName(output)
 
     alg.processCommand()

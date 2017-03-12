@@ -17,7 +17,7 @@ class QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
     ~QgsContrastEnhancement();
 
     /*

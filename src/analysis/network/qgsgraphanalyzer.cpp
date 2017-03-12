@@ -22,9 +22,9 @@
 #include "qgsgraph.h"
 #include "qgsgraphanalyzer.h"
 
-void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int criterionNum, QVector<int>* resultTree, QVector<double>* resultCost )
+void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int criterionNum, QVector<int> *resultTree, QVector<double> *resultCost )
 {
-  QVector< double > * result = nullptr;
+  QVector< double > *result = nullptr;
   if ( resultCost )
   {
     result = resultCost;
@@ -83,7 +83,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
   }
 }
 
-QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum )
+QgsGraph *QgsGraphAnalyzer::shortestTree( const QgsGraph *source, int startVertexIdx, int criterionNum )
 {
   QgsGraph *treeResult = new QgsGraph();
   QVector<int> tree;
@@ -109,7 +109,7 @@ QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVerte
   {
     if ( tree[ i ] != -1 )
     {
-      const QgsGraphEdge& arc = source->edge( tree[i] );
+      const QgsGraphEdge &arc = source->edge( tree[i] );
 
       treeResult->addEdge( source2result[ arc.outVertex()], source2result[ arc.inVertex()],
                            arc.strategies() );

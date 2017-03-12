@@ -62,7 +62,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
-            u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
+            self.tr(u"{0} - {1} [{2}]").format(self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
 
         self.defaultLayerName = 'QueryLayer'
 
@@ -197,7 +197,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             # set the new model
             model = self.db.sqlResultModel(sql, self)
             self.viewResult.setModel(model)
-            self.lblResult.setText(self.tr("%d rows, %.1f seconds") % (model.affectedRows(), model.secs()))
+            self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
             cols = self.viewResult.model().columnNames()
             for col in cols:
                 quotedCols.append(self.db.connector.quoteId(col))

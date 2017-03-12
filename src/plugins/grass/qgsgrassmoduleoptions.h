@@ -96,7 +96,7 @@ class QgsGrassModuleOptions
     //! Get region covering all input maps
     // \param all true all input maps
     // \param all false only the mas which were switched on
-    virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all )
+    virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
     { Q_UNUSED( window ); Q_UNUSED( crs ); Q_UNUSED( all ); return false; }
 
     // ! Flag names
@@ -124,7 +124,7 @@ class QgsGrassModuleOptions
     QString mAppDir;
 
     //! Region mode select box
-    QComboBox * mRegionModeComboBox = nullptr;
+    QComboBox *mRegionModeComboBox = nullptr;
 
     //! Direct mode
     bool mDirect;
@@ -147,7 +147,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
       QString xname, QDomElement confDocElem,
-      bool direct, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+      bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
 
     ~QgsGrassModuleStandardOptions();
@@ -171,7 +171,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QStringList checkRegion() override;
     bool usesRegion() override;
     bool requestsRegion() override;
-    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) override;
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all ) override;
     QStringList flagNames() override { return mFlagNames; }
 
   public slots:
@@ -183,12 +183,12 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     /** Read and parse module options (--interface-description).
      * @param errors - list to which possible errors are added
      */
-    QDomDocument readInterfaceDescription( const QString & xname, QStringList & errors );
+    QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 
     /** Get region for currently selected map. It will show warning dialog if region could not be read.
      * @return true if region was successfully read
      */
-    bool getCurrentMapRegion( QgsGrassModuleInput * param, struct Cell_head *window );
+    bool getCurrentMapRegion( QgsGrassModuleInput *param, struct Cell_head *window );
 
     // List of providers used by layers in QgsProject
     QList<QgsGrassProvider *> grassProviders();
@@ -201,7 +201,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QString mXPath;
 
     //! Option items
-    QList<QgsGrassModuleParam*> mParams;
+    QList<QgsGrassModuleParam *> mParams;
 
     //! List of all flags. Necessary for scripts.
     QStringList mFlagNames;

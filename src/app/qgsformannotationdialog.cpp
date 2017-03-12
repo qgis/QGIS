@@ -23,10 +23,10 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mItem( item )
-    , mEmbeddedWidget( nullptr )
+QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+  , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
@@ -35,12 +35,12 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem* it
 
   if ( item && item->annotation() )
   {
-    QgsFormAnnotation* annotation = static_cast< QgsFormAnnotation* >( item->annotation() );
+    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( item->annotation() );
     mFileLineEdit->setText( annotation->designerForm() );
   }
 
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsFormAnnotationDialog::applySettingsToItem );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsFormAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
@@ -60,9 +60,9 @@ void QgsFormAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsFormAnnotation* annotation = static_cast< QgsFormAnnotation* >( mItem->annotation() );
+    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
     annotation->setDesignerForm( mFileLineEdit->text() );
-    QgsVectorLayer* layer = qobject_cast< QgsVectorLayer* >( annotation->mapLayer() );
+    QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( annotation->mapLayer() );
     if ( layer )
     {
       //set last used annotation form as default for the layer
@@ -91,7 +91,7 @@ void QgsFormAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsFormAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+void QgsFormAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

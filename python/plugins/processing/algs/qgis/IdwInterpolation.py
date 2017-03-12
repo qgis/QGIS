@@ -40,8 +40,8 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import (Parameter,
                                         ParameterNumber,
                                         ParameterExtent,
-                                        _splitParameterOptions
-                                        )
+                                        _splitParameterOptions,
+                                        _createDescriptiveName)
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 
@@ -104,12 +104,12 @@ class IdwInterpolation(GeoAlgorithm):
                 isOptional, name, definition = _splitParameterOptions(line)
                 descName = _createDescriptiveName(name)
                 parent = definition.lower().strip()[len('interpolation data') + 1:]
-                return ParameterInterpolationData(name, description, parent)
+                return ParameterInterpolationData(name, descName, parent)
 
             @staticmethod
             def dataToString(data):
                 s = ''
-                for d in data:
+                for c in data:
                     s += '{}, {}, {:d}, {:d};'.format(c[0],
                                                       c[1],
                                                       c[2],

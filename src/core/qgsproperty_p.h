@@ -37,23 +37,23 @@ class QgsPropertyPrivate : public QSharedData
   public:
 
     QgsPropertyPrivate()
-        : type( 0 )
-        , active( true )
-        , transformer( nullptr )
+      : type( 0 )
+      , active( true )
+      , transformer( nullptr )
     {}
 
-    QgsPropertyPrivate( const QgsPropertyPrivate& other )
-        : QSharedData( other )
-        , type( other.type )
-        , active( other.active )
-        , transformer( other.transformer ? other.transformer->clone() : nullptr )
-        , staticValue( other.staticValue )
-        , fieldName( other.fieldName )
-        , cachedFieldIdx( other.cachedFieldIdx )
-        , expressionString( other.expressionString )
-        , expressionPrepared( other.expressionPrepared )
-        , expression( other.expression )
-        , expressionReferencedCols( other.expressionReferencedCols )
+    QgsPropertyPrivate( const QgsPropertyPrivate &other )
+      : QSharedData( other )
+      , type( other.type )
+      , active( other.active )
+      , transformer( other.transformer ? other.transformer->clone() : nullptr )
+      , staticValue( other.staticValue )
+      , fieldName( other.fieldName )
+      , cachedFieldIdx( other.cachedFieldIdx )
+      , expressionString( other.expressionString )
+      , expressionPrepared( other.expressionPrepared )
+      , expression( other.expression )
+      , expressionReferencedCols( other.expressionReferencedCols )
     {}
 
     ~QgsPropertyPrivate()
@@ -67,7 +67,7 @@ class QgsPropertyPrivate : public QSharedData
     bool active = true;
 
     //! Optional transfomer
-    QgsPropertyTransformer* transformer = nullptr;
+    QgsPropertyTransformer *transformer = nullptr;
 
     // StaticData
     QVariant staticValue;

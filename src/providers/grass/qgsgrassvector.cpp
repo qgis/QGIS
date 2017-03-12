@@ -41,16 +41,16 @@ extern "C"
 #endif
 }
 
-QgsGrassVectorLayer::QgsGrassVectorLayer( QObject * parent )
-    : QObject( parent )
-    , mNumber( 0 )
+QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
+  : QObject( parent )
+  , mNumber( 0 )
 {
 }
 
-QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject * parent )
-    : QObject( parent )
-    , mGrassObject( grassObject )
-    , mNumber( number )
+QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( grassObject )
+  , mNumber( number )
 {
   if ( fieldInfo )
   {
@@ -188,18 +188,18 @@ QgsFields QgsGrassVectorLayer::fields()
 
 
 /*********************** QgsGrassVector ***********************/
-QgsGrassVector::QgsGrassVector( const QString& gisdbase, const QString& location, const QString& mapset,
-                                const QString& name, QObject *parent )
-    : QObject( parent )
-    , mGrassObject( gisdbase, location, mapset, name )
-    , mNodeCount( 0 )
+QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
+                                const QString &name, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( gisdbase, location, mapset, name )
+  , mNodeCount( 0 )
 {
 }
 
-QgsGrassVector::QgsGrassVector( const QgsGrassObject& grassObject, QObject *parent )
-    : QObject( parent )
-    , mGrassObject( grassObject )
-    , mNodeCount( 0 )
+QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( grassObject )
+  , mNodeCount( 0 )
 {
 }
 
@@ -237,7 +237,7 @@ bool QgsGrassVector::openHead()
     map = QgsGrass::vectNewMapStruct();
     level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().data(), ( char * ) mGrassObject.mapset().toUtf8().data() );
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     QgsDebugMsg( QString( "Cannot open GRASS vectvectorTypesor: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );
@@ -324,7 +324,7 @@ bool QgsGrassVector::openHead()
     QgsGrass::vectDestroyMapStruct( map );
     QgsGrass::unlock();
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     QgsDebugMsg( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );

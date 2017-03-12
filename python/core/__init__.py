@@ -38,6 +38,8 @@ from qgis._core import *
 
 def _geometryNonZero(self):
     return not self.isEmpty()
+
+
 QgsGeometry.__nonzero__ = _geometryNonZero
 QgsGeometry.__bool__ = _geometryNonZero
 
@@ -252,5 +254,6 @@ def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.A
 
     assert function
     return QgsTaskWrapper(description, flags, function, on_finished, *args, **kwargs)
+
 
 QgsTask.fromFunction = fromFunction

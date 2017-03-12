@@ -29,11 +29,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import sys
 import os
 import traceback
 
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QObject, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtGui import QCursor
 
@@ -54,14 +53,14 @@ from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.core.alglist import algList
 
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
+from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider  # NOQA
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
 
 class Processing(object):
@@ -98,8 +97,10 @@ class Processing(object):
         except:
             ProcessingLog.addToLog(
                 ProcessingLog.LOG_ERROR,
-                Processing.tr('Could not load provider: %s\n%s')
-                % (provider.name(), traceback.format_exc()))
+                Processing.tr('Could not load provider: {0}\n{0}').format(
+                    provider.name(), traceback.format_exc()
+                )
+            )
             Processing.removeProvider(provider)
 
     @staticmethod
@@ -172,11 +173,12 @@ class Processing(object):
     def updateAlgsList():
         """Call this method when there has been any change that
         requires the list of algorithms to be created again from
-        algorithm providers.
+        algorithm providers. Use reloadProvider() for a more fine-grained
+        update.
         """
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         for p in Processing.providers:
-            Processing.reloadProvider(p)
+            Processing.reloadProvider(p.id())
         QApplication.restoreOverrideCursor()
 
     @staticmethod
@@ -226,8 +228,9 @@ class Processing(object):
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong parameter value {0} for parameter {1}.').format(value, name), Processing.tr("Processing"))
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
-                    Processing.tr('Error in %s. Wrong parameter value %s for parameter %s.') % (
-                        alg.name, value, name)
+                    Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
+                        alg.name, value, name
+                    )
                 )
                 return
             # fill any missing parameters with default values if allowed
@@ -239,7 +242,7 @@ class Processing(object):
                         QgsMessageLog.logMessage(Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name), Processing.tr("Processing"))
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
-                            Processing.tr('Error in %s. Missing parameter value for parameter %s.') % (
+                            Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
                                 alg.name, param.name)
                         )
                         return
@@ -277,8 +280,8 @@ class Processing(object):
             return
 
         if not alg.checkInputCRS():
-            print('Warning: Not all input layers use the same CRS.\n'
-                  + 'This can cause unexpected results.')
+            print('Warning: Not all input layers use the same CRS.\n' +
+                  'This can cause unexpected results.')
             QgsMessageLog.logMessage(Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'), Processing.tr("Processing"))
 
         # Don't set the wait cursor twice, because then when you

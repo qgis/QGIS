@@ -30,11 +30,11 @@
 
 //QgsComposerItemBaseWidget
 
-QgsComposerConfigObject::QgsComposerConfigObject( QWidget* parent, QgsComposerObject *composerObject )
-    : QObject( parent )
-    , mComposerObject( composerObject )
+QgsComposerConfigObject::QgsComposerConfigObject( QWidget *parent, QgsComposerObject *composerObject )
+  : QObject( parent )
+  , mComposerObject( composerObject )
 {
-  connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+  connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ),
            this, SLOT( updateDataDefinedButtons() ) );
   connect( atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateDataDefinedButtons() ) );
 }
@@ -46,7 +46,7 @@ QgsComposerConfigObject::~QgsComposerConfigObject()
 void QgsComposerConfigObject::updateDataDefinedProperty()
 {
   //match data defined button to item's data defined property
-  QgsPropertyOverrideButton* ddButton = qobject_cast<QgsPropertyOverrideButton*>( sender() );
+  QgsPropertyOverrideButton *ddButton = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   if ( !ddButton )
   {
     return;
@@ -68,13 +68,13 @@ void QgsComposerConfigObject::updateDataDefinedProperty()
 
 void QgsComposerConfigObject::updateDataDefinedButtons()
 {
-  Q_FOREACH ( QgsPropertyOverrideButton* button, findChildren< QgsPropertyOverrideButton* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
   {
     button->setVectorLayer( atlasCoverageLayer() );
   }
 }
 
-void QgsComposerConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton* button, QgsComposerObject::DataDefinedProperty key )
+void QgsComposerConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty key )
 {
   button->blockSignals( true );
   button->init( key, mComposerObject->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), atlasCoverageLayer() );
@@ -83,7 +83,7 @@ void QgsComposerConfigObject::initializeDataDefinedButton( QgsPropertyOverrideBu
   button->blockSignals( false );
 }
 
-void QgsComposerConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton* button )
+void QgsComposerConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *button )
 {
   if ( !button )
     return;
@@ -95,14 +95,14 @@ void QgsComposerConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton
   whileBlocking( button )->setToProperty( mComposerObject->dataDefinedProperties().property( key ) );
 }
 
-QgsAtlasComposition* QgsComposerConfigObject::atlasComposition() const
+QgsAtlasComposition *QgsComposerConfigObject::atlasComposition() const
 {
   if ( !mComposerObject )
   {
     return nullptr;
   }
 
-  QgsComposition* composition = mComposerObject->composition();
+  QgsComposition *composition = mComposerObject->composition();
 
   if ( !composition )
   {
@@ -112,9 +112,9 @@ QgsAtlasComposition* QgsComposerConfigObject::atlasComposition() const
   return &composition->atlasComposition();
 }
 
-QgsVectorLayer* QgsComposerConfigObject::atlasCoverageLayer() const
+QgsVectorLayer *QgsComposerConfigObject::atlasCoverageLayer() const
 {
-  QgsAtlasComposition* atlasMap = atlasComposition();
+  QgsAtlasComposition *atlasMap = atlasComposition();
 
   if ( atlasMap && atlasMap->enabled() )
   {
@@ -136,21 +136,21 @@ void QgsComposerItemWidget::updateVariables()
     mVariableEditor->setEditableScopeIndex( editableIndex );
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
-    : QWidget( parent )
-    , mItem( item )
-    , mConfigObject( new QgsComposerConfigObject( this, item ) )
-    , mFreezeXPosSpin( false )
-    , mFreezeYPosSpin( false )
-    , mFreezeWidthSpin( false )
-    , mFreezeHeightSpin( false )
-    , mFreezePageSpin( false )
+QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *item )
+  : QWidget( parent )
+  , mItem( item )
+  , mConfigObject( new QgsComposerConfigObject( this, item ) )
+  , mFreezeXPosSpin( false )
+  , mFreezeYPosSpin( false )
+  , mFreezeWidthSpin( false )
+  , mFreezeHeightSpin( false )
+  , mFreezePageSpin( false )
 {
 
   setupUi( this );
 
   //make button exclusive
-  QButtonGroup* buttonGroup = new QButtonGroup( this );
+  QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->addButton( mUpperLeftCheckBox );
   buttonGroup->addButton( mUpperMiddleCheckBox );
   buttonGroup->addButton( mUpperRightCheckBox );
@@ -198,14 +198,14 @@ void QgsComposerItemWidget::showFrameGroup( bool showGroup )
 
 //slots
 
-void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& newFrameColor )
+void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor &newFrameColor )
 {
   if ( !mItem )
   {
     return;
   }
-  mItem->beginCommand( tr( "Frame color changed" ), QgsComposerMergeCommand::ItemOutlineColor );
-  mItem->setFrameOutlineColor( newFrameColor );
+  mItem->beginCommand( tr( "Frame color changed" ), QgsComposerMergeCommand::ItemStrokeColor );
+  mItem->setFrameStrokeColor( newFrameColor );
   mItem->update();
   mItem->endCommand();
 }
@@ -218,7 +218,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
   }
 }
 
-void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor )
+void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor )
 {
   if ( !mItem )
   {
@@ -229,7 +229,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  QgsComposerMap *cm = dynamic_cast<QgsComposerMap *>( mItem );
   if ( cm )
   {
     cm->cache();
@@ -299,15 +299,15 @@ QgsComposerItem::ItemPositionMode QgsComposerItemWidget::positionMode() const
   return QgsComposerItem::UpperLeft;
 }
 
-void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsComposerItemWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mItem )
   {
     return;
   }
 
-  mItem->beginCommand( tr( "Item outline width" ), QgsComposerMergeCommand::ItemOutlineWidth );
-  mItem->setFrameOutlineWidth( d );
+  mItem->beginCommand( tr( "Item stroke width" ), QgsComposerMergeCommand::ItemStrokeWidth );
+  mItem->setFrameStrokeWidth( d );
   mItem->endCommand();
 }
 
@@ -349,7 +349,7 @@ void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  QgsComposerMap *cm = dynamic_cast<QgsComposerMap *>( mItem );
   if ( cm )
   {
     cm->cache();
@@ -495,7 +495,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
     return;
   }
 
-  mOutlineWidthSpinBox->blockSignals( true );
+  mStrokeWidthSpinBox->blockSignals( true );
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
@@ -509,8 +509,8 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->backgroundColor() );
-  mFrameColorButton->setColor( mItem->frameOutlineColor() );
-  mOutlineWidthSpinBox->setValue( mItem->frameOutlineWidth() );
+  mFrameColorButton->setColor( mItem->frameStrokeColor() );
+  mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
@@ -524,7 +524,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
   mFrameJoinStyleCombo->blockSignals( false );
-  mOutlineWidthSpinBox->blockSignals( false );
+  mStrokeWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
@@ -551,7 +551,7 @@ void QgsComposerItemWidget::initializeDataDefinedButtons()
 
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
-  Q_FOREACH ( QgsPropertyOverrideButton* button, findChildren< QgsPropertyOverrideButton* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
   {
     mConfigObject->updateDataDefinedButton( button );
   }
@@ -774,29 +774,29 @@ void QgsComposerItemWidget::on_mExcludeFromPrintsCheckBox_toggled( bool checked 
   }
 }
 
-QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject* composerObject )
-    : QgsPanelWidget( parent )
-    , mConfigObject( new QgsComposerConfigObject( this, composerObject ) )
+QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget *parent, QgsComposerObject *composerObject )
+  : QgsPanelWidget( parent )
+  , mConfigObject( new QgsComposerConfigObject( this, composerObject ) )
 {
 
 }
 
-void QgsComposerItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton* button, QgsComposerObject::DataDefinedProperty property )
+void QgsComposerItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
 }
 
-void QgsComposerItemBaseWidget::updateDataDefinedButton( QgsPropertyOverrideButton* button )
+void QgsComposerItemBaseWidget::updateDataDefinedButton( QgsPropertyOverrideButton *button )
 {
   mConfigObject->updateDataDefinedButton( button );
 }
 
-QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
+QgsVectorLayer *QgsComposerItemBaseWidget::atlasCoverageLayer() const
 {
   return mConfigObject->atlasCoverageLayer();
 }
 
-QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
+QgsAtlasComposition *QgsComposerItemBaseWidget::atlasComposition() const
 {
   return mConfigObject->atlasComposition();
 }

@@ -19,9 +19,9 @@
 #include "qgsprevieweffect.h"
 
 
-QgsPreviewEffect::QgsPreviewEffect( QObject* parent )
-    : QGraphicsEffect( parent )
-    , mMode( PreviewGrayscale )
+QgsPreviewEffect::QgsPreviewEffect( QObject *parent )
+  : QGraphicsEffect( parent )
+  , mMode( PreviewGrayscale )
 {
   //effect is disabled by default
   setEnabled( false );
@@ -33,7 +33,7 @@ void QgsPreviewEffect::setMode( QgsPreviewEffect::PreviewMode mode )
   update();
 }
 
-void QgsPreviewEffect::draw( QPainter* painter )
+void QgsPreviewEffect::draw( QPainter *painter )
 {
   QPoint offset;
   QPixmap pixmap;
@@ -56,7 +56,7 @@ void QgsPreviewEffect::draw( QPainter* painter )
   {
     case QgsPreviewEffect::PreviewGrayscale:
     {
-      QRgb * line = nullptr;
+      QRgb *line = nullptr;
 
       for ( int y = 0; y < image.height(); y++ )
       {
@@ -80,7 +80,7 @@ void QgsPreviewEffect::draw( QPainter* painter )
     case QgsPreviewEffect::PreviewProtanope:
     case QgsPreviewEffect::PreviewDeuteranope:
     {
-      QRgb * line = nullptr;
+      QRgb *line = nullptr;
 
       for ( int y = 0; y < image.height(); y++ )
       {
@@ -98,7 +98,7 @@ void QgsPreviewEffect::draw( QPainter* painter )
 
 }
 
-QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEffect::PreviewMode mode )
+QRgb QgsPreviewEffect::simulateColorBlindness( QRgb &originalColor, QgsPreviewEffect::PreviewMode mode )
 {
   int red = qRed( originalColor );
   int green = qGreen( originalColor );
@@ -137,14 +137,14 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb& originalColor, QgsPreviewEf
   return qRgb( red, green, blue );
 }
 
-void QgsPreviewEffect::simulateProtanopeLMS( double& L, double &M, double &S )
+void QgsPreviewEffect::simulateProtanopeLMS( double &L, double &M, double &S )
 {
   //adjust L component to simulate vision of Protanope
   //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5) #spellok
   L = ( 2.02344 * M ) + ( -2.52581 * S );
 }
 
-void QgsPreviewEffect::simulateDeuteranopeLMS( double& L, double &M, double &S )
+void QgsPreviewEffect::simulateDeuteranopeLMS( double &L, double &M, double &S )
 {
   //adjust M component to simulate vision of Deuteranope
   //(http://vision.psychol.cam.ac.uk/jdmollon/papers/colourmaps.pdf p248, equation 5) #spellok

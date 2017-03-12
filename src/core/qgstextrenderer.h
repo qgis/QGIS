@@ -48,12 +48,12 @@ class CORE_EXPORT QgsTextBufferSettings
     /** Copy constructor.
      * @param other source settings
      */
-    QgsTextBufferSettings( const QgsTextBufferSettings& other );
+    QgsTextBufferSettings( const QgsTextBufferSettings &other );
 
     /** Copy constructor.
      * @param other source QgsTextBufferSettings
      */
-    QgsTextBufferSettings& operator=( const QgsTextBufferSettings &other );
+    QgsTextBufferSettings &operator=( const QgsTextBufferSettings &other );
 
     ~QgsTextBufferSettings();
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsTextBufferSettings
      * @see sizeMapUnitScale()
      * @see setSizeUnit()
      */
-    void setSizeMapUnitScale( const QgsMapUnitScale& scale );
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the color of the buffer.
      * @see setColor()
@@ -118,9 +118,9 @@ class CORE_EXPORT QgsTextBufferSettings
      * @param color buffer color
      * @see color()
      */
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
-    /** Returns whether the interior of the buffer will be filled in. If false, only the outline
+    /** Returns whether the interior of the buffer will be filled in. If false, only the stroke
      * of the text will be drawn as the buffer. The effect of this setting is only visible for
      * semi-transparent text.
      * @see setFillBufferInterior()
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsTextBufferSettings
     bool fillBufferInterior() const;
 
     /** Sets whether the interior of the buffer will be filled in.
-     * @param fill set to false to drawn only the outline of the text as the buffer, or true to also
+     * @param fill set to false to drawn only the stroke of the text as the buffer, or true to also
      * shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
      * @see fillBufferInterior()
      */
@@ -173,23 +173,23 @@ class CORE_EXPORT QgsTextBufferSettings
      * @param layer source vector layer
      * @see writeToLayer()
      */
-    void readFromLayer( QgsVectorLayer* layer );
+    void readFromLayer( QgsVectorLayer *layer );
 
     /** Writes settings to a layer's custom properties.
      * @param layer target vector layer
      * @see readFromLayer()
      */
-    void writeToLayer( QgsVectorLayer* layer ) const;
+    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * @see writeXml()
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
     /** Write settings into a DOM element.
      * @see readXml()
      */
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 
 
   private:
@@ -243,9 +243,9 @@ class CORE_EXPORT QgsTextBackgroundSettings
     /** Copy constructor.
      * @param other source QgsTextBackgroundSettings
      */
-    QgsTextBackgroundSettings( const QgsTextBackgroundSettings& other );
+    QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other );
 
-    QgsTextBackgroundSettings& operator=( const QgsTextBackgroundSettings &other );
+    QgsTextBackgroundSettings &operator=( const QgsTextBackgroundSettings &other );
 
     ~QgsTextBackgroundSettings();
 
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @param file SVG file path
      * @see svgFile()
      */
-    void setSvgFile( const QString& file );
+    void setSvgFile( const QString &file );
 
     /** Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
      * around text).
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @see size()
      * @see setSizeType()
      */
-    void setSize( const QSizeF& size );
+    void setSize( const QSizeF &size );
 
     /** Returns the units used for the shape's size. This value has no meaning if the sizeType() is set to
      * QgsTextBackgroundSettings::SizePercent.
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @see sizeMapUnitScale()
      * @see setSizeUnit()
      */
-    void setSizeMapUnitScale( const QgsMapUnitScale& scale );
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the method used for rotating the background shape.
      * @see setRotationType()
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @see offset()
      * @see setOffsetUnit()
      */
-    void setOffset( const QPointF& offset );
+    void setOffset( const QPointF &offset );
 
     /** Returns the units used for the shape's offset.
      * @see setOffsetUnit()
@@ -416,7 +416,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @see offsetMapUnitScale()
      * @see setOffsetUnit()
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the radii used for rounding the corners of shapes. Units are retrieved
      * through radiiUnit().
@@ -432,7 +432,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @see radii()
      * @see setRadiiUnit()
      */
-    void setRadii( const QSizeF& radii );
+    void setRadii( const QSizeF &radii );
 
     /** Returns the units used for the shape's radii.
      * @see setRadiiUnit()
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @see radiiMapUnitScale()
      * @see setRadiiUnit()
      */
-    void setRadiiMapUnitScale( const QgsMapUnitScale& scale );
+    void setRadiiMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the background shape's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
      * opaque).
@@ -488,71 +488,71 @@ class CORE_EXPORT QgsTextBackgroundSettings
 
     /** Returns the color used for filing the background shape.
      * @see setFillColor()
-     * @see borderColor()
+     * @see strokeColor()
      */
     QColor fillColor() const;
 
     /** Sets the color used for filing the background shape.
      * @param color background color
      * @see fillColor()
-     * @see setBorderColor()
+     * @see setStrokeColor()
      */
-    void setFillColor( const QColor& color );
+    void setFillColor( const QColor &color );
 
     /** Returns the color used for outlining the background shape.
-     * @see setBorderColor()
+     * @see setStrokeColor()
      * @see fillColor()
      */
-    QColor borderColor() const;
+    QColor strokeColor() const;
 
     /** Sets the color used for outlining the background shape.
-     * @param color outline color
-     * @see borderColor()
+     * @param color stroke color
+     * @see strokeColor()
      * @see setFillColor()
      */
-    void setBorderColor( const QColor& color );
+    void setStrokeColor( const QColor &color );
 
-    /** Returns the width of the shape's border (outline). Units are retrieved through
-     * borderWidthUnit().
-     * @see setBorderWidth()
-     * @see borderWidthUnit()
+    /** Returns the width of the shape's stroke (stroke). Units are retrieved through
+     * strokeWidthUnit().
+     * @see setStrokeWidth()
+     * @see strokeWidthUnit()
      */
-    double borderWidth() const;
+    double strokeWidth() const;
 
-    /** Sets the width of the shape's border (outline). Units are specified through
-     * setBorderWidthUnit().
-     * @see borderWidth()
-     * @see setBorderWidthUnit()
+    /** Sets the width of the shape's stroke (stroke). Units are specified through
+     * setStrokeWidthUnit().
+     * @see strokeWidth()
+     * @see setStrokeWidthUnit()
      */
-    void setBorderWidth( double width );
+    void setStrokeWidth( double width );
 
-    /** Returns the units used for the shape's border width.
-     * @see setBorderWidthUnit()
-     * @see borderWidth()
+    /** Returns the units used for the shape's stroke width.
+     * @see setStrokeWidthUnit()
+     * @see strokeWidth()
      */
-    QgsUnitTypes::RenderUnit borderWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    /** Sets the units used for the shape's border width.
-     * @param units border width units
-     * @see borderWidthUnit()
-     * @see setBorderWidth()
+    /** Sets the units used for the shape's stroke width.
+     * @param units stroke width units
+     * @see strokeWidthUnit()
+     * @see setStrokeWidth()
      */
-    void setBorderWidthUnit( QgsUnitTypes::RenderUnit units );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit units );
 
-    /** Returns the map unit scale object for the shape border width. This is only used if the
-     * borderWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
-     * @see setBorderWidthMapUnitScale()
-     * @see borderWidthUnit()
+    /** Returns the map unit scale object for the shape stroke width. This is only used if the
+     * strokeWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
+     * @see setStrokeWidthMapUnitScale()
+     * @see strokeWidthUnit()
      */
-    QgsMapUnitScale borderWidthMapUnitScale() const;
+    QgsMapUnitScale strokeWidthMapUnitScale() const;
 
-    /** Sets the map unit scale object for the shape border width. This is only used if the
-     * borderWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
-     * @param scale scale for shape border width
-     * @see borderWidthMapUnitScale()
-     * @see setBorderWidthUnit()
+    /** Sets the map unit scale object for the shape stroke width. This is only used if the
+     * strokeWidthUnit() is set to QgsUnitTypes::RenderMapUnit.
+     * @param scale scale for shape stroke width
+     * @see strokeWidthMapUnitScale()
+     * @see setStrokeWidthUnit()
      */
-    void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale );
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the join style used for drawing the background shape.
      * @see setJoinStyle
@@ -569,23 +569,23 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * @param layer source vector layer
      * @see writeToLayer()
      */
-    void readFromLayer( QgsVectorLayer* layer );
+    void readFromLayer( QgsVectorLayer *layer );
 
     /** Writes settings to a layer's custom properties.
      * @param layer target vector layer
      * @see readFromLayer()
      */
-    void writeToLayer( QgsVectorLayer* layer ) const;
+    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * @see writeXml()
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
     /** Write settings into a DOM element.
      * @see readXml()
      */
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 
   private:
 
@@ -619,9 +619,9 @@ class CORE_EXPORT QgsTextShadowSettings
     /** Copy constructor.
      * @param other source QgsTextShadowSettings
      */
-    QgsTextShadowSettings( const QgsTextShadowSettings& other );
+    QgsTextShadowSettings( const QgsTextShadowSettings &other );
 
-    QgsTextShadowSettings& operator=( const QgsTextShadowSettings &other );
+    QgsTextShadowSettings &operator=( const QgsTextShadowSettings &other );
 
     ~QgsTextShadowSettings();
 
@@ -705,7 +705,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * @see offsetMapUnitScale()
      * @see setOffsetUnit()
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns true if the global shadow offset will be used.
      * @see setOffsetGlobal()
@@ -756,7 +756,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * @see blurRadiusMapUnitScale()
      * @see setBlurRadiusUnit()
      */
-    void setBlurRadiusMapUnitScale( const QgsMapUnitScale& scale );
+    void setBlurRadiusMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns whether only the alpha channel for the shadow will be blurred.
      * @see setBlurAlphaOnly()
@@ -803,7 +803,7 @@ class CORE_EXPORT QgsTextShadowSettings
      * @param color shadow color
      * @see color()
      */
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
     /** Returns the blending mode used for drawing the drop shadow.
      * @see setBlendMode()
@@ -820,23 +820,23 @@ class CORE_EXPORT QgsTextShadowSettings
      * @param layer source vector layer
      * @see writeToLayer()
      */
-    void readFromLayer( QgsVectorLayer* layer );
+    void readFromLayer( QgsVectorLayer *layer );
 
     /** Writes settings to a layer's custom properties.
      * @param layer target vector layer
      * @see readFromLayer()
      */
-    void writeToLayer( QgsVectorLayer* layer ) const;
+    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * @see writeXml()
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
     /** Write settings into a DOM element.
      * @see readXml()
      */
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 
   private:
 
@@ -861,16 +861,16 @@ class CORE_EXPORT QgsTextFormat
     /** Copy constructor.
      * @param other source QgsTextFormat
      */
-    QgsTextFormat( const QgsTextFormat& other );
+    QgsTextFormat( const QgsTextFormat &other );
 
-    QgsTextFormat& operator=( const QgsTextFormat &other );
+    QgsTextFormat &operator=( const QgsTextFormat &other );
 
     ~QgsTextFormat();
 
     /** Returns a reference to the text buffer settings.
      * @see setBuffer()
      */
-    QgsTextBufferSettings& buffer() { return mBufferSettings; }
+    QgsTextBufferSettings &buffer() { return mBufferSettings; }
 
     /** Returns a reference to the text buffer settings.
      * @see setBuffer()
@@ -881,12 +881,12 @@ class CORE_EXPORT QgsTextFormat
      * @param bufferSettings buffer settings
      * @see buffer()
      */
-    void setBuffer( const QgsTextBufferSettings& bufferSettings ) { mBufferSettings = bufferSettings; }
+    void setBuffer( const QgsTextBufferSettings &bufferSettings ) { mBufferSettings = bufferSettings; }
 
     /** Returns a reference to the text background settings.
      * @see setBackground()
      */
-    QgsTextBackgroundSettings& background() { return mBackgroundSettings; }
+    QgsTextBackgroundSettings &background() { return mBackgroundSettings; }
 
     /** Returns a reference to the text background settings.
      * @see setBackground()
@@ -897,12 +897,12 @@ class CORE_EXPORT QgsTextFormat
      * @param backgroundSettings background settings
      * @see background()
      */
-    void setBackground( const QgsTextBackgroundSettings& backgroundSettings ) { mBackgroundSettings = backgroundSettings; }
+    void setBackground( const QgsTextBackgroundSettings &backgroundSettings ) { mBackgroundSettings = backgroundSettings; }
 
     /** Returns a reference to the text drop shadow settings.
      * @see setShadow()
      */
-    QgsTextShadowSettings& shadow() { return mShadowSettings; }
+    QgsTextShadowSettings &shadow() { return mShadowSettings; }
 
     /** Returns a reference to the text drop shadow settings.
      * @see setShadow()
@@ -913,7 +913,7 @@ class CORE_EXPORT QgsTextFormat
      * @param shadowSettings shadow settings
      * @see shadow()
      */
-    void setShadow( const QgsTextShadowSettings& shadowSettings ) { mShadowSettings = shadowSettings; }
+    void setShadow( const QgsTextShadowSettings &shadowSettings ) { mShadowSettings = shadowSettings; }
 
     /** Returns the font used for rendering text. Note that the size of the font
      * is not used, and size() should be called instead to determine the size
@@ -931,7 +931,7 @@ class CORE_EXPORT QgsTextFormat
      * @see font()
      * @see size()
      */
-    QFont scaledFont( const QgsRenderContext& context ) const;
+    QFont scaledFont( const QgsRenderContext &context ) const;
 
     /** Sets the font used for rendering text. Note that the size of the font
      * is not used, and setSize() should be called instead to explicitly set the size
@@ -940,7 +940,7 @@ class CORE_EXPORT QgsTextFormat
      * @see font()
      * @see setNamedStyle()
      */
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
     /** Returns the named style for the font used for rendering text (e.g., "bold").
      * @see setNamedStyle()
@@ -953,7 +953,7 @@ class CORE_EXPORT QgsTextFormat
      * @see namedStyle()
      * @see setFont()
      */
-    void setNamedStyle( const QString& style );
+    void setNamedStyle( const QString &style );
 
     /** Returns the size for rendered text. Units are retrieved using sizeUnit().
      * @see setSize()
@@ -995,7 +995,7 @@ class CORE_EXPORT QgsTextFormat
      * @see sizeMapUnitScale()
      * @see setSizeUnit()
      */
-    void setSizeMapUnitScale( const QgsMapUnitScale& scale );
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 
     /** Returns the color that text will be rendered in.
      * @see setColor()
@@ -1006,7 +1006,7 @@ class CORE_EXPORT QgsTextFormat
      * @param color text color
      * @see color()
      */
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
     /** Returns the text's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
      * opaque).
@@ -1051,23 +1051,23 @@ class CORE_EXPORT QgsTextFormat
      * @param layer source vector layer
      * @see writeToLayer()
      */
-    void readFromLayer( QgsVectorLayer* layer );
+    void readFromLayer( QgsVectorLayer *layer );
 
     /** Writes settings to a layer's custom properties.
      * @param layer target vector layer
      * @see readFromLayer()
      */
-    void writeToLayer( QgsVectorLayer* layer ) const;
+    void writeToLayer( QgsVectorLayer *layer ) const;
 
     /** Read settings from a DOM element.
      * @see writeXml()
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
     /** Write settings into a DOM element.
      * @see readXml()
      */
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QDomElement writeXml( QDomDocument &doc ) const;
 
     /** Returns true if any component of the font format requires advanced effects
      * such as blend modes, which require output in raster formats to be fully respected.
@@ -1135,7 +1135,7 @@ class CORE_EXPORT QgsTextRenderer
      * @param mapUnitScale a mapUnitScale clamper
      * @return font pixel size
      */
-    static int sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
     /** Draws text within a rectangle using the specified settings.
      * @param rect destination rectangle for text
@@ -1148,8 +1148,8 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawText( const QRectF& rect, double rotation, HAlignment alignment, const QStringList& textLines,
-                          QgsRenderContext& context, const QgsTextFormat& format,
+    static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+                          QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 
     /** Draws text at a point origin using the specified settings.
@@ -1163,8 +1163,8 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawText( const QPointF& point, double rotation, HAlignment alignment, const QStringList& textLines,
-                          QgsRenderContext& context, const QgsTextFormat& format,
+    static void drawText( const QPointF &point, double rotation, HAlignment alignment, const QStringList &textLines,
+                          QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 
     /** Draws a single component of rendered text using the specified settings.
@@ -1181,8 +1181,8 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawPart( const QRectF& rect, double rotation, HAlignment alignment, const QStringList& textLines,
-                          QgsRenderContext& context, const QgsTextFormat& format,
+    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+                          QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 
     /** Draws a single component of rendered text using the specified settings.
@@ -1199,8 +1199,8 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawPart( const QPointF& origin, double rotation, HAlignment alignment, const QStringList& textLines,
-                          QgsRenderContext& context, const QgsTextFormat& format,
+    static void drawPart( const QPointF &origin, double rotation, HAlignment alignment, const QStringList &textLines,
+                          QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 
   private:
@@ -1215,12 +1215,12 @@ class CORE_EXPORT QgsTextRenderer
     struct Component
     {
       Component()
-          : useOrigin( false )
-          , rotation( 0.0 )
-          , rotationOffset( 0.0 )
-          , pictureBuffer( 0.0 )
-          , dpiRatio( 1.0 )
-          , hAlign( AlignLeft )
+        : useOrigin( false )
+        , rotation( 0.0 )
+        , rotationOffset( 0.0 )
+        , pictureBuffer( 0.0 )
+        , dpiRatio( 1.0 )
+        , hAlign( AlignLeft )
       {}
 
       //! Component text
@@ -1250,29 +1250,29 @@ class CORE_EXPORT QgsTextRenderer
       HAlignment hAlign;
     };
 
-    static void drawBuffer( QgsRenderContext& context,
+    static void drawBuffer( QgsRenderContext &context,
                             const Component &component,
-                            const QgsTextFormat& format );
+                            const QgsTextFormat &format );
 
-    static void drawBackground( QgsRenderContext& context,
+    static void drawBackground( QgsRenderContext &context,
                                 Component component,
-                                const QgsTextFormat& format,
-                                const QStringList& textLines,
+                                const QgsTextFormat &format,
+                                const QStringList &textLines,
                                 DrawMode mode = Rect );
 
     static void drawShadow( QgsRenderContext &context,
                             const Component &component,
-                            const QgsTextFormat& format );
+                            const QgsTextFormat &format );
 
     static void drawText( QgsRenderContext &context,
                           const Component &component,
-                          const QgsTextFormat& format );
+                          const QgsTextFormat &format );
 
     static void drawTextInternal( TextPart drawType,
-                                  QgsRenderContext& context,
-                                  const QgsTextFormat& format,
-                                  const Component& component,
-                                  const QStringList& textLines,
+                                  QgsRenderContext &context,
+                                  const QgsTextFormat &format,
+                                  const Component &component,
+                                  const QStringList &textLines,
                                   const QFontMetricsF *fontMetrics,
                                   HAlignment alignment,
                                   bool drawAsOutlines,
@@ -1281,12 +1281,12 @@ class CORE_EXPORT QgsTextRenderer
     friend class QgsVectorLayerLabelProvider;
     friend class QgsLabelPreview;
 
-    static QgsTextFormat updateShadowPosition( const QgsTextFormat& format );
+    static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
 
-    static double textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines,
-                             QFontMetricsF* fm = 0 );
-    static double textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, DrawMode mode,
-                              QFontMetricsF* fm = 0 );
+    static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines,
+                             QFontMetricsF *fm = 0 );
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
+                              QFontMetricsF *fm = 0 );
 
 
 };

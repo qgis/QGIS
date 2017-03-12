@@ -44,7 +44,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void on_mTypeBox_currentIndexChanged( int index );
     void on_pbnFindSRID_clicked();
     void on_toolButtonNewDatabase_clicked();
-    void nameChanged( const QString& );
+    void nameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 

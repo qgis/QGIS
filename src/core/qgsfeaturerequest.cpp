@@ -23,51 +23,51 @@
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
-    : mFilter( FilterNone )
-    , mFilterFid( -1 )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+  : mFilter( FilterNone )
+  , mFilterFid( -1 )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
-    : mFilter( FilterFid )
-    , mFilterFid( fid )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+  : mFilter( FilterFid )
+  , mFilterFid( fid )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds& fids )
-    : mFilter( FilterFids )
-    , mFilterFid( -1 )
-    , mFilterFids( fids )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
+  : mFilter( FilterFids )
+  , mFilterFid( -1 )
+  , mFilterFids( fids )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
-    : mFilter( FilterRect )
-    , mFilterRect( rect )
-    , mFilterFid( -1 )
-    , mFilterExpression( nullptr )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
+  : mFilter( FilterRect )
+  , mFilterRect( rect )
+  , mFilterFid( -1 )
+  , mFilterExpression( nullptr )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext &context )
-    : mFilter( FilterExpression )
-    , mFilterFid( -1 )
-    , mFilterExpression( new QgsExpression( expr ) )
-    , mExpressionContext( context )
-    , mFlags( nullptr )
-    , mLimit( -1 )
+QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context )
+  : mFilter( FilterExpression )
+  , mFilterFid( -1 )
+  , mFilterExpression( new QgsExpression( expr ) )
+  , mExpressionContext( context )
+  , mFlags( nullptr )
+  , mLimit( -1 )
 {
 }
 
@@ -76,7 +76,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
   operator=( rh );
 }
 
-QgsFeatureRequest& QgsFeatureRequest::operator=( const QgsFeatureRequest & rh )
+QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
 {
   mFlags = rh.mFlags;
   mFilter = rh.mFilter;
@@ -104,7 +104,7 @@ QgsFeatureRequest::~QgsFeatureRequest()
   delete mFilterExpression;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
+QgsFeatureRequest &QgsFeatureRequest::setFilterRect( const QgsRectangle &rect )
 {
   if ( mFilter == FilterNone )
     mFilter = FilterRect;
@@ -112,21 +112,21 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
+QgsFeatureRequest &QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
 {
   mFilter = FilterFid;
   mFilterFid = fid;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFilterFids( const QgsFeatureIds& fids )
+QgsFeatureRequest &QgsFeatureRequest::setFilterFids( const QgsFeatureIds &fids )
 {
   mFilter = FilterFids;
   mFilterFids = fids;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFilterExpression( const QString& expression )
+QgsFeatureRequest &QgsFeatureRequest::setFilterExpression( const QString &expression )
 {
   mFilter = FilterExpression;
   delete mFilterExpression;
@@ -134,7 +134,7 @@ QgsFeatureRequest& QgsFeatureRequest::setFilterExpression( const QString& expres
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::combineFilterExpression( const QString& expression )
+QgsFeatureRequest &QgsFeatureRequest::combineFilterExpression( const QString &expression )
 {
   if ( mFilterExpression )
   {
@@ -153,13 +153,13 @@ QgsFeatureRequest &QgsFeatureRequest::setExpressionContext( const QgsExpressionC
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, bool ascending )
+QgsFeatureRequest &QgsFeatureRequest::addOrderBy( const QString &expression, bool ascending )
 {
   mOrderBy.append( OrderByClause( expression, ascending ) );
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::addOrderBy( const QString& expression, bool ascending, bool nullsfirst )
+QgsFeatureRequest &QgsFeatureRequest::addOrderBy( const QString &expression, bool ascending, bool nullsfirst )
 {
   mOrderBy.append( OrderByClause( expression, ascending, nullsfirst ) );
   return *this;
@@ -170,32 +170,32 @@ QgsFeatureRequest::OrderBy QgsFeatureRequest::orderBy() const
   return mOrderBy;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
+QgsFeatureRequest &QgsFeatureRequest::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
 {
   mOrderBy = orderBy;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setLimit( long limit )
+QgsFeatureRequest &QgsFeatureRequest::setLimit( long limit )
 {
   mLimit = limit;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
+QgsFeatureRequest &QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
 {
   mFlags = flags;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeList& attrs )
+QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeList &attrs )
 {
   mFlags |= SubsetOfAttributes;
   mAttrs = attrs;
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields )
+QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields )
 {
   if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
   {
@@ -206,7 +206,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString& attrName, attrNames )
+  Q_FOREACH ( const QString &attrName, attrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -216,7 +216,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& 
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>& attrNames, const QgsFields& fields )
+QgsFeatureRequest &QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields )
 {
   if ( attrNames.contains( QgsFeatureRequest::ALL_ATTRIBUTES ) )
   {
@@ -227,7 +227,7 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
   mFlags |= SubsetOfAttributes;
   mAttrs.clear();
 
-  Q_FOREACH ( const QString& attrName, attrNames )
+  Q_FOREACH ( const QString &attrName, attrNames )
   {
     int attrNum = fields.lookupField( attrName );
     if ( attrNum != -1 && !mAttrs.contains( attrNum ) )
@@ -237,13 +237,13 @@ QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QSet<QString>
   return *this;
 }
 
-QgsFeatureRequest& QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod& simplifyMethod )
+QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod )
 {
   mSimplifyMethod = simplifyMethod;
   return *this;
 }
 
-bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
+bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
   switch ( mFilter )
   {
@@ -251,29 +251,17 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       return true;
 
     case QgsFeatureRequest::FilterRect:
-      if ( feature.hasGeometry() && feature.geometry().intersects( mFilterRect ) )
-        return true;
-      else
-        return false;
+      return ( feature.hasGeometry() && feature.geometry().intersects( mFilterRect ) );
 
     case QgsFeatureRequest::FilterFid:
-      if ( feature.id() == mFilterFid )
-        return true;
-      else
-        return false;
+      return ( feature.id() == mFilterFid );
 
     case QgsFeatureRequest::FilterExpression:
       mExpressionContext.setFeature( feature );
-      if ( mFilterExpression->evaluate( &mExpressionContext ).toBool() )
-        return true;
-      else
-        return false;
+      return ( mFilterExpression->evaluate( &mExpressionContext ).toBool() );
 
     case QgsFeatureRequest::FilterFids:
-      if ( mFilterFids.contains( feature.id() ) )
-        return true;
-      else
-        return false;
+      return ( mFilterFids.contains( feature.id() ) );
   }
 
   return true;
@@ -293,30 +281,30 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   }
 }
 
-void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator* it )
+void QgsAbstractFeatureSource::iteratorOpened( QgsAbstractFeatureIterator *it )
 {
   mActiveIterators.insert( it );
 }
 
-void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator* it )
+void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it )
 {
   mActiveIterators.remove( it );
 }
 
 
 
-QgsFeatureRequest::OrderByClause::OrderByClause( const QString& expression, bool ascending )
-    : mExpression( expression )
-    , mAscending( ascending )
+QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool ascending )
+  : mExpression( expression )
+  , mAscending( ascending )
 {
   // postgres behavior: default for ASC: NULLS LAST, default for DESC: NULLS FIRST
   mNullsFirst = !ascending;
 }
 
-QgsFeatureRequest::OrderByClause::OrderByClause( const QString& expression, bool ascending, bool nullsfirst )
-    : mExpression( expression )
-    , mAscending( ascending )
-    , mNullsFirst( nullsfirst )
+QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool ascending, bool nullsfirst )
+  : mExpression( expression )
+  , mAscending( ascending )
+  , mNullsFirst( nullsfirst )
 {
 }
 
@@ -353,9 +341,9 @@ QgsExpression QgsFeatureRequest::OrderByClause::expression() const
   return mExpression;
 }
 
-QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause>& other )
+QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )
 {
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& clause, other )
+  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, other )
   {
     append( clause );
   }
@@ -366,13 +354,13 @@ QList<QgsFeatureRequest::OrderByClause> QgsFeatureRequest::OrderBy::list() const
   return *this;
 }
 
-void QgsFeatureRequest::OrderBy::save( QDomElement& elem ) const
+void QgsFeatureRequest::OrderBy::save( QDomElement &elem ) const
 {
   QDomDocument doc = elem.ownerDocument();
   QList<OrderByClause>::ConstIterator it;
   for ( it = constBegin(); it != constEnd(); ++it )
   {
-    const OrderByClause& clause = *it;
+    const OrderByClause &clause = *it;
     QDomElement clauseElem = doc.createElement( QStringLiteral( "orderByClause" ) );
     clauseElem.setAttribute( QStringLiteral( "asc" ), clause.ascending() );
     clauseElem.setAttribute( QStringLiteral( "nullsFirst" ), clause.nullsFirst() );
@@ -382,7 +370,7 @@ void QgsFeatureRequest::OrderBy::save( QDomElement& elem ) const
   }
 }
 
-void QgsFeatureRequest::OrderBy::load( const QDomElement& elem )
+void QgsFeatureRequest::OrderBy::load( const QDomElement &elem )
 {
   clear();
 
@@ -406,7 +394,7 @@ QSet<QString> QgsFeatureRequest::OrderBy::usedAttributes() const
   QList<OrderByClause>::ConstIterator it;
   for ( it = constBegin(); it != constEnd(); ++it )
   {
-    const OrderByClause& clause = *it;
+    const OrderByClause &clause = *it;
 
     usedAttributes.unite( clause.expression().referencedColumns() );
   }
@@ -421,7 +409,7 @@ QString QgsFeatureRequest::OrderBy::dump() const
   QList<OrderByClause>::ConstIterator it;
   for ( it = constBegin(); it != constEnd(); ++it )
   {
-    const OrderByClause& clause = *it;
+    const OrderByClause &clause = *it;
 
     results << clause.dump();
   }

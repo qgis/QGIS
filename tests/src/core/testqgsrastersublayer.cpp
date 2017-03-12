@@ -61,14 +61,14 @@ class TestQgsRasterSubLayer : public QObject
   private:
     QString mTestDataDir;
     QString mFileName;
-    QgsRasterLayer * mpRasterLayer = nullptr;
+    QgsRasterLayer *mpRasterLayer = nullptr;
     QString mReport;
     bool mHasNetCDF;
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-    : mpRasterLayer( nullptr )
-    , mHasNetCDF( false )
+  : mpRasterLayer( nullptr )
+  , mHasNetCDF( false )
 {
 
 }
@@ -139,7 +139,7 @@ void TestQgsRasterSubLayer::subLayersList()
     expected << QStringLiteral( "Band2" );
 
     QStringList sublayers;
-    Q_FOREACH ( const QString& s, mpRasterLayer->subLayers() )
+    Q_FOREACH ( const QString &s, mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
       sublayers << s.split( ':' ).last();

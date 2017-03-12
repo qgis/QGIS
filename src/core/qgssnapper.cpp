@@ -24,13 +24,13 @@
 #include <cmath>
 
 
-QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
-    : mMapSettings( mapSettings )
-    , mSnapMode( SnapWithOneResult )
+QgsSnapper::QgsSnapper( const QgsMapSettings &mapSettings )
+  : mMapSettings( mapSettings )
+  , mSnapMode( SnapWithOneResult )
 {
 }
 
-int QgsSnapper::snapMapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
+int QgsSnapper::snapMapPoint( const QgsPoint &mapCoordPoint, QList<QgsSnappingResult> &snappingResult, const QList<QgsPoint> &excludePoints )
 {
   snappingResult.clear();
 
@@ -110,7 +110,7 @@ int QgsSnapper::snapMapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingRe
 
     for ( evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt )
     {
-      if ( returnResult.snappedVertex.sqrDist( evalIt.value().snappedVertex ) < tolerance*tolerance )
+      if ( returnResult.snappedVertex.sqrDist( evalIt.value().snappedVertex ) < tolerance * tolerance )
       {
         snappingResult.push_back( evalIt.value() );
       }
@@ -129,7 +129,7 @@ int QgsSnapper::snapMapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingRe
   return 0;
 }
 
-void QgsSnapper::setSnapLayers( const QList<QgsSnapper::SnapLayer>& snapLayers )
+void QgsSnapper::setSnapLayers( const QList<QgsSnapper::SnapLayer> &snapLayers )
 {
   mSnapLayers = snapLayers;
 }
@@ -140,7 +140,7 @@ void QgsSnapper::setSnapMode( QgsSnapper::SnappingMode snapMode )
   mSnapMode = snapMode;
 }
 
-void QgsSnapper::cleanResultList( QMultiMap<double, QgsSnappingResult>& list, const QList<QgsPoint>& excludeList ) const
+void QgsSnapper::cleanResultList( QMultiMap<double, QgsSnappingResult> &list, const QList<QgsPoint> &excludeList ) const
 {
   QgsPoint currentResultPoint;
   QgsSnappingResult currentSnappingResult;

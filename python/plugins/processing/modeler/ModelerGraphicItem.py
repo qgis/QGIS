@@ -30,7 +30,7 @@ import os
 import math
 
 from qgis.PyQt.QtCore import Qt, QPointF, QRectF
-from qgis.PyQt.QtGui import QIcon, QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter
+from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter
 from qgis.PyQt.QtWidgets import QGraphicsItem, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
 from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, ModelerOutput
@@ -79,20 +79,20 @@ class ModelerGraphicItem(QGraphicsItem):
             picture = QPicture()
             painter = QPainter(picture)
             svg.render(painter)
-            pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
-                         - FlatButtonGraphicItem.WIDTH / 2,
-                         ModelerGraphicItem.BOX_HEIGHT / 2
-                         - FlatButtonGraphicItem.HEIGHT / 2)
+            pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2 -
+                         FlatButtonGraphicItem.WIDTH / 2,
+                         ModelerGraphicItem.BOX_HEIGHT / 2 -
+                         FlatButtonGraphicItem.HEIGHT / 2)
             self.editButton = FlatButtonGraphicItem(picture, pt, self.editElement)
             self.editButton.setParentItem(self)
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
             picture = QPicture()
             painter = QPainter(picture)
             svg.render(painter)
-            pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
-                         - FlatButtonGraphicItem.WIDTH / 2,
-                         - ModelerGraphicItem.BOX_HEIGHT / 2
-                         + FlatButtonGraphicItem.HEIGHT / 2)
+            pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2 -
+                         FlatButtonGraphicItem.WIDTH / 2,
+                         FlatButtonGraphicItem.HEIGHT / 2 -
+                         ModelerGraphicItem.BOX_HEIGHT / 2)
             self.deleteButton = FlatButtonGraphicItem(picture, pt,
                                                       self.removeElement)
             self.deleteButton.setParentItem(self)
@@ -241,20 +241,20 @@ class ModelerGraphicItem(QGraphicsItem):
 
         if isinstance(self.element, ModelerParameter):
             color = QColor(238, 242, 131)
-            outline = QColor(234, 226, 118)
+            stroke = QColor(234, 226, 118)
             selected = QColor(116, 113, 68)
         elif isinstance(self.element, Algorithm):
             color = QColor(255, 255, 255)
-            outline = Qt.gray
+            stroke = Qt.gray
             selected = QColor(50, 50, 50)
         else:
             color = QColor(172, 196, 114)
-            outline = QColor(90, 140, 90)
+            stroke = QColor(90, 140, 90)
             selected = QColor(42, 65, 42)
         if self.isSelected():
-            outline = selected
+            stroke = selected
             color = color.darker(110)
-        painter.setPen(QPen(outline, 0)) # 0 width "cosmetic" pen
+        painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
         font = QFont('Verdana', 8)
@@ -283,8 +283,7 @@ class ModelerGraphicItem(QGraphicsItem):
                         text = self.getAdjustedText(param.description)
                         h = -(fm.height() * 1.2) * (i + 1)
                         h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-                        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                     + 33, h)
+                        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 33, h)
                         painter.drawText(pt, text)
                         i += 1
             h = fm.height() * 1.1
@@ -296,8 +295,7 @@ class ModelerGraphicItem(QGraphicsItem):
                     text = self.getAdjustedText(out.description)
                     h = fm.height() * 1.2 * (i + 2)
                     h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-                    pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2
-                                 + 33, h)
+                    pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 33, h)
                     painter.drawText(pt, text)
         if self.pixmap:
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
@@ -331,8 +329,9 @@ class ModelerGraphicItem(QGraphicsItem):
             w = fm.width(text)
             h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
             y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-            x = (-ModelerGraphicItem.BOX_WIDTH / 2 + 33 + w
-                 + 5 if not self.element.outputsFolded else 10)
+            x = (-ModelerGraphicItem.BOX_WIDTH / 2 + 33 + w + 5
+                 if not self.element.outputsFolded
+                 else 10)
             return QPointF(x, y)
         else:
             return QPointF(0, 0)

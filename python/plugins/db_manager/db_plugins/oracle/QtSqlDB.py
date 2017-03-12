@@ -150,9 +150,9 @@ class QtSqlDBCursor(object):
         row = []
         for i in range(len(self.description)):
             value = self.qry.value(i)
-            if (isinstance(value, QDate)
-                    or isinstance(value, QTime)
-                    or isinstance(value, QDateTime)):
+            if (isinstance(value, QDate) or
+                    isinstance(value, QTime) or
+                    isinstance(value, QDateTime)):
                 value = value.toString()
             elif isinstance(value, QByteArray):
                 value = u"GEOMETRY"

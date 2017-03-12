@@ -21,27 +21,27 @@
 #include <qmath.h>
 
 CloughTocherInterpolator::CloughTocherInterpolator()
-    : mTIN( nullptr )
-    , mEdgeTolerance( 0.00001 )
-    , der1X( 0.0 )
-    , der1Y( 0.0 )
-    , der2X( 0.0 )
-    , der2Y( 0.0 )
-    , der3X( 0.0 )
-    , der3Y( 0.0 )
+  : mTIN( nullptr )
+  , mEdgeTolerance( 0.00001 )
+  , der1X( 0.0 )
+  , der1Y( 0.0 )
+  , der2X( 0.0 )
+  , der2Y( 0.0 )
+  , der3X( 0.0 )
+  , der3Y( 0.0 )
 {
 
 }
 
-CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator* tin )
-    : mTIN( tin )
-    , mEdgeTolerance( 0.00001 )
-    , der1X( 0.0 )
-    , der1Y( 0.0 )
-    , der2X( 0.0 )
-    , der2Y( 0.0 )
-    , der3X( 0.0 )
-    , der3Y( 0.0 )
+CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
+  : mTIN( tin )
+  , mEdgeTolerance( 0.00001 )
+  , der1X( 0.0 )
+  , der1Y( 0.0 )
+  , der2X( 0.0 )
+  , der2Y( 0.0 )
+  , der3X( 0.0 )
+  , der3Y( 0.0 )
 {
 
 }
@@ -51,7 +51,7 @@ CloughTocherInterpolator::~CloughTocherInterpolator()
   //nothing to do
 }
 
-void CloughTocherInterpolator::setTriangulation( NormVecDecorator* tin )
+void CloughTocherInterpolator::setTriangulation( NormVecDecorator *tin )
 {
   mTIN = tin;
 }
@@ -68,7 +68,7 @@ double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, 
   return result;
 }
 
-bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D* result )
+bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result )
 {
   if ( result )
   {
@@ -87,9 +87,9 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D* result
       double zv = cp1.getZ() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp2.getZ() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + point2.getZ() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp4.getZ() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp5.getZ() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp8.getZ() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.getX(), barycoord.getY(), barycoord.getZ() );
       double zw = cp3.getZ() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp4.getZ() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp5.getZ() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp7.getZ() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp8.getZ() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp10.getZ() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.getX(), barycoord.getY(), barycoord.getZ() );
       MathUtils::BarycentricToXY( barycoord.getX() + 1, barycoord.getY() - 1, barycoord.getZ(), &point1, &point2, &cp10, &endpointUXY );
-      endpointUXY.setZ( 3*( zu - zv ) );
+      endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.getX(), barycoord.getY() + 1, barycoord.getZ() - 1, &point1, &point2, &cp10, &endpointVXY );
-      endpointVXY.setZ( 3*( zv - zw ) );
+      endpointVXY.setZ( 3 * ( zv - zw ) );
       Vector3D v1( endpointUXY.getX() - x, endpointUXY.getY() - y, endpointUXY.getZ() );
       Vector3D v2( endpointVXY.getX() - x, endpointVXY.getY() - y, endpointVXY.getZ() );
       result->setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
@@ -106,9 +106,9 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D* result
       double zv = cp9.getZ() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp16.getZ() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + point3.getZ() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp13.getZ() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp15.getZ() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp12.getZ() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.getX(), barycoord.getY(), barycoord.getZ() );
       double zw = cp5.getZ() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp13.getZ() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp15.getZ() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp8.getZ() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp12.getZ() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp10.getZ() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.getX(), barycoord.getY(), barycoord.getZ() );
       MathUtils::BarycentricToXY( barycoord.getX() + 1, barycoord.getY() - 1, barycoord.getZ(), &point2, &point3, &cp10, &endpointUXY );
-      endpointUXY.setZ( 3*( zu - zv ) );
+      endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.getX(), barycoord.getY() + 1, barycoord.getZ() - 1, &point2, &point3, &cp10, &endpointVXY );
-      endpointVXY.setZ( 3*( zv - zw ) );
+      endpointVXY.setZ( 3 * ( zv - zw ) );
       Vector3D v1( endpointUXY.getX() - x, endpointUXY.getY() - y, endpointUXY.getZ() );
       Vector3D v2( endpointVXY.getX() - x, endpointVXY.getY() - y, endpointVXY.getZ() );
       result->setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
@@ -126,9 +126,9 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D* result
       double zv = cp14.getZ() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp6.getZ() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + point1.getZ() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp11.getZ() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp3.getZ() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp7.getZ() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.getX(), barycoord.getY(), barycoord.getZ() );
       double zw = cp15.getZ() * calcBernsteinPoly( 2, 2, 0, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp11.getZ() * calcBernsteinPoly( 2, 1, 1, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp3.getZ() * calcBernsteinPoly( 2, 0, 2, 0, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp12.getZ() * calcBernsteinPoly( 2, 1, 0, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp7.getZ() * calcBernsteinPoly( 2, 0, 1, 1, barycoord.getX(), barycoord.getY(), barycoord.getZ() ) + cp10.getZ() * calcBernsteinPoly( 2, 0, 0, 2, barycoord.getX(), barycoord.getY(), barycoord.getZ() );
       MathUtils::BarycentricToXY( barycoord.getX() + 1, barycoord.getY() - 1, barycoord.getZ(), &point3, &point1, &cp10, &endpointUXY );
-      endpointUXY.setZ( 3*( zu - zv ) );
+      endpointUXY.setZ( 3 * ( zu - zv ) );
       MathUtils::BarycentricToXY( barycoord.getX(), barycoord.getY() + 1, barycoord.getZ() - 1, &point3, &point1, &cp10, &endpointVXY );
-      endpointVXY.setZ( 3*( zv - zw ) );
+      endpointVXY.setZ( 3 * ( zv - zw ) );
       Vector3D v1( endpointUXY.getX() - x, endpointUXY.getY() - y, endpointUXY.getZ() );
       Vector3D v2( endpointVXY.getX() - x, endpointVXY.getY() - y, endpointVXY.getZ() );
       result->setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
@@ -178,7 +178,7 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D* result
   }
 }
 
-bool CloughTocherInterpolator::calcPoint( double x, double y, Point3D* result )
+bool CloughTocherInterpolator::calcPoint( double x, double y, Point3D *result )
 {
   if ( result )
   {
@@ -305,8 +305,8 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp6.setZ( point1.getZ() + ( cp6.getX() - point1.getX() )*der1X + ( cp6.getY() - point1.getY() )*der1Y );
 
     //set x- and y-coordinates of the central point
-    cp10.setX(( point1.getX() + point2.getX() + point3.getX() ) / 3 );
-    cp10.setY(( point1.getY() + point2.getY() + point3.getY() ) / 3 );
+    cp10.setX( ( point1.getX() + point2.getX() + point3.getX() ) / 3 );
+    cp10.setY( ( point1.getY() + point2.getY() + point3.getY() ) / 3 );
 
     //set the derivatives of the points to new values if they are on a breakline
     if ( state1 == NormVecDecorator::BreakLine )
@@ -386,68 +386,68 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     cp15.setZ( point3.getZ() + ( cp15.getX() - point3.getX() )*der3X + ( cp15.getY() - point3.getY() )*der3Y );
 
 
-    cp4.setX(( point1.getX() + cp10.getX() + point2.getX() ) / 3 );
-    cp4.setY(( point1.getY() + cp10.getY() + point2.getY() ) / 3 );
+    cp4.setX( ( point1.getX() + cp10.getX() + point2.getX() ) / 3 );
+    cp4.setY( ( point1.getY() + cp10.getY() + point2.getY() ) / 3 );
 
-    Point3D midpoint3(( cp1.getX() + cp2.getX() ) / 2, ( cp1.getY() + cp2.getY() ) / 2, ( cp1.getZ() + cp2.getZ() ) / 2 );
+    Point3D midpoint3( ( cp1.getX() + cp2.getX() ) / 2, ( cp1.getY() + cp2.getY() ) / 2, ( cp1.getZ() + cp2.getZ() ) / 2 );
     Vector3D cp1cp2( cp2.getX() - cp1.getX(), cp2.getY() - cp1.getY(), cp2.getZ() - cp1.getZ() );
     Vector3D odir3( 0, 0, 0 );//direction orthogonal to the line from point1 to point2
-    if (( point2.getY() - point1.getY() ) != 0 )//avoid division through zero
+    if ( ( point2.getY() - point1.getY() ) != 0 ) //avoid division through zero
     {
       odir3.setX( 1 );
       odir3.setY( -( point2.getX() - point1.getX() ) / ( point2.getY() - point1.getY() ) );
-      odir3.setZ(( der1X + der2X ) / 2 + ( der1Y + der2Y ) / 2*odir3.getY() );//take the linear interpolated cross-derivative
+      odir3.setZ( ( der1X + der2X ) / 2 + ( der1Y + der2Y ) / 2 * odir3.getY() ); //take the linear interpolated cross-derivative
     }
     else
     {
       odir3.setY( 1 );
       odir3.setX( -( point2.getY() - point1.getY() ) / ( point2.getX() - point1.getX() ) );
-      odir3.setZ(( der1X + der2X ) / 2*odir3.getX() + ( der1Y + der2Y ) / 2 );
+      odir3.setZ( ( der1X + der2X ) / 2 * odir3.getX() + ( der1Y + der2Y ) / 2 );
     }
     Vector3D midpoint3cp4( 0, 0, 0 );
     MathUtils::derVec( &cp1cp2, &odir3, &midpoint3cp4, cp4.getX() - midpoint3.getX(), cp4.getY() - midpoint3.getY() );
     cp4.setZ( midpoint3.getZ() + midpoint3cp4.getZ() );
 
-    cp13.setX(( point2.getX() + cp10.getX() + point3.getX() ) / 3 );
-    cp13.setY(( point2.getY() + cp10.getY() + point3.getY() ) / 3 );
+    cp13.setX( ( point2.getX() + cp10.getX() + point3.getX() ) / 3 );
+    cp13.setY( ( point2.getY() + cp10.getY() + point3.getY() ) / 3 );
     //find the point in the middle of the bezier curve between point2 and point3
-    Point3D midpoint1(( cp9.getX() + cp16.getX() ) / 2, ( cp9.getY() + cp16.getY() ) / 2, ( cp9.getZ() + cp16.getZ() ) / 2 );
+    Point3D midpoint1( ( cp9.getX() + cp16.getX() ) / 2, ( cp9.getY() + cp16.getY() ) / 2, ( cp9.getZ() + cp16.getZ() ) / 2 );
     Vector3D cp9cp16( cp16.getX() - cp9.getX(), cp16.getY() - cp9.getY(), cp16.getZ() - cp9.getZ() );
     Vector3D odir1( 0, 0, 0 );//direction orthogonal to the line from point2 to point3
-    if (( point3.getY() - point2.getY() ) != 0 )//avoid division through zero
+    if ( ( point3.getY() - point2.getY() ) != 0 ) //avoid division through zero
     {
       odir1.setX( 1 );
       odir1.setY( -( point3.getX() - point2.getX() ) / ( point3.getY() - point2.getY() ) );
-      odir1.setZ(( der2X + der3X ) / 2 + ( der2Y + der3Y ) / 2*odir1.getY() );//take the linear interpolated cross-derivative
+      odir1.setZ( ( der2X + der3X ) / 2 + ( der2Y + der3Y ) / 2 * odir1.getY() ); //take the linear interpolated cross-derivative
     }
     else
     {
       odir1.setY( 1 );
       odir1.setX( -( point3.getY() - point2.getY() ) / ( point3.getX() - point2.getX() ) );
-      odir1.setZ(( der2X + der3X ) / 2*odir1.getX() + ( der2Y + der3Y ) / 2 );
+      odir1.setZ( ( der2X + der3X ) / 2 * odir1.getX() + ( der2Y + der3Y ) / 2 );
     }
     Vector3D midpoint1cp13( 0, 0, 0 );
     MathUtils::derVec( &cp9cp16, &odir1, &midpoint1cp13, cp13.getX() - midpoint1.getX(), cp13.getY() - midpoint1.getY() );
     cp13.setZ( midpoint1.getZ() + midpoint1cp13.getZ() );
 
 
-    cp11.setX(( point3.getX() + cp10.getX() + point1.getX() ) / 3 );
-    cp11.setY(( point3.getY() + cp10.getY() + point1.getY() ) / 3 );
+    cp11.setX( ( point3.getX() + cp10.getX() + point1.getX() ) / 3 );
+    cp11.setY( ( point3.getY() + cp10.getY() + point1.getY() ) / 3 );
     //find the point in the middle of the bezier curve between point3 and point2
-    Point3D midpoint2(( cp14.getX() + cp6.getX() ) / 2, ( cp14.getY() + cp6.getY() ) / 2, ( cp14.getZ() + cp6.getZ() ) / 2 );
+    Point3D midpoint2( ( cp14.getX() + cp6.getX() ) / 2, ( cp14.getY() + cp6.getY() ) / 2, ( cp14.getZ() + cp6.getZ() ) / 2 );
     Vector3D cp14cp6( cp6.getX() - cp14.getX(), cp6.getY() - cp14.getY(), cp6.getZ() - cp14.getZ() );
     Vector3D odir2( 0, 0, 0 );//direction orthogonal to the line from point 1 to point3
-    if (( point3.getY() - point1.getY() ) != 0 )//avoid division through zero
+    if ( ( point3.getY() - point1.getY() ) != 0 ) //avoid division through zero
     {
       odir2.setX( 1 );
       odir2.setY( -( point3.getX() - point1.getX() ) / ( point3.getY() - point1.getY() ) );
-      odir2.setZ(( der3X + der1X ) / 2 + ( der3Y + der1Y ) / 2*odir2.getY() );//take the linear interpolated cross-derivative
+      odir2.setZ( ( der3X + der1X ) / 2 + ( der3Y + der1Y ) / 2 * odir2.getY() ); //take the linear interpolated cross-derivative
     }
     else
     {
       odir2.setY( 1 );
       odir2.setX( -( point3.getY() - point1.getY() ) / ( point3.getX() - point1.getX() ) );
-      odir2.setZ(( der3X + der1X ) / 2*odir2.getX() + ( der3Y + der1Y ) / 2 );
+      odir2.setZ( ( der3X + der1X ) / 2 * odir2.getX() + ( der3Y + der1Y ) / 2 );
     }
     Vector3D midpoint2cp11( 0, 0, 0 );
     MathUtils::derVec( &cp14cp6, &odir2, &midpoint2cp11, cp11.getX() - midpoint2.getX(), cp11.getY() - midpoint2.getY() );
@@ -551,8 +551,8 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
     cp6.setZ( point1.getZ() + ( cp6.getX() - point1.getX() )*der1X + ( cp6.getY() - point1.getY() )*der1Y );
 
     //set x- and y-coordinates of the central point
-    cp10.setX(( point1.getX() + point2.getX() + point3.getX() ) / 3 );
-    cp10.setY(( point1.getY() + point2.getY() + point3.getY() ) / 3 );
+    cp10.setX( ( point1.getX() + point2.getX() + point3.getX() ) / 3 );
+    cp10.setY( ( point1.getY() + point2.getY() + point3.getY() ) / 3 );
 
     //do the necessary adjustments in case of breaklines--------------------------------------------------------------------
 
@@ -570,11 +570,11 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
         tmpy = -tmp.getY() / tmp.getZ();
         if ( state3 == NormVecDecorator::Normal )
         {
-          cp6.setZ( point1.getZ() + (( point3.getX() - point1.getX() ) / 3 )*tmpx + (( point3.getY() - point1.getY() ) / 3 )*tmpy );
+          cp6.setZ( point1.getZ() + ( ( point3.getX() - point1.getX() ) / 3 )*tmpx + ( ( point3.getY() - point1.getY() ) / 3 )*tmpy );
         }
         if ( state2 == NormVecDecorator::Normal )
         {
-          cp1.setZ( point1.getZ() + (( point2.getX() - point1.getX() ) / 3 )*tmpx + (( point2.getY() - point1.getY() ) / 3 )*tmpy );
+          cp1.setZ( point1.getZ() + ( ( point2.getX() - point1.getX() ) / 3 )*tmpx + ( ( point2.getY() - point1.getY() ) / 3 )*tmpy );
         }
       }
     }
@@ -587,11 +587,11 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
         tmpy = -tmp.getY() / tmp.getZ();
         if ( state1 == NormVecDecorator::Normal )
         {
-          cp2.setZ( point2.getZ() + (( point1.getX() - point2.getX() ) / 3 )*tmpx + (( point1.getY() - point2.getY() ) / 3 )*tmpy );
+          cp2.setZ( point2.getZ() + ( ( point1.getX() - point2.getX() ) / 3 )*tmpx + ( ( point1.getY() - point2.getY() ) / 3 )*tmpy );
         }
         if ( state3 == NormVecDecorator::Normal )
         {
-          cp9.setZ( point2.getZ() + (( point3.getX() - point2.getX() ) / 3 )*tmpx + (( point3.getY() - point2.getY() ) / 3 )*tmpy );
+          cp9.setZ( point2.getZ() + ( ( point3.getX() - point2.getX() ) / 3 )*tmpx + ( ( point3.getY() - point2.getY() ) / 3 )*tmpy );
         }
       }
     }
@@ -604,11 +604,11 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
         tmpy = -tmp.getY() / tmp.getZ();
         if ( state1 == NormVecDecorator::Normal )
         {
-          cp14.setZ( point3.getZ() + (( point1.getX() - point3.getX() ) / 3 )*tmpx + (( point1.getY() - point3.getY() ) / 3 )*tmpy );
+          cp14.setZ( point3.getZ() + ( ( point1.getX() - point3.getX() ) / 3 )*tmpx + ( ( point1.getY() - point3.getY() ) / 3 )*tmpy );
         }
         if ( state2 == NormVecDecorator::Normal )
         {
-          cp16.setZ( point3.getZ() + (( point2.getX() - point3.getX() ) / 3 )*tmpx + (( point2.getY() - point3.getY() ) / 3 )*tmpy );
+          cp16.setZ( point3.getZ() + ( ( point2.getX() - point3.getX() ) / 3 )*tmpx + ( ( point2.getY() - point3.getY() ) / 3 )*tmpy );
         }
       }
     }
@@ -656,68 +656,68 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
     cp15.setZ( point3.getZ() + ( cp15.getX() - point3.getX() )*der3X + ( cp15.getY() - point3.getY() )*der3Y );
 
 
-    cp4.setX(( point1.getX() + cp10.getX() + point2.getX() ) / 3 );
-    cp4.setY(( point1.getY() + cp10.getY() + point2.getY() ) / 3 );
+    cp4.setX( ( point1.getX() + cp10.getX() + point2.getX() ) / 3 );
+    cp4.setY( ( point1.getY() + cp10.getY() + point2.getY() ) / 3 );
 
-    Point3D midpoint3(( cp1.getX() + cp2.getX() ) / 2, ( cp1.getY() + cp2.getY() ) / 2, ( cp1.getZ() + cp2.getZ() ) / 2 );
+    Point3D midpoint3( ( cp1.getX() + cp2.getX() ) / 2, ( cp1.getY() + cp2.getY() ) / 2, ( cp1.getZ() + cp2.getZ() ) / 2 );
     Vector3D cp1cp2( cp2.getX() - cp1.getX(), cp2.getY() - cp1.getY(), cp2.getZ() - cp1.getZ() );
     Vector3D odir3( 0, 0, 0 );//direction orthogonal to the line from point1 to point2
-    if (( point2.getY() - point1.getY() ) != 0 )//avoid division through zero
+    if ( ( point2.getY() - point1.getY() ) != 0 ) //avoid division through zero
     {
       odir3.setX( 1 );
       odir3.setY( -( point2.getX() - point1.getX() ) / ( point2.getY() - point1.getY() ) );
-      odir3.setZ(( der1X + der2X ) / 2 + ( der1Y + der2Y ) / 2*odir3.getY() );//take the linear interpolated cross-derivative
+      odir3.setZ( ( der1X + der2X ) / 2 + ( der1Y + der2Y ) / 2 * odir3.getY() ); //take the linear interpolated cross-derivative
     }
     else
     {
       odir3.setY( 1 );
       odir3.setX( -( point2.getY() - point1.getY() ) / ( point2.getX() - point1.getX() ) );
-      odir3.setZ(( der1X + der2X ) / 2*odir3.getX() + ( der1Y + der2Y ) / 2 );
+      odir3.setZ( ( der1X + der2X ) / 2 * odir3.getX() + ( der1Y + der2Y ) / 2 );
     }
     Vector3D midpoint3cp4( 0, 0, 0 );
     MathUtils::derVec( &cp1cp2, &odir3, &midpoint3cp4, cp4.getX() - midpoint3.getX(), cp4.getY() - midpoint3.getY() );
     cp4.setZ( midpoint3.getZ() + midpoint3cp4.getZ() );
 
-    cp13.setX(( point2.getX() + cp10.getX() + point3.getX() ) / 3 );
-    cp13.setY(( point2.getY() + cp10.getY() + point3.getY() ) / 3 );
+    cp13.setX( ( point2.getX() + cp10.getX() + point3.getX() ) / 3 );
+    cp13.setY( ( point2.getY() + cp10.getY() + point3.getY() ) / 3 );
     //find the point in the middle of the bezier curve between point2 and point3
-    Point3D midpoint1(( cp9.getX() + cp16.getX() ) / 2, ( cp9.getY() + cp16.getY() ) / 2, ( cp9.getZ() + cp16.getZ() ) / 2 );
+    Point3D midpoint1( ( cp9.getX() + cp16.getX() ) / 2, ( cp9.getY() + cp16.getY() ) / 2, ( cp9.getZ() + cp16.getZ() ) / 2 );
     Vector3D cp9cp16( cp16.getX() - cp9.getX(), cp16.getY() - cp9.getY(), cp16.getZ() - cp9.getZ() );
     Vector3D odir1( 0, 0, 0 );//direction orthogonal to the line from point2 to point3
-    if (( point3.getY() - point2.getY() ) != 0 )//avoid division through zero
+    if ( ( point3.getY() - point2.getY() ) != 0 ) //avoid division through zero
     {
       odir1.setX( 1 );
       odir1.setY( -( point3.getX() - point2.getX() ) / ( point3.getY() - point2.getY() ) );
-      odir1.setZ(( der2X + der3X ) / 2 + ( der2Y + der3Y ) / 2*odir1.getY() );//take the linear interpolated cross-derivative
+      odir1.setZ( ( der2X + der3X ) / 2 + ( der2Y + der3Y ) / 2 * odir1.getY() ); //take the linear interpolated cross-derivative
     }
     else
     {
       odir1.setY( 1 );
       odir1.setX( -( point3.getY() - point2.getY() ) / ( point3.getX() - point2.getX() ) );
-      odir1.setZ(( der2X + der3X ) / 2*odir1.getX() + ( der2Y + der3Y ) / 2 );
+      odir1.setZ( ( der2X + der3X ) / 2 * odir1.getX() + ( der2Y + der3Y ) / 2 );
     }
     Vector3D midpoint1cp13( 0, 0, 0 );
     MathUtils::derVec( &cp9cp16, &odir1, &midpoint1cp13, cp13.getX() - midpoint1.getX(), cp13.getY() - midpoint1.getY() );
     cp13.setZ( midpoint1.getZ() + midpoint1cp13.getZ() );
 
 
-    cp11.setX(( point3.getX() + cp10.getX() + point1.getX() ) / 3 );
-    cp11.setY(( point3.getY() + cp10.getY() + point1.getY() ) / 3 );
+    cp11.setX( ( point3.getX() + cp10.getX() + point1.getX() ) / 3 );
+    cp11.setY( ( point3.getY() + cp10.getY() + point1.getY() ) / 3 );
     //find the point in the middle of the bezier curve between point3 and point2
-    Point3D midpoint2(( cp14.getX() + cp6.getX() ) / 2, ( cp14.getY() + cp6.getY() ) / 2, ( cp14.getZ() + cp6.getZ() ) / 2 );
+    Point3D midpoint2( ( cp14.getX() + cp6.getX() ) / 2, ( cp14.getY() + cp6.getY() ) / 2, ( cp14.getZ() + cp6.getZ() ) / 2 );
     Vector3D cp14cp6( cp6.getX() - cp14.getX(), cp6.getY() - cp14.getY(), cp6.getZ() - cp14.getZ() );
     Vector3D odir2( 0, 0, 0 );//direction orthogonal to the line from point 1 to point3
-    if (( point3.getY() - point1.getY() ) != 0 )//avoid division through zero
+    if ( ( point3.getY() - point1.getY() ) != 0 ) //avoid division through zero
     {
       odir2.setX( 1 );
       odir2.setY( -( point3.getX() - point1.getX() ) / ( point3.getY() - point1.getY() ) );
-      odir2.setZ(( der3X + der1X ) / 2 + ( der3Y + der1Y ) / 2*odir2.getY() );//take the linear interpolated cross-derivative
+      odir2.setZ( ( der3X + der1X ) / 2 + ( der3Y + der1Y ) / 2 * odir2.getY() ); //take the linear interpolated cross-derivative
     }
     else
     {
       odir2.setY( 1 );
       odir2.setX( -( point3.getY() - point1.getY() ) / ( point3.getX() - point1.getX() ) );
-      odir2.setZ(( der3X + der1X ) / 2*odir2.getX() + ( der3Y + der1Y ) / 2 );
+      odir2.setZ( ( der3X + der1X ) / 2 * odir2.getX() + ( der3Y + der1Y ) / 2 );
     }
     Vector3D midpoint2cp11( 0, 0, 0 );
     MathUtils::derVec( &cp14cp6, &odir2, &midpoint2cp11, cp11.getX() - midpoint2.getX(), cp11.getY() - midpoint2.getY() );

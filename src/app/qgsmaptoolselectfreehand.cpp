@@ -23,14 +23,14 @@ email                : jpalmer at linz dot govt dot nz
 #include <QMouseEvent>
 
 
-QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColor = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
@@ -38,7 +38,7 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -47,14 +47,14 @@ void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setBorderColor( mBorderColor );
+    mRubberBand->setStrokeColor( mStrokeColor );
   }
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   mDragging = true;
 }
 
 
-void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mDragging || !mRubberBand )
     return;
@@ -63,7 +63,7 @@ void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand )
     return;
@@ -72,7 +72,7 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( mRubberBand->numberOfVertices() > 0 && mRubberBand->numberOfVertices() <= 2 )
   {
     // single click, not drag - create a rectangle around clicked point
-    QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
     if ( vlayer )
     {
       QRect selectRect;

@@ -32,24 +32,24 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     void setSymbolHeight( double h );
     double symbolHeight() const;
 
-    Qt::PenStyle outlineStyle() const;
-    void setOutlineStyle( Qt::PenStyle outlineStyle );
+    Qt::PenStyle strokeStyle() const;
+    void setStrokeStyle( Qt::PenStyle strokeStyle );
 
-    /** Get outline join style.
+    /** Get stroke join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const;
-    /** Set outline join style.
+    /** Set stroke join style.
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
-    void setOutlineWidth( double w );
-    double outlineWidth() const;
+    void setStrokeWidth( double w );
+    double strokeWidth() const;
 
     void setFillColor( const QColor& c );
     QColor fillColor() const;
 
-    void setOutlineColor( const QColor& c );
-    QColor outlineColor() const;
+    void setStrokeColor( const QColor& c );
+    QColor strokeColor() const;
 
     /** Sets the units for the symbol's width.
      * @param unit symbol units
@@ -83,19 +83,19 @@ class QgsEllipseSymbolLayer : QgsMarkerSymbolLayer
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& symbolHeightMapUnitScale() const;
 
-    /** Sets the units for the symbol's outline width.
+    /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the symbol's outline width.
-     * @see setOutlineWidthUnit()
+    /** Returns the units for the symbol's stroke width.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;

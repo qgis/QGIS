@@ -600,7 +600,7 @@ class DBModel(QAbstractItemModel):
 
         if not inLayer.isValid():
             # invalid layer
-            QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer %s") % inLayer.name())
+            QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer {0}").format(inLayer.name()))
             return False
 
         # retrieve information about the new table's db and schema

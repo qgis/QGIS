@@ -39,10 +39,10 @@ class QgsPointCompare
 {
   public:
     explicit QgsPointCompare( double tolerance )
-        : mTolerance( tolerance )
+      : mTolerance( tolerance )
     {  }
 
-    bool operator()( const QgsPoint& p1, const QgsPoint& p2 ) const
+    bool operator()( const QgsPoint &p1, const QgsPoint &p2 ) const
     {
       if ( mTolerance <= 0 )
         return p1.x() == p2.x() ? p1.y() < p2.y() : p1.x() < p2.x();
@@ -94,7 +94,7 @@ struct TiePointInfo
   QgsPoint mLastPoint;
 };
 
-bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
+bool TiePointInfoCompare( const TiePointInfo &a, const TiePointInfo &b )
 {
   if ( a.mFirstPoint == b.mFirstPoint )
     return a.mLastPoint.x() == b.mLastPoint.x() ? a.mLastPoint.y() < b.mLastPoint.y() : a.mLastPoint.x() < b.mLastPoint.x();
@@ -104,9 +104,9 @@ bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
 
 QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
     int directionFieldId,
-    const QString& directDirectionValue,
-    const QString& reverseDirectionValue,
-    const QString& bothDirectionValue,
+    const QString &directDirectionValue,
+    const QString &reverseDirectionValue,
+    const QString &bothDirectionValue,
     const Direction defaultDirection
                                               )
 {
@@ -118,18 +118,13 @@ QgsVectorLayerDirector::QgsVectorLayerDirector( QgsVectorLayer *myLayer,
   mBothDirectionValue     = bothDirectionValue;
 }
 
-QgsVectorLayerDirector::~QgsVectorLayerDirector()
-{
-
-}
-
 QString QgsVectorLayerDirector::name() const
 {
   return QStringLiteral( "Vector line" );
 }
 
-void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
-                                        QVector< QgsPoint >& snappedPoints ) const
+void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint > &additionalPoints,
+                                        QVector< QgsPoint > &snappedPoints ) const
 {
   QgsVectorLayer *vl = mVectorLayer;
 
@@ -237,7 +232,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() );
   points.resize( tmp - points.begin() );
 
-  for ( i = 0;i < points.size();++i )
+  for ( i = 0; i < points.size(); ++i )
     builder->addVertex( i, points[ i ] );
 
   for ( i = 0; i < snappedPoints.size() ; ++i )
@@ -253,7 +248,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       tmpAttr.push_back( mDirectionFieldId );
     }
 
-    QList< QgsNetworkStrategy* >::const_iterator it;
+    QList< QgsNetworkStrategy * >::const_iterator it;
     QgsAttributeList::const_iterator it2;
 
     for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
@@ -366,10 +361,10 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             {
               double distance = builder->distanceArea()->measureLine( pt1, pt2 );
               QVector< QVariant > prop;
-              QList< QgsNetworkStrategy* >::const_iterator it;
+              QList< QgsNetworkStrategy * >::const_iterator it;
               for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
               {
-                prop.push_back(( *it )->cost( distance, feature ) );
+                prop.push_back( ( *it )->cost( distance, feature ) );
               }
 
               if ( directionType == Direction::DirectionForward ||

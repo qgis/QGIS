@@ -29,14 +29,14 @@
 #include "qgswkbptr.h"
 #include <QProgressDialog>
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TINInterpolation interpolation, bool showProgressDialog )
-    : QgsInterpolator( inputData )
-    , mTriangulation( nullptr )
-    , mTriangleInterpolator( nullptr )
-    , mIsInitialized( false )
-    , mShowProgressDialog( showProgressDialog )
-    , mExportTriangulationToFile( false )
-    , mInterpolation( interpolation )
+QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, bool showProgressDialog )
+  : QgsInterpolator( inputData )
+  , mTriangulation( nullptr )
+  , mTriangleInterpolator( nullptr )
+  , mIsInitialized( false )
+  , mShowProgressDialog( showProgressDialog )
+  , mExportTriangulationToFile( false )
+  , mInterpolation( interpolation )
 {
 }
 
@@ -46,7 +46,7 @@ QgsTINInterpolator::~QgsTINInterpolator()
   delete mTriangleInterpolator;
 }
 
-int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
+int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
 {
   if ( !mIsInitialized )
   {
@@ -69,16 +69,16 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
 
 void QgsTINInterpolator::initialize()
 {
-  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
+  DualEdgeTriangulation *dualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
   if ( mInterpolation == CloughTocher )
   {
-    NormVecDecorator* dec = new NormVecDecorator();
-    dec->addTriangulation( theDualEdgeTriangulation );
+    NormVecDecorator *dec = new NormVecDecorator();
+    dec->addTriangulation( dualEdgeTriangulation );
     mTriangulation = dec;
   }
   else
   {
-    mTriangulation = theDualEdgeTriangulation;
+    mTriangulation = dualEdgeTriangulation;
   }
 
   //get number of features if we use a progress bar
@@ -86,7 +86,7 @@ void QgsTINInterpolator::initialize()
   int nProcessedFeatures = 0;
   if ( mShowProgressDialog )
   {
-    Q_FOREACH ( const LayerData& layer, mLayerData )
+    Q_FOREACH ( const LayerData &layer, mLayerData )
     {
       if ( layer.vectorLayer )
       {
@@ -95,16 +95,16 @@ void QgsTINInterpolator::initialize()
     }
   }
 
-  QProgressDialog* theProgressDialog = nullptr;
+  QProgressDialog *progressDialog = nullptr;
   if ( mShowProgressDialog )
   {
-    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
-    theProgressDialog->setWindowModality( Qt::WindowModal );
+    progressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
+    progressDialog->setWindowModality( Qt::WindowModal );
   }
 
 
   QgsFeature f;
-  Q_FOREACH ( const LayerData& layer, mLayerData )
+  Q_FOREACH ( const LayerData &layer, mLayerData )
   {
     if ( layer.vectorLayer )
     {
@@ -120,11 +120,11 @@ void QgsTINInterpolator::initialize()
       {
         if ( mShowProgressDialog )
         {
-          if ( theProgressDialog->wasCanceled() )
+          if ( progressDialog->wasCanceled() )
           {
             break;
           }
-          theProgressDialog->setValue( nProcessedFeatures );
+          progressDialog->setValue( nProcessedFeatures );
         }
         insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
@@ -132,15 +132,15 @@ void QgsTINInterpolator::initialize()
     }
   }
 
-  delete theProgressDialog;
+  delete progressDialog;
 
   if ( mInterpolation == CloughTocher )
   {
-    CloughTocherInterpolator* ctInterpolator = new CloughTocherInterpolator();
-    NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
+    CloughTocherInterpolator *ctInterpolator = new CloughTocherInterpolator();
+    NormVecDecorator *dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
     if ( dec )
     {
-      QProgressDialog* progressDialog = nullptr;
+      QProgressDialog *progressDialog = nullptr;
       if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
       {
         progressDialog = new QProgressDialog();
@@ -155,18 +155,18 @@ void QgsTINInterpolator::initialize()
   }
   else //linear
   {
-    mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
+    mTriangleInterpolator = new LinTriangleInterpolator( dualEdgeTriangulation );
   }
   mIsInitialized = true;
 
   //debug
   if ( mExportTriangulationToFile )
   {
-    theDualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
+    dualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
   }
 }
 
-int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputType type )
+int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputType type )
 {
   if ( !f )
   {
@@ -205,7 +205,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
   QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
   //maybe a structure or break line
-  Line3D* line = nullptr;
+  Line3D *line = nullptr;
 
   QgsWkbTypes::Type wkbType = g.wkbType();
   switch ( wkbType )
@@ -224,8 +224,8 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       {
         z = attributeValue;
       }
-      Point3D* thePoint = new Point3D( x, y, z );
-      if ( mTriangulation->addPoint( thePoint ) == -100 )
+      Point3D *point = new Point3D( x, y, z );
+      if ( mTriangulation->addPoint( point ) == -100 )
       {
         return -1;
       }

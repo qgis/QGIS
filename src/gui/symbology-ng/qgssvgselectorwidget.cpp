@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
+#include "qgssettings.h"
 
 #include <QAbstractListModel>
 #include <QCheckBox>
@@ -28,17 +29,16 @@
 #include <QFileDialog>
 #include <QModelIndex>
 #include <QPixmapCache>
-#include <QSettings>
 #include <QStyle>
 #include <QTime>
 
 // QgsSvgSelectorLoader
 
 ///@cond PRIVATE
-QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject* parent )
-    : QThread( parent )
-    , mCanceled( false )
-    , mTimerThreshold( 0 )
+QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject *parent )
+  : QThread( parent )
+  , mCanceled( false )
+  , mTimerThreshold( 0 )
 {
 }
 
@@ -73,7 +73,7 @@ void QgsSvgSelectorLoader::stop()
   while ( isRunning() ) {}
 }
 
-void QgsSvgSelectorLoader::loadPath( const QString& path )
+void QgsSvgSelectorLoader::loadPath( const QString &path )
 {
   if ( mCanceled )
     return;
@@ -83,7 +83,7 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
   if ( path.isEmpty() )
   {
     QStringList svgPaths = QgsApplication::svgPaths();
-    Q_FOREACH ( const QString& svgPath, svgPaths )
+    Q_FOREACH ( const QString &svgPath, svgPaths )
     {
       if ( mCanceled )
         return;
@@ -104,7 +104,7 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
 
     loadImages( path );
 
-    Q_FOREACH ( const QString& item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString &item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       if ( mCanceled )
         return;
@@ -116,10 +116,10 @@ void QgsSvgSelectorLoader::loadPath( const QString& path )
   }
 }
 
-void QgsSvgSelectorLoader::loadImages( const QString& path )
+void QgsSvgSelectorLoader::loadImages( const QString &path )
 {
   QDir dir( path );
-  Q_FOREACH ( const QString& item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+  Q_FOREACH ( const QString &item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
   {
     if ( mCanceled )
       return;
@@ -153,9 +153,9 @@ void QgsSvgSelectorLoader::loadImages( const QString& path )
 // QgsSvgGroupLoader
 //
 
-QgsSvgGroupLoader::QgsSvgGroupLoader( QObject* parent )
-    : QThread( parent )
-    , mCanceled( false )
+QgsSvgGroupLoader::QgsSvgGroupLoader( QObject *parent )
+  : QThread( parent )
+  , mCanceled( false )
 {
 
 }
@@ -183,7 +183,7 @@ void QgsSvgGroupLoader::stop()
   while ( isRunning() ) {}
 }
 
-void QgsSvgGroupLoader::loadGroup( const QString& parentPath )
+void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 {
   QDir parentDir( parentPath );
 
@@ -194,7 +194,7 @@ void QgsSvgGroupLoader::loadGroup( const QString& parentPath )
 
   mTraversedPaths.insert( canonicalPath );
 
-  Q_FOREACH ( const QString& item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  Q_FOREACH ( const QString &item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     if ( mCanceled )
       return;
@@ -210,60 +210,60 @@ void QgsSvgGroupLoader::loadGroup( const QString& parentPath )
 // QgsSvgSelectorListModel
 //
 
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent )
-    : QAbstractListModel( parent )
-    , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent )
+  : QAbstractListModel( parent )
+  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
 {
   mSvgLoader->setPath( QString() );
   connect( mSvgLoader, SIGNAL( foundSvgs( QStringList ) ), this, SLOT( addSvgs( QStringList ) ) );
   mSvgLoader->start();
 }
 
-QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject* parent, const QString& path )
-    : QAbstractListModel( parent )
-    , mSvgLoader( new QgsSvgSelectorLoader( this ) )
+QgsSvgSelectorListModel::QgsSvgSelectorListModel( QObject *parent, const QString &path )
+  : QAbstractListModel( parent )
+  , mSvgLoader( new QgsSvgSelectorLoader( this ) )
 {
   mSvgLoader->setPath( path );
   connect( mSvgLoader, SIGNAL( foundSvgs( QStringList ) ), this, SLOT( addSvgs( QStringList ) ) );
   mSvgLoader->start();
 }
 
-int QgsSvgSelectorListModel::rowCount( const QModelIndex& parent ) const
+int QgsSvgSelectorListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return mSvgFiles.count();
 }
 
-QPixmap QgsSvgSelectorListModel::createPreview( const QString& entry ) const
+QPixmap QgsSvgSelectorListModel::createPreview( const QString &entry ) const
 {
   // render SVG file
-  QColor fill, outline;
-  double outlineWidth, fillOpacity, outlineOpacity;
-  bool fillParam, fillOpacityParam, outlineParam, outlineWidthParam, outlineOpacityParam;
-  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultOutlineColor = false,
-                             hasDefaultOutlineWidth = false, hasDefaultOutlineOpacity = false;
+  QColor fill, stroke;
+  double strokeWidth, fillOpacity, strokeOpacity;
+  bool fillParam, fillOpacityParam, strokeParam, strokeWidthParam, strokeOpacityParam;
+  bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false,
+       hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
   QgsApplication::svgCache()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
       fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
-      outlineParam, hasDefaultOutlineColor, outline,
-      outlineWidthParam, hasDefaultOutlineWidth, outlineWidth,
-      outlineOpacityParam, hasDefaultOutlineOpacity, outlineOpacity );
+      strokeParam, hasDefaultStrokeColor, stroke,
+      strokeWidthParam, hasDefaultStrokeWidth, strokeWidth,
+      strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
 
   //if defaults not set in symbol, use these values
   if ( !hasDefaultFillColor )
     fill = QColor( 200, 200, 200 );
   fill.setAlphaF( hasDefaultFillOpacity ? fillOpacity : 1.0 );
-  if ( !hasDefaultOutlineColor )
-    outline = Qt::black;
-  outline.setAlphaF( hasDefaultOutlineOpacity ? outlineOpacity : 1.0 );
-  if ( !hasDefaultOutlineWidth )
-    outlineWidth = 0.2;
+  if ( !hasDefaultStrokeColor )
+    stroke = Qt::black;
+  stroke.setAlphaF( hasDefaultStrokeOpacity ? strokeOpacity : 1.0 );
+  if ( !hasDefaultStrokeWidth )
+    strokeWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage& img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  const QImage &img = QgsApplication::svgCache()->svgAsImage( entry, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
   return QPixmap::fromImage( img );
 }
 
-QVariant QgsSvgSelectorListModel::data( const QModelIndex& index, int role ) const
+QVariant QgsSvgSelectorListModel::data( const QModelIndex &index, int role ) const
 {
   QString entry = mSvgFiles.at( index.row() );
 
@@ -286,7 +286,7 @@ QVariant QgsSvgSelectorListModel::data( const QModelIndex& index, int role ) con
   return QVariant();
 }
 
-void QgsSvgSelectorListModel::addSvgs( const QStringList& svgs )
+void QgsSvgSelectorListModel::addSvgs( const QStringList &svgs )
 {
   beginInsertRows( QModelIndex(), mSvgFiles.count(), mSvgFiles.count() + svgs.size() - 1 );
   mSvgFiles.append( svgs );
@@ -299,9 +299,9 @@ void QgsSvgSelectorListModel::addSvgs( const QStringList& svgs )
 
 //--- QgsSvgSelectorGroupsModel
 
-QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject* parent )
-    : QStandardItemModel( parent )
-    , mLoader( new QgsSvgGroupLoader( this ) )
+QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
+  : QStandardItemModel( parent )
+  , mLoader( new QgsSvgGroupLoader( this ) )
 {
   QStringList svgPaths = QgsApplication::svgPaths();
   QStandardItem *parentItem = invisibleRootItem();
@@ -345,14 +345,14 @@ QgsSvgSelectorGroupsModel::~QgsSvgSelectorGroupsModel()
   mLoader->stop();
 }
 
-void QgsSvgSelectorGroupsModel::addPath( const QString& parentPath, const QString& item )
+void QgsSvgSelectorGroupsModel::addPath( const QString &parentPath, const QString &item )
 {
-  QStandardItem* parentGroup = mPathItemHash.value( parentPath );
+  QStandardItem *parentGroup = mPathItemHash.value( parentPath );
   if ( !parentGroup )
     return;
 
   QString fullPath = parentPath + '/' + item;
-  QStandardItem* group = new QStandardItem( item );
+  QStandardItem *group = new QStandardItem( item );
   group->setData( QVariant( fullPath ) );
   group->setEditable( false );
   group->setCheckable( false );
@@ -365,8 +365,8 @@ void QgsSvgSelectorGroupsModel::addPath( const QString& parentPath, const QStrin
 
 //-- QgsSvgSelectorWidget
 
-QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget* parent )
-    : QWidget( parent )
+QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
+  : QWidget( parent )
 {
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
@@ -374,24 +374,24 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget* parent )
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
-  connect( mImagesListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-           this, SLOT( svgSelectionChanged( const QModelIndex& ) ) );
-  connect( mGroupsTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-           this, SLOT( populateIcons( const QModelIndex& ) ) );
+  connect( mImagesListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
+           this, SLOT( svgSelectionChanged( const QModelIndex & ) ) );
+  connect( mGroupsTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
+           this, SLOT( populateIcons( const QModelIndex & ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   bool useRelativePath = ( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false )
-                           || settings.value( QStringLiteral( "/Windows/SvgSelectorWidget/RelativePath" ) ).toBool() );
+                           || settings.value( QStringLiteral( "Windows/SvgSelectorWidget/RelativePath" ) ).toBool() );
   mRelativePathChkBx->setChecked( useRelativePath );
 }
 
 QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SvgSelectorWidget/RelativePath" ), mRelativePathChkBx->isChecked() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/SvgSelectorWidget/RelativePath" ), mRelativePathChkBx->isChecked() );
 }
 
-void QgsSvgSelectorWidget::setSvgPath( const QString& svgPath )
+void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
 {
   QString updatedPath( QLatin1String( "" ) );
 
@@ -412,8 +412,8 @@ void QgsSvgSelectorWidget::setSvgPath( const QString& svgPath )
   mFileLineEdit->blockSignals( false );
 
   mImagesListView->selectionModel()->blockSignals( true );
-  QAbstractItemModel* m = mImagesListView->model();
-  QItemSelectionModel* selModel = mImagesListView->selectionModel();
+  QAbstractItemModel *m = mImagesListView->model();
+  QItemSelectionModel *selModel = mImagesListView->selectionModel();
   for ( int i = 0; i < m->rowCount(); i++ )
   {
     QModelIndex idx( m->index( i, 0 ) );
@@ -441,37 +441,37 @@ QString QgsSvgSelectorWidget::currentSvgPathToName() const
   return QgsSymbolLayerUtils::symbolPathToName( mCurrentSvgPath );
 }
 
-void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString& svgPath )
+void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
 {
   mCurrentSvgPath = svgPath;
   emit svgSelected( currentSvgPath() );
 }
 
-void QgsSvgSelectorWidget::svgSelectionChanged( const QModelIndex& idx )
+void QgsSvgSelectorWidget::svgSelectionChanged( const QModelIndex &idx )
 {
   QString filePath = idx.data( Qt::UserRole ).toString();
   mFileLineEdit->setText( filePath );
   updateCurrentSvgPath( filePath );
 }
 
-void QgsSvgSelectorWidget::populateIcons( const QModelIndex& idx )
+void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
 {
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
-  QAbstractItemModel* oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mImagesListView, path );
+  QAbstractItemModel *oldModel = mImagesListView->model();
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView, path );
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
-  connect( mImagesListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
-           this, SLOT( svgSelectionChanged( const QModelIndex& ) ) );
+  connect( mImagesListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
+           this, SLOT( svgSelectionChanged( const QModelIndex & ) ) );
 
 }
 
 void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
 {
-  QSettings settings;
-  QString openDir = settings.value( QStringLiteral( "/UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString openDir = settings.value( QStringLiteral( "UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
 
   QString lineEditText = mFileLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -497,19 +497,19 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
     updateLineEditFeedback( false );
     return;
   }
-  settings.setValue( QStringLiteral( "/UI/lastSVGMarkerDir" ), fi.absolutePath() );
+  settings.setValue( QStringLiteral( "UI/lastSVGMarkerDir" ), fi.absolutePath() );
   mFileLineEdit->setText( file );
   updateCurrentSvgPath( file );
 }
 
-void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString& tip )
+void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString &tip )
 {
   // draw red text for path field if invalid (path can't be resolved)
   mFileLineEdit->setStyleSheet( QString( !ok ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
   mFileLineEdit->setToolTip( !ok ? tr( "File not found" ) : tip );
 }
 
-void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
+void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString &text )
 {
   QString resolvedPath = QgsSymbolLayerUtils::symbolNameToPath( text );
   bool validSVG = !resolvedPath.isNull();
@@ -520,7 +520,7 @@ void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString& text )
 
 void QgsSvgSelectorWidget::populateList()
 {
-  QgsSvgSelectorGroupsModel* g = new QgsSvgSelectorGroupsModel( mGroupsTreeView );
+  QgsSvgSelectorGroupsModel *g = new QgsSvgSelectorGroupsModel( mGroupsTreeView );
   mGroupsTreeView->setModel( g );
   // Set the tree expanded at the first level
   int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
@@ -530,8 +530,8 @@ void QgsSvgSelectorWidget::populateList()
   }
 
   // Initially load the icons in the List view without any grouping
-  QAbstractItemModel* oldModel = mImagesListView->model();
-  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mImagesListView );
+  QAbstractItemModel *oldModel = mImagesListView->model();
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mImagesListView );
   mImagesListView->setModel( m );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 }
@@ -541,7 +541,7 @@ void QgsSvgSelectorWidget::populateList()
 QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
     QDialogButtonBox::StandardButtons buttons,
     Qt::Orientation orientation )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
   Q_UNUSED( orientation );
@@ -561,13 +561,13 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   mLayout->addWidget( mButtonBox );
   setLayout( mLayout );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
 }
 
 QgsSvgSelectorDialog::~QgsSvgSelectorDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
 }
 

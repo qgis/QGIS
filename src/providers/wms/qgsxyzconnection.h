@@ -22,6 +22,8 @@ struct QgsXyzConnection
 {
   QString name;
   QString url;
+  int zMin = -1;
+  int zMax = -1;
 
   QString encodedUri() const;
 };
@@ -34,13 +36,13 @@ class QgsXyzConnectionUtils
     static QStringList connectionList();
 
     //! Returns connection details
-    static QgsXyzConnection connection( const QString& name );
+    static QgsXyzConnection connection( const QString &name );
 
     //! Removes a connection from the list
-    static void deleteConnection( const QString& name );
+    static void deleteConnection( const QString &name );
 
     //! Adds a new connection to the list
-    static void addConnection( const QgsXyzConnection& conn );
+    static void addConnection( const QgsXyzConnection &conn );
 };
 
 

@@ -82,16 +82,16 @@ class TestQgsGrassCommand
     };
 
     TestQgsGrassCommand()
-        : command( AddFeature )
-        , verify( true )
-        , fid( 0 )
-        , geometry( 0 )
+      : command( AddFeature )
+      , verify( true )
+      , fid( 0 )
+      , geometry( 0 )
     {}
     explicit TestQgsGrassCommand( Command c )
-        : command( c )
-        , verify( true )
-        , fid( 0 )
-        , geometry( 0 )
+      : command( c )
+      , verify( true )
+      , fid( 0 )
+      , geometry( 0 )
     {}
 
     QString toString() const;
@@ -130,7 +130,7 @@ QString TestQgsGrassCommand::toString() const
   else if ( command == AddFeature )
   {
     string += QLatin1String( "AddFeature " );
-    Q_FOREACH ( const TestQgsGrassFeature & grassFeature, grassFeatures )
+    Q_FOREACH ( const TestQgsGrassFeature &grassFeature, grassFeatures )
     {
       if ( grassFeature.hasGeometry() )
       {
@@ -213,28 +213,28 @@ class TestQgsGrassProvider: public QObject
     void vectorImport();
     void edit();
   private:
-    void reportRow( const QString& message );
-    void reportHeader( const QString& message );
+    void reportRow( const QString &message );
+    void reportHeader( const QString &message );
     // verify result and report result
     bool verify( bool ok );
     // compare expected and got string and set ok to false if not equal
-    bool compare( const QString& expected, const QString& got, bool& ok );
+    bool compare( const QString &expected, const QString &got, bool &ok );
     // lists are considered equal if contains the same values regardless order
     // set ok to false if not equal
-    bool compare( const QStringList& expected, const QStringList& got, bool& ok );
+    bool compare( const QStringList &expected, const QStringList &got, bool &ok );
     // compare with tolerance
-    bool compare( double expected, double got, bool& ok );
+    bool compare( double expected, double got, bool &ok );
     bool copyRecursively( const QString &srcFilePath, const QString &tgtFilePath, QString *error );
     bool removeRecursively( const QString &filePath, QString *error = 0 );
-    bool copyLocation( QString& tmpGisdbase );
-    bool createTmpLocation( QString& tmpGisdbase, QString& tmpLocation, QString& tmpMapset );
+    bool copyLocation( QString &tmpGisdbase );
+    bool createTmpLocation( QString &tmpGisdbase, QString &tmpLocation, QString &tmpMapset );
     bool equal( QgsFeature feature, QgsFeature expectedFeatures );
-    bool compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool& ok );
-    bool compare( QMap<QString, QgsVectorLayer *> layers, bool& ok );
-    bool compare( QString uri, QgsVectorLayer *expectedLayer, bool& ok );
+    bool compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool &ok );
+    bool compare( QMap<QString, QgsVectorLayer *> layers, bool &ok );
+    bool compare( QString uri, QgsVectorLayer *expectedLayer, bool &ok );
     QList< TestQgsGrassCommandGroup > createCommands();
     QList<QgsFeature> getFeatures( QgsVectorLayer *layer );
-    bool setAttributes( QgsFeature & feature, const QMap<QString, QVariant> &attributes );
+    bool setAttributes( QgsFeature &feature, const QMap<QString, QVariant> &attributes );
     QString mGisdbase;
     QString mLocation;
     QString mReport;
@@ -243,11 +243,11 @@ class TestQgsGrassProvider: public QObject
 
 #define GVERIFY(x) QVERIFY( verify(x) )
 
-void TestQgsGrassProvider::reportRow( const QString& message )
+void TestQgsGrassProvider::reportRow( const QString &message )
 {
   mReport += message + "<br>\n";
 }
-void TestQgsGrassProvider::reportHeader( const QString& message )
+void TestQgsGrassProvider::reportHeader( const QString &message )
 {
   mReport += "<h2>" + message + "</h2>\n";
 }
@@ -314,7 +314,7 @@ bool TestQgsGrassProvider::verify( bool ok )
   return ok;
 }
 
-bool TestQgsGrassProvider::compare( const QString& expected, const QString& got, bool &ok )
+bool TestQgsGrassProvider::compare( const QString &expected, const QString &got, bool &ok )
 {
   if ( expected != got )
   {
@@ -324,7 +324,7 @@ bool TestQgsGrassProvider::compare( const QString& expected, const QString& got,
   return true;
 }
 
-bool TestQgsGrassProvider::compare( const QStringList& expected, const QStringList& got, bool &ok )
+bool TestQgsGrassProvider::compare( const QStringList &expected, const QStringList &got, bool &ok )
 {
   QStringList e = expected;
   QStringList g = got;
@@ -338,7 +338,7 @@ bool TestQgsGrassProvider::compare( const QStringList& expected, const QStringLi
   return true;
 }
 
-bool TestQgsGrassProvider::compare( double expected, double got, bool& ok )
+bool TestQgsGrassProvider::compare( double expected, double got, bool &ok )
 {
   if ( qAbs( got - expected ) > TINY_VALUE )
   {
@@ -360,7 +360,7 @@ void TestQgsGrassProvider::fatalError()
     ok = false; // should not be reached
     reportRow( QStringLiteral( "G_fatal_error() did not throw exception" ) );
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     reportRow( QStringLiteral( "Exception thrown and caught correctly" ) );
     reportRow( "expected error message: " + errorMessage );
@@ -501,7 +501,7 @@ void TestQgsGrassProvider::vectorLayers()
     reportRow( "layers: " + layers.join( QStringLiteral( ", " ) ) );
     compare( expectedLayers, layers, ok );
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     ok = false;
     reportRow( QStringLiteral( "ERROR: %1" ).arg( e.what() ) );
@@ -564,7 +564,7 @@ void TestQgsGrassProvider::info()
   es.minimumValue = -20.25;
   es.maximumValue = 20.25;
   expectedStats.insert( QStringLiteral( "fcell" ), es );
-  Q_FOREACH ( const QString& map, expectedStats.keys() )
+  Q_FOREACH ( const QString &map, expectedStats.keys() )
   {
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
@@ -656,9 +656,9 @@ bool TestQgsGrassProvider::copyRecursively( const QString &srcFilePath, const QS
     Q_FOREACH ( const QString &fileName, fileNames )
     {
       const QString newSrcFilePath
-      = srcFilePath + QLatin1Char( '/' ) + fileName;
+        = srcFilePath + QLatin1Char( '/' ) + fileName;
       const QString newTgtFilePath
-      = tgtFilePath + QLatin1Char( '/' ) + fileName;
+        = tgtFilePath + QLatin1Char( '/' ) + fileName;
       if ( !copyRecursively( newSrcFilePath, newTgtFilePath, error ) )
         return false;
     }
@@ -723,10 +723,10 @@ bool TestQgsGrassProvider::removeRecursively( const QString &filePath, QString *
 }
 
 // copy test location to temporary
-bool TestQgsGrassProvider::copyLocation( QString& tmpGisdbase )
+bool TestQgsGrassProvider::copyLocation( QString &tmpGisdbase )
 {
   // use QTemporaryFile to generate name (QTemporaryDir since 5.0)
-  QTemporaryFile* tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
+  QTemporaryFile *tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
   tmpFile->open();
   tmpGisdbase = tmpFile->fileName();
   delete tmpFile;
@@ -742,10 +742,10 @@ bool TestQgsGrassProvider::copyLocation( QString& tmpGisdbase )
 }
 
 // create temporary output location
-bool TestQgsGrassProvider::createTmpLocation( QString& tmpGisdbase, QString& tmpLocation, QString& tmpMapset )
+bool TestQgsGrassProvider::createTmpLocation( QString &tmpGisdbase, QString &tmpLocation, QString &tmpMapset )
 {
   // use QTemporaryFile to generate name (QTemporaryDir since 5.0)
-  QTemporaryFile* tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
+  QTemporaryFile *tmpFile = new QTemporaryFile( QDir::tempPath() + "/qgis-grass-test" );
   tmpFile->open();
   tmpGisdbase = tmpFile->fileName();
   delete tmpFile;
@@ -766,7 +766,7 @@ bool TestQgsGrassProvider::createTmpLocation( QString& tmpGisdbase, QString& tmp
   QStringList cpFiles;
   cpFiles << QStringLiteral( "DEFAULT_WIND" ) << QStringLiteral( "WIND" ) << QStringLiteral( "PROJ_INFO" ) << QStringLiteral( "PROJ_UNITS" );
   QString templateMapsetPath = mGisdbase + "/" + mLocation + "/PERMANENT";
-  Q_FOREACH ( const QString& cpFile, cpFiles )
+  Q_FOREACH ( const QString &cpFile, cpFiles )
   {
     if ( !QFile::copy( templateMapsetPath + "/" + cpFile, tmpMapsetPath + "/" + cpFile ) )
     {
@@ -801,12 +801,12 @@ void TestQgsGrassProvider::rasterImport()
   rasterFiles << QStringLiteral( "raster/band1_float32_noct_epsg4326.tif" ) << QStringLiteral( "raster/band3_int16_noct_epsg4326.tif" );
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
-  Q_FOREACH ( const QString& rasterFile, rasterFiles )
+  Q_FOREACH ( const QString &rasterFile, rasterFiles )
   {
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + rasterFile;
     QString name = QFileInfo( uri ).baseName();
     reportRow( "input raster: " + uri );
-    QgsRasterDataProvider* provider = qobject_cast<QgsRasterDataProvider*>( QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), uri ) );
+    QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), uri ) );
     if ( !provider )
     {
       reportRow( "Cannot create provider " + uri );
@@ -824,13 +824,13 @@ void TestQgsGrassProvider::rasterImport()
     int newXSize = provider->xSize();
     int newYSize = provider->ySize();
 
-    QgsRasterPipe* pipe = new QgsRasterPipe();
+    QgsRasterPipe *pipe = new QgsRasterPipe();
     pipe->set( provider );
 
     QgsCoordinateReferenceSystem providerCrs = provider->crs();
     if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
     {
-      QgsRasterProjector * projector = new QgsRasterProjector;
+      QgsRasterProjector *projector = new QgsRasterProjector;
       projector->setCrs( providerCrs, mapsetCrs );
       projector->destExtentSize( provider->extent(), provider->xSize(), provider->ySize(),
                                  newExtent, newXSize, newYSize );
@@ -873,12 +873,12 @@ void TestQgsGrassProvider::vectorImport()
   files << QStringLiteral( "polys_overlapping.shp" ) << QStringLiteral( "bug5598.shp" );
 
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
-  Q_FOREACH ( const QString& file, files )
+  Q_FOREACH ( const QString &file, files )
   {
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + file;
     QString name = QFileInfo( uri ).baseName();
     reportRow( "input vector: " + uri );
-    QgsVectorDataProvider* provider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( QStringLiteral( "ogr" ), uri ) );
+    QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( QStringLiteral( "ogr" ), uri ) );
     if ( !provider )
     {
       reportRow( "Cannot create provider " + uri );
@@ -915,7 +915,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassCommandGroup commandGroup;
   TestQgsGrassCommand command;
   TestQgsGrassFeature grassFeature;
-  QgsLineString * line = nullptr;
+  QgsLineString *line = nullptr;
   QgsGeometry *geometry = nullptr;
   QList<QgsPointV2> pointList;
 
@@ -1107,7 +1107,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   return commandGroups;
 }
 
-bool TestQgsGrassProvider::setAttributes( QgsFeature & feature, const QMap<QString, QVariant> &attributes )
+bool TestQgsGrassProvider::setAttributes( QgsFeature &feature, const QMap<QString, QVariant> &attributes )
 {
   bool attributesSet = true;
   Q_FOREACH ( const QString fieldName, attributes.keys() )
@@ -1146,7 +1146,7 @@ void TestQgsGrassProvider::edit()
 
   for ( int i = 0; i < commandGroups.size(); i++ )
   {
-    TestQgsGrassCommandGroup & commandGroup = commandGroups[i];
+    TestQgsGrassCommandGroup &commandGroup = commandGroups[i];
 
     // Create GRASS vector
     QString name = QStringLiteral( "edit_%1" ).arg( i );
@@ -1170,7 +1170,7 @@ void TestQgsGrassProvider::edit()
 
     QList<TestQgsGrassCommand> editCommands; // real edit
 
-    Q_FOREACH ( const TestQgsGrassCommand & command, commandGroup.commands )
+    Q_FOREACH ( const TestQgsGrassCommand &command, commandGroup.commands )
     {
       reportRow( "<br>command: " + command.toString() );
       bool commandOk = true;
@@ -1548,7 +1548,7 @@ bool TestQgsGrassProvider::equal( QgsFeature feature, QgsFeature expectedFeature
   return true;
 }
 
-bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool& ok )
+bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature> expectedFeatures, bool &ok )
 {
   bool localOk = true;
   if ( features.size() != expectedFeatures.size() )
@@ -1558,10 +1558,10 @@ bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature
     return false;
   }
   // Check if each expected feature exists in features
-  Q_FOREACH ( const QgsFeature& expectedFeature,  expectedFeatures )
+  Q_FOREACH ( const QgsFeature &expectedFeature,  expectedFeatures )
   {
     bool found = false;
-    Q_FOREACH ( const QgsFeature& feature, features )
+    Q_FOREACH ( const QgsFeature &feature, features )
     {
       if ( equal( feature, expectedFeature ) )
       {
@@ -1579,11 +1579,11 @@ bool TestQgsGrassProvider::compare( QList<QgsFeature> features, QList<QgsFeature
   return localOk;
 }
 
-bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool& ok )
+bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool &ok )
 {
-  Q_FOREACH ( const QString & grassUri, layers.keys() )
+  Q_FOREACH ( const QString &grassUri, layers.keys() )
   {
-    QgsVectorLayer* layer = layers.value( grassUri );
+    QgsVectorLayer *layer = layers.value( grassUri );
     Q_ASSERT( layer );
     if ( !compare( grassUri, layer, ok ) )
     {
@@ -1597,7 +1597,7 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
   return ok;
 }
 
-bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, bool& ok )
+bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, bool &ok )
 {
   QgsGrassObject mapObject;
   mapObject.setFromUri( uri );
@@ -1639,28 +1639,28 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
     int result = Vect_open_old( map, mapObject.name().toUtf8().data(), mapObject.mapset().toUtf8().data() );
 
     if ( result == -1 )
-{
-  QgsGrass::vectDestroyMapStruct( map );
-    throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
-  }
+    {
+      QgsGrass::vectDestroyMapStruct( map );
+      throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
+    }
 
 #if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
-  Vect_build( map );
+    Vect_build( map );
 #else
-  Vect_build( map, stderr );
+    Vect_build( map, stderr );
 #endif
-  //Vect_set_release_support( map );
-  Vect_close( map );
-  QgsGrass::vectDestroyMapStruct( map );
+    //Vect_set_release_support( map );
+    Vect_close( map );
+    QgsGrass::vectDestroyMapStruct( map );
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     reportRow( "Cannot build topology: " + QString( e.what() ) );
     ok = false;
     return false;
   }
 
-  QgsGrassVectorMapStore * mapStore = new QgsGrassVectorMapStore();
+  QgsGrassVectorMapStore *mapStore = new QgsGrassVectorMapStore();
   QgsGrassVectorMapStore::setStore( mapStore );
 
   layer = new QgsVectorLayer( uri, QStringLiteral( "test" ), QStringLiteral( "grass" ) );

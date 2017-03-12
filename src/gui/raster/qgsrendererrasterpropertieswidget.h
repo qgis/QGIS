@@ -43,19 +43,19 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
      * @param canvas The canvas object used to calculate the max and min values from the extent.
      * @param parent Parent object
      */
-    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
+    QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Return the active render widget. Can be null.
      */
-    QgsRasterRendererWidget* currentRenderWidget() { return mRendererWidget; }
+    QgsRasterRendererWidget *currentRenderWidget() { return mRendererWidget; }
 
   public slots:
     //! called when user changes renderer type
@@ -83,10 +83,10 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void refreshAfterStyleChanged();
 
   private:
-    void setRendererWidget( const QString& rendererName );
+    void setRendererWidget( const QString &rendererName );
 
-    QgsRasterLayer* mRasterLayer = nullptr;
-    QgsRasterRendererWidget* mRendererWidget = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsRasterRendererWidget *mRendererWidget = nullptr;
 };
 
 #endif // QGSRENDERERRASTERPROPERTIESDIALOG_H

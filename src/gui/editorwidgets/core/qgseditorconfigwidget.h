@@ -18,9 +18,11 @@
 
 #include <QWidget>
 #include "qgis_gui.h"
-
+#include "qgseditorwidgetwrapper.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;
+class QgsPropertyOverrideButton;
 
 /** \ingroup gui
  * This class should be subclassed for every configurable editor widget type.
@@ -30,7 +32,7 @@ class QgsVectorLayer;
  * It will only be instantiated by {@see QgsEditorWidgetFactory}
  */
 
-class GUI_EXPORT QgsEditorConfigWidget : public QWidget
+class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -42,7 +44,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      * @param fieldIdx The index of the field on the layer for which this dialog will be created
      * @param parent   A parent widget
      */
-    explicit QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
     /**
      * @brief Create a configuration from the current GUI state
@@ -56,7 +58,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      *
      * @param config The configuration which should be represented by this widget
      */
-    virtual void setConfig( const QVariantMap& config ) = 0;
+    virtual void setConfig( const QVariantMap &config ) = 0;
 
     /**
      * Returns the field for which this configuration widget applies
@@ -70,7 +72,9 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      *
      * @return The layer
      */
-    QgsVectorLayer* layer();
+    QgsVectorLayer *layer();
+
+    QgsExpressionContext createExpressionContext() const override;
 
   signals:
 
@@ -79,8 +83,34 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      */
     void changed();
 
+  protected:
+
+    /**
+     * Registers a property override button, setting up its initial value, connections and description.
+     * @param button button to register
+     * @param key corresponding data defined property key
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
+
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    //! Temporary property collection for config widgets
+    QgsPropertyCollection mPropertyCollection;
+
+  private slots:
+
+    void updateProperty();
+
   private:
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     int mField;
 };
 

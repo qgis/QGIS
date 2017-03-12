@@ -42,9 +42,7 @@
 #ifndef QSQL_OCISPATIAL_H
 #define QSQL_OCISPATIAL_H
 
-#include <QtSql/qsqlresult.h>
 #include <QtSql/qsqldriver.h>
-#include "qsqlcachedresult_p.h"
 
 #ifdef QT_PLUGIN
 #define Q_EXPORT_SQLDRIVER_OCISPATIAL
@@ -52,78 +50,48 @@
 #define Q_EXPORT_SQLDRIVER_OCISPATIAL Q_SQL_EXPORT
 #endif
 
-QT_BEGIN_HEADER
-
 typedef struct OCIEnv OCIEnv;
 typedef struct OCISvcCtx OCISvcCtx;
 
 QT_BEGIN_NAMESPACE
 
-class QOCISpatialDriver;
-class QOCISpatialCols;
-struct QOCISpatialDriverPrivate;
-struct QOCISpatialResultPrivate;
-
-class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialResult : public QSqlCachedResult
-{
-    friend class QOCISpatialDriver;
-    friend struct QOCISpatialResultPrivate;
-    friend class QOCISpatialCols;
-  public:
-    QOCISpatialResult( const QOCISpatialDriver * db, const QOCISpatialDriverPrivate* p );
-    ~QOCISpatialResult();
-    bool prepare( const QString& query );
-    bool exec();
-    QVariant handle() const;
-
-  protected:
-    bool gotoNext( ValueCache &values, int index );
-    bool reset( const QString& query );
-    int size();
-    int numRowsAffected();
-    QSqlRecord record() const;
-    QVariant lastInsertId() const;
-
-  private:
-    QOCISpatialResultPrivate *d = nullptr;
-};
+class QSqlResult;
+class QOCISpatialDriverPrivate;
 
 class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
 {
+    Q_DECLARE_PRIVATE( QOCISpatialDriver )
     Q_OBJECT
-    friend struct QOCISpatialResultPrivate;
-    friend class QOCISpatialPrivate;
+    friend class QOCISpatialCols;
+    friend class QOCISpatialResultPrivate;
+
   public:
-    explicit QOCISpatialDriver( QObject* parent = 0 );
-    QOCISpatialDriver( OCIEnv* env, OCISvcCtx* ctx, QObject* parent = 0 );
+    explicit QOCISpatialDriver( QObject *parent = nullptr );
+    QOCISpatialDriver( OCIEnv *env, OCISvcCtx *ctx, QObject *parent = nullptr );
     ~QOCISpatialDriver();
     bool hasFeature( DriverFeature f ) const;
-    bool open( const QString & db,
-               const QString & user,
-               const QString & password,
-               const QString & host,
+    bool open( const QString &db,
+               const QString &user,
+               const QString &password,
+               const QString &host,
                int port,
-               const QString& connOpts );
+               const QString &connOpts ) override;
     void close();
     QSqlResult *createResult() const;
-    QStringList tables( QSql::TableType ) const;
-    QSqlRecord record( const QString& tablename ) const;
-    QSqlIndex primaryIndex( const QString& tablename ) const;
+    QStringList tables( QSql::TableType ) const override;
+    QSqlRecord record( const QString &tablename ) const override;
+    QSqlIndex primaryIndex( const QString &tablename ) const override;
     QString formatValue( const QSqlField &field,
-                         bool trimStrings ) const;
+                         bool trimStrings ) const override;
     QVariant handle() const;
-    QString escapeIdentifier( const QString &identifier, IdentifierType ) const;
+    QString escapeIdentifier( const QString &identifier, IdentifierType ) const override;
 
   protected:
-    bool                beginTransaction();
-    bool                commitTransaction();
-    bool                rollbackTransaction();
-  private:
-    QOCISpatialDriverPrivate *d = nullptr;
+    bool beginTransaction() override;
+    bool commitTransaction() override;
+    bool rollbackTransaction() override;
 };
 
 QT_END_NAMESPACE
-
-QT_END_HEADER
 
 #endif // QSQL_OCISPATIAL_H

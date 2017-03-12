@@ -33,32 +33,32 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     QgsNullSymbolRenderer();
 
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-    virtual void stopRender( QgsRenderContext& context ) override;
-    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
+    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    virtual void stopRender( QgsRenderContext &context ) override;
+    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     virtual QString dump() const override;
-    virtual QgsFeatureRenderer* clone() const override;
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
+    virtual QgsFeatureRenderer *clone() const override;
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /** Creates a null renderer from XML element.
      * @param element DOM element
      * @returns new null symbol renderer
      */
-    static QgsFeatureRenderer* create( QDomElement& element );
+    static QgsFeatureRenderer *create( QDomElement &element );
 
-    virtual QDomElement save( QDomDocument& doc ) override;
+    virtual QDomElement save( QDomDocument &doc ) override;
 
     /** Creates a QgsNullSymbolRenderer from an existing renderer.
      * @param renderer renderer to convert from
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsNullSymbolRenderer* convertFromRenderer( const QgsFeatureRenderer *renderer );
+    static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 

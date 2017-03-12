@@ -24,10 +24,10 @@
 #include "qgsvectorlayer.h"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
-    : QAbstractItemModel( parent )
-    , mLayer( nullptr )
-    , mAllowExpression( false )
-    , mAllowEmpty( false )
+  : QAbstractItemModel( parent )
+  , mLayer( nullptr )
+  , mAllowExpression( false )
+  , mAllowEmpty( false )
 {
 }
 
@@ -66,14 +66,14 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
     int exprIdx = mExpression.indexOf( fldName );
     if ( exprIdx != -1 )
     {
-      return index(( mAllowEmpty ? 1 : 0 ) + mFields.count() + exprIdx, 0 );
+      return index( ( mAllowEmpty ? 1 : 0 ) + mFields.count() + exprIdx, 0 );
     }
   }
 
   return QModelIndex();
 }
 
-bool QgsFieldModel::isField( const QString& expression ) const
+bool QgsFieldModel::isField( const QString &expression ) const
 {
   int index = mFields.indexFromName( expression );
   return index >= 0;

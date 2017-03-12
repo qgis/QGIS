@@ -18,7 +18,6 @@
 #include <QObject>
 #include <QPainter>
 #include <QSet>
-#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
@@ -26,17 +25,18 @@
 #include <QScriptValue>
 #include <QScriptValueIterator>
 
-#include <qgsapplication.h>
-#include <qgsdatasourceuri.h>
-#include <qgslogger.h>
-#include <qgsproject.h>
-#include <qgsmaprenderersequentialjob.h>
-#include <qgsproviderregistry.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasterinterface.h>
-#include <qgsrasterlayer.h>
-#include <qgswcscapabilities.h>
-#include <testqgswcspublicservers.h>
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
+#include "qgsrasterlayer.h"
+#include "qgswcscapabilities.h"
+#include "testqgswcspublicservers.h"
+#include "qgssettings.h"
 
 #ifdef Q_OS_WIN
 // Open files in binary mode
@@ -50,22 +50,22 @@ int _fmode = _O_BINARY;
 #include <getopt.h>
 #endif
 
-TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server, const QString & coverage, const QString &version, bool force ):
-    mCacheDirPath( cacheDirPath )
-    , mMaxCoverages( maxCoverages )
-    , mServer( server )
-    , mCoverage( coverage )
-    , mVersion( version )
-    , mForce( force )
-    , mTimeout( 300000 )
-    , mOrigTimeout( 20000 )
+TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString &cacheDirPath, int maxCoverages, const QString &server, const QString &coverage, const QString &version, bool force ):
+  mCacheDirPath( cacheDirPath )
+  , mMaxCoverages( maxCoverages )
+  , mServer( server )
+  , mCoverage( coverage )
+  , mVersion( version )
+  , mForce( force )
+  , mTimeout( 300000 )
+  , mOrigTimeout( 20000 )
 {
 
 }
 
 TestQgsWcsPublicServers::~TestQgsWcsPublicServers()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mOrigTimeout );
 }
 
@@ -76,7 +76,7 @@ void TestQgsWcsPublicServers::init()
 
   // Unfortunately this seems to be the only way to set timeout, we try to reset it
   // at the end but it can be canceled before ...
-  QSettings settings;
+  QgsSettings settings;
   mOrigTimeout = settings.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt();
   settings.setValue( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), mTimeout );
 
@@ -96,7 +96,7 @@ void TestQgsWcsPublicServers::init()
 
   QStringList providers;
   providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
-  Q_FOREACH ( const QString& provider, providers )
+  Q_FOREACH ( const QString &provider, providers )
   {
     QString prefix = provider == QLatin1String( "gdal" ) ? "GDAL " : "";
     mHead << prefix + "CRS";
@@ -186,26 +186,26 @@ void TestQgsWcsPublicServers::init()
   }
 }
 
-TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QString & url )
+TestQgsWcsPublicServers::Server TestQgsWcsPublicServers::getServer( const QString &url )
 {
-  Q_FOREACH ( const Server& server, mServers )
+  Q_FOREACH ( const Server &server, mServers )
   {
     if ( server.url == url ) return server;
   }
   return Server();
 }
 
-QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QString & url, const QString & coverage, const QString &version )
+QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QString &url, const QString &coverage, const QString &version )
 {
   QList<Issue> issues;
-  Q_FOREACH ( const Server& server, mServers )
+  Q_FOREACH ( const Server &server, mServers )
   {
     if ( server.url == url )
     {
-      Q_FOREACH ( const Issue& issue, server.issues )
+      Q_FOREACH ( const Issue &issue, server.issues )
       {
-        if (( issue.coverages.isEmpty() || issue.coverages.contains( coverage ) ) &&
-            ( issue.versions.isEmpty() || issue.versions.contains( version ) ) )
+        if ( ( issue.coverages.isEmpty() || issue.coverages.contains( coverage ) ) &&
+             ( issue.versions.isEmpty() || issue.versions.contains( version ) ) )
         {
           issues << issue;
         }
@@ -215,20 +215,20 @@ QList<TestQgsWcsPublicServers::Issue> TestQgsWcsPublicServers::issues( const QSt
   return issues;
 }
 
-QStringList TestQgsWcsPublicServers::issueDescriptions( const QString & url, const QString & coverage, const QString &version )
+QStringList TestQgsWcsPublicServers::issueDescriptions( const QString &url, const QString &coverage, const QString &version )
 {
   QStringList descriptions;
-  Q_FOREACH ( const Issue& myIssue, issues( url, coverage, version ) )
+  Q_FOREACH ( const Issue &myIssue, issues( url, coverage, version ) )
   {
     descriptions << myIssue.description;
   }
   return descriptions;
 }
 
-int TestQgsWcsPublicServers::issueOffender( const QString & url, const QString & coverage, const QString &version )
+int TestQgsWcsPublicServers::issueOffender( const QString &url, const QString &coverage, const QString &version )
 {
   int offender = NoOffender;
-  Q_FOREACH ( const Issue& myIssue, issues( url, coverage, version ) )
+  Q_FOREACH ( const Issue &myIssue, issues( url, coverage, version ) )
   {
     if ( myIssue.offender == QLatin1String( "server" ) )
     {
@@ -267,13 +267,13 @@ void TestQgsWcsPublicServers::test()
   }
   else
   {
-    Q_FOREACH ( const Server& server, mServers )
+    Q_FOREACH ( const Server &server, mServers )
     {
       serverUrls << server.url;
     }
   }
 
-  Q_FOREACH ( const QString& serverUrl, serverUrls )
+  Q_FOREACH ( const QString &serverUrl, serverUrls )
   {
     Server myServer = getServer( serverUrl );
     QStringList myServerLog;
@@ -292,7 +292,7 @@ void TestQgsWcsPublicServers::test()
 
     QString myServerLogPath = myServerDir.absolutePath() + "/server.log";
 
-    Q_FOREACH ( const QString& version, versions )
+    Q_FOREACH ( const QString &version, versions )
     {
       QgsDebugMsg( "server: " + serverUrl + " version: " + version );
       QStringList myVersionLog;
@@ -318,7 +318,7 @@ void TestQgsWcsPublicServers::test()
       }
       myServerUri.setParam( QStringLiteral( "cache" ), QStringLiteral( "AlwaysNetwork" ) );
 
-      Q_FOREACH ( const QString& key, myServer.params.keys() )
+      Q_FOREACH ( const QString &key, myServer.params.keys() )
       {
         myServerUri.setParam( key, myServer.params.value( key ) );
       }
@@ -409,7 +409,7 @@ void TestQgsWcsPublicServers::test()
         QStringList providers;
         providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
 
-        Q_FOREACH ( const QString& provider, providers )
+        Q_FOREACH ( const QString &provider, providers )
         {
           QTime time;
           time.start();
@@ -434,7 +434,7 @@ void TestQgsWcsPublicServers::test()
             myGdalXmlFile.close();
           }
 
-          QgsRasterLayer * myLayer = new QgsRasterLayer( uri, myCoverage.identifier, provider );
+          QgsRasterLayer *myLayer = new QgsRasterLayer( uri, myCoverage.identifier, provider );
           if ( myLayer->isValid() )
           {
             myLog << provider + "_crs:" + myLayer->dataProvider()->crs().authid();
@@ -442,10 +442,10 @@ void TestQgsWcsPublicServers::test()
             myLog << provider + "_height:" + QString::number( myLayer->dataProvider()->ySize() );
             QgsRectangle extent = myLayer->dataProvider()->extent();
             myLog << provider + "_extent:"
-            + QgsRasterBlock::printValue( extent.xMinimum() ) + ','
-            + QgsRasterBlock::printValue( extent.yMinimum() ) + ','
-            + QgsRasterBlock::printValue( extent.xMaximum() ) + ','
-            + QgsRasterBlock::printValue( extent.yMaximum() ) + ',';
+                  + QgsRasterBlock::printValue( extent.xMinimum() ) + ','
+                  + QgsRasterBlock::printValue( extent.yMinimum() ) + ','
+                  + QgsRasterBlock::printValue( extent.xMaximum() ) + ','
+                  + QgsRasterBlock::printValue( extent.yMaximum() ) + ',';
             int myBandCount = myLayer->dataProvider()->bandCount();
             myLog << provider + "_bandCount:" + QString::number( myBandCount );
             if ( myBandCount > 0 )
@@ -460,7 +460,7 @@ void TestQgsWcsPublicServers::test()
             QgsProject::instance()->addMapLayer( myLayer, false );
 
             QgsMapSettings mapSettings;
-            mapSettings.setLayers( QList<QgsMapLayer*>() << myLayer );
+            mapSettings.setLayers( QList<QgsMapLayer *>() << myLayer );
             mapSettings.setExtent( myLayer->extent() );
             mapSettings.setOutputSize( QSize( myWidth, myHeight ) );
 
@@ -544,14 +544,14 @@ void TestQgsWcsPublicServers::test()
   }
 }
 
-void TestQgsWcsPublicServers::writeReport( const QString& theReport )
+void TestQgsWcsPublicServers::writeReport( const QString &report )
 {
   QString myReportFile = mCacheDir.absolutePath() + "/index.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QTextStream myStream( &myFile );
-    myStream << theReport;
+    myStream << report;
     myFile.close();
   }
   QgsDebugMsg( "Report written to " + myReportFile );
@@ -568,7 +568,7 @@ void TestQgsWcsPublicServers::report()
   int myCoverageErrCount = 0;
   int myCoverageWarnCount = 0;
 
-  Q_FOREACH ( const QString& myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+  Q_FOREACH ( const QString &myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     myServerCount++;
     QDir myServerDir( mCacheDir.absolutePath() + '/' + myServerDirName );
@@ -585,7 +585,7 @@ void TestQgsWcsPublicServers::report()
     if ( !myServer.params.isEmpty() )
     {
       myReport += QLatin1String( "<br>Additional params: " );
-      Q_FOREACH ( const QString& key, myServer.params.keys() )
+      Q_FOREACH ( const QString &key, myServer.params.keys() )
       {
         myReport += key + '=' + myServer.params.value( key ) + " ";
       }
@@ -596,7 +596,7 @@ void TestQgsWcsPublicServers::report()
 
     bool myServerErr = false;
     bool myServerWarn = false;
-    Q_FOREACH ( const QString& myVersionDirName, myServerDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    Q_FOREACH ( const QString &myVersionDirName, myServerDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
     {
       QString myVersionReport;
       int myVersionCoverageCount = 0;
@@ -628,7 +628,7 @@ void TestQgsWcsPublicServers::report()
         QStringList filters;
         filters << QStringLiteral( "*.log" );
         myVersionDir.setNameFilters( filters );
-        Q_FOREACH ( const QString& myLogFileName, myVersionDir.entryList( QDir::Files ) )
+        Q_FOREACH ( const QString &myLogFileName, myVersionDir.entryList( QDir::Files ) )
         {
           if ( myLogFileName == QLatin1String( "version.log" ) ) continue;
           myVersionCoverageCount++;
@@ -651,7 +651,7 @@ void TestQgsWcsPublicServers::report()
           providers << QStringLiteral( "wcs" ) << QStringLiteral( "gdal" );
 
           bool hasErr = false;
-          Q_FOREACH ( const QString& provider, providers )
+          Q_FOREACH ( const QString &provider, providers )
           {
             QString imgPath = myVersionDir.absolutePath() + '/' + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
 
@@ -784,15 +784,15 @@ void TestQgsWcsPublicServers::report()
   writeReport( myRep );
 }
 
-QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& theFileName )
+QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString &fileName )
 {
   QMap<QString, QString> myMap;
 
-  QFile myFile( theFileName );
+  QFile myFile( fileName );
   if ( myFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream myStream( &myFile );
-    Q_FOREACH ( const QString& row, myStream.readAll().split( '\n' ) )
+    Q_FOREACH ( const QString &row, myStream.readAll().split( '\n' ) )
     {
       int sepIdx = row.indexOf( ':' );
       myMap.insert( row.left( sepIdx ), row.mid( sepIdx + 1 ) );
@@ -802,53 +802,53 @@ QMap<QString, QString> TestQgsWcsPublicServers::readLog( const QString& theFileN
   return myMap;
 }
 
-QString TestQgsWcsPublicServers::error( const QString& theMessage )
+QString TestQgsWcsPublicServers::error( const QString &message )
 {
   QString myRow = QStringLiteral( "<font class='errmsg'>Error: " );
-  myRow += theMessage;
+  myRow += message;
   myRow += QLatin1String( "</font>" );
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::cells( const QStringList& theValues, const QString& theClass, int colspan, int rowspan )
+QString TestQgsWcsPublicServers::cells( const QStringList &values, const QString &classStr, int colspan, int rowspan )
 {
   QString myRow;
-  for ( int i = 0; i < theValues.size(); i++ )
+  for ( int i = 0; i < values.size(); i++ )
   {
-    QString val = theValues.value( i );
+    QString val = values.value( i );
     QString colspanStr, rowspanStr;
-    if ( colspan > 1 && i == theValues.size() - 1 )
+    if ( colspan > 1 && i == values.size() - 1 )
     {
-      colspanStr = QStringLiteral( "colspan=%1" ).arg( colspan - theValues.size() + 1 );
+      colspanStr = QStringLiteral( "colspan=%1" ).arg( colspan - values.size() + 1 );
     }
     if ( rowspan > 1 )
     {
       rowspanStr = QStringLiteral( "rowspan=%1" ).arg( rowspan );
     }
-    myRow += QStringLiteral( "<td class='cell %1' %2 %3>%4</td>" ).arg( theClass, colspanStr, rowspanStr, val );
+    myRow += QStringLiteral( "<td class='cell %1' %2 %3>%4</td>" ).arg( classStr, colspanStr, rowspanStr, val );
   }
   return myRow;
 }
 
-QString TestQgsWcsPublicServers::row( const QStringList& theValues, const QString& theClass )
+QString TestQgsWcsPublicServers::row( const QStringList &values, const QString &classStr )
 {
   QString myRow = QStringLiteral( "<tr>" );
-  for ( int i = 0; i < theValues.size(); i++ )
+  for ( int i = 0; i < values.size(); i++ )
   {
-    QString val = theValues.value( i );
+    QString val = values.value( i );
     QString colspan;
-    if ( theValues.size() < mHead.size() && i == ( theValues.size() - 1 ) )
+    if ( values.size() < mHead.size() && i == ( values.size() - 1 ) )
     {
-      colspan = QStringLiteral( "colspan=%1" ).arg( mHead.size() - theValues.size() + 1 );
+      colspan = QStringLiteral( "colspan=%1" ).arg( mHead.size() - values.size() + 1 );
     }
-    myRow += QStringLiteral( "<td class='cell %1' %2>%3</td>" ).arg( theClass, colspan, val );
+    myRow += QStringLiteral( "<td class='cell %1' %2>%3</td>" ).arg( classStr, colspan, val );
   }
   myRow += QLatin1String( "</tr>\n" );
   return myRow;
 }
 
 /* print usage text */
-void usage( std::string const & appName )
+void usage( std::string const &appName )
 {
   std::cerr << "QGIS public WCS servers test - " << VERSION << " '" << RELEASE_NAME << "'\n"
             << "Console application for QGIS WCS provider (WCS client) testing.\n"

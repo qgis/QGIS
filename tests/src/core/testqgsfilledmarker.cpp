@@ -45,11 +45,11 @@ class TestQgsFilledMarkerSymbol : public QObject
 
   public:
     TestQgsFilledMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( nullptr )
-        , mFilledMarkerLayer( nullptr )
-        , mMarkerSymbol( nullptr )
-        , mSymbolRenderer( nullptr )
+      : mTestHasError( false )
+      , mpPointsLayer( nullptr )
+      , mFilledMarkerLayer( nullptr )
+      , mMarkerSymbol( nullptr )
+      , mSymbolRenderer( nullptr )
     {}
 
   private slots:
@@ -65,12 +65,12 @@ class TestQgsFilledMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer = nullptr;
-    QgsFilledMarkerSymbolLayer* mFilledMarkerLayer = nullptr;
-    QgsMarkerSymbol* mMarkerSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsFilledMarkerSymbolLayer *mFilledMarkerLayer = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -97,7 +97,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
                                       pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   //setup symbol
-  QgsGradientFillSymbolLayer* gradientFill = new QgsGradientFillSymbolLayer();
+  QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
   gradientFill->setColor( QColor( "red" ) );
   gradientFill->setColor2( QColor( "blue" ) );
   gradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
@@ -106,7 +106,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   gradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Pad );
   gradientFill->setReferencePoint1( QPointF( 0, 0 ) );
   gradientFill->setReferencePoint2( QPointF( 1, 1 ) );
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, gradientFill );
 
   mFilledMarkerLayer = new QgsFilledMarkerSymbolLayer();
@@ -120,7 +120,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Filled Marker Tests</h1>\n" );
 
 }
@@ -176,7 +176,7 @@ void TestQgsFilledMarkerSymbol::bounds()
 //
 
 
-bool TestQgsFilledMarkerSymbol::imageCheck( const QString& theTestType )
+bool TestQgsFilledMarkerSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -184,9 +184,9 @@ bool TestQgsFilledMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_filledmarker" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

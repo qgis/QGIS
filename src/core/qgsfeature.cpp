@@ -58,18 +58,18 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
   initAttributes( d->fields.count() );
 }
 
-QgsFeature::QgsFeature( const QgsFeature& rhs )
-    : d( rhs.d )
+QgsFeature::QgsFeature( const QgsFeature &rhs ) //NOLINT
+  : d( rhs.d )
 {
 }
 
-QgsFeature & QgsFeature::operator=( const QgsFeature & rhs )
+QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
 {
   d = rhs.d;
   return *this;
 }
 
-bool QgsFeature::operator ==( const QgsFeature& other ) const
+bool QgsFeature::operator ==( const QgsFeature &other ) const
 {
   if ( d == other.d )
     return true;
@@ -84,12 +84,12 @@ bool QgsFeature::operator ==( const QgsFeature& other ) const
   return false;
 }
 
-bool QgsFeature::operator!=( const QgsFeature& other ) const
+bool QgsFeature::operator!=( const QgsFeature &other ) const
 {
   return !( *this == other );
 }
 
-QgsFeature::~QgsFeature()
+QgsFeature::~QgsFeature() //NOLINT
 {
 }
 
@@ -144,7 +144,7 @@ void QgsFeature::setAttributes( const QgsAttributes &attrs )
   d->attributes = attrs;
 }
 
-void QgsFeature::setGeometry( const QgsGeometry& geometry )
+void QgsFeature::setGeometry( const QgsGeometry &geometry )
 {
   d.detach();
   d->geometry = geometry;
@@ -205,7 +205,7 @@ void QgsFeature::initAttributes( int fieldCount )
 {
   d.detach();
   d->attributes.resize( fieldCount );
-  QVariant* ptr = d->attributes.data();
+  QVariant *ptr = d->attributes.data();
   for ( int i = 0; i < fieldCount; ++i, ++ptr )
     ptr->clear();
 }
@@ -229,7 +229,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsFeature::setAttribute( const QString& name, const QVariant& value )
+bool QgsFeature::setAttribute( const QString &name, const QVariant &value )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -240,7 +240,7 @@ bool QgsFeature::setAttribute( const QString& name, const QVariant& value )
   return true;
 }
 
-bool QgsFeature::deleteAttribute( const QString& name )
+bool QgsFeature::deleteAttribute( const QString &name )
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -259,7 +259,7 @@ QVariant QgsFeature::attribute( int fieldIdx ) const
   return d->attributes.at( fieldIdx );
 }
 
-QVariant QgsFeature::attribute( const QString& name ) const
+QVariant QgsFeature::attribute( const QString &name ) const
 {
   int fieldIdx = fieldNameIndex( name );
   if ( fieldIdx == -1 )
@@ -274,7 +274,7 @@ QVariant QgsFeature::attribute( const QString& name ) const
  * See details in QEP #17
  ****************************************************************************/
 
-int QgsFeature::fieldNameIndex( const QString& fieldName ) const
+int QgsFeature::fieldNameIndex( const QString &fieldName ) const
 {
   return d->fields.lookupField( fieldName );
 }
@@ -285,7 +285,7 @@ int QgsFeature::fieldNameIndex( const QString& fieldName ) const
  * See details in QEP #17
  ****************************************************************************/
 
-QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
+QDataStream &operator<<( QDataStream &out, const QgsFeature &feature )
 {
   out << feature.id();
   out << feature.attributes();
@@ -302,7 +302,7 @@ QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
   return out;
 }
 
-QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
+QDataStream &operator>>( QDataStream &in, QgsFeature &feature )
 {
   QgsFeatureId id;
   QgsGeometry geometry;
@@ -316,10 +316,10 @@ QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
   return in;
 }
 
-uint qHash( const QgsFeature& key, uint seed )
+uint qHash( const QgsFeature &key, uint seed )
 {
   uint hash = seed;
-  Q_FOREACH ( const QVariant& attr, key.attributes() )
+  Q_FOREACH ( const QVariant &attr, key.attributes() )
   {
     hash ^= qHash( attr.toString() );
   }

@@ -57,10 +57,10 @@ class QgsOWSSourceSelect : QDialog
     virtual void on_mLayersTreeWidget_itemSelectionChanged();
 
     //! Set status message to theMessage
-    void showStatusMessage( const QString &theMessage );
+    void showStatusMessage( const QString &message );
 
     //! show whatever error is exposed.
-    void showError( const QString &theTitle, const QString &theFormat, const QString &theError );
+    void showError( const QString &title, const QString &format, const QString &error );
 
     //! Stores the selected datasource whenerver it is changed
     void on_mConnectionsComboBox_activated( int );

@@ -33,22 +33,22 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     Q_OBJECT
 
   public:
-    QgsMapToolPointSymbol( QgsMapCanvas* canvas );
+    QgsMapToolPointSymbol( QgsMapCanvas *canvas );
 
     virtual Flags flags() const override { return QgsMapTool::EditTool; }
 
-    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   protected:
-    QgsVectorLayer* mActiveLayer = nullptr;
+    QgsVectorLayer *mActiveLayer = nullptr;
     QgsFeatureId mFeatureNumber;
 
     //! Screen coordinate of the snapped feature
     QPoint mSnappedPoint;
 
-    virtual void canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint ) = 0;
+    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint ) = 0;
 
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& context ) = 0;
+    virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) = 0;
 
     virtual void noCompatibleSymbols() {}
 

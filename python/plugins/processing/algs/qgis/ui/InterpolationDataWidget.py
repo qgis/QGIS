@@ -28,10 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSlot, QEvent
-from qgis.PyQt.QtGui import (QIcon,
-                             QBrush,
-                             QColor)
+from qgis.PyQt.QtCore import pyqtSlot
 from qgis.PyQt.QtWidgets import (QTreeWidgetItem,
                                  QComboBox
                                  )

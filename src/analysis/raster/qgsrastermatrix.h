@@ -61,8 +61,8 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     //! Takes ownership of data array
     QgsRasterMatrix();
     //! @note note available in python bindings
-    QgsRasterMatrix( int nCols, int nRows, double* data, double nodataValue );
-    QgsRasterMatrix( const QgsRasterMatrix& m );
+    QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue );
+    QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
 
     //! Returns true if matrix is 1x1 (=scalar number)
@@ -71,12 +71,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     //! Returns data array (but not ownership)
     //! @note not available in python bindings
-    double* data() { return mData; }
+    double *data() { return mData; }
     //! Returns data and ownership. Sets data and nrows, ncols of this matrix to 0
     //! @note not available in python bindings
-    double* takeData();
+    double *takeData();
 
-    void setData( int cols, int rows, double* data, double nodataValue );
+    void setData( int cols, int rows, double *data, double nodataValue );
 
     int nColumns() const { return mColumns; }
     int nRows() const { return mRows; }
@@ -84,22 +84,22 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     double nodataValue() const { return mNodataValue; }
     void setNodataValue( double d ) { mNodataValue = d; }
 
-    QgsRasterMatrix& operator=( const QgsRasterMatrix& m );
+    QgsRasterMatrix &operator=( const QgsRasterMatrix &m );
     //! Adds another matrix to this one
-    bool add( const QgsRasterMatrix& other );
+    bool add( const QgsRasterMatrix &other );
     //! Subtracts another matrix from this one
-    bool subtract( const QgsRasterMatrix& other );
-    bool multiply( const QgsRasterMatrix& other );
-    bool divide( const QgsRasterMatrix& other );
-    bool power( const QgsRasterMatrix& other );
-    bool equal( const QgsRasterMatrix& other );
-    bool notEqual( const QgsRasterMatrix& other );
-    bool greaterThan( const QgsRasterMatrix& other );
-    bool lesserThan( const QgsRasterMatrix& other );
-    bool greaterEqual( const QgsRasterMatrix& other );
-    bool lesserEqual( const QgsRasterMatrix& other );
-    bool logicalAnd( const QgsRasterMatrix& other );
-    bool logicalOr( const QgsRasterMatrix& other );
+    bool subtract( const QgsRasterMatrix &other );
+    bool multiply( const QgsRasterMatrix &other );
+    bool divide( const QgsRasterMatrix &other );
+    bool power( const QgsRasterMatrix &other );
+    bool equal( const QgsRasterMatrix &other );
+    bool notEqual( const QgsRasterMatrix &other );
+    bool greaterThan( const QgsRasterMatrix &other );
+    bool lesserThan( const QgsRasterMatrix &other );
+    bool greaterEqual( const QgsRasterMatrix &other );
+    bool lesserEqual( const QgsRasterMatrix &other );
+    bool logicalAnd( const QgsRasterMatrix &other );
+    bool logicalOr( const QgsRasterMatrix &other );
 
     bool squareRoot();
     bool sinus();
@@ -115,11 +115,11 @@ class ANALYSIS_EXPORT QgsRasterMatrix
   private:
     int mColumns;
     int mRows;
-    double* mData = nullptr;
+    double *mData = nullptr;
     double mNodataValue;
 
     //! +,-,*,/,^,<,>,<=,>=,=,!=, and, or
-    bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other );
+    bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other );
     double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
 
     /*sqrt, sin, cos, tan, asin, acos, atan*/

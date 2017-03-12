@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsProject, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
+from qgis.core import QgsDataSourceUri, QgsVirtualLayerDefinition, QgsProject, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
 
 import sqlite3
 
@@ -48,7 +48,7 @@ def getQueryGeometryName(sqlite_file):
     with sqlite3_connection(sqlite_file) as conn:
         c = conn.cursor()
         for r in c.execute("SELECT url FROM _meta"):
-            d = QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(r[0]))
+            d = QgsVirtualLayerDefinition.fromUrl(QUrl(r[0]))
             if d.hasDefinedGeometry():
                 return d.geometryField()
         return None
@@ -127,8 +127,10 @@ class VLayerConnector(DBConnector):
         tmp = tf.fileName()
         tf.close()
 
-        q = QUrl.toPercentEncoding(c.sql)
-        p = QgsVectorLayer("%s?query=%s" % (QUrl.fromLocalFile(tmp).toString(), q), "vv", "virtual")
+        df = QgsVirtualLayerDefinition()
+        df.setFilePath(tmp)
+        df.setQuery(c.sql)
+        p = QgsVectorLayer(df.toString(), "vv", "virtual")
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]

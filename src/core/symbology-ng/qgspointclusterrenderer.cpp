@@ -29,13 +29,13 @@
 #endif
 
 QgsPointClusterRenderer::QgsPointClusterRenderer()
-    : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
+  : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
 {
   mClusterSymbol.reset( new QgsMarkerSymbol() );
   mClusterSymbol->setSize( 4 );
   mClusterSymbol->setColor( QColor( 245, 75, 80 ) );
 
-  QgsFontMarkerSymbolLayer* fm = new QgsFontMarkerSymbolLayer();
+  QgsFontMarkerSymbolLayer *fm = new QgsFontMarkerSymbolLayer();
   fm->setFontFamily( QFont().defaultFamily() );
   fm->setColor( QColor( 255, 255, 255 ) );
   fm->setSize( 3.2 );
@@ -44,9 +44,9 @@ QgsPointClusterRenderer::QgsPointClusterRenderer()
   mClusterSymbol->insertSymbolLayer( 1, fm );
 }
 
-QgsPointClusterRenderer* QgsPointClusterRenderer::clone() const
+QgsPointClusterRenderer *QgsPointClusterRenderer::clone() const
 {
-  QgsPointClusterRenderer* r = new QgsPointClusterRenderer();
+  QgsPointClusterRenderer *r = new QgsPointClusterRenderer();
   if ( mRenderer )
     r->setEmbeddedRenderer( mRenderer->clone() );
   r->setLabelFont( mLabelFont );
@@ -63,7 +63,7 @@ QgsPointClusterRenderer* QgsPointClusterRenderer::clone() const
   return r;
 }
 
-void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext& context, const ClusteredGroup& group )
+void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group )
 {
   if ( group.size() > 1 )
   {
@@ -72,12 +72,12 @@ void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext& 
   else
   {
     //single isolated symbol, draw it untouched
-    QgsMarkerSymbol* symbol = group.at( 0 ).symbol;
+    QgsMarkerSymbol *symbol = group.at( 0 ).symbol;
     symbol->renderPoint( centerPoint, &( group.at( 0 ).feature ), context, -1, group.at( 0 ).isSelected );
   }
 }
 
-void QgsPointClusterRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsPointClusterRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   if ( mClusterSymbol )
   {
@@ -86,7 +86,7 @@ void QgsPointClusterRenderer::startRender( QgsRenderContext& context, const QgsF
   QgsPointDistanceRenderer::startRender( context, fields );
 }
 
-void QgsPointClusterRenderer::stopRender( QgsRenderContext& context )
+void QgsPointClusterRenderer::stopRender( QgsRenderContext &context )
 {
   QgsPointDistanceRenderer::stopRender( context );
   if ( mClusterSymbol )
@@ -95,9 +95,9 @@ void QgsPointClusterRenderer::stopRender( QgsRenderContext& context )
   }
 }
 
-QgsFeatureRenderer* QgsPointClusterRenderer::create( QDomElement& symbologyElem )
+QgsFeatureRenderer *QgsPointClusterRenderer::create( QDomElement &symbologyElem )
 {
-  QgsPointClusterRenderer* r = new QgsPointClusterRenderer();
+  QgsPointClusterRenderer *r = new QgsPointClusterRenderer();
   r->setTolerance( symbologyElem.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "0.00001" ) ).toDouble() );
   r->setToleranceUnit( QgsUnitTypes::decodeRenderUnit( symbologyElem.attribute( QStringLiteral( "toleranceUnit" ), QStringLiteral( "MapUnit" ) ) ) );
   r->setToleranceMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( symbologyElem.attribute( QStringLiteral( "toleranceUnitScale" ) ) ) );
@@ -118,12 +118,12 @@ QgsFeatureRenderer* QgsPointClusterRenderer::create( QDomElement& symbologyElem 
   return r;
 }
 
-QgsMarkerSymbol* QgsPointClusterRenderer::clusterSymbol()
+QgsMarkerSymbol *QgsPointClusterRenderer::clusterSymbol()
 {
   return mClusterSymbol.get();
 }
 
-QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
+QDomElement QgsPointClusterRenderer::save( QDomDocument &doc )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
   rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
@@ -157,7 +157,7 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument& doc )
   return rendererElement;
 }
 
-QSet<QString> QgsPointClusterRenderer::usedAttributes( const QgsRenderContext& context ) const
+QSet<QString> QgsPointClusterRenderer::usedAttributes( const QgsRenderContext &context ) const
 {
   QSet<QString> attr = QgsPointDistanceRenderer::usedAttributes( context );
   if ( mClusterSymbol )
@@ -165,37 +165,37 @@ QSet<QString> QgsPointClusterRenderer::usedAttributes( const QgsRenderContext& c
   return attr;
 }
 
-void QgsPointClusterRenderer::setClusterSymbol( QgsMarkerSymbol* symbol )
+void QgsPointClusterRenderer::setClusterSymbol( QgsMarkerSymbol *symbol )
 {
   mClusterSymbol.reset( symbol );
 }
 
-QgsPointClusterRenderer* QgsPointClusterRenderer::convertFromRenderer( const QgsFeatureRenderer* renderer )
+QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == QLatin1String( "pointCluster" ) )
   {
-    return dynamic_cast<QgsPointClusterRenderer*>( renderer->clone() );
+    return dynamic_cast<QgsPointClusterRenderer *>( renderer->clone() );
   }
   else if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
             renderer->type() == QLatin1String( "categorizedSymbol" ) ||
             renderer->type() == QLatin1String( "graduatedSymbol" ) ||
             renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
-    QgsPointClusterRenderer* pointRenderer = new QgsPointClusterRenderer();
+    QgsPointClusterRenderer *pointRenderer = new QgsPointClusterRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
     return pointRenderer;
   }
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) )
   {
-    QgsPointClusterRenderer* pointRenderer = new QgsPointClusterRenderer();
-    const QgsPointDisplacementRenderer* displacementRenderer = static_cast< const QgsPointDisplacementRenderer* >( renderer );
+    QgsPointClusterRenderer *pointRenderer = new QgsPointClusterRenderer();
+    const QgsPointDisplacementRenderer *displacementRenderer = static_cast< const QgsPointDisplacementRenderer * >( renderer );
     if ( displacementRenderer->embeddedRenderer() )
       pointRenderer->setEmbeddedRenderer( displacementRenderer->embeddedRenderer()->clone() );
     pointRenderer->setTolerance( displacementRenderer->tolerance() );
     pointRenderer->setToleranceUnit( displacementRenderer->toleranceUnit() );
     pointRenderer->setToleranceMapUnitScale( displacementRenderer->toleranceMapUnitScale() );
-    if ( const_cast< QgsPointDisplacementRenderer* >( displacementRenderer )->centerSymbol() )
-      pointRenderer->setClusterSymbol( const_cast< QgsPointDisplacementRenderer* >( displacementRenderer )->centerSymbol()->clone() );
+    if ( const_cast< QgsPointDisplacementRenderer * >( displacementRenderer )->centerSymbol() )
+      pointRenderer->setClusterSymbol( const_cast< QgsPointDisplacementRenderer * >( displacementRenderer )->centerSymbol()->clone() );
     return pointRenderer;
   }
   else

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsSpatialIndex, QgsWkbTypes, QgsPoint
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsSpatialIndex, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -127,12 +127,12 @@ class SplitWithLines(GeoAlgorithm):
                         while len(inGeoms) > 0:
                             inGeom = inGeoms.pop()
 
-                            if inGeom.isNull(): # this has been encountered and created a run-time error
+                            if inGeom.isNull():  # this has been encountered and created a run-time error
                                 continue
 
                             if split_geom_engine.intersects(inGeom.geometry()):
                                 inPoints = vector.extractPoints(inGeom)
-                                if splitterPList == None:
+                                if splitterPList is None:
                                     splitterPList = vector.extractPoints(splitGeom)
 
                                 try:
@@ -171,7 +171,7 @@ class SplitWithLines(GeoAlgorithm):
 
                     if numPoints <= 2:
                         if numPoints == 2:
-                            passed = not aGeom.geometry().isClosed() # tests if vertex 0 = vertex 1
+                            passed = not aGeom.geometry().isClosed()  # tests if vertex 0 = vertex 1
                         else:
                             passed = False
                             # sometimes splitting results in lines of zero length

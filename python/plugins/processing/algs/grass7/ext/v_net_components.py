@@ -32,7 +32,7 @@ def processCommand(alg):
     # remove the output for point
     outLine = alg.getOutputFromName(u'output')
     outPoint = alg.getOutputFromName(u'output_point')
-    alg.exportedLayers[outPoint.value] = outLine.name + alg.uniqueSufix
+    alg.exportedLayers[outPoint.value] = outLine.name + alg.uniqueSuffix
     alg.removeOutputFromName(u'output_point')
 
     alg.processCommand()

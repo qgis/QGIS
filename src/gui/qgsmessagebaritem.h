@@ -45,9 +45,9 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! make out a widget containing a widget to be displayed on the bar
     QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
-    QgsMessageBarItem *setText( const QString& text );
+    QgsMessageBarItem *setText( const QString &text );
 
-    QgsMessageBarItem *setTitle( const QString& title );
+    QgsMessageBarItem *setTitle( const QString &title );
 
     QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
 
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
   signals:
     //! emitted when the message level has changed
-    void styleChanged( const QString& styleSheet );
+    void styleChanged( const QString &styleSheet );
 
 
   private:

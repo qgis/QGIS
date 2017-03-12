@@ -24,7 +24,7 @@
 //QgsComposerAttributeTableColumnModelV2
 
 QgsComposerAttributeTableColumnModelV2::QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent ) : QAbstractTableModel( parent )
-    , mComposerTable( composerTable )
+  , mComposerTable( composerTable )
 {
 }
 
@@ -32,7 +32,7 @@ QModelIndex QgsComposerAttributeTableColumnModelV2::index( int row, int column, 
 {
   if ( hasIndex( row, column, parent ) )
   {
-    if (( *mComposerTable->columns() )[row] )
+    if ( ( *mComposerTable->columns() )[row] )
     {
       return createIndex( row, column, ( *mComposerTable->columns() )[row] );
     }
@@ -74,7 +74,7 @@ QVariant QgsComposerAttributeTableColumnModelV2::data( const QModelIndex &index,
   }
 
   //get column for index
-  QgsComposerTableColumn* column = columnFromIndex( index );
+  QgsComposerTableColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return QVariant();
@@ -195,7 +195,7 @@ QVariant QgsComposerAttributeTableColumnModelV2::headerData( int section, Qt::Or
   }
 }
 
-bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex& index, const QVariant& value, int role )
+bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole || !mComposerTable )
   {
@@ -207,7 +207,7 @@ bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex& index, 
   }
 
   //get column for index
-  QgsComposerTableColumn* column = columnFromIndex( index );
+  QgsComposerTableColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return false;
@@ -245,7 +245,7 @@ bool QgsComposerAttributeTableColumnModelV2::setData( const QModelIndex& index, 
   return false;
 }
 
-Qt::ItemFlags QgsComposerAttributeTableColumnModelV2::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsComposerAttributeTableColumnModelV2::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
@@ -259,7 +259,7 @@ Qt::ItemFlags QgsComposerAttributeTableColumnModelV2::flags( const QModelIndex& 
   }
 }
 
-bool QgsComposerAttributeTableColumnModelV2::removeRows( int row, int count, const QModelIndex& parent )
+bool QgsComposerAttributeTableColumnModelV2::removeRows( int row, int count, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
 
@@ -268,21 +268,21 @@ bool QgsComposerAttributeTableColumnModelV2::removeRows( int row, int count, con
   //move backwards through rows, removing each corresponding QgsComposerTableColumn
   for ( int i = maxRow; i >= row; --i )
   {
-    delete( *mComposerTable->columns() )[i];
+    delete ( *mComposerTable->columns() )[i];
     mComposerTable->columns()->removeAt( i );
   }
   endRemoveRows();
   return true;
 }
 
-bool QgsComposerAttributeTableColumnModelV2::insertRows( int row, int count, const QModelIndex& parent )
+bool QgsComposerAttributeTableColumnModelV2::insertRows( int row, int count, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   //create new QgsComposerTableColumns for each inserted row
   for ( int i = row; i < row + count; ++i )
   {
-    QgsComposerTableColumn* col = new QgsComposerTableColumn;
+    QgsComposerTableColumn *col = new QgsComposerTableColumn;
     mComposerTable->columns()->insert( i, col );
   }
   endInsertRows();
@@ -291,8 +291,8 @@ bool QgsComposerAttributeTableColumnModelV2::insertRows( int row, int count, con
 
 bool QgsComposerAttributeTableColumnModelV2::moveRow( int row, ShiftDirection direction )
 {
-  if (( direction == ShiftUp && row <= 0 ) ||
-      ( direction == ShiftDown &&  row >= rowCount() - 1 ) )
+  if ( ( direction == ShiftUp && row <= 0 ) ||
+       ( direction == ShiftDown &&  row >= rowCount() - 1 ) )
   {
     //row is already at top/bottom
     return false;
@@ -303,7 +303,7 @@ bool QgsComposerAttributeTableColumnModelV2::moveRow( int row, ShiftDirection di
 
   //remove row
   beginRemoveRows( QModelIndex(), swapWithRow, swapWithRow );
-  QgsComposerTableColumn* temp = mComposerTable->columns()->takeAt( swapWithRow );
+  QgsComposerTableColumn *temp = mComposerTable->columns()->takeAt( swapWithRow );
   endRemoveRows();
 
   //insert row
@@ -321,13 +321,13 @@ void QgsComposerAttributeTableColumnModelV2::resetToLayer()
   endResetModel();
 }
 
-QgsComposerTableColumn* QgsComposerAttributeTableColumnModelV2::columnFromIndex( const QModelIndex &index ) const
+QgsComposerTableColumn *QgsComposerAttributeTableColumnModelV2::columnFromIndex( const QModelIndex &index ) const
 {
-  QgsComposerTableColumn* column = static_cast<QgsComposerTableColumn*>( index.internalPointer() );
+  QgsComposerTableColumn *column = static_cast<QgsComposerTableColumn *>( index.internalPointer() );
   return column;
 }
 
-QModelIndex QgsComposerAttributeTableColumnModelV2::indexFromColumn( QgsComposerTableColumn* column )
+QModelIndex QgsComposerAttributeTableColumnModelV2::indexFromColumn( QgsComposerTableColumn *column )
 {
   if ( !mComposerTable )
   {
@@ -345,7 +345,7 @@ QModelIndex QgsComposerAttributeTableColumnModelV2::indexFromColumn( QgsComposer
   return QModelIndex();
 }
 
-void QgsComposerAttributeTableColumnModelV2::setColumnAsSorted( QgsComposerTableColumn* column, Qt::SortOrder order )
+void QgsComposerAttributeTableColumnModelV2::setColumnAsSorted( QgsComposerTableColumn *column, Qt::SortOrder order )
 {
   if ( !column || !mComposerTable )
   {
@@ -354,7 +354,7 @@ void QgsComposerAttributeTableColumnModelV2::setColumnAsSorted( QgsComposerTable
 
   //find current highest sort by rank
   int highestRank = 0;
-  QList<QgsComposerTableColumn*>::const_iterator columnIt = mComposerTable->columns()->constBegin();
+  QList<QgsComposerTableColumn *>::const_iterator columnIt = mComposerTable->columns()->constBegin();
   for ( ; columnIt != mComposerTable->columns()->constEnd(); ++columnIt )
   {
     highestRank = qMax( highestRank, ( *columnIt )->sortByRank() );
@@ -367,7 +367,7 @@ void QgsComposerAttributeTableColumnModelV2::setColumnAsSorted( QgsComposerTable
   emit dataChanged( idx, idx );
 }
 
-void QgsComposerAttributeTableColumnModelV2::setColumnAsUnsorted( QgsComposerTableColumn * column )
+void QgsComposerAttributeTableColumnModelV2::setColumnAsUnsorted( QgsComposerTableColumn *column )
 {
   if ( !mComposerTable || !column )
   {
@@ -379,27 +379,27 @@ void QgsComposerAttributeTableColumnModelV2::setColumnAsUnsorted( QgsComposerTab
   emit dataChanged( idx, idx );
 }
 
-static bool columnsBySortRank( QgsComposerTableColumn * a, QgsComposerTableColumn * b )
+static bool columnsBySortRank( QgsComposerTableColumn *a, QgsComposerTableColumn *b )
 {
   return a->sortByRank() < b->sortByRank();
 }
 
-bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTableColumn * column, ShiftDirection direction )
+bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTableColumn *column, ShiftDirection direction )
 {
   if ( !mComposerTable || !column )
   {
     return false;
   }
-  if (( direction == ShiftUp && column->sortByRank() <= 1 )
-      || ( direction == ShiftDown && column->sortByRank() <= 0 ) )
+  if ( ( direction == ShiftUp && column->sortByRank() <= 1 )
+       || ( direction == ShiftDown && column->sortByRank() <= 0 ) )
   {
     //already at start/end of list or not being used for sort
     return false;
   }
 
   //find column before this one in sort order
-  QList<QgsComposerTableColumn*> sortedColumns;
-  Q_FOREACH ( QgsComposerTableColumn* currentColumn, *mComposerTable->columns() )
+  QList<QgsComposerTableColumn *> sortedColumns;
+  Q_FOREACH ( QgsComposerTableColumn *currentColumn, *mComposerTable->columns() )
   {
     if ( currentColumn->sortByRank() > 0 )
     {
@@ -409,14 +409,14 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
   std::stable_sort( sortedColumns.begin(), sortedColumns.end(), columnsBySortRank );
   int columnPos = sortedColumns.indexOf( column );
 
-  if (( columnPos == 0 && direction == ShiftUp )
-      || (( columnPos == sortedColumns.length() - 1 ) && direction == ShiftDown ) )
+  if ( ( columnPos == 0 && direction == ShiftUp )
+       || ( ( columnPos == sortedColumns.length() - 1 ) && direction == ShiftDown ) )
   {
     //column already at start/end
     return false;
   }
 
-  QgsComposerTableColumn* swapColumn = direction == ShiftUp ?
+  QgsComposerTableColumn *swapColumn = direction == ShiftUp ?
                                        sortedColumns[ columnPos - 1]
                                        : sortedColumns[ columnPos + 1];
   QModelIndex idx = indexFromColumn( column );
@@ -438,9 +438,9 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
 //QgsComposerTableSortColumnsProxyModelV2
 
 QgsComposerTableSortColumnsProxyModelV2::QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mComposerTable( composerTable )
-    , mFilterType( filterType )
+  : QSortFilterProxyModel( parent )
+  , mComposerTable( composerTable )
+  , mFilterType( filterType )
 {
   setDynamicSortFilter( true );
 }
@@ -449,15 +449,15 @@ bool QgsComposerTableSortColumnsProxyModelV2::filterAcceptsRow( int source_row, 
 {
   //get QgsComposerTableColumn corresponding to row
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsComposerTableColumn* column = columnFromSourceIndex( index );
+  QgsComposerTableColumn *column = columnFromSourceIndex( index );
 
   if ( !column )
   {
     return false;
   }
 
-  if (( column->sortByRank() > 0 && mFilterType == ShowSortedColumns )
-      || ( column->sortByRank() <= 0 && mFilterType == ShowUnsortedColumns ) )
+  if ( ( column->sortByRank() > 0 && mFilterType == ShowSortedColumns )
+       || ( column->sortByRank() <= 0 && mFilterType == ShowUnsortedColumns ) )
   {
     //column matches filter type
     return true;
@@ -475,18 +475,18 @@ QgsComposerTableColumn *QgsComposerTableSortColumnsProxyModelV2::columnFromIndex
   return columnFromSourceIndex( sourceIndex );
 }
 
-QgsComposerTableColumn* QgsComposerTableSortColumnsProxyModelV2::columnFromSourceIndex( const QModelIndex &sourceIndex ) const
+QgsComposerTableColumn *QgsComposerTableSortColumnsProxyModelV2::columnFromSourceIndex( const QModelIndex &sourceIndex ) const
 {
   //get column corresponding to an index from the source model
   QVariant columnAsVariant = sourceModel()->data( sourceIndex, Qt::UserRole );
-  QgsComposerTableColumn* column = qobject_cast<QgsComposerTableColumn *>( columnAsVariant.value<QObject *>() );
+  QgsComposerTableColumn *column = qobject_cast<QgsComposerTableColumn *>( columnAsVariant.value<QObject *>() );
   return column;
 }
 
 bool QgsComposerTableSortColumnsProxyModelV2::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsComposerTableColumn* column1 = columnFromSourceIndex( left );
-  QgsComposerTableColumn* column2 = columnFromSourceIndex( right );
+  QgsComposerTableColumn *column1 = columnFromSourceIndex( left );
+  QgsComposerTableColumn *column2 = columnFromSourceIndex( right );
   if ( !column1 )
   {
     return false;
@@ -506,12 +506,12 @@ int QgsComposerTableSortColumnsProxyModelV2::columnCount( const QModelIndex &par
 
 QVariant QgsComposerTableSortColumnsProxyModelV2::data( const QModelIndex &index, int role ) const
 {
-  if (( role != Qt::DisplayRole && role != Qt::EditRole ) || !index.isValid() )
+  if ( ( role != Qt::DisplayRole && role != Qt::EditRole ) || !index.isValid() )
   {
     return QVariant();
   }
 
-  QgsComposerTableColumn* column = columnFromIndex( index );
+  QgsComposerTableColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return QVariant();
@@ -578,7 +578,7 @@ QVariant QgsComposerTableSortColumnsProxyModelV2::headerData( int section, Qt::O
   }
 }
 
-Qt::ItemFlags QgsComposerTableSortColumnsProxyModelV2::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsComposerTableSortColumnsProxyModelV2::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
@@ -591,7 +591,7 @@ Qt::ItemFlags QgsComposerTableSortColumnsProxyModelV2::flags( const QModelIndex&
   return flags;
 }
 
-bool QgsComposerTableSortColumnsProxyModelV2::setData( const QModelIndex& index, const QVariant& value, int role )
+bool QgsComposerTableSortColumnsProxyModelV2::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole )
     return false;
@@ -601,7 +601,7 @@ bool QgsComposerTableSortColumnsProxyModelV2::setData( const QModelIndex& index,
     return false;
   }
 
-  QgsComposerTableColumn* column = columnFromIndex( index );
+  QgsComposerTableColumn *column = columnFromIndex( index );
   if ( !column )
   {
     return false;

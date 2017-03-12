@@ -34,7 +34,7 @@ class SERVER_EXPORT QgsServerException : public QgsException
 {
   public:
     //! Constructor
-    QgsServerException( const QString& message, int responseCode = 500 );
+    QgsServerException( const QString &message, int responseCode = 500 );
 
     /**
      * @return the return HTTP response code associated with this exception
@@ -48,7 +48,7 @@ class SERVER_EXPORT QgsServerException : public QgsException
      *
      * The defaolt implementation return text/xml format.
      */
-    virtual QByteArray formatResponse( QString& responseFormat ) const;
+    virtual QByteArray formatResponse( QString &responseFormat ) const;
 
   private:
     int mResponseCode;
@@ -67,8 +67,8 @@ class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
 {
   public:
     //! Construction
-    QgsOgcServiceException( const QString& code, const QString& message, const QString& locator = QString(),
-                            int responseCode = 200, const QString& version = QStringLiteral( "1.3.0" ) );
+    QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(),
+                            int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
 
     //! @return message
     QString message() const { return mMessage; }
@@ -83,7 +83,7 @@ class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
     QString version() const { return mVersion; }
 
     //! Overridden from QgsServerException
-    virtual QByteArray formatResponse( QString& responseFormat ) const override;
+    virtual QByteArray formatResponse( QString &responseFormat ) const override;
 
   private:
     QString mCode;

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2015'
@@ -26,7 +25,7 @@ __copyright__ = '(C) 2015, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsSpatialIndex, QgsFeatureRequest, QgsGeometry
+from qgis.core import QgsSpatialIndex, QgsFeatureRequest
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -87,7 +86,7 @@ class SelectByAttributeSum(GeoAlgorithm):
                 tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)
-                    selected.append(i)
+                    selected.append(ft.id())
                     attrSum += ft[fieldName]
                     if attrSum >= value:
                         completed = True

@@ -62,7 +62,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
      * @param parent Parent widget
      */
     explicit QgsAuthMethodEdit( QWidget *parent = nullptr )
-        : QWidget( parent )
+      : QWidget( parent )
     {}
 
     virtual ~QgsAuthMethodEdit() = default;

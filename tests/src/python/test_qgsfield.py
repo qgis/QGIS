@@ -83,5 +83,6 @@ class TestQgsFields(unittest.TestCase):
         with self.assertRaises(KeyError):
             fields.iconForField(111)
 
+
 if __name__ == '__main__':
     unittest.main()

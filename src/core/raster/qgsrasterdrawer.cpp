@@ -27,14 +27,14 @@
 #include <QPainter>
 #include <QPrinter>
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iterator )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
 {
 }
 
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback )
+void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
+  if ( !p || !mIterator || !viewPort || !qgsMapToPixel )
   {
     return;
   }
@@ -98,7 +98,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       p->setCompositionMode( QPainter::CompositionMode_Source );
     }
 
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, qgsMapToPixel );
 
     delete block;
 
@@ -111,7 +111,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   }
 }
 
-void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow, const QgsMapToPixel* theQgsMapToPixel ) const
+void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *qgsMapToPixel ) const
 {
   if ( !p || !viewPort )
   {
@@ -128,12 +128,12 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
 
-  if ( theQgsMapToPixel )
+  if ( qgsMapToPixel )
   {
-    int w = theQgsMapToPixel->mapWidth();
-    int h = theQgsMapToPixel->mapHeight();
+    int w = qgsMapToPixel->mapWidth();
+    int h = qgsMapToPixel->mapHeight();
 
-    double rotation = theQgsMapToPixel->mapRotation();
+    double rotation = qgsMapToPixel->mapRotation();
     if ( rotation )
     {
       // both viewPort and image sizes are dependent on scale

@@ -40,7 +40,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * @brief Widget to control a layers transparency and related options
      */
-    QgsRasterTransparencyWidget( QgsRasterLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
 
@@ -56,13 +56,13 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 
   private slots:
 
-    void pixelSelected( const QgsPoint& canvasPoint );
+    void pixelSelected( const QgsPoint &canvasPoint );
 
     //! Transparency cell changed
-    void transparencyCellTextEdited( const QString & text );
+    void transparencyCellTextEdited( const QString &text );
 
     //! \brief slot executed when the transparency level changes.
-    void sliderTransparency_valueChanged( int theValue );
+    void sliderTransparency_valueChanged( int value );
 
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
     void on_pbnAddValuesFromDisplay_clicked();
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     bool rasterIsMultiBandColor();
 
     //! \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type
-    void populateTransparencyTable( QgsRasterRenderer* renderer );
+    void populateTransparencyTable( QgsRasterRenderer *renderer );
 
     void setupTransparencyTable( int nBands );
 
@@ -100,11 +100,11 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 
     double transparencyCellValue( int row, int column );
 
-    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
 
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
-    QgsMapToolEmitPoint* mPixelSelectorTool = nullptr;
+    QgsMapToolEmitPoint *mPixelSelectorTool = nullptr;
 
     QVector<bool> mTransparencyToEdited;
 };

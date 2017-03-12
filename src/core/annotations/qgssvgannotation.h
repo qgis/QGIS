@@ -37,16 +37,16 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsSvgAnnotation.
      */
-    QgsSvgAnnotation( QObject* parent = nullptr );
+    QgsSvgAnnotation( QObject *parent = nullptr );
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /**
      * Sets the file path for the source SVG file.
      * @see filePath()
      */
-    void setFilePath( const QString& file );
+    void setFilePath( const QString &file );
 
     /**
      * Returns the file path for the source SVG file.
@@ -57,11 +57,11 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsSvgAnnotation object.
      */
-    static QgsSvgAnnotation* create() { return new QgsSvgAnnotation(); }
+    static QgsSvgAnnotation *create() { return new QgsSvgAnnotation(); }
 
   protected:
 
-    void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
+    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private:
     mutable QSvgRenderer mSvgRenderer; // QSvgRenderer::render methods are not const?

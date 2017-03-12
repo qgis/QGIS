@@ -21,14 +21,14 @@
 #include <QPushButton>
 
 QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   setupUi( this );
 }
 
 
 QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setWindowTitle( tr( "Certificate Manager" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

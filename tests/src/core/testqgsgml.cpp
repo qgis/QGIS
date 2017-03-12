@@ -111,7 +111,7 @@ void TestQgsGML::testFromURL()
   tmpFile.flush();
   QCOMPARE( gmlParser.getFeatures( QUrl::fromLocalFile( tmpFile.fileName() ).toString(), &wkbType ), 0 );
   QCOMPARE( wkbType, QgsWkbTypes::Point );
-  QMap<QgsFeatureId, QgsFeature* > featureMaps = gmlParser.featuresMap();
+  QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QCOMPARE( gmlParser.idsMap().size(), 1 );
   QCOMPARE( gmlParser.crs().authid(), QString( "EPSG:27700" ) );
@@ -125,7 +125,7 @@ void TestQgsGML::testFromByteArray()
   QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
   QCOMPARE( gmlParser.getFeatures( data1.toAscii(), &wkbType ), 0 );
-  QMap<QgsFeatureId, QgsFeature* > featureMaps = gmlParser.featuresMap();
+  QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
   QCOMPARE( featureMaps[ 0 ]->attributes().size(), 1 );

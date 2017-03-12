@@ -38,22 +38,22 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     /** Constructor
      * @param c parent composition
      */
-    QgsComposerPolyline( QgsComposition* c );
+    QgsComposerPolyline( QgsComposition *c );
 
     /** Constructor
      * @param polyline nodes of the shape
      * @param c parent composition
      */
-    QgsComposerPolyline( const QPolygonF &polyline, QgsComposition* c );
+    QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
 
     //! Overridden to return shape name
     virtual QString displayName() const override;
 
     //! Returns the QgsSymbol used to draw the shape.
-    QgsLineSymbol* polylineStyleSymbol() { return mPolylineStyleSymbol.get(); }
+    QgsLineSymbol *polylineStyleSymbol() { return mPolylineStyleSymbol.get(); }
 
     //! Set the QgsSymbol used to draw the shape.
-    void setPolylineStyleSymbol( QgsLineSymbol* symbol );
+    void setPolylineStyleSymbol( QgsLineSymbol *symbol );
 
     //! Overridden to return shape type
     virtual int type() const override { return ComposerPolyline; }

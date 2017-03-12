@@ -35,7 +35,6 @@ import re
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
-from time import sleep
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
@@ -53,7 +52,7 @@ from offlineditingtestbase import OfflineTestBase
 try:
     QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
 except:
-    QGIS_SERVER_OFFLINE_PORT = '0' # Auto
+    QGIS_SERVER_OFFLINE_PORT = '0'  # Auto
 
 qgis_app = start_app()
 

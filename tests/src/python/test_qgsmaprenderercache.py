@@ -46,7 +46,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         self.assertFalse(cache.hasCacheImage('bad'))
 
         # clear cache image
-        cache.clearCacheImage('not in cache') # no crash!
+        cache.clearCacheImage('not in cache')  # no crash!
         cache.clearCacheImage('littlehands')
         im = cache.cacheImage('littlehands')
         self.assertTrue(im.isNull())
@@ -144,7 +144,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
 
         # trigger repaint on layer
         layer1.triggerRepaint()
-        layer1.triggerRepaint() # do this a couple of times - we don't want errors due to multiple disconnects, etc
+        layer1.triggerRepaint()  # do this a couple of times - we don't want errors due to multiple disconnects, etc
         layer2.triggerRepaint()
         layer2.triggerRepaint()
         # cache image should still exist - it's not dependent on layers
@@ -173,7 +173,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # trigger repaint layer 1 (check twice - don't want disconnect errors)
         for i in range(2):
             layer1.triggerRepaint()
-            #should be cleared
+            # should be cleared
             self.assertTrue(cache.cacheImage('im1').isNull())
             self.assertFalse(cache.hasCacheImage('im1'))
             self.assertTrue(cache.cacheImage('im1_im2').isNull())
@@ -189,7 +189,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # trigger repaint layer 2
         for i in range(2):
             layer2.triggerRepaint()
-            #should be cleared
+            # should be cleared
             self.assertFalse(cache.hasCacheImage('im1'))
             self.assertTrue(cache.cacheImage('im1').isNull())
             self.assertFalse(cache.hasCacheImage('im1_im2'))
@@ -265,6 +265,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         QCoreApplication.processEvents()
         # cache should be cleared
         self.assertFalse(cache.hasCacheImage('l1'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -115,6 +115,6 @@ class GdalParametersPanel(ParametersPanel):
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            self.text.setPlainText(self.tr("Invalid value for parameter '%s'") % e.parameter.description)
+            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description))
         except:
             self.text.setPlainText("")

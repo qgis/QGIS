@@ -21,11 +21,11 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from __future__ import print_function
 from builtins import str
 from builtins import range
-from qgis.PyQt.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize
+from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 import sys
 import os
@@ -83,15 +83,15 @@ class Editor(QsciScintilla):
     def __init__(self, parent=None):
         super(Editor, self).__init__(parent)
         self.parent = parent
-        ## recent modification time
+        #  recent modification time
         self.lastModified = 0
         self.opening = ['(', '{', '[', "'", '"']
         self.closing = [')', '}', ']', "'", '"']
 
-        ## List of marker line to be deleted from check syntax
+        # List of marker line to be deleted from check syntax
         self.bufferMarkerLine = []
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
 
         # Enable non-ascii chars for editor
         self.setUtf8(True)
@@ -104,7 +104,7 @@ class Editor(QsciScintilla):
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
-        #fm = QFontMetrics(font)
+        # fm = QFontMetrics(font)
         fontmetrics = QFontMetrics(font)
         self.setMarginsFont(font)
         self.setMarginWidth(0, fontmetrics.width("0000") + 5)
@@ -118,7 +118,7 @@ class Editor(QsciScintilla):
                           self.MARKER_NUM)
 
         self.setMinimumHeight(120)
-        #self.setMinimumWidth(300)
+        # self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
         self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
@@ -126,16 +126,16 @@ class Editor(QsciScintilla):
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
         self.setFoldMarginColors(QColor("#f4f4f4"), QColor("#f4f4f4"))
-        #self.setWrapMode(QsciScintilla.WrapWord)
+        # self.setWrapMode(QsciScintilla.WrapWord)
 
-        ## Edge Mode
+        # Edge Mode
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
         self.setEdgeColor(QColor("#FF0000"))
 
-        #self.setWrapMode(QsciScintilla.WrapCharacter)
+        # self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
-        #self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+        # self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         self.settingsEditor()
@@ -152,14 +152,14 @@ class Editor(QsciScintilla):
         self.setTabWidth(4)
         self.setIndentationGuides(True)
 
-        ## Disable command key
+        # Disable command key
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
-        ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
+        # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
         self.newShortcutCS.setContext(Qt.WidgetShortcut)
         self.redoScut = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Z), self)
@@ -400,8 +400,8 @@ class Editor(QsciScintilla):
             if not forward:
                 line = lineFrom
                 index = indexFrom
-            ## findFirst(QString(), re bool, cs bool, wo bool, wrap, bool, forward=True)
-            ## re = Regular Expression, cs = Case Sensitive, wo = Whole Word, wrap = Wrap Around
+            # findFirst(QString(), re bool, cs bool, wo bool, wrap, bool, forward=True)
+            # re = Regular Expression, cs = Case Sensitive, wo = Whole Word, wrap = Wrap Around
             if not self.findFirst(text, re, cs, wo, wrap, forward, line, index):
                 notFound = True
             if notFound:
@@ -527,9 +527,9 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         if name in sys.modules:
-            reload(sys.modules[name])
+            reload(sys.modules[name])  # NOQA
         try:
-            ## set creationflags for running command without shell window
+            # set creationflags for running command without shell window
             if sys.platform.startswith('win'):
                 p = subprocess.Popen(['python3', filename], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
@@ -538,7 +538,7 @@ class Editor(QsciScintilla):
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
-            ## Fix interrupted system call on OSX
+            # Fix interrupted system call on OSX
             if sys.platform == 'darwin':
                 status = None
                 while status is None:
@@ -618,7 +618,7 @@ class Editor(QsciScintilla):
         self.SendScintilla(QsciScintilla.SCI_SETTARGETEND, len(self.text()))
         pos = self.SendScintilla(QsciScintilla.SCI_SEARCHINTARGET, len(objName), objName)
         index = pos - self.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
-        #line, _ = self.getCursorPosition()
+        # line, _ = self.getCursorPosition()
         self.setSelection(linenr - 1, index, linenr - 1, index + len(objName))
         self.ensureLineVisible(linenr)
         self.setFocus()
@@ -631,7 +631,7 @@ class Editor(QsciScintilla):
         try:
             if not filename:
                 filename = self.parent.tw.currentWidget().path
-            #source = open(filename, 'r').read() + '\n'
+            # source = open(filename, 'r').read() + '\n'
             if isinstance(source, type(u"")):
                 source = source.encode('utf-8')
             if isinstance(filename, type(u"")):
@@ -660,9 +660,9 @@ class Editor(QsciScintilla):
                                  True)
             self.annotate(eline, edescr, styleAnn)
             self.setCursorPosition(eline, ecolumn - 1)
-            #self.setSelection(eline, ecolumn, eline, self.lineLength(eline)-1)
+            # self.setSelection(eline, ecolumn, eline, self.lineLength(eline)-1)
             self.ensureLineVisible(eline)
-            #self.ensureCursorVisible()
+            # self.ensureCursorVisible()
             return False
         else:
             self.markerDeleteAll()
@@ -676,7 +676,7 @@ class Editor(QsciScintilla):
         self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracketEditor", False, type=bool)
         self.autoImport = self.settings.value("pythonConsole/autoInsertionImportEditor", True, type=bool)
         txt = self.text(line)[:pos]
-        ## Close bracket automatically
+        # Close bracket automatically
         if t in self.opening and self.autoCloseBracket:
             self.beginUndoAction()
             i = self.opening.index(t)
@@ -698,8 +698,8 @@ class Editor(QsciScintilla):
             else:
                 self.insert(self.closing[i])
             self.endUndoAction()
-        ## FIXES #8392 (automatically removes the redundant char
-        ## when autoclosing brackets option is enabled)
+        # FIXES #8392 (automatically removes the redundant char
+        # when autoclosing brackets option is enabled)
         elif t in [')', ']', '}'] and self.autoCloseBracket:
             txt = self.text(line)
             try:
@@ -726,7 +726,7 @@ class Editor(QsciScintilla):
         if pathfile and self.lastModified != QFileInfo(pathfile).lastModified():
             self.beginUndoAction()
             self.selectAll()
-            #fileReplaced = self.selectedText()
+            # fileReplaced = self.selectedText()
             self.removeSelectedText()
             file = open(pathfile, "r")
             fileLines = file.readlines()
@@ -823,7 +823,7 @@ class EditorTab(QWidget):
         if overwrite:
             try:
                 permis = os.stat(path).st_mode
-                #self.newEditor.lastModified = QFileInfo(path).lastModified()
+                # self.newEditor.lastModified = QFileInfo(path).lastModified()
                 os.chmod(path, permis)
             except:
                 raise
@@ -869,7 +869,7 @@ class EditorTabWidget(QTabWidget):
         QTabWidget.__init__(self, parent=None)
         self.parent = parent
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
 
         self.idx = -1
         # Layout for top frame (restore tabs)
@@ -920,7 +920,7 @@ class EditorTabWidget(QTabWidget):
         self.restoreTabsButton.clicked.connect(self.restoreTabs)
         self.clButton.clicked.connect(self.closeRestore)
 
-        ## Fixes #7653
+        # Fixes #7653
         if sys.platform != 'darwin':
             self.setDocumentMode(True)
 
@@ -1183,7 +1183,7 @@ class EditorTabWidget(QTabWidget):
                     sys.path.append(pathFile)
                     found = True
                 try:
-                    reload(pyclbr)
+                    reload(pyclbr)  # NOQA
                     dictObject = {}
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)

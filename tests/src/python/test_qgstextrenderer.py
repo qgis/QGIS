@@ -27,9 +27,9 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRenderContext,
                        QgsRectangle,
                        QgsRenderChecker)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtGui import (QColor, QPainter, QImage, QBrush, QPen)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest, start_app
 from utilities import getTestFont, svgSymbolsPath
 
@@ -136,13 +136,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setRadiiUnit(QgsUnitTypes.RenderPercentage)
         s.setRadiiMapUnitScale(QgsMapUnitScale(15, 16))
         s.setFillColor(QColor(255, 0, 0))
-        s.setBorderColor(QColor(0, 255, 0))
+        s.setStrokeColor(QColor(0, 255, 0))
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.RoundJoin)
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
-        s.setBorderWidth(7)
-        s.setBorderWidthUnit(QgsUnitTypes.RenderPoints)
-        s.setBorderWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
+        s.setStrokeWidth(7)
+        s.setStrokeWidthUnit(QgsUnitTypes.RenderPoints)
+        s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
         return s
 
     def checkBackgroundSettings(self, s):
@@ -163,13 +163,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.radiiUnit(), QgsUnitTypes.RenderPercentage)
         self.assertEqual(s.radiiMapUnitScale(), QgsMapUnitScale(15, 16))
         self.assertEqual(s.fillColor(), QColor(255, 0, 0))
-        self.assertEqual(s.borderColor(), QColor(0, 255, 0))
+        self.assertEqual(s.strokeColor(), QColor(0, 255, 0))
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
-        self.assertEqual(s.borderWidth(), 7)
-        self.assertEqual(s.borderWidthUnit(), QgsUnitTypes.RenderPoints)
-        self.assertEqual(s.borderWidthMapUnitScale(), QgsMapUnitScale(25, 26))
+        self.assertEqual(s.strokeWidth(), 7)
+        self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderPoints)
+        self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
 
     def testBackgroundGettersSetters(self):
         s = self.createBackgroundSettings()
@@ -473,13 +473,13 @@ class PyQgsTextRenderer(unittest.TestCase):
         painter.setFont(format.scaledFont(context))
         painter.setPen(QPen(QColor(255, 0, 255, 200)))
         # For comparison with QPainter's methods:
-        if alignment == QgsTextRenderer.AlignCenter:
-            align = Qt.AlignHCenter
-        elif alignment == QgsTextRenderer.AlignRight:
-            align = Qt.AlignRight
-        else:
-            align = Qt.AlignLeft
-        #painter.drawText(rect, align, '\n'.join(text))
+        # if alignment == QgsTextRenderer.AlignCenter:
+        #     align = Qt.AlignHCenter
+        # elif alignment == QgsTextRenderer.AlignRight:
+        #     align = Qt.AlignRight
+        # else:
+        #     align = Qt.AlignLeft
+        # painter.drawText(rect, align, '\n'.join(text))
 
         painter.end()
         return self.imageCheck(name, name, image)
@@ -976,16 +976,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.background().setFillColor(QColor(50, 100, 50))
         assert self.checkRender(format, 'background_fillcolor', QgsTextRenderer.Background)
 
-    def testDrawBackgroundOutline(self):
+    def testDrawBackgroundStroke(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         format.background().setEnabled(True)
         format.background().setType(QgsTextBackgroundSettings.ShapeRectangle)
         format.background().setSize(QSizeF(30, 20))
         format.background().setSizeType(QgsTextBackgroundSettings.SizeFixed)
-        format.background().setBorderColor(QColor(50, 100, 50))
-        format.background().setBorderWidth(3)
-        format.background().setBorderWidthUnit(QgsUnitTypes.RenderMillimeters)
+        format.background().setStrokeColor(QColor(50, 100, 50))
+        format.background().setStrokeWidth(3)
+        format.background().setStrokeWidthUnit(QgsUnitTypes.RenderMillimeters)
         assert self.checkRender(format, 'background_outline', QgsTextRenderer.Background)
 
     def testDrawText(self):
@@ -1008,7 +1008,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
         # need to call getTestFont to make sure font style is installed and ready to go
-        temp_font = getTestFont('Bold Oblique')
+        temp_font = getTestFont('Bold Oblique')  # NOQA
         format.setFont(getTestFont())
         format.setNamedStyle('Bold Oblique')
         format.setSize(60)

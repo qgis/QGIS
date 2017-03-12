@@ -37,7 +37,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
+    QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      *
      * @see bool getFeature( QgsFeature& f )
      */
-    virtual bool fetchFeature( QgsFeature& f ) override;
+    virtual bool fetchFeature( QgsFeature &f ) override;
 
     /**
      * We have a local special iterator for FilterFids, no need to run the generic.
@@ -72,11 +72,11 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * @param f      Will write to this feature
      * @return bool  true if the operation was ok
      */
-    virtual bool nextFeatureFilterFids( QgsFeature& f ) override { return fetchFeature( f ); }
+    virtual bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
   private:
     QgsFeatureIds mFeatureIds;
-    QgsVectorLayerCache* mVectorLayerCache = nullptr;
+    QgsVectorLayerCache *mVectorLayerCache = nullptr;
     QgsFeatureIds::ConstIterator mFeatureIdIterator;
 };
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer
      */
-    QgsCachedFeatureWriterIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
+    QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 
     /**
      * Rewind to the beginning of the iterator
@@ -121,11 +121,11 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      *
      * @see bool getFeature( QgsFeature& f )
      */
-    virtual bool fetchFeature( QgsFeature& f ) override;
+    virtual bool fetchFeature( QgsFeature &f ) override;
 
   private:
     QgsFeatureIterator mFeatIt;
-    QgsVectorLayerCache* mVectorLayerCache = nullptr;
+    QgsVectorLayerCache *mVectorLayerCache = nullptr;
     QgsFeatureIds mFids;
 };
 #endif // QGSCACHEDFEATUREITERATOR_H

@@ -26,13 +26,13 @@
   \brief The QgsRubberBand class provides a transparent overlay widget
   for tracking the mouse while drawing polylines or polygons.
 */
-QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geometryType )
-    : QgsMapCanvasItem( mapCanvas )
-    , mIconSize( 5 )
-    , mIconType( ICON_CIRCLE )
-    , mGeometryType( geometryType )
-    , mTranslationOffsetX( 0.0 )
-    , mTranslationOffsetY( 0.0 )
+QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
+  : QgsMapCanvasItem( mapCanvas )
+  , mIconSize( 5 )
+  , mIconType( ICON_CIRCLE )
+  , mGeometryType( geometryType )
+  , mTranslationOffsetX( 0.0 )
+  , mTranslationOffsetY( 0.0 )
 {
   reset( geometryType );
   QColor color( Qt::lightGray );
@@ -44,37 +44,37 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType
 }
 
 QgsRubberBand::QgsRubberBand()
-    : QgsMapCanvasItem( nullptr )
-    , mIconSize( 5 )
-    , mIconType( ICON_CIRCLE )
-    , mGeometryType( QgsWkbTypes::PolygonGeometry )
-    , mTranslationOffsetX( 0.0 )
-    , mTranslationOffsetY( 0.0 )
+  : QgsMapCanvasItem( nullptr )
+  , mIconSize( 5 )
+  , mIconType( ICON_CIRCLE )
+  , mGeometryType( QgsWkbTypes::PolygonGeometry )
+  , mTranslationOffsetX( 0.0 )
+  , mTranslationOffsetY( 0.0 )
 {
 }
 
 /*!
-  Set the outline and fill color.
+  Set the stroke and fill color.
   */
-void QgsRubberBand::setColor( const QColor & color )
+void QgsRubberBand::setColor( const QColor &color )
 {
-  setBorderColor( color );
+  setStrokeColor( color );
   setFillColor( color );
 }
 
 /*!
   Set the fill color.
   */
-void QgsRubberBand::setFillColor( const QColor & color )
+void QgsRubberBand::setFillColor( const QColor &color )
 {
   QColor fillColor( color.red(), color.green(), color.blue(), color.alpha() );
   mBrush.setColor( fillColor );
 }
 
 /*!
-  Set the outline
+  Set the stroke
   */
-void QgsRubberBand::setBorderColor( const QColor & color )
+void QgsRubberBand::setStrokeColor( const QColor &color )
 {
   QColor penColor( color.red(), color.green(), color.blue(), color.alpha() );
   mPen.setColor( penColor );
@@ -82,7 +82,7 @@ void QgsRubberBand::setBorderColor( const QColor & color )
 
 
 /*!
-  Set the outline width.
+  Set the stroke width.
   */
 void QgsRubberBand::setWidth( int width )
 {
@@ -123,7 +123,7 @@ void QgsRubberBand::reset( QgsWkbTypes::GeometryType geometryType )
 /*!
   Add a point to the shape being created.
   */
-void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, int geometryIndex )
+void QgsRubberBand::addPoint( const QgsPoint &p, bool doUpdate /* = true */, int geometryIndex )
 {
   if ( geometryIndex < 0 )
   {
@@ -214,7 +214,7 @@ void QgsRubberBand::removeLastPoint( int geometryIndex, bool doUpdate/* = true*/
 /*!
   Update the line between the last added point and the mouse position.
   */
-void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
+void QgsRubberBand::movePoint( const QgsPoint &p, int geometryIndex )
 {
   if ( mPoints.size() < geometryIndex + 1 )
   {
@@ -232,7 +232,7 @@ void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
   update();
 }
 
-void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
+void QgsRubberBand::movePoint( int index, const QgsPoint &p, int geometryIndex )
 {
   if ( mPoints.size() < geometryIndex + 1 )
   {
@@ -250,7 +250,7 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
   update();
 }
 
-void QgsRubberBand::setToGeometry( const QgsGeometry& geom, QgsVectorLayer* layer )
+void QgsRubberBand::setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer )
 {
   if ( geom.isNull() )
   {
@@ -262,7 +262,7 @@ void QgsRubberBand::setToGeometry( const QgsGeometry& geom, QgsVectorLayer* laye
   addGeometry( geom, layer );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer )
+void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer )
 {
   if ( geom.isNull() )
   {
@@ -270,7 +270,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer 
   }
 
   //maprender object of canvas
-  const QgsMapSettings& ms = mMapCanvas->mapSettings();
+  const QgsMapSettings &ms = mMapCanvas->mapSettings();
 
   int idx = mPoints.size();
 
@@ -422,7 +422,7 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
     return;
   }
 
-  const QgsMapToPixel* transform = mMapCanvas->getCoordinateTransform();
+  const QgsMapToPixel *transform = mMapCanvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates( rect.left(), rect.bottom() );
   QgsPoint lr = transform->toMapCoordinates( rect.right(), rect.bottom() );
   QgsPoint ul = transform->toMapCoordinates( rect.left(), rect.top() );
@@ -438,17 +438,17 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
 /*!
   Draw the shape in response to an update event.
   */
-void QgsRubberBand::paint( QPainter* p )
+void QgsRubberBand::paint( QPainter *p )
 {
   if ( !mPoints.isEmpty() )
   {
     p->setBrush( mBrush );
     p->setPen( mPen );
 
-    Q_FOREACH ( const QList<QgsPoint>& line, mPoints )
+    Q_FOREACH ( const QList<QgsPoint> &line, mPoints )
     {
       QVector<QPointF> pts;
-      Q_FOREACH ( const QgsPoint& pt, line )
+      Q_FOREACH ( const QgsPoint &pt, line )
       {
         const QPointF cur = toCanvasCoordinates( QgsPoint( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
         if ( pts.empty() || std::abs( pts.back().x() - cur.x() ) > 1 ||  std::abs( pts.back().y() - cur.y() ) > 1 )
@@ -526,16 +526,16 @@ void QgsRubberBand::updateRect()
     return;
   }
 
-  const QgsMapToPixel& m2p = *( mMapCanvas->getCoordinateTransform() );
+  const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
 
   qreal res = m2p.mapUnitsPerPixel();
-  qreal w = (( mIconSize - 1 ) / 2 + mPen.width() ) / res;
+  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ) / res;
 
   QgsRectangle r;
   for ( int i = 0; i < mPoints.size(); ++i )
   {
     QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin(),
-                                         itE = mPoints.at( i ).constEnd();
+                                    itE = mPoints.at( i ).constEnd();
     for ( ; it != itE; ++it )
     {
       QgsPoint p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
@@ -670,7 +670,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
   return geom;
 }
 
-QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPoint> & points )
+QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPoint> &points )
 {
   QgsPolyline polyline;
   QList<QgsPoint>::const_iterator iter = points.constBegin();

@@ -25,13 +25,13 @@
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader( QUrl url, QString outputFileName, bool enableGuiNotifications )
-    : mUrl( url )
-    , mReply( nullptr )
-    , mProgressDialog( nullptr )
-    , mDownloadCanceled( false )
-    , mErrors()
-    , mGuiNotificationsEnabled( enableGuiNotifications )
+QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool enableGuiNotifications )
+  : mUrl( url )
+  , mReply( nullptr )
+  , mProgressDialog( nullptr )
+  , mDownloadCanceled( false )
+  , mErrors()
+  , mGuiNotificationsEnabled( enableGuiNotifications )
 {
   mFile.setFileName( outputFileName );
   startDownload();
@@ -54,7 +54,7 @@ QgsFileDownloader::~QgsFileDownloader()
 
 void QgsFileDownloader::startDownload()
 {
-  QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   QNetworkRequest request( mUrl );
   if ( mReply )
@@ -111,7 +111,7 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
 #endif
 
 
-void QgsFileDownloader::error( QStringList errorMessages )
+void QgsFileDownloader::error( const QStringList &errorMessages )
 {
   for ( auto end = errorMessages.size(), i = 0; i != end; ++i )
   {
@@ -125,7 +125,7 @@ void QgsFileDownloader::error( QStringList errorMessages )
   emit downloadError( mErrors );
 }
 
-void QgsFileDownloader::error( QString errorMessage )
+void QgsFileDownloader::error( const QString &errorMessage )
 {
   error( QStringList() << errorMessage );
 }

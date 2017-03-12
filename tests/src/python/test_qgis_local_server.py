@@ -24,7 +24,6 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import datetime
-import tempfile
 
 if os.name == 'nt':
     print("TestQgisLocalServer currently doesn't support windows")
@@ -107,9 +106,9 @@ class TestQgisLocalServer(unittest.TestCase):
         param_crs = 'CRS=EPSG%3A32613'
         param_bbx = 'BBOX=606510%2C4823130%2C612510%2C4827130'
         msg = '\nParameter instances could not be converted'
-        assert (param_lyrs in params_p
-                and param_crs in params_p
-                and param_bbx in params_p), msg
+        assert (param_lyrs in params_p and
+                param_crs in params_p and
+                param_bbx in params_p), msg
 
     # @unittest.skip('')
     def test_getmap(self):

@@ -16,10 +16,10 @@
 #include "qgsogrconnpool.h"
 #include "qgslogger.h"
 
-QgsOgrConnPool* QgsOgrConnPool::sInstance = nullptr;
+QgsOgrConnPool *QgsOgrConnPool::sInstance = nullptr;
 
 // static public
-QgsOgrConnPool* QgsOgrConnPool::instance()
+QgsOgrConnPool *QgsOgrConnPool::instance()
 {
   if ( ! sInstance ) sInstance = new QgsOgrConnPool();
   return sInstance;
@@ -32,7 +32,7 @@ void QgsOgrConnPool::cleanupInstance()
   sInstance = nullptr;
 }
 
-QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()
+QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGroup>()
 {
   QgsDebugCall;
 }

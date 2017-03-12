@@ -43,14 +43,14 @@ QgsWmsConfigParser::QgsWmsConfigParser()
 {
 }
 
-QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
+QgsComposition *QgsWmsConfigParser::createPrintComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, const QMap< QString, QString > &parameterMap, QStringList &highlightLayers ) const
 {
-  QList<QgsComposerMap*> composerMaps;
-  QList<QgsComposerLegend*> composerLegends;
-  QList<QgsComposerLabel*> composerLabels;
-  QList<const QgsComposerHtml*> composerHtmls;
+  QList<QgsComposerMap *> composerMaps;
+  QList<QgsComposerLegend *> composerLegends;
+  QList<QgsComposerLabel *> composerLabels;
+  QList<const QgsComposerHtml *> composerHtmls;
 
-  QgsComposition* c = initComposition( composerTemplate, mapSettings, composerMaps, composerLegends, composerLabels, composerHtmls );
+  QgsComposition *c = initComposition( composerTemplate, mapSettings, composerMaps, composerLegends, composerLabels, composerHtmls );
   if ( !c )
   {
     return nullptr;
@@ -63,7 +63,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
   }
 
   //replace composer map parameters
-  Q_FOREACH ( QgsComposerMap* currentMap, composerMaps )
+  Q_FOREACH ( QgsComposerMap *currentMap, composerMaps )
   {
     if ( !currentMap )
     {
@@ -145,7 +145,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     QStringList layerSet;
     if ( currentMap->keepLayerSet() )
     {
-      Q_FOREACH ( QgsMapLayer* layer, currentMap->layers() )
+      Q_FOREACH ( QgsMapLayer *layer, currentMap->layers() )
         layerSet << layer->id();
     }
     else
@@ -192,10 +192,10 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     //add highlight layers
     highlightLayers.append( addHighlightLayers( parameterMap, layerSet, mapId + ":" ) );
 
-    QList<QgsMapLayer*> layers;
-    Q_FOREACH ( const QString& layerId, layerSet )
+    QList<QgsMapLayer *> layers;
+    Q_FOREACH ( const QString &layerId, layerSet )
     {
-      if ( QgsMapLayer* layer = QgsProject::instance()->mapLayer( layerId ) )
+      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId ) )
         layers << layer;
     }
 
@@ -203,12 +203,12 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
     currentMap->setKeepLayerSet( true );
 
     //remove highlight layers from the composer legends
-    QList< QgsComposerLegend* >::iterator legendIt = composerLegends.begin();
+    QList< QgsComposerLegend * >::iterator legendIt = composerLegends.begin();
     for ( ; legendIt != composerLegends.end(); ++legendIt )
     {
-      if (( *legendIt )->autoUpdateModel() )
+      if ( ( *legendIt )->autoUpdateModel() )
       {
-        setLayerIdsToLegendModel(( *legendIt )->model(), bkLayerSet, currentMap->scale() );
+        setLayerIdsToLegendModel( ( *legendIt )->model(), bkLayerSet, currentMap->scale() );
       }
     }
 
@@ -218,7 +218,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
   }
 //update legend
 // if it has an auto-update model
-  Q_FOREACH ( QgsComposerLegend* currentLegend, composerLegends )
+  Q_FOREACH ( QgsComposerLegend *currentLegend, composerLegends )
   {
     if ( !currentLegend )
     {
@@ -230,16 +230,16 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
       // the legend has an auto-update model or
       // has to be filter by map
       // we will update it with map's layers
-      const QgsComposerMap* map = currentLegend->composerMap();
+      const QgsComposerMap *map = currentLegend->composerMap();
       if ( !map )
       {
         continue;
       }
 
       // get model and layer tree root of the legend
-      QgsLegendModel* model = currentLegend->model();
+      QgsLegendModel *model = currentLegend->model();
       QStringList layerSet;
-      Q_FOREACH ( QgsMapLayer* layer, map->layers() )
+      Q_FOREACH ( QgsMapLayer *layer, map->layers() )
         layerSet << layer->id();
       setLayerIdsToLegendModel( model, layerSet, map->scale() );
     }
@@ -268,7 +268,7 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
 //replace html url
   Q_FOREACH ( const QgsComposerHtml *currentHtml, composerHtmls )
   {
-    QgsComposerHtml * html = const_cast<QgsComposerHtml *>( currentHtml );
+    QgsComposerHtml *html = const_cast<QgsComposerHtml *>( currentHtml );
     QgsComposerFrame *htmlFrame = html->frame( 0 );
     QString htmlId = htmlFrame->id();
     QString url = parameterMap.value( htmlId.toUpper() );
@@ -297,10 +297,10 @@ QgsComposition* QgsWmsConfigParser::createPrintComposition( const QString& compo
   return c;
 }
 
-QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>& parameterMap, QStringList& layerSet, const QString& parameterPrefix )
+QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString> &parameterMap, QStringList &layerSet, const QString &parameterPrefix )
 {
   QStringList highlightLayers, geomSplit, symbolSplit, labelSplit, labelFontSplit, labelSizeSplit,
-  labelWeightSplit, labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit;
+              labelWeightSplit, labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit;
   highlightParameters( parameterMap, parameterPrefix, geomSplit, symbolSplit, labelSplit, labelFontSplit, labelSizeSplit, labelWeightSplit,
                        labelColorSplit, labelBufferColorSplit, labelBufferSizeSplit );
 
@@ -357,9 +357,9 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
   return highlightLayers;
 }
 
-QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& crsString, const QgsGeometry& geom, const QString& labelString, const QStringList& labelSizeSplit, const QStringList& labelColorSplit,
-    const QStringList& labelWeightSplit, const QStringList& labelFontSplit, const QStringList& labelBufferSizeSplit,
-    const QStringList& labelBufferColorSplit )
+QgsVectorLayer *QgsWmsConfigParser::createHighlightLayer( int i, const QString &crsString, const QgsGeometry &geom, const QString &labelString, const QStringList &labelSizeSplit, const QStringList &labelColorSplit,
+    const QStringList &labelWeightSplit, const QStringList &labelFontSplit, const QStringList &labelBufferSizeSplit,
+    const QStringList &labelBufferColorSplit )
 {
   if ( !geom )
   {
@@ -378,7 +378,7 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
     }
   }
 
-  QgsVectorLayer* layer = new QgsVectorLayer( url, "highlight_" + QString::number( i ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( url, "highlight_" + QString::number( i ), QStringLiteral( "memory" ) );
   if ( !layer->isValid() )
   {
     delete layer;
@@ -477,9 +477,9 @@ QgsVectorLayer* QgsWmsConfigParser::createHighlightLayer( int i, const QString& 
   return layer;
 }
 
-void QgsWmsConfigParser::highlightParameters( const QMap<QString, QString>& parameterMap, const QString& parameterPrefix, QStringList& geom, QStringList& symbol,
-    QStringList& label, QStringList& labelFont, QStringList& labelSize, QStringList& labelWeight, QStringList& labelColor,
-    QStringList& labelBufferColor, QStringList& labelBufferSize )
+void QgsWmsConfigParser::highlightParameters( const QMap<QString, QString> &parameterMap, const QString &parameterPrefix, QStringList &geom, QStringList &symbol,
+    QStringList &label, QStringList &labelFont, QStringList &labelSize, QStringList &labelWeight, QStringList &labelColor,
+    QStringList &labelBufferColor, QStringList &labelBufferSize )
 {
   QString geomParam = parameterMap.value( parameterPrefix + "HIGHLIGHT_GEOM" );
   QString symbolParam = parameterMap.value( parameterPrefix + "HIGHLIGHT_SYMBOL" );
@@ -536,7 +536,7 @@ void QgsWmsConfigParser::highlightParameters( const QMap<QString, QString>& para
   }
 }
 
-void QgsWmsConfigParser::removeHighlightLayers( const QStringList& layerIds )
+void QgsWmsConfigParser::removeHighlightLayers( const QStringList &layerIds )
 {
   QStringList::const_iterator idIt = layerIds.constBegin();
   for ( ; idIt != layerIds.constEnd(); ++idIt )
@@ -545,7 +545,7 @@ void QgsWmsConfigParser::removeHighlightLayers( const QStringList& layerIds )
   }
 }
 
-void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel* model, const QStringList& layerSet, double scale )
+void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel *model, const QStringList &layerSet, double scale )
 {
   if ( !model )
   {
@@ -553,7 +553,7 @@ void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel* model, const 
   }
 
   // get model and layer tree root of the legend
-  QgsLayerTreeGroup* root = model->rootGroup();
+  QgsLayerTreeGroup *root = model->rootGroup();
 
 
   // get layerIds find in the layer tree root
@@ -561,26 +561,26 @@ void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel* model, const 
 
   // Q_FOREACH layer find in the layer tree
   // remove it if the layer id is not in map layerIds
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( const QString &layerId, layerIds )
   {
-    QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
+    QgsLayerTreeLayer *nodeLayer = root->findLayer( layerId );
     if ( !nodeLayer )
     {
       continue;
     }
     if ( !layerSet.contains( layerId ) )
     {
-      qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+      qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
     }
     else
     {
-      QgsMapLayer* layer = nodeLayer->layer();
+      QgsMapLayer *layer = nodeLayer->layer();
       if ( layer->hasScaleBasedVisibility() )
       {
         if ( layer->minimumScale() > scale )
-          qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+          qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
         else if ( layer->maximumScale() < scale )
-          qobject_cast<QgsLayerTreeGroup*>( nodeLayer->parent() )->removeChildNode( nodeLayer );
+          qobject_cast<QgsLayerTreeGroup *>( nodeLayer->parent() )->removeChildNode( nodeLayer );
       }
     }
   }

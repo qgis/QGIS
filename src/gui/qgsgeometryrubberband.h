@@ -67,21 +67,21 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
+    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
     //! Sets geometry (takes ownership). Geometry is expected to be in map coordinates
-    void setGeometry( QgsAbstractGeometry* geom );
+    void setGeometry( QgsAbstractGeometry *geom );
     //! Returns a pointer to the geometry
-    const QgsAbstractGeometry* geometry() { return mGeometry; }
+    const QgsAbstractGeometry *geometry() { return mGeometry; }
     //! Moves vertex to new position (in map coordinates)
-    void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
+    void moveVertex( QgsVertexId id, const QgsPointV2 &newPos );
     //! Sets fill color for vertex markers
-    void setFillColor( const QColor& c );
-    //! Sets outline color for vertex markers
-    void setOutlineColor( const QColor& c );
-    //! Sets outline width
-    void setOutlineWidth( int width );
+    void setFillColor( const QColor &c );
+    //! Sets stroke color for vertex markers
+    void setStrokeColor( const QColor &c );
+    //! Sets stroke width
+    void setStrokeWidth( int width );
     //! Sets pen style
     void setLineStyle( Qt::PenStyle penStyle );
     //! Sets brush style
@@ -90,17 +90,17 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     void setIconType( IconType iconType ) { mIconType = iconType; }
 
   protected:
-    virtual void paint( QPainter* painter ) override;
+    virtual void paint( QPainter *painter ) override;
 
   private:
-    QgsAbstractGeometry* mGeometry = nullptr;
+    QgsAbstractGeometry *mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
     int mIconSize;
     IconType mIconType;
     QgsWkbTypes::GeometryType mGeometryType;
 
-    void drawVertex( QPainter* p, double x, double y );
+    void drawVertex( QPainter *p, double x, double y );
     QgsRectangle rubberBandRectangle() const;
 };
 

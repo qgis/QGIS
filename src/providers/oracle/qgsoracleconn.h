@@ -24,6 +24,7 @@
 #include <QMap>
 #include <QSet>
 #include <QThread>
+#include <QVariant>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -46,12 +47,12 @@ struct QgsOracleLayerProperty
   QString              sql;
 
   QgsOracleLayerProperty()
-      : isView( false )
+    : isView( false )
   {}
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  bool operator==( const QgsOracleLayerProperty& other )
+  bool operator==( const QgsOracleLayerProperty &other )
   {
     return types == other.types && srids == other.srids && ownerName == other.ownerName &&
            tableName == other.tableName && geometryColName == other.geometryColName &&
@@ -155,16 +156,16 @@ class QgsOracleConn : public QObject
 
     static QStringList connectionList();
     static QString selectedConnection();
-    static void setSelectedConnection( QString theConnName );
-    static QgsDataSourceUri connUri( QString theConnName );
-    static bool userTablesOnly( QString theConnName );
-    static bool geometryColumnsOnly( QString theConnName );
-    static bool allowGeometrylessTables( QString theConnName );
-    static bool estimatedMetadata( QString theConnName );
-    static bool onlyExistingTypes( QString theConnName );
-    static void deleteConnection( QString theConnName );
+    static void setSelectedConnection( QString connName );
+    static QgsDataSourceUri connUri( QString connName );
+    static bool userTablesOnly( QString connName );
+    static bool geometryColumnsOnly( QString connName );
+    static bool allowGeometrylessTables( QString connName );
+    static bool estimatedMetadata( QString connName );
+    static bool onlyExistingTypes( QString connName );
+    static void deleteConnection( QString connName );
     static QString databaseName( QString database, QString host, QString port );
-    static QString toPoolName( const QgsDataSourceUri& uri );
+    static QString toPoolName( const QgsDataSourceUri &uri );
 
     operator QSqlDatabase() { return mDatabase; }
 
@@ -172,7 +173,7 @@ class QgsOracleConn : public QObject
     explicit QgsOracleConn( QgsDataSourceUri uri );
     ~QgsOracleConn();
 
-    bool exec( QSqlQuery &qry, QString sql );
+    bool exec( QSqlQuery &qry, QString sql, const QVariantList &params );
 
     //! reference count
     int mRef;

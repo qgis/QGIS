@@ -58,14 +58,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       SegmentSizeFitWidth = 1 //!< Scale bar segment size is calculated to fit a size range
     };
 
-    QgsComposerScaleBar( QgsComposition* composition );
+    QgsComposerScaleBar( QgsComposition *composition );
     ~QgsComposerScaleBar();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerScaleBar; }
 
     //! \brief Reimplementation of QCanvasItem::paint
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     //getters and setters
     int numSegments() const {return mNumSegments;}
@@ -140,10 +140,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
 
     QString unitLabeling() const {return mUnitLabeling;}
-    void setUnitLabeling( const QString& label ) {mUnitLabeling = label;}
+    void setUnitLabeling( const QString &label ) {mUnitLabeling = label;}
 
     QFont font() const;
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
     /** Returns the color used for drawing text in the scalebar.
      * @returns font color for scalebar.
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see fontColor
      * @see setFont
      */
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    void setFontColor( const QColor &c ) {mFontColor = c;}
 
     /** Returns the color used for fills in the scalebar.
      * @see setFillColor()
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setFillColor2()
      * @note added in QGIS 3.0
      */
-    void setFillColor( const QColor& color ) {mFillColor = color; mBrush.setColor( color ); }
+    void setFillColor( const QColor &color ) {mFillColor = color; mBrush.setColor( color ); }
 
     /** Returns the secondary color used for fills in the scalebar.
      * @see setFillColor2()
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setFillColor2()
      * @note added in QGIS 3.0
      */
-    void setFillColor2( const QColor& color ) {mFillColor2 = color; mBrush2.setColor( color ); }
+    void setFillColor2( const QColor &color ) {mFillColor2 = color; mBrush2.setColor( color ); }
 
     /** Returns the color used for lines in the scalebar.
      * @see setLineColor()
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see lineColor()
      * @note added in QGIS 3.0
      */
-    void setLineColor( const QColor& color ) { mLineColor = color; mPen.setColor( mLineColor ); }
+    void setLineColor( const QColor &color ) { mLineColor = color; mPen.setColor( mLineColor ); }
 
     /** Returns the line width in millimeters for lines in the scalebar.
      * @see setLineWidth()
@@ -237,8 +237,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double height() const {return mHeight;}
     void setHeight( double h ) {mHeight = h;}
 
-    void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const {return mComposerMap;}
+    void setComposerMap( const QgsComposerMap *map );
+    const QgsComposerMap *composerMap() const {return mComposerMap;}
 
     double labelBarSpace() const {return mLabelBarSpace;}
     void setLabelBarSpace( double space ) {mLabelBarSpace = space;}
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /** Sets style by name
      @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
-    void setStyle( const QString& styleName );
+    void setStyle( const QString &styleName );
 
     //! Returns style name
     QString style() const;
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * of the segment
      * @note not available in Python bindings
      */
-    void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
+    void segmentPositions( QList<QPair<double, double> > &posWidthList ) const;
 
     //! Sets box size suitable to content
     void adjustBoxSize();
@@ -318,13 +318,13 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //! Moves scalebar position to the left / right depending on alignment and change in item width
     void correctXPositionAlignment( double width, double widthAfter );
@@ -336,12 +336,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void updateSegmentSize();
     //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   protected:
 
     //! Reference to composer map object
-    const QgsComposerMap* mComposerMap = nullptr;
+    const QgsComposerMap *mComposerMap = nullptr;
     //! Number of segments on right side
     int mNumSegments;
     //! Number of segments on left side
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QColor mLineColor = QColor( 0, 0, 0 );
     //! Line width
     double mLineWidth = 0.3;
-    //! Outline
+    //! Stroke
     QPen mPen;
     //! Fill
     QBrush mBrush;
@@ -379,7 +379,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     //! Height of bars/lines
     double mHeight;
     //! Scalebar style
-    QgsScaleBarStyle* mStyle = nullptr;
+    QgsScaleBarStyle *mStyle = nullptr;
 
     //! Space between bar and Text labels
     double mLabelBarSpace;

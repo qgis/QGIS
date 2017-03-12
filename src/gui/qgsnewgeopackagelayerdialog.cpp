@@ -25,12 +25,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsgenericprojectionselector.h"
-
+#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
-#include <QSettings>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -43,15 +42,15 @@
 #include <cpl_string.h>
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOkButton( nullptr )
-    , mTableNameEdited( false )
-    , mLayerIdentifierEdited( false )
+  : QDialog( parent, fl )
+  , mOkButton( nullptr )
+  , mTableNameEdited( false )
+  , mLayerIdentifierEdited( false )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
@@ -88,14 +87,14 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
+  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
   defaultCrs.validate();
   mCrsSelector->setCrs( defaultCrs );
 
-  connect( mFieldNameEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( fieldNameChanged( QString ) ) );
+  connect( mFieldNameEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( fieldNameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  connect( mTableNameEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkOk() ) );
-  connect( mDatabaseEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( checkOk() ) );
+  connect( mTableNameEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( checkOk() ) );
+  connect( mDatabaseEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( checkOk() ) );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
@@ -105,8 +104,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
 
 QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/NewGeoPackageLayer/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ), saveGeometry() );
 }
 
 void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
@@ -147,7 +146,7 @@ void QgsNewGeoPackageLayerDialog::on_mSelectDatabaseButton_clicked()
   mDatabaseEdit->setText( fileName );
 }
 
-void QgsNewGeoPackageLayerDialog::on_mDatabaseEdit_textChanged( const QString& text )
+void QgsNewGeoPackageLayerDialog::on_mDatabaseEdit_textChanged( const QString &text )
 {
   if ( !text.isEmpty() && !mTableNameEdited )
   {
@@ -156,7 +155,7 @@ void QgsNewGeoPackageLayerDialog::on_mDatabaseEdit_textChanged( const QString& t
   }
 }
 
-void QgsNewGeoPackageLayerDialog::on_mTableNameEdit_textChanged( const QString& text )
+void QgsNewGeoPackageLayerDialog::on_mTableNameEdit_textChanged( const QString &text )
 {
   mTableNameEdited = !text.isEmpty();
   if ( !text.isEmpty() && !mLayerIdentifierEdited )
@@ -165,13 +164,13 @@ void QgsNewGeoPackageLayerDialog::on_mTableNameEdit_textChanged( const QString& 
   }
 }
 
-void QgsNewGeoPackageLayerDialog::on_mTableNameEdit_textEdited( const QString& text )
+void QgsNewGeoPackageLayerDialog::on_mTableNameEdit_textEdited( const QString &text )
 {
   // Remember if the user explicitly defined a name
   mTableNameEdited = !text.isEmpty();
 }
 
-void QgsNewGeoPackageLayerDialog::on_mLayerIdentifierEdit_textEdited( const QString& text )
+void QgsNewGeoPackageLayerDialog::on_mLayerIdentifierEdit_textEdited( const QString &text )
 {
   // Remember if the user explicitly defined a name
   mLayerIdentifierEdited = !text.isEmpty();
@@ -213,7 +212,7 @@ void QgsNewGeoPackageLayerDialog::on_mRemoveAttributeButton_clicked()
   checkOk();
 }
 
-void QgsNewGeoPackageLayerDialog::fieldNameChanged( const QString& name )
+void QgsNewGeoPackageLayerDialog::fieldNameChanged( const QString &name )
 {
   mAddAttributeButton->setDisabled( name.isEmpty() || ! mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
@@ -397,9 +396,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QTreeWidgetItemIterator it( mAttributeView );
   while ( *it )
   {
-    QString fieldName(( *it )->text( 0 ) );
-    QString fieldType(( *it )->text( 1 ) );
-    QString fieldWidth(( *it )->text( 2 ) );
+    QString fieldName( ( *it )->text( 0 ) );
+    QString fieldType( ( *it )->text( 1 ) );
+    QString fieldWidth( ( *it )->text( 2 ) );
 
     OGRFieldType ogrType( OFTString );
     if ( fieldType == QLatin1String( "text" ) )

@@ -42,13 +42,13 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
         im = QImage(1000, 600, QImage.Format_RGB32)
-        dots_per_m = 300 / 25.4 * 1000 # 300 dpi to dots per m
+        dots_per_m = 300 / 25.4 * 1000  # 300 dpi to dots per m
         im.setDotsPerMeterX(dots_per_m)
         im.setDotsPerMeterY(dots_per_m)
         p = QPainter(im)
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
-        self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3) # scaleFactor should be pixels/mm
+        self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
     def testConvertSingleUnit(self):
 

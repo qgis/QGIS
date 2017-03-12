@@ -40,24 +40,24 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      * @param layer The layer attached for this widget.
      * @param extent The current extent.
      */
-    QgsHillshadeRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     /**
       * Factory method to create the renderer for this type.
       */
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsHillshadeRendererWidget( layer, theExtent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsHillshadeRendererWidget( layer, extent ); }
 
     /**
      * @brief The renderer for the widget.
      * @return A new renderer for the the config in the widget
      */
-    QgsRasterRenderer* renderer() override;
+    QgsRasterRenderer *renderer() override;
 
     /**
      * @brief Set the widget state from the given renderer.
      * @param renderer The renderer to take the state from.
      */
-    void setFromRenderer( const QgsRasterRenderer* renderer );
+    void setFromRenderer( const QgsRasterRenderer *renderer );
 
     /**
      * Returns the direction of the light over the raster between 0-360.

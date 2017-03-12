@@ -16,13 +16,14 @@
 #include "qgsselectbyformdialog.h"
 #include "qgsattributeform.h"
 #include "qgsmapcanvas.h"
-#include <QLayout>
-#include <QSettings>
+#include "qgssettings.h"
 
-QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAttributeEditorContext& context, QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mLayer( layer )
-    , mMessageBar( nullptr )
+#include <QLayout>
+
+QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mLayer( layer )
+  , mMessageBar( nullptr )
 {
   QgsAttributeEditorContext dlgContext = context;
   dlgContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
@@ -31,7 +32,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAt
   mForm = new QgsAttributeForm( layer, QgsFeature(), dlgContext, this );
   mForm->setMode( QgsAttributeForm::SearchMode );
 
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   vLayout->setMargin( 0 );
   vLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( vLayout );
@@ -40,31 +41,31 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer* layer, const QgsAt
 
   connect( mForm, SIGNAL( closed() ), this, SLOT( close() ) );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SelectByForm/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );
 
   setWindowTitle( tr( "Select features by value" ) );
 }
 
 QgsSelectByFormDialog::~QgsSelectByFormDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SelectByForm/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/SelectByForm/geometry" ), saveGeometry() );
 }
 
-void QgsSelectByFormDialog::setMessageBar( QgsMessageBar* messageBar )
+void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )
 {
   mMessageBar = messageBar;
   mForm->setMessageBar( messageBar );
 }
 
-void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas* canvas )
+void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   connect( mForm, &QgsAttributeForm::zoomToFeatures, this, &QgsSelectByFormDialog::zoomToFeatures );
 }
 
-void QgsSelectByFormDialog::zoomToFeatures( const QString& filter )
+void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 {
   QgsFeatureIds ids;
 
@@ -92,8 +93,8 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString& filter )
   }
   features.close();
 
-  QSettings settings;
-  int timeout = settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  QgsSettings settings;
+  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
     mMapCanvas->zoomToFeatureExtent( bbox );

@@ -40,7 +40,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapSettings
                        )
 
-from qgis.testing import start_app, unittest
+from qgis.testing import unittest
 
 from qgis.testing.mocked import get_iface
 
@@ -186,6 +186,7 @@ class TestQgsBlendModes(unittest.TestCase):
         myResult = checker.runTest("raster_blendmodes", 20)
         myMessage = ('raster blending failed')
         assert myResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

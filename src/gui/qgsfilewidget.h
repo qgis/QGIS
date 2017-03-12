@@ -83,7 +83,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * @brief setDialogTitle defines the open file dialog title
      * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
      */
-    void setDialogTitle( const QString& title );
+    void setDialogTitle( const QString &title );
 
     //! returns the filters used for QDialog::getOpenFileName
     QString filter() const;
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     //! returns the default root path
     QString defaultRoot() const;
     //! determines the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath
-    void setDefaultRoot( const QString& defaultRoot );
+    void setDefaultRoot( const QString &defaultRoot );
 
     //! returns the storage mode (i.e. file or directory)
     QgsFileWidget::StorageMode storageMode() const;
@@ -126,11 +126,11 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   signals:
     //! emitted as soon as the current file or directory is changed
-    void fileChanged( const QString& );
+    void fileChanged( const QString & );
 
   private slots:
     void openFileDialog();
-    void textEdited( const QString& path );
+    void textEdited( const QString &path );
 
   private:
     QString mFilePath;
@@ -143,15 +143,15 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     StorageMode mStorageMode;
     RelativeStorage mRelativeStorage;
 
-    QLabel* mLinkLabel = nullptr;
-    QgsFilterLineEdit* mLineEdit = nullptr;
-    QToolButton* mFileWidgetButton = nullptr;
+    QLabel *mLinkLabel = nullptr;
+    QgsFilterLineEdit *mLineEdit = nullptr;
+    QToolButton *mFileWidgetButton = nullptr;
 
     //! returns a HTML code with a link to the given file path
-    QString toUrl( const QString& path ) const;
+    QString toUrl( const QString &path ) const;
 
     //! Returns a filePath with relative path options applied (or not) !
-    QString relativePath( const QString& filePath, bool removeRelative ) const;
+    QString relativePath( const QString &filePath, bool removeRelative ) const;
 
     friend class TestQgsFileWidget;
 };

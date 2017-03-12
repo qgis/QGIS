@@ -28,15 +28,15 @@
  ****************************************************************************/
 
 QgsInterval::QgsInterval()
-    : mSeconds( 0.0 )
-    , mValid( false )
+  : mSeconds( 0.0 )
+  , mValid( false )
 {
 
 }
 
 QgsInterval::QgsInterval( double seconds )
-    : mSeconds( seconds )
-    , mValid( true )
+  : mSeconds( seconds )
+  , mValid( true )
 { }
 
 bool QgsInterval::operator==( QgsInterval other ) const
@@ -49,14 +49,14 @@ bool QgsInterval::operator==( QgsInterval other ) const
     return false;
 }
 
-QgsInterval QgsInterval::fromString( const QString& string )
+QgsInterval QgsInterval::fromString( const QString &string )
 {
   int seconds = 0;
   QRegExp rx( "([-+]?\\d?\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
   QStringList list;
   int pos = 0;
 
-  while (( pos = rx.indexIn( string, pos ) ) != -1 )
+  while ( ( pos = rx.indexIn( string, pos ) ) != -1 )
   {
     list << rx.cap( 1 );
     pos += rx.matchedLength();
@@ -71,7 +71,7 @@ QgsInterval QgsInterval::fromString( const QString& string )
   map.insert( 0 + MONTHS, QStringList() << QStringLiteral( "month" ) << QStringLiteral( "months" ) << QObject::tr( "month|months", "list of words separated by | which reference months" ).split( '|' ) );
   map.insert( 0 + YEARS, QStringList() << QStringLiteral( "year" ) << QStringLiteral( "years" ) << QObject::tr( "year|years", "list of words separated by | which reference years" ).split( '|' ) );
 
-  Q_FOREACH ( const QString& match, list )
+  Q_FOREACH ( const QString &match, list )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
@@ -86,7 +86,7 @@ QgsInterval QgsInterval::fromString( const QString& string )
     for ( ; it != map.constEnd(); ++it )
     {
       int duration = it.key();
-      Q_FOREACH ( const QString& name, it.value() )
+      Q_FOREACH ( const QString &name, it.value() )
       {
         if ( match.contains( name, Qt::CaseInsensitive ) )
         {
@@ -110,7 +110,7 @@ QgsInterval QgsInterval::fromString( const QString& string )
   return QgsInterval( seconds );
 }
 
-QDebug operator<<( QDebug dbg, const QgsInterval& interval )
+QDebug operator<<( QDebug dbg, const QgsInterval &interval )
 {
   if ( !interval.isValid() )
     dbg.nospace() << "QgsInterval()";
@@ -119,13 +119,13 @@ QDebug operator<<( QDebug dbg, const QgsInterval& interval )
   return dbg.maybeSpace();
 }
 
-QgsInterval operator-( const QDateTime& dt1, const QDateTime& dt2 )
+QgsInterval operator-( const QDateTime &dt1, const QDateTime &dt2 )
 {
   qint64 mSeconds = dt2.msecsTo( dt1 );
   return QgsInterval( mSeconds / 1000.0 );
 }
 
-QDateTime operator+( const QDateTime& start, QgsInterval interval )
+QDateTime operator+( const QDateTime &start, QgsInterval interval )
 {
   return start.addMSecs( static_cast<qint64>( interval.seconds() * 1000.0 ) );
 }

@@ -52,11 +52,11 @@ static const QString icon_ = QStringLiteral( ":/icons/spatialquery.png" );
 * @param qgis Pointer to the QGIS main window
 * @parma mIface Pointer to the QGIS interface object
 */
-QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mDialog( nullptr )
-    , mIface( iface )
-    , mSpatialQueryAction( nullptr )
+QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface *iface )
+  : QgisPlugin( name_, description_, category_, version_, type_ )
+  , mDialog( nullptr )
+  , mIface( iface )
+  , mSpatialQueryAction( nullptr )
 {
 }
 
@@ -132,29 +132,29 @@ void QgsSpatialQueryPlugin::run()
 }
 
 //! Set icons to the current theme
-void QgsSpatialQueryPlugin::setCurrentTheme( const QString& )
+void QgsSpatialQueryPlugin::setCurrentTheme( const QString & )
 {
   if ( mSpatialQueryAction )
     mSpatialQueryAction->setIcon( getThemeIcon( QStringLiteral( "/spatialquery.png" ) ) );
 }
 
-QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
+QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::activeThemePath() + "/plugins" + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + name );
   }
   else
   {
-    return QIcon( ":/icons" + theName );
+    return QIcon( ":/icons" + name );
   }
 }
 
-void QgsSpatialQueryPlugin::MsgDEBUG( const QString& sMSg )
+void QgsSpatialQueryPlugin::MsgDEBUG( const QString &sMSg )
 {
   QMessageBox::warning( nullptr, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
 }
@@ -166,7 +166,7 @@ void QgsSpatialQueryPlugin::MsgDEBUG( const QString& sMSg )
 * of the plugin class
 */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin* classFactory( QgisInterface* iface )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *iface )
 {
   return new QgsSpatialQueryPlugin( iface );
 }
@@ -208,7 +208,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin* theSpatialQueryPluginPointer )
+QGISEXTERN void unload( QgisPlugin *spatialQueryPluginPointer )
 {
-  delete theSpatialQueryPluginPointer;
+  delete spatialQueryPluginPointer;
 }

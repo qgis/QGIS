@@ -75,8 +75,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
-    QgsDataProvider( QString const & uri = "" )
-        : mDataSourceURI( uri )
+    QgsDataProvider( QString const &uri = "" )
+      : mDataSourceURI( uri )
     {}
 
     /** Returns the coordinate system for the data source.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * connection string
      * @param uri source specification
      */
-    virtual void setDataSourceUri( const QString & uri )
+    virtual void setDataSourceUri( const QString &uri )
     {
       mDataSourceURI = uri;
     }
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * that can be used by the data provider to create a subset.
      * Must be implemented in the dataprovider.
      */
-    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true )
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true )
     {
       // NOP by default
       Q_UNUSED( subset );
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /** Invalidate connections corresponding to specified name
      * @note added in QGIS 2.16
      */
-    virtual void invalidateConnections( const QString& connection ) { Q_UNUSED( connection ); }
+    virtual void invalidateConnections( const QString &connection ) { Q_UNUSED( connection ); }
 
     /** Enter update mode.
      *
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * @note added in 2.16
      */
-    void setProviderProperty( ProviderProperty property, const QVariant& value );
+    void setProviderProperty( ProviderProperty property, const QVariant &value );
 
     /**
      * Allows setting arbitrary properties on the provider.
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * @note added in 2.16
      */
-    void setProviderProperty( int property, const QVariant& value );
+    void setProviderProperty( int property, const QVariant &value );
 
     /**
      * Get the current value of a certain provider property.
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * @note added in 2.16
      */
-    QVariant providerProperty( ProviderProperty property, const QVariant& defaultValue = QVariant() ) const;
+    QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 
     /**
      * Get the current value of a certain provider property.
@@ -390,7 +390,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * @note added in 2.16
      */
-    QVariant providerProperty( int property , const QVariant& defaultValue ) const;
+    QVariant providerProperty( int property, const QVariant &defaultValue ) const;
 
   signals:
 
@@ -421,10 +421,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QgsError mError;
 
     //! Add error message
-    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
+    void appendError( const QgsErrorMessage &message ) { mError.append( message );}
 
     //! Set error message
-    void setError( const QgsError & theError ) { mError = theError;}
+    void setError( const QgsError &error ) { mError = error;}
 
   private:
 

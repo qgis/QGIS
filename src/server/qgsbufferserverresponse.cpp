@@ -37,13 +37,13 @@ QgsBufferServerResponse::~QgsBufferServerResponse()
 
 }
 
-void QgsBufferServerResponse::clearHeader( const QString& key )
+void QgsBufferServerResponse::clearHeader( const QString &key )
 {
   if ( !mHeadersSent )
     mHeaders.remove( key );
 }
 
-void QgsBufferServerResponse::setHeader( const QString& key, const QString& value )
+void QgsBufferServerResponse::setHeader( const QString &key, const QString &value )
 {
   if ( ! mHeadersSent )
     mHeaders.insert( key, value );
@@ -54,7 +54,7 @@ void QgsBufferServerResponse::setReturnCode( int code )
   mReturnCode = code;
 }
 
-QString QgsBufferServerResponse::getHeader( const QString& key ) const
+QString QgsBufferServerResponse::getHeader( const QString &key ) const
 {
   return mHeaders.value( key );
 }
@@ -69,7 +69,7 @@ bool QgsBufferServerResponse::headersSent() const
   return mHeadersSent;
 }
 
-void QgsBufferServerResponse::sendError( int code,  const QString& message )
+void QgsBufferServerResponse::sendError( int code,  const QString &message )
 {
   if ( mHeadersSent )
   {
@@ -84,7 +84,7 @@ void QgsBufferServerResponse::sendError( int code,  const QString& message )
   finish();
 }
 
-QIODevice* QgsBufferServerResponse::io()
+QIODevice *QgsBufferServerResponse::io()
 {
   return &mBuffer;
 }
@@ -116,7 +116,7 @@ void QgsBufferServerResponse::flush()
   }
 
   mBuffer.seek( 0 );
-  QByteArray& ba = mBuffer.buffer();
+  QByteArray &ba = mBuffer.buffer();
   mBody.append( ba );
   ba.clear();
 }
@@ -132,8 +132,8 @@ void QgsBufferServerResponse::clear()
 
 //QgsBufferServerRequest
 //
-QgsBufferServerRequest::QgsBufferServerRequest( const QString& url, Method method, QByteArray* data )
-    : QgsServerRequest( url, method )
+QgsBufferServerRequest::QgsBufferServerRequest( const QString &url, Method method, QByteArray *data )
+  : QgsServerRequest( url, method )
 {
   if ( data )
   {
@@ -141,8 +141,8 @@ QgsBufferServerRequest::QgsBufferServerRequest( const QString& url, Method metho
   }
 }
 
-QgsBufferServerRequest::QgsBufferServerRequest( const QUrl& url, Method method, QByteArray* data )
-    : QgsServerRequest( url, method )
+QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, QByteArray *data )
+  : QgsServerRequest( url, method )
 {
   if ( data )
   {

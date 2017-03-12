@@ -34,7 +34,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = 0 );
+    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = 0 );
 
     //! Save position
     void saveWindowLocation();
@@ -43,7 +43,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restorePosition();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint();
 
     //! Mose move
     void mouseMove( const QgsPoint &point );
@@ -71,6 +71,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Open configuration tab
     void openConfigTab();
+
+    void crsChanged();
 
   private:
 
@@ -113,7 +115,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
-    QgsMeasureTool* mTool = nullptr;
+    QgsMeasureTool *mTool = nullptr;
 
     QgsPoint mLastMousePoint;
 

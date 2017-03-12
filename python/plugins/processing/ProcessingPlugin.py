@@ -32,6 +32,7 @@ import os
 import sys
 
 from qgis.core import QgsApplication
+from qgis.gui import QgsOptionsWidgetFactory
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
@@ -39,7 +40,7 @@ from qgis.PyQt.QtGui import QIcon
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
-from processing.gui.ConfigDialog import ConfigDialog
+from processing.gui.ConfigDialog import ConfigOptionsPage, ConfigDialog
 from processing.gui.ResultsDock import ResultsDock
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
@@ -53,10 +54,25 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 
+class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
+
+    def __init__(self):
+        super(QgsOptionsWidgetFactory, self).__init__()
+
+    def icon(self):
+        return QgsApplication.getThemeIcon('/processingAlgorithm.svg')
+
+    def createWidget(self, parent):
+        return ConfigOptionsPage(parent)
+
+
 class ProcessingPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface
+        self.options_factory = ProcessingOptionsFactory()
+        self.options_factory.setTitle(self.tr('Processing'))
+        iface.registerOptionsWidgetFactory(self.options_factory)
         Processing.initialize()
 
     def initGui(self):
@@ -122,16 +138,6 @@ class ProcessingPlugin(object):
 
         self.menu.addSeparator()
 
-        self.configAction = QAction(
-            QIcon(QgsApplication.getThemeIcon('mActionOptions.svg')),
-            self.tr('&Options...'), self.iface.mainWindow())
-        self.configAction.setObjectName('configAction')
-        self.configAction.setMenuRole(QAction.NoRole)
-
-        self.configAction.triggered.connect(self.openConfig)
-        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
-        self.menu.addAction(self.configAction)
-
         initializeMenus()
         createMenus()
 
@@ -152,9 +158,10 @@ class ProcessingPlugin(object):
         self.iface.unregisterMainWindowAction(self.toolboxAction)
         self.iface.unregisterMainWindowAction(self.modelerAction)
         self.iface.unregisterMainWindowAction(self.historyAction)
-        self.iface.unregisterMainWindowAction(self.configAction)
         self.iface.unregisterMainWindowAction(self.resultsAction)
         self.iface.unregisterMainWindowAction(self.commanderAction)
+
+        self.iface.unregisterOptionsWidgetFactory(self.options_factory)
 
         removeMenus()
 
@@ -188,10 +195,6 @@ class ProcessingPlugin(object):
 
     def openHistory(self):
         dlg = HistoryDialog()
-        dlg.exec_()
-
-    def openConfig(self):
-        dlg = ConfigDialog(self.toolbox)
         dlg.exec_()
 
     def tr(self, message):

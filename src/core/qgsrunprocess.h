@@ -45,7 +45,7 @@ class CORE_EXPORT QgsRunProcess: public QObject
     // The action argument contains string with the command.
     // If capture is true, the standard output and error from the process
     // will be sent to QgsMessageOutput - usually a dialog box.
-    static QgsRunProcess* create( const QString& action, bool capture )
+    static QgsRunProcess *create( const QString &action, bool capture )
     { return new QgsRunProcess( action, capture ); }
 
   public slots:
@@ -56,14 +56,14 @@ class CORE_EXPORT QgsRunProcess: public QObject
     void dialogGone();
 
   private:
-    QgsRunProcess( const QString& action, bool capture );
+    QgsRunProcess( const QString &action, bool capture );
     ~QgsRunProcess();
 
     // Deletes the instance of the class
     void die();
 
-    QProcess* mProcess = nullptr;
-    QgsMessageOutput* mOutput = nullptr;
+    QProcess *mProcess = nullptr;
+    QgsMessageOutput *mOutput = nullptr;
     QString mCommand;
 };
 

@@ -38,7 +38,7 @@ QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache
 
 
 QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
-    : QgsAuthMethod()
+  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -85,7 +85,7 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
 
   QgsDebugMsg( QString( "Update request SSL config: HTTPS connection for authcfg: %1" ).arg( authcfg ) );
 
-  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
     QgsDebugMsg( QString( "Update request SSL config FAILED for authcfg: %1: PKI bundle invalid" ).arg( authcfg ) );
@@ -112,7 +112,7 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
 
   QgsDebugMsg( QString( "Update URI items for authcfg: %1" ).arg( authcfg ) );
 
-  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
     QgsDebugMsg( "Update URI items FAILED: PKI bundle invalid" );
@@ -224,7 +224,7 @@ void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &authcfg )
 {
-  QgsPkiConfigBundle * bundle = nullptr;
+  QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
   if ( sPkiConfigBundleCache.contains( authcfg ) )
@@ -282,7 +282,7 @@ void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
 {
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    QgsPkiConfigBundle * pkibundle = sPkiConfigBundleCache.take( authcfg );
+    QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
     pkibundle = nullptr;
     QgsDebugMsg( QString( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );

@@ -48,7 +48,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
   public:
     //! Constructor
     QgsGrassRegion( QgisInterface *iface,
-                    QWidget * parent = 0, Qt::WindowFlags f = 0 );
+                    QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
 
     ~QgsGrassRegion();
@@ -124,7 +124,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     QString formatExtent( double v );
     QString formatResolution( double v );
 
-    QgsGrassRegionEdit* mRegionEdit = nullptr;
+    QgsGrassRegionEdit *mRegionEdit = nullptr;
 };
 
 //! Map tool which uses rubber band for changing grass region
@@ -133,7 +133,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     Q_OBJECT
 
   public:
-    explicit QgsGrassRegionEdit( QgsMapCanvas* );
+    explicit QgsGrassRegionEdit( QgsMapCanvas * );
 
     ~QgsGrassRegionEdit();
 
@@ -154,10 +154,10 @@ class QgsGrassRegionEdit : public QgsMapTool
     QgsRectangle getRegion();
 
     //! refresh the rectangle displayed in canvas
-    void setRegion( const QgsPoint&, const QgsPoint& );
+    void setRegion( const QgsPoint &, const QgsPoint & );
     void setSrcRegion( const QgsRectangle &rect );
 
-    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform& coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
+    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand *rubberBand, const QgsRectangle &rect, const QgsCoordinateTransform &coordinateTransform = QgsCoordinateTransform(), bool isPolygon = false );
     void calcSrcRegion();
     static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, const QgsCoordinateTransform &coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
 
@@ -170,8 +170,8 @@ class QgsGrassRegionEdit : public QgsMapTool
 
   private:
     //! Rubber band for selecting grass region
-    QgsRubberBand* mRubberBand = nullptr;
-    QgsRubberBand* mSrcRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
+    QgsRubberBand *mSrcRubberBand = nullptr;
 
     //! Status of input from canvas
     bool mDraw;

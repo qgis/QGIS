@@ -46,36 +46,35 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     };
 
     QgsVectorFieldSymbolLayer();
-    ~QgsVectorFieldSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *createFromSld( QDomElement &element );
 
     QString layerType() const override { return QStringLiteral( "VectorField" ); }
 
-    bool setSubSymbol( QgsSymbol* symbol ) override;
-    QgsSymbol* subSymbol() override { return mLineSymbol; }
+    bool setSubSymbol( QgsSymbol *symbol ) override;
+    QgsSymbol *subSymbol() override { return mLineSymbol.get(); }
 
-    void setColor( const QColor& color ) override;
+    void setColor( const QColor &color ) override;
     virtual QColor color() const override;
 
-    void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
-    void startRender( QgsSymbolRenderContext& context ) override;
-    void stopRender( QgsSymbolRenderContext& context ) override;
+    void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
 
-    QgsVectorFieldSymbolLayer* clone() const override;
+    QgsVectorFieldSymbolLayer *clone() const override;
     QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
-    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //setters and getters
-    void setXAttribute( const QString& attribute ) { mXAttribute = attribute; }
+    void setXAttribute( const QString &attribute ) { mXAttribute = attribute; }
     QString xAttribute() const { return mXAttribute; }
-    void setYAttribute( const QString& attribute ) { mYAttribute = attribute; }
+    void setYAttribute( const QString &attribute ) { mYAttribute = attribute; }
     QString yAttribute() const { return mYAttribute; }
     void setScale( double s ) { mScale = s; }
     double scale() const { return mScale; }
@@ -89,7 +88,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
     /** Sets the units for the distance.
@@ -103,11 +102,11 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     */
     QgsUnitTypes::RenderUnit distanceUnit() const { return mDistanceUnit; }
 
-    void setDistanceMapUnitScale( const QgsMapUnitScale& scale ) { mDistanceMapUnitScale = scale; }
-    const QgsMapUnitScale& distanceMapUnitScale() const { return mDistanceMapUnitScale; }
+    void setDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mDistanceMapUnitScale = scale; }
+    const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
     // TODO - implement properly
-    virtual QRectF bounds( QPointF, QgsSymbolRenderContext& ) override { return QRectF(); }
+    virtual QRectF bounds( QPointF, QgsSymbolRenderContext & ) override { return QRectF(); }
 
   private:
     QString mXAttribute;
@@ -119,14 +118,14 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     AngleOrientation mAngleOrientation;
     AngleUnits mAngleUnits;
 
-    QgsLineSymbol* mLineSymbol = nullptr;
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
 
     //Attribute indices are resolved in startRender method
     int mXIndex;
     int mYIndex;
 
     //Converts length/angle to cartesian x/y
-    void convertPolarToCartesian( double length, double angle, double& x, double& y ) const;
+    void convertPolarToCartesian( double length, double angle, double &x, double &y ) const;
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYER_H

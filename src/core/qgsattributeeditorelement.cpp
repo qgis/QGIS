@@ -21,7 +21,7 @@ void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *wi
   mChildren.append( widget );
 }
 
-void QgsAttributeEditorContainer::setName( const QString& name )
+void QgsAttributeEditorContainer::setName( const QString &name )
 {
   mName = name;
 }
@@ -31,7 +31,7 @@ QgsOptionalExpression QgsAttributeEditorContainer::visibilityExpression() const
   return mVisibilityExpression;
 }
 
-void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpression& visibilityExpression )
+void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpression &visibilityExpression )
 {
   if ( visibilityExpression == mVisibilityExpression )
     return;
@@ -39,11 +39,11 @@ void QgsAttributeEditorContainer::setVisibilityExpression( const QgsOptionalExpr
   mVisibilityExpression = visibilityExpression;
 }
 
-QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
+QList<QgsAttributeEditorElement *> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
 {
-  QList<QgsAttributeEditorElement*> results;
+  QList<QgsAttributeEditorElement *> results;
 
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
+  Q_FOREACH ( QgsAttributeEditorElement *elem, mChildren )
   {
     if ( elem->type() == type )
     {
@@ -52,7 +52,7 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
 
     if ( elem->type() == AeTypeContainer )
     {
-      QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
+      QgsAttributeEditorContainer *cont = dynamic_cast<QgsAttributeEditorContainer *>( elem );
       if ( cont )
         results += cont->findElements( type );
     }
@@ -67,22 +67,22 @@ void QgsAttributeEditorContainer::clear()
   mChildren.clear();
 }
 
-QgsAttributeEditorElement* QgsAttributeEditorField::clone( QgsAttributeEditorElement* parent ) const
+QgsAttributeEditorElement *QgsAttributeEditorField::clone( QgsAttributeEditorElement *parent ) const
 {
-  QgsAttributeEditorField* element = new QgsAttributeEditorField( name(), mIdx, parent );
+  QgsAttributeEditorField *element = new QgsAttributeEditorField( name(), mIdx, parent );
 
   return element;
 }
 
-bool QgsAttributeEditorRelation::init( QgsRelationManager* relationManager )
+bool QgsAttributeEditorRelation::init( QgsRelationManager *relationManager )
 {
   mRelation = relationManager->relation( mRelationId );
   return mRelation.isValid();
 }
 
-QgsAttributeEditorElement* QgsAttributeEditorRelation::clone( QgsAttributeEditorElement* parent ) const
+QgsAttributeEditorElement *QgsAttributeEditorRelation::clone( QgsAttributeEditorElement *parent ) const
 {
-  QgsAttributeEditorRelation* element = new QgsAttributeEditorRelation( name(), mRelationId, parent );
+  QgsAttributeEditorRelation *element = new QgsAttributeEditorRelation( name(), mRelationId, parent );
   element->mRelation = mRelation;
   element->mShowLinkButton = mShowLinkButton;
   element->mShowUnlinkButton = mShowUnlinkButton;
@@ -99,7 +99,7 @@ QString QgsAttributeEditorField::typeIdentifier() const
   return QStringLiteral( "attributeEditorField" );
 }
 
-QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument& doc ) const
+QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( typeIdentifier() );
   elem.setAttribute( QStringLiteral( "name" ), mName );
@@ -119,7 +119,7 @@ void QgsAttributeEditorElement::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 }
 
-void QgsAttributeEditorRelation::saveConfiguration( QDomElement& elem ) const
+void QgsAttributeEditorRelation::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "relation" ), mRelation.id() );
   elem.setAttribute( QStringLiteral( "showLinkButton" ), mShowLinkButton );

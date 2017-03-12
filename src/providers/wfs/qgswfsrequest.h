@@ -27,15 +27,15 @@ class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QString& theUri );
+    explicit QgsWfsRequest( const QString &uri );
 
     virtual ~QgsWfsRequest();
 
     //! \brief proceed to sending a GET request
-    bool sendGET( const QUrl& url, bool synchronous, bool forceRefresh = false, bool cache = true );
+    bool sendGET( const QUrl &url, bool synchronous, bool forceRefresh = false, bool cache = true );
 
     //! \brief proceed to sending a synchronous POST request
-    bool sendPOST( const QUrl& url, const QString& contentTypeHeader, const QByteArray& data );
+    bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data );
 
     enum ErrorCode { NoError,
                      NetworkError,
@@ -43,7 +43,7 @@ class QgsWfsRequest : public QObject
                      XmlError,
                      ServerExceptionError,
                      WFSVersionNotSupported
-                 };
+                   };
 
     //! \brief Return error code (after download/post)
     ErrorCode errorCode() const { return mErrorCode; }
@@ -68,7 +68,7 @@ class QgsWfsRequest : public QObject
   protected slots:
     void replyProgress( qint64, qint64 );
     void replyFinished();
-    void requestTimedOut( QNetworkReply* reply );
+    void requestTimedOut( QNetworkReply *reply );
 
   protected:
     //! URI
@@ -105,7 +105,7 @@ class QgsWfsRequest : public QObject
 
     /** Return (translated) error message, composed with a
         (possibly translated, but sometimes coming from server) reason  */
-    virtual QString errorMessageWithReason( const QString& reason ) = 0;
+    virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
     //! Return experiation delay in second
     virtual int defaultExpirationInSec() { return 0; }

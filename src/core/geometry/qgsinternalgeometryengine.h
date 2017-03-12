@@ -38,7 +38,7 @@ class QgsInternalGeometryEngine
      * for the whole lifetime of this object.
      * @param geometry
      */
-    explicit QgsInternalGeometryEngine( const QgsGeometry& geometry );
+    explicit QgsInternalGeometryEngine( const QgsGeometry &geometry );
 
     /**
      * Will extrude a line or (segmentized) curve by a given offset and return a polygon
@@ -59,7 +59,7 @@ class QgsInternalGeometryEngine
      * to calculate.
      * Optionally, the distance to the polygon boundary from the pole can be stored.
      */
-    QgsGeometry poleOfInaccessibility( double precision, double* distanceFromBoundary = nullptr ) const;
+    QgsGeometry poleOfInaccessibility( double precision, double *distanceFromBoundary = nullptr ) const;
 
     /**
      * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
@@ -72,7 +72,7 @@ class QgsInternalGeometryEngine
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
   private:
-    const QgsAbstractGeometry* mGeometry = nullptr;
+    const QgsAbstractGeometry *mGeometry = nullptr;
 };
 
 #endif // QGSINTERNALGEOMETRYENGINE_H

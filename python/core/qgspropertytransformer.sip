@@ -1,3 +1,38 @@
+class QgsCurveTransform
+{
+%TypeHeaderCode
+#include <qgspropertytransformer.h>
+%End
+
+  public:
+
+    QgsCurveTransform();
+    QgsCurveTransform( const QList< QgsPoint >& controlPoints );
+    ~QgsCurveTransform();
+    QgsCurveTransform( const QgsCurveTransform& other );
+
+    //QgsCurveTransform& operator=( const QgsCurveTransform& other );
+
+    QList< QgsPoint > controlPoints() const;
+
+    void setControlPoints( const QList< QgsPoint >& points );
+
+    void addControlPoint( double x, double y );
+
+    void removeControlPoint( double x, double y );
+
+    double y( double x ) const;
+
+    QVector< double > y( const QVector< double >& x ) const;
+
+    bool readXml( const QDomElement& elem, const QDomDocument& doc );
+
+    bool writeXml( QDomElement& transformElem, QDomDocument& doc ) const;
+
+    QVariant toVariant() const;
+
+    bool loadVariant( const QVariant &transformer );
+};
 class QgsPropertyTransformer
 {
 %TypeHeaderCode
@@ -28,15 +63,16 @@ class QgsPropertyTransformer
 
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
 
+    QgsPropertyTransformer( const QgsPropertyTransformer& other );
+
     virtual ~QgsPropertyTransformer();
 
     virtual Type transformerType() const = 0;
 
     virtual QgsPropertyTransformer* clone() = 0 /Factory/;
+    virtual bool loadVariant(const QVariant &transformer );
 
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
-
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
+    virtual QVariant toVariant() const;
 
     double minValue() const;
 
@@ -46,11 +82,18 @@ class QgsPropertyTransformer
 
     void setMaxValue( double max );
 
+    QgsCurveTransform* curveTransform() const;
+
+    void setCurveTransform( QgsCurveTransform* transform /Transfer/ );
+
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
     virtual QString toExpression( const QString& baseExpression ) const = 0;
 
     static QgsPropertyTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
 
+  protected:
+
+    double transformNumeric( double input ) const;
 };
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
@@ -66,10 +109,12 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
                                   double nullOutput = 0.0,
                                   double exponent = 1.0 );
 
+    QgsGenericNumericTransformer( const QgsGenericNumericTransformer& other );
+
     virtual Type transformerType() const;
     virtual QgsGenericNumericTransformer* clone() /Factory/;
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
+    virtual QVariant toVariant() const;
+    virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
     virtual QString toExpression( const QString& baseExpression ) const;
     static QgsGenericNumericTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName ) /Factory/;
@@ -108,10 +153,12 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
                              double nullSize = 0.0,
                              double exponent = 1.0 );
 
+    QgsSizeScaleTransformer( const QgsSizeScaleTransformer& other );
+
     virtual Type transformerType() const;
     virtual QgsSizeScaleTransformer* clone() /Factory/;
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
+    virtual QVariant toVariant() const;
+    virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
     virtual QString toExpression( const QString& baseExpression ) const;
 
@@ -161,8 +208,8 @@ class QgsColorRampTransformer : QgsPropertyTransformer
 
     virtual Type transformerType() const;
     virtual QgsColorRampTransformer* clone() /Factory/;
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
+    virtual QVariant toVariant() const;
+    virtual bool loadVariant( const QVariant &definition );
     virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
     virtual QString toExpression( const QString& baseExpression ) const;
 

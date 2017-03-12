@@ -126,12 +126,12 @@ bool DRW_TableEntry::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *
       duint16 strDataSize = strBuf->getRawShort16();
       QgsDebugMsg( QString( "string strDataSize: 0x%1" ).arg( strDataSize, 0, 16 ) );
 
-      if (( strDataSize& 0x8000 ) == 0x8000 )
+      if ( ( strDataSize & 0x8000 ) == 0x8000 )
       {
         QgsDebugMsg( "string 0x8000 bit is set" );
         strBuf->moveBitPos( -33 );//RLZ pending to verify
         duint16 hiSize = strBuf->getRawShort16();
-        strDataSize = (( strDataSize & 0x7fff ) | ( hiSize << 15 ) );
+        strDataSize = ( ( strDataSize & 0x7fff ) | ( hiSize << 15 ) );
       }
       strBuf->moveBitPos( -strDataSize - 16 ); //-14
 
@@ -176,7 +176,7 @@ bool DRW_TableEntry::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *
         duint16 cp = tmpExtDataBuf.getBERawShort16();
         QgsDebugMsg( QString( "str codepage:%1" ).arg( cp ) );
         Q_UNUSED( cp );
-        for ( int i = 0;i < strLength + 1;i++ )  //string length + null terminating char
+        for ( int i = 0; i < strLength + 1; i++ ) //string length + null terminating char
         {
           duint8 dxfChar = tmpExtDataBuf.getRawChar8();
           QgsDebugMsg( QString( " dxfChar:%1" ).arg( dxfChar ) );
@@ -565,7 +565,7 @@ bool DRW_LType::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     /*double d4= */
     buf->getBitDouble();
     int bs2 = buf->getBitShort();
-    if (( bs2 & 2 ) != 0 ) haveStrArea = true;
+    if ( ( bs2 & 2 ) != 0 ) haveStrArea = true;
   }
 
   QStringList l;
@@ -579,7 +579,7 @@ bool DRW_LType::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   {
     duint8 strarea[256];
     buf->getBytes( strarea, 256 );
-    QgsDebugMsg( QString( "string area 256 bytes:\n%1" ).arg( reinterpret_cast<char*>( strarea ) ) );
+    QgsDebugMsg( QString( "string area 256 bytes:\n%1" ).arg( reinterpret_cast<char *>( strarea ) ) );
   }
   else   //2007+
   {
@@ -588,7 +588,7 @@ bool DRW_LType::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     {
       duint8 strarea[512];
       buf->getBytes( strarea, 512 );
-      QgsDebugMsg( QString( "string area 256 bytes:\n%1" ).arg( reinterpret_cast<char*>( strarea ) ) );
+      QgsDebugMsg( QString( "string area 256 bytes:\n%1" ).arg( reinterpret_cast<char *>( strarea ) ) );
     }
     else
     {
@@ -617,7 +617,7 @@ bool DRW_LType::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
                     .arg( ltControlH.code ).arg( ltControlH.size ).arg( ltControlH.ref, 0, 16 ).arg( buf->numRemainingBytes() ), 4 );
   parentHandle = ltControlH.ref;
 
-  for ( int i = 0; i < numReactors;++i )
+  for ( int i = 0; i < numReactors; ++i )
   {
     dwgHandle reactorsH = buf->getHandle();
     QgsDebugMsgLevel( QString( "reactorsH control handle: %1.%2 0x%3" ).arg( reactorsH.code ).arg( reactorsH.size ).arg( reactorsH.ref, 0, 16 ), 4 );
@@ -720,7 +720,7 @@ bool DRW_Layer::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     flags |= ( f >> 1 ) & 0x0002;//frozen in new
     flags |= ( f >> 1 ) & 0x0004;//locked
     plotF = ( f >> 4 ) & 0x0001;
-    lWeight = DRW_LW_Conv::dwgInt2lineWidth(( f & 0x03E0 ) >> 5 );
+    lWeight = DRW_LW_Conv::dwgInt2lineWidth( ( f & 0x03E0 ) >> 5 );
   }
   color = buf->getCmColor( version ); //BS or CMC //ok for R14 or negate
   QgsDebugMsg( QString( "entity color: %1" ).arg( color ) );
@@ -1151,7 +1151,7 @@ bool DRW_Vport::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     /*dint16 xrefindex =*/
     buf->getBitShort();
   }
-  flags |= buf->getBit() << 4; //is refx dependant, style code 70, bit 5 (16)
+  flags |= buf->getBit() << 4; //is refx dependent, style code 70, bit 5 (16)
   height = buf->getBitDouble();
   ratio = buf->getBitDouble();
 

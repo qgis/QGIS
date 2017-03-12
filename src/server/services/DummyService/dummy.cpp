@@ -31,8 +31,8 @@ class SampleService: public QgsService
       return method == QgsServerRequest::GetMethod;
     }
 
-    void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                         const QgsProject* project )
+    void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
+                         const QgsProject *project )
     {
       Q_UNUSED( project );
       Q_UNUSED( request );
@@ -45,7 +45,7 @@ class SampleService: public QgsService
 class QgsSampleModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry& registry, QgsServerInterface* serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
     {
       Q_UNUSED( serverIface );
       QgsDebugMsg( "SampleModule::registerSelf called" );
@@ -54,12 +54,12 @@ class QgsSampleModule: public QgsServiceModule
 };
 
 // Entry points
-QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
+QGISEXTERN QgsServiceModule *QGS_ServiceModule_Init()
 {
   static QgsSampleModule sModule;
   return &sModule;
 }
-QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
+QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }

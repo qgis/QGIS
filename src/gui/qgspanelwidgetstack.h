@@ -41,7 +41,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
       * for added panels.
       * @param parent
       */
-    QgsPanelWidgetStack( QWidget* parent = nullptr );
+    QgsPanelWidgetStack( QWidget *parent = nullptr );
 
     /**
      * Adds the main panel widget to the stack and selects it for the user
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * @see mainPanel()
      * @see takeMainPanel()
      */
-    void setMainPanel( QgsPanelWidget* panel );
+    void setMainPanel( QgsPanelWidget *panel );
 
     /**
      * The main panel widget that is set in the stack. The main widget can not be closed
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * @return The main QgsPanelWidget that is active in the stack.
      * @see setMainPanel()
      */
-    QgsPanelWidget* mainPanel();
+    QgsPanelWidget *mainPanel();
 
     /**
      * Removes the main panel widget from the stack and transfers ownsership to the
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * @see mainPanel()
      * @see setMainPanel()
      */
-    QgsPanelWidget* takeMainPanel();
+    QgsPanelWidget *takeMainPanel();
 
     /**
      * Clear the stack of all widgets. Unless the panels autoDelete is set to false
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * Returns the panel currently shown in the stack.
      * @note added in QGIS 3.0
      */
-    QgsPanelWidget* currentPanel();
+    QgsPanelWidget *currentPanel();
 
   public slots:
 
@@ -109,14 +109,14 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * nested panels. Auto switches the the given panel for the user.
      * @param panel The panel to show.
      */
-    void showPanel( QgsPanelWidget* panel );
+    void showPanel( QgsPanelWidget *panel );
 
     /**
      * Closes the panel in the widget. Will also delete the widget.
      * This slot is normally auto connected to panelAccepted when a panel is shown.
      * @param panel The panel to close.
      */
-    void closePanel( QgsPanelWidget* panel );
+    void closePanel( QgsPanelWidget *panel );
   private:
     void updateBreadcrumb();
     QStack<QString> mTitles;

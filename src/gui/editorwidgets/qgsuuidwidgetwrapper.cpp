@@ -17,10 +17,10 @@
 
 #include <QUuid>
 
-QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mLabel( nullptr )
-    , mLineEdit( nullptr )
+QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mLabel( nullptr )
+  , mLineEdit( nullptr )
 {
 }
 
@@ -36,15 +36,15 @@ QVariant QgsUuidWidgetWrapper::value() const
   return v;
 }
 
-QWidget* QgsUuidWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsUuidWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QLineEdit( parent );
 }
 
-void QgsUuidWidgetWrapper::initWidget( QWidget* editor )
+void QgsUuidWidgetWrapper::initWidget( QWidget *editor )
 {
-  mLineEdit = qobject_cast<QLineEdit*>( editor );
-  mLabel = qobject_cast<QLabel*>( editor );
+  mLineEdit = qobject_cast<QLineEdit *>( editor );
+  mLabel = qobject_cast<QLabel *>( editor );
   if ( mLineEdit )
     mLineEdit->setEnabled( false );
 }
@@ -54,7 +54,7 @@ bool QgsUuidWidgetWrapper::valid() const
   return mLineEdit || mLabel;
 }
 
-void QgsUuidWidgetWrapper::setValue( const QVariant& value )
+void QgsUuidWidgetWrapper::setValue( const QVariant &value )
 {
   if ( value.isNull() )
   {

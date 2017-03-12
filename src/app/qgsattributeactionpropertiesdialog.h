@@ -27,9 +27,9 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     Q_OBJECT
 
   public:
-    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString& description, const QString& shortTitle, const QString& iconPath, const QString& actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-    QgsAttributeActionPropertiesDialog( QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     QgsAction::ActionType type() const;
 
@@ -54,10 +54,10 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     void updateButtons();
 
   private:
-    void init( const QSet<QString>& actionScopes );
+    void init( const QSet<QString> &actionScopes );
 
-    QgsVectorLayer* mLayer = nullptr;
-    QList<QCheckBox*> mActionScopeCheckBoxes;
+    QgsVectorLayer *mLayer = nullptr;
+    QList<QCheckBox *> mActionScopeCheckBoxes;
 };
 
 #endif // QGSATTRIBUTEACTIONPROPERTIESDIALOG_H

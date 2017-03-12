@@ -47,7 +47,7 @@ class QgsFeedback;
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-    QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}
+    QgsMapLayerRenderer( const QString &layerID ) : mLayerID( layerID ) {}
     virtual ~QgsMapLayerRenderer() = default;
 
     //! Do the rendering (based on data stored in the class)
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsMapLayerRenderer
 
     //! Access to feedback object of the layer renderer (may be null)
     //! @note added in QGIS 3.0
-    virtual QgsFeedback* feedback() const { return nullptr; }
+    virtual QgsFeedback *feedback() const { return nullptr; }
 
     //! Return list of errors (problems) that happened during the rendering
     QStringList errors() const { return mErrors; }

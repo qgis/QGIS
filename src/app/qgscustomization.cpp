@@ -29,26 +29,26 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QPushButton>
 #include <QKeySequence>
 #include <QToolButton>
 #include <QStatusBar>
 #include <QMetaObject>
+#include <QSettings>
 
 #ifdef Q_OS_MACX
-QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* settings )
-    : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings *settings )
+  : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
-QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* settings )
-    : QMainWindow( parent )
+QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * settings )
+  : QMainWindow( parent )
 #endif
 {
   mSettings = settings;
   setupUi( this );
 
   QSettings appSettings;
-  restoreGeometry( appSettings.value( QStringLiteral( "/Windows/Customization/geometry" ) ).toByteArray() );
+  restoreGeometry( appSettings.value( QStringLiteral( "Windows/Customization/geometry" ) ).toByteArray() );
 
   init();
   QStringList myHeaders;
@@ -67,18 +67,18 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* sett
 QgsCustomizationDialog::~QgsCustomizationDialog()
 {
   QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Customization/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Customization/geometry" ), saveGeometry() );
 }
 
-QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWidgetItem *theItem )
+QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetItem *widgetItem )
 {
-  QString path = thePath;
-  if ( path.startsWith( '/' ) )
-    path = path.mid( 1 ); // remove '/'
-  QStringList names = path.split( '/' );
-  path = QStringList( names.mid( 1 ) ).join( QStringLiteral( "/" ) );
+  QString pathCopy = path;
+  if ( pathCopy.startsWith( '/' ) )
+    pathCopy = pathCopy.mid( 1 ); // remove '/'
+  QStringList names = pathCopy.split( '/' );
+  pathCopy = QStringList( names.mid( 1 ) ).join( QStringLiteral( "/" ) );
 
-  if ( ! theItem )
+  if ( ! widgetItem )
   {
     for ( int i = 0; i < treeWidget->topLevelItemCount(); ++i )
     {
@@ -86,15 +86,15 @@ QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWid
       QString objectName = myItem->text( 0 );
       if ( objectName == names[0] )
       {
-        return item( path, myItem );
+        return item( pathCopy, myItem );
       }
     }
   }
   else
   {
-    for ( int i = 0; i < theItem->childCount(); ++i )
+    for ( int i = 0; i < widgetItem->childCount(); ++i )
     {
-      QTreeWidgetItem *myItem = theItem->child( i );
+      QTreeWidgetItem *myItem = widgetItem->child( i );
       QString objectName = myItem->text( 0 );
       if ( objectName == names[0] )
       {
@@ -104,7 +104,7 @@ QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWid
         }
         else
         {
-          return item( path, myItem );
+          return item( pathCopy, myItem );
         }
       }
     }
@@ -113,73 +113,73 @@ QTreeWidgetItem * QgsCustomizationDialog::item( const QString& thePath, QTreeWid
   return nullptr;
 }
 
-bool QgsCustomizationDialog::itemChecked( const QString& thePath )
+bool QgsCustomizationDialog::itemChecked( const QString &path )
 {
-  QgsDebugMsg( QString( "thePath = %1" ).arg( thePath ) );
-  QTreeWidgetItem *myItem = item( thePath );
+  QgsDebugMsg( QString( "thePath = %1" ).arg( path ) );
+  QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return true;
   return myItem->checkState( 0 ) == Qt::Checked ? true : false;
 }
 
-void QgsCustomizationDialog::setItemChecked( const QString& thePath, bool on )
+void QgsCustomizationDialog::setItemChecked( const QString &path, bool on )
 {
-  QgsDebugMsg( QString( "thePath = %1 on = %2" ).arg( thePath ).arg( on ) );
-  QTreeWidgetItem *myItem = item( thePath );
+  QgsDebugMsg( QString( "thePath = %1 on = %2" ).arg( path ).arg( on ) );
+  QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return;
   myItem->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
 }
 
-void QgsCustomizationDialog::settingsToItem( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings )
+void QgsCustomizationDialog::settingsToItem( const QString &path, QTreeWidgetItem *item, QSettings *settings )
 {
-  QString objectName = theItem->text( 0 );
+  QString objectName = item->text( 0 );
   if ( objectName.isEmpty() )
     return; // object is not identifiable
 
-  QString myPath = thePath + '/' + objectName;
+  QString myPath = path + '/' + objectName;
 
-  bool on = theSettings->value( myPath, true ).toBool();
-  theItem->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
+  bool on = settings->value( myPath, true ).toBool();
+  item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
 
-  for ( int i = 0; i < theItem->childCount(); ++i )
+  for ( int i = 0; i < item->childCount(); ++i )
   {
-    QTreeWidgetItem *myItem = theItem->child( i );
-    settingsToItem( myPath, myItem, theSettings );
+    QTreeWidgetItem *myItem = item->child( i );
+    settingsToItem( myPath, myItem, settings );
   }
 }
 
-void QgsCustomizationDialog::itemToSettings( const QString& thePath, QTreeWidgetItem *theItem, QSettings *theSettings )
+void QgsCustomizationDialog::itemToSettings( const QString &path, QTreeWidgetItem *item, QSettings *settings )
 {
 
-  QString objectName = theItem->text( 0 );
+  QString objectName = item->text( 0 );
   if ( objectName.isEmpty() )
     return; // object is not identifiable
 
-  QString myPath = thePath + '/' + objectName;
-  bool on = theItem->checkState( 0 ) == Qt::Checked ? true : false;
-  theSettings->setValue( myPath, on );
+  QString myPath = path + '/' + objectName;
+  bool on = item->checkState( 0 ) == Qt::Checked ? true : false;
+  settings->setValue( myPath, on );
 
-  for ( int i = 0; i < theItem->childCount(); ++i )
+  for ( int i = 0; i < item->childCount(); ++i )
   {
-    QTreeWidgetItem *myItem = theItem->child( i );
-    itemToSettings( myPath, myItem, theSettings );
+    QTreeWidgetItem *myItem = item->child( i );
+    itemToSettings( myPath, myItem, settings );
   }
 }
 
-void QgsCustomizationDialog::treeToSettings( QSettings *theSettings )
+void QgsCustomizationDialog::treeToSettings( QSettings *settings )
 {
   for ( int i = 0; i < treeWidget->topLevelItemCount(); ++i )
   {
-    itemToSettings( QStringLiteral( "/Customization" ), treeWidget->topLevelItem( i ), theSettings );
+    itemToSettings( QStringLiteral( "/Customization" ), treeWidget->topLevelItem( i ), settings );
   }
 }
 
-void QgsCustomizationDialog::settingsToTree( QSettings *theSettings )
+void QgsCustomizationDialog::settingsToTree( QSettings *settings )
 {
   for ( int i = 0; i < treeWidget->topLevelItemCount(); ++i )
   {
-    settingsToItem( QStringLiteral( "/Customization" ), treeWidget->topLevelItem( i ), theSettings );
+    settingsToItem( QStringLiteral( "/Customization" ), treeWidget->topLevelItem( i ), settings );
   }
 }
 
@@ -189,7 +189,7 @@ void QgsCustomizationDialog::reset()
   settingsToTree( mSettings );
 
   QSettings settings;
-  bool enabled = settings.value( QStringLiteral( "/UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
+  bool enabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
   mCustomizationEnabledCheckBox->setChecked( enabled );
   treeWidget->setEnabled( enabled );
   toolBar->setEnabled( enabled );
@@ -208,7 +208,7 @@ void QgsCustomizationDialog::apply()
   mSettings->sync();
 
   QSettings settings;
-  settings.setValue( QStringLiteral( "/UI/Customization/enabled" ), mCustomizationEnabledCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "UI/Customization/enabled" ), mCustomizationEnabledCheckBox->isChecked() );
 }
 
 void QgsCustomizationDialog::cancel()
@@ -239,7 +239,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName, QSettings::IniFormat );
+  QSettings fileSettings( fileName );
   treeToSettings( &fileSettings );
 }
 
@@ -258,7 +258,7 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName, QSettings::IniFormat );
+  QSettings fileSettings( fileName );
   settingsToTree( &fileSettings );
 }
 
@@ -277,9 +277,9 @@ void QgsCustomizationDialog::on_actionCollapseAll_triggered( bool checked )
 void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
 {
   Q_UNUSED( checked );
-  QList<QTreeWidgetItem*> items = treeWidget->findItems( QStringLiteral( "*" ), Qt::MatchWildcard | Qt::MatchRecursive, 0 );
+  QList<QTreeWidgetItem *> items = treeWidget->findItems( QStringLiteral( "*" ), Qt::MatchWildcard | Qt::MatchRecursive, 0 );
 
-  Q_FOREACH ( QTreeWidgetItem* item, items )
+  Q_FOREACH ( QTreeWidgetItem *item, items )
     item->setCheckState( 0, Qt::Checked );
 }
 
@@ -291,7 +291,7 @@ void QgsCustomizationDialog::on_mCustomizationEnabledCheckBox_toggled( bool chec
 
 void QgsCustomizationDialog::init()
 {
-  QTreeWidgetItem * wi = createTreeItemWidgets();
+  QTreeWidgetItem *wi = createTreeItemWidgets();
   if ( wi )
   {
     treeWidget->insertTopLevelItem( 0, wi );
@@ -310,7 +310,7 @@ void QgsCustomizationDialog::init()
   treeWidget->resizeColumnToContents( 0 );
 }
 
-QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
+QTreeWidgetItem *QgsCustomizationDialog::createTreeItemWidgets()
 {
 
   QDomDocument myDoc( QStringLiteral( "QgsWidgets" ) );
@@ -338,9 +338,9 @@ QTreeWidgetItem * QgsCustomizationDialog::createTreeItemWidgets()
   return myItem;
 }
 
-QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode& theNode )
+QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &node )
 {
-  QDomElement myElement = theNode.toElement();
+  QDomElement myElement = node.toElement();
 
   QString name = myElement.attribute( QStringLiteral( "objectName" ), QLatin1String( "" ) );
   QStringList data( name );
@@ -362,7 +362,7 @@ QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode& th
   myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   myItem->setCheckState( 0, Qt::Checked );
 
-  QDomNode n = theNode.firstChild();
+  QDomNode n = node.firstChild();
   while ( !n.isNull() )
   {
     QDomElement e = n.toElement();
@@ -400,8 +400,8 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     }
     else if ( widget->inherits( "QToolButton" ) )
     {
-      QToolButton* toolbutton = qobject_cast<QToolButton*>( widget );
-      QAction* action = toolbutton->defaultAction();
+      QToolButton *toolbutton = qobject_cast<QToolButton *>( widget );
+      QAction *action = toolbutton->defaultAction();
       if ( !action )
         return false;
       QString toolbarName = widget->parent()->objectName();
@@ -444,33 +444,33 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
   return true;
 }
 
-QString QgsCustomizationDialog::widgetPath( QWidget * theWidget, const QString& thePath )
+QString QgsCustomizationDialog::widgetPath( QWidget *widget, const QString &path )
 {
   // go up until QDialog is reached
-  QString name = theWidget->objectName();
+  QString name = widget->objectName();
 
-  QString path = thePath;
+  QString pathCopy = path;
 
   if ( !QgsCustomization::sInternalWidgets.contains( name ) )
   {
-    if ( !path.isEmpty() )
+    if ( !pathCopy.isEmpty() )
     {
-      path = name + '/' + path;
+      pathCopy = name + '/' + pathCopy;
     }
     else
     {
-      path = name;
+      pathCopy = name;
     }
   }
 
-  QWidget * parent = theWidget->parentWidget();
+  QWidget *parent = widget->parentWidget();
 
-  if ( !parent || theWidget->inherits( "QDialog" ) )
+  if ( !parent || widget->inherits( "QDialog" ) )
   {
-    return '/' + path;
+    return '/' + pathCopy;
   }
 
-  return widgetPath( parent, path );
+  return widgetPath( parent, pathCopy );
 }
 
 void QgsCustomizationDialog::setCatch( bool on )
@@ -482,9 +482,9 @@ bool QgsCustomizationDialog::catchOn()
   return actionCatch->isChecked();
 }
 
-void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions )
+void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions )
 {
-  Q_FOREACH ( QAction* action, actions )
+  Q_FOREACH ( QAction *action, actions )
   {
     if ( action->isSeparator() )
     {
@@ -500,7 +500,7 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QL
       // it is an ordinary action
       QStringList strs;
       strs << action->objectName() << action->text();
-      QTreeWidgetItem* myItem = new QTreeWidgetItem( parentItem, strs );
+      QTreeWidgetItem *myItem = new QTreeWidgetItem( parentItem, strs );
       myItem->setIcon( 0, action->icon() );
       myItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       myItem->setCheckState( 0, Qt::Checked );
@@ -508,12 +508,12 @@ void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QL
   }
 }
 
-void QgsCustomization::addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu )
+void QgsCustomization::addTreeItemMenu( QTreeWidgetItem *parentItem, QMenu *menu )
 {
   QStringList menustrs;
   // remove '&' which are used to mark shortcut key
   menustrs << menu->objectName() << menu->title().remove( '&' );
-  QTreeWidgetItem* menuItem = new QTreeWidgetItem( parentItem, menustrs );
+  QTreeWidgetItem *menuItem = new QTreeWidgetItem( parentItem, menustrs );
   menuItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   menuItem->setCheckState( 0, Qt::Checked );
 
@@ -527,12 +527,12 @@ void QgsCustomization::createTreeItemMenus()
 
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
-  QMenuBar* menubar = QgisApp::instance()->menuBar();
-  Q_FOREACH ( QObject* obj, menubar->children() )
+  QMenuBar *menubar = QgisApp::instance()->menuBar();
+  Q_FOREACH ( QObject *obj, menubar->children() )
   {
     if ( obj->inherits( "QMenu" ) )
     {
-      QMenu* menu = qobject_cast<QMenu*>( obj );
+      QMenu *menu = qobject_cast<QMenu *>( obj );
       addTreeItemMenu( topItem, menu );
     }
   }
@@ -547,15 +547,15 @@ void QgsCustomization::createTreeItemToolbars()
 
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
-  QMainWindow* mw = QgisApp::instance();
-  Q_FOREACH ( QObject* obj, mw->children() )
+  QMainWindow *mw = QgisApp::instance();
+  Q_FOREACH ( QObject *obj, mw->children() )
   {
     if ( obj->inherits( "QToolBar" ) )
     {
-      QToolBar* tb = qobject_cast<QToolBar*>( obj );
+      QToolBar *tb = qobject_cast<QToolBar *>( obj );
       QStringList tbstrs;
       tbstrs << tb->objectName() << tb->windowTitle();
-      QTreeWidgetItem* tbItem = new QTreeWidgetItem( topItem, tbstrs );
+      QTreeWidgetItem *tbItem = new QTreeWidgetItem( topItem, tbstrs );
       tbItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       tbItem->setCheckState( 0, Qt::Checked );
 
@@ -573,15 +573,15 @@ void QgsCustomization::createTreeItemDocks()
 
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
-  QMainWindow* mw = QgisApp::instance();
-  Q_FOREACH ( QObject* obj, mw->children() )
+  QMainWindow *mw = QgisApp::instance();
+  Q_FOREACH ( QObject *obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
-      QDockWidget* dw = qobject_cast<QDockWidget*>( obj );
+      QDockWidget *dw = qobject_cast<QDockWidget *>( obj );
       QStringList dwstrs;
       dwstrs << dw->objectName() << dw->windowTitle();
-      QTreeWidgetItem* dwItem = new QTreeWidgetItem( topItem, dwstrs );
+      QTreeWidgetItem *dwItem = new QTreeWidgetItem( topItem, dwstrs );
       dwItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       dwItem->setCheckState( 0, Qt::Checked );
     }
@@ -599,14 +599,14 @@ void QgsCustomization::createTreeItemStatus()
   topItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
   topItem->setCheckState( 0, Qt::Checked );
 
-  QStatusBar* sb = QgisApp::instance()->statusBar();
-  Q_FOREACH ( QObject* obj, sb->children() )
+  QStatusBar *sb = QgisApp::instance()->statusBar();
+  Q_FOREACH ( QObject *obj, sb->children() )
   {
     if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
     {
       QStringList strs;
       strs << obj->objectName();
-      QTreeWidgetItem* item = new QTreeWidgetItem( topItem, strs );
+      QTreeWidgetItem *item = new QTreeWidgetItem( topItem, strs );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
       item->setCheckState( 0, Qt::Checked );
     }
@@ -628,21 +628,21 @@ QgsCustomization *QgsCustomization::instance()
 }
 
 QgsCustomization::QgsCustomization()
-    : pDialog( nullptr )
-    , mEnabled( false )
-    , mSettings( nullptr )
-    , mStatusPath( QStringLiteral( "/Customization/status" ) )
+  : pDialog( nullptr )
+  , mEnabled( false )
+  , mSettings( nullptr )
+  , mStatusPath( QStringLiteral( "/Customization/status" ) )
 {
 
   QSettings settings;
-  mEnabled = settings.value( QStringLiteral( "/UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
+  mEnabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
 }
 
 QgsCustomization::~QgsCustomization()
 {
 }
 
-void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
+void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
 {
   // collect tree items even if the customization is disabled
   createTreeItemMenus();
@@ -653,18 +653,18 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   if ( !mEnabled )
     return;
 
-  QMainWindow* mw = QgisApp::instance();
-  QMenuBar* menubar = mw->menuBar();
+  QMainWindow *mw = QgisApp::instance();
+  QMenuBar *menubar = mw->menuBar();
 
   mSettings->beginGroup( QStringLiteral( "Customization/Menus" ) );
 
   // hide menus and menu actions
 
-  Q_FOREACH ( QObject* obj, menubar->children() )
+  Q_FOREACH ( QObject *obj, menubar->children() )
   {
     if ( obj->inherits( "QMenu" ) )
     {
-      QMenu* menu = qobject_cast<QMenu*>( obj );
+      QMenu *menu = qobject_cast<QMenu *>( obj );
       bool visible = mSettings->value( menu->objectName(), true ).toBool();
       if ( !visible )
       {
@@ -682,23 +682,23 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   // remove toolbars, toolbar actions
 
   mSettings->beginGroup( QStringLiteral( "Customization/Toolbars" ) );
-  Q_FOREACH ( QObject* obj, mw->children() )
+  Q_FOREACH ( QObject *obj, mw->children() )
   {
     if ( obj->inherits( "QToolBar" ) )
     {
-      QToolBar* tb = qobject_cast<QToolBar*>( obj );
+      QToolBar *tb = qobject_cast<QToolBar *>( obj );
       bool visible = mSettings->value( tb->objectName(), true ).toBool();
       if ( !visible )
       {
         mw->removeToolBar( tb );
         // remove also from menu, because toolbars removed here, switched on later from menu don't work correctly
-        theToolBarMenu->removeAction( tb->toggleViewAction() );
+        toolBarMenu->removeAction( tb->toggleViewAction() );
       }
       else
       {
         mSettings->beginGroup( tb->objectName() );
         // hide individual toolbar actions
-        Q_FOREACH ( QAction* action, tb->actions() )
+        Q_FOREACH ( QAction *action, tb->actions() )
         {
           if ( action->objectName().isEmpty() )
           {
@@ -718,14 +718,14 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   // remove dock widgets
 
   mSettings->beginGroup( QStringLiteral( "Customization/Docks" ) );
-  Q_FOREACH ( QObject* obj, mw->children() )
+  Q_FOREACH ( QObject *obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
       bool visible = mSettings->value( obj->objectName(), true ).toBool();
       if ( !visible )
       {
-        mw->removeDockWidget( qobject_cast<QDockWidget*>( obj ) );
+        mw->removeDockWidget( qobject_cast<QDockWidget *>( obj ) );
       }
     }
   }
@@ -738,12 +738,12 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   {
     mSettings->beginGroup( QStringLiteral( "Customization/StatusBar" ) );
 
-    QStatusBar* sb = mw->statusBar();
-    Q_FOREACH ( QObject* obj, sb->children() )
+    QStatusBar *sb = mw->statusBar();
+    Q_FOREACH ( QObject *obj, sb->children() )
     {
       if ( obj->inherits( "QWidget" ) )
       {
-        QWidget* widget = qobject_cast<QWidget*>( obj );
+        QWidget *widget = qobject_cast<QWidget *>( obj );
         if ( widget->objectName().isEmpty() )
         {
           continue;
@@ -765,11 +765,11 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   }
 }
 
-void QgsCustomization::updateMenu( QMenu* menu, QSettings* settings )
+void QgsCustomization::updateMenu( QMenu *menu, QSettings *settings )
 {
   settings->beginGroup( menu->objectName() );
   // hide individual menu actions and call recursively on visible submenus
-  Q_FOREACH ( QAction* action, menu->actions() )
+  Q_FOREACH ( QAction *action, menu->actions() )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
     if ( objName.isEmpty() )
@@ -799,7 +799,7 @@ void QgsCustomization::openDialog( QWidget *parent )
   pDialog->show();
 }
 
-void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event, QSettings* settings )
+void QgsCustomization::customizeWidget( QWidget *widget, QEvent *event, QSettings *settings )
 {
   Q_UNUSED( event );
   // Test if the widget is child of QDialog
@@ -814,10 +814,10 @@ void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event, QSetti
   QgsCustomization::customizeWidget( path, widget, settings );
 }
 
-void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWidget, QSettings* settings )
+void QgsCustomization::customizeWidget( const QString &path, QWidget *widget, QSettings *settings )
 {
-  QString name = theWidget->objectName();
-  QString myPath = thePath;
+  QString name = widget->objectName();
+  QString myPath = path;
 
   // Qt may insert some internal classes in the tree, e.g. QTabWidgetPrivate inserts
   // qt_tabwidget_stackedwidget, such widgets do not appear in the tree generated
@@ -825,16 +825,16 @@ void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWid
 
   if ( !QgsCustomization::sInternalWidgets.contains( name ) )
   {
-    myPath = thePath + '/' + name;
+    myPath = path + '/' + name;
   }
 
-  QObjectList children = theWidget->children();
+  QObjectList children = widget->children();
   QObjectList::iterator i;
   for ( i = children.begin(); i != children.end(); ++i )
   {
     if ( !( *i )->inherits( "QWidget" ) )
       continue;
-    QWidget * w = qobject_cast<QWidget*>( *i );
+    QWidget *w = qobject_cast<QWidget *>( *i );
 
     QString p = myPath + '/' + w->objectName();
 
@@ -846,7 +846,7 @@ void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWid
     }
     else
     {
-      QLayout *l = theWidget->layout();
+      QLayout *l = widget->layout();
       if ( l )
       {
         QgsDebugMsg( "remove" );
@@ -862,33 +862,33 @@ void QgsCustomization::customizeWidget( const QString& thePath, QWidget * theWid
   }
 }
 
-void QgsCustomization::removeFromLayout( QLayout *theLayout, QWidget * theWidget )
+void QgsCustomization::removeFromLayout( QLayout *layout, QWidget *widget )
 {
-  if ( theLayout->indexOf( theWidget ) >= 0 )
+  if ( layout->indexOf( widget ) >= 0 )
   {
-    theLayout->removeWidget( theWidget );
+    layout->removeWidget( widget );
     return;
   }
   else
   {
-    QObjectList children = theLayout->children();
+    QObjectList children = layout->children();
     QObjectList::iterator i;
     for ( i = children.begin(); i != children.end(); ++i )
     {
       if ( !( *i )->inherits( "QLayout" ) )
         continue;
-      QLayout *l = qobject_cast<QLayout*>( *i );
+      QLayout *l = qobject_cast<QLayout *>( *i );
 
-      QgsCustomization::removeFromLayout( l, theWidget );
+      QgsCustomization::removeFromLayout( l, widget );
     }
   }
 }
 
-void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * done )
+void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )
 {
   if ( event->type() == QEvent::Show || event->type() == QEvent::MouseButtonPress )
   {
-    QWidget *widget = qobject_cast<QWidget*>( receiver );
+    QWidget *widget = qobject_cast<QWidget *>( receiver );
 
     if ( mEnabled && widget && event->type() == QEvent::Show )
     {
@@ -899,7 +899,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
       //QgsDebugMsg( "click" );
       if ( pDialog && pDialog->isVisible() )
       {
-        QMouseEvent *e = static_cast<QMouseEvent*>( event );
+        QMouseEvent *e = static_cast<QMouseEvent *>( event );
         *done = pDialog->switchWidget( widget, e );
       }
     }
@@ -911,7 +911,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
   {
     if ( pDialog && pDialog->isVisible() )
     {
-      QKeyEvent *e = static_cast<QKeyEvent*>( event );
+      QKeyEvent *e = static_cast<QKeyEvent *>( event );
       //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) );
       if ( e->key() == Qt::Key_M && e->modifiers() == Qt::ControlModifier )
       {
@@ -954,7 +954,7 @@ void QgsCustomization::loadDefault()
   }
   QgsDebugMsg( "Loading default customization from " + path );
 
-  QSettings fileSettings( path, QSettings::IniFormat );
+  QSettings fileSettings( path );
   QStringList keys = fileSettings.allKeys();
   QgsDebugMsg( QString( "size = %1" ).arg( keys.size() ) );
   QStringList::const_iterator i;

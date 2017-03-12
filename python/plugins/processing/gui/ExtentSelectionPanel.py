@@ -33,13 +33,9 @@ from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
 
 from processing.gui.RectangleMapTool import RectangleMapTool
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterMultipleInput
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 

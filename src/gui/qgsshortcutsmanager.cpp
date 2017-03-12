@@ -15,46 +15,47 @@
 
 #include "qgsshortcutsmanager.h"
 #include "qgslogger.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QShortcut>
 
-QgsShortcutsManager* QgsShortcutsManager::sInstance = nullptr;
+QgsShortcutsManager *QgsShortcutsManager::sInstance = nullptr;
 
 
-QgsShortcutsManager* QgsShortcutsManager::instance()
+QgsShortcutsManager *QgsShortcutsManager::instance()
 {
   if ( !sInstance )
     sInstance = new QgsShortcutsManager( nullptr );
   return sInstance;
 }
 
-QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString& settingsRoot )
-    : QObject( parent )
-    , mSettingsPath( settingsRoot )
+QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
+  : QObject( parent )
+  , mSettingsPath( settingsRoot )
 {
 }
 
-void QgsShortcutsManager::registerAllChildren( QObject* object, bool recursive )
+void QgsShortcutsManager::registerAllChildren( QObject *object, bool recursive )
 {
   registerAllChildActions( object, recursive );
   registerAllChildShortcuts( object, recursive );
 }
 
-void QgsShortcutsManager::registerAllChildActions( QObject* object, bool recursive )
+void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursive )
 {
   if ( recursive )
   {
-    QList< QAction* > actions = object->findChildren< QAction* >();
-    Q_FOREACH ( QAction* a, actions )
+    QList< QAction * > actions = object->findChildren< QAction * >();
+    Q_FOREACH ( QAction *a, actions )
     {
       registerAction( a, a->shortcut() );
     }
   }
   else
   {
-    Q_FOREACH ( QObject* child, object->children() )
+    Q_FOREACH ( QObject *child, object->children() )
     {
-      if ( QAction* a = qobject_cast<QAction*>( child ) )
+      if ( QAction *a = qobject_cast<QAction *>( child ) )
       {
         registerAction( a, a->shortcut() );
       }
@@ -62,21 +63,21 @@ void QgsShortcutsManager::registerAllChildActions( QObject* object, bool recursi
   }
 }
 
-void QgsShortcutsManager::registerAllChildShortcuts( QObject* object, bool recursive )
+void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recursive )
 {
   if ( recursive )
   {
-    QList< QShortcut* > shortcuts = object->findChildren< QShortcut* >();
-    Q_FOREACH ( QShortcut* s, shortcuts )
+    QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
+    Q_FOREACH ( QShortcut *s, shortcuts )
     {
       registerShortcut( s, s->key() );
     }
   }
   else
   {
-    Q_FOREACH ( QObject* child, object->children() )
+    Q_FOREACH ( QObject *child, object->children() )
     {
-      if ( QShortcut* s = qobject_cast<QShortcut*>( child ) )
+      if ( QShortcut *s = qobject_cast<QShortcut *>( child ) )
       {
         registerShortcut( s, s->key() );
       }
@@ -84,7 +85,7 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject* object, bool recur
   }
 }
 
-bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaultSequence )
+bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaultSequence )
 {
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate actions
@@ -99,7 +100,7 @@ bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaul
   actionText.remove( '&' ); // remove the accelerator
 
   // load overridden value from settings
-  QSettings settings;
+  QgsSettings settings;
   QString sequence = settings.value( mSettingsPath + actionText, defaultSequence ).toString();
 
   action->setShortcut( sequence );
@@ -109,7 +110,7 @@ bool QgsShortcutsManager::registerAction( QAction* action, const QString& defaul
   return true;
 }
 
-bool QgsShortcutsManager::registerShortcut( QShortcut* shortcut, const QString& defaultSequence )
+bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &defaultSequence )
 {
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate actions
@@ -123,7 +124,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut* shortcut, const QString& 
   QString shortcutName = shortcut->objectName();
 
   // load overridden value from settings
-  QSettings settings;
+  QgsSettings settings;
   QString keySequence = settings.value( mSettingsPath + shortcutName, defaultSequence ).toString();
 
   shortcut->setKey( keySequence );
@@ -131,7 +132,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut* shortcut, const QString& 
   return true;
 }
 
-bool QgsShortcutsManager::unregisterAction( QAction* action )
+bool QgsShortcutsManager::unregisterAction( QAction *action )
 {
   if ( !mActions.contains( action ) )
     return false;
@@ -140,7 +141,7 @@ bool QgsShortcutsManager::unregisterAction( QAction* action )
   return true;
 }
 
-bool QgsShortcutsManager::unregisterShortcut( QShortcut* shortcut )
+bool QgsShortcutsManager::unregisterShortcut( QShortcut *shortcut )
 {
   if ( !mShortcuts.contains( shortcut ) )
     return false;
@@ -149,19 +150,19 @@ bool QgsShortcutsManager::unregisterShortcut( QShortcut* shortcut )
   return true;
 }
 
-QList<QAction*> QgsShortcutsManager::listActions() const
+QList<QAction *> QgsShortcutsManager::listActions() const
 {
   return mActions.keys();
 }
 
-QList<QShortcut*> QgsShortcutsManager::listShortcuts() const
+QList<QShortcut *> QgsShortcutsManager::listShortcuts() const
 {
   return mShortcuts.keys();
 }
 
-QList<QObject*> QgsShortcutsManager::listAll() const
+QList<QObject *> QgsShortcutsManager::listAll() const
 {
-  QList< QObject* > list;
+  QList< QObject * > list;
   ActionsHash::const_iterator actionIt = mActions.constBegin();
   for ( ; actionIt != mActions.constEnd(); ++actionIt )
   {
@@ -175,47 +176,47 @@ QList<QObject*> QgsShortcutsManager::listAll() const
   return list;
 }
 
-QString QgsShortcutsManager::objectDefaultKeySequence( QObject* object ) const
+QString QgsShortcutsManager::objectDefaultKeySequence( QObject *object ) const
 {
-  if ( QAction* action = qobject_cast< QAction* >( object ) )
+  if ( QAction *action = qobject_cast< QAction * >( object ) )
     return defaultKeySequence( action );
-  else if ( QShortcut* shortcut = qobject_cast< QShortcut* >( object ) )
+  else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( object ) )
     return defaultKeySequence( shortcut );
   else
     return QString();
 }
 
-QString QgsShortcutsManager::defaultKeySequence( QAction* action ) const
+QString QgsShortcutsManager::defaultKeySequence( QAction *action ) const
 {
   return mActions.value( action, QString() );
 }
 
-QString QgsShortcutsManager::defaultKeySequence( QShortcut* shortcut ) const
+QString QgsShortcutsManager::defaultKeySequence( QShortcut *shortcut ) const
 {
   return mShortcuts.value( shortcut, QString() );
 }
 
-bool QgsShortcutsManager::setKeySequence( const QString& name, const QString& sequence )
+bool QgsShortcutsManager::setKeySequence( const QString &name, const QString &sequence )
 {
-  if ( QAction* action = actionByName( name ) )
+  if ( QAction *action = actionByName( name ) )
     return setKeySequence( action, sequence );
-  else if ( QShortcut* shortcut = shortcutByName( name ) )
+  else if ( QShortcut *shortcut = shortcutByName( name ) )
     return setKeySequence( shortcut, sequence );
   else
     return false;
 }
 
-bool QgsShortcutsManager::setObjectKeySequence( QObject* object, const QString& sequence )
+bool QgsShortcutsManager::setObjectKeySequence( QObject *object, const QString &sequence )
 {
-  if ( QAction* action = qobject_cast< QAction* >( object ) )
+  if ( QAction *action = qobject_cast< QAction * >( object ) )
     return setKeySequence( action, sequence );
-  else if ( QShortcut* shortcut = qobject_cast< QShortcut* >( object ) )
+  else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( object ) )
     return setKeySequence( shortcut, sequence );
   else
     return false;
 }
 
-bool QgsShortcutsManager::setKeySequence( QAction* action, const QString& sequence )
+bool QgsShortcutsManager::setKeySequence( QAction *action, const QString &sequence )
 {
   action->setShortcut( sequence );
   this->updateActionToolTip( action, sequence );
@@ -224,34 +225,34 @@ bool QgsShortcutsManager::setKeySequence( QAction* action, const QString& sequen
   actionText.remove( '&' ); // remove the accelerator
 
   // save to settings
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsPath + actionText, sequence );
   return true;
 }
 
-bool QgsShortcutsManager::setKeySequence( QShortcut* shortcut, const QString& sequence )
+bool QgsShortcutsManager::setKeySequence( QShortcut *shortcut, const QString &sequence )
 {
   shortcut->setKey( sequence );
 
   QString shortcutText = shortcut->objectName();
 
   // save to settings
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mSettingsPath + shortcutText, sequence );
   return true;
 }
 
-QObject* QgsShortcutsManager::objectForSequence( const QKeySequence& sequence ) const
+QObject *QgsShortcutsManager::objectForSequence( const QKeySequence &sequence ) const
 {
-  if ( QAction* action = actionForSequence( sequence ) )
+  if ( QAction *action = actionForSequence( sequence ) )
     return action;
-  else if ( QShortcut* shortcut = shortcutForSequence( sequence ) )
+  else if ( QShortcut *shortcut = shortcutForSequence( sequence ) )
     return shortcut;
   else
     return nullptr;
 }
 
-QAction* QgsShortcutsManager::actionForSequence( const QKeySequence& sequence ) const
+QAction *QgsShortcutsManager::actionForSequence( const QKeySequence &sequence ) const
 {
   if ( sequence.isEmpty() )
     return nullptr;
@@ -265,7 +266,7 @@ QAction* QgsShortcutsManager::actionForSequence( const QKeySequence& sequence ) 
   return nullptr;
 }
 
-QShortcut* QgsShortcutsManager::shortcutForSequence( const QKeySequence& sequence ) const
+QShortcut *QgsShortcutsManager::shortcutForSequence( const QKeySequence &sequence ) const
 {
   if ( sequence.isEmpty() )
     return nullptr;
@@ -279,7 +280,7 @@ QShortcut* QgsShortcutsManager::shortcutForSequence( const QKeySequence& sequenc
   return nullptr;
 }
 
-QAction* QgsShortcutsManager::actionByName( const QString& name ) const
+QAction *QgsShortcutsManager::actionByName( const QString &name ) const
 {
   for ( ActionsHash::const_iterator it = mActions.constBegin(); it != mActions.constEnd(); ++it )
   {
@@ -290,7 +291,7 @@ QAction* QgsShortcutsManager::actionByName( const QString& name ) const
   return nullptr;
 }
 
-QShortcut* QgsShortcutsManager::shortcutByName( const QString& name ) const
+QShortcut *QgsShortcutsManager::shortcutByName( const QString &name ) const
 {
   for ( ShortcutsHash::const_iterator it = mShortcuts.constBegin(); it != mShortcuts.constEnd(); ++it )
   {
@@ -303,15 +304,15 @@ QShortcut* QgsShortcutsManager::shortcutByName( const QString& name ) const
 
 void QgsShortcutsManager::actionDestroyed()
 {
-  mActions.remove( qobject_cast<QAction*>( sender() ) );
+  mActions.remove( qobject_cast<QAction *>( sender() ) );
 }
 
 void QgsShortcutsManager::shortcutDestroyed()
 {
-  mShortcuts.remove( qobject_cast<QShortcut*>( sender() ) );
+  mShortcuts.remove( qobject_cast<QShortcut *>( sender() ) );
 }
 
-void QgsShortcutsManager::updateActionToolTip( QAction *action, QString sequence )
+void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &sequence )
 {
   QString current = action->toolTip();
   // Remove the old shortcut.

@@ -32,7 +32,7 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
 {
     Q_OBJECT
   public:
-    QgsAnnotationWidget( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsAnnotationWidget();
 
     void apply();
@@ -40,14 +40,14 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
   signals:
 
     //! Emitted when the background color of the annotation is changed
-    void backgroundColorChanged( const QColor& color );
+    void backgroundColorChanged( const QColor &color );
 
   private slots:
     void on_mMapMarkerButton_clicked();
     void on_mFrameStyleButton_clicked();
 
   private:
-    QgsMapCanvasAnnotationItem* mItem = nullptr;
+    QgsMapCanvasAnnotationItem *mItem = nullptr;
     std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
 

@@ -24,8 +24,8 @@
 
 
 QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
   populateIdentityComboBox();
@@ -84,7 +84,7 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
   {
     cmbIdentityCert->setIconSize( QSize( 26, 22 ) );
     QgsStringMap idents;
-    Q_FOREACH ( const QSslCertificate& cert, certs )
+    Q_FOREACH ( const QSslCertificate &cert, certs )
     {
       QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
       if ( org.isEmpty() )

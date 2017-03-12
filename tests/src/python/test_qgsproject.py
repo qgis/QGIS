@@ -61,7 +61,7 @@ class TestQgsProject(unittest.TestCase):
             (0x3001, 0xD7FF),
             (0xF900, 0xFDCF),
             (0xFDF0, 0xFFFD),
-            #(0x10000, 0xEFFFF),   while actually valid, these are not yet accepted by makeKeyTokens_()
+            # (0x10000, 0xEFFFF),   while actually valid, these are not yet accepted by makeKeyTokens_()
         ]
         for r in charRanges:
             for c in range(r[0], r[1]):
@@ -127,8 +127,13 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.clear()
 
+        prj.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3111'))
         prj.setEllipsoid('WGS84')
         self.assertEqual(prj.ellipsoid(), 'WGS84')
+
+        # if project has NO crs, then ellipsoid should always be none
+        prj.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(prj.ellipsoid(), 'NONE')
 
     def testDistanceUnits(self):
         prj = QgsProject.instance()
@@ -148,10 +153,29 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
 
-        #valid key, valid int value
+        # valid key, valid int value
         self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
-        #invalid key
+        # invalid key
         self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+
+    def testEmbeddedGroup(self):
+        testdata_path = unitTestDataPath('embedded_groups') + '/'
+
+        prj_path = os.path.join(testdata_path, "project2.qgs")
+        prj = QgsProject()
+        prj.read(prj_path)
+
+        layer_tree_group = prj.layerTreeRoot()
+        layers_ids = layer_tree_group.findLayerIds()
+
+        layers_names = []
+        for layer_id in layers_ids:
+            name = prj.mapLayer(layer_id).name()
+            layers_names.append(name)
+
+        expected = ['polys', 'lines']
+        self.assertEqual(sorted(layers_names), sorted(expected))
+
 
 if __name__ == '__main__':
     unittest.main()

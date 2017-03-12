@@ -21,14 +21,15 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorcss.h"
+#include "qgssettings.h"
+
 #include <QFileDialog>
-#include <QSettings>
 
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame )
-    : QgsComposerItemBaseWidget( nullptr, html )
-    , mHtml( html )
-    , mFrame( frame )
+QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame )
+  : QgsComposerItemBaseWidget( nullptr, html )
+  , mHtml( html )
+  , mFrame( frame )
 {
   setupUi( this );
   setPanelTitle( tr( "HTML properties" ) );
@@ -60,7 +61,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   if ( mFrame )
   {
     //add widget for general composer item properties
-    QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
+    QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
     mainLayout->addWidget( itemPropertiesWidget );
   }
 
@@ -70,11 +71,11 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
-    : QgsComposerItemBaseWidget( nullptr, nullptr )
-    , mHtml( nullptr )
-    , mFrame( nullptr )
-    , mHtmlEditor( nullptr )
-    , mStylesheetEditor( nullptr )
+  : QgsComposerItemBaseWidget( nullptr, nullptr )
+  , mHtml( nullptr )
+  , mFrame( nullptr )
+  , mHtmlEditor( nullptr )
+  , mStylesheetEditor( nullptr )
 {
 }
 
@@ -109,7 +110,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
       return;
     }
 
-    QgsComposition* composition = mHtml->composition();
+    QgsComposition *composition = mHtml->composition();
     if ( composition )
     {
       composition->beginMultiFrameCommand( mHtml, tr( "Change HTML url" ) );
@@ -122,7 +123,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
   QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   if ( !file.isEmpty() )
@@ -142,11 +143,11 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     composition->beginMultiFrameCommand( mHtml, tr( "Change resize mode" ) );
-    mHtml->setResizeMode(( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
+    mHtml->setResizeMode( ( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
     composition->endMultiFrameCommand();
   }
 
@@ -160,7 +161,7 @@ void QgsComposerHtmlWidget::on_mEvaluateExpressionsCheckbox_toggled( bool checke
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -178,7 +179,7 @@ void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_toggled( bool checked )
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -196,7 +197,7 @@ void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -214,7 +215,7 @@ void QgsComposerHtmlWidget::htmlEditorChanged()
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -233,7 +234,7 @@ void QgsComposerHtmlWidget::stylesheetEditorChanged()
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -251,7 +252,7 @@ void QgsComposerHtmlWidget::on_mUserStylesheetCheckBox_toggled( bool checked )
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -293,7 +294,7 @@ void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -317,7 +318,7 @@ void QgsComposerHtmlWidget::on_mRadioUrlSource_clicked( bool checked )
     return;
   }
 
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     blockSignals( true );
@@ -358,14 +359,14 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
   }
 
   // use the atlas coverage layer, if any
-  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
   QgsExpressionContext context = mHtml->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();
-    QgsComposition* composition = mHtml->composition();
+    QgsComposition *composition = mHtml->composition();
     if ( !expression.isEmpty() && composition )
     {
       blockSignals( true );
@@ -418,11 +419,11 @@ void QgsComposerHtmlWidget::on_mAddFramePushButton_clicked()
   //shift new frame so that it sits 10 units below current frame
   pos.ry() += mFrame->rect().height() + 10;
 
-  QgsComposerFrame * newFrame = mHtml->createNewFrame( mFrame, pos, mFrame->rect().size() );
+  QgsComposerFrame *newFrame = mHtml->createNewFrame( mFrame, pos, mFrame->rect().size() );
   mHtml->recalculateFrameSizes();
 
   //set new frame as selection
-  QgsComposition* composition = mHtml->composition();
+  QgsComposition *composition = mHtml->composition();
   if ( composition )
   {
     composition->setSelectedItem( newFrame );

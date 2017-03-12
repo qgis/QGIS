@@ -56,7 +56,7 @@ class contour(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Contour')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
+        self.group, self.i18n_group = self.trAlgorithm('Raster extraction')
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,

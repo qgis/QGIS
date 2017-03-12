@@ -14,25 +14,25 @@
  ***************************************************************************/
 #include "qgisgui.h"
 
-#include <QSettings>
-#include <QImageWriter>
+#include "qgssettings.h"
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
-
-#include <QFontDialog>
 #include "qgis_gui.h"
+
+#include <QImageWriter>
+#include <QFontDialog>
 
 
 namespace QgisGui
 {
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+      QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll )
   {
     Q_UNUSED( enc );
 
-    QSettings settings;
+    QgsSettings settings;
     QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
     QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", QDir::homePath() ).toString();
 
@@ -43,7 +43,7 @@ namespace QgisGui
     }
     else //we have to use non-native dialog to add cancel all button
     {
-      QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( nullptr, title, lastUsedDir, filters, QString() );
+      QgsEncodingFileDialog *openFileDialog = new QgsEncodingFileDialog( nullptr, title, lastUsedDir, filters, QString() );
 
       // allow for selection of more than one file
       openFileDialog->setFileMode( QFileDialog::ExistingFiles );
@@ -84,11 +84,11 @@ namespace QgisGui
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, const QString& theMessage, const QString& defaultFilename )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString &message, const QString &defaultFilename )
   {
     // get a list of supported output image types
     QMap<QString, QString> filterMap;
-    Q_FOREACH ( const QByteArray& format, QImageWriter::supportedImageFormats() )
+    Q_FOREACH ( const QByteArray &format, QImageWriter::supportedImageFormats() )
     {
       //svg doesn't work so skip it
       if ( format ==  "svg" )
@@ -105,13 +105,13 @@ namespace QgisGui
     }
 #endif
 
-    QSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    QgsSettings settings;  // where we keep last used filter in persistent state
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format
     QString pngExtension = QStringLiteral( "png" );
     QString pngFilter = createFileFilter_( pngExtension );
-    QString selectedFilter = settings.value( QStringLiteral( "/UI/lastSaveAsImageFilter" ), pngFilter ).toString();
+    QString selectedFilter = settings.value( QStringLiteral( "UI/lastSaveAsImageFilter" ), pngFilter ).toString();
 
     QString initialPath;
     if ( defaultFilename.isNull() )
@@ -128,19 +128,19 @@ namespace QgisGui
     QString outputFileName;
     QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
-    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
+    outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, QStringList( filterMap.keys() ).join( QStringLiteral( ";;" ) ), &selectedFilter );
 
     if ( !outputFileName.isNull() )
     {
       ext = filterMap.value( selectedFilter, QString::null );
       if ( !ext.isNull() )
-        settings.setValue( QStringLiteral( "/UI/lastSaveAsImageFilter" ), selectedFilter );
-      settings.setValue( QStringLiteral( "/UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
+        settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), selectedFilter );
+      settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
     }
 #else
 
     //create a file dialog using the filter list generated above
-    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
+    std::unique_ptr<QFileDialog> fileDialog( new QFileDialog( parent, message, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );
@@ -201,4 +201,4 @@ namespace QgisGui
     return QFontDialog::getFont( &ok, initial, nullptr, title );
 #endif
   }
-} // end of QgisGui namespace
+} // namespace QgisGui

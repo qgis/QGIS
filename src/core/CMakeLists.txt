@@ -234,6 +234,7 @@ SET(QGIS_CORE_SRCS
   qgstransaction.cpp
   qgstransactiongroup.cpp
   qgsunittypes.cpp
+  qgsvector.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
@@ -257,6 +258,7 @@ SET(QGIS_CORE_SRCS
   qgsvirtuallayerdefinitionutils.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
+  qgssettings.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -539,6 +541,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmapthemecollection.h
   qgswebpage.h
   qgswebview.h
+  qgssettings.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h
@@ -779,6 +782,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorsimplifymethod.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsvector.h
   qgswebpage.h
   qgswebframe.h
   qgswebview.h
@@ -1004,6 +1008,14 @@ ELSE(NOT APPLE)
     PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
+  # generated export header does not get copied with PUBLIC_HEADER files
+  ADD_CUSTOM_COMMAND(TARGET qgis_core
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy qgis_core.h
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS qgis_core.h
+  )
 ENDIF(NOT APPLE)
 
 #generate unversioned libs for android
@@ -1041,7 +1053,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTGUI_LIBRARY}
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
-  ${QT_QTWEBKIT_LIBRARY}
+  ${OPTIONAL_QTWEBKIT}
   ${QT_QTSQL_LIBRARY}
   ${QCA_LIBRARY}
 
@@ -1059,6 +1071,14 @@ IF (Qt5Positioning_FOUND)
     Qt5::Positioning
   )
 ENDIF (Qt5Positioning_FOUND)
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_core PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 # install
 

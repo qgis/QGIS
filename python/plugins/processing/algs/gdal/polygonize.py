@@ -54,7 +54,7 @@ class polygonize(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Polygonize (raster to vector)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
+        self.group, self.i18n_group = self.trAlgorithm('Raster conversion')
         self.addParameter(ParameterRaster(polygonize.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(polygonize.FIELD,

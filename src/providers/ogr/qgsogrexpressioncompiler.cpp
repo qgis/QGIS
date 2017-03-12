@@ -16,15 +16,15 @@
 #include "qgsogrexpressioncompiler.h"
 #include "qgsogrprovider.h"
 
-QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
-                                | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
-    , mSource( source )
+QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
+                              | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+  , mSource( source )
 {
 }
 
 
-QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression* exp )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression *exp )
 {
   //for certain driver types, OGR forwards SQL through to the underlying provider. In these cases
   //the syntax may differ from OGR SQL, so we don't support compilation for these drivers
@@ -45,13 +45,13 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExp
   return QgsSqlExpressionCompiler::compile( exp );
 }
 
-QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
 {
   switch ( node->nodeType() )
   {
     case QgsExpression::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator*>( node )->op() )
+      switch ( static_cast<const QgsExpression::NodeBinaryOperator *>( node )->op() )
       {
         case QgsExpression::boILike:
         case QgsExpression::boNotILike:
@@ -84,12 +84,12 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsOgrExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   return mSource->mProvider->quotedIdentifier( identifier.toUtf8() );
 }
 
-QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsOgrExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 
@@ -102,12 +102,12 @@ QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
   return QgsOgrProviderUtils::quotedValue( value );
 }
 
-QString QgsOgrExpressionCompiler::castToReal( const QString& value ) const
+QString QgsOgrExpressionCompiler::castToReal( const QString &value ) const
 {
   return QStringLiteral( "CAST((%1) AS float)" ).arg( value );
 }
 
-QString QgsOgrExpressionCompiler::castToInt( const QString& value ) const
+QString QgsOgrExpressionCompiler::castToInt( const QString &value ) const
 {
   return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
 }

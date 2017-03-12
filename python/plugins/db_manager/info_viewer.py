@@ -85,7 +85,7 @@ class InfoViewer(QTextBrowser):
 
     def _clear(self):
         if self.item is not None:
-            ## skip exception on RuntimeError fixes #6892
+            # skip exception on RuntimeError fixes #6892
             try:
                 self.item.aboutToChange.disconnect(self.setDirty)
             except RuntimeError:

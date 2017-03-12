@@ -49,7 +49,7 @@ class QgsMssqlTableModel : public QStandardItemModel
     void addTableEntry( const QgsMssqlLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex& index, const QString& sql );
+    void setSql( const QModelIndex &index, const QString &sql );
 
     /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is detected later by thread*/

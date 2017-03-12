@@ -13,9 +13,11 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+import os
 
 from qgis.testing import unittest, start_app
 from console import console
+from qgis.PyQt.QtCore import QSettings, QCoreApplication
 
 start_app()
 
@@ -23,6 +25,12 @@ start_app()
 class TestConsole(unittest.TestCase):
 
     def test_show_console(self):
+        if os.name == 'nt':
+            QCoreApplication.setOrganizationName("QGIS")
+            QCoreApplication.setOrganizationDomain("qgis.org")
+            QCoreApplication.setApplicationName("QGIS-TEST")
+            QSettings().setValue('pythonConsole/contextHelpOnFirstLaunch', False)
+
         my_console = console.show_console()
         my_console_widget = my_console.console
 

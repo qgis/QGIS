@@ -19,10 +19,10 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent )
-    : QWidget( parent )
-    , Ui::QgsRelationManagerDialogBase()
-    , mRelationManager( relationMgr )
+QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relationMgr, QWidget *parent )
+  : QWidget( parent )
+  , Ui::QgsRelationManagerDialogBase()
+  , mRelationManager( relationMgr )
 {
   setupUi( this );
 
@@ -34,13 +34,13 @@ QgsRelationManagerDialog::~QgsRelationManagerDialog()
 {
 }
 
-void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers )
+void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layers )
 {
   mLayers = layers;
 
-  const QList<QgsRelation>& relations = mRelationManager->relations().values();
+  const QList<QgsRelation> &relations = mRelationManager->relations().values();
 
-  Q_FOREACH ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation &rel, relations )
   {
     addRelation( rel );
   }
@@ -54,7 +54,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
 
-  QTableWidgetItem* item = new QTableWidgetItem( rel.name() );
+  QTableWidgetItem *item = new QTableWidgetItem( rel.name() );
   // Save relation in first column's item
   item->setData( Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
   mRelationsTable->setItem( row, 0, item );
@@ -102,7 +102,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     QStringList existingNames;
 
 
-    Q_FOREACH ( const QgsRelation& rel, relations() )
+    Q_FOREACH ( const QgsRelation &rel, relations() )
     {
       existingNames << rel.id();
     }
@@ -127,7 +127,7 @@ void QgsRelationManagerDialog::on_mBtnDiscoverRelations_clicked()
   QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
   if ( discoverDlg.exec() )
   {
-    Q_FOREACH ( const QgsRelation& relation, discoverDlg.relations() )
+    Q_FOREACH ( const QgsRelation &relation, discoverDlg.relations() )
     {
       addRelation( relation );
     }

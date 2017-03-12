@@ -27,24 +27,24 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectPolygon( QgsMapCanvas* canvas );
+    QgsMapToolSelectPolygon( QgsMapCanvas *canvas );
 
     virtual ~QgsMapToolSelectPolygon();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   private:
 
     //! used for storing all of the maps point for the polygon
-    QgsRubberBand* mRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
 
     QColor mFillColor;
 
-    QColor mBorderColor;
+    QColor mStrokeColor;
 };
 
 #endif

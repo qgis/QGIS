@@ -30,8 +30,8 @@ class print_none
     virtual void printD( double d ) {( void )d;}
     virtual void printH( long long int i ) {( void )i;}
     virtual void printB( int i ) {( void )i;}
-    virtual void printHL( int c, int s, int h ) {( void )c;( void )s;( void )h;}
-    virtual void printPT( double x, double y, double z ) {( void )x;( void )y;( void )z;}
+    virtual void printHL( int c, int s, int h ) {( void )c; ( void )s; ( void )h;}
+    virtual void printPT( double x, double y, double z ) {( void )x; ( void )y; ( void )z;}
     print_none() {}
     virtual ~print_none() = default;
 };

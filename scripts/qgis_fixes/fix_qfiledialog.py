@@ -8,7 +8,7 @@ Migrate QFileDialog methods from PyQt4 to PyQt5
 
 # Local imports
 from lib2to3.fixer_base import BaseFix
-from lib2to3.fixer_util import Name, Call
+
 
 class FixQfiledialog(BaseFix):
 
@@ -26,7 +26,7 @@ class FixQfiledialog(BaseFix):
         # getOpen/SaveFileName returns a tuple
         if 'filename' in results:
             node = results['filename']
-            
+
             # count number of leaves (result variables)
             nbLeaves = sum(1 for i in node.leaves())
 
@@ -36,11 +36,9 @@ class FixQfiledialog(BaseFix):
                 fileName = node.value
                 node.value = u'{}, __'.format(fileName)
                 node.changed()
-                
+
         # Rename *AndFilter methods
         if 'filter' in results:
             method = results['filter'][0]
             method.value = method.value.replace(u'AndFilter', u'')
             method.changed()
-
-        

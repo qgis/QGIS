@@ -24,13 +24,12 @@ The content of this file is based on
 from builtins import str
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsRasterLayer, QgsMimeDataUtils, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject
+from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsMapLayer, QgsProviderRegistry, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsProject, QgsSettings
 from qgis.gui import QgsMessageViewer
-from qgis.utils import iface
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
@@ -137,7 +136,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
     def chooseInputFile(self):
         vectorFormats = QgsProviderRegistry.instance().fileVectorFilters()
         # get last used dir and format
-        settings = QSettings()
+        settings = QgsSettings()
         lastDir = settings.value("/db_manager/lastUsedDir", "")
         lastVectorFormat = settings.value("/UI/lastVectorFileFilter", "")
         # ask for a filename
@@ -362,7 +361,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
         if ret != 0:
             output = QgsMessageViewer()
             output.setTitle(self.tr("Import to database"))
-            output.setMessageAsPlainText(self.tr("Error %d\n%s") % (ret, errMsg))
+            output.setMessageAsPlainText(self.tr("Error {0}\n{1}").format(ret, errMsg))
             output.showMessage()
             return
 

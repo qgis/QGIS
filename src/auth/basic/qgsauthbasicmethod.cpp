@@ -27,7 +27,7 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<Q
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
-    : QgsAuthMethod()
+  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -172,7 +172,7 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   return mconfig;
 }
 
-void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig )
+void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig )
 {
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
   sAuthConfigCache.insert( authcfg, mconfig );
@@ -187,14 +187,14 @@ void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
   }
 }
 
-QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim ) const
+QString QgsAuthBasicMethod::escapeUserPass( const QString &val, QChar delim ) const
 {
-  QString val = theVal;
+  QString escaped = val;
 
-  val.replace( '\\', QLatin1String( "\\\\" ) );
-  val.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
+  escaped.replace( '\\', QLatin1String( "\\\\" ) );
+  escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
-  return val;
+  return escaped;
 }
 
 //////////////////////////////////////////////

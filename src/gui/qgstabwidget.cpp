@@ -17,16 +17,16 @@
 
 #include "qgslogger.h"
 
-QgsTabWidget::QgsTabWidget( QWidget* parent )
-    : QTabWidget( parent )
-    , mSetTabVisibleFlag( false )
+QgsTabWidget::QgsTabWidget( QWidget *parent )
+  : QTabWidget( parent )
+  , mSetTabVisibleFlag( false )
 {
 }
 
-void QgsTabWidget::hideTab( QWidget* tab )
+void QgsTabWidget::hideTab( QWidget *tab )
 {
   QgsDebugMsg( "Hide" );
-  TabInformation& info = mTabs[ realTabIndex( tab )];
+  TabInformation &info = mTabs[ realTabIndex( tab )];
   if ( info.visible )
   {
     mSetTabVisibleFlag = true;
@@ -36,10 +36,10 @@ void QgsTabWidget::hideTab( QWidget* tab )
   }
 }
 
-void QgsTabWidget::showTab( QWidget* tab )
+void QgsTabWidget::showTab( QWidget *tab )
 {
   QgsDebugMsg( "Show" );
-  TabInformation& info = mTabs[ realTabIndex( tab )];
+  TabInformation &info = mTabs[ realTabIndex( tab )];
   if ( ! info.visible )
   {
     mSetTabVisibleFlag = true;
@@ -49,7 +49,7 @@ void QgsTabWidget::showTab( QWidget* tab )
   }
 }
 
-void QgsTabWidget::setTabVisible( QWidget* tab, bool visible )
+void QgsTabWidget::setTabVisible( QWidget *tab, bool visible )
 {
   if ( visible )
     showTab( tab );
@@ -57,10 +57,10 @@ void QgsTabWidget::setTabVisible( QWidget* tab, bool visible )
     hideTab( tab );
 }
 
-int QgsTabWidget::realTabIndex( QWidget* widget )
+int QgsTabWidget::realTabIndex( QWidget *widget )
 {
   int realIndex = 0;
-  Q_FOREACH ( const TabInformation& info, mTabs )
+  Q_FOREACH ( const TabInformation &info, mTabs )
   {
     if ( info.widget == widget )
       return realIndex;
@@ -73,7 +73,7 @@ void QgsTabWidget::tabInserted( int index )
 {
   if ( !mSetTabVisibleFlag )
   {
-    QWidget* newWidget = widget( index );
+    QWidget *newWidget = widget( index );
 
     if ( index == 0 )
     {
@@ -127,7 +127,7 @@ void QgsTabWidget::synchronizeIndexes()
 {
   QgsDebugMsg( "---------" );
   int i = -1;
-  QWidget* nextWidget = widget( 0 );
+  QWidget *nextWidget = widget( 0 );
 
   QList<TabInformation>::iterator it;
 
@@ -143,9 +143,9 @@ void QgsTabWidget::synchronizeIndexes()
   }
 }
 
-QgsTabWidget::TabInformation QgsTabWidget::tabInfo( QWidget* widget )
+QgsTabWidget::TabInformation QgsTabWidget::tabInfo( QWidget *widget )
 {
-  Q_FOREACH ( const TabInformation& info, mTabs )
+  Q_FOREACH ( const TabInformation &info, mTabs )
   {
     if ( info.widget == widget )
       return info;
@@ -153,7 +153,7 @@ QgsTabWidget::TabInformation QgsTabWidget::tabInfo( QWidget* widget )
   return TabInformation();
 }
 
-bool QgsTabWidget::TabInformation::operator ==( const QgsTabWidget::TabInformation& other )
+bool QgsTabWidget::TabInformation::operator ==( const QgsTabWidget::TabInformation &other )
 {
   return other.widget == widget && other.sourceIndex == sourceIndex;
 }

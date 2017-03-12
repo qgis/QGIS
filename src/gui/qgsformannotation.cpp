@@ -36,11 +36,11 @@
 #include <QUiLoader>
 #include <QWidget>
 
-QgsFormAnnotation::QgsFormAnnotation( QObject* parent )
-    : QgsAnnotation( parent )
+QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
+  : QgsAnnotation( parent )
 {}
 
-void QgsFormAnnotation::setDesignerForm( const QString& uiFile )
+void QgsFormAnnotation::setDesignerForm( const QString &uiFile )
 {
   mDesignerForm = uiFile;
   mDesignerWidget.reset( createDesignerWidget( uiFile ) );
@@ -49,7 +49,7 @@ void QgsFormAnnotation::setDesignerForm( const QString& uiFile )
     mMinimumSize = mDesignerWidget->minimumSize();
     if ( fillSymbol() )
     {
-      QgsFillSymbol* newFill = fillSymbol()->clone();
+      QgsFillSymbol *newFill = fillSymbol()->clone();
       newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
       setFillSymbol( newFill );
     }
@@ -58,7 +58,7 @@ void QgsFormAnnotation::setDesignerForm( const QString& uiFile )
   emit appearanceChanged();
 }
 
-QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
+QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
 {
   QFile file( filePath );
   if ( !file.open( QFile::ReadOnly ) )
@@ -69,12 +69,12 @@ QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
   QUiLoader loader;
   QFileInfo fi( file );
   loader.setWorkingDirectory( fi.dir() );
-  QWidget* widget = loader.load( &file, nullptr );
+  QWidget *widget = loader.load( &file, nullptr );
   file.close();
 
   //get feature and set attribute information
   QgsAttributeEditorContext context;
-  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
   if ( vectorLayer && associatedFeature().isValid() )
   {
     QgsFields fields = vectorLayer->fields();
@@ -83,10 +83,10 @@ QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
     {
       if ( i < fields.count() )
       {
-        QWidget* attWidget = widget->findChild<QWidget*>( fields.at( i ).name() );
+        QWidget *attWidget = widget->findChild<QWidget *>( fields.at( i ).name() );
         if ( attWidget )
         {
-          QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( vectorLayer, i, attWidget, widget, context );
+          QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( vectorLayer, i, attWidget, widget, context );
           if ( eww )
           {
             eww->setValue( attrs.at( i ) );
@@ -98,7 +98,7 @@ QWidget* QgsFormAnnotation::createDesignerWidget( const QString& filePath )
   return widget;
 }
 
-void QgsFormAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
+void QgsFormAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
   if ( !mDesignerWidget )
     return;
@@ -135,7 +135,7 @@ QSizeF QgsFormAnnotation::preferredFrameSize() const
   }
 }
 
-void QgsFormAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
+void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
   formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
@@ -143,7 +143,7 @@ void QgsFormAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
   elem.appendChild( formAnnotationElem );
 }
 
-void QgsFormAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
@@ -160,13 +160,13 @@ void QgsFormAnnotation::readXml( const QDomElement& itemElem, const QDomDocument
   mDesignerWidget.reset( createDesignerWidget( mDesignerForm ) );
   if ( mDesignerWidget && fillSymbol() )
   {
-    QgsFillSymbol* newFill = fillSymbol()->clone();
+    QgsFillSymbol *newFill = fillSymbol()->clone();
     newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
     setFillSymbol( newFill );
   }
 }
 
-void QgsFormAnnotation::setAssociatedFeature( const QgsFeature& feature )
+void QgsFormAnnotation::setAssociatedFeature( const QgsFeature &feature )
 {
   QgsAnnotation::setAssociatedFeature( feature );
 
@@ -174,7 +174,7 @@ void QgsFormAnnotation::setAssociatedFeature( const QgsFeature& feature )
   mDesignerWidget.reset( createDesignerWidget( mDesignerForm ) );
   if ( mDesignerWidget && fillSymbol() )
   {
-    QgsFillSymbol* newFill = fillSymbol()->clone();
+    QgsFillSymbol *newFill = fillSymbol()->clone();
     newFill->setColor( mDesignerWidget->palette().color( QPalette::Window ) );
     setFillSymbol( newFill );
   }

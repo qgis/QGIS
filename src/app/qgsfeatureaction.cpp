@@ -29,17 +29,17 @@
 #include "qgsactionmanager.h"
 #include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
+#include "qgssettings.h"
 
 #include <QPushButton>
-#include <QSettings>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid& actionId, int defaultAttr, QObject *parent )
-    : QAction( name, parent )
-    , mLayer( layer )
-    , mFeature( &f )
-    , mActionId( actionId )
-    , mIdx( defaultAttr )
-    , mFeatureSaved( false )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, const QUuid &actionId, int defaultAttr, QObject *parent )
+  : QAction( name, parent )
+  , mLayer( layer )
+  , mFeature( &f )
+  , mActionId( actionId )
+  , mIdx( defaultAttr )
+  , mFeatureSaved( false )
 {
 }
 
@@ -76,12 +76,12 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     a->setEnabled( false );
     dialog->addAction( a );
 
-    Q_FOREACH ( const QgsAction& action, actions )
+    Q_FOREACH ( const QgsAction &action, actions )
     {
       if ( !action.runable() )
         continue;
 
-      QgsFeature& feat = const_cast<QgsFeature&>( *dialog->feature() );
+      QgsFeature &feat = const_cast<QgsFeature &>( *dialog->feature() );
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, action.id(), -1, dialog );
       dialog->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
@@ -127,7 +127,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    QgsAttributeDialog* dialog = newDialog( false );
+    QgsAttributeDialog *dialog = newDialog( false );
 
     if ( !mFeature->isValid() )
       dialog->setMode( QgsAttributeForm::AddFeatureMode );
@@ -140,13 +140,13 @@ bool QgsFeatureAction::editFeature( bool showModal )
   return true;
 }
 
-bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, bool showModal )
+bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, bool showModal )
 {
   if ( !mLayer || !mLayer->isEditable() )
     return false;
 
-  QSettings settings;
-  bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
+  QgsSettings settings;
+  bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   QgsFields fields = mLayer->fields();
@@ -175,7 +175,7 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
 
   //show the dialog to enter attribute values
   //only show if enabled in settings and layer has fields
-  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
+  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool();
 
   // override application-wide setting with any layer setting
   switch ( mLayer->editFormConfig().suppress() )
@@ -224,9 +224,9 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
   return mFeatureSaved;
 }
 
-void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
+void QgsFeatureAction::onFeatureSaved( const QgsFeature &feature )
 {
-  QgsAttributeForm* form = qobject_cast<QgsAttributeForm*>( sender() );
+  QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( sender() );
   Q_UNUSED( form ) // only used for Q_ASSERT
   Q_ASSERT( form );
 
@@ -236,8 +236,8 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
 
   mFeatureSaved = true;
 
-  QSettings settings;
-  bool reuseLastValues = settings.value( QStringLiteral( "/qgis/digitizing/reuseLastValues" ), false ).toBool();
+  QgsSettings settings;
+  bool reuseLastValues = settings.value( QStringLiteral( "qgis/digitizing/reuseLastValues" ), false ).toBool();
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   if ( reuseLastValues )

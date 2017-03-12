@@ -37,7 +37,7 @@ namespace QgsWms
   /**
    * Median cut implementation used when reducing RGB colors to palletized colors
    */
-  void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage );
+  void medianCut( QVector<QRgb> &colorTable, int nColors, const QImage &inputImage );
 
 } // namespace QgsWms
 

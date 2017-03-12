@@ -22,16 +22,16 @@
 #include "qgsmapsettings.h"
 #include <limits>
 
-QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), c )
-    , mPolylineStyleSymbol( nullptr )
+QgsComposerPolyline::QgsComposerPolyline( QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), c )
+  , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
 
-QgsComposerPolyline::QgsComposerPolyline( const QPolygonF& polyline, QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), polyline, c )
-    , mPolylineStyleSymbol( nullptr )
+QgsComposerPolyline::QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), polyline, c )
+  , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
@@ -41,7 +41,7 @@ bool QgsComposerPolyline::_addNode( const int indexPoint,
                                     const double radius )
 {
   const double distStart = computeDistance( newPoint, mPolygon[0] );
-  const double distEnd = computeDistance( newPoint, mPolygon[mPolygon.size()-1] );
+  const double distEnd = computeDistance( newPoint, mPolygon[mPolygon.size() - 1] );
 
   if ( indexPoint == ( mPolygon.size() - 1 ) )
   {
@@ -120,9 +120,9 @@ void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
   mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt ) );
 }
 
-void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
+void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol *symbol )
 {
-  mPolylineStyleSymbol.reset( static_cast<QgsLineSymbol*>( symbol->clone() ) );
+  mPolylineStyleSymbol.reset( static_cast<QgsLineSymbol *>( symbol->clone() ) );
   update();
   emit frameChanged();
 }

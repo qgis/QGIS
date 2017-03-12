@@ -662,15 +662,13 @@ class ParameterTableFieldTest(unittest.TestCase):
         test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')
         parent = ParameterVector(parent_name, parent_name)
         parent.setValue(test_layer)
-        parameter = ParameterTableField(
-            'myName', 'myDesc', parent_name, optional=True)
+        ParameterTableField('myName', 'myDesc', parent_name, optional=True)
 
     def testScriptCode(self):
         parent_name = 'test_parent_layer'
         test_data = points()
-        test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')
-        parameter = ParameterTableField(
-            'myName', 'myDesc', parent_name)
+        test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')  # NOQA
+        parameter = ParameterTableField('myName', 'myDesc', parent_name)
         code = parameter.getAsScriptCode()
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterTableField)
@@ -696,6 +694,7 @@ class ParameterTableTest(unittest.TestCase):
         result = getParameterFromString(code)
         self.assertIsInstance(result, ParameterTable)
         self.assertTrue(result.optional)
+
 
 if __name__ == '__main__':
     unittest.main()

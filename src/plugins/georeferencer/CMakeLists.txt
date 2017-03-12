@@ -1,6 +1,4 @@
-FIND_PACKAGE(GSL)      # Georeferencer
-
-IF(GSL_FOUND)
+FIND_PACKAGE(GSL REQUIRED)      # Georeferencer
 
 ########################################################
 # Files
@@ -106,5 +104,3 @@ TARGET_LINK_LIBRARIES(georefplugin
 INSTALL(TARGETS georefplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
-
-ENDIF(GSL_FOUND)

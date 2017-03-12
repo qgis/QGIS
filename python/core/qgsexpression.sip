@@ -686,17 +686,6 @@ class QgsExpression
 
         int precedence() const;
         bool leftAssociative() const;
-
-      protected:
-        bool compare( double diff );
-        int computeInt( int x, int y );
-        double computeDouble( double x, double y );
-
-        /** Computes the result date time calculation from a start datetime and an interval
-         * @param d start datetime
-         * @param i interval to add or subtract (depending on mOp)
-         */
-        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval *i );
     };
 
     class NodeInOperator : QgsExpression::Node

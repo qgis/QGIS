@@ -158,8 +158,8 @@ class RasterCalculator(GeoAlgorithm):
         for alg in list(model.algs.values()):
             if alg.name not in dependent:
                 for out in alg.algorithm.outputs:
-                    if (isinstance(out, OutputRaster)
-                            and "{}:{}@".format(alg.name, out.name) in expression):
+                    if (isinstance(out, OutputRaster) and
+                            "{}:{}@".format(alg.name, out.name) in expression):
                         values.append(ValueFromOutput(alg.name, out.name))
 
         algorithm.params[self.LAYERS] = values

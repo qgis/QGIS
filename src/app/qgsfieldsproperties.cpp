@@ -28,6 +28,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgssettings.h"
 
 #include <QTreeWidgetItem>
 #include <QWidget>
@@ -36,24 +37,23 @@
 #include <QPushButton>
 #include <QTableWidgetItem>
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QFormLayout>
 
-QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
-    : QWidget( parent )
-    , mLayer( layer )
-    , mDesignerTree( nullptr )
-    , mFieldsList( nullptr )
-    , mRelationsList( nullptr )
+QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
+  : QWidget( parent )
+  , mLayer( layer )
+  , mDesignerTree( nullptr )
+  , mFieldsList( nullptr )
+  , mRelationsList( nullptr )
 {
   if ( !layer )
     return;
 
   setupUi( this );
 
-  mSplitter->restoreState( QSettings().value( QStringLiteral( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ) ).toByteArray() );
+  mSplitter->restoreState( QgsSettings().value( QStringLiteral( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ) ).toByteArray() );
 
   // Init as hidden by default, it will be enabled if project is set to
   mAttributeEditorOptionsWidget->setVisible( false );
@@ -130,7 +130,7 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
 
 QgsFieldsProperties::~QgsFieldsProperties()
 {
-  QSettings().setValue( QStringLiteral( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ), mSplitter->saveState() );
+  QgsSettings().setValue( QStringLiteral( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ), mSplitter->saveState() );
 }
 
 void QgsFieldsProperties::init()
@@ -154,9 +154,9 @@ void QgsFieldsProperties::onAttributeSelectionChanged()
   updateButtons();
 }
 
-QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement* const widgetDef, QTreeWidgetItem* parent )
+QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent )
 {
-  QTreeWidgetItem* newWidget = nullptr;
+  QTreeWidgetItem *newWidget = nullptr;
   switch ( widgetDef->type() )
   {
     case QgsAttributeEditorElement::AeTypeField:
@@ -169,7 +169,7 @@ QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
     case QgsAttributeEditorElement::AeTypeRelation:
     {
-      const QgsAttributeEditorRelation* relationEditor = static_cast<const QgsAttributeEditorRelation*>( widgetDef );
+      const QgsAttributeEditorRelation *relationEditor = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
       DesignerTreeItemData itemData = DesignerTreeItemData( DesignerTreeItemData::Relation, widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
       RelationEditorConfiguration relEdConfig;
@@ -186,7 +186,7 @@ QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       DesignerTreeItemData itemData( DesignerTreeItemData::Container, widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
 
-      const QgsAttributeEditorContainer* container = static_cast<const QgsAttributeEditorContainer*>( widgetDef );
+      const QgsAttributeEditorContainer *container = static_cast<const QgsAttributeEditorContainer *>( widgetDef );
       if ( !container )
         break;
 
@@ -195,7 +195,7 @@ QTreeWidgetItem* QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       itemData.setVisibilityExpression( container->visibilityExpression() );
       newWidget = mDesignerTree->addItem( parent, itemData );
 
-      Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
+      Q_FOREACH ( QgsAttributeEditorElement *wdg, container->children() )
       {
         loadAttributeEditorTreeItem( wdg, newWidget );
       }
@@ -254,7 +254,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mDesignerTree->setAcceptDrops( true );
   mDesignerTree->setDragDropMode( QAbstractItemView::DragDrop );
 
-  Q_FOREACH ( QgsAttributeEditorElement* wdg, mLayer->editFormConfig().tabs() )
+  Q_FOREACH ( QgsAttributeEditorElement *wdg, mLayer->editFormConfig().tabs() )
   {
     loadAttributeEditorTreeItem( wdg, mDesignerTree->invisibleRootItem() );
   }
@@ -276,9 +276,9 @@ void QgsFieldsProperties::loadRows()
   updateFieldRenamingStatus();
 }
 
-void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
+void QgsFieldsProperties::setRow( int row, int idx, const QgsField &field )
 {
-  QTableWidgetItem* dataItem = new QTableWidgetItem();
+  QTableWidgetItem *dataItem = new QTableWidgetItem();
   dataItem->setData( Qt::DisplayRole, idx );
   DesignerTreeItemData itemData( DesignerTreeItemData::Field, field.name() );
   dataItem->setData( DesignerTreeRole, itemData.asQVariant() );
@@ -305,9 +305,9 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   mFieldsList->setItem( row, AttrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
   if ( mLayer->fields().fieldOrigin( idx ) == QgsFields::OriginExpression )
   {
-    QWidget* expressionWidget = new QWidget;
+    QWidget *expressionWidget = new QWidget;
     expressionWidget->setLayout( new QHBoxLayout );
-    QToolButton* editExpressionButton = new QToolButton;
+    QToolButton *editExpressionButton = new QToolButton;
     editExpressionButton->setProperty( "Index", idx );
     editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
     connect( editExpressionButton, SIGNAL( clicked() ), this, SLOT( updateExpression() ) );
@@ -351,11 +351,11 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   mFieldsList->setItem( row, AttrAliasCol, new QTableWidgetItem( field.alias() ) );
 
   //published WMS/WFS attributes
-  QTableWidgetItem* wmsAttrItem = new QTableWidgetItem();
+  QTableWidgetItem *wmsAttrItem = new QTableWidgetItem();
   wmsAttrItem->setCheckState( mLayer->excludeAttributesWms().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, AttrWMSCol, wmsAttrItem );
-  QTableWidgetItem* wfsAttrItem = new QTableWidgetItem();
+  QTableWidgetItem *wfsAttrItem = new QTableWidgetItem();
   wfsAttrItem->setCheckState( mLayer->excludeAttributesWfs().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
   wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
   mFieldsList->setItem( row, AttrWFSCol, wfsAttrItem );
@@ -369,11 +369,11 @@ void QgsFieldsProperties::loadRelations()
 
   int idx = 0;
 
-  Q_FOREACH ( const QgsRelation& relation, mRelations )
+  Q_FOREACH ( const QgsRelation &relation, mRelations )
   {
     mRelationsList->insertRow( idx );
 
-    QTableWidgetItem* item = new QTableWidgetItem( relation.name() );
+    QTableWidgetItem *item = new QTableWidgetItem( relation.name() );
     item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     DesignerTreeItemData itemData( DesignerTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) );
     item->setData( DesignerTreeRole, itemData.asQVariant() );
@@ -391,9 +391,9 @@ void QgsFieldsProperties::loadRelations()
     item->setFlags( Qt::ItemIsDragEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     mRelationsList->setItem( idx, RelIdCol, item );
 
-    QComboBox* nmCombo = new QComboBox( mRelationsList );
+    QComboBox *nmCombo = new QComboBox( mRelationsList );
     nmCombo->addItem( tr( "Many to one relation" ) );
-    Q_FOREACH ( const QgsRelation& nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
+    Q_FOREACH ( const QgsRelation &nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
     {
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
@@ -420,8 +420,8 @@ void QgsFieldsProperties::loadRelations()
 
 void QgsFieldsProperties::on_mAddItemButton_clicked()
 {
-  QList<QTableWidgetItem*> listItems = mFieldsList->selectedItems();
-  QList<QTreeWidgetItem*> treeItems = mDesignerTree->selectedItems();
+  QList<QTableWidgetItem *> listItems = mFieldsList->selectedItems();
+  QList<QTreeWidgetItem *> treeItems = mDesignerTree->selectedItems();
 
   if ( treeItems.count() != 1 && listItems.isEmpty() )
     return;
@@ -430,7 +430,7 @@ void QgsFieldsProperties::on_mAddItemButton_clicked()
   if ( parent->data( 0, DesignerTreeRole ).value<DesignerTreeItemData>().type() != DesignerTreeItemData::Container )
     return;
 
-  Q_FOREACH ( QTableWidgetItem* item, listItems )
+  Q_FOREACH ( QTableWidgetItem *item, listItems )
   {
     if ( item->column() == 0 ) // Information is in the first column
       mDesignerTree->addItem( parent, item->data( DesignerTreeRole ).value<DesignerTreeItemData>() );
@@ -461,7 +461,7 @@ void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
   }
   else
   {
-    QTreeWidgetItem* tabItem = addTabOrGroup.tab();
+    QTreeWidgetItem *tabItem = addTabOrGroup.tab();
     mDesignerTree->addContainer( tabItem, name, addTabOrGroup.columnCount() );
   }
 }
@@ -473,12 +473,12 @@ void QgsFieldsProperties::on_mRemoveTabGroupItemButton_clicked()
 
 void QgsFieldsProperties::on_mMoveDownItem_clicked()
 {
-  QList<QTreeWidgetItem*> itemList = mDesignerTree->selectedItems();
+  QList<QTreeWidgetItem *> itemList = mDesignerTree->selectedItems();
   if ( itemList.count() != 1 )
     return;
 
-  QTreeWidgetItem* itemToMoveDown = itemList.first();
-  QTreeWidgetItem* parent = itemToMoveDown->parent();
+  QTreeWidgetItem *itemToMoveDown = itemList.first();
+  QTreeWidgetItem *parent = itemToMoveDown->parent();
   if ( !parent )
   {
     parent = mDesignerTree->invisibleRootItem();
@@ -497,12 +497,12 @@ void QgsFieldsProperties::on_mMoveDownItem_clicked()
 
 void QgsFieldsProperties::on_mMoveUpItem_clicked()
 {
-  QList<QTreeWidgetItem*> itemList = mDesignerTree->selectedItems();
+  QList<QTreeWidgetItem *> itemList = mDesignerTree->selectedItems();
   if ( itemList.count() != 1 )
     return;
 
-  QTreeWidgetItem* itemToMoveUp = itemList.first();
-  QTreeWidgetItem* parent = itemToMoveUp->parent();
+  QTreeWidgetItem *itemToMoveUp = itemList.first();
+  QTreeWidgetItem *parent = itemToMoveUp->parent();
   if ( !parent )
   {
     parent = mDesignerTree->invisibleRootItem();
@@ -539,7 +539,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   int index = -1;
   int row = -1;
 
-  Q_FOREACH ( QTableWidgetItem* wdg, mIndexedWidgets )
+  Q_FOREACH ( QTableWidgetItem *wdg, mIndexedWidgets )
   {
     cfg = wdg->data( FieldConfigRole ).value<FieldConfig>();
     if ( cfg.mButton == pb )
@@ -675,7 +675,7 @@ void QgsFieldsProperties::editingToggled()
 
 QgsFieldsProperties::FieldConfig QgsFieldsProperties::configForRow( int row )
 {
-  Q_FOREACH ( QTableWidgetItem* wdg, mIndexedWidgets )
+  Q_FOREACH ( QTableWidgetItem *wdg, mIndexedWidgets )
   {
     if ( wdg->row() == row )
     {
@@ -688,9 +688,9 @@ QgsFieldsProperties::FieldConfig QgsFieldsProperties::configForRow( int row )
   return FieldConfig();
 }
 
-void QgsFieldsProperties::setConfigForRow( int row, const QgsFieldsProperties::FieldConfig& cfg )
+void QgsFieldsProperties::setConfigForRow( int row, const QgsFieldsProperties::FieldConfig &cfg )
 {
-  Q_FOREACH ( QTableWidgetItem* wdg, mIndexedWidgets )
+  Q_FOREACH ( QTableWidgetItem *wdg, mIndexedWidgets )
   {
     if ( wdg->row() == row )
     {
@@ -717,7 +717,7 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
 {
   QSet<int> providerFields;
   QSet<int> expressionFields;
-  Q_FOREACH ( QTableWidgetItem* item, mFieldsList->selectedItems() )
+  Q_FOREACH ( QTableWidgetItem *item, mFieldsList->selectedItems() )
   {
     if ( item->column() == 0 )
     {
@@ -749,7 +749,7 @@ void QgsFieldsProperties::updateButtons()
 {
   int cap = mLayer->dataProvider()->capabilities();
 
-  mToggleEditingButton->setEnabled(( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->readOnly() );
+  mToggleEditingButton->setEnabled( ( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->readOnly() );
 
   if ( mLayer->isEditable() )
   {
@@ -766,7 +766,7 @@ void QgsFieldsProperties::updateButtons()
     mDeleteAttributeButton->setEnabled( !mFieldsList->selectedItems().isEmpty() );
 
     // and only if all selected items have their origin in an expression
-    Q_FOREACH ( QTableWidgetItem* item, mFieldsList->selectedItems() )
+    Q_FOREACH ( QTableWidgetItem *item, mFieldsList->selectedItems() )
     {
       if ( item->column() == 0 )
       {
@@ -832,7 +832,7 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
 
 void QgsFieldsProperties::updateExpression()
 {
-  QToolButton* btn = qobject_cast<QToolButton*>( sender() );
+  QToolButton *btn = qobject_cast<QToolButton *>( sender() );
   Q_ASSERT( btn );
 
   int index = btn->property( "Index" ).toInt();
@@ -841,7 +841,7 @@ void QgsFieldsProperties::updateExpression()
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, QStringLiteral( "generic" ), context );
 
@@ -881,7 +881,7 @@ void QgsFieldsProperties::updateFieldRenamingStatus()
   }
 }
 
-QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem* item, QgsAttributeEditorElement* parent , bool forceGroup )
+QgsAttributeEditorElement *QgsFieldsProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup )
 {
   QgsAttributeEditorElement *widgetDef = nullptr;
 
@@ -898,7 +898,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
     case DesignerTreeItemData::Relation:
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
-      QgsAttributeEditorRelation* relDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
+      QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( itemData.name(), relation, parent );
       relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
       relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
       widgetDef = relDef;
@@ -907,7 +907,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
     case DesignerTreeItemData::Container:
     {
-      QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
+      QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
       container->setColumnCount( itemData.columnCount() );
       container->setIsGroupBox( forceGroup ? true : itemData.showAsGroupBox() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
@@ -930,7 +930,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
 void QgsFieldsProperties::on_pbtnSelectInitFilePath_clicked()
 {
-  QSettings myQSettings;
+  QgsSettings myQSettings;
   QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString();
   QString pyfilename = QFileDialog::getOpenFileName( this, tr( "Select Python file" ), lastUsedDir, tr( "Python file" )  + " (*.py)" );
 
@@ -945,7 +945,7 @@ void QgsFieldsProperties::on_pbtnSelectInitFilePath_clicked()
 
 void QgsFieldsProperties::on_pbnSelectEditForm_clicked()
 {
-  QSettings myQSettings;
+  QgsSettings myQSettings;
   QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastUIDir" ), QDir::homePath() ).toString();
   QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
 
@@ -1033,21 +1033,21 @@ void QgsFieldsProperties::apply()
   editFormConfig.clearTabs();
   for ( int t = 0; t < mDesignerTree->invisibleRootItem()->childCount(); t++ )
   {
-    QTreeWidgetItem* tabItem = mDesignerTree->invisibleRootItem()->child( t );
+    QTreeWidgetItem *tabItem = mDesignerTree->invisibleRootItem()->child( t );
 
     editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
   }
 
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
-  editFormConfig.setLayout(( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
+  editFormConfig.setLayout( ( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
 
   // Init function configuration
   editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );
   editFormConfig.setInitCode( mInitCodeEditorPython->text() );
   editFormConfig.setInitFilePath( mInitFilePathLineEdit->text() );
-  editFormConfig.setInitCodeSource(( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
+  editFormConfig.setInitCodeSource( ( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
 
-  editFormConfig.setSuppress(( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
+  editFormConfig.setSuppress( ( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
 
   mLayer->setExcludeAttributesWms( excludeAttributesWMS );
   mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
@@ -1057,7 +1057,7 @@ void QgsFieldsProperties::apply()
   {
     QVariantMap cfg;
 
-    QComboBox* cb = qobject_cast<QComboBox*>( mRelationsList->cellWidget( i, RelNmCol ) );
+    QComboBox *cb = qobject_cast<QComboBox *>( mRelationsList->cellWidget( i, RelNmCol ) );
     QVariant otherRelation = cb->currentData();
 
     if ( otherRelation.isValid() )
@@ -1079,17 +1079,17 @@ void QgsFieldsProperties::apply()
  */
 
 QgsFieldsProperties::FieldConfig::FieldConfig()
-    : mEditable( true )
-    , mEditableEnabled( true )
-    , mLabelOnTop( false )
-    , mConstraints( 0 )
-    , mConstraintDescription( QString() )
-    , mButton( nullptr )
+  : mEditable( true )
+  , mEditableEnabled( true )
+  , mLabelOnTop( false )
+  , mConstraints( 0 )
+  , mConstraintDescription( QString() )
+  , mButton( nullptr )
 {
 }
 
-QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
-    : mButton( nullptr )
+QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
+  : mButton( nullptr )
 {
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -1116,7 +1116,7 @@ QStringList DragList::mimeTypes() const
   return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
 }
 
-QMimeData* DragList::mimeData( const QList<QTableWidgetItem *> items ) const
+QMimeData *DragList::mimeData( const QList<QTableWidgetItem *> items ) const
 {
   if ( items.count() <= 0 )
     return nullptr;
@@ -1126,12 +1126,12 @@ QMimeData* DragList::mimeData( const QList<QTableWidgetItem *> items ) const
   if ( types.isEmpty() )
     return nullptr;
 
-  QMimeData* data = new QMimeData();
+  QMimeData *data = new QMimeData();
   QString format = types.at( 0 );
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QTableWidgetItem* item, items )
+  Q_FOREACH ( const QTableWidgetItem *item, items )
   {
     // Relevant information is always in the UserRole of the first column
     if ( item && item->column() == 0 )
@@ -1150,7 +1150,7 @@ QMimeData* DragList::mimeData( const QList<QTableWidgetItem *> items ) const
  * DesignerTree implementation
  */
 
-QTreeWidgetItem* DesignerTree::addContainer( QTreeWidgetItem* parent, const QString& title, int columnCount )
+QTreeWidgetItem *DesignerTree::addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << title );
   newItem->setBackground( 0, QBrush( Qt::lightGray ) );
@@ -1163,16 +1163,16 @@ QTreeWidgetItem* DesignerTree::addContainer( QTreeWidgetItem* parent, const QStr
   return newItem;
 }
 
-DesignerTree::DesignerTree( QgsVectorLayer* layer, QWidget* parent )
-    : QTreeWidget( parent )
-    , mLayer( layer )
+DesignerTree::DesignerTree( QgsVectorLayer *layer, QWidget *parent )
+  : QTreeWidget( parent )
+  , mLayer( layer )
 {
-  connect( this, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( onItemDoubleClicked( QTreeWidgetItem*, int ) ) );
+  connect( this, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ), this, SLOT( onItemDoubleClicked( QTreeWidgetItem *, int ) ) );
 }
 
-QTreeWidgetItem* DesignerTree::addItem( QTreeWidgetItem* parent, QgsFieldsProperties::DesignerTreeItemData data )
+QTreeWidgetItem *DesignerTree::addItem( QTreeWidgetItem *parent, QgsFieldsProperties::DesignerTreeItemData data )
 {
-  QTreeWidgetItem* newItem = new QTreeWidgetItem( QStringList() << data.name() );
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
   if ( data.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
@@ -1209,7 +1209,7 @@ QTreeWidgetItem* DesignerTree::addItem( QTreeWidgetItem* parent, QgsFieldsProper
 
 void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
 {
-  const QMimeData* data = event->mimeData();
+  const QMimeData *data = event->mimeData();
 
   if ( data->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
   {
@@ -1234,7 +1234,7 @@ void DesignerTree::dragMoveEvent( QDragMoveEvent *event )
 }
 
 
-bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMimeData * data, Qt::DropAction action )
+bool DesignerTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action )
 {
   Q_UNUSED( index )
   bool bDropSuccessful = false;
@@ -1269,7 +1269,7 @@ bool DesignerTree::dropMimeData( QTreeWidgetItem* parent, int index, const QMime
   return bDropSuccessful;
 }
 
-void DesignerTree::dropEvent( QDropEvent* event )
+void DesignerTree::dropEvent( QDropEvent *event )
 {
   if ( !event->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelement" ) ) )
     return;
@@ -1287,7 +1287,7 @@ QStringList DesignerTree::mimeTypes() const
   return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
 }
 
-QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
+QMimeData *DesignerTree::mimeData( const QList<QTreeWidgetItem *> items ) const
 {
   if ( items.count() <= 0 )
     return nullptr;
@@ -1297,12 +1297,12 @@ QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
   if ( types.isEmpty() )
     return nullptr;
 
-  QMimeData* data = new QMimeData();
+  QMimeData *data = new QMimeData();
   QString format = types.at( 0 );
   QByteArray encoded;
   QDataStream stream( &encoded, QIODevice::WriteOnly );
 
-  Q_FOREACH ( const QTreeWidgetItem* item, items )
+  Q_FOREACH ( const QTreeWidgetItem *item, items )
   {
     if ( item )
     {
@@ -1317,37 +1317,37 @@ QMimeData* DesignerTree::mimeData( const QList<QTreeWidgetItem*> items ) const
   return data;
 }
 
-void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
+void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column )
   QgsFieldsProperties::DesignerTreeItemData itemData = item->data( 0, QgsFieldsProperties::DesignerTreeRole ).value<QgsFieldsProperties::DesignerTreeItemData>();
 
-  QGroupBox* baseData = new QGroupBox( tr( "Base configuration" ) );
+  QGroupBox *baseData = new QGroupBox( tr( "Base configuration" ) );
 
-  QFormLayout* baseLayout = new QFormLayout();
+  QFormLayout *baseLayout = new QFormLayout();
   baseData->setLayout( baseLayout );
-  QCheckBox* showLabelCheckbox = new QCheckBox( QStringLiteral( "Show label" ) );
+  QCheckBox *showLabelCheckbox = new QCheckBox( QStringLiteral( "Show label" ) );
   showLabelCheckbox->setChecked( itemData.showLabel() );
   baseLayout->addRow( showLabelCheckbox );
-  QWidget* baseWidget = new QWidget();
+  QWidget *baseWidget = new QWidget();
   baseWidget->setLayout( baseLayout );
 
   if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
     QDialog dlg;
     dlg.setWindowTitle( tr( "Configure container" ) );
-    QFormLayout* layout = new QFormLayout() ;
+    QFormLayout *layout = new QFormLayout() ;
     dlg.setLayout( layout );
     layout->addRow( baseWidget );
 
-    QCheckBox* showAsGroupBox = nullptr;
-    QLineEdit* title = new QLineEdit( itemData.name() );
-    QSpinBox* columnCount = new QSpinBox();
-    QGroupBox* visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
+    QCheckBox *showAsGroupBox = nullptr;
+    QLineEdit *title = new QLineEdit( itemData.name() );
+    QSpinBox *columnCount = new QSpinBox();
+    QGroupBox *visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
     visibilityExpressionGroupBox->setCheckable( true );
     visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
     visibilityExpressionGroupBox->setLayout( new QGridLayout );
-    QgsFieldExpressionWidget* visibilityExpressionWidget = new QgsFieldExpressionWidget;
+    QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
     visibilityExpressionWidget->setLayer( mLayer );
     visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility expression" ) );
     visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
@@ -1367,7 +1367,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
       layout->addRow( showAsGroupBox );
     }
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
         | QDialogButtonBox::Cancel );
 
     connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
@@ -1395,18 +1395,18 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
   {
     QDialog dlg;
     dlg.setWindowTitle( tr( "Configure relation editor" ) );
-    QFormLayout* layout = new QFormLayout() ;
+    QFormLayout *layout = new QFormLayout() ;
     dlg.setLayout( layout );
     layout->addWidget( baseWidget );
 
-    QCheckBox* showLinkButton = new QCheckBox( tr( "Show link button" ) );
+    QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
     showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
-    QCheckBox* showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
+    QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
     showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
     layout->addRow( showLinkButton );
     layout->addRow( showUnlinkButton );
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
     connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
     connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
@@ -1431,7 +1431,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
     dlg.setLayout( new QGridLayout() );
     dlg.layout()->addWidget( baseWidget );
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
         | QDialogButtonBox::Cancel );
 
     connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
@@ -1452,20 +1452,20 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem* item, int column )
  * Serialization helpers for DesigerTreeItemData so we can stuff this easily into QMimeData
  */
 
-QDataStream& operator<<( QDataStream& stream, const QgsFieldsProperties::DesignerTreeItemData& data )
+QDataStream &operator<<( QDataStream &stream, const QgsFieldsProperties::DesignerTreeItemData &data )
 {
   stream << ( quint32 )data.type() << data.name();
   return stream;
 }
 
-QDataStream& operator>>( QDataStream& stream, QgsFieldsProperties::DesignerTreeItemData& data )
+QDataStream &operator>>( QDataStream &stream, QgsFieldsProperties::DesignerTreeItemData &data )
 {
   QString name;
   quint32 type;
 
   stream >> type >> name;
 
-  data.setType(( QgsFieldsProperties::DesignerTreeItemData::Type )type );
+  data.setType( ( QgsFieldsProperties::DesignerTreeItemData::Type )type );
   data.setName( name );
 
   return stream;
@@ -1496,7 +1496,7 @@ QgsOptionalExpression QgsFieldsProperties::DesignerTreeItemData::visibilityExpre
   return mVisibilityExpression;
 }
 
-void QgsFieldsProperties::DesignerTreeItemData::setVisibilityExpression( const QgsOptionalExpression& visibilityExpression )
+void QgsFieldsProperties::DesignerTreeItemData::setVisibilityExpression( const QgsOptionalExpression &visibilityExpression )
 {
   mVisibilityExpression = visibilityExpression;
 }

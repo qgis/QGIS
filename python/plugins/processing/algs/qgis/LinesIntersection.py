@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry,
+from qgis.core import (QgsFeatureRequest, QgsFeature, QgsGeometry,
                        QgsWkbTypes, QgsFields)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm

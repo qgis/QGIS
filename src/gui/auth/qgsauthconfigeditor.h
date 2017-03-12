@@ -76,10 +76,10 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     void eraseAuthenticationDatabase();
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
+    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
     //! Pass selection change on to UI update
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Update UI based upon current selection
     void checkSelection();
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
 
   private:
     bool mRelayMessages;
-    QgsMessageBar * messageBar();
+    QgsMessageBar *messageBar();
     int messageTimeout();
     QString selectedConfigId();
 

@@ -27,7 +27,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 {
     Q_OBJECT
   public:
-    QgsRasterCalcDialog( QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsRasterCalcDialog();
 
     QString formulaString() const;
@@ -47,11 +47,11 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 
   private slots:
     void on_mOutputLayerPushButton_clicked();
-    void on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem* item );
+    void on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );
     void on_mButtonBox_accepted();
     void on_mCurrentLayerExtentButton_clicked();
     void on_mExpressionTextEdit_textChanged();
-    void on_mOutputLayerLineEdit_textChanged( const QString& text );
+    void on_mOutputLayerLineEdit_textChanged( const QString &text );
     //! Enables ok button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
 
@@ -92,7 +92,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     //! Returns true if output file directory exists
     bool filePathValid() const;
 
-    static QString quoteBandEntry( const QString& layerName );
+    static QString quoteBandEntry( const QString &layerName );
 
     //! Stores relation between driver name and extension
     QMap<QString, QString> mDriverExtensionMap;

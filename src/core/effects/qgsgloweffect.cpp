@@ -22,30 +22,30 @@
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()
-    : QgsPaintEffect()
-    , mSpread( 2.0 )
-    , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
-    , mRamp( nullptr )
-    , mBlurLevel( 3 )
-    , mTransparency( 0.5 )
-    , mColor( Qt::white )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mColorType( SingleColor )
+  : QgsPaintEffect()
+  , mSpread( 2.0 )
+  , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
+  , mRamp( nullptr )
+  , mBlurLevel( 3 )
+  , mTransparency( 0.5 )
+  , mColor( Qt::white )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mColorType( SingleColor )
 {
 
 }
 
 QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
-    : QgsPaintEffect( other )
-    , mSpread( other.spread() )
-    , mSpreadUnit( other.spreadUnit() )
-    , mSpreadMapUnitScale( other.spreadMapUnitScale() )
-    , mRamp( nullptr )
-    , mBlurLevel( other.blurLevel() )
-    , mTransparency( other.transparency() )
-    , mColor( other.color() )
-    , mBlendMode( other.blendMode() )
-    , mColorType( other.colorType() )
+  : QgsPaintEffect( other )
+  , mSpread( other.spread() )
+  , mSpreadUnit( other.spreadUnit() )
+  , mSpreadMapUnitScale( other.spreadMapUnitScale() )
+  , mRamp( nullptr )
+  , mBlurLevel( other.blurLevel() )
+  , mTransparency( other.transparency() )
+  , mColor( other.color() )
+  , mBlendMode( other.blendMode() )
+  , mColorType( other.colorType() )
 {
   if ( other.ramp() )
   {
@@ -65,7 +65,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
 
   QImage im = sourceAsImage( context )->copy();
 
-  QgsColorRamp* ramp = nullptr;
+  QgsColorRamp *ramp = nullptr;
   if ( mColorType == ColorRamp && mRamp )
   {
     ramp = mRamp;
@@ -102,7 +102,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     p.end();
   }
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
   painter->save();
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
@@ -192,7 +192,7 @@ void QgsGlowEffect::setRamp( QgsColorRamp *ramp )
   mRamp = ramp;
 }
 
-QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
+QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
 {
   if ( &rhs == this )
     return *this;
@@ -210,7 +210,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
   return *this;
 }
 
-QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //spread size
   double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
@@ -225,21 +225,21 @@ QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& 
 //
 
 QgsOuterGlowEffect::QgsOuterGlowEffect()
-    : QgsGlowEffect()
+  : QgsGlowEffect()
 {
 
 }
 
 QgsPaintEffect *QgsOuterGlowEffect::create( const QgsStringMap &map )
 {
-  QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
+  QgsOuterGlowEffect *effect = new QgsOuterGlowEffect();
   effect->readProperties( map );
   return effect;
 }
 
-QgsOuterGlowEffect* QgsOuterGlowEffect::clone() const
+QgsOuterGlowEffect *QgsOuterGlowEffect::clone() const
 {
-  QgsOuterGlowEffect* newEffect = new QgsOuterGlowEffect( *this );
+  QgsOuterGlowEffect *newEffect = new QgsOuterGlowEffect( *this );
   return newEffect;
 }
 
@@ -249,20 +249,20 @@ QgsOuterGlowEffect* QgsOuterGlowEffect::clone() const
 //
 
 QgsInnerGlowEffect::QgsInnerGlowEffect()
-    : QgsGlowEffect()
+  : QgsGlowEffect()
 {
 
 }
 
 QgsPaintEffect *QgsInnerGlowEffect::create( const QgsStringMap &map )
 {
-  QgsInnerGlowEffect* effect = new QgsInnerGlowEffect();
+  QgsInnerGlowEffect *effect = new QgsInnerGlowEffect();
   effect->readProperties( map );
   return effect;
 }
 
-QgsInnerGlowEffect* QgsInnerGlowEffect::clone() const
+QgsInnerGlowEffect *QgsInnerGlowEffect::clone() const
 {
-  QgsInnerGlowEffect* newEffect = new QgsInnerGlowEffect( *this );
+  QgsInnerGlowEffect *newEffect = new QgsInnerGlowEffect( *this );
   return newEffect;
 }

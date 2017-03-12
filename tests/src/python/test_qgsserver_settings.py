@@ -19,7 +19,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from utilities import unitTestDataPath
 from qgis.testing import unittest
-from qgis.core import QgsApplication
 from qgis.server import QgsServerSettings
 
 
@@ -137,7 +136,6 @@ class TestQgsServerSettings(unittest.TestCase):
     def test_priority(self):
         env = "QGIS_OPTIONS_PATH"
         dpath = "conf0"
-        ini = "{0}.ini".format(os.path.join(self.testdata_path, dpath))
         QCoreApplication.setOrganizationName(dpath)
 
         # load settings
@@ -209,6 +207,7 @@ class TestQgsServerSettings(unittest.TestCase):
 
         # clear environment
         os.environ.pop(env)
+
 
 if __name__ == '__main__':
     unittest.main()

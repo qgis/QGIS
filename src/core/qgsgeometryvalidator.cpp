@@ -17,14 +17,13 @@ email                : jef at norbit dot de
 #include "qgsgeometryvalidator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors )
-    : QThread()
-    , mErrors( errors )
-    , mStop( false )
-    , mErrorCount( 0 )
+  : QThread()
+  , mErrors( errors )
+  , mStop( false )
+  , mErrorCount( 0 )
 {
   Q_ASSERT( g );
   if ( g )
@@ -48,11 +47,11 @@ void QgsGeometryValidator::checkRingIntersections(
 {
   for ( int i = 0; !mStop && i < ring0.size() - 1; i++ )
   {
-    QgsVector v = ring0[i+1] - ring0[i];
+    QgsVector v = ring0[i + 1] - ring0[i];
 
     for ( int j = 0; !mStop && j < ring1.size() - 1; j++ )
     {
-      QgsVector w = ring1[j+1] - ring1[j];
+      QgsVector w = ring1[j + 1] - ring1[j];
 
       QgsPoint s;
       if ( intersectLines( ring0[i], v, ring1[j], w, s ) )
@@ -63,8 +62,8 @@ void QgsGeometryValidator::checkRingIntersections(
         {
           d = -distLine2Point( ring1[j], w.perpVector(), s );
           if ( d > 0 && d < w.length() &&
-               ring0[i+1] != ring1[j+1] && ring0[i+1] != ring1[j] &&
-               ring0[i+0] != ring1[j+1] && ring0[i+0] != ring1[j] )
+               ring0[i + 1] != ring1[j + 1] && ring0[i + 1] != ring1[j] &&
+               ring0[i + 0] != ring1[j + 1] && ring0[i + 0] != ring1[j] )
           {
             QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7" )
                           .arg( i0 ).arg( i ).arg( p0 )
@@ -93,7 +92,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
       return;
     }
 
-    if ( line[0] != line[ line.size()-1 ] )
+    if ( line[0] != line[ line.size() - 1 ] )
     {
       QString msg = QObject::tr( "ring %1 not closed" ).arg( i );
       QgsDebugMsg( msg );
@@ -115,7 +114,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
   while ( j < line.size() - 1 )
   {
     int n = 0;
-    while ( j < line.size() - 1 && line[j] == line[j+1] )
+    while ( j < line.size() - 1 && line[j] == line[j + 1] )
     {
       line.remove( j );
       n++;
@@ -134,14 +133,14 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
 
   for ( j = 0; !mStop && j < line.size() - 3; j++ )
   {
-    QgsVector v = line[j+1] - line[j];
+    QgsVector v = line[j + 1] - line[j];
     double vl = v.length();
 
     int n = ( j == 0 && ring ) ? line.size() - 2 : line.size() - 1;
 
     for ( int k = j + 2; !mStop && k < n; k++ )
     {
-      QgsVector w = line[k+1] - line[k];
+      QgsVector w = line[k + 1] - line[k];
 
       QgsPoint s;
       if ( !intersectLines( line[j], v, line[k], w, s ) )
@@ -152,7 +151,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
       {
         d = -distLine2Point( line[j], v.perpVector(), s );
       }
-      catch ( QgsException & e )
+      catch ( QgsException &e )
       {
         Q_UNUSED( e );
         QgsDebugMsg( "Error validating: " + e.what() );
@@ -165,7 +164,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
       {
         d = -distLine2Point( line[k], w.perpVector(), s );
       }
-      catch ( QgsException & e )
+      catch ( QgsException &e )
       {
         Q_UNUSED( e );
         QgsDebugMsg( "Error validating: " + e.what() );
@@ -216,8 +215,8 @@ void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon &polygon )
 void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
-  QSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
   {
     char *r = nullptr;
     GEOSGeometry *g0 = mG.exportToGeos();
@@ -346,7 +345,7 @@ void QgsGeometryValidator::run()
 #endif
 }
 
-void QgsGeometryValidator::addError( const QgsGeometry::Error& e )
+void QgsGeometryValidator::addError( const QgsGeometry::Error &e )
 {
   if ( mErrors )
     *mErrors << e;
@@ -365,17 +364,17 @@ void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeom
 // return >0  => q lies left of the line
 //        <0  => q lies right of the line
 //
-double QgsGeometryValidator::distLine2Point( const QgsPoint& p, QgsVector v, const QgsPoint& q )
+double QgsGeometryValidator::distLine2Point( const QgsPoint &p, QgsVector v, const QgsPoint &q )
 {
   if ( qgsDoubleNear( v.length(), 0 ) )
   {
     throw QgsException( QObject::tr( "invalid line" ) );
   }
 
-  return ( v.x()*( q.y() - p.y() ) - v.y()*( q.x() - p.x() ) ) / v.length();
+  return ( v.x() * ( q.y() - p.y() ) - v.y() * ( q.x() - p.x() ) ) / v.length();
 }
 
-bool QgsGeometryValidator::intersectLines( const QgsPoint& p, QgsVector v, const QgsPoint& q, QgsVector w, QgsPoint &s )
+bool QgsGeometryValidator::intersectLines( const QgsPoint &p, QgsVector v, const QgsPoint &q, QgsVector w, QgsPoint &s )
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
@@ -401,10 +400,10 @@ bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPoint 
     if ( qgsDoubleNear( ring[i].x(), p.x() ) && qgsDoubleNear( ring[i].y(), p.y() ) )
       return true;
 
-    if (( ring[i].y() < p.y() && ring[j].y() >= p.y() ) ||
-        ( ring[j].y() < p.y() && ring[i].y() >= p.y() ) )
+    if ( ( ring[i].y() < p.y() && ring[j].y() >= p.y() ) ||
+         ( ring[j].y() < p.y() && ring[i].y() >= p.y() ) )
     {
-      if ( ring[i].x() + ( p.y() - ring[i].y() ) / ( ring[j].y() - ring[i].y() )*( ring[j].x() - ring[i].x() ) <= p.x() )
+      if ( ring[i].x() + ( p.y() - ring[i].y() ) / ( ring[j].y() - ring[i].y() ) * ( ring[j].x() - ring[i].x() ) <= p.x() )
         inside = !inside;
     }
 

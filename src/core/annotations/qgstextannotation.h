@@ -37,33 +37,33 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsTextAnnotation.
      */
-    QgsTextAnnotation( QObject* parent = nullptr );
+    QgsTextAnnotation( QObject *parent = nullptr );
 
     /**
      * Returns the text document which will be rendered
      * within the annotation.
      * @see setDocument()
      */
-    const QTextDocument* document() const;
+    const QTextDocument *document() const;
 
     /**
      * Sets the text document which will be rendered
      * within the annotation. Ownership is not transferred.
      * @see document()
      */
-    void setDocument( const QTextDocument* doc );
+    void setDocument( const QTextDocument *doc );
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /**
      * Returns a new QgsTextAnnotation object.
      */
-    static QgsTextAnnotation* create() { return new QgsTextAnnotation(); }
+    static QgsTextAnnotation *create() { return new QgsTextAnnotation(); }
 
   protected:
 
-    void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
+    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private:
     std::unique_ptr< QTextDocument > mDocument;

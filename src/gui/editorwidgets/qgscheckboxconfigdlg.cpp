@@ -15,8 +15,8 @@
 
 #include "qgscheckboxconfigdlg.h"
 
-QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -34,7 +34,7 @@ QVariantMap QgsCheckBoxConfigDlg::config()
   return cfg;
 }
 
-void QgsCheckBoxConfigDlg::setConfig( const QVariantMap& config )
+void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
 {
   leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
   leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );

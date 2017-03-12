@@ -29,7 +29,7 @@ class QgsAdvancedDigitizingDockWidget;
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
   public:
-    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
+    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void paint( QPainter *painter ) override;
 
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
     QPen mCursorPen;
 
   private:
-    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget = nullptr;
+    QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
 };
 
 #endif // QGSADVANCEDDIGITIZINGCANVASITEM_H

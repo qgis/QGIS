@@ -54,23 +54,23 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
     /**
      * Constructor for QgsMapCanvasAnnotationItem.
      */
-    QgsMapCanvasAnnotationItem( QgsAnnotation* annotation, QgsMapCanvas* mapCanvas );
+    QgsMapCanvasAnnotationItem( QgsAnnotation *annotation, QgsMapCanvas *mapCanvas );
 
     /**
      * Returns the item's annotation.
      */
-    const QgsAnnotation* annotation() const { return mAnnotation; }
+    const QgsAnnotation *annotation() const { return mAnnotation; }
 
     /**
      * Returns the item's annotation.
      */
-    QgsAnnotation* annotation() { return mAnnotation; }
+    QgsAnnotation *annotation() { return mAnnotation; }
 
     void updatePosition() override;
 
     QRectF boundingRect() const override;
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter *painter ) override;
 
     /**
      * Returns the mouse move behavior for a given position in scene coordinates
@@ -94,12 +94,12 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
   private:
 
     //! Draws selection handles around the item
-    void drawSelectionBoxes( QPainter* p ) const;
+    void drawSelectionBoxes( QPainter *p ) const;
 
     //! Returns the symbol size scaled in (mapcanvas) pixels. Used for the counding rect calculation
     double scaledSymbolSize() const;
 
-    QgsAnnotation* mAnnotation = nullptr;
+    QgsAnnotation *mAnnotation = nullptr;
 
     //! Bounding rect (including item frame and balloon)
     QRectF mBoundingRect;

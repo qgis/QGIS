@@ -53,40 +53,40 @@ class GUI_EXPORT QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext()
-        : mParentContext( nullptr )
-        , mLayer( nullptr )
-        , mVectorLayerTools( nullptr )
-        , mRelationMode( Undefined )
-        , mFormMode( Embed )
-        , mAllowCustomUi( true )
+      : mParentContext( nullptr )
+      , mLayer( nullptr )
+      , mVectorLayerTools( nullptr )
+      , mRelationMode( Undefined )
+      , mFormMode( Embed )
+      , mAllowCustomUi( true )
     {}
 
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode )
-        : mParentContext( &parentContext )
-        , mLayer( nullptr )
-        , mVectorLayerTools( parentContext.mVectorLayerTools )
-        , mDistanceArea( parentContext.mDistanceArea )
-        , mRelationMode( Undefined )
-        , mFormMode( formMode )
-        , mAllowCustomUi( true )
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode )
+      : mParentContext( &parentContext )
+      , mLayer( nullptr )
+      , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mDistanceArea( parentContext.mDistanceArea )
+      , mRelationMode( Undefined )
+      , mFormMode( formMode )
+      , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode widgetMode )
-        : mParentContext( &parentContext )
-        , mLayer( nullptr )
-        , mVectorLayerTools( parentContext.mVectorLayerTools )
-        , mDistanceArea( parentContext.mDistanceArea )
-        , mRelation( relation )
-        , mRelationMode( relationMode )
-        , mFormMode( widgetMode )
-        , mAllowCustomUi( true )
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode )
+      : mParentContext( &parentContext )
+      , mLayer( nullptr )
+      , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mDistanceArea( parentContext.mDistanceArea )
+      , mRelation( relation )
+      , mRelationMode( relationMode )
+      , mFormMode( widgetMode )
+      , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
-    inline void setDistanceArea( const QgsDistanceArea& distanceArea )
+    inline void setDistanceArea( const QgsDistanceArea &distanceArea )
     {
       if ( mLayer )
       {
@@ -95,13 +95,13 @@ class GUI_EXPORT QgsAttributeEditorContext
       }
     }
 
-    inline const QgsDistanceArea& distanceArea() const { return mDistanceArea; }
+    inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
-    inline void setVectorLayerTools( QgsVectorLayerTools* vlTools ) { mVectorLayerTools = vlTools; }
-    inline const QgsVectorLayerTools* vectorLayerTools() const { return mVectorLayerTools; }
+    inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
+    inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
 
-    inline void setRelation( const QgsRelation& relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
-    inline const QgsRelation& relation() const { return mRelation; }
+    inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+    inline const QgsRelation &relation() const { return mRelation; }
     inline RelationMode relationMode() const { return mRelationMode; }
 
     /** Returns the form mode.
@@ -130,12 +130,12 @@ class GUI_EXPORT QgsAttributeEditorContext
      */
     void setAllowCustomUi( bool allow ) { mAllowCustomUi = allow; }
 
-    inline const QgsAttributeEditorContext* parentContext() const { return mParentContext; }
+    inline const QgsAttributeEditorContext *parentContext() const { return mParentContext; }
 
   private:
-    const QgsAttributeEditorContext* mParentContext = nullptr;
-    QgsVectorLayer* mLayer = nullptr;
-    QgsVectorLayerTools* mVectorLayerTools = nullptr;
+    const QgsAttributeEditorContext *mParentContext = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode;

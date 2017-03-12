@@ -33,13 +33,13 @@ class CORE_EXPORT QgsRasterShader
 {
 
   public:
-    QgsRasterShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+    QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
     ~QgsRasterShader();
 
     //! QgsRasterShader cannot be copied
-    QgsRasterShader( const QgsRasterShader& rh ) = delete;
+    QgsRasterShader( const QgsRasterShader &rh ) = delete;
     //! QgsRasterShader cannot be copied
-    QgsRasterShader& operator=( const QgsRasterShader& rh ) = delete;
+    QgsRasterShader &operator=( const QgsRasterShader &rh ) = delete;
 
     /*
      *
@@ -52,8 +52,8 @@ class CORE_EXPORT QgsRasterShader
     //! \brief Return the minimum value for the raster shader
     double minimumValue() { return mMinimumValue; }
 
-    QgsRasterShaderFunction* rasterShaderFunction() { return mRasterShaderFunction; }
-    const QgsRasterShaderFunction* rasterShaderFunction() const { return mRasterShaderFunction; }
+    QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction; }
+    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction; }
 
     /*
      *
@@ -61,14 +61,14 @@ class CORE_EXPORT QgsRasterShader
      *
      */
     //! \brief generates and new RGBA value based on one input value
-    bool shade( double, int*, int*, int*, int* );
+    bool shade( double, int *, int *, int *, int * );
 
     //! \brief generates and new RGBA value based on original RGBA value
-    bool shade( double, double, double, double, int*, int*, int*, int* );
+    bool shade( double, double, double, double, int *, int *, int *, int * );
 
     /** \brief A public method that allows the user to set their own shader function
       \note Raster shader takes ownership of the shader function instance */
-    void setRasterShaderFunction( QgsRasterShaderFunction* );
+    void setRasterShaderFunction( QgsRasterShaderFunction * );
 
     //! \brief Set the maximum value
     void setMaximumValue( double );
@@ -79,12 +79,12 @@ class CORE_EXPORT QgsRasterShader
     /**
      * Writes shader state to an XML element.
      */
-    void writeXml( QDomDocument& doc, QDomElement& parent ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parent ) const;
 
     /**
      * Reads shader state from an XML element.
      */
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
     //! \brief User defineable minimum value for the raster shader
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsRasterShader
     double mMaximumValue;
 
     //! \brief Pointer to the shader function
-    QgsRasterShaderFunction* mRasterShaderFunction = nullptr;
+    QgsRasterShaderFunction *mRasterShaderFunction = nullptr;
 
 };
 #endif

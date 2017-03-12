@@ -36,12 +36,12 @@ back to QgsVectorLayer.
 #include <QImageWriter>
 #include <QTableWidget>
 
-QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager& actions, QWidget* parent )
-    : QWidget( parent )
-    , mLayer( actions.layer() )
+QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &actions, QWidget *parent )
+  : QWidget( parent )
+  , mLayer( actions.layer() )
 {
   setupUi( this );
-  QHeaderView* header = mAttributeActionTable->horizontalHeader();
+  QHeaderView *header = mAttributeActionTable->horizontalHeader();
   header->setHighlightSections( false );
   header->setStretchLastSection( true );
   mAttributeActionTable->setColumnWidth( 0, 100 );
@@ -49,7 +49,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager& acti
   mAttributeActionTable->setCornerButtonEnabled( false );
   mAttributeActionTable->setEditTriggers( QAbstractItemView::AnyKeyPressed | QAbstractItemView::SelectedClicked );
 
-  connect( mAttributeActionTable, SIGNAL( itemDoubleClicked( QTableWidgetItem* ) ), this, SLOT( itemDoubleClicked( QTableWidgetItem* ) ) );
+  connect( mAttributeActionTable, SIGNAL( itemDoubleClicked( QTableWidgetItem * ) ), this, SLOT( itemDoubleClicked( QTableWidgetItem * ) ) );
   connect( mAttributeActionTable, SIGNAL( itemSelectionChanged() ), this, SLOT( updateButtons() ) );
   connect( mMoveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
   connect( mMoveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
@@ -60,14 +60,14 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager& acti
   init( actions, mLayer->attributeTableConfig() );
 }
 
-void QgsAttributeActionDialog::init( const QgsActionManager& actions, const QgsAttributeTableConfig& attributeTableConfig )
+void QgsAttributeActionDialog::init( const QgsActionManager &actions, const QgsAttributeTableConfig &attributeTableConfig )
 {
   // Start from a fresh slate.
   mAttributeActionTable->setRowCount( 0 );
 
   int i = 0;
   // Populate with our actions.
-  Q_FOREACH ( const QgsAction& action, actions.actions() )
+  Q_FOREACH ( const QgsAction &action, actions.actions() )
   {
     insertRow( i++, action );
   }
@@ -104,9 +104,9 @@ QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeActionDialog::attributeTa
   return static_cast<QgsAttributeTableConfig::ActionWidgetStyle>( mAttributeTableWidgetType->currentIndex() );
 }
 
-void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
+void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
 {
-  QTableWidgetItem* item = nullptr;
+  QTableWidgetItem *item = nullptr;
   mAttributeActionTable->insertRow( row );
 
   // Type
@@ -141,14 +141,14 @@ void QgsAttributeActionDialog::insertRow( int row, const QgsAction& action )
 
   // Icon
   QIcon icon = action.icon();
-  QTableWidgetItem* headerItem = new QTableWidgetItem( icon, QLatin1String( "" ) );
+  QTableWidgetItem *headerItem = new QTableWidgetItem( icon, QLatin1String( "" ) );
   headerItem->setData( Qt::UserRole, action.iconPath() );
   mAttributeActionTable->setVerticalHeaderItem( row, headerItem );
 
   updateButtons();
 }
 
-void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString& name, const QString& actionText, const QString& iconPath, bool capture, const QString& shortTitle, const QSet<QString>& actionScopes )
+void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &actionText, const QString &iconPath, bool capture, const QString &shortTitle, const QSet<QString> &actionScopes )
 {
   if ( uniqueName( name ) == name )
     insertRow( row, QgsAction( type, name, actionText, iconPath, capture, shortTitle, actionScopes ) );
@@ -206,7 +206,7 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
     mAttributeActionTable->setItem( row1, col, mAttributeActionTable->takeItem( row2, col ) );
     mAttributeActionTable->setItem( row2, col, item );
   }
-  QTableWidgetItem* header = mAttributeActionTable->takeVerticalHeaderItem( row1 );
+  QTableWidgetItem *header = mAttributeActionTable->takeVerticalHeaderItem( row1 );
   mAttributeActionTable->setVerticalHeaderItem( row1, mAttributeActionTable->takeVerticalHeaderItem( row2 ) );
   mAttributeActionTable->setVerticalHeaderItem( row2, header );
 }
@@ -310,7 +310,7 @@ void QgsAttributeActionDialog::addDefaultActions()
   insertRow( pos++, QgsAction::GenericPython, tr( "List feature ids" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nlayer = QgsProject.instance().mapLayer('[% @layer_id %]')\nif layer.selectedFeatureCount():\n    ids = layer.selectedFeatureIds()\nelse:\n    ids = [f.id() for f in layer.getFeatures()]\n\nQtWidgets.QMessageBox.information(None, \"Feature ids\", ', '.join([str(id) for id in ids]))" ), QLatin1String( "" ), false, tr( "List feature ids" ), QSet<QString>() << QStringLiteral( "Layer" ) );
 }
 
-void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
+void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
 {
   int row = item->row();
 
@@ -336,7 +336,7 @@ void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem* item )
     mAttributeActionTable->item( row, ActionText )->setText( actionProperties.actionText() );
     mAttributeActionTable->item( row, Capture )->setCheckState( actionProperties.capture() ? Qt::Checked : Qt::Unchecked );
 
-    QTableWidgetItem* item = mAttributeActionTable->item( row, ActionScopes );
+    QTableWidgetItem *item = mAttributeActionTable->item( row, ActionScopes );
     QStringList actionScopes = actionProperties.actionScopes().toList();
     std::sort( actionScopes.begin(), actionScopes.end() );
     item->setText( actionScopes.join( QStringLiteral( ", " ) ) );

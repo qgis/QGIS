@@ -36,8 +36,8 @@ namespace QgsWfs
   {
     public:
       // Constructor
-      Service( QgsServerInterface* serverIface )
-          : mServerIface( serverIface )
+      Service( QgsServerInterface *serverIface )
+        : mServerIface( serverIface )
       {}
 
       QString name()    const { return QStringLiteral( "WFS" ); }
@@ -48,8 +48,8 @@ namespace QgsWfs
         return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
       }
 
-      void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           const QgsProject* project )
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
+                           const QgsProject *project )
       {
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
@@ -93,7 +93,7 @@ namespace QgsWfs
       }
 
     private:
-      QgsServerInterface* mServerIface = nullptr;
+      QgsServerInterface *mServerIface = nullptr;
   };
 
 
@@ -104,7 +104,7 @@ namespace QgsWfs
 class QgsWfsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry& registry, QgsServerInterface* serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
     {
       QgsDebugMsg( "WFSModule::registerSelf called" );
       registry.registerService( new  QgsWfs::Service( serverIface ) );
@@ -113,12 +113,12 @@ class QgsWfsModule: public QgsServiceModule
 
 
 // Entry points
-QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
+QGISEXTERN QgsServiceModule *QGS_ServiceModule_Init()
 {
   static QgsWfsModule module;
   return &module;
 }
-QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
+QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }

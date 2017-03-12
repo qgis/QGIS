@@ -65,8 +65,8 @@ class TestQgsComposerPicture : public QObject
 
 
   private:
-    QgsComposition* mComposition = nullptr;
-    QgsComposerPicture* mComposerPicture = nullptr;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerPicture *mComposerPicture = nullptr;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
@@ -74,8 +74,8 @@ class TestQgsComposerPicture : public QObject
 };
 
 TestQgsComposerPicture::TestQgsComposerPicture()
-    : mComposition( 0 )
-    , mComposerPicture( 0 )
+  : mComposition( 0 )
+  , mComposerPicture( 0 )
 {
 
 }
@@ -357,8 +357,8 @@ void TestQgsComposerPicture::svgParameters()
   mComposerPicture->setResizeMode( QgsComposerPicture::Zoom );
   mComposerPicture->setPicturePath( mSvgParamsImage );
   mComposerPicture->setSvgFillColor( QColor( 30, 90, 200, 100 ) );
-  mComposerPicture->setSvgBorderColor( QColor( 255, 45, 20, 200 ) );
-  mComposerPicture->setSvgBorderWidth( 2.2 );
+  mComposerPicture->setSvgStrokeColor( QColor( 255, 45, 20, 200 ) );
+  mComposerPicture->setSvgStrokeWidth( 2.2 );
 
   QgsCompositionChecker checker( QStringLiteral( "composerpicture_svg_params" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );

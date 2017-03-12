@@ -26,13 +26,13 @@ class ANALYSIS_EXPORT Line3D
 {
   private:
     //! Copy constructor, declared private to not use it
-    Line3D( const Line3D& );
+    Line3D( const Line3D & );
     //! Assignment operator, declared private to not use it
-    Line3D& operator=( const Line3D& );
+    Line3D &operator=( const Line3D & );
   protected:
-    Node* head = nullptr;
-    Node* z = nullptr;
-    Node* currentNode = nullptr;
+    Node *head = nullptr;
+    Node *z = nullptr;
+    Node *currentNode = nullptr;
     unsigned int size;
     unsigned int current;
 
@@ -42,11 +42,11 @@ class ANALYSIS_EXPORT Line3D
     //! Returns true, if the Line contains no Point3D, otherwise false
     bool empty() const;
     //! Inserts a node behind the current position and sets the current position to this new node
-    void insertPoint( Point3D* p );
+    void insertPoint( Point3D *p );
     //! Removes the point behind the current position
     void removePoint();
     //! Gets the point at the current position
-    Point3D* getPoint() const;
+    Point3D *getPoint() const;
     //! Returns the current position
     unsigned int getCurrent() const;
     //! Returns the size of the line (the numbero of inserted Nodes without 'head' and 'z'
@@ -57,12 +57,12 @@ class ANALYSIS_EXPORT Line3D
     void goToNext();
 };
 
-inline Line3D::Line3D( const Line3D& )
+inline Line3D::Line3D( const Line3D & )
 {
 
 }
 
-inline Line3D& Line3D::operator=( const Line3D& )
+inline Line3D &Line3D::operator=( const Line3D & )
 {
   return ( *this );
 }
@@ -72,7 +72,7 @@ inline unsigned int Line3D::getCurrent() const
   return current;
 }
 
-inline Point3D* Line3D::getPoint() const
+inline Point3D *Line3D::getPoint() const
 {
   return ( currentNode->getPoint() );
 }

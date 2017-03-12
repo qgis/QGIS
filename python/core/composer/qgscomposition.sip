@@ -326,15 +326,15 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 
     /** Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
-     * @param theId - A QString representing the identifier of the item to retrieve.
+     * @param id - A QString representing the identifier of the item to retrieve.
      * @return QgsComposerItem pointer or 0 pointer if no such item exists.
      */
-    const QgsComposerItem* getComposerItemById( const QString& theId ) const;
+    const QgsComposerItem* getComposerItemById( const QString& id ) const;
 
     /** Returns a composer item given its unique identifier.
-     * @param theUuid A QString representing the UUID of the item to
+     * @param uuid A QString representing the UUID of the item to
      */
-    const QgsComposerItem* getComposerItemByUuid( const QString& theUuid ) const;
+    const QgsComposerItem* getComposerItemByUuid( const QString& uuid ) const;
 
     int printResolution() const;
     void setPrintResolution( const int dpi );

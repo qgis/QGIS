@@ -193,6 +193,7 @@ SET(QGIS_GUI_SRCS
   qgscredentialdialog.cpp
   qgscursors.cpp
   qgscustomdrophandler.cpp
+  qgscurveeditorwidget.cpp
   qgsdatumtransformdialog.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
@@ -222,7 +223,6 @@ SET(QGIS_GUI_SRCS
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsformannotation.cpp
-  qgsgenericprojectionselector.cpp
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
@@ -280,8 +280,9 @@ SET(QGIS_GUI_SRCS
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
+  qgsprojectionselectiondialog.cpp
   qgsprojectionselectionwidget.cpp
-  qgsprojectionselector.cpp
+  qgsprojectionselectiontreewidget.cpp
   qgspropertyassistantwidget.cpp
   qgspropertyoverridebutton.cpp
   qgsquerybuilder.cpp
@@ -345,6 +346,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
+  qgscurveeditorwidget.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -373,7 +375,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfloatingwidget.h
   qgsfocuswatcher.h
   qgsformannotation.h
-  qgsgenericprojectionselector.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
@@ -415,6 +416,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewvectorlayerdialog.h
   qgsnewgeopackagelayerdialog.h
   qgsoptionsdialogbase.h
+  qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
   qgssourceselectdialog.h
@@ -424,8 +426,9 @@ SET(QGIS_GUI_MOC_HDRS
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
+  qgsprojectionselectiondialog.h
   qgsprojectionselectionwidget.h
-  qgsprojectionselector.h
+  qgsprojectionselectiontreewidget.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsquerybuilder.h
@@ -803,6 +806,14 @@ ELSE(NOT APPLE)
     PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
+  # generated export header does not get copied with PUBLIC_HEADER files
+  ADD_CUSTOM_COMMAND(TARGET qgis_gui
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy qgis_gui.h
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_gui.framework/Headers"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS qgis_gui.h
+  )
 ENDIF(NOT APPLE)
 
 #generate unversioned libs for android
@@ -827,6 +838,14 @@ IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
   ADD_DEFINITIONS(-DQSCINTILLA_DLL)
 ENDIF(WIN32)
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_gui PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 # install
 

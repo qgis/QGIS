@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QgsFeature, QgsGeometry
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import vector
 
 

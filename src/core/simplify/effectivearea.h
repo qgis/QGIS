@@ -70,10 +70,10 @@ struct MINHEAP
  */
 struct EFFECTIVE_AREAS
 {
-  EFFECTIVE_AREAS( const QgsCurve& curve )
-      : is3d( curve.is3D() )
-      , initial_arealist( nullptr )
-      , res_arealist( nullptr )
+  EFFECTIVE_AREAS( const QgsCurve &curve )
+    : is3d( curve.is3D() )
+    , initial_arealist( nullptr )
+    , res_arealist( nullptr )
   {
     curve.points( inpts );
     initial_arealist = new areanode[ inpts.size()];
@@ -86,8 +86,8 @@ struct EFFECTIVE_AREAS
     delete [] res_arealist;
   }
 
-  EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other ) = delete;
-  EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other ) = delete;
+  EFFECTIVE_AREAS( const EFFECTIVE_AREAS &other ) = delete;
+  EFFECTIVE_AREAS &operator=( const EFFECTIVE_AREAS &other ) = delete;
 
   bool is3d;
   QgsPointSequence inpts;

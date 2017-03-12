@@ -33,9 +33,9 @@ class TestQgsComposerLabel : public QObject
 
   public:
     TestQgsComposerLabel()
-        : mComposition( 0 )
-        , mComposerLabel( 0 )
-        , mVectorLayer( 0 )
+      : mComposition( 0 )
+      , mComposerLabel( 0 )
+      , mVectorLayer( 0 )
     {}
 
   private slots:
@@ -56,9 +56,9 @@ class TestQgsComposerLabel : public QObject
     void renderAsHtmlRelative();
 
   private:
-    QgsComposition* mComposition = nullptr;
-    QgsComposerLabel* mComposerLabel = nullptr;
-    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerLabel *mComposerLabel = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
     QString mReport;
 };
 

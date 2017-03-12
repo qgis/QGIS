@@ -119,9 +119,9 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 
     void appendString( const QString &line );
 
-    QPushButton* saveButton();
-    QPushButton* closeButton();
-    QString getOpenFileName( const QString& title, const QString& extfilter );
+    QPushButton *saveButton();
+    QPushButton *closeButton();
+    QString getOpenFileName( const QString &title, const QString &extfilter );
 
     QSslSocket *mSocket = nullptr;
     bool mExecErrorsDialog;

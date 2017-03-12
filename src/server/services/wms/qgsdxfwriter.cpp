@@ -27,7 +27,7 @@ namespace QgsWms
   namespace
   {
 
-    QMap<QString, QString> parseFormatOptions( const QString& optionString )
+    QMap<QString, QString> parseFormatOptions( const QString &optionString )
     {
       QMap<QString, QString> options;
 
@@ -44,9 +44,9 @@ namespace QgsWms
       return options;
     }
 
-    void readDxfLayerSettings( const QgsServerRequest::Parameters& parameters, QgsWmsConfigParser* configParser,
-                               QList< QPair<QgsVectorLayer *, int > >& layers,
-                               const QMap<QString, QString>& options )
+    void readDxfLayerSettings( const QgsServerRequest::Parameters &parameters, QgsWmsConfigParser *configParser,
+                               QList< QPair<QgsVectorLayer *, int > > &layers,
+                               const QMap<QString, QString> &options )
     {
       QSet<QString> wfsLayers = QSet<QString>::fromList( configParser->wfsLayerNames() );
 
@@ -70,7 +70,7 @@ namespace QgsWms
           styleName = styleList.at( i );
         }
 
-        QList<QgsMapLayer*> layerList = configParser->mapLayerFromStyle( layerName, styleName );
+        QList<QgsMapLayer *> layerList = configParser->mapLayerFromStyle( layerName, styleName );
         for ( auto layerIt = layerList.constBegin(); layerIt != layerList.constEnd(); ++layerIt )
         {
           if ( !( *layerIt ) )
@@ -79,12 +79,12 @@ namespace QgsWms
           }
 
           //vector layer?
-          if (( *layerIt )->type() != QgsMapLayer::VectorLayer )
+          if ( ( *layerIt )->type() != QgsMapLayer::VectorLayer )
           {
             continue;
           }
 
-          QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( *layerIt );
+          QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( *layerIt );
 
           int layerAttribute = -1;
           if ( layerAttributes.size() > i )
@@ -105,11 +105,11 @@ namespace QgsWms
 
   }
 
-  void writeAsDxf( QgsServerInterface* serverIface,  const QString& version, const QgsServerRequest& request, QgsServerResponse& response )
+  void writeAsDxf( QgsServerInterface *serverIface,  const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
   {
     Q_UNUSED( version );
 
-    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
 
     QgsDxfExport dxf;
     QgsServerRequest::Parameters params = request.parameters();

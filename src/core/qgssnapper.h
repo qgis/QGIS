@@ -57,7 +57,7 @@ struct CORE_EXPORT QgsSnappingResult
   //! Index of the snapped geometry
   QgsFeatureId snappedAtGeometry;
   //! Layer where the snap occurred
-  const QgsVectorLayer* layer = nullptr;
+  const QgsVectorLayer *layer = nullptr;
 };
 
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsSnapper
     struct SnapLayer
     {
       //! The layer to which snapping is applied
-      QgsVectorLayer* mLayer = nullptr;
+      QgsVectorLayer *mLayer = nullptr;
       //! The snapping tolerances for the layers, always in source coordinate systems of the layer
       double mTolerance;
       //! What snapping type to use (snap to segment or to vertex)
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsSnapper
       QgsTolerance::UnitType mUnitType;
     };
 
-    explicit QgsSnapper( const QgsMapSettings& mapSettings );
+    explicit QgsSnapper( const QgsMapSettings &mapSettings );
 
     /** Does the snapping operation
      * @param mapCoordPoint the start point for snapping (in map coordinates)
@@ -112,18 +112,18 @@ class CORE_EXPORT QgsSnapper
     int snapMapPoint( const QgsPoint &mapCoordPoint, QList<QgsSnappingResult> &snappingResult, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
     //setters
-    void setSnapLayers( const QList<QgsSnapper::SnapLayer>& snapLayers );
+    void setSnapLayers( const QList<QgsSnapper::SnapLayer> &snapLayers );
     void setSnapMode( QgsSnapper::SnappingMode snapMode );
 
   private:
 
     //! Removes the snapping results that contains points in exclude list
-    void cleanResultList( QMultiMap<double, QgsSnappingResult>& list, const QList<QgsPoint>& excludeList ) const;
+    void cleanResultList( QMultiMap<double, QgsSnappingResult> &list, const QList<QgsPoint> &excludeList ) const;
 
     /** The map settings object contains information about the output coordinate system
      * of the map and about the relationship between pixel space and map space
      */
-    const QgsMapSettings& mMapSettings;
+    const QgsMapSettings &mMapSettings;
     //! Snap mode to apply
     QgsSnapper::SnappingMode mSnapMode;
     //! List of layers to which snapping is applied

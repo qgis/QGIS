@@ -40,12 +40,12 @@
 #include <QDomDocument>
 #include <QPolygonF>
 
-QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext& context, const QgsPointV2& point )
+QPointF QgsFeatureRenderer::_getPoint( QgsRenderContext &context, const QgsPointV2 &point )
 {
   return QgsSymbol::_getPoint( context, point );
 }
 
-void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer* destRenderer ) const
+void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer *destRenderer ) const
 {
   if ( !destRenderer || !mPaintEffect )
     return;
@@ -55,14 +55,14 @@ void QgsFeatureRenderer::copyRendererData( QgsFeatureRenderer* destRenderer ) co
   destRenderer->mOrderByEnabled = mOrderByEnabled;
 }
 
-QgsFeatureRenderer::QgsFeatureRenderer( const QString& type )
-    : mType( type )
-    , mUsingSymbolLevels( false )
-    , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
-    , mCurrentVertexMarkerSize( 3 )
-    , mPaintEffect( nullptr )
-    , mForceRaster( false )
-    , mOrderByEnabled( false )
+QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
+  : mType( type )
+  , mUsingSymbolLevels( false )
+  , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
+  , mCurrentVertexMarkerSize( 3 )
+  , mPaintEffect( nullptr )
+  , mForceRaster( false )
+  , mOrderByEnabled( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -73,17 +73,17 @@ QgsFeatureRenderer::~QgsFeatureRenderer()
   delete mPaintEffect;
 }
 
-QgsFeatureRenderer* QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryType geomType )
+QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryType geomType )
 {
   return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
 }
 
-QgsSymbol* QgsFeatureRenderer::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
 {
   return symbolForFeature( feature, context );
 }
 
-QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context )
+QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
@@ -95,9 +95,9 @@ bool QgsFeatureRenderer::filterNeedsGeometry() const
   return false;
 }
 
-bool QgsFeatureRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsFeatureRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
-  QgsSymbol* symbol = symbolForFeature( feature, context );
+  QgsSymbol *symbol = symbolForFeature( feature, context );
   if ( !symbol )
     return false;
 
@@ -105,7 +105,7 @@ bool QgsFeatureRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
   return true;
 }
 
-void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbol* symbol, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   symbol->renderFeature( feature, context, layer, selected, drawVertexMarker, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
 }
@@ -115,7 +115,7 @@ QString QgsFeatureRenderer::dump() const
   return QStringLiteral( "UNKNOWN RENDERER\n" );
 }
 
-QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
+QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element )
 {
   // <renderer-v2 type=""> ... </renderer-v2>
 
@@ -125,11 +125,11 @@ QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
   // load renderer
   QString rendererType = element.attribute( QStringLiteral( "type" ) );
 
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
   if ( !m )
     return nullptr;
 
-  QgsFeatureRenderer* r = m->createRenderer( element );
+  QgsFeatureRenderer *r = m->createRenderer( element );
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( QStringLiteral( "symbollevels" ), QStringLiteral( "0" ) ).toInt() );
@@ -150,7 +150,7 @@ QgsFeatureRenderer* QgsFeatureRenderer::load( QDomElement& element )
   return r;
 }
 
-QDomElement QgsFeatureRenderer::save( QDomDocument& doc )
+QDomElement QgsFeatureRenderer::save( QDomDocument &doc )
 {
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
@@ -169,7 +169,7 @@ QDomElement QgsFeatureRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )
+QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTypes::GeometryType geomType, QString &errorMessage )
 {
   QDomElement element = node.toElement();
   if ( element.isNull() )
@@ -247,18 +247,18 @@ QgsFeatureRenderer* QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
   QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
 
   // create the renderer and return it
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererType );
   if ( !m )
   {
     errorMessage = QStringLiteral( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
     return nullptr;
   }
 
-  QgsFeatureRenderer* r = m->createRendererFromSld( featTypeStyleElem, geomType );
+  QgsFeatureRenderer *r = m->createRendererFromSld( featTypeStyleElem, geomType );
   return r;
 }
 
-QDomElement QgsFeatureRenderer::writeSld( QDomDocument& doc, const QString& styleName, const QgsStringMap& props ) const
+QDomElement QgsFeatureRenderer::writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props ) const
 {
   QDomElement userStyleElem = doc.createElement( QStringLiteral( "UserStyle" ) );
 
@@ -285,25 +285,25 @@ bool QgsFeatureRenderer::legendSymbolItemsCheckable() const
   return false;
 }
 
-bool QgsFeatureRenderer::legendSymbolItemChecked( const QString& key )
+bool QgsFeatureRenderer::legendSymbolItemChecked( const QString &key )
 {
   Q_UNUSED( key );
   return false;
 }
 
-void QgsFeatureRenderer::checkLegendSymbolItem( const QString& key, bool state )
+void QgsFeatureRenderer::checkLegendSymbolItem( const QString &key, bool state )
 {
   Q_UNUSED( key );
   Q_UNUSED( state );
 }
 
-void QgsFeatureRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
+void QgsFeatureRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
   Q_UNUSED( key );
   delete symbol;
 }
 
-QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
+QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
 {
   Q_UNUSED( scaleDenominator );
   Q_UNUSED( rule );
@@ -312,7 +312,7 @@ QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems( double scaleDenominat
 
 QgsLegendSymbolListV2 QgsFeatureRenderer::legendSymbolItemsV2() const
 {
-  QgsLegendSymbolList lst = const_cast<QgsFeatureRenderer*>( this )->legendSymbolItems();
+  QgsLegendSymbolList lst = const_cast<QgsFeatureRenderer *>( this )->legendSymbolItems();
   QgsLegendSymbolListV2 lst2;
   int i = 0;
   for ( QgsLegendSymbolList::const_iterator it = lst.begin(); it != lst.end(); ++it, ++i )
@@ -333,27 +333,27 @@ bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &
   return nullptr != symbolForFeature( feat, context );
 }
 
-void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext& context )
+void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
 {
   QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
                                     static_cast< QgsVectorLayer::VertexMarkerType >( mCurrentVertexMarkerType ),
                                     mCurrentVertexMarkerSize );
 }
 
-void QgsFeatureRenderer::renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context )
+void QgsFeatureRenderer::renderVertexMarkerPolyline( QPolygonF &pts, QgsRenderContext &context )
 {
   Q_FOREACH ( QPointF pt, pts )
     renderVertexMarker( pt, context );
 }
 
-void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context )
+void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolygonF> *rings, QgsRenderContext &context )
 {
   Q_FOREACH ( QPointF pt, pts )
     renderVertexMarker( pt, context );
 
   if ( rings )
   {
-    Q_FOREACH ( const QPolygonF& ring, *rings )
+    Q_FOREACH ( const QPolygonF &ring, *rings )
     {
       Q_FOREACH ( QPointF pt, ring )
         renderVertexMarker( pt, context );
@@ -364,7 +364,7 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolyg
 QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   QgsSymbolList lst;
-  QgsSymbol* s = symbolForFeature( feat, context );
+  QgsSymbol *s = symbolForFeature( feat, context );
   if ( s ) lst.append( s );
   return lst;
 }
@@ -372,7 +372,7 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRender
 QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   QgsSymbolList lst;
-  QgsSymbol* s = originalSymbolForFeature( feat, context );
+  QgsSymbol *s = originalSymbolForFeature( feat, context );
   if ( s ) lst.append( s );
   return lst;
 }
@@ -393,7 +393,7 @@ QgsFeatureRequest::OrderBy QgsFeatureRenderer::orderBy() const
   return mOrderBy;
 }
 
-void QgsFeatureRenderer::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
+void QgsFeatureRenderer::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
 {
   mOrderBy = orderBy;
 }
@@ -408,11 +408,11 @@ void QgsFeatureRenderer::setOrderByEnabled( bool enabled )
   mOrderByEnabled = enabled;
 }
 
-void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::ScaleMethod method, const QString & field )
+void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field )
 {
   if ( symbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
+    QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
     if ( QgsSymbol::ScaleArea == QgsSymbol::ScaleMethod( method ) )
     {
       s->setDataDefinedSize( QgsProperty::fromExpression( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" ) );
@@ -425,17 +425,17 @@ void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol * symbol, QgsSymbol::
   }
   else if ( symbol->type() == QgsSymbol::Line )
   {
-    QgsLineSymbol * s = static_cast<QgsLineSymbol *>( symbol );
+    QgsLineSymbol *s = static_cast<QgsLineSymbol *>( symbol );
     s->setDataDefinedWidth( QgsProperty::fromExpression( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" ) );
   }
 }
 
-void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol * symbol, const QString & field )
+void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol *symbol, const QString &field )
 {
   if ( symbol->type() == QgsSymbol::Marker )
   {
-    QgsMarkerSymbol * s = static_cast<QgsMarkerSymbol *>( symbol );
-    QgsProperty dd = QgsProperty::fromExpression(( s->angle()
+    QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
+    QgsProperty dd = QgsProperty::fromExpression( ( s->angle()
                      ? QString::number( s->angle() ) + " + "
                      : QString() ) + field );
     s->setDataDefinedAngle( dd );

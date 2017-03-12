@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QSettings, QVariant
+from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes
+from qgis.core import QgsSettings, QgsGeometry, QgsFeature, QgsField, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -82,7 +82,7 @@ class CheckValidity(GeoAlgorithm):
             self.tr('Error output')))
 
     def processAlgorithm(self, feedback):
-        settings = QSettings()
+        settings = QgsSettings()
         initial_method_setting = settings.value(settings_method_key, 1)
 
         method = self.getParameterValue(self.METHOD)
@@ -97,7 +97,7 @@ class CheckValidity(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
-        settings = QSettings()
+        settings = QgsSettings()
         method = int(settings.value(settings_method_key, 1))
 
         valid_output = self.getOutputFromName(self.VALID_OUTPUT)

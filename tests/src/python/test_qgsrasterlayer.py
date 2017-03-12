@@ -189,7 +189,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myRasterLayer.setRenderer(myPseudoRenderer)
 
         return
-        ######## works first time #############
+        # ####### works first time #############
 
         myRasterShader = QgsRasterShader()
         myColorRampShader = QgsColorRampShader()
@@ -206,7 +206,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myItems.append(myItem)
         myColorRampShader.setColorRampItemList(myItems)
         myRasterShader.setRasterShaderFunction(myColorRampShader)
-        ######## crash on next line (fixed now)##################
+        # ####### crash on next line (fixed now)##################
         myPseudoRenderer = QgsSingleBandPseudoColorRenderer(
             myRasterLayer.dataProvider(), 1, myRasterShader)
         myRasterLayer.setRenderer(myPseudoRenderer)

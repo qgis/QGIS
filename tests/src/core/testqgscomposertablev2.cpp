@@ -39,11 +39,11 @@ class TestQgsComposerTableV2 : public QObject
 
   public:
     TestQgsComposerTableV2()
-        : mComposition( 0 )
-        , mVectorLayer( 0 )
-        , mComposerAttributeTable( 0 )
-        , mFrame1( 0 )
-        , mFrame2( 0 )
+      : mComposition( 0 )
+      , mVectorLayer( 0 )
+      , mComposerAttributeTable( 0 )
+      , mFrame1( 0 )
+      , mFrame2( 0 )
     {}
 
   private slots:
@@ -77,11 +77,11 @@ class TestQgsComposerTableV2 : public QObject
     void cellStylesRender(); //test rendering cell styles
 
   private:
-    QgsComposition* mComposition = nullptr;
-    QgsVectorLayer* mVectorLayer = nullptr;
-    QgsComposerAttributeTableV2* mComposerAttributeTable = nullptr;
-    QgsComposerFrame* mFrame1 = nullptr;
-    QgsComposerFrame* mFrame2 = nullptr;
+    QgsComposition *mComposition = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsComposerAttributeTableV2 *mComposerAttributeTable = nullptr;
+    QgsComposerFrame *mFrame1 = nullptr;
+    QgsComposerFrame *mFrame2 = nullptr;
     QString mReport;
 
     //compares rows in mComposerAttributeTable to expected rows
@@ -187,11 +187,11 @@ void TestQgsComposerTableV2::compareTable( QList<QStringList> &expectedRows )
     QgsComposerTableRow::const_iterator cellIt = ( *resultIt ).constBegin();
     for ( ; cellIt != ( *resultIt ).constEnd(); ++cellIt )
     {
-      QCOMPARE(( *cellIt ).toString(), expectedRows.at( rowNumber ).at( colNumber ) );
+      QCOMPARE( ( *cellIt ).toString(), expectedRows.at( rowNumber ).at( colNumber ) );
       colNumber++;
     }
     //also check that number of columns matches expected
-    QCOMPARE(( *resultIt ).count(), expectedRows.at( rowNumber ).count() );
+    QCOMPARE( ( *resultIt ).count(), expectedRows.at( rowNumber ).count() );
 
     rowNumber++;
   }
@@ -290,7 +290,7 @@ void TestQgsComposerTableV2::attributeTableVisibleOnly()
 {
   //test displaying only visible attributes
 
-  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  QgsComposerMap *composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   composerMap->setFrameEnabled( true );
   composerMap->setNewExtent( QgsRectangle( -131.767, 30.558, -110.743, 41.070 ) );
 
@@ -417,13 +417,13 @@ void TestQgsComposerTableV2::attributeTableRepeat()
 
 void TestQgsComposerTableV2::attributeTableAtlasSource()
 {
-  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+  QgsComposerAttributeTableV2 *table = new QgsComposerAttributeTableV2( mComposition, false );
 
 
   table->setSource( QgsComposerAttributeTableV2::AtlasFeature );
 
   //setup atlas
-  QgsVectorLayer* vectorLayer = nullptr;
+  QgsVectorLayer *vectorLayer = nullptr;
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                     vectorFileInfo.completeBaseName(),
@@ -481,7 +481,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 void TestQgsComposerTableV2::attributeTableRelationSource()
 {
   QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points_relations.shp" );
-  QgsVectorLayer* atlasLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
+  QgsVectorLayer *atlasLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
       QStringLiteral( "ogr" ) );
 
@@ -499,7 +499,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
   relation.addFieldPair( QStringLiteral( "Class" ), QStringLiteral( "Class" ) );
   QgsProject::instance()->relationManager()->addRelation( relation );
 
-  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+  QgsComposerAttributeTableV2 *table = new QgsComposerAttributeTableV2( mComposition, false );
   table->setMaximumNumberOfFeatures( 50 );
   table->setSource( QgsComposerAttributeTableV2::RelationChildren );
   table->setRelationId( relation.id() );
@@ -588,7 +588,7 @@ void TestQgsComposerTableV2::contentsContainsRow()
 
 void TestQgsComposerTableV2::removeDuplicates()
 {
-  QgsVectorLayer* dupesLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "dupes" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *dupesLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "dupes" ), QStringLiteral( "memory" ) );
   QVERIFY( dupesLayer->isValid() );
   QgsFeature f1( dupesLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 1 );
@@ -608,7 +608,7 @@ void TestQgsComposerTableV2::removeDuplicates()
   f4.setAttribute( QStringLiteral( "col3" ), 1 );
   dupesLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
 
-  QgsComposerAttributeTableV2* table = new QgsComposerAttributeTableV2( mComposition, false );
+  QgsComposerAttributeTableV2 *table = new QgsComposerAttributeTableV2( mComposition, false );
   table->setSource( QgsComposerAttributeTableV2::LayerAttributes );
   table->setVectorLayer( dupesLayer );
   table->setMaximumNumberOfFeatures( 50 );
@@ -635,7 +635,7 @@ void TestQgsComposerTableV2::removeDuplicates()
 
 void TestQgsComposerTableV2::multiLineText()
 {
-  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -669,7 +669,7 @@ void TestQgsComposerTableV2::multiLineText()
 
 void TestQgsComposerTableV2::horizontalGrid()
 {
-  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -708,7 +708,7 @@ void TestQgsComposerTableV2::horizontalGrid()
 
 void TestQgsComposerTableV2::verticalGrid()
 {
-  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -747,7 +747,7 @@ void TestQgsComposerTableV2::verticalGrid()
 
 void TestQgsComposerTableV2::align()
 {
-  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -788,7 +788,7 @@ void TestQgsComposerTableV2::align()
 
 void TestQgsComposerTableV2::wrapChar()
 {
-  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -811,7 +811,7 @@ void TestQgsComposerTableV2::wrapChar()
 
 void TestQgsComposerTableV2::autoWrap()
 {
-  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "long multiline\nstring" );

@@ -38,21 +38,21 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     /**
      * Default constructor
      */
-    QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
+    QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 
     ~QgsGraphBuilder();
 
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    virtual void addVertex( int id, const QgsPoint& pt ) override;
+    virtual void addVertex( int id, const QgsPoint &pt ) override;
 
-    virtual void addEdge( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& prop ) override;
+    virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &prop ) override;
 
     /**
      * Returns generated QgsGraph
      */
-    QgsGraph* graph();
+    QgsGraph *graph();
 
   private:
 

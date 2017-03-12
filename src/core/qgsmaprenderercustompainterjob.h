@@ -34,18 +34,19 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter );
+    QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter );
     ~QgsMapRendererCustomPainterJob();
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
     virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    virtual QgsLabelingResults *takeLabelingResults() override;
 
     //! @note not available in python bindings
-    const LayerRenderJobs& jobs() const { return mLayerJobs; }
+    const LayerRenderJobs &jobs() const { return mLayerJobs; }
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.
@@ -76,12 +77,12 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     void futureFinished();
 
   private:
-    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
+    static void staticRender( QgsMapRendererCustomPainterJob *self ); // function to be used within the thread
 
     // these methods are called within worker thread
     void doRender();
 
-    QPainter* mPainter = nullptr;
+    QPainter *mPainter = nullptr;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
     std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;

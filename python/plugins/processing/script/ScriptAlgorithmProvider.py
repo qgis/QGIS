@@ -27,8 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import QgsApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting

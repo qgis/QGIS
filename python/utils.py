@@ -50,12 +50,11 @@ import codecs
 import time
 import functools
 
-if sys.version_info[0] >= 3:
-    import builtins
-    builtins.__dict__['unicode'] = str
-    builtins.__dict__['basestring'] = str
-    builtins.__dict__['long'] = int
-    builtins.__dict__['Set'] = set
+import builtins
+builtins.__dict__['unicode'] = str
+builtins.__dict__['basestring'] = str
+builtins.__dict__['long'] = int
+builtins.__dict__['Set'] = set
 
 # ######################
 # ERROR HANDLING
@@ -107,7 +106,7 @@ def showException(type, value, tb, msg, messagebar=False):
         open_stack_dialog(type, value, tb, msg)
         return
 
-    bar = iface.messageBar()
+    bar = iface.messageBar() if iface else None
 
     # If it's not the main window see if we can find a message bar to report the error in
     if not window.objectName() == "QgisApp":
@@ -194,9 +193,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
 def qgis_excepthook(type, value, tb):
     # detect if running in the main thread
-    in_main_thread = True
-    if QThread.currentThread() != QgsApplication.instance().thread():
-        in_main_thread = False
+    in_main_thread = QThread.currentThread() == QgsApplication.instance().thread()
 
     # only use messagebar if running in main thread - otherwise it will crash!
     showException(type, value, tb, None, messagebar=in_main_thread)
@@ -208,6 +205,7 @@ def installErrorHook():
 
 def uninstallErrorHook():
     sys.excepthook = sys.__excepthook__
+
 
 # install error hook() on module load
 installErrorHook()
@@ -222,6 +220,7 @@ def initInterface(pointer):
 
     global iface
     iface = wrapinstance(pointer, QgisInterface)
+
 
 #######################
 # PLUGINS
@@ -313,8 +312,7 @@ def loadPlugin(packageName):
         __import__(packageName)
         return True
     except:
-        msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s'")
-        msg = msgTemplate % packageName
+        msg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -325,12 +323,13 @@ def startPlugin(packageName):
 
     if packageName in active_plugins:
         return False
+
     if packageName not in sys.modules:
         return False
 
     package = sys.modules[packageName]
 
-    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin %s") % packageName
+    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
 
     start = time.clock()
     # create an instance of the plugin
@@ -338,7 +337,7 @@ def startPlugin(packageName):
         plugins[packageName] = package.classFactory(iface)
     except:
         _unloadPluginModules(packageName)
-        msg = QCoreApplication.translate("Python", "%s due to an error when calling its classFactory() method") % errMsg
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -348,7 +347,7 @@ def startPlugin(packageName):
     except:
         del plugins[packageName]
         _unloadPluginModules(packageName)
-        msg = QCoreApplication.translate("Python", "%s due to an error when calling its initGui() method") % errMsg
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -396,7 +395,7 @@ def unloadPlugin(packageName):
         _unloadPluginModules(packageName)
         return True
     except Exception as e:
-        msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
+        msg = QCoreApplication.translate("Python", "Error while unloading plugin {0}").format(packageName)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
         return False
 
@@ -573,7 +572,7 @@ def startServerPlugin(packageName):
 
     package = sys.modules[packageName]
 
-    errMsg = QCoreApplication.translate("Python", "Couldn't load server plugin %s") % packageName
+    errMsg = QCoreApplication.translate("Python", "Couldn't load server plugin {0}").format(packageName)
 
     # create an instance of the plugin
     try:
@@ -581,7 +580,7 @@ def startServerPlugin(packageName):
     except:
         _unloadPluginModules(packageName)
         msg = QCoreApplication.translate("Python",
-                                         "%s due to an error when calling its serverClassFactory() method") % errMsg
+                                         "{0} due to an error when calling its serverClassFactory() method").format(errMsg)
         showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
         return False
 
@@ -625,6 +624,7 @@ or using the "mod_spatialite" extension (python3)"""
         return con
     return dbapi2.connect(*args, **kwargs)
 
+
 #######################
 # IMPORT wrapper
 
@@ -643,7 +643,7 @@ _plugin_modules = {}
 def _import(name, globals={}, locals={}, fromlist=[], level=None):
     """ wrapper around builtin import that keeps track of loaded plugin modules """
     if level is None:
-        level = -1 if sys.version_info[0] < 3 else 0
+        level = 0
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
     if mod and '__file__' in mod.__dict__:

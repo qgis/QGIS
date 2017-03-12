@@ -29,7 +29,6 @@ from qgis.core import QgsWkbTypes, QgsExpression, QgsExpressionContext, QgsExpre
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector, ParameterSelection, ParameterBoolean, ParameterExpression
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -99,7 +98,7 @@ class GeometryByExpression(GeoAlgorithm):
 
         if not expression.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
-                self.tr('Evaluation error: %s' % expression.evalErrorString()))
+                self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
         features = vector.features(layer)
         total = 100.0 / len(features)
@@ -110,7 +109,7 @@ class GeometryByExpression(GeoAlgorithm):
             value = expression.evaluate(exp_context)
             if expression.hasEvalError():
                 raise GeoAlgorithmExecutionException(
-                    self.tr('Evaluation error: %s' % expression.evalErrorString()))
+                    self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
 
             if not value:
                 output_feature.setGeometry(QgsGeometry())

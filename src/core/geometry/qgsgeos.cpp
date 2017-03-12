@@ -99,8 +99,8 @@ class GEOSInit
 
   private:
 
-    GEOSInit( const GEOSInit& rh );
-    GEOSInit& operator=( const GEOSInit& rh );
+    GEOSInit( const GEOSInit &rh );
+    GEOSInit &operator=( const GEOSInit &rh );
 };
 
 static GEOSInit geosinit;
@@ -115,29 +115,29 @@ static GEOSInit geosinit;
 class GEOSGeomScopedPtr
 {
   public:
-    explicit GEOSGeomScopedPtr( GEOSGeometry* geom = nullptr ) : mGeom( geom ) {}
+    explicit GEOSGeomScopedPtr( GEOSGeometry *geom = nullptr ) : mGeom( geom ) {}
     ~GEOSGeomScopedPtr() { GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
-    GEOSGeometry* get() const { return mGeom; }
+    GEOSGeometry *get() const { return mGeom; }
     operator bool() const { return nullptr != mGeom; }
-    void reset( GEOSGeometry* geom )
+    void reset( GEOSGeometry *geom )
     {
       GEOSGeom_destroy_r( geosinit.ctxt, mGeom );
       mGeom = geom;
     }
 
   private:
-    GEOSGeometry* mGeom = nullptr;
+    GEOSGeometry *mGeom = nullptr;
 
   private:
-    GEOSGeomScopedPtr( const GEOSGeomScopedPtr& rh );
-    GEOSGeomScopedPtr& operator=( const GEOSGeomScopedPtr& rh );
+    GEOSGeomScopedPtr( const GEOSGeomScopedPtr &rh );
+    GEOSGeomScopedPtr &operator=( const GEOSGeomScopedPtr &rh );
 };
 
-QgsGeos::QgsGeos( const QgsAbstractGeometry* geometry, double precision )
-    : QgsGeometryEngine( geometry )
-    , mGeos( nullptr )
-    , mGeosPrepared( nullptr )
-    , mPrecision( precision )
+QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision )
+  : QgsGeometryEngine( geometry )
+  , mGeos( nullptr )
+  , mGeosPrepared( nullptr )
+  , mPrecision( precision )
 {
   cacheGeos();
 }
@@ -179,51 +179,51 @@ void QgsGeos::cacheGeos() const
   mGeos = asGeos( mGeometry, mPrecision );
 }
 
-QgsAbstractGeometry* QgsGeos::intersection( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return overlay( geom, INTERSECTION, errorMsg );
 }
 
-QgsAbstractGeometry* QgsGeos::difference( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return overlay( geom, DIFFERENCE, errorMsg );
 }
 
-QgsAbstractGeometry* QgsGeos::combine( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return overlay( geom, UNION, errorMsg );
 }
 
-QgsAbstractGeometry* QgsGeos::combine( const QList<QgsAbstractGeometry*>& geomList, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
 {
 
-  QVector< GEOSGeometry* > geosGeometries;
+  QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.resize( geomList.size() );
   for ( int i = 0; i < geomList.size(); ++i )
   {
     geosGeometries[i] = asGeos( geomList.at( i ), mPrecision );
   }
 
-  GEOSGeometry* geomUnion = nullptr;
+  GEOSGeometry *geomUnion = nullptr;
   try
   {
-    GEOSGeometry* geomCollection =  createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
+    GEOSGeometry *geomCollection =  createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
     geomUnion = GEOSUnaryUnion_r( geosinit.ctxt, geomCollection );
     GEOSGeom_destroy_r( geosinit.ctxt, geomCollection );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
-  QgsAbstractGeometry* result = fromGeos( geomUnion );
+  QgsAbstractGeometry *result = fromGeos( geomUnion );
   GEOSGeom_destroy_r( geosinit.ctxt, geomUnion );
   return result;
 }
 
-QgsAbstractGeometry* QgsGeos::symDifference( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return overlay( geom, SYMDIFFERENCE, errorMsg );
 }
 
-double QgsGeos::distance( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+double QgsGeos::distance( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   double distance = -1.0;
   if ( !mGeos )
@@ -231,7 +231,7 @@ double QgsGeos::distance( const QgsAbstractGeometry& geom, QString* errorMsg ) c
     return distance;
   }
 
-  GEOSGeometry* otherGeosGeom = asGeos( &geom, mPrecision );
+  GEOSGeometry *otherGeosGeom = asGeos( &geom, mPrecision );
   if ( !otherGeosGeom )
   {
     return distance;
@@ -248,42 +248,42 @@ double QgsGeos::distance( const QgsAbstractGeometry& geom, QString* errorMsg ) c
   return distance;
 }
 
-bool QgsGeos::intersects( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::intersects( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, INTERSECTS, errorMsg );
 }
 
-bool QgsGeos::touches( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::touches( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, TOUCHES, errorMsg );
 }
 
-bool QgsGeos::crosses( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::crosses( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, CROSSES, errorMsg );
 }
 
-bool QgsGeos::within( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::within( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, WITHIN, errorMsg );
 }
 
-bool QgsGeos::overlaps( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::overlaps( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, OVERLAPS, errorMsg );
 }
 
-bool QgsGeos::contains( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::contains( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, CONTAINS, errorMsg );
 }
 
-bool QgsGeos::disjoint( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::disjoint( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   return relation( geom, DISJOINT, errorMsg );
 }
 
-QString QgsGeos::relate( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+QString QgsGeos::relate( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -299,7 +299,7 @@ QString QgsGeos::relate( const QgsAbstractGeometry& geom, QString* errorMsg ) co
   QString result;
   try
   {
-    char* r = GEOSRelate_r( geosinit.ctxt, mGeos, geosGeom.get() );
+    char *r = GEOSRelate_r( geosinit.ctxt, mGeos, geosGeom.get() );
     if ( r )
     {
       result = QString( r );
@@ -317,7 +317,7 @@ QString QgsGeos::relate( const QgsAbstractGeometry& geom, QString* errorMsg ) co
   return result;
 }
 
-bool QgsGeos::relatePattern( const QgsAbstractGeometry& geom, const QString& pattern, QString* errorMsg ) const
+bool QgsGeos::relatePattern( const QgsAbstractGeometry &geom, const QString &pattern, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -346,7 +346,7 @@ bool QgsGeos::relatePattern( const QgsAbstractGeometry& geom, const QString& pat
   return result;
 }
 
-double QgsGeos::area( QString* errorMsg ) const
+double QgsGeos::area( QString *errorMsg ) const
 {
   double area = -1.0;
   if ( !mGeos )
@@ -363,7 +363,7 @@ double QgsGeos::area( QString* errorMsg ) const
   return area;
 }
 
-double QgsGeos::length( QString* errorMsg ) const
+double QgsGeos::length( QString *errorMsg ) const
 {
   double length = -1.0;
   if ( !mGeos )
@@ -379,11 +379,11 @@ double QgsGeos::length( QString* errorMsg ) const
   return length;
 }
 
-int QgsGeos::splitGeometry( const QgsLineString& splitLine,
-                            QList<QgsAbstractGeometry*>&newGeometries,
+int QgsGeos::splitGeometry( const QgsLineString &splitLine,
+                            QList<QgsAbstractGeometry *> &newGeometries,
                             bool topological,
                             QgsPointSequence &topologyTestPoints,
-                            QString* errorMsg ) const
+                            QString *errorMsg ) const
 {
 
   int returnCode = 0;
@@ -402,12 +402,12 @@ int QgsGeos::splitGeometry( const QgsLineString& splitLine,
     return 7;
 
   //make sure splitLine is valid
-  if (( mGeometry->dimension() == 1 && splitLine.numPoints() < 1 ) ||
-      ( mGeometry->dimension() == 2 && splitLine.numPoints() < 2 ) )
+  if ( ( mGeometry->dimension() == 1 && splitLine.numPoints() < 1 ) ||
+       ( mGeometry->dimension() == 2 && splitLine.numPoints() < 2 ) )
     return 1;
 
   newGeometries.clear();
-  GEOSGeometry* splitLineGeos = nullptr;
+  GEOSGeometry *splitLineGeos = nullptr;
 
   try
   {
@@ -461,7 +461,7 @@ int QgsGeos::splitGeometry( const QgsLineString& splitLine,
 
 
 
-int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPointSequence &testPoints, QString* errorMsg ) const
+int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg ) const
 {
   //Find out the intersection points between splitLineGeos and this geometry.
   //These points need to be tested for topological correctness by the calling function
@@ -475,7 +475,7 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPoint
   try
   {
     testPoints.clear();
-    GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosinit.ctxt, mGeos, splitLine );
+    GEOSGeometry *intersectionGeom = GEOSIntersection_r( geosinit.ctxt, mGeos, splitLine );
     if ( !intersectionGeom )
       return 1;
 
@@ -490,13 +490,13 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPoint
 
     for ( int i = 0; i < nIntersectGeoms; ++i )
     {
-      const GEOSGeometry* currentIntersectGeom = nullptr;
+      const GEOSGeometry *currentIntersectGeom = nullptr;
       if ( simple )
         currentIntersectGeom = intersectionGeom;
       else
         currentIntersectGeom = GEOSGetGeometryN_r( geosinit.ctxt, intersectionGeom, i );
 
-      const GEOSCoordSequence* lineSequence = GEOSGeom_getCoordSeq_r( geosinit.ctxt, currentIntersectGeom );
+      const GEOSCoordSequence *lineSequence = GEOSGeom_getCoordSeq_r( geosinit.ctxt, currentIntersectGeom );
       unsigned int sequenceSize = 0;
       double x, y;
       if ( GEOSCoordSeq_getSize_r( geosinit.ctxt, lineSequence, &sequenceSize ) != 0 )
@@ -520,14 +520,14 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QgsPoint
   return 0;
 }
 
-GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
+GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
 {
   int type = GEOSGeomTypeId_r( geosinit.ctxt, mGeos );
 
-  QgsMultiCurve* multiCurve = nullptr;
+  QgsMultiCurve *multiCurve = nullptr;
   if ( type == GEOS_MULTILINESTRING )
   {
-    multiCurve = dynamic_cast<QgsMultiCurve*>( mGeometry->clone() );
+    multiCurve = dynamic_cast<QgsMultiCurve *>( mGeometry->clone() );
   }
   else if ( type == GEOS_LINESTRING )
   {
@@ -545,8 +545,8 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
   }
 
 
-  QgsAbstractGeometry* splitGeom = fromGeos( GEOSsplitPoint );
-  QgsPointV2* splitPoint = dynamic_cast<QgsPointV2*>( splitGeom );
+  QgsAbstractGeometry *splitGeom = fromGeos( GEOSsplitPoint );
+  QgsPointV2 *splitPoint = dynamic_cast<QgsPointV2 *>( splitGeom );
   if ( !splitPoint )
   {
     delete splitGeom;
@@ -558,7 +558,7 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
   //For each part
   for ( int i = 0; i < multiCurve->numGeometries(); ++i )
   {
-    const QgsLineString* line = dynamic_cast<const QgsLineString*>( multiCurve->geometryN( i ) );
+    const QgsLineString *line = dynamic_cast<const QgsLineString *>( multiCurve->geometryN( i ) );
     if ( line )
     {
       //For each segment
@@ -586,7 +586,7 @@ GEOSGeometry* QgsGeos::linePointDifference( GEOSGeometry* GEOSsplitPoint ) const
   return asGeos( &lines, mPrecision );
 }
 
-int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const
+int QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const
 {
   if ( !splitLine )
     return 2;
@@ -605,7 +605,7 @@ int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeom
 
   int splitGeomType = GEOSGeomTypeId_r( geosinit.ctxt, splitLine );
 
-  GEOSGeometry* splitGeom = nullptr;
+  GEOSGeometry *splitGeom = nullptr;
   if ( splitGeomType == GEOS_POINT )
   {
     splitGeom = linePointDifference( splitLine );
@@ -614,7 +614,7 @@ int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeom
   {
     splitGeom = GEOSDifference_r( geosinit.ctxt, mGeos, splitLine );
   }
-  QVector<GEOSGeometry*> lineGeoms;
+  QVector<GEOSGeometry *> lineGeoms;
 
   int splitType = GEOSGeomTypeId_r( geosinit.ctxt, splitGeom );
   if ( splitType == GEOS_MULTILINESTRING )
@@ -642,7 +642,7 @@ int QgsGeos::splitLinearGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeom
   return 0;
 }
 
-int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeometry*>& newGeometries ) const
+int QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const
 {
   if ( !splitLine )
     return 2;
@@ -674,7 +674,7 @@ int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeo
 
   //test every polygon if contained in original geometry
   //include in result if yes
-  QVector<GEOSGeometry*> testedGeometries;
+  QVector<GEOSGeometry *> testedGeometries;
   GEOSGeometry *intersectGeometry = nullptr;
 
   //ratio intersect geometry / geometry. This should be close to 1
@@ -741,7 +741,7 @@ int QgsGeos::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsAbstractGeo
   return 0;
 }
 
-GEOSGeometry* QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom )
+GEOSGeometry *QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom )
 {
   if ( !splitLine || !geom )
     return nullptr;
@@ -760,7 +760,7 @@ GEOSGeometry* QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const GEOS
   return unionGeometry;
 }
 
-int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const
+int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const
 {
   if ( !mGeos )
     return 1;
@@ -773,11 +773,11 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
        type != GEOS_MULTIPOINT )
     return 0;
 
-  QVector<GEOSGeometry*> copyList = splitResult;
+  QVector<GEOSGeometry *> copyList = splitResult;
   splitResult.clear();
 
   //collect all the geometries that belong to the initial multifeature
-  QVector<GEOSGeometry*> unionGeom;
+  QVector<GEOSGeometry *> unionGeom;
 
   for ( int i = 0; i < copyList.size(); ++i )
   {
@@ -798,7 +798,7 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
     }
     else
     {
-      QVector<GEOSGeometry*> geomVector;
+      QVector<GEOSGeometry *> geomVector;
       geomVector << copyList[i];
 
       if ( type == GEOS_MULTILINESTRING )
@@ -826,7 +826,7 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
   return 0;
 }
 
-GEOSGeometry* QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms )
+GEOSGeometry *QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms )
 {
   int nNullGeoms = geoms.count( nullptr );
   int nNotNullGeoms = geoms.size() - nNullGeoms;
@@ -838,7 +838,7 @@ GEOSGeometry* QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGeome
   }
 
   int i = 0;
-  QVector<GEOSGeometry*>::const_iterator geomIt = geoms.constBegin();
+  QVector<GEOSGeometry *>::const_iterator geomIt = geoms.constBegin();
   for ( ; geomIt != geoms.constEnd(); ++geomIt )
   {
     if ( *geomIt )
@@ -863,7 +863,7 @@ GEOSGeometry* QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGeome
   return geom;
 }
 
-QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
+QgsAbstractGeometry *QgsGeos::fromGeos( const GEOSGeometry *geos )
 {
   if ( !geos )
   {
@@ -873,13 +873,13 @@ QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( geosinit.ctxt, geos );
   int nDims = GEOSGeom_getDimensions_r( geosinit.ctxt, geos );
   bool hasZ = ( nCoordDims == 3 );
-  bool hasM = (( nDims - nCoordDims ) == 1 );
+  bool hasM = ( ( nDims - nCoordDims ) == 1 );
 
   switch ( GEOSGeomTypeId_r( geosinit.ctxt, geos ) )
   {
     case GEOS_POINT:                 // a point
     {
-      const GEOSCoordSequence* cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
+      const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
       return ( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
     }
     case GEOS_LINESTRING:
@@ -892,11 +892,11 @@ QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTIPOINT:
     {
-      QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
+      QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
-        const GEOSCoordSequence* cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
+        const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
         if ( cs )
         {
           multiPoint->addGeometry( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
@@ -906,11 +906,11 @@ QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTILINESTRING:
     {
-      QgsMultiLineString* multiLineString = new QgsMultiLineString();
+      QgsMultiLineString *multiLineString = new QgsMultiLineString();
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
-        QgsLineString* line = sequenceToLinestring( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ), hasZ, hasM );
+        QgsLineString *line = sequenceToLinestring( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ), hasZ, hasM );
         if ( line )
         {
           multiLineString->addGeometry( line );
@@ -920,12 +920,12 @@ QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTIPOLYGON:
     {
-      QgsMultiPolygonV2* multiPolygon = new QgsMultiPolygonV2();
+      QgsMultiPolygonV2 *multiPolygon = new QgsMultiPolygonV2();
 
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
-        QgsPolygonV2* poly = fromGeosPolygon( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
+        QgsPolygonV2 *poly = fromGeosPolygon( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
         if ( poly )
         {
           multiPolygon->addGeometry( poly );
@@ -935,11 +935,11 @@ QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_GEOMETRYCOLLECTION:
     {
-      QgsGeometryCollection* geomCollection = new QgsGeometryCollection();
+      QgsGeometryCollection *geomCollection = new QgsGeometryCollection();
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
-        QgsAbstractGeometry* geom = fromGeos( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
+        QgsAbstractGeometry *geom = fromGeos( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
         if ( geom )
         {
           geomCollection->addGeometry( geom );
@@ -951,7 +951,7 @@ QgsAbstractGeometry* QgsGeos::fromGeos( const GEOSGeometry* geos )
   return nullptr;
 }
 
-QgsPolygonV2* QgsGeos::fromGeosPolygon( const GEOSGeometry* geos )
+QgsPolygonV2 *QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 {
   if ( GEOSGeomTypeId_r( geosinit.ctxt, geos ) != GEOS_POLYGON )
   {
@@ -961,17 +961,17 @@ QgsPolygonV2* QgsGeos::fromGeosPolygon( const GEOSGeometry* geos )
   int nCoordDims = GEOSGeom_getCoordinateDimension_r( geosinit.ctxt, geos );
   int nDims = GEOSGeom_getDimensions_r( geosinit.ctxt, geos );
   bool hasZ = ( nCoordDims == 3 );
-  bool hasM = (( nDims - nCoordDims ) == 1 );
+  bool hasM = ( ( nDims - nCoordDims ) == 1 );
 
-  QgsPolygonV2* polygon = new QgsPolygonV2();
+  QgsPolygonV2 *polygon = new QgsPolygonV2();
 
-  const GEOSGeometry* ring = GEOSGetExteriorRing_r( geosinit.ctxt, geos );
+  const GEOSGeometry *ring = GEOSGetExteriorRing_r( geosinit.ctxt, geos );
   if ( ring )
   {
     polygon->setExteriorRing( sequenceToLinestring( ring, hasZ, hasM ) );
   }
 
-  QList<QgsCurve*> interiorRings;
+  QList<QgsCurve *> interiorRings;
   for ( int i = 0; i < GEOSGetNumInteriorRings_r( geosinit.ctxt, geos ); ++i )
   {
     ring = GEOSGetInteriorRingN_r( geosinit.ctxt, geos, i );
@@ -985,10 +985,10 @@ QgsPolygonV2* QgsGeos::fromGeosPolygon( const GEOSGeometry* geos )
   return polygon;
 }
 
-QgsLineString* QgsGeos::sequenceToLinestring( const GEOSGeometry* geos, bool hasZ, bool hasM )
+QgsLineString *QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
   QgsPointSequence pts;
-  const GEOSCoordSequence* cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
+  const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit.ctxt, cs, &nPoints );
   pts.reserve( nPoints );
@@ -996,12 +996,12 @@ QgsLineString* QgsGeos::sequenceToLinestring( const GEOSGeometry* geos, bool has
   {
     pts.push_back( coordSeqPoint( cs, i, hasZ, hasM ) );
   }
-  QgsLineString* line = new QgsLineString();
+  QgsLineString *line = new QgsLineString();
   line->setPoints( pts );
   return line;
 }
 
-int QgsGeos::numberOfGeometries( GEOSGeometry* g )
+int QgsGeos::numberOfGeometries( GEOSGeometry *g )
 {
   if ( !g )
     return 0;
@@ -1015,7 +1015,7 @@ int QgsGeos::numberOfGeometries( GEOSGeometry* g )
   return GEOSGetNumGeometries_r( geosinit.ctxt, g );
 }
 
-QgsPointV2 QgsGeos::coordSeqPoint( const GEOSCoordSequence* cs, int i, bool hasZ, bool hasM )
+QgsPointV2 QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM )
 {
   if ( !cs )
   {
@@ -1052,7 +1052,7 @@ QgsPointV2 QgsGeos::coordSeqPoint( const GEOSCoordSequence* cs, int i, bool hasZ
   return QgsPointV2( t, x, y, z, m );
 }
 
-GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometry* geom, double precision )
+GEOSGeometry *QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precision )
 {
   int coordDims = 2;
   if ( geom->is3D() )
@@ -1091,11 +1091,11 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometry* geom, double precision
       }
     }
 
-    const QgsGeometryCollection* c = dynamic_cast<const QgsGeometryCollection*>( geom );
+    const QgsGeometryCollection *c = dynamic_cast<const QgsGeometryCollection *>( geom );
     if ( !c )
       return nullptr;
 
-    QVector< GEOSGeometry* > geomVector( c->numGeometries() );
+    QVector< GEOSGeometry * > geomVector( c->numGeometries() );
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
       geomVector[i] = asGeos( c->geometryN( i ), precision );
@@ -1107,15 +1107,15 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometry* geom, double precision
     switch ( QgsWkbTypes::geometryType( geom->wkbType() ) )
     {
       case QgsWkbTypes::PointGeometry:
-        return createGeosPoint( static_cast<const QgsPointV2*>( geom ), coordDims, precision );
+        return createGeosPoint( static_cast<const QgsPointV2 *>( geom ), coordDims, precision );
         break;
 
       case QgsWkbTypes::LineGeometry:
-        return createGeosLinestring( static_cast<const QgsLineString*>( geom ), precision );
+        return createGeosLinestring( static_cast<const QgsLineString *>( geom ), precision );
         break;
 
       case QgsWkbTypes::PolygonGeometry:
-        return createGeosPolygon( static_cast<const QgsPolygonV2*>( geom ), precision );
+        return createGeosPolygon( static_cast<const QgsPolygonV2 *>( geom ), precision );
         break;
 
       case QgsWkbTypes::UnknownGeometry:
@@ -1127,7 +1127,7 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometry* geom, double precision
   return nullptr;
 }
 
-QgsAbstractGeometry* QgsGeos::overlay( const QgsAbstractGeometry& geom, Overlay op, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::overlay( const QgsAbstractGeometry &geom, Overlay op, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1174,7 +1174,7 @@ QgsAbstractGeometry* QgsGeos::overlay( const QgsAbstractGeometry& geom, Overlay 
       default:    //unknown op
         return nullptr;
     }
-    QgsAbstractGeometry* opResult = fromGeos( opGeom.get() );
+    QgsAbstractGeometry *opResult = fromGeos( opGeom.get() );
     return opResult;
   }
   catch ( GEOSException &e )
@@ -1187,7 +1187,7 @@ QgsAbstractGeometry* QgsGeos::overlay( const QgsAbstractGeometry& geom, Overlay 
   }
 }
 
-bool QgsGeos::relation( const QgsAbstractGeometry& geom, Relation r, QString* errorMsg ) const
+bool QgsGeos::relation( const QgsAbstractGeometry &geom, Relation r, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1267,13 +1267,13 @@ bool QgsGeos::relation( const QgsAbstractGeometry& geom, Relation r, QString* er
     {
       *errorMsg = e.what();
     }
-    return 0;
+    return false;
   }
 
   return result;
 }
 
-QgsAbstractGeometry* QgsGeos::buffer( double distance, int segments, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1289,7 +1289,7 @@ QgsAbstractGeometry* QgsGeos::buffer( double distance, int segments, QString* er
   return fromGeos( geos.get() );
 }
 
-QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1305,7 +1305,7 @@ QgsAbstractGeometry *QgsGeos::buffer( double distance, int segments, int endCapS
   return fromGeos( geos.get() );
 }
 
-QgsAbstractGeometry* QgsGeos::simplify( double tolerance, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::simplify( double tolerance, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1320,7 +1320,7 @@ QgsAbstractGeometry* QgsGeos::simplify( double tolerance, QString* errorMsg ) co
   return fromGeos( geos.get() );
 }
 
-QgsAbstractGeometry* QgsGeos::interpolate( double distance, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::interpolate( double distance, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1335,7 +1335,7 @@ QgsAbstractGeometry* QgsGeos::interpolate( double distance, QString* errorMsg ) 
   return fromGeos( geos.get() );
 }
 
-bool QgsGeos::centroid( QgsPointV2& pt, QString* errorMsg ) const
+bool QgsGeos::centroid( QgsPointV2 &pt, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1362,7 +1362,7 @@ bool QgsGeos::centroid( QgsPointV2& pt, QString* errorMsg ) const
   return true;
 }
 
-QgsAbstractGeometry* QgsGeos::envelope( QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::envelope( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1377,7 +1377,7 @@ QgsAbstractGeometry* QgsGeos::envelope( QString* errorMsg ) const
   return fromGeos( geos.get() );
 }
 
-bool QgsGeos::pointOnSurface( QgsPointV2& pt, QString* errorMsg ) const
+bool QgsGeos::pointOnSurface( QgsPointV2 &pt, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1406,7 +1406,7 @@ bool QgsGeos::pointOnSurface( QgsPointV2& pt, QString* errorMsg ) const
   return true;
 }
 
-QgsAbstractGeometry* QgsGeos::convexHull( QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1415,15 +1415,15 @@ QgsAbstractGeometry* QgsGeos::convexHull( QString* errorMsg ) const
 
   try
   {
-    GEOSGeometry* cHull = GEOSConvexHull_r( geosinit.ctxt, mGeos );
-    QgsAbstractGeometry* cHullGeom = fromGeos( cHull );
+    GEOSGeometry *cHull = GEOSConvexHull_r( geosinit.ctxt, mGeos );
+    QgsAbstractGeometry *cHullGeom = fromGeos( cHull );
     GEOSGeom_destroy_r( geosinit.ctxt, cHull );
     return cHullGeom;
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr );
 }
 
-bool QgsGeos::isValid( QString* errorMsg ) const
+bool QgsGeos::isValid( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1437,7 +1437,7 @@ bool QgsGeos::isValid( QString* errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( false );
 }
 
-bool QgsGeos::isEqual( const QgsAbstractGeometry& geom, QString* errorMsg ) const
+bool QgsGeos::isEqual( const QgsAbstractGeometry &geom, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1457,7 +1457,7 @@ bool QgsGeos::isEqual( const QgsAbstractGeometry& geom, QString* errorMsg ) cons
   CATCH_GEOS_WITH_ERRMSG( false );
 }
 
-bool QgsGeos::isEmpty( QString* errorMsg ) const
+bool QgsGeos::isEmpty( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1471,10 +1471,10 @@ bool QgsGeos::isEmpty( QString* errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( false );
 }
 
-GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurve* curve, double precision, bool forceClose )
+GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
   bool segmentize = false;
-  const QgsLineString* line = dynamic_cast<const QgsLineString*>( curve );
+  const QgsLineString *line = dynamic_cast<const QgsLineString *>( curve );
 
   if ( !line )
   {
@@ -1507,7 +1507,7 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurve* curve, dou
     ++numOutPoints;
   }
 
-  GEOSCoordSequence* coordSeq = nullptr;
+  GEOSCoordSequence *coordSeq = nullptr;
   try
   {
     coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numOutPoints, coordDims );
@@ -1560,17 +1560,17 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurve* curve, dou
   return coordSeq;
 }
 
-GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometry* point, int coordDims, double precision )
+GEOSGeometry *QgsGeos::createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision )
 {
-  const QgsPointV2* pt = dynamic_cast<const QgsPointV2*>( point );
+  const QgsPointV2 *pt = dynamic_cast<const QgsPointV2 *>( point );
   if ( !pt )
     return nullptr;
 
-  GEOSGeometry* geosPoint = nullptr;
+  GEOSGeometry *geosPoint = nullptr;
 
   try
   {
-    GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
+    GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
     if ( !coordSeq )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not create coordinate sequence for point with %1 dimensions" ).arg( coordDims ), QObject::tr( "GEOS" ) );
@@ -1606,17 +1606,17 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometry* point, int co
   return geosPoint;
 }
 
-GEOSGeometry* QgsGeos::createGeosLinestring( const QgsAbstractGeometry* curve , double precision )
+GEOSGeometry *QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision )
 {
-  const QgsCurve* c = dynamic_cast<const QgsCurve*>( curve );
+  const QgsCurve *c = dynamic_cast<const QgsCurve *>( curve );
   if ( !c )
     return nullptr;
 
-  GEOSCoordSequence* coordSeq = createCoordinateSequence( c, precision );
+  GEOSCoordSequence *coordSeq = createCoordinateSequence( c, precision );
   if ( !coordSeq )
     return nullptr;
 
-  GEOSGeometry* geosGeom = nullptr;
+  GEOSGeometry *geosGeom = nullptr;
   try
   {
     geosGeom = GEOSGeom_createLineString_r( geosinit.ctxt, coordSeq );
@@ -1625,26 +1625,26 @@ GEOSGeometry* QgsGeos::createGeosLinestring( const QgsAbstractGeometry* curve , 
   return geosGeom;
 }
 
-GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometry* poly , double precision )
+GEOSGeometry *QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision )
 {
-  const QgsCurvePolygon* polygon = dynamic_cast<const QgsCurvePolygon*>( poly );
+  const QgsCurvePolygon *polygon = dynamic_cast<const QgsCurvePolygon *>( poly );
   if ( !polygon )
     return nullptr;
 
-  const QgsCurve* exteriorRing = polygon->exteriorRing();
+  const QgsCurve *exteriorRing = polygon->exteriorRing();
   if ( !exteriorRing )
   {
     return nullptr;
   }
 
-  GEOSGeometry* geosPolygon = nullptr;
+  GEOSGeometry *geosPolygon = nullptr;
   try
   {
-    GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing, precision, true ) );
+    GEOSGeometry *exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing, precision, true ) );
 
 
     int nHoles = polygon->numInteriorRings();
-    GEOSGeometry** holes = nullptr;
+    GEOSGeometry **holes = nullptr;
     if ( nHoles > 0 )
     {
       holes = new GEOSGeometry*[ nHoles ];
@@ -1652,7 +1652,7 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometry* poly , doub
 
     for ( int i = 0; i < nHoles; ++i )
     {
-      const QgsCurve* interiorRing = polygon->interiorRing( i );
+      const QgsCurve *interiorRing = polygon->interiorRing( i );
       holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing, precision, true ) );
     }
     geosPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, exteriorRingGeos, holes, nHoles );
@@ -1663,23 +1663,23 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometry* poly , doub
   return geosPolygon;
 }
 
-QgsAbstractGeometry* QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
     return nullptr;
 
-  GEOSGeometry* offset = nullptr;
+  GEOSGeometry *offset = nullptr;
   try
   {
     offset = GEOSOffsetCurve_r( geosinit.ctxt, mGeos, distance, segments, joinStyle, mitreLimit );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
-  QgsAbstractGeometry* offsetGeom = fromGeos( offset );
+  QgsAbstractGeometry *offsetGeom = fromGeos( offset );
   GEOSGeom_destroy_r( geosinit.ctxt, offset );
   return offsetGeom;
 }
 
-QgsAbstractGeometry* QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double mitreLimit, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::singleSidedBuffer( double distance, int segments, int side, int joinStyle, double mitreLimit, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1689,7 +1689,7 @@ QgsAbstractGeometry* QgsGeos::singleSidedBuffer( double distance, int segments, 
   GEOSGeomScopedPtr geos;
   try
   {
-    GEOSBufferParams* bp  = GEOSBufferParams_create_r( geosinit.ctxt );
+    GEOSBufferParams *bp  = GEOSBufferParams_create_r( geosinit.ctxt );
     GEOSBufferParams_setSingleSided_r( geosinit.ctxt, bp, 1 );
     GEOSBufferParams_setQuadrantSegments_r( geosinit.ctxt, bp, segments );
     GEOSBufferParams_setJoinStyle_r( geosinit.ctxt, bp, joinStyle );
@@ -1706,7 +1706,7 @@ QgsAbstractGeometry* QgsGeos::singleSidedBuffer( double distance, int segments, 
   return fromGeos( geos.get() );
 }
 
-QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithLine, int* errorCode, QString* errorMsg ) const
+QgsAbstractGeometry *QgsGeos::reshapeGeometry( const QgsLineString &reshapeWithLine, int *errorCode, QString *errorMsg ) const
 {
   if ( !mGeos || reshapeWithLine.numPoints() < 2 || mGeometry->dimension() == 0 )
   {
@@ -1714,7 +1714,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
     return nullptr;
   }
 
-  GEOSGeometry* reshapeLineGeos = createGeosLinestring( &reshapeWithLine, mPrecision );
+  GEOSGeometry *reshapeLineGeos = createGeosLinestring( &reshapeWithLine, mPrecision );
 
   //single or multi?
   int numGeoms = GEOSGetNumGeometries_r( geosinit.ctxt, mGeos );
@@ -1734,7 +1734,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
 
   if ( !isMultiGeom )
   {
-    GEOSGeometry* reshapedGeometry = nullptr;
+    GEOSGeometry *reshapedGeometry = nullptr;
     if ( isLine )
     {
       reshapedGeometry = reshapeLine( mGeos, reshapeLineGeos, mPrecision );
@@ -1745,7 +1745,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
     }
 
     if ( errorCode ) { *errorCode = 0; }
-    QgsAbstractGeometry* reshapeResult = fromGeos( reshapedGeometry );
+    QgsAbstractGeometry *reshapeResult = fromGeos( reshapedGeometry );
     GEOSGeom_destroy_r( geosinit.ctxt, reshapedGeometry );
     GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
     return reshapeResult;
@@ -1757,8 +1757,8 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
       //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
       bool reshapeTookPlace = false;
 
-      GEOSGeometry* currentReshapeGeometry = nullptr;
-      GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
+      GEOSGeometry *currentReshapeGeometry = nullptr;
+      GEOSGeometry **newGeoms = new GEOSGeometry*[numGeoms];
 
       for ( int i = 0; i < numGeoms; ++i )
       {
@@ -1779,7 +1779,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
       }
       GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
 
-      GEOSGeometry* newMultiGeom = nullptr;
+      GEOSGeometry *newMultiGeom = nullptr;
       if ( isLine )
       {
         newMultiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, newGeoms, numGeoms );
@@ -1799,7 +1799,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
       if ( reshapeTookPlace )
       {
         if ( errorCode ) { *errorCode = 0; }
-        QgsAbstractGeometry* reshapedMultiGeom = fromGeos( newMultiGeom );
+        QgsAbstractGeometry *reshapedMultiGeom = fromGeos( newMultiGeom );
         GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
         return reshapedMultiGeom;
       }
@@ -1814,7 +1814,7 @@ QgsAbstractGeometry* QgsGeos::reshapeGeometry( const QgsLineString& reshapeWithL
   }
 }
 
-QgsGeometry QgsGeos::mergeLines( QString* errorMsg ) const
+QgsGeometry QgsGeos::mergeLines( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1833,7 +1833,7 @@ QgsGeometry QgsGeos::mergeLines( QString* errorMsg ) const
   return QgsGeometry( fromGeos( geos.get() ) );
 }
 
-QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg ) const
+QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
 {
   if ( !mGeos || other.isNull() )
   {
@@ -1850,7 +1850,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg )
   double ny = 0.0;
   try
   {
-    GEOSCoordSequence* nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos, otherGeom.get() );
+    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos, otherGeom.get() );
 
     ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 0, &nx );
     ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 0, &ny );
@@ -1868,7 +1868,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry& other, QString* errorMsg )
   return QgsGeometry( new QgsPointV2( nx, ny ) );
 }
 
-QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg ) const
+QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg ) const
 {
   if ( !mGeos || other.isNull() )
   {
@@ -1887,7 +1887,7 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg )
   double ny2 = 0.0;
   try
   {
-    GEOSCoordSequence* nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos, otherGeom.get() );
+    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos, otherGeom.get() );
 
     ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 0, &nx1 );
     ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 0, &ny1 );
@@ -1905,13 +1905,13 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry& other, QString* errorMsg )
     return QgsGeometry();
   }
 
-  QgsLineString* line = new QgsLineString();
+  QgsLineString *line = new QgsLineString();
   line->addVertex( QgsPointV2( nx1, ny1 ) );
   line->addVertex( QgsPointV2( nx2, ny2 ) );
   return QgsGeometry( line );
 }
 
-double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) const
+double QgsGeos::lineLocatePoint( const QgsPointV2 &point, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -1941,13 +1941,13 @@ double QgsGeos::lineLocatePoint( const QgsPointV2& point, QString* errorMsg ) co
   return distance;
 }
 
-QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry*>& geometries, QString* errorMsg )
+QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry *> &geometries, QString *errorMsg )
 {
-  GEOSGeometry** const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
+  GEOSGeometry **const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
   int validLines = 0;
-  Q_FOREACH ( const QgsAbstractGeometry* g, geometries )
+  Q_FOREACH ( const QgsAbstractGeometry *g, geometries )
   {
-    GEOSGeometry* l = asGeos( g );
+    GEOSGeometry *l = asGeos( g );
     if ( l )
     {
       lineGeosGeometries[validLines] = l;
@@ -1980,14 +1980,14 @@ QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry*>& geometries, 
   }
 }
 
-QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry* extent, double tolerance, bool edgesOnly, QString* errorMsg ) const
+QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double tolerance, bool edgesOnly, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
     return QgsGeometry();
   }
 
-  GEOSGeometry* extentGeos = nullptr;
+  GEOSGeometry *extentGeos = nullptr;
   GEOSGeomScopedPtr extentGeosGeom( nullptr );
   if ( extent )
   {
@@ -2014,7 +2014,7 @@ QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry* extent, double t
   CATCH_GEOS_WITH_ERRMSG( QgsGeometry() );
 }
 
-QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString* errorMsg ) const
+QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
@@ -2038,9 +2038,9 @@ QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QS
 
 
 //! Extract coordinates of linestring's endpoints. Returns false on error.
-static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, double& y1, double& x2, double& y2 )
+static bool _linestringEndpoints( const GEOSGeometry *linestring, double &x1, double &y1, double &x2, double &y2 )
 {
-  const GEOSCoordSequence* coordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, linestring );
+  const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, linestring );
   if ( !coordSeq )
     return false;
 
@@ -2060,7 +2060,7 @@ static bool _linestringEndpoints( const GEOSGeometry* linestring, double& x1, do
 
 
 //! Merge two linestrings if they meet at the given intersection point, return new geometry or null on error.
-static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeometry* line2, const QgsPoint& intersectionPoint )
+static GEOSGeometry *_mergeLinestrings( const GEOSGeometry *line1, const GEOSGeometry *line2, const QgsPoint &intersectionPoint )
 {
   double x1, y1, x2, y2;
   if ( !_linestringEndpoints( line1, x1, y1, x2, y2 ) )
@@ -2080,11 +2080,11 @@ static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeo
   // the intersection must be at the begin/end of both lines
   if ( intersectionAtOrigLineEndpoint && intersectionAtReshapeLineEndpoint )
   {
-    GEOSGeometry* g1 = GEOSGeom_clone_r( geosinit.ctxt, line1 );
-    GEOSGeometry* g2 = GEOSGeom_clone_r( geosinit.ctxt, line2 );
-    GEOSGeometry* geoms[2] = { g1, g2 };
-    GEOSGeometry* multiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, geoms, 2 );
-    GEOSGeometry* res = GEOSLineMerge_r( geosinit.ctxt, multiGeom );
+    GEOSGeometry *g1 = GEOSGeom_clone_r( geosinit.ctxt, line1 );
+    GEOSGeometry *g2 = GEOSGeom_clone_r( geosinit.ctxt, line2 );
+    GEOSGeometry *geoms[2] = { g1, g2 };
+    GEOSGeometry *multiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, geoms, 2 );
+    GEOSGeometry *res = GEOSLineMerge_r( geosinit.ctxt, multiGeom );
     GEOSGeom_destroy_r( geosinit.ctxt, multiGeom );
     return res;
   }
@@ -2093,7 +2093,7 @@ static GEOSGeometry* _mergeLinestrings( const GEOSGeometry* line1, const GEOSGeo
 }
 
 
-GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry* reshapeLineGeos , double precision )
+GEOSGeometry *QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision )
 {
   if ( !line || !reshapeLineGeos )
     return nullptr;
@@ -2105,7 +2105,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   try
   {
     //make sure there are at least two intersection between line and reshape geometry
-    GEOSGeometry* intersectGeom = GEOSIntersection_r( geosinit.ctxt, line, reshapeLineGeos );
+    GEOSGeometry *intersectGeom = GEOSIntersection_r( geosinit.ctxt, line, reshapeLineGeos );
     if ( intersectGeom )
     {
       atLeastTwoIntersections = ( GEOSGeomTypeId_r( geosinit.ctxt, intersectGeom ) == GEOS_MULTIPOINT
@@ -2113,7 +2113,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
       // one point is enough when extending line at its endpoint
       if ( GEOSGeomTypeId_r( geosinit.ctxt, intersectGeom ) == GEOS_POINT )
       {
-        const GEOSCoordSequence* intersectionCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, intersectGeom );
+        const GEOSCoordSequence *intersectionCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, intersectGeom );
         double xi, yi;
         GEOSCoordSeq_getX_r( geosinit.ctxt, intersectionCoordSeq, 0, &xi );
         GEOSCoordSeq_getY_r( geosinit.ctxt, intersectionCoordSeq, 0, &yi );
@@ -2142,9 +2142,9 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
     return nullptr;
 
   QgsPointV2 beginPoint( x1, y1 );
-  GEOSGeometry* beginLineVertex = createGeosPoint( &beginPoint, 2, precision );
+  GEOSGeometry *beginLineVertex = createGeosPoint( &beginPoint, 2, precision );
   QgsPointV2 endPoint( x2, y2 );
-  GEOSGeometry* endLineVertex = createGeosPoint( &endPoint, 2, precision );
+  GEOSGeometry *endLineVertex = createGeosPoint( &endPoint, 2, precision );
 
   bool isRing = false;
   if ( GEOSGeomTypeId_r( geosinit.ctxt, line ) == GEOS_LINEARRING
@@ -2152,7 +2152,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
     isRing = true;
 
   //node line and reshape line
-  GEOSGeometry* nodedGeometry = nodeGeometries( reshapeLineGeos, line );
+  GEOSGeometry *nodedGeometry = nodeGeometries( reshapeLineGeos, line );
   if ( !nodedGeometry )
   {
     GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
@@ -2181,15 +2181,15 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
       return nullptr;
   }
 
-  QList<GEOSGeometry*> resultLineParts; //collection with the line segments that will be contained in result
-  QList<GEOSGeometry*> probableParts; //parts where we can decide on inclusion only after going through all the candidates
+  QList<GEOSGeometry *> resultLineParts; //collection with the line segments that will be contained in result
+  QList<GEOSGeometry *> probableParts; //parts where we can decide on inclusion only after going through all the candidates
 
   for ( int i = 0; i < numMergedLines; ++i )
   {
-    const GEOSGeometry* currentGeom = nullptr;
+    const GEOSGeometry *currentGeom = nullptr;
 
     currentGeom = GEOSGetGeometryN_r( geosinit.ctxt, mergedLines, i );
-    const GEOSCoordSequence* currentCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, currentGeom );
+    const GEOSCoordSequence *currentCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, currentGeom );
     unsigned int currentCoordSeqSize;
     GEOSCoordSeq_getSize_r( geosinit.ctxt, currentCoordSeq, &currentCoordSeqSize );
     if ( currentCoordSeqSize < 2 )
@@ -2202,9 +2202,9 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
     GEOSCoordSeq_getX_r( geosinit.ctxt, currentCoordSeq, currentCoordSeqSize - 1, &xEnd );
     GEOSCoordSeq_getY_r( geosinit.ctxt, currentCoordSeq, currentCoordSeqSize - 1, &yEnd );
     QgsPointV2 beginPoint( xBegin, yBegin );
-    GEOSGeometry* beginCurrentGeomVertex = createGeosPoint( &beginPoint, 2, precision );
+    GEOSGeometry *beginCurrentGeomVertex = createGeosPoint( &beginPoint, 2, precision );
     QgsPointV2 endPoint( xEnd, yEnd );
-    GEOSGeometry* endCurrentGeomVertex = createGeosPoint( &endPoint, 2, precision );
+    GEOSGeometry *endCurrentGeomVertex = createGeosPoint( &endPoint, 2, precision );
 
     //check how many endpoints of the line merge result are on the (original) line
     int nEndpointsOnOriginalLine = 0;
@@ -2263,8 +2263,8 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   //add the longest segment from the probable list for rings (only used for polygon rings)
   if ( isRing && !probableParts.isEmpty() )
   {
-    GEOSGeometry* maxGeom = nullptr; //the longest geometry in the probabla list
-    GEOSGeometry* currentGeom = nullptr;
+    GEOSGeometry *maxGeom = nullptr; //the longest geometry in the probabla list
+    GEOSGeometry *currentGeom = nullptr;
     double maxLength = -std::numeric_limits<double>::max();
     double currentLength = 0;
     for ( int i = 0; i < probableParts.size(); ++i )
@@ -2289,7 +2289,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
   GEOSGeom_destroy_r( geosinit.ctxt, mergedLines );
 
-  GEOSGeometry* result = nullptr;
+  GEOSGeometry *result = nullptr;
   if ( resultLineParts.size() < 1 )
     return nullptr;
 
@@ -2306,7 +2306,7 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
     }
 
     //create multiline from resultLineParts
-    GEOSGeometry* multiLineGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, lineArray, resultLineParts.size() );
+    GEOSGeometry *multiLineGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, lineArray, resultLineParts.size() );
     delete [] lineArray;
 
     //then do a linemerge with the newly combined partstrings
@@ -2324,19 +2324,19 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   return result;
 }
 
-GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos, double precision )
+GEOSGeometry *QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEOSGeometry *reshapeLineGeos, double precision )
 {
   //go through outer shell and all inner rings and check if there is exactly one intersection of a ring and the reshape line
   int nIntersections = 0;
   int lastIntersectingRing = -2;
-  const GEOSGeometry* lastIntersectingGeom = nullptr;
+  const GEOSGeometry *lastIntersectingGeom = nullptr;
 
   int nRings = GEOSGetNumInteriorRings_r( geosinit.ctxt, polygon );
   if ( nRings < 0 )
     return nullptr;
 
   //does outer ring intersect?
-  const GEOSGeometry* outerRing = GEOSGetExteriorRing_r( geosinit.ctxt, polygon );
+  const GEOSGeometry *outerRing = GEOSGetExteriorRing_r( geosinit.ctxt, polygon );
   if ( GEOSIntersects_r( geosinit.ctxt, outerRing, reshapeLineGeos ) == 1 )
   {
     ++nIntersections;
@@ -2373,7 +2373,7 @@ GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGe
   }
 
   //we have one intersecting ring, let's try to reshape it
-  GEOSGeometry* reshapeResult = reshapeLine( lastIntersectingGeom, reshapeLineGeos, precision );
+  GEOSGeometry *reshapeResult = reshapeLine( lastIntersectingGeom, reshapeLineGeos, precision );
   if ( !reshapeResult )
   {
     delete [] innerRings;
@@ -2381,9 +2381,9 @@ GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGe
   }
 
   //if reshaping took place, we need to reassemble the polygon and its rings
-  GEOSGeometry* newRing = nullptr;
-  const GEOSCoordSequence* reshapeSequence = GEOSGeom_getCoordSeq_r( geosinit.ctxt, reshapeResult );
-  GEOSCoordSequence* newCoordSequence = GEOSCoordSeq_clone_r( geosinit.ctxt, reshapeSequence );
+  GEOSGeometry *newRing = nullptr;
+  const GEOSCoordSequence *reshapeSequence = GEOSGeom_getCoordSeq_r( geosinit.ctxt, reshapeResult );
+  GEOSCoordSequence *newCoordSequence = GEOSCoordSeq_clone_r( geosinit.ctxt, reshapeSequence );
 
   GEOSGeom_destroy_r( geosinit.ctxt, reshapeResult );
 
@@ -2394,20 +2394,20 @@ GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGe
     return nullptr;
   }
 
-  GEOSGeometry* newOuterRing = nullptr;
+  GEOSGeometry *newOuterRing = nullptr;
   if ( lastIntersectingRing == -1 )
     newOuterRing = newRing;
   else
     newOuterRing = GEOSGeom_clone_r( geosinit.ctxt, outerRing );
 
   //check if all the rings are still inside the outer boundary
-  QList<GEOSGeometry*> ringList;
+  QList<GEOSGeometry *> ringList;
   if ( nRings > 0 )
   {
-    GEOSGeometry* outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone_r( geosinit.ctxt, newOuterRing ), nullptr, 0 );
+    GEOSGeometry *outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone_r( geosinit.ctxt, newOuterRing ), nullptr, 0 );
     if ( outerRingPoly )
     {
-      GEOSGeometry* currentRing = nullptr;
+      GEOSGeometry *currentRing = nullptr;
       for ( int i = 0; i < nRings; ++i )
       {
         if ( lastIntersectingRing == i )
@@ -2425,19 +2425,19 @@ GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGe
     GEOSGeom_destroy_r( geosinit.ctxt, outerRingPoly );
   }
 
-  GEOSGeometry** newInnerRings = new GEOSGeometry*[ringList.size()];
+  GEOSGeometry **newInnerRings = new GEOSGeometry*[ringList.size()];
   for ( int i = 0; i < ringList.size(); ++i )
     newInnerRings[i] = ringList.at( i );
 
   delete [] innerRings;
 
-  GEOSGeometry* reshapedPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, newOuterRing, newInnerRings, ringList.size() );
+  GEOSGeometry *reshapedPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, newOuterRing, newInnerRings, ringList.size() );
   delete[] newInnerRings;
 
   return reshapedPolygon;
 }
 
-int QgsGeos::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 )
+int QgsGeos::lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 )
 {
   if ( !line1 || !line2 )
   {
@@ -2446,11 +2446,11 @@ int QgsGeos::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry*
 
   double bufferDistance = pow( 10.0L, geomDigits( line2 ) - 11 );
 
-  GEOSGeometry* bufferGeom = GEOSBuffer_r( geosinit.ctxt, line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
+  GEOSGeometry *bufferGeom = GEOSBuffer_r( geosinit.ctxt, line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
     return -2;
 
-  GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosinit.ctxt, bufferGeom, line1 );
+  GEOSGeometry *intersectionGeom = GEOSIntersection_r( geosinit.ctxt, bufferGeom, line1 );
 
   //compare ratio between line1Length and intersectGeomLength (usually close to 1 if line1 is contained in line2)
   double intersectGeomLength;
@@ -2469,14 +2469,14 @@ int QgsGeos::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry*
   return 0;
 }
 
-int QgsGeos::pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line )
+int QgsGeos::pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry *line )
 {
   if ( !point || !line )
     return -1;
 
   double bufferDistance = pow( 10.0L, geomDigits( line ) - 11 );
 
-  GEOSGeometry* lineBuffer = GEOSBuffer_r( geosinit.ctxt, line, bufferDistance, 8 );
+  GEOSGeometry *lineBuffer = GEOSBuffer_r( geosinit.ctxt, line, bufferDistance, 8 );
   if ( !lineBuffer )
     return -2;
 
@@ -2488,17 +2488,17 @@ int QgsGeos::pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry
   return contained;
 }
 
-int QgsGeos::geomDigits( const GEOSGeometry* geom )
+int QgsGeos::geomDigits( const GEOSGeometry *geom )
 {
   GEOSGeomScopedPtr bbox( GEOSEnvelope_r( geosinit.ctxt, geom ) );
   if ( !bbox.get() )
     return -1;
 
-  const GEOSGeometry* bBoxRing = GEOSGetExteriorRing_r( geosinit.ctxt, bbox.get() );
+  const GEOSGeometry *bBoxRing = GEOSGetExteriorRing_r( geosinit.ctxt, bbox.get() );
   if ( !bBoxRing )
     return -1;
 
-  const GEOSCoordSequence* bBoxCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, bBoxRing );
+  const GEOSCoordSequence *bBoxCoordSeq = GEOSGeom_getCoordSeq_r( geosinit.ctxt, bBoxRing );
 
   if ( !bBoxCoordSeq )
     return -1;

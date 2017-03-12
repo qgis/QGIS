@@ -57,22 +57,22 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      * @param defaultDirection default direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
-    QgsVectorLayerDirector( QgsVectorLayer* myLayer,
+    QgsVectorLayerDirector( QgsVectorLayer *myLayer,
                             int directionFieldId,
-                            const QString& directDirectionValue,
-                            const QString& reverseDirectionValue,
-                            const QString& bothDirectionValue,
+                            const QString &directDirectionValue,
+                            const QString &reverseDirectionValue,
+                            const QString &bothDirectionValue,
                             const Direction defaultDirection
                           );
 
-    virtual ~QgsVectorLayerDirector();
+    virtual ~QgsVectorLayerDirector() = default;
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
-                    const QVector< QgsPoint >& additionalPoints,
-                    QVector< QgsPoint>& snappedPoints ) const override;
+                    const QVector< QgsPoint > &additionalPoints,
+                    QVector< QgsPoint> &snappedPoints ) const override;
 
     QString name() const override;
 

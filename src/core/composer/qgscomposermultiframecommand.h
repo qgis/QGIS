@@ -31,7 +31,7 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = nullptr );
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent = nullptr );
 
     void undo() override;
     void redo() override;
@@ -45,10 +45,10 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
-    const QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
+    const QgsComposerMultiFrame *multiFrame() const { return mMultiFrame; }
 
   protected:
-    QgsComposerMultiFrame* mMultiFrame = nullptr;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
 
     QDomDocument mPreviousState;
     QDomDocument mAfterState;
@@ -56,8 +56,8 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     bool mFirstRun;
 
     QgsComposerMultiFrameCommand(); //forbidden
-    void saveState( QDomDocument& stateDoc );
-    void restoreState( QDomDocument& stateDoc );
+    void saveState( QDomDocument &stateDoc );
+    void restoreState( QDomDocument &stateDoc );
     bool checkFirstRun();
 };
 
@@ -86,9 +86,9 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
       TableBackgroundColor,
     };
 
-    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
+    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame *multiFrame, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command ) override;
+    bool mergeWith( const QUndoCommand *command ) override;
     int id() const override { return static_cast< int >( mContext ); }
 
   private:

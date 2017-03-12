@@ -38,7 +38,7 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
     ~QgsAddRemoveMultiFrameCommand();
     void redo() override;
     void undo() override;
@@ -50,8 +50,8 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
     void switchState();
     bool checkFirstRun();
 
-    QgsComposerMultiFrame* mMultiFrame = nullptr;
-    QgsComposition* mComposition = nullptr;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
+    QgsComposition *mComposition = nullptr;
     State mState;
     bool mFirstRun;
 };

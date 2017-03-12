@@ -36,24 +36,24 @@ class QgsDxfLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
     //! construct the provider
-    explicit QgsDxfLabelProvider( QgsVectorLayer* layer, const QString& providerId, QgsDxfExport* dxf, const QgsPalLayerSettings *settings );
+    explicit QgsDxfLabelProvider( QgsVectorLayer *layer, const QString &providerId, QgsDxfExport *dxf, const QgsPalLayerSettings *settings );
 
     /** Re-implementation that writes to DXF file instead of drawing with QPainter
      * @param context render context
      * @param label label
      */
-    void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     /** Registration method that keeps track of DXF layer names of individual features
      * @param feature feature
      * @param context render context
      * @param dxfLayerName name of dxf layer
      */
-    void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
+    void registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
 
   protected:
     //! pointer to parent DXF export where this instance is used
-    QgsDxfExport* mDxfExport = nullptr;
+    QgsDxfExport *mDxfExport = nullptr;
 };
 
 /** \ingroup core
@@ -67,12 +67,12 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
 {
   public:
     //! construct the provider
-    explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer* layer, QgsDxfExport* dxf );
+    explicit QgsDxfRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, QgsDxfExport *dxf );
 
     /** Reinitialize the subproviders with QgsDxfLabelProviders
      * @param layer layer
      */
-    void reinit( QgsVectorLayer* layer );
+    void reinit( QgsVectorLayer *layer );
 
     /** Re-implementation that writes to DXF file instead of drawing with QPainter
      * @param context render context
@@ -85,14 +85,14 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
      * @param context render context
      * @param dxfLayerName name of dxf layer
      */
-    void registerDxfFeature( QgsFeature& feature, QgsRenderContext &context, const QString& dxfLayerName );
+    void registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
 
     //! create QgsDxfLabelProvider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString& providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
+    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
 
   protected:
     //! pointer to parent DXF export where this instance is used
-    QgsDxfExport* mDxfExport = nullptr;
+    QgsDxfExport *mDxfExport = nullptr;
 };
 
 

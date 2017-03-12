@@ -28,9 +28,9 @@
     throw e; \
   }
 
-//! Calculate arbitary axis
+//! Calculate arbitrary axis
 /*!
-*   Calculate arbitary axis for apply extrusions
+*   Calculate arbitrary axis for apply extrusions
 *  @author Rallaz
 */
 void DRW_Entity::calculateAxis( DRW_Coord extPoint )
@@ -65,9 +65,9 @@ void DRW_Entity::calculateAxis( DRW_Coord extPoint )
   extAxisY.unitize();
 }
 
-//! Extrude a point using arbitary axis
+//! Extrude a point using arbitrary axis
 /*!
-*   apply extrusion in a point using arbitary axis (previous calculated)
+*   apply extrusion in a point using arbitrary axis (previously calculated)
 *  @author Rallaz
 */
 void DRW_Entity::extrudePoint( DRW_Coord extPoint, DRW_Coord *point )
@@ -217,7 +217,7 @@ bool DRW_Entity::parseDxfGroups( int code, dxfReader *reader )
   return true;
 }
 
-bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs )
+bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf, duint32 bs )
 {
   objSize = 0;
   QgsDebugMsg( "***************************** parsing entity *********************************************" );
@@ -248,12 +248,12 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strB
       strBuf->moveBitPos( -17 );
       duint16 strDataSize = strBuf->getRawShort16();
       QgsDebugMsgLevel( QString( "strDataSize: %1" ).arg( strDataSize ), 4 );
-      if (( strDataSize& 0x8000 ) == 0x8000 )
+      if ( ( strDataSize & 0x8000 ) == 0x8000 )
       {
         QgsDebugMsgLevel( "string 0x8000 bit is set", 4 );
         strBuf->moveBitPos( -33 );//RLZ pending to verify
         duint16 hiSize = strBuf->getRawShort16();
-        strDataSize = (( strDataSize & 0x7fff ) | ( hiSize << 15 ) );
+        strDataSize = ( ( strDataSize & 0x7fff ) | ( hiSize << 15 ) );
       }
       strBuf->moveBitPos( -strDataSize - 16 ); //-14
 
@@ -296,7 +296,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer* strB
         Q_UNUSED( cp );
 
         QStringList l;
-        for ( int i = 0;i < strLength + 1; i++ )  //string length + null terminating char
+        for ( int i = 0; i < strLength + 1; i++ ) //string length + null terminating char
         {
           duint8 dxfChar = tmpExtDataBuf.getRawChar8();
           l << QString( "0x%1" ).arg( dxfChar, 0, 16 );
@@ -881,11 +881,11 @@ void DRW_Ellipse::applyExtrusion()
   {
     calculateAxis( extPoint );
     extrudePoint( extPoint, &secPoint );
-    double intialparam = staparam;
+    double initialparam = staparam;
     if ( extPoint.z < 0. )
     {
       staparam = M_PIx2 - endparam;
-      endparam = M_PIx2 - intialparam;
+      endparam = M_PIx2 - initialparam;
     }
   }
 }
@@ -1139,7 +1139,7 @@ bool DRW_3Dface::parseDwg( DRW::Version v, dwgBuffer *buf, duint32 bs )
     invisibleflag = has_no_flag ? ( int )NoEdge : buf->getBitShort();
   }
   drw_assert( invisibleflag >= NoEdge );
-  drw_assert( invisibleflag <= AllEdges );
+  drw_assert( invisibleflag <= AllEdges );  //#spellok
 
   QgsDebugMsg( QString( "base:%1 sec:%2 third:%3 fourth:%4 invisibleFlag:%5" )
                .arg( QString( "%1,%2,%3" ).arg( basePoint.x ).arg( basePoint.y ).arg( basePoint.z ) )
@@ -1502,7 +1502,7 @@ bool DRW_LWPolyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
     vertex->x = buf->getRawDouble();
     vertex->y = buf->getRawDouble();
     vertlist.push_back( vertex );
-    DRW_Vertex2D* pv = vertex;
+    DRW_Vertex2D *pv = vertex;
     for ( std::vector<DRW_Vertex2D *>::size_type i = 1; i < vertexnum; i++ )
     {
       vertex = new DRW_Vertex2D();
@@ -1556,7 +1556,7 @@ bool DRW_LWPolyline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
   QgsDebugMsgLevel( "Vertex list: ", 5 );
   for ( std::vector<DRW_Vertex2D *>::iterator it = vertlist.begin() ; it != vertlist.end(); ++it )
   {
-    DRW_Vertex2D* pv = *it;
+    DRW_Vertex2D *pv = *it;
 
     QgsDebugMsgLevel( QString( "x:%1 y:%2 bulge:%3 stawidth:%4 endwidth:%5" )
                       .arg( pv->x ).arg( pv->y )
@@ -1633,7 +1633,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   duint8 data_flags = 0x00;
   if ( version > DRW::AC1014 )  //2000+
   {
-    data_flags = buf->getRawChar8(); /* DataFlags RC Used to determine presence of subsquent data */
+    data_flags = buf->getRawChar8(); /* DataFlags RC Used to determine presence of subsequent data */
 
     QgsDebugMsg( QString( "data_flags:%1" ).arg( data_flags, 0, 16 ) );
 
@@ -1681,11 +1681,11 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   if ( version > DRW::AC1014 )  //2000+
   {
-    if ( !( data_flags & 0x04 ) ) /* Oblique ang RD 51 present if !(DataFlags & 0x04) */
+    if ( !( data_flags & 0x04 ) ) /* Oblique angle RD 51 present if !(DataFlags & 0x04) */
     {
       oblique = buf->getRawDouble();
     }
-    if ( !( data_flags & 0x08 ) ) /* Rotation ang RD 50 present if !(DataFlags & 0x08) */
+    if ( !( data_flags & 0x08 ) ) /* Rotation angle RD 50 present if !(DataFlags & 0x08) */
     {
       angle = buf->getRawDouble();
     }
@@ -1697,13 +1697,13 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   }
   else  //14-
   {
-    oblique = buf->getBitDouble(); /* Oblique ang BD 51 */
-    angle = buf->getBitDouble(); /* Rotation ang BD 50 */
+    oblique = buf->getBitDouble(); /* Oblique angle BD 51 */
+    angle = buf->getBitDouble(); /* Rotation angle BD 50 */
     height = buf->getBitDouble(); /* Height BD 40 */
     widthscale = buf->getBitDouble(); /* Width factor BD 41 */
   }
 
-  QgsDebugMsg( QString( "thickness:%1, Oblique ang:%2, Width:%3, rotation:%4, height:%5" )
+  QgsDebugMsg( QString( "thickness:%1, Oblique angle:%2, Width:%3, rotation:%4, height:%5" )
                .arg( thickness ).arg( oblique ).arg( widthscale ).arg( angle ).arg( height )
              );
 
@@ -1711,7 +1711,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   QgsDebugMsg( QString( "text string:%1" ).arg( text.c_str() ) );
 
-  //textgen, alignH, alignV always present in R14-, data_flags set in initialisation
+  //textgen, alignH, alignV always present in R14-, data_flags set in initialization
   if ( !( data_flags & 0x20 ) ) /* Generation BS 71 present if !(DataFlags & 0x20) */
   {
     textgen = buf->getBitShort();
@@ -1807,7 +1807,7 @@ bool DRW_MText::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   DRW_UNUSED( ext_ht );
   /* Extents wid BD Undocumented and not present in DXF or entget The extents
   rectangle, when rotated the same as the text, fits the actual text image on
-  the screen (altough we've seen it include an extra row of text in height). */
+  the screen (although we've seen it include an extra row of text in height). */
   double ext_wid = buf->getBitDouble();
   DRW_UNUSED( ext_wid );
   /* Text TV 1 All text in one long string (without '\n's 3 for line wrapping).
@@ -2374,7 +2374,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
           RESERVE( spline->controllist, spline->ncontrol );
           for ( dint32 j = 0; j < spline->ncontrol && buf->isGood(); ++j )
           {
-            DRW_Coord* crd = new DRW_Coord( buf->get2RawDouble() );
+            DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
             spline->controllist.push_back( crd );
             if ( isRational )
               crd->z = buf->getBitDouble(); //RLZ: investigate how store weight
@@ -2391,7 +2391,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
             RESERVE( spline->fitlist, spline->nfit );
             for ( dint32 j = 0; j < spline->nfit && buf->isGood(); ++j )
             {
-              DRW_Coord* crd = new DRW_Coord( buf->get2RawDouble() );
+              DRW_Coord *crd = new DRW_Coord( buf->get2RawDouble() );
               spline->fitlist.push_back( crd );
 
               QgsDebugMsg( QString( "  fit %1: %2" )
@@ -2691,7 +2691,7 @@ bool DRW_Spline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   RESERVE( controllist, ncontrol );
   for ( dint32 i = 0; i < ncontrol; ++i )
   {
-    DRW_Coord* crd = new DRW_Coord( buf->get3BitDouble() );
+    DRW_Coord *crd = new DRW_Coord( buf->get3BitDouble() );
     controllist.push_back( crd );
     QgsDebugMsgLevel( QString( "cp %1: %2,%3,%4 rem:%5" )
                       .arg( i ).arg( crd->x, 0, 'g', 17 ).arg( crd->y, 0, 'g', 17 ).arg( crd->z, 0, 'g', 17 ).arg( buf->numRemainingBytes() ), 4
@@ -2709,7 +2709,7 @@ bool DRW_Spline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   RESERVE( fitlist, nfit );
   for ( dint32 i = 0; i < nfit; ++i )
   {
-    DRW_Coord* crd = new DRW_Coord( buf->get3BitDouble() );
+    DRW_Coord *crd = new DRW_Coord( buf->get3BitDouble() );
     fitlist.push_back( crd );
     QgsDebugMsgLevel( QString( "fp %1: %2,%3,%4 rem:%5" )
                       .arg( i ).arg( crd->x, 0, 'g', 17 ).arg( crd->y, 0, 'g', 17 ).arg( crd->z, 0, 'g', 17 ).arg( buf->numRemainingBytes() ), 4
@@ -3526,7 +3526,7 @@ bool DRW_Leader::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   // add vertices
   for ( int i = 0; i < nPt; i++ )
   {
-    DRW_Coord* vertex = new DRW_Coord( buf->get3BitDouble() );
+    DRW_Coord *vertex = new DRW_Coord( buf->get3BitDouble() );
     vertexlist.push_back( vertex );
     QgsDebugMsg( QString( " vertex %1: %2,%3,%4" ).arg( i ).arg( vertex->x ).arg( vertex->y ).arg( vertex->z ) );
   }

@@ -16,8 +16,6 @@ import qgis  # NOQA
 import os
 
 from qgis.core import (
-    QgsTask,
-    QgsTaskManager,
     QgsApplication,
     QgsVectorLayer,
     QgsFeature,
@@ -25,11 +23,8 @@ from qgis.core import (
     QgsPoint,
     QgsVectorFileWriter,
     QgsVectorFileWriterTask
-
 )
-from qgis.PyQt.QtCore import (QCoreApplication,
-                              QDir)
-
+from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.testing import start_app, unittest
 
 start_app()

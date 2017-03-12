@@ -33,7 +33,7 @@ class CORE_EXPORT QgsRasterIterator
 {
   public:
 
-    QgsRasterIterator( QgsRasterInterface* input );
+    QgsRasterIterator( QgsRasterInterface *input );
 
     /** Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
       @param bandNumber number of raster band to read
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsRasterIterator
       @param extent area to read
       @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent, QgsRasterBlockFeedback* feedback = nullptr );
+    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
 
     /** Fetches next part of raster data, caller takes ownership of the block and
        caller should delete the block.
@@ -54,19 +54,22 @@ class CORE_EXPORT QgsRasterIterator
        @param topLeftRow top left row
        @return false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
-                             int& nCols, int& nRows,
+                             int &nCols, int &nRows,
                              QgsRasterBlock **block,
-                             int& topLeftCol, int& topLeftRow );
+                             int &topLeftCol, int &topLeftRow );
 
     void stopRasterRead( int bandNumber );
 
-    const QgsRasterInterface* input() const { return mInput; }
+    const QgsRasterInterface *input() const { return mInput; }
 
     void setMaximumTileWidth( int w ) { mMaximumTileWidth = w; }
     int maximumTileWidth() const { return mMaximumTileWidth; }
 
     void setMaximumTileHeight( int h ) { mMaximumTileHeight = h; }
     int maximumTileHeight() const { return mMaximumTileHeight; }
+
+    static const int DEFAULT_MAXIMUM_TILE_WIDTH = 2000;
+    static const int DEFAULT_MAXIMUM_TILE_HEIGHT = 2000;
 
   private:
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
@@ -76,13 +79,13 @@ class CORE_EXPORT QgsRasterIterator
       int currentRow;
       int nCols;
       int nRows;
-      QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
+      QgsRasterProjector *prj; //raster projector (or 0 if no reprojection is done)
     };
 
-    QgsRasterInterface* mInput = nullptr;
+    QgsRasterInterface *mInput = nullptr;
     QMap<int, RasterPartInfo> mRasterPartInfos;
     QgsRectangle mExtent;
-    QgsRasterBlockFeedback* mFeedback = nullptr;
+    QgsRasterBlockFeedback *mFeedback = nullptr;
 
     int mMaximumTileWidth;
     int mMaximumTileHeight;

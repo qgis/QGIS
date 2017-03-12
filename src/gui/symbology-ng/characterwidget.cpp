@@ -55,7 +55,7 @@
 
 //! [0]
 CharacterWidget::CharacterWidget( QWidget *parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   squareSize = 24;
   columns = 16;
@@ -123,7 +123,7 @@ void CharacterWidget::setCharacter( QChar character )
 //! [3]
 QSize CharacterWidget::sizeHint() const
 {
-  return QSize( columns*squareSize, ( 65536 / columns )*squareSize );
+  return QSize( columns * squareSize, ( 65536 / columns ) * squareSize );
 }
 //! [3]
 
@@ -178,7 +178,7 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
   {
     for ( int column = beginColumn; column <= endColumn; ++column )
     {
-      painter.drawRect( column*squareSize, row*squareSize, squareSize, squareSize );
+      painter.drawRect( column * squareSize, row * squareSize, squareSize, squareSize );
     }
 //! [8] //! [9]
   }
@@ -194,13 +194,13 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
     {
 
       int key = row * columns + column;
-      painter.setClipRect( column*squareSize, row*squareSize, squareSize, squareSize );
+      painter.setClipRect( column * squareSize, row * squareSize, squareSize, squareSize );
 
       if ( key == lastKey )
-        painter.fillRect( column*squareSize + 1, row*squareSize + 1, squareSize, squareSize, QBrush( Qt::red ) );
+        painter.fillRect( column * squareSize + 1, row * squareSize + 1, squareSize, squareSize, QBrush( Qt::red ) );
 
-      painter.drawText( column*squareSize + ( squareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
-                        row*squareSize + 4 + fontMetrics.ascent(),
+      painter.drawText( column * squareSize + ( squareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
+                        row * squareSize + 4 + fontMetrics.ascent(),
                         QString( QChar( key ) ) );
     }
   }

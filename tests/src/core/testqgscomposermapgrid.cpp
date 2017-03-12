@@ -58,16 +58,16 @@ class TestQgsComposerMapGrid : public QObject
     void descendingAnnotations(); //test descending annotation direction
 
   private:
-    QgsComposition* mComposition = nullptr;
-    QgsComposerMap* mComposerMap = nullptr;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerMap *mComposerMap = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
 
 TestQgsComposerMapGrid::TestQgsComposerMapGrid()
-    : mComposition( 0 )
-    , mComposerMap( 0 )
-    , mMapSettings( 0 )
+  : mComposition( 0 )
+  , mComposerMap( 0 )
+  , mMapSettings( 0 )
 {
 }
 
@@ -100,7 +100,6 @@ void TestQgsComposerMapGrid::init()
 {
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
   mMapSettings->setDestinationCrs( crs );
-  mMapSettings->setCrsTransformEnabled( false );
   mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );

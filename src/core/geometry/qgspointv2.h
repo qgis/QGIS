@@ -45,7 +45,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 
     /** Construct a QgsPointV2 from a QgsPoint object
      */
-    explicit QgsPointV2( const QgsPoint& p );
+    explicit QgsPointV2( const QgsPoint &p );
 
     /** Construct a QgsPointV2 from a QPointF
      */
@@ -60,8 +60,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
-    bool operator==( const QgsPointV2& pt ) const;
-    bool operator!=( const QgsPointV2& pt ) const;
+    bool operator==( const QgsPointV2 &pt ) const;
+    bool operator!=( const QgsPointV2 &pt ) const;
 
     /** Returns the point's x-coordinate.
      * @see setX()
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * when comparing distances.
      * @note added in QGIS 3.0
     */
-    double distance( const QgsPointV2& other ) const;
+    double distance( const QgsPointV2 &other ) const;
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate. Calling
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see distance()
      * @note added in QGIS 3.0
     */
-    double distanceSquared( const QgsPointV2& other ) const;
+    double distanceSquared( const QgsPointV2 &other ) const;
 
     /**
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * when comparing distances.
      * @note added in QGIS 3.0
     */
-    double distance3D( const QgsPointV2& other ) const;
+    double distance3D( const QgsPointV2 &other ) const;
 
     /**
      * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
@@ -220,13 +220,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * @see distance()
      * @note added in QGIS 3.0
     */
-    double distanceSquared3D( const QgsPointV2& other ) const;
+    double distanceSquared3D( const QgsPointV2 &other ) const;
 
     /**
      * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
      * @note added in QGIS 3.0
      */
-    double azimuth( const QgsPointV2& other ) const;
+    double azimuth( const QgsPointV2 &other ) const;
 
     /** Returns a new point which correspond to this point projected by a specified distance
      * with specified angles (azimuth and inclination).
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Calculates the vector obtained by subtracting a point from this point.
      * @note added in QGIS 3.0
      */
-    QgsVector operator-( const QgsPointV2& p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
+    QgsVector operator-( const QgsPointV2 &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     /**
      * Adds a vector to this point in place.
@@ -292,30 +292,30 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
     virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
     virtual int dimension() const override { return 0; }
-    virtual QgsPointV2* clone() const override;
+    virtual QgsPointV2 *clone() const override;
     void clear() override;
-    virtual bool fromWkb( QgsConstWkbPtr& wkb ) override;
-    virtual bool fromWkt( const QString& wkt ) override;
+    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    virtual bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
-    void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    void draw( QPainter &p ) const override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform& t ) override;
+    void transform( const QTransform &t ) override;
     virtual QgsCoordinateSequence coordinateSequence() const override;
     virtual int nCoordinates() const override { return 1; }
-    virtual QgsAbstractGeometry* boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
-    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
+    double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
 
     /** Angle undefined. Always returns 0.0
         @param vertex the vertex id

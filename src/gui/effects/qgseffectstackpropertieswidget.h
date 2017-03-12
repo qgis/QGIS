@@ -53,19 +53,19 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
      * @param stack QgsEffectStack to modify in the widget
      * @param parent parent widget
      */
-    QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent = nullptr );
+    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent = nullptr );
 
     ~QgsEffectStackPropertiesWidget();
 
     /** Returns effect stack attached to the widget
      * @returns QgsEffectStack modified by the widget
      */
-    QgsEffectStack* stack() { return mStack; }
+    QgsEffectStack *stack() { return mStack; }
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
      */
-    void setPreviewPicture( const QPicture& picture );
+    void setPreviewPicture( const QPicture &picture );
 
   public slots:
 
@@ -96,14 +96,14 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     /** Updates the effect stack when the currently selected effect changes properties.
      * @param newEffect new effect to replace existing effect at selected position within the stack.
      */
-    void changeEffect( QgsPaintEffect* newEffect );
+    void changeEffect( QgsPaintEffect *newEffect );
 
   protected:
 
-    QgsEffectStack* mStack = nullptr;
-    QStandardItemModel* mModel = nullptr;
-    QWidget* mPresentWidget = nullptr;
-    QPicture* mPreviewPicture = nullptr;
+    QgsEffectStack *mStack = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QWidget *mPresentWidget = nullptr;
+    QPicture *mPreviewPicture = nullptr;
 
     /** Refreshes the widget to reflect the current state of the stack.
      */
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     /** Refreshes the widget to reflect the current state of a specified stack.
      * @param stack QgsEffectStack for widget
      */
-    void loadStack( QgsEffectStack* stack );
+    void loadStack( QgsEffectStack *stack );
 
     /** Enables or disables widgets depending on the selected effect within the stack.
      */
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     /** Returns the currently selected effect within the stack.
      * @note not available in python bindings
      */
-    EffectItem* currentEffectItem();
+    EffectItem *currentEffectItem();
 
     /** Moves the currently selected effect within the stack by a specified offset
      */
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
 
     /** Sets the effect properties widget
      */
-    void setWidget( QWidget* widget );
+    void setWidget( QWidget *widget );
 
 };
 
@@ -156,21 +156,21 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
      * @param parent parent widget
      * @param f window flags
      */
-    QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     /** Returns effect stack attached to the dialog
      * @returns QgsEffectStack modified by the dialog
      */
-    QgsEffectStack* stack();
+    QgsEffectStack *stack();
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
      */
-    void setPreviewPicture( const QPicture& picture );
+    void setPreviewPicture( const QPicture &picture );
 
   protected:
 
-    QgsEffectStackPropertiesWidget* mPropertiesWidget = nullptr;
+    QgsEffectStackPropertiesWidget *mPropertiesWidget = nullptr;
 
 };
 
@@ -198,7 +198,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
      */
-    QgsEffectStackCompactWidget( QWidget* parent = nullptr, QgsPaintEffect* effect = nullptr );
+    QgsEffectStackCompactWidget( QWidget *parent = nullptr, QgsPaintEffect *effect = nullptr );
     ~QgsEffectStackCompactWidget();
 
     /** Sets paint effect attached to the widget,
@@ -207,13 +207,13 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * stack consisting of the original effect
      * @see paintEffect
      */
-    void setPaintEffect( QgsPaintEffect* effect );
+    void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns paint effect attached to the widget
      * @returns QgsPaintEffect modified by the widget
      * @see setPaintEffect
      */
-    QgsPaintEffect* paintEffect() const;
+    QgsPaintEffect *paintEffect() const;
 
     /** Sets the picture to use for effect previews for the dialog
      * @param picture preview picture
@@ -232,14 +232,14 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
 
     void enableToggled( bool checked );
 
-    void updateAcceptWidget( QgsPanelWidget* panel );
+    void updateAcceptWidget( QgsPanelWidget *panel );
     void updateEffectLive();
 
   private:
-    QgsEffectStack* mStack = nullptr;
-    QCheckBox* mEnabledCheckBox = nullptr;
-    QToolButton* mButton = nullptr;
-    QPicture* mPreviewPicture = nullptr;
+    QgsEffectStack *mStack = nullptr;
+    QCheckBox *mEnabledCheckBox = nullptr;
+    QToolButton *mButton = nullptr;
+    QPicture *mPreviewPicture = nullptr;
 
 };
 

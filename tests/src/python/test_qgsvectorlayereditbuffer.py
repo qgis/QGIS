@@ -14,29 +14,14 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-import os
-
 from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtGui import QPainter
 
-from qgis.core import (Qgis,
-                       QgsWkbTypes,
-                       QgsVectorLayer,
-                       QgsRectangle,
+from qgis.core import (QgsVectorLayer,
                        QgsFeature,
-                       QgsFeatureRequest,
                        QgsGeometry,
                        QgsPoint,
-                       QgsField,
-                       QgsFields,
-                       QgsSymbol,
-                       QgsSingleSymbolRenderer,
-                       QgsCoordinateReferenceSystem,
-                       QgsProject,
-                       QgsUnitTypes,
-                       QgsAggregateCalculator)
+                       QgsField)
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 start_app()
 
 
@@ -329,6 +314,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         # test contents of buffer
         self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), 'new1')
         self.assertEqual(layer.editBuffer().addedAttributes()[1].name(), 'new2')
+
 
 if __name__ == '__main__':
     unittest.main()

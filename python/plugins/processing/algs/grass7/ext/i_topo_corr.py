@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import multipleOutputDir, verifyRasterNum
+from .i import multipleOutputDir
 from processing.core.parameters import getParameterFromString
 
 

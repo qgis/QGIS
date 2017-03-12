@@ -40,14 +40,14 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsColorEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map );
 
     QgsColorEffect();
 
     virtual QString type() const override { return QStringLiteral( "color" ); }
     virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsColorEffect* clone() const override;
+    virtual void readProperties( const QgsStringMap &props ) override;
+    virtual QgsColorEffect *clone() const override;
 
     /** Sets the brightness modification for the effect.
      * @param brightness Valid values are between -255 and 255, where 0 represents
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * @see setColorizeOn
      * @see setColorizeStrength
      */
-    void setColorizeColor( const QColor& colorizeColor );
+    void setColorizeColor( const QColor &colorizeColor );
 
     /** Returns the color used for colorizing a picture. This is only used if
      * @link colorizeOn @endlink is set to true.
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override;
+    virtual void draw( QgsRenderContext &context ) override;
 
   private:
 

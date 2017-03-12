@@ -43,9 +43,9 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
      * @param parent parent widget
      * @param fl window flags
      */
-    QgsSelectByFormDialog( QgsVectorLayer* layer,
-                           const QgsAttributeEditorContext& context = QgsAttributeEditorContext(),
-                           QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsSelectByFormDialog( QgsVectorLayer *layer,
+                           const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+                           QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
 
     ~QgsSelectByFormDialog();
 
@@ -54,23 +54,23 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
      * @param messageBar target message bar
      * @note added in QGIS 2.16
      */
-    void setMessageBar( QgsMessageBar* messageBar );
+    void setMessageBar( QgsMessageBar *messageBar );
 
     /**
      * Sets a map canvas associated with the dialog.
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
   private slots:
 
-    void zoomToFeatures( const QString& filter );
+    void zoomToFeatures( const QString &filter );
 
   private:
 
-    QgsAttributeForm* mForm = nullptr;
-    QgsVectorLayer* mLayer = nullptr;
-    QgsMessageBar* mMessageBar = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsAttributeForm *mForm = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
 };
 

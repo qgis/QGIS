@@ -269,7 +269,7 @@ void TestQgsFields::byIndex()
   QCOMPARE( fields[0], field );
   QCOMPARE( fields[1], field2 );
 
-  const QgsFields& constFields = fields;
+  const QgsFields &constFields = fields;
   QCOMPARE( constFields[0], field );
   QCOMPARE( constFields[1], field2 );
   QCOMPARE( constFields.at( 0 ), field );
@@ -294,7 +294,7 @@ void TestQgsFields::fieldOrigin()
 {
   QgsFields fields;
   QgsField field( QStringLiteral( "testfield" ) );
-  fields.append( field , QgsFields::OriginJoin );
+  fields.append( field, QgsFields::OriginJoin );
   QgsField field2( QStringLiteral( "testfield2" ) );
   fields.append( field2, QgsFields::OriginExpression );
 
@@ -307,7 +307,7 @@ void TestQgsFields::fieldOriginIndex()
 {
   QgsFields fields;
   QgsField field( QStringLiteral( "testfield" ) );
-  fields.append( field , QgsFields::OriginProvider, 5 );
+  fields.append( field, QgsFields::OriginProvider, 5 );
   QCOMPARE( fields.fieldOriginIndex( 0 ), 5 );
 
   QgsField field2( QStringLiteral( "testfield2" ) );
@@ -493,7 +493,7 @@ void TestQgsFields::qforeach()
   fields.append( field2 );
 
   int i = 0;
-  Q_FOREACH ( const QgsField& field, fields )
+  Q_FOREACH ( const QgsField &field, fields )
   {
     QCOMPARE( field, fields.at( i ) );
     ++i;
@@ -515,12 +515,12 @@ void TestQgsFields::iterator()
   QgsFields::iterator it = fields.begin();
 
   QCOMPARE( it->name(), QString( "1" ) );
-  QCOMPARE(( ++it )->name(), QString( "2" ) );
-  QCOMPARE(( --it )->name(), QString( "1" ) );
-  QCOMPARE(( it++ )->name(), QString( "1" ) );
+  QCOMPARE( ( ++it )->name(), QString( "2" ) );
+  QCOMPARE( ( --it )->name(), QString( "1" ) );
+  QCOMPARE( ( it++ )->name(), QString( "1" ) );
   QCOMPARE( it->name(), QString( "2" ) );
   it->setName( QStringLiteral( "Test" ) );
-  QCOMPARE(( it-- )->name(), QString( "Test" ) );
+  QCOMPARE( ( it-- )->name(), QString( "Test" ) );
   QCOMPARE( it->name(), QString( "1" ) );
   QCOMPARE( it[1].name(), QString( "Test" ) );
   it += 2;
@@ -547,8 +547,8 @@ void TestQgsFields::constIterator()
 
   //test with empty fields
   QCOMPARE( fields.constBegin(), fields.constEnd() );
-  QCOMPARE( const_cast< const QgsFields* >( &fields )->begin(), const_cast< const QgsFields* >( &fields )->end() );
-  Q_FOREACH ( const QgsField& f, fields )
+  QCOMPARE( const_cast< const QgsFields * >( &fields )->begin(), const_cast< const QgsFields * >( &fields )->end() );
+  Q_FOREACH ( const QgsField &f, fields )
   {
     Q_UNUSED( f );
     //should not be called!
@@ -565,11 +565,11 @@ void TestQgsFields::constIterator()
   QgsFields::const_iterator it = constFields.begin();
 
   QCOMPARE( it->name(), QString( "1" ) );
-  QCOMPARE(( ++it )->name(), QString( "2" ) );
-  QCOMPARE(( --it )->name(), QString( "1" ) );
-  QCOMPARE(( it++ )->name(), QString( "1" ) );
+  QCOMPARE( ( ++it )->name(), QString( "2" ) );
+  QCOMPARE( ( --it )->name(), QString( "1" ) );
+  QCOMPARE( ( it++ )->name(), QString( "1" ) );
   QCOMPARE( it->name(), QString( "2" ) );
-  QCOMPARE(( it-- )->name(), QString( "2" ) );
+  QCOMPARE( ( it-- )->name(), QString( "2" ) );
   QCOMPARE( it->name(), QString( "1" ) );
   QCOMPARE( it[1].name(), QString( "2" ) );
   it += 2;
@@ -578,11 +578,11 @@ void TestQgsFields::constIterator()
   QgsFields::const_iterator it2 = fields.constBegin();
 
   QCOMPARE( it2->name(), QString( "1" ) );
-  QCOMPARE(( ++it2 )->name(), QString( "2" ) );
-  QCOMPARE(( --it2 )->name(), QString( "1" ) );
-  QCOMPARE(( it2++ )->name(), QString( "1" ) );
+  QCOMPARE( ( ++it2 )->name(), QString( "2" ) );
+  QCOMPARE( ( --it2 )->name(), QString( "1" ) );
+  QCOMPARE( ( it2++ )->name(), QString( "1" ) );
   QCOMPARE( it2->name(), QString( "2" ) );
-  QCOMPARE(( it2-- )->name(), QString( "2" ) );
+  QCOMPARE( ( it2-- )->name(), QString( "2" ) );
   QCOMPARE( it2->name(), QString( "1" ) );
   QCOMPARE( it2[1].name(), QString( "2" ) );
   it2 += 2;

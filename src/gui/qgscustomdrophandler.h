@@ -34,7 +34,7 @@ class GUI_EXPORT QgsCustomDropHandler
     virtual QString key() const = 0;
 
     //! Method called from QGIS after a drop event with custom URI known by the handler
-    virtual void handleDrop( const QgsMimeDataUtils::Uri& uri ) const = 0;
+    virtual void handleDrop( const QgsMimeDataUtils::Uri &uri ) const = 0;
 };
 
 #endif // QGSCUSTOMDROPHANDLER_H

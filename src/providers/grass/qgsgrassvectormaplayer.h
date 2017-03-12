@@ -64,15 +64,15 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /** Original fields before editing started + topo field if edited.
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields() */
-    QgsFields & fields() { return mFields; }
+    QgsFields &fields() { return mFields; }
 
     /** Current fields, as modified during editing, it contains cat field, without topo field.
      *  This fields are used by layers which are not editied to reflect current state of editing. */
-    QgsFields & tableFields() { return mTableFields; }
+    QgsFields &tableFields() { return mTableFields; }
 
-    static QStringList fieldNames( QgsFields & fields );
+    static QStringList fieldNames( QgsFields &fields );
 
-    QMap<int, QList<QVariant> > & attributes() { return mAttributes; }
+    QMap<int, QList<QVariant> > &attributes() { return mAttributes; }
 
     /** Get attribute for index corresponding to current fields(),
      * if there is no table, returns cat */
@@ -168,7 +168,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
   private:
     QString quotedValue( const QVariant &value );
-    dbDriver * openDriver( QString &error );
+    dbDriver *openDriver( QString &error );
     void addTopoField( QgsFields &fields );
     int mField;
     bool mValid;

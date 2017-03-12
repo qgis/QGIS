@@ -52,31 +52,31 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     //! Create a new GPX layer
     void createGPX();
     //! Add a vector layer given vectorLayerPath, baseName, providerKey
-    void drawVectorLayer( const QString&, const QString&, const QString& );
+    void drawVectorLayer( const QString &, const QString &, const QString & );
     //! unload the plugin
     void unload() override;
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( const QString& theThemeName );
+    void setCurrentTheme( const QString &themeName );
 
     //! load a GPX file
-    void loadGPXFile( const QString& fileName, bool loadWaypoints, bool loadRoutes,
+    void loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
                       bool loadTracks );
-    void importGPSFile( const QString& inputFileName, QgsBabelFormat* importer,
+    void importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
                         bool importWaypoints, bool importRoutes,
-                        bool importTracks, const QString& outputFileName,
-                        const QString& layerName );
-    void convertGPSFile( const QString& inputFileName,
+                        bool importTracks, const QString &outputFileName,
+                        const QString &layerName );
+    void convertGPSFile( const QString &inputFileName,
                          int convertType,
-                         const QString& outputFileName,
-                         const QString& layerName );
-    void downloadFromGPS( const QString& device, const QString& port,
+                         const QString &outputFileName,
+                         const QString &layerName );
+    void downloadFromGPS( const QString &device, const QString &port,
                           bool downloadWaypoints, bool downloadRoutes,
-                          bool downloadTracks, const QString& outputFileName,
-                          const QString& layerName );
-    void uploadToGPS( QgsVectorLayer* gpxLayer, const QString& device,
-                      const QString& port );
+                          bool downloadTracks, const QString &outputFileName,
+                          const QString &layerName );
+    void uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
+                      const QString &port );
 
   signals:
 
@@ -96,9 +96,9 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     //! The path to the GPSBabel program
     QString mBabelPath;
     //! Importers for external GPS data file formats
-    std::map<QString, QgsBabelFormat*> mImporters;
+    std::map<QString, QgsBabelFormat *> mImporters;
     //! Upload/downloaders for GPS devices
-    std::map<QString, QgsGPSDevice*> mDevices;
+    std::map<QString, QgsGPSDevice *> mDevices;
 };
 
 #endif

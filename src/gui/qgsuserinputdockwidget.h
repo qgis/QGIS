@@ -36,19 +36,19 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsUserInputDockWidget( QWidget* parent = nullptr );
+    QgsUserInputDockWidget( QWidget *parent = nullptr );
 
     /** Add a widget to be displayed in the dock.
      * @param widget widget to add. Ownership is not transferred.
      */
-    void addUserInputWidget( QWidget* widget );
+    void addUserInputWidget( QWidget *widget );
 
   protected:
     // will not display the dock if it contains no widget
     void paintEvent( QPaintEvent *event ) override;
 
   private slots:
-    void widgetDestroyed( QObject* obj );
+    void widgetDestroyed( QObject *obj );
 
     //! when area change, update the layout according to the new dock location
     void areaChanged( Qt::DockWidgetArea area );
@@ -59,10 +59,10 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
     void updateLayoutDirection();
 
     // list of widget with their corresponding line separator
-    QMap<QWidget*, QFrame*> mWidgetList;
+    QMap<QWidget *, QFrame *> mWidgetList;
 
     bool mLayoutHorizontal;
-    QBoxLayout* mLayout = nullptr;
+    QBoxLayout *mLayout = nullptr;
 };
 
 #endif // QGSUSERINPUTDOCKWIDGET_H

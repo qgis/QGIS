@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from builtins import range
+from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'

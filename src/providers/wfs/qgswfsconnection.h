@@ -24,16 +24,16 @@ class QgsWfsConnection : public QgsOwsConnection
 
     /**
      * Constructor
-     * @param theConnName connection name
+     * @param connName connection name
      */
-    explicit QgsWfsConnection( const QString & theConnName );
+    explicit QgsWfsConnection( const QString &connName );
 
     static QStringList connectionList();
 
-    static void deleteConnection( const QString & name );
+    static void deleteConnection( const QString &name );
 
     static QString selectedConnection();
-    static void setSelectedConnection( const QString & name );
+    static void setSelectedConnection( const QString &name );
 };
 
 #endif

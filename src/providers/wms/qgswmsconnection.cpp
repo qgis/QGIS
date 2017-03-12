@@ -26,22 +26,22 @@
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPicture>
-#include <QSettings>
 #include <QUrl>
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSConnection::QgsWMSConnection( const QString& theConnName )
-    : mConnName( theConnName )
+QgsWMSConnection::QgsWMSConnection( const QString &connName )
+  : mConnName( connName )
 {
-  QgsDebugMsg( "theConnName = " + theConnName );
+  QgsDebugMsg( "theConnName = " + connName );
 
-  QSettings settings;
+  QgsSettings settings;
 
   QString key = "/Qgis/connections-wms/" + mConnName;
   QString credentialsKey = "/Qgis/WMS/" + mConnName;
@@ -123,26 +123,26 @@ QgsDataSourceUri QgsWMSConnection::uri()
 
 QStringList QgsWMSConnection::connectionList()
 {
-  QSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
   return settings.childGroups();
 }
 
 QString QgsWMSConnection::selectedConnection()
 {
-  QSettings settings;
-  return settings.value( QStringLiteral( "/Qgis/connections-wms/selected" ) ).toString();
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/connections-wms/selected" ) ).toString();
 }
 
-void QgsWMSConnection::setSelectedConnection( const QString& name )
+void QgsWMSConnection::setSelectedConnection( const QString &name )
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Qgis/connections-wms/selected" ), name );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "qgis/connections-wms/selected" ), name );
 }
 
-void QgsWMSConnection::deleteConnection( const QString& name )
+void QgsWMSConnection::deleteConnection( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( "/Qgis/connections-wms/" + name );
   settings.remove( "/Qgis/WMS/" + name );
 }

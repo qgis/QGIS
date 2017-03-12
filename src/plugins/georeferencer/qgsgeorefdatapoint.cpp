@@ -19,15 +19,15 @@
 
 #include "qgsgeorefdatapoint.h"
 
-QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *dstCanvas,
-                                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
+                                        const QgsPoint &pixelCoords, const QgsPoint &mapCoords,
                                         bool enable )
-    : mSrcCanvas( srcCanvas )
-    , mDstCanvas( dstCanvas )
-    , mPixelCoords( pixelCoords )
-    , mMapCoords( mapCoords )
-    , mId( -1 )
-    , mEnabled( enable )
+  : mSrcCanvas( srcCanvas )
+  , mDstCanvas( dstCanvas )
+  , mPixelCoords( pixelCoords )
+  , mMapCoords( mapCoords )
+  , mId( -1 )
+  , mEnabled( enable )
 {
   mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
   mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );
@@ -39,11 +39,11 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *d
 }
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
-    : QObject()
-    , mSrcCanvas( nullptr )
-    , mDstCanvas( nullptr )
-    , mGCPSourceItem( nullptr )
-    , mGCPDestinationItem( nullptr )
+  : QObject()
+  , mSrcCanvas( nullptr )
+  , mDstCanvas( nullptr )
+  , mGCPSourceItem( nullptr )
+  , mGCPDestinationItem( nullptr )
 {
   Q_UNUSED( p );
   // we share item representation on canvas between all points

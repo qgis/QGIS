@@ -24,7 +24,6 @@
 #include <QDomNode>
 #include <QFile>
 #include <QFileInfo>
-#include <QSettings> // TODO: get rid of it [MD]
 #include <QTextStream>
 #include <QUrl>
 
@@ -47,19 +46,20 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
+#include "qgssettings.h" // TODO: get rid of it [MD]
 
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
-                          const QString& lyrname,
-                          const QString& source )
-    : mValid( false ) // assume the layer is invalid
-    , mDataSource( source )
-    , mLayerOrigName( lyrname ) // store the original name
-    , mID( QLatin1String( "" ) )
-    , mLayerType( type )
-    , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
-    , mLegend( nullptr )
-    , mStyleManager( new QgsMapLayerStyleManager( this ) )
+                          const QString &lyrname,
+                          const QString &source )
+  : mValid( false ) // assume the layer is invalid
+  , mDataSource( source )
+  , mLayerOrigName( lyrname ) // store the original name
+  , mID( QLatin1String( "" ) )
+  , mLayerType( type )
+  , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
+  , mLegend( nullptr )
+  , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
   mLayerName = capitalizeLayerName( mLayerOrigName );
@@ -84,7 +84,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mScaleBasedVisibility = false;
 
   connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
-  connect( &mRefreshTimer, &QTimer::timeout, this, [=] { triggerRepaint( true ); } );
+  connect( &mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -104,7 +104,7 @@ QString QgsMapLayer::id() const
   return mID;
 }
 
-void QgsMapLayer::setName( const QString& name )
+void QgsMapLayer::setName( const QString &name )
 {
   QString newName = capitalizeLayerName( name );
   if ( name == mLayerOrigName && newName == mLayerName )
@@ -156,7 +156,7 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement& layerElement, const QgsPathResolver& pathResolver )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver )
 {
   bool layerError;
 
@@ -176,8 +176,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement, const QgsPathRe
 
   // if the layer needs authentication, ensure the master password is set
   QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
-  if (( rx.indexIn( mDataSource ) != -1 )
-      && !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( ( rx.indexIn( mDataSource ) != -1 )
+       && !QgsAuthManager::instance()->setMasterPassword( true ) )
   {
     return false;
   }
@@ -514,7 +514,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement& layerElement, const QgsPathRe
 } // bool QgsMapLayer::readLayerXML
 
 
-bool QgsMapLayer::readXml( const QDomNode& layer_node )
+bool QgsMapLayer::readXml( const QDomNode &layer_node )
 {
   Q_UNUSED( layer_node );
   // NOP by default; children will over-ride with behavior specific to them
@@ -524,7 +524,7 @@ bool QgsMapLayer::readXml( const QDomNode& layer_node )
 
 
 
-bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QgsPathResolver& pathResolver ) const
+bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const
 {
   // use scale dependent visibility flag
   layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
@@ -790,7 +790,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement& layerElement, QDomDocument& docume
 } // bool QgsMapLayer::writeXml
 
 
-bool QgsMapLayer::writeXml( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
   Q_UNUSED( layer_node );
   Q_UNUSED( document );
@@ -810,7 +810,7 @@ void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc 
   mCustomProperties.writeXml( layerNode, doc );
 }
 
-void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
+void QgsMapLayer::readStyleManager( const QDomNode &layerNode )
 {
   QDomElement styleMgrElem = layerNode.firstChildElement( QStringLiteral( "map-layer-style-manager" ) );
   if ( !styleMgrElem.isNull() )
@@ -819,7 +819,7 @@ void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
     mStyleManager->reset();
 }
 
-void QgsMapLayer::writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const
+void QgsMapLayer::writeStyleManager( QDomNode &layerNode, QDomDocument &doc ) const
 {
   if ( mStyleManager )
   {
@@ -842,7 +842,7 @@ void QgsMapLayer::invalidTransformInput()
 }
 
 #if 0
-void QgsMapLayer::connectNotify( const char * signal )
+void QgsMapLayer::connectNotify( const char *signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
@@ -930,7 +930,7 @@ void QgsMapLayer::setLayerOrder( const QStringList &layers )
   // NOOP
 }
 
-void QgsMapLayer::setSubLayerVisibility( const QString& name, bool vis )
+void QgsMapLayer::setSubLayerVisibility( const QString &name, bool vis )
 {
   Q_UNUSED( name );
   Q_UNUSED( vis );
@@ -942,7 +942,7 @@ QgsCoordinateReferenceSystem QgsMapLayer::crs() const
   return mCRS;
 }
 
-void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
+void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal )
 {
   mCRS = srs;
 
@@ -956,12 +956,12 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSign
     emit crsChanged();
 }
 
-QString QgsMapLayer::capitalizeLayerName( const QString& name )
+QString QgsMapLayer::capitalizeLayerName( const QString &name )
 {
   // Capitalize the first letter of the layer name if requested
-  QSettings settings;
+  QgsSettings settings;
   bool capitalizeLayerName =
-    settings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
+    settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
 
   QString layerName( name );
 
@@ -1023,7 +1023,7 @@ QString QgsMapLayer::styleURI() const
   return key;
 }
 
-QString QgsMapLayer::loadDefaultStyle( bool & resultFlag )
+QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
 {
   return loadNamedStyle( styleURI(), resultFlag );
 }
@@ -1032,7 +1032,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 {
   QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
 
-  bool theResultFlag = false;
+  bool resultFlag = false;
 
   // read from database
   sqlite3 *myDatabase = nullptr;
@@ -1061,7 +1061,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
          sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
       qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      theResultFlag = true;
+      resultFlag = true;
     }
 
     sqlite3_finalize( myPreparedStatement );
@@ -1069,7 +1069,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
   sqlite3_close( myDatabase );
 
-  return theResultFlag;
+  return resultFlag;
 }
 
 
@@ -1129,7 +1129,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
 }
 
 
-bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMessage )
+bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMessage )
 {
   QDomElement myRoot = myDocument.firstChildElement( QStringLiteral( "qgis" ) );
   if ( myRoot.isNull() )
@@ -1151,7 +1151,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMe
   //Test for matching geometry type on vector layers when applying, if geometry type is given in the style
   if ( type() == QgsMapLayer::VectorLayer && !myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).isNull() )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( this );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( this );
     QgsWkbTypes::GeometryType importLayerGeometryType = static_cast<QgsWkbTypes::GeometryType>( myRoot.firstChildElement( QStringLiteral( "layerGeometryType" ) ).text().toInt() );
     if ( vl->geometryType() != importLayerGeometryType )
     {
@@ -1215,7 +1215,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   if ( type() == QgsMapLayer::VectorLayer )
   {
     //Getting the selectionLayer geometry
-    const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer*>( this );
+    const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( this );
     QString geoType = QString::number( vl->geometryType() );
 
     //Adding geometryinformation
@@ -1229,7 +1229,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   doc = myDocument;
 }
 
-QString QgsMapLayer::saveDefaultStyle( bool & resultFlag )
+QString QgsMapLayer::saveDefaultStyle( bool &resultFlag )
 {
   return saveNamedStyle( styleURI(), resultFlag );
 }
@@ -1549,14 +1549,14 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QLatin1String( "" );
 }
 
-bool QgsMapLayer::readStyle( const QDomNode& node, QString& errorMessage )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
   return false;
 }
 
-bool QgsMapLayer::writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
+bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
 {
   Q_UNUSED( node );
   Q_UNUSED( doc );
@@ -1565,28 +1565,28 @@ bool QgsMapLayer::writeStyle( QDomNode& node, QDomDocument& doc, QString& errorM
 }
 
 
-QUndoStack* QgsMapLayer::undoStack()
+QUndoStack *QgsMapLayer::undoStack()
 {
   return &mUndoStack;
 }
 
-QUndoStack* QgsMapLayer::undoStackStyles()
+QUndoStack *QgsMapLayer::undoStackStyles()
 {
   return &mUndoStackStyles;
 }
 
 
-void QgsMapLayer::setCustomProperty( const QString& key, const QVariant& value )
+void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
   mCustomProperties.setValue( key, value );
 }
 
-QVariant QgsMapLayer::customProperty( const QString& value, const QVariant& defaultValue ) const
+QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const
 {
   return mCustomProperties.value( value, defaultValue );
 }
 
-void QgsMapLayer::removeCustomProperty( const QString& key )
+void QgsMapLayer::removeCustomProperty( const QString &key )
 {
   mCustomProperties.remove( key );
 }
@@ -1603,7 +1603,7 @@ void QgsMapLayer::setValid( bool valid )
   mValid = valid;
 }
 
-void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
+void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
 {
   if ( legend == mLegend )
     return;
@@ -1617,12 +1617,12 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
   emit legendChanged();
 }
 
-QgsMapLayerLegend*QgsMapLayer::legend() const
+QgsMapLayerLegend *QgsMapLayer::legend() const
 {
   return mLegend;
 }
 
-QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
+QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
 {
   return mStyleManager;
 }
@@ -1647,36 +1647,36 @@ void QgsMapLayer::setExtent( const QgsRectangle &r )
   mExtent = r;
 }
 
-static QList<const QgsMapLayer*> _depOutEdges( const QgsMapLayer* vl, const QgsMapLayer* that, const QSet<QgsMapLayerDependency>& layers )
+static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
 {
-  QList<const QgsMapLayer*> lst;
+  QList<const QgsMapLayer *> lst;
   if ( vl == that )
   {
-    Q_FOREACH ( const QgsMapLayerDependency& dep, layers )
+    Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
     {
-      if ( const QgsMapLayer* l = QgsProject::instance()->mapLayer( dep.layerId() ) )
+      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }
   else
   {
-    Q_FOREACH ( const QgsMapLayerDependency& dep, vl->dependencies() )
+    Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
     {
-      if ( const QgsMapLayer* l = QgsProject::instance()->mapLayer( dep.layerId() ) )
+      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }
   return lst;
 }
 
-static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int>& mark, const QgsMapLayer* that, const QSet<QgsMapLayerDependency>& layers )
+static bool _depHasCycleDFS( const QgsMapLayer *n, QHash<const QgsMapLayer *, int> &mark, const QgsMapLayer *that, const QSet<QgsMapLayerDependency> &layers )
 {
   if ( mark.value( n ) == 1 ) // temporary
     return true;
   if ( mark.value( n ) == 0 ) // not visited
   {
     mark[n] = 1; // temporary
-    Q_FOREACH ( const QgsMapLayer* m, _depOutEdges( n, that, layers ) )
+    Q_FOREACH ( const QgsMapLayer *m, _depOutEdges( n, that, layers ) )
     {
       if ( _depHasCycleDFS( m, mark, that, layers ) )
         return true;
@@ -1686,9 +1686,9 @@ static bool _depHasCycleDFS( const QgsMapLayer* n, QHash<const QgsMapLayer*, int
   return false;
 }
 
-bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const
+bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const
 {
-  QHash<const QgsMapLayer*, int> marks;
+  QHash<const QgsMapLayer *, int> marks;
   return _depHasCycleDFS( this, marks, this, layers );
 }
 
@@ -1697,10 +1697,10 @@ QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
   return mDependencies;
 }
 
-bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency>& oDeps )
+bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 {
   QSet<QgsMapLayerDependency> deps;
-  Q_FOREACH ( const QgsMapLayerDependency& dep, oDeps )
+  Q_FOREACH ( const QgsMapLayerDependency &dep, oDeps )
   {
     if ( dep.origin() == QgsMapLayerDependency::FromUser )
       deps << dep;

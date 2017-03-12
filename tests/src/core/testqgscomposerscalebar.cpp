@@ -37,10 +37,10 @@ class TestQgsComposerScaleBar : public QObject
 
   public:
     TestQgsComposerScaleBar()
-        : mComposition( 0 )
-        , mComposerMap( 0 )
-        , mComposerScaleBar( 0 )
-        , mRasterLayer( 0 )
+      : mComposition( 0 )
+      , mComposerMap( 0 )
+      , mComposerScaleBar( 0 )
+      , mRasterLayer( 0 )
     {}
 
   private slots:
@@ -56,10 +56,10 @@ class TestQgsComposerScaleBar : public QObject
     void dataDefined();
 
   private:
-    QgsComposition* mComposition = nullptr;
-    QgsComposerMap* mComposerMap = nullptr;
-    QgsComposerScaleBar* mComposerScaleBar = nullptr;
-    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerMap *mComposerMap = nullptr;
+    QgsComposerScaleBar *mComposerScaleBar = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
     QString mReport;
 };
 
@@ -84,7 +84,7 @@ void TestQgsComposerScaleBar::initTestCase()
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create composition with composer map
@@ -95,7 +95,7 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
-  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
 
   mComposerScaleBar = new QgsComposerScaleBar( mComposition );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );

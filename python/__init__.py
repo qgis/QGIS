@@ -44,5 +44,6 @@ def mapping_geometry(geometry):
     # back a string that looks like a dictionary.
     return eval(geo)
 
+
 QgsFeature.__geo_interface__ = property(mapping_feature)
 QgsGeometry.__geo_interface__ = property(mapping_geometry)

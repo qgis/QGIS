@@ -36,8 +36,7 @@ from processing.core.parameters import (ParameterRaster,
                                         ParameterSelection,
                                         ParameterCrs,
                                         ParameterNumber,
-                                        ParameterString,
-                                        ParameterBoolean)
+                                        ParameterString)
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -66,7 +65,7 @@ class warp(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+        self.group, self.i18n_group = self.trAlgorithm('Raster projections')
 
         self.tags = self.tr('transform,reproject,crs,srs')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))

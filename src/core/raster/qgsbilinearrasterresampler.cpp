@@ -23,12 +23,12 @@ QgsBilinearRasterResampler::QgsBilinearRasterResampler()
 {
 }
 
-QgsBilinearRasterResampler* QgsBilinearRasterResampler::clone() const
+QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 {
   return new QgsBilinearRasterResampler();
 }
 
-void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstImage )
+void QgsBilinearRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
   dstImage = srcImage.scaled( dstImage.width(), dstImage.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
 }

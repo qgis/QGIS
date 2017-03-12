@@ -60,7 +60,7 @@ class MultipleInputPanel(BASE, WIDGET):
         # No checking is performed!
         self.selectedoptions = selected
         self.leText.setText(
-            self.tr('%d elements selected') % len(self.selectedoptions))
+            self.tr('{0} elements selected').format(len(self.selectedoptions)))
 
     def showSelectionDialog(self):
         if self.datatype is None:
@@ -71,7 +71,7 @@ class MultipleInputPanel(BASE, WIDGET):
         if dlg.selectedoptions is not None:
             self.selectedoptions = dlg.selectedoptions
             self.leText.setText(
-                self.tr('%d elements selected') % len(self.selectedoptions))
+                self.tr('{0} elements selected').format(len(self.selectedoptions)))
             self.selectionChanged.emit()
 
     def updateForOptions(self, options):

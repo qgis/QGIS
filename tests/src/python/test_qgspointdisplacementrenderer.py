@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import QSize
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsVectorLayer,
                        QgsProject,
@@ -47,7 +47,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsSymbolLayer
                        )
 from qgis.testing import start_app, unittest
-from utilities import (unitTestDataPath)
+from utilities import unitTestDataPath
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -204,6 +204,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         result = renderchecker.runTest('expected_displacement_variables')
         self.layer.renderer().setCenterSymbol(old_marker)
         self.assertTrue(result)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -500,7 +500,7 @@ class CORE_EXPORT QgsWkbTypes
     /** Attempts to extract the WKB type from a WKT string.
      * @param wktStr a valid WKT string
      */
-    static Type parseType( const QString& wktStr );
+    static Type parseType( const QString &wktStr );
 
     /** Returns true if the WKB type is a single type.
      * @see isMultiType()
@@ -905,16 +905,16 @@ class CORE_EXPORT QgsWkbTypes
 
     struct wkbEntry
     {
-      wkbEntry( const QString& name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
+      wkbEntry( const QString &name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
                 bool hasZ, bool hasM )
-          : mName( name )
-          , mIsMultiType( isMultiType )
-          , mMultiType( multiType )
-          , mSingleType( singleType )
-          , mFlatType( flatType )
-          , mGeometryType( geometryType )
-          , mHasZ( hasZ )
-          , mHasM( hasM )
+        : mName( name )
+        , mIsMultiType( isMultiType )
+        , mMultiType( multiType )
+        , mSingleType( singleType )
+        , mFlatType( flatType )
+        , mGeometryType( geometryType )
+        , mHasZ( hasZ )
+        , mHasM( hasM )
       {}
       QString mName;
       bool mIsMultiType;

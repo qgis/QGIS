@@ -167,9 +167,9 @@ class nviz7(GeoAlgorithm):
                         layer = param.value
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
-                    cellsize = max(cellsize, (layer.extent().xMaximum()
-                                              - layer.extent().xMinimum())
-                                   / layer.width())
+                    cellsize = max(cellsize, (layer.extent().xMaximum() -
+                                              layer.extent().xMinimum()) /
+                                   layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 
                     layers = param.value.split(';')
@@ -177,9 +177,9 @@ class nviz7(GeoAlgorithm):
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
-                                layer.extent().xMaximum()
-                                - layer.extent().xMinimum())
-                                / layer.width())
+                                layer.extent().xMaximum() -
+                                layer.extent().xMinimum()) /
+                                layer.width())
 
         if cellsize == 0:
             cellsize = 1

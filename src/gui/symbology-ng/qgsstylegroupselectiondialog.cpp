@@ -23,12 +23,12 @@
 
 
 QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent )
-    : QDialog( parent )
-    , mStyle( style )
+  : QDialog( parent )
+  , mStyle( style )
 {
   setupUi( this );
 
-  QStandardItemModel* model = new QStandardItemModel( groupTree );
+  QStandardItemModel *model = new QStandardItemModel( groupTree );
   groupTree->setModel( model );
 
   QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
@@ -47,7 +47,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   model->appendRow( tags );
 
   QStandardItem *tag = new QStandardItem( tr( "Smart Groups" ) );
-  tag->setData( "smartgroupsheader" , Qt::UserRole + 2 );
+  tag->setData( "smartgroupsheader", Qt::UserRole + 2 );
   tag->setEditable( false );
   tag->setFlags( tag->flags() & ~Qt::ItemIsSelectable );
   setBold( tag );
@@ -58,7 +58,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
     QStandardItem *item = new QStandardItem( i.value() );
     item->setEditable( false );
     item->setData( i.key() );
-    item->setData( "smartgroup" , Qt::UserRole + 2 );
+    item->setData( "smartgroup", Qt::UserRole + 2 );
     tag->appendRow( item );
     ++i;
   }
@@ -70,10 +70,10 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   {
     groupTree->setExpanded( model->indexFromItem( model->item( i ) ), true );
   }
-  connect( groupTree->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( groupTreeSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( groupTree->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( groupTreeSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 }
 
-void QgsStyleGroupSelectionDialog::setBold( QStandardItem* item )
+void QgsStyleGroupSelectionDialog::setBold( QStandardItem *item )
 {
   QFont font = item->font();
   font.setBold( true );
@@ -106,7 +106,8 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
       emit smartgroupDeselected( index.data().toString() );
     }
     else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tag" ) )
-    { // It's a tag
+    {
+      // It's a tag
       emit tagDeselected( index.data().toString() );
     }
   }
@@ -129,22 +130,23 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
       emit smartgroupSelected( index.data().toString() );
     }
     else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tag" ) )
-    {  // It's a tag
+    {
+      // It's a tag
       emit tagSelected( index.data().toString() );
     }
   }
 }
 
 
-void QgsStyleGroupSelectionDialog::buildTagTree( QStandardItem* &parent )
+void QgsStyleGroupSelectionDialog::buildTagTree( QStandardItem *&parent )
 {
   QStringList tags = mStyle->tags();
   tags.sort();
-  Q_FOREACH ( const QString& tag, tags )
+  Q_FOREACH ( const QString &tag, tags )
   {
     QStandardItem *item = new QStandardItem( tag );
     item->setData( mStyle->tagId( tag ) );
-    item->setData( "tag" , Qt::UserRole + 2 );
+    item->setData( "tag", Qt::UserRole + 2 );
     item->setEditable( false );
     parent->appendRow( item );
   }

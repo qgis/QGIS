@@ -34,7 +34,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
   public:
     //! Constructor
-    QgsDecorationNorthArrow( QObject* parent = nullptr );
+    QgsDecorationNorthArrow( QObject *parent = nullptr );
 
     virtual ~QgsDecorationNorthArrow();
 

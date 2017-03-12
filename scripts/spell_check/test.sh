@@ -14,6 +14,8 @@
 #                                                                         #
 ###########################################################################
 
+# Testing the spell test :)
+
 # GNU prefix command for mac os support (gsed, gsplit)
 GP=
 if [[ "$OSTYPE" =~ darwin* ]]; then

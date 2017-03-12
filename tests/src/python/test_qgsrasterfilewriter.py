@@ -97,5 +97,6 @@ class TestQgsRasterFileWriter(unittest.TestCase):
 
         assert allOk, "Raster file writer test failed"
 
+
 if __name__ == '__main__':
     unittest.main()

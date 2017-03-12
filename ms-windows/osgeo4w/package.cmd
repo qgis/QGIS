@@ -177,17 +177,6 @@ cmake -G Ninja ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
-	-D WITH_INTERNAL_JINJA2=FALSE ^
-	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
-	-D WITH_INTERNAL_PYGMENTS=FALSE ^
-	-D WITH_INTERNAL_REQUESTS=FALSE ^
-	-D WITH_INTERNAL_DATEUTIL=FALSE ^
-	-D WITH_INTERNAL_PYTZ=FALSE ^
-	-D WITH_INTERNAL_SIX=FALSE ^
-	-D WITH_INTERNAL_NOSE2=FALSE ^
-	-D WITH_INTERNAL_MOCK=FALSE ^
-	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
-	-D WITH_INTERNAL_FUTURE=FALSE ^
 	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
@@ -288,6 +277,11 @@ for %%g IN (%GRASS_VERSIONS%) do (
 
 	set packages=!packages! "-grass-plugin!w!"
 )
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' preremove-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin-common.bat
+if errorlevel 1 (echo creation of grass common preremove failed & goto error)
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin-common.bat
+if errorlevel 1 (echo creation of grass common postinstall failed & goto error)
 
 touch exclude
 
@@ -415,7 +409,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common
 	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.v.in7.exe" ^
 	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser6.exe" ^
 	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser7.exe" ^
-	"apps/%PACKAGENAME%/grass"
+	"apps/%PACKAGENAME%/grass" ^
+	"etc/postinstall/%PACKAGENAME%-grass-plugin-common.bat" ^
+	"etc/preremove/%PACKAGENAME%-grass-plugin-common.bat"
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
 
 for %%g IN (%GRASS_VERSIONS%) do (

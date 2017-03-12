@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
 
@@ -24,11 +23,12 @@
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
+#include "qgssettings.h"
 
-QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
@@ -46,7 +46,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/PostgreSQL/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
@@ -107,7 +107,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
 //! Autoconnected SLOTS *
 void QgsPgNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
@@ -122,13 +122,13 @@ void QgsPgNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -177,10 +177,6 @@ void QgsPgNewConnection::on_cb_geometryColumnsOnly_clicked()
 }
 
 //! End  Autoconnected SLOTS *
-
-QgsPgNewConnection::~QgsPgNewConnection()
-{
-}
 
 void QgsPgNewConnection::testConnection()
 {

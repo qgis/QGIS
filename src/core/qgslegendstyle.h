@@ -52,8 +52,8 @@ class CORE_EXPORT QgsLegendStyle
     QgsLegendStyle();
 
     QFont font() const { return mFont; }
-    QFont & rfont() { return mFont; }
-    void setFont( const QFont & font ) { mFont = font; }
+    QFont &rfont() { return mFont; }
+    void setFont( const QFont &font ) { mFont = font; }
 
     double margin( Side side ) { return mMarginMap.value( side ); }
     void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
@@ -61,15 +61,15 @@ class CORE_EXPORT QgsLegendStyle
     // set all margins
     void setMargin( double margin );
 
-    void writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const;
+    void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
 
-    void readXml( const QDomElement& elem, const QDomDocument& doc );
+    void readXml( const QDomElement &elem, const QDomDocument &doc );
 
     //! Get name for style, used in project file
     static QString styleName( Style s );
 
     //! Get style from name, used in project file
-    static Style styleFromName( const QString& styleName );
+    static Style styleFromName( const QString &styleName );
 
     //! Get style label, translated, used in UI
     static QString styleLabel( Style s );

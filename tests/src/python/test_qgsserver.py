@@ -19,20 +19,17 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import email
+
 from io import StringIO
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog, QgsRenderChecker, QgsApplication
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
-import osgeo.gdal
+
+import osgeo.gdal  # NOQA
 import tempfile
 import base64
-
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
 
 
 # Strip path and content length because path may vary
@@ -56,9 +53,9 @@ class TestQgsServer(unittest.TestCase):
                                  re.findall(b'<([^>\s]+)[ >]', response_line)[0], msg=msg + "\nTag mismatch on line %s: %s != %s" % (line_no, expected_line, response_line))
             except IndexError:
                 self.assertEqual(expected_line, response_line, msg=msg + "\nTag line mismatch %s: %s != %s" % (line_no, expected_line, response_line))
-            #print("---->%s\t%s == %s" % (line_no, expected_line, response_line))
+            # print("---->%s\t%s == %s" % (line_no, expected_line, response_line))
             # Compare attributes
-            if re.match(RE_ATTRIBUTES, expected_line): # has attrs
+            if re.match(RE_ATTRIBUTES, expected_line):  # has attrs
                 expected_attrs = sorted(re.findall(RE_ATTRIBUTES, expected_line))
                 response_attrs = sorted(re.findall(RE_ATTRIBUTES, response_line))
                 self.assertEqual(expected_attrs, response_attrs, msg=msg + "\nXML attributes differ at line {0}: {1} != {2}".format(line_no, expected_attrs, response_attrs))
@@ -368,7 +365,7 @@ class TestQgsServer(unittest.TestCase):
             if "onlineResource" in item:
                 self.assertEqual("onlineResource=\"?" in item, True)
 
-          # url well defined in project
+        # url well defined in project
         project = os.path.join(self.testdata_path, "test_project_with_urls.qgs")
         qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
@@ -740,6 +737,7 @@ class TestQgsServer(unittest.TestCase):
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Basic")
 
+    @unittest.skip('Randomly failing to draw the map layer')
     def test_wms_getprint_srs(self):
         qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -843,8 +841,8 @@ class TestQgsServer(unittest.TestCase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            #'WIDTH': '20', # optional
-            #'HEIGHT': '20', # optional
+            # 'WIDTH': '20', # optional
+            # 'HEIGHT': '20', # optional
             'LAYER': 'testlayer%20èé',
         }
         qs = '&'.join(["%s=%s" % (k, v) for k, v in parms.items()])
@@ -860,8 +858,8 @@ class TestQgsServer(unittest.TestCase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            #'WIDTH': '20', # optional
-            #'HEIGHT': '20', # optional
+            # 'WIDTH': '20', # optional
+            # 'HEIGHT': '20', # optional
             'LAYER': u'testlayer%20èé',
             'LAYERTITLE': 'TRUE',
         }
@@ -875,8 +873,8 @@ class TestQgsServer(unittest.TestCase):
             'VERSION': '1.3.0',
             'REQUEST': 'GetLegendGraphic',
             'FORMAT': 'image/png',
-            #'WIDTH': '20', # optional
-            #'HEIGHT': '20', # optional
+            # 'WIDTH': '20', # optional
+            # 'HEIGHT': '20', # optional
             'LAYER': u'testlayer%20èé',
             'LAYERTITLE': 'FALSE',
         }
@@ -1063,13 +1061,45 @@ class TestQgsServer(unittest.TestCase):
         r, h = self._result(self.server.handleRequest(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
+    # WCS tests
+    def wcs_request_compare(self, request):
+        project = self.projectPath
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
+        header, body = self.server.handleRequest(query_string)
+        self.assert_headers(header, body)
+        response = header + body
+        f = open(self.testdata_path + 'wcs_' + request.lower() + '.txt', 'rb')
+        expected = f.read()
+        f.close()
+        # Store the output for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.join( tempfile.gettempdir(), 'wcs_' +  request.lower() + '_expected.txt' ), 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.join( tempfile.gettempdir(), 'wcs_' +  request.lower() + '_response.txt'), 'w+')
+        f.write(response)
+        f.close()
+        """
+
+        response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
+        expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
+
+        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
+
+    def test_project_wcs(self):
+        """Test some WCS request"""
+        for request in ('GetCapabilities', 'DescribeCoverage'):
+            self.wcs_request_compare(request)
+
     def test_wcs_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
         qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WCS",
-            "VERSION": "1.3.0",
+            "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
             "STYLES": ""
         }.items())])
@@ -1088,7 +1118,7 @@ class TestQgsServer(unittest.TestCase):
         qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(project),
             "SERVICE": "WCS",
-            "VERSION": "1.3.0",
+            "VERSION": "1.0.0",
             "REQUEST": "GetCapabilities",
             "STYLES": ""
         }.items())])
@@ -1148,6 +1178,7 @@ class TestQgsServer(unittest.TestCase):
                 )
 
         self.assertTrue(test, message)
+
 
 if __name__ == '__main__':
     unittest.main()

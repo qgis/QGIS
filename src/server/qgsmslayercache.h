@@ -32,11 +32,11 @@ struct QgsMSLayerCacheEntry
   time_t creationTime; //time this layer was created
   time_t lastUsedTime; //last time this layer was in use
   QString url; //datasource url
-  QgsMapLayer* layerPointer = nullptr;
+  QgsMapLayer *layerPointer = nullptr;
   QList<QString> temporaryFiles; //path to the temporary files written for the layer
   QString configFile; //path to the project file associated with the layer
 
-  bool operator==( const QgsMSLayerCacheEntry& other ) const
+  bool operator==( const QgsMSLayerCacheEntry &other ) const
   {
     return ( creationTime == other.creationTime
              && lastUsedTime == other.lastUsedTime
@@ -53,7 +53,7 @@ class QgsMSLayerCache: public QObject
 {
     Q_OBJECT
   public:
-    static QgsMSLayerCache* instance();
+    static QgsMSLayerCache *instance();
     ~QgsMSLayerCache();
 
     /**
@@ -68,11 +68,11 @@ class QgsMSLayerCache: public QObject
     @param layerName the layer name (to distinguish between different layers in a request using the same datasource
     @param configFile path of the config file (to invalidate entries if file changes). Can be empty (e.g. layers from sld)
     @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
-    void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile = QString(), const QList<QString>& tempFiles = QList<QString>() );
+    void insertLayer( const QString &url, const QString &layerName, QgsMapLayer *layer, const QString &configFile = QString(), const QList<QString> &tempFiles = QList<QString>() );
 
     /** Searches for the layer with the given url.
      @return a pointer to the layer or 0 if no such layer*/
-    QgsMapLayer* searchLayer( const QString& url, const QString& layerName, const QString& configFile = QString() );
+    QgsMapLayer *searchLayer( const QString &url, const QString &layerName, const QString &configFile = QString() );
 
     int projectsMaxLayers() const { return mProjectMaxLayers; }
 
@@ -82,7 +82,7 @@ class QgsMSLayerCache: public QObject
     void logCacheContents() const;
 
     //! Expose method for use in server interface
-    void removeProjectLayers( const QString& path );
+    void removeProjectLayers( const QString &path );
 
   protected:
     //! Protected singleton constructor
@@ -95,7 +95,7 @@ class QgsMSLayerCache: public QObject
     //! Removes the cash entry with the lowest 'lastUsedTime'
     void removeLeastUsedEntry();
     //! Frees memory and removes temporary files of an entry
-    void freeEntryResources( QgsMSLayerCacheEntry& entry );
+    void freeEntryResources( QgsMSLayerCacheEntry &entry );
 
   private:
 
@@ -119,7 +119,7 @@ class QgsMSLayerCache: public QObject
   private slots:
 
     //! Removes entries from a project (e.g. if a project file has changed)
-    void removeProjectFileLayers( const QString& project );
+    void removeProjectFileLayers( const QString &project );
 };
 
 #endif

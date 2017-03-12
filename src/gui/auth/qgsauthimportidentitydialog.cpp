@@ -20,8 +20,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QPushButton>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthconfig.h"
 #include "qgsauthguiutils.h"
@@ -29,7 +29,7 @@
 #include "qgslogger.h"
 
 
-static QByteArray fileData_( const QString& path, bool astext = false )
+static QByteArray fileData_( const QString &path, bool astext = false )
 {
   QByteArray data;
   QFile file( path );
@@ -51,12 +51,12 @@ static QByteArray fileData_( const QString& path, bool astext = false )
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
     QWidget *parent )
-    : QDialog( parent )
-    , mIdentityType( CertIdentity )
-    , mPkiBundle( QgsPkiBundle() )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mIdentityType( CertIdentity )
+  , mPkiBundle( QgsPkiBundle() )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -202,12 +202,12 @@ void QgsAuthImportIdentityDialog::on_lePkiPathsKeyPass_textChanged( const QStrin
 
 void QgsAuthImportIdentityDialog::on_chkPkiPathsPassShow_stateChanged( int state )
 {
-  lePkiPathsKeyPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  lePkiPathsKeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsAuthImportIdentityDialog::on_btnPkiPathsCert_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -217,7 +217,7 @@ void QgsAuthImportIdentityDialog::on_btnPkiPathsCert_clicked()
 
 void QgsAuthImportIdentityDialog::on_btnPkiPathsKey_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -233,12 +233,12 @@ void QgsAuthImportIdentityDialog::on_lePkiPkcs12KeyPass_textChanged( const QStri
 
 void QgsAuthImportIdentityDialog::on_chkPkiPkcs12PassShow_stateChanged( int state )
 {
-  lePkiPkcs12KeyPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  lePkiPkcs12KeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsAuthImportIdentityDialog::on_btnPkiPkcs12Bundle_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ),  tr( "PKCS#12 (*.p12 *.pfx)" ) );
+  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ),  tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPkcs12Bundle->setText( fn );
@@ -442,7 +442,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
     QList<QSslCertificate> ca_certs;
     if ( cert_chain.size() > 1 )
     {
-      Q_FOREACH ( const QCA::Certificate& ca_cert, cert_chain )
+      Q_FOREACH ( const QCA::Certificate &ca_cert, cert_chain )
       {
         if ( ca_cert != cert_chain.primary() )
         {
@@ -474,7 +474,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
 
 QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 

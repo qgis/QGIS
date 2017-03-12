@@ -67,7 +67,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     virtual int type() const override { return ComposerPicture; }
 
     //! Reimplementation of QCanvasItem::paint
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see picturePath
      * @note added in QGIS 2.5
      */
-    void setPicturePath( const QString& path );
+    void setPicturePath( const QString &path );
 
     /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
@@ -91,19 +91,19 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
      */
-    void setSceneRect( const QRectF& rectangle ) override;
+    void setSceneRect( const QRectF &rectangle ) override;
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Returns the rotation used for drawing the picture within the item's frame
      * @returns picture rotation in degrees
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Returns the fill color used for parametrized SVG files.
      * @see setSvgFillColor()
-     * @see svgBorderColor()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
     QColor svgFillColor() const { return mSvgFillColor; }
@@ -207,44 +207,44 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
      * @see svgFillColor()
-     * @see setSvgBorderColor()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgFillColor( const QColor& color );
+    void setSvgFillColor( const QColor &color );
 
-    /** Returns the border color used for parametrized SVG files.
-     * @see setSvgBorderColor()
+    /** Returns the stroke color used for parametrized SVG files.
+     * @see setSvgStrokeColor()
      * @see svgFillColor()
      * @note added in QGIS 2.14.1
      */
-    QColor svgBorderColor() const { return mSvgBorderColor; }
+    QColor svgStrokeColor() const { return mSvgStrokeColor; }
 
-    /** Sets the border color used for parametrized SVG files.
-     * @param color border color.
+    /** Sets the stroke color used for parametrized SVG files.
+     * @param color stroke color.
      * @note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgBorderlColor()
+     * @see svgStrokelColor()
      * @see setSvgFillColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderColor( const QColor& color );
+    void setSvgStrokeColor( const QColor &color );
 
-    /** Returns the border width (in mm) used for parametrized SVG files.
-     * @see setSvgBorderWidth()
-     * @see svgBorderColor()
+    /** Returns the stroke width (in mm) used for parametrized SVG files.
+     * @see setSvgStrokeWidth()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    double svgBorderWidth() const { return mSvgBorderWidth; }
+    double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
-    /** Sets the border width used for parametrized SVG files.
-     * @param width border width in mm
+    /** Sets the stroke width used for parametrized SVG files.
+     * @param width stroke width in mm
      * @note this setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * @see svgBorderWidth()
-     * @see setSvgBorderColor()
+     * @see svgStrokeWidth()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderWidth( double width );
+    void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
      * @returns picture mode
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @param context expression context for evaluating data defined picture sources
      * @note added in 2.3
      */
-    void refreshPicture( const QgsExpressionContext* context = nullptr );
+    void refreshPicture( const QgsExpressionContext *context = nullptr );
 
     /** Forces a recalculation of the picture's frame size
      * @note added in 2.3
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     //! Image rotation
     double mPictureRotation;
     //! Map that sets the rotation (or 0 if this picture uses map independent rotation)
-    const QgsComposerMap* mRotationMap = nullptr;
+    const QgsComposerMap *mRotationMap = nullptr;
 
     //! Mode used to align to North
     NorthMode mNorthMode;
@@ -325,8 +325,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QgsComposerItem::ItemPositionMode mPictureAnchor;
 
     QColor mSvgFillColor = QColor( 255, 255, 255 );
-    QColor mSvgBorderColor = QColor( 0, 0, 0 );
-    double mSvgBorderWidth = 0.2;
+    QColor mSvgStrokeColor = QColor( 0, 0, 0 );
+    double mSvgStrokeWidth = 0.2;
 
     bool mHasExpressionError;
     bool mLoaded;

@@ -34,7 +34,6 @@ SET(qgis_mapserv_SRCS
   qgsremotedatasourcebuilder.cpp
   qgssentdatasourcebuilder.cpp
   qgsserverlogger.cpp
-  qgswcsprojectparser.cpp
   qgswfsprojectparser.cpp
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
@@ -186,6 +185,13 @@ ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${qgis_mapserv_TESTRCC_SRCS})
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi qgis_server)
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_mapserv.fcgi PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 ########################################################
 # Install

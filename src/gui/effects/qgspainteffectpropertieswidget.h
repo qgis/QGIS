@@ -39,7 +39,7 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
      * @param effect QgsPaintEffect to modify in the widget
      * @param parent parent widget
      */
-    QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget* parent = nullptr );
+    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent = nullptr );
 
   public slots:
 
@@ -59,14 +59,14 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
 
     /** Emitted when paint effect type changes
      */
-    void changeEffect( QgsPaintEffect* effect );
+    void changeEffect( QgsPaintEffect *effect );
 
   private:
 
-    QgsPaintEffect* mEffect = nullptr;
+    QgsPaintEffect *mEffect = nullptr;
 
     void populateEffectTypes();
-    void updateEffectWidget( QgsPaintEffect* effect );
+    void updateEffectWidget( QgsPaintEffect *effect );
 
 };
 

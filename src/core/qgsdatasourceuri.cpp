@@ -26,21 +26,21 @@
 #include <QUrl>
 
 QgsDataSourceUri::QgsDataSourceUri()
-    : mSSLmode( SslPrefer )
-    , mKeyColumn( QLatin1String( "" ) )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : mSSLmode( SslPrefer )
+  , mKeyColumn( QLatin1String( "" ) )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   // do nothing
 }
 
 QgsDataSourceUri::QgsDataSourceUri( QString uri )
-    : mSSLmode( SslPrefer )
-    , mKeyColumn( QLatin1String( "" ) )
-    , mUseEstimatedMetadata( false )
-    , mSelectAtIdDisabled( false )
-    , mWkbType( QgsWkbTypes::Unknown )
+  : mSSLmode( SslPrefer )
+  , mKeyColumn( QLatin1String( "" ) )
+  , mUseEstimatedMetadata( false )
+  , mSelectAtIdDisabled( false )
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -232,7 +232,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
   }
 }
 
-QString QgsDataSourceUri::removePassword( const QString& aUri )
+QString QgsDataSourceUri::removePassword( const QString &aUri )
 {
   QRegExp regexp;
   regexp.setMinimal( true );
@@ -252,8 +252,8 @@ QString QgsDataSourceUri::removePassword( const QString& aUri )
     regexp.setPattern( QStringLiteral( " pass=.* " ) );
     safeName.replace( regexp, QStringLiteral( " " ) );
   }
-  else if (( aUri.contains( QLatin1String( "OCI:" ) ) )
-           || ( aUri.contains( QLatin1String( "ODBC:" ) ) ) )
+  else if ( ( aUri.contains( QLatin1String( "OCI:" ) ) )
+            || ( aUri.contains( QLatin1String( "ODBC:" ) ) ) )
   {
     regexp.setPattern( QStringLiteral( "/.*@" ) );
     safeName.replace( regexp, QStringLiteral( "/@" ) );
@@ -276,7 +276,7 @@ QString QgsDataSourceUri::username() const
   return mUsername;
 }
 
-void QgsDataSourceUri::setUsername( const QString& username )
+void QgsDataSourceUri::setUsername( const QString &username )
 {
   mUsername = username;
 }
@@ -301,7 +301,7 @@ QString QgsDataSourceUri::password() const
   return mPassword;
 }
 
-void QgsDataSourceUri::setPassword( const QString& password )
+void QgsDataSourceUri::setPassword( const QString &password )
 {
   mPassword = password;
 }
@@ -347,21 +347,21 @@ QString QgsDataSourceUri::keyColumn() const
 }
 
 
-void QgsDataSourceUri::setDriver( const QString& driver )
+void QgsDataSourceUri::setDriver( const QString &driver )
 {
   mDriver = driver;
 }
 
 
-void QgsDataSourceUri::setKeyColumn( const QString& column )
+void QgsDataSourceUri::setKeyColumn( const QString &column )
 {
   mKeyColumn = column;
 }
 
 
-void QgsDataSourceUri::setUseEstimatedMetadata( bool theFlag )
+void QgsDataSourceUri::setUseEstimatedMetadata( bool flag )
 {
-  mUseEstimatedMetadata = theFlag;
+  mUseEstimatedMetadata = flag;
 }
 
 bool QgsDataSourceUri::useEstimatedMetadata() const
@@ -369,9 +369,9 @@ bool QgsDataSourceUri::useEstimatedMetadata() const
   return mUseEstimatedMetadata;
 }
 
-void QgsDataSourceUri::disableSelectAtId( bool theFlag )
+void QgsDataSourceUri::disableSelectAtId( bool flag )
 {
-  mSelectAtIdDisabled = theFlag;
+  mSelectAtIdDisabled = flag;
 }
 
 bool QgsDataSourceUri::selectAtIdDisabled() const
@@ -379,7 +379,7 @@ bool QgsDataSourceUri::selectAtIdDisabled() const
   return mSelectAtIdDisabled;
 }
 
-void QgsDataSourceUri::setSql( const QString& sql )
+void QgsDataSourceUri::setSql( const QString &sql )
 {
   mSql = sql;
 }
@@ -389,19 +389,19 @@ void QgsDataSourceUri::clearSchema()
   mSchema = QLatin1String( "" );
 }
 
-void QgsDataSourceUri::setSchema( const QString& schema )
+void QgsDataSourceUri::setSchema( const QString &schema )
 {
   mSchema = schema;
 }
 
-QString QgsDataSourceUri::escape( const QString &theVal, QChar delim = '\'' ) const
+QString QgsDataSourceUri::escape( const QString &val, QChar delim = '\'' ) const
 {
-  QString val = theVal;
+  QString escaped = val;
 
-  val.replace( '\\', QLatin1String( "\\\\" ) );
-  val.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
+  escaped.replace( '\\', QLatin1String( "\\\\" ) );
+  escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
-  return val;
+  return escaped;
 }
 
 void QgsDataSourceUri::skipBlanks( const QString &uri, int &i )
@@ -552,32 +552,32 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
 
 QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 {
-  QString theUri = connectionInfo( expandAuthConfig );
+  QString uri = connectionInfo( expandAuthConfig );
 
   if ( !mKeyColumn.isEmpty() )
   {
-    theUri += QStringLiteral( " key='%1'" ).arg( escape( mKeyColumn ) );
+    uri += QStringLiteral( " key='%1'" ).arg( escape( mKeyColumn ) );
   }
 
   if ( mUseEstimatedMetadata )
   {
-    theUri += QStringLiteral( " estimatedmetadata=true" );
+    uri += QStringLiteral( " estimatedmetadata=true" );
   }
 
   if ( !mSrid.isEmpty() )
   {
-    theUri += QStringLiteral( " srid=%1" ).arg( mSrid );
+    uri += QStringLiteral( " srid=%1" ).arg( mSrid );
   }
 
   if ( mWkbType != QgsWkbTypes::Unknown && mWkbType != QgsWkbTypes::NoGeometry )
   {
-    theUri += QLatin1String( " type=" );
-    theUri += QgsWkbTypes::displayString( mWkbType );
+    uri += QLatin1String( " type=" );
+    uri += QgsWkbTypes::displayString( mWkbType );
   }
 
   if ( mSelectAtIdDisabled )
   {
-    theUri += QStringLiteral( " selectatid=false" );
+    uri += QStringLiteral( " selectatid=false" );
   }
 
   for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
@@ -588,27 +588,27 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
       continue;
     }
 
-    theUri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
+    uri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
   }
 
   QString columnName( mGeometryColumn );
   columnName.replace( '\\', QLatin1String( "\\\\" ) );
   columnName.replace( ')', QLatin1String( "\\)" ) );
 
-  theUri += QStringLiteral( " table=%1%2 sql=%3" )
-            .arg( quotedTablename(),
-                  mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ),
-                  mSql );
+  uri += QStringLiteral( " table=%1%2 sql=%3" )
+         .arg( quotedTablename(),
+               mGeometryColumn.isNull() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ),
+               mSql );
 
-  return theUri;
+  return uri;
 }
 
 QByteArray QgsDataSourceUri::encodedUri() const
 {
   QUrl url;
-  Q_FOREACH ( const QString& key, mParams.uniqueKeys() )
+  Q_FOREACH ( const QString &key, mParams.uniqueKeys() )
   {
-    Q_FOREACH ( const QString& value, mParams.values( key ) )
+    Q_FOREACH ( const QString &value, mParams.values( key ) )
     {
       url.addQueryItem( key, value );
     }
@@ -616,7 +616,7 @@ QByteArray QgsDataSourceUri::encodedUri() const
   return url.encodedQuery();
 }
 
-void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
+void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
 {
   mParams.clear();
   QUrl url;
@@ -628,7 +628,7 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray & uri )
   }
 }
 
-void QgsDataSourceUri::setEncodedUri( const QString & uri )
+void QgsDataSourceUri::setEncodedUri( const QString &uri )
 {
   setEncodedUri( uri.toLatin1() );
 }
@@ -714,7 +714,7 @@ QString QgsDataSourceUri::srid() const
   return mSrid;
 }
 
-void QgsDataSourceUri::setSrid( const QString& srid )
+void QgsDataSourceUri::setSrid( const QString &srid )
 {
   mSrid = srid;
 }
@@ -727,7 +727,7 @@ void QgsDataSourceUri::setParam( const QString &key, const QString &value )
 
 void QgsDataSourceUri::setParam( const QString &key, const QStringList &value )
 {
-  Q_FOREACH ( const QString& val, value )
+  Q_FOREACH ( const QString &val, value )
   {
     mParams.insertMulti( key, val );
   }

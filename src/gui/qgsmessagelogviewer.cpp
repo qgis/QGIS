@@ -31,7 +31,7 @@
 
 
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   Q_UNUSED( statusBar )
   setupUi( this );
@@ -40,6 +40,15 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
            this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 
   connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
+}
+
+void QgsMessageLogViewer::closeEvent( QCloseEvent *e )
+{
+  e->ignore();
+}
+
+void QgsMessageLogViewer::reject()
+{
 }
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
@@ -63,6 +72,7 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
     w->setReadOnly( true );
     tabWidget->addTab( w, tag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
+    tabWidget->setTabsClosable( true );
   }
 
   QString prefix = QStringLiteral( "%1\t%2\t" )
@@ -74,6 +84,6 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  if ( tabWidget->count() > 1 )
-    tabWidget->removeTab( index );
+  tabWidget->removeTab( index );
+  tabWidget->setTabsClosable( tabWidget->count() > 1 );
 }

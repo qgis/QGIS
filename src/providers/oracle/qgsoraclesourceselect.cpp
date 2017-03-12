@@ -29,11 +29,11 @@ email                : jef at norbit dot de
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypethread.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QHeaderView>
 #include <QStringList>
@@ -109,7 +109,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
 {
   QString value( index.data( Qt::DisplayRole ).toString() );
 
-  QComboBox *cb = qobject_cast<QComboBox* >( editor );
+  QComboBox *cb = qobject_cast<QComboBox * >( editor );
   if ( cb )
   {
     if ( index.column() == QgsOracleTableModel::DbtmType )
@@ -119,7 +119,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
       cb->setCurrentIndex( cb->findText( value ) );
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit*>( editor );
+  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
   if ( le )
   {
     bool ok;
@@ -167,11 +167,11 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
 }
 
 QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( 0 )
-    , mIsConnected( false )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( 0 )
+  , mIsConnected( false )
 {
   setupUi( this );
 
@@ -224,9 +224,9 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addOracleDC", false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
@@ -322,7 +322,7 @@ void QgsOracleSourceSelect::on_btnEdit_clicked()
 //! End Autoconnected SLOTS *
 
 // Remember which database is selected
-void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
 {
   // Remember which database was selected.
   QgsOracleConn::setSelectedConnection( text );
@@ -357,7 +357,7 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
 
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
+  QgsSettings settings;
   if ( settings.value( "/qgis/addOracleDC", false ).toBool() )
   {
     addTables();
@@ -376,7 +376,7 @@ void QgsOracleSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
 }
 
-void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -388,7 +388,7 @@ void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & tex
   }
 }
 
-void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -424,7 +424,7 @@ void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const 
   }
 }
 
-void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -443,7 +443,7 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
     finishList();
   }
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "/Windows/OracleSourceSelect/geometry", saveGeometry() );
   settings.setValue( "/Windows/OracleSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
 
@@ -649,7 +649,7 @@ void QgsOracleSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsOracleSourceSelect::setSearchExpression( const QString& regexp )
+void QgsOracleSourceSelect::setSearchExpression( const QString &regexp )
 {
   Q_UNUSED( regexp );
 }
@@ -665,7 +665,7 @@ void QgsOracleSourceSelect::loadTableFromCache()
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;
 
-  Q_FOREACH ( const QgsOracleLayerProperty& layerProperty, layers )
+  Q_FOREACH ( const QgsOracleLayerProperty &layerProperty, layers )
     mTableModel.addTableEntry( layerProperty );
 
   QApplication::setOverrideCursor( Qt::BusyCursor );

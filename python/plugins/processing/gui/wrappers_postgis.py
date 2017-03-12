@@ -18,7 +18,7 @@
 """
 
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QComboBox
 
 from processing.core.parameters import (
@@ -51,7 +51,7 @@ class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         return self.wrapWithExpressionButton(self._combo)
 
     def items(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         items = [(group, group) for group in settings.childGroups()]
 

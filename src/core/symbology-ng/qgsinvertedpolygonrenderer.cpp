@@ -29,9 +29,9 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer* subRenderer )
-    : QgsFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ) )
-    , mPreprocessingEnabled( false )
+QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer *subRenderer )
+  : QgsFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ) )
+  , mPreprocessingEnabled( false )
 {
   if ( subRenderer )
   {
@@ -43,7 +43,7 @@ QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer* subR
   }
 }
 
-void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer* subRenderer )
+void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer )
 {
   if ( subRenderer )
   {
@@ -55,12 +55,12 @@ void QgsInvertedPolygonRenderer::setEmbeddedRenderer( QgsFeatureRenderer* subRen
   }
 }
 
-const QgsFeatureRenderer* QgsInvertedPolygonRenderer::embeddedRenderer() const
+const QgsFeatureRenderer *QgsInvertedPolygonRenderer::embeddedRenderer() const
 {
   return mSubRenderer.get();
 }
 
-void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString& key, QgsSymbol* symbol )
+void QgsInvertedPolygonRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
   if ( !mSubRenderer )
     return;
@@ -76,7 +76,7 @@ bool QgsInvertedPolygonRenderer::legendSymbolItemsCheckable() const
   return mSubRenderer->legendSymbolItemsCheckable();
 }
 
-bool QgsInvertedPolygonRenderer::legendSymbolItemChecked( const QString& key )
+bool QgsInvertedPolygonRenderer::legendSymbolItemChecked( const QString &key )
 {
   if ( !mSubRenderer )
     return false;
@@ -84,7 +84,7 @@ bool QgsInvertedPolygonRenderer::legendSymbolItemChecked( const QString& key )
   return mSubRenderer->legendSymbolItemChecked( key );
 }
 
-void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString& key, bool state )
+void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString &key, bool state )
 {
   if ( !mSubRenderer )
     return;
@@ -92,7 +92,7 @@ void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString& key, bool
   return mSubRenderer->checkLegendSymbolItem( key, state );
 }
 
-void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   if ( !mSubRenderer )
   {
@@ -110,7 +110,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   // We compute coordinates of the extent which will serve as exterior ring
   // for the final polygon
   // It must be computed in the destination CRS if reprojection is enabled.
-  const QgsMapToPixel& mtp( context.mapToPixel() );
+  const QgsMapToPixel &mtp( context.mapToPixel() );
 
   if ( !context.painter() )
   {
@@ -120,7 +120,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
   // convert viewport to dest CRS
   QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
-  e.adjust( -e.width()*5, -e.height()*5, e.width()*5, e.height()*5 );
+  e.adjust( -e.width() * 5, -e.height() * 5, e.width() * 5, e.height() * 5 );
   QgsPolyline exteriorRing;
   exteriorRing << mtp.toMapCoordinates( e.topLeft() );
   exteriorRing << mtp.toMapCoordinates( e.topRight() );
@@ -148,11 +148,9 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const Q
 
   mExtentPolygon.clear();
   mExtentPolygon.append( exteriorRing );
-
-  return;
 }
 
-bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   if ( !context.painter() )
   {
@@ -183,18 +181,18 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   if ( capabilities() & MoreSymbolsPerFeature )
   {
     QgsSymbolList syms( mSubRenderer->symbolsForFeature( feature, context ) );
-    Q_FOREACH ( QgsSymbol* sym, syms )
+    Q_FOREACH ( QgsSymbol *sym, syms )
     {
       // append the memory address
-      catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
+      catId.append( reinterpret_cast<const char *>( &sym ), sizeof( sym ) );
     }
   }
   else
   {
-    QgsSymbol* sym = mSubRenderer->symbolForFeature( feature, context );
+    QgsSymbol *sym = mSubRenderer->symbolForFeature( feature, context );
     if ( sym )
     {
-      catId.append( reinterpret_cast<const char*>( &sym ), sizeof( sym ) );
+      catId.append( reinterpret_cast<const char *>( &sym ), sizeof( sym ) );
     }
   }
 
@@ -213,7 +211,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   }
 
   // update the geometry
-  CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
+  CombinedFeature &cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
   if ( !feature.hasGeometry() )
   {
     return false;
@@ -244,7 +242,7 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
   return true;
 }
 
-void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
+void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 {
   if ( !mSubRenderer )
   {
@@ -258,7 +256,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
   QgsMultiPolygon finalMulti; //avoid expensive allocation for list for every feature
   QgsPolygon newPoly;
 
-  Q_FOREACH ( const CombinedFeature& cit, mFeaturesCategories )
+  Q_FOREACH ( const CombinedFeature &cit, mFeaturesCategories )
   {
     finalMulti.resize( 0 ); //preserve capacity - don't use clear!
     QgsFeature feat = cit.feature; // just a copy, so that we do not accumulate geometries again
@@ -285,23 +283,23 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       // operations do not need geometries to be valid
 
       finalMulti.append( mExtentPolygon );
-      Q_FOREACH ( const QgsGeometry& geom, cit.geometries )
+      Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
       {
         QgsMultiPolygon multi;
         QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.geometry()->wkbType() );
 
-        if (( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
+        if ( ( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
         {
           multi.append( geom.asPolygon() );
         }
-        else if (( type == QgsWkbTypes::MultiPolygon ) || ( type == QgsWkbTypes::MultiSurface ) )
+        else if ( ( type == QgsWkbTypes::MultiPolygon ) || ( type == QgsWkbTypes::MultiSurface ) )
         {
           multi = geom.asMultiPolygon();
         }
 
         for ( int i = 0; i < multi.size(); i++ )
         {
-          const QgsPolyline& exterior = multi[i][0];
+          const QgsPolyline &exterior = multi[i][0];
           // add the exterior ring as interior ring to the first polygon
           // make sure it satisfies at least very basic requirements of GEOS
           // (otherwise the creation of GEOS geometry will fail)
@@ -357,37 +355,37 @@ QString QgsInvertedPolygonRenderer::dump() const
   return "INVERTED [" + mSubRenderer->dump() + ']';
 }
 
-QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::clone() const
+QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::clone() const
 {
-  QgsInvertedPolygonRenderer* newRenderer = nullptr;
+  QgsInvertedPolygonRenderer *newRenderer = nullptr;
   if ( !mSubRenderer )
   {
     newRenderer = new QgsInvertedPolygonRenderer( nullptr );
   }
   else
   {
-    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer.get()->clone() );
+    newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
   copyRendererData( newRenderer );
   return newRenderer;
 }
 
-QgsFeatureRenderer* QgsInvertedPolygonRenderer::create( QDomElement& element )
+QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element )
 {
-  QgsInvertedPolygonRenderer* r = new QgsInvertedPolygonRenderer();
+  QgsInvertedPolygonRenderer *r = new QgsInvertedPolygonRenderer();
   //look for an embedded renderer <renderer-v2>
   QDomElement embeddedRendererElem = element.firstChildElement( QStringLiteral( "renderer-v2" ) );
   if ( !embeddedRendererElem.isNull() )
   {
-    QgsFeatureRenderer* renderer = QgsFeatureRenderer::load( embeddedRendererElem );
+    QgsFeatureRenderer *renderer = QgsFeatureRenderer::load( embeddedRendererElem );
     r->setEmbeddedRenderer( renderer );
   }
   r->setPreprocessingEnabled( element.attribute( QStringLiteral( "preprocessing" ), QStringLiteral( "0" ) ).toInt() == 1 );
   return r;
 }
 
-QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
+QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invertedPolygonRenderer" ) );
@@ -414,7 +412,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsSymbol* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol *QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
 {
   if ( !mSubRenderer )
   {
@@ -423,14 +421,14 @@ QgsSymbol* QgsInvertedPolygonRenderer::symbolForFeature( QgsFeature& feature, Qg
   return mSubRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbol* QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbol *QgsInvertedPolygonRenderer::originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   if ( !mSubRenderer )
     return nullptr;
   return mSubRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature &feature, QgsRenderContext &context )
 {
   if ( !mSubRenderer )
   {
@@ -439,14 +437,14 @@ QgsSymbolList QgsInvertedPolygonRenderer::symbolsForFeature( QgsFeature& feature
   return mSubRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   if ( !mSubRenderer )
     return QgsSymbolList();
   return mSubRenderer->originalSymbolsForFeature( feat, context );
 }
 
-QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList QgsInvertedPolygonRenderer::symbols( QgsRenderContext &context )
 {
   if ( !mSubRenderer )
   {
@@ -464,7 +462,7 @@ QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
   return mSubRenderer->capabilities();
 }
 
-QSet<QString> QgsInvertedPolygonRenderer::usedAttributes( const QgsRenderContext& context ) const
+QSet<QString> QgsInvertedPolygonRenderer::usedAttributes( const QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )
   {
@@ -482,7 +480,7 @@ QgsLegendSymbologyList QgsInvertedPolygonRenderer::legendSymbologyItems( QSize i
   return mSubRenderer->legendSymbologyItems( iconSize );
 }
 
-QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString& rule )
+QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleDenominator, const QString &rule )
 {
   if ( !mSubRenderer )
   {
@@ -491,7 +489,7 @@ QgsLegendSymbolList QgsInvertedPolygonRenderer::legendSymbolItems( double scaleD
   return mSubRenderer->legendSymbolItems( scaleDenominator, rule );
 }
 
-bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
+bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
 {
   if ( !mSubRenderer )
   {
@@ -500,11 +498,11 @@ bool QgsInvertedPolygonRenderer::willRenderFeature( QgsFeature& feat, QgsRenderC
   return mSubRenderer->willRenderFeature( feat, context );
 }
 
-QgsInvertedPolygonRenderer* QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
+QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == QLatin1String( "invertedPolygonRenderer" ) )
   {
-    return dynamic_cast<QgsInvertedPolygonRenderer*>( renderer->clone() );
+    return dynamic_cast<QgsInvertedPolygonRenderer *>( renderer->clone() );
   }
 
   if ( renderer->type() == QLatin1String( "singleSymbol" ) ||

@@ -20,18 +20,19 @@
 #include "qgsrastercalcnode.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
+#include "qgssettings.h"
+
 #include "cpl_string.h"
 #include "gdal.h"
 
 #include <QFileDialog>
-#include <QSettings>
 
-QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/RasterCalc/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/RasterCalc/geometry" ) ).toByteArray() );
 
   //add supported output formats
   insertAvailableOutputFormats();
@@ -46,8 +47,8 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ):
 
 QgsRasterCalcDialog::~QgsRasterCalcDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/RasterCalc/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/RasterCalc/geometry" ), saveGeometry() );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -121,13 +122,13 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
-  const QMap<QString, QgsMapLayer*>& layers = QgsProject::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::const_iterator layerIt = layers.constBegin();
+  const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
 
   bool firstLayer = true;
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( layerIt.value() );
+    QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layerIt.value() );
     if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == QLatin1String( "gdal" ) )
     {
       if ( firstLayer ) //set bounding box / resolution of output to the values of the first possible input layer
@@ -165,7 +166,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
     GDALDriverH driver = GDALGetDriver( i );
     if ( driver )
     {
-      char** driverMetadata = GDALGetMetadata( driver, nullptr );
+      char **driverMetadata = GDALGetMetadata( driver, nullptr );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
       {
         QString driverShortName = GDALGetDriverShortName( driver );
@@ -189,7 +190,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
   }
 
   //and set last used driver in combo box
-  QSettings s;
+  QgsSettings s;
   QString lastUsedDriver = s.value( QStringLiteral( "/RasterCalculator/lastOutputFormat" ), "GeoTIFF" ).toString();
   int lastDriverIndex = mOutputFormatComboBox->findText( lastUsedDriver );
   if ( lastDriverIndex != -1 )
@@ -218,14 +219,14 @@ int QgsRasterCalcDialog::numberOfRows() const
 void QgsRasterCalcDialog::on_mButtonBox_accepted()
 {
   //save last output format
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputFormat" ), QVariant( mOutputFormatComboBox->currentText() ) );
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QVariant( QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() ) );
 }
 
 void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Enter result file" ), s.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
   if ( !saveFileName.isNull() )
   {
@@ -235,10 +236,10 @@ void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
 
 void QgsRasterCalcDialog::on_mCurrentLayerExtentButton_clicked()
 {
-  QListWidgetItem* currentLayerItem = mRasterBandsListWidget->currentItem();
+  QListWidgetItem *currentLayerItem = mRasterBandsListWidget->currentItem();
   if ( currentLayerItem )
   {
-    QgsRasterLayer* rlayer = nullptr;
+    QgsRasterLayer *rlayer = nullptr;
     QList<QgsRasterCalculatorEntry>::const_iterator rasterIt = mAvailableRasterBands.constBegin();
     for ( ; rasterIt != mAvailableRasterBands.constEnd(); ++rasterIt )
     {
@@ -303,7 +304,7 @@ void QgsRasterCalcDialog::setAcceptButtonState()
 bool QgsRasterCalcDialog::expressionValid() const
 {
   QString errorString;
-  QgsRasterCalcNode* testNode = QgsRasterCalcNode::parseRasterCalcString( mExpressionTextEdit->toPlainText(), errorString );
+  QgsRasterCalcNode *testNode = QgsRasterCalcNode::parseRasterCalcString( mExpressionTextEdit->toPlainText(), errorString );
   if ( testNode )
   {
     delete testNode;
@@ -322,7 +323,7 @@ bool QgsRasterCalcDialog::filePathValid() const
   return QFileInfo( outputPath ).isWritable();
 }
 
-void QgsRasterCalcDialog::on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem* item )
+void QgsRasterCalcDialog::on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
 }
@@ -447,7 +448,7 @@ void QgsRasterCalcDialog::on_mOrButton_clicked()
   mExpressionTextEdit->insertPlainText( QStringLiteral( " OR " ) );
 }
 
-QString QgsRasterCalcDialog::quoteBandEntry( const QString& layerName )
+QString QgsRasterCalcDialog::quoteBandEntry( const QString &layerName )
 {
   // '"' -> '\\"'
   QString quotedName = layerName;

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * parameters have changed since last initialization.
      * @return flag whether the parameters are the same as last time
      */
-    bool init( const QgsRectangle& extent, double scale );
+    bool init( const QgsRectangle &extent, double scale );
 
     /**
      * Set the cached \a image for a particular \a cacheKey. The \a cacheKey usually
@@ -66,14 +66,14 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * repaint then the cache image will be cleared.
      * @see cacheImage()
      */
-    void setCacheImage( const QString& cacheKey, const QImage& image, const QList< QgsMapLayer* >& dependentLayers = QList< QgsMapLayer* >() );
+    void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
 
     /**
      * Returns true if the cache contains an image with the specified \a cacheKey.
      * @note added in QGIS 3.0
      * @see cacheImage()
      */
-    bool hasCacheImage( const QString& cacheKey ) const;
+    bool hasCacheImage( const QString &cacheKey ) const;
 
     /**
      * Returns the cached image for the specified \a cacheKey. The \a cacheKey usually
@@ -82,19 +82,19 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * @see setCacheImage()
      * @see hasCacheImage()
      */
-    QImage cacheImage( const QString& cacheKey ) const;
+    QImage cacheImage( const QString &cacheKey ) const;
 
     /**
      * Returns a list of map layers on which an image in the cache depends.
      * @note added in QGIS 3.0
      */
-    QList< QgsMapLayer* > dependentLayers( const QString& cacheKey ) const;
+    QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
 
     /**
      * Removes an image from the cache with matching \a cacheKey.
      * @see clear()
      */
-    void clearCacheImage( const QString& cacheKey );
+    void clearCacheImage( const QString &cacheKey );
 
   private slots:
     //! Remove layer (that emitted the signal) from the cache

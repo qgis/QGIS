@@ -85,4 +85,8 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayer
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
+
+  private:
+
+    QgsVectorFieldSymbolLayer( const QgsVectorFieldSymbolLayer& other );
 };

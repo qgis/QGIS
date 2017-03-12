@@ -53,7 +53,7 @@ QgsCoordinateSequence QgsCurve::coordinateSequence() const
   return mCoordinateSequence;
 }
 
-bool QgsCurve::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
+bool QgsCurve::nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const
 {
   if ( id.vertex < 0 )
   {
@@ -78,7 +78,7 @@ bool QgsCurve::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
-QgsAbstractGeometry* QgsCurve::boundary() const
+QgsAbstractGeometry *QgsCurve::boundary() const
 {
   if ( isEmpty() )
     return nullptr;
@@ -86,13 +86,13 @@ QgsAbstractGeometry* QgsCurve::boundary() const
   if ( isClosed() )
     return nullptr;
 
-  QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
+  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
   multiPoint->addGeometry( new QgsPointV2( startPoint() ) );
   multiPoint->addGeometry( new QgsPointV2( endPoint() ) );
   return multiPoint;
 }
 
-QgsCurve* QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   return curveToLine( tolerance, toleranceType );
 }

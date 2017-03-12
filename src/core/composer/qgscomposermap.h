@@ -90,17 +90,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      *  @param dpi scene dpi
      *  @param forceWidthScale force wysiwyg line widths / marker sizes
      */
-    void draw( QPainter *painter, const QgsRectangle& extent, QSizeF size, double dpi, double* forceWidthScale = nullptr );
+    void draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale = nullptr );
 
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     //! \brief Create cache image
     void cache();
 
     /** Return map settings that would be used for drawing of the map
      *  @note added in 2.6 */
-    QgsMapSettings mapSettings( const QgsRectangle& extent, QSizeF size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
 
     //! \brief Get identification number
     int id() const {return mId;}
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
 
     //! Sets new scene rectangle bounds and recalculates hight and extent
-    void setSceneRect( const QRectF& rectangle ) override;
+    void setSceneRect( const QRectF &rectangle ) override;
 
     //! \brief Scale
     double scale() const;
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param extent new extent for the map
      * @see zoomToExtent
      */
-    void setNewExtent( const QgsRectangle& extent );
+    void setNewExtent( const QgsRectangle &extent );
 
     /** Zooms the map so that the specified extent is fully visible within the map item.
      * This method will not change the width or height of the map, and may result in
@@ -150,12 +150,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see setNewExtent
      * @note added in QGIS 2.5
      */
-    void zoomToExtent( const QgsRectangle& extent );
+    void zoomToExtent( const QgsRectangle &extent );
 
     /** Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
-    void setNewAtlasFeatureExtent( const QgsRectangle& extent );
+    void setNewAtlasFeatureExtent( const QgsRectangle &extent );
 
     /** Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
@@ -163,10 +163,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @returns pointer to current map extent
      * @see visibleExtentPolygon
      */
-    const QgsRectangle* currentMapExtent() const;
+    const QgsRectangle *currentMapExtent() const;
 
     //! @note not available in python bindings
-    QgsRectangle* currentMapExtent();
+    QgsRectangle *currentMapExtent();
 
     /**
      * Returns coordinate reference system used for rendering the map.
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see presetCrs()
      * @note added in QGIS 3.0
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     PreviewMode previewMode() const {return mPreviewMode;}
     void setPreviewMode( PreviewMode m );
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see setLayers()
      * @see keepLayerSet()
      */
-    QList<QgsMapLayer*> layers() const;
+    QList<QgsMapLayer *> layers() const;
 
     /**
      * Setter for stored layer set.  This will usually be synchronized with the main app canvas
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see layers()
      * @see keepLayerSet()
      */
-    void setLayers( const QList<QgsMapLayer*> layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 
     //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Getter for stored overrides of styles for layers. @note added in 2.8
     QMap<QString, QString> layerStyleOverrides() const { return mLayerStyleOverrides; }
     //! Setter for stored overrides of styles for layers. @note added in 2.8
-    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+    void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
     //! Stores the current layer styles into style overrides. @note added in 2.8
     void storeCurrentLayerStyles();
 
@@ -269,7 +269,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets preset name for map rendering. See followVisibilityPresetName() for more details.
      * @note added in 2.16 */
-    void setFollowVisibilityPresetName( const QString& name ) { mFollowVisibilityPresetName = name; }
+    void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
 
     // Set cache outdated
     void setCacheUpdated( bool u = false );
@@ -289,13 +289,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Returns the map item's grid stack, which is used to control how grids
      * are drawn over the map's contents.
@@ -303,14 +303,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see grid()
      * @note introduced in QGIS 2.5
      */
-    QgsComposerMapGridStack* grids() { return mGridStack; }
+    QgsComposerMapGridStack *grids() { return mGridStack; }
 
     /** Returns the map item's first grid. This is a convenience function.
      * @returns pointer to first grid for map item
      * @see grids()
      * @note introduced in QGIS 2.5
      */
-    QgsComposerMapGrid* grid();
+    QgsComposerMapGrid *grid();
 
     /** Returns the map item's overview stack, which is used to control how overviews
      * are drawn over the map's contents.
@@ -318,20 +318,20 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @see overview()
      * @note introduced in QGIS 2.5
      */
-    QgsComposerMapOverviewStack* overviews() { return mOverviewStack; }
+    QgsComposerMapOverviewStack *overviews() { return mOverviewStack; }
 
     /** Returns the map item's first overview. This is a convenience function.
      * @returns pointer to first overview for map item
      * @see overviews()
      * @note introduced in QGIS 2.5
      */
-    QgsComposerMapOverview* overview();
+    QgsComposerMapOverview *overview();
 
     //! In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
 
-    /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameOutlineWidth( const double outlineWidth ) override;
+    /* reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
+    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item
@@ -453,7 +453,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Calculates the extent to request and the yShift of the top-left point in case of rotation.
      * @note added in 2.6 */
-    void requestedExtent( QgsRectangle& extent ) const;
+    void requestedExtent( QgsRectangle &extent ) const;
 
     virtual QgsExpressionContext createExpressionContext() const override;
 
@@ -485,19 +485,19 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   private slots:
-    void layersAboutToBeRemoved( QList<QgsMapLayer*> layers );
+    void layersAboutToBeRemoved( QList<QgsMapLayer *> layers );
 
   private:
 
     //! Unique identifier
     int mId = 0;
 
-    QgsComposerMapGridStack* mGridStack = nullptr;
+    QgsComposerMapGridStack *mGridStack = nullptr;
 
-    QgsComposerMapOverviewStack* mOverviewStack = nullptr;
+    QgsComposerMapOverviewStack *mOverviewStack = nullptr;
 
     // Map region in map units really used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
@@ -568,10 +568,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void syncLayerSet();
 
     //! Returns first map grid or creates an empty one if none
-    const QgsComposerMapGrid* constFirstMapGrid() const;
+    const QgsComposerMapGrid *constFirstMapGrid() const;
 
     //! Returns first map overview or creates an empty one if none
-    const QgsComposerMapOverview* constFirstMapOverview() const;
+    const QgsComposerMapOverview *constFirstMapOverview() const;
 
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
@@ -580,7 +580,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
-    void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle& extent ) const;
+    void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle &extent ) const;
 
     //! True if map is being controlled by an atlas
     bool mAtlasDriven = false;
@@ -595,25 +595,25 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void updateToolTip();
 
     //! Returns a list of the layers to render for this map item
-    QList<QgsMapLayer*> layersToRender( const QgsExpressionContext* context = nullptr ) const;
+    QList<QgsMapLayer *> layersToRender( const QgsExpressionContext *context = nullptr ) const;
 
     //! Returns current layer style overrides for this map item
-    QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext& context ) const;
+    QMap<QString, QString> layerStyleOverridesToRender( const QgsExpressionContext &context ) const;
 
     //! Returns extent that considers mOffsetX / mOffsetY (during content move)
     QgsRectangle transformedExtent() const;
 
     //! MapPolygon variant using a given extent
-    void mapPolygon( const QgsRectangle& extent, QPolygonF& poly ) const;
+    void mapPolygon( const QgsRectangle &extent, QPolygonF &poly ) const;
 
     /** Scales a composer map shift (in MM) and rotates it by mRotation
         @param xShift in: shift in x direction (in item units), out: xShift in map units
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
-    void transformShift( double& xShift, double& yShift ) const;
+    void transformShift( double &xShift, double &yShift ) const;
 
-    void drawAnnotations( QPainter* painter );
-    void drawAnnotation( const QgsAnnotation* item, QgsRenderContext& context );
-    QPointF composerMapPosForItem( const QgsAnnotation* item ) const;
+    void drawAnnotations( QPainter *painter );
+    void drawAnnotation( const QgsAnnotation *item, QgsRenderContext &context );
+    QPointF composerMapPosForItem( const QgsAnnotation *item ) const;
 
     enum PartType
     {
@@ -632,7 +632,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param context expression context for evaluating data defined map parameters
      * @note this method was added in version 2.5
      */
-    void refreshMapExtents( const QgsExpressionContext* context = nullptr );
+    void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
     friend class QgsComposerMapOverview; //to access mXOffset, mYOffset
     friend class TestQgsComposerMap;

@@ -27,8 +27,8 @@ namespace QgsWfs
   /**
    * Output WFS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-                             const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                             const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
 
@@ -37,14 +37,14 @@ namespace QgsWfs
   }
 
 
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface, const QgsProject* project, const QString& version,
-      const QgsServerRequest& request )
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+      const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
     QDomDocument doc;
 
-    QgsWfsProjectParser* configParser = getConfigParser( serverIface );
+    QgsWfsProjectParser *configParser = getConfigParser( serverIface );
 
     //wfs:WFS_Capabilities element
     QDomElement wfsCapabilitiesElement = doc.createElement( QStringLiteral( "WFS_Capabilities" )/*wms:WFS_Capabilities*/ );

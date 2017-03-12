@@ -37,8 +37,8 @@ class QDomElement;
 class QString;
 class QStringList;
 
-void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement& layerElement, QDomDocument& doc,
-    const QStringList &crsList, const QStringList& constrainedCrsList )
+void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement &layerElement, QDomDocument &doc,
+    const QStringList &crsList, const QStringList &constrainedCrsList )
 {
   if ( layerElement.isNull() )
   {
@@ -60,7 +60,7 @@ void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement& layerElement, 
   }
   else //no crs constraint
   {
-    Q_FOREACH ( const QString& crs, crsList )
+    Q_FOREACH ( const QString &crs, crsList )
     {
       appendCrsElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }
@@ -70,8 +70,8 @@ void QgsConfigParserUtils::appendCrsElementsToLayer( QDomElement& layerElement, 
   appendCrsElementToLayer( layerElement, CRSPrecedingElement, QString( "CRS:84" ), doc );
 }
 
-void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement,
-    const QString& crsText, QDomDocument& doc )
+void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement &layerElement, const QDomElement &precedingElement,
+    const QString &crsText, QDomDocument &doc )
 {
   QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
   QDomElement crsElement = doc.createElement( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS" );
@@ -80,8 +80,8 @@ void QgsConfigParserUtils::appendCrsElementToLayer( QDomElement& layerElement, c
   layerElement.insertAfter( crsElement, precedingElement );
 }
 
-void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& lExtent,
-    const QgsCoordinateReferenceSystem& layerCRS, const QStringList &crsList, const QStringList& constrainedCrsList )
+void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement &layerElem, QDomDocument &doc, const QgsRectangle &lExtent,
+    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList, const QStringList &constrainedCrsList )
 {
   if ( layerElem.isNull() )
   {
@@ -190,15 +190,15 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement& layerElem, QDo
   }
   else //no crs constraint
   {
-    Q_FOREACH ( const QString& crs, crsList )
+    Q_FOREACH ( const QString &crs, crsList )
     {
       appendLayerBoundingBox( layerElem, doc, layerExtent, layerCRS, crs );
     }
   }
 }
 
-void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent,
-    const QgsCoordinateReferenceSystem& layerCRS, const QString& crsText )
+void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement &layerElem, QDomDocument &doc, const QgsRectangle &layerExtent,
+    const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText )
 {
   if ( layerElem.isNull() )
   {
@@ -266,7 +266,7 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement& layerElem, QDomD
   }
 }
 
-QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLayer )
+QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer *mapLayer )
 {
   QStringList crsNumbers;
   QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
@@ -277,10 +277,10 @@ QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLaye
 
   //check the db is available
   myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
-  if ( myResult && theMapLayer )
+  if ( myResult && mapLayer )
   {
     //if the database cannot be opened, add at least the epsg number of the source coordinate system
-    crsNumbers.push_back( theMapLayer->crs().authid() );
+    crsNumbers.push_back( mapLayer->crs().authid() );
     return crsNumbers;
   };
   QString mySql = QStringLiteral( "select upper(auth_name||':'||auth_id) from tbl_srs" );
@@ -289,7 +289,7 @@ QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLaye
   {
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      crsNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      crsNumbers.push_back( QString::fromUtf8( ( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) );
     }
   }
   sqlite3_finalize( myPreparedStatement );
@@ -297,7 +297,7 @@ QStringList QgsConfigParserUtils::createCrsListForLayer( QgsMapLayer* theMapLaye
   return crsNumbers;
 }
 
-void QgsConfigParserUtils::fallbackServiceCapabilities( QDomElement& parentElement, QDomDocument& doc )
+void QgsConfigParserUtils::fallbackServiceCapabilities( QDomElement &parentElement, QDomDocument &doc )
 {
   Q_UNUSED( doc );
   QFile wmsService( QStringLiteral( "wms_metadata.xml" ) );
@@ -315,12 +315,12 @@ void QgsConfigParserUtils::fallbackServiceCapabilities( QDomElement& parentEleme
   }
 }
 
-QList<QgsMapLayer*> QgsConfigParserUtils::layerMapToList( const QMap< int, QgsMapLayer* >& layerMap, bool reverseOrder )
+QList<QgsMapLayer *> QgsConfigParserUtils::layerMapToList( const QMap< int, QgsMapLayer * > &layerMap, bool reverseOrder )
 {
   if ( reverseOrder ) //reverse order
   {
-    QList<QgsMapLayer*> list;
-    QMapIterator< int, QgsMapLayer* > layerMapIt( layerMap );
+    QList<QgsMapLayer *> list;
+    QMapIterator< int, QgsMapLayer * > layerMapIt( layerMap );
     layerMapIt.toBack();
     while ( layerMapIt.hasPrevious() )
     {

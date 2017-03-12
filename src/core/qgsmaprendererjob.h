@@ -45,8 +45,8 @@ class QgsFeatureFilterProvider;
 struct LayerRenderJob
 {
   QgsRenderContext context;
-  QImage* img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
-  QgsMapLayerRenderer* renderer; // must be deleted
+  QImage *img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
+  QgsMapLayerRenderer *renderer; // must be deleted
   QPainter::CompositionMode blendMode;
   double opacity;
   bool cached; // if true, img already contains cached image from previous rendering
@@ -67,7 +67,7 @@ struct LabelRenderJob
    * May be null if it is not necessary to draw to separate image (e.g. using composition modes which prevent "flattening" the layer).
    * Note that if complete is false then img will be uninitialized and contain random data!.
    */
-  QImage* img = nullptr;
+  QImage *img = nullptr;
   //! If true, img already contains cached image from previous rendering
   bool cached = false;
   //! Will be true if labeling is eligible for caching
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     Q_OBJECT
   public:
 
-    QgsMapRendererJob( const QgsMapSettings& settings );
+    QgsMapRendererJob( const QgsMapSettings &settings );
 
     //! Start the rendering job and immediately return.
     //! Does nothing if the rendering is already in progress.
@@ -120,6 +120,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! Stop the rendering job - does not return until the job has terminated.
     //! Does nothing if the rendering is not active.
     virtual void cancel() = 0;
+
+    /**
+     * Triggers cancelation of the rendering job without blocking. The render job will continue
+     * to operate until it is able to cancel, at which stage the finished() signal will be emitted.
+     * Does nothing if the rendering is not active.
+     */
+    virtual void cancelWithoutBlocking() = 0;
 
     //! Block until the job has finished.
     virtual void waitForFinished() = 0;
@@ -141,7 +148,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
      * @see usedCachedLabels()
      */
-    virtual QgsLabelingResults* takeLabelingResults() = 0;
+    virtual QgsLabelingResults *takeLabelingResults() = 0;
 
     //! @note Added in QGIS 3.0
     //! Set the feature filter provider used by the QgsRenderContext of
@@ -153,13 +160,13 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     //! @note Added in QGIS 3.0
     //! Returns the feature filter provider used by the QgsRenderContext of
     //! each LayerRenderJob.
-    const QgsFeatureFilterProvider* featureFilterProvider() const { return mFeatureFilterProvider; }
+    const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
     struct Error
     {
-      Error( const QString& lid, const QString& msg )
-          : layerID( lid )
-          , message( msg )
+      Error( const QString &lid, const QString &msg )
+        : layerID( lid )
+        , message( msg )
       {}
 
       QString layerID;
@@ -174,11 +181,11 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     //! Assign a cache to be used for reading and storing rendered images of individual layers.
     //! Does not take ownership of the object.
-    void setCache( QgsMapRendererCache* cache );
+    void setCache( QgsMapRendererCache *cache );
 
     //! Set which vector layers should be cached while rendering
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
-    void setRequestedGeometryCacheForLayers( const QStringList& layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
+    void setRequestedGeometryCacheForLayers( const QStringList &layerIds ) { mRequestedGeomCacheForLayers = layerIds; }
 
     //! Find out how long it took to finish the job (in milliseconds)
     int renderingTime() const { return mRenderingTime; }
@@ -188,7 +195,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * @return A QgsMapSettings instance with render settings
      * @note added in 2.8
      */
-    const QgsMapSettings& mapSettings() const;
+    const QgsMapSettings &mapSettings() const;
 
     /**
      * QgsMapRendererCache ID string for cached label image.
@@ -216,7 +223,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QTime mRenderingStart;
     Errors mErrors;
 
-    QgsMapRendererCache* mCache = nullptr;
+    QgsMapRendererCache *mCache = nullptr;
 
     int mRenderingTime = 0;
 
@@ -228,23 +235,23 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     bool prepareLabelCache() const;
 
     //! @note not available in python bindings
-    LayerRenderJobs prepareJobs( QPainter* painter, QgsLabelingEngine* labelingEngine2 );
+    LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 );
 
     /**
      * Prepares a labeling job.
      * @note not available in python bindings
      * @note added in QGIS 3.0
      */
-    LabelRenderJob prepareLabelingJob( QPainter* painter, QgsLabelingEngine* labelingEngine2, bool canUseLabelCache = true );
+    LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true );
 
     //! @note not available in python bindings
-    static QImage composeImage( const QgsMapSettings& settings, const LayerRenderJobs& jobs, const LabelRenderJob& labelJob );
+    static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob );
 
     //! @note not available in python bindings
-    void logRenderingTime( const LayerRenderJobs& jobs, const LabelRenderJob& labelJob );
+    void logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob );
 
     //! @note not available in python bindings
-    void cleanupJobs( LayerRenderJobs& jobs );
+    void cleanupJobs( LayerRenderJobs &jobs );
 
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
@@ -252,10 +259,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * @note added in QGIS 3.0
      * @note not available in python bindings
      */
-    void cleanupLabelJob( LabelRenderJob& job );
+    void cleanupLabelJob( LabelRenderJob &job );
 
     //! @note not available in Python bindings
-    static void drawLabeling( const QgsMapSettings& settings, QgsRenderContext& renderContext, QgsLabelingEngine* labelingEngine2, QPainter* painter );
+    static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter );
 
   private:
 
@@ -267,7 +274,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     static bool reprojectToLayerExtent( const QgsMapLayer *ml, const QgsCoordinateTransform &ct, QgsRectangle &extent, QgsRectangle &r2 );
 
-    bool needTemporaryImage( QgsMapLayer* ml );
+    bool needTemporaryImage( QgsMapLayer *ml );
 
     //! called when rendering has finished to update all layers' geometry caches
     void updateLayerGeometryCaches();
@@ -292,10 +299,11 @@ class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
     Q_OBJECT
 
   public:
-    QgsMapRendererQImageJob( const QgsMapSettings& settings );
+    QgsMapRendererQImageJob( const QgsMapSettings &settings );
 
     //! Get a preview/resulting image
     virtual QImage renderedImage() = 0;
+
 };
 
 

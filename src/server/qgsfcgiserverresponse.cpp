@@ -31,7 +31,7 @@
 //
 
 QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
-    : mMethod( method )
+  : mMethod( method )
 {
   mBuffer.open( QIODevice::ReadWrite );
   setDefaultHeaders();
@@ -41,17 +41,17 @@ QgsFcgiServerResponse::~QgsFcgiServerResponse()
 {
 }
 
-void QgsFcgiServerResponse::clearHeader( const QString& key )
+void QgsFcgiServerResponse::clearHeader( const QString &key )
 {
   mHeaders.remove( key );
 }
 
-void QgsFcgiServerResponse::setHeader( const QString& key, const QString& value )
+void QgsFcgiServerResponse::setHeader( const QString &key, const QString &value )
 {
   mHeaders.insert( key, value );
 }
 
-QString QgsFcgiServerResponse::getHeader( const QString& key ) const
+QString QgsFcgiServerResponse::getHeader( const QString &key ) const
 {
   return mHeaders.value( key );
 }
@@ -72,7 +72,7 @@ void QgsFcgiServerResponse::setReturnCode( int code )
   mHeaders.insert( QStringLiteral( "Status" ), QStringLiteral( " %1" ).arg( code ) );
 }
 
-void QgsFcgiServerResponse::sendError( int code,  const QString& message )
+void QgsFcgiServerResponse::sendError( int code,  const QString &message )
 {
   if ( mHeadersSent )
   {
@@ -87,7 +87,7 @@ void QgsFcgiServerResponse::sendError( int code,  const QString& message )
   finish();
 }
 
-QIODevice* QgsFcgiServerResponse::io()
+QIODevice *QgsFcgiServerResponse::io()
 {
   return &mBuffer;
 }
@@ -122,7 +122,7 @@ void QgsFcgiServerResponse::flush()
       fputs( it.key().toUtf8(), FCGI_stdout );
       fputs( ": ", FCGI_stdout );
       fputs( it.value().toUtf8(), FCGI_stdout );
-      fputs( "\n" , FCGI_stdout );
+      fputs( "\n", FCGI_stdout );
     }
     fputs( "\n", FCGI_stdout );
     mHeadersSent = true;
@@ -137,8 +137,8 @@ void QgsFcgiServerResponse::flush()
   }
   else if ( mBuffer.bytesAvailable() > 0 )
   {
-    QByteArray& ba = mBuffer.buffer();
-    size_t count   = fwrite(( void* )ba.data(), ba.size(), 1, FCGI_stdout );
+    QByteArray &ba = mBuffer.buffer();
+    size_t count   = fwrite( ( void * )ba.data(), ba.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
     qDebug() << QStringLiteral( "Sent %1 blocks of %2 bytes" ).arg( count ).arg( ba.size() );
 #else
@@ -218,7 +218,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   // XXX OGC paremetrs are passed with the query string
   // we override the query string url in case it is
   // defined independently of REQUEST_URI
-  const char* qs = getenv( "QUERY_STRING" );
+  const char *qs = getenv( "QUERY_STRING" );
   if ( qs )
   {
     url.setQuery( qs );
@@ -231,7 +231,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   QgsServerRequest::Method method = GetMethod;
 
   // Get method
-  const char* me = getenv( "REQUEST_METHOD" );
+  const char *me = getenv( "REQUEST_METHOD" );
 
   if ( me )
   {
@@ -284,7 +284,7 @@ QByteArray QgsFcgiServerRequest::data() const
 void QgsFcgiServerRequest::readData()
 {
   // Check if we have CONTENT_LENGTH defined
-  const char* lengthstr = getenv( "CONTENT_LENGTH" );
+  const char *lengthstr = getenv( "CONTENT_LENGTH" );
   if ( lengthstr )
   {
 #ifdef QGISDEBUG

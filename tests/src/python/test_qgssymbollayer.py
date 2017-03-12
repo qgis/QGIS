@@ -54,7 +54,6 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsRasterFillSymbolLayer,
                        QgsShapeburstFillSymbolLayer,
                        QgsArrowSymbolLayer,
-                       QgsSymbol,
                        QgsUnitTypes,
                        QgsFillSymbol,
                        QgsLineSymbol,
@@ -409,7 +408,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         layer = QgsSimpleFillSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
-        layer.setBorderStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
         symbol = QgsFillSymbol()
@@ -539,7 +538,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
         layer.setColor(QColor(100, 150, 150))
         layer.setSize(5)
-        layer.setOutlineStyle(Qt.NoPen)
+        layer.setStrokeStyle(Qt.NoPen)
 
         symbol = QgsMarkerSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -583,17 +582,17 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = '#ffaa7f'
-        mValue = mSymbolLayer.borderColor().name()
+        mValue = mSymbolLayer.strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = Qt.DotLine
-        mValue = mSymbolLayer.borderStyle()
+        mValue = mSymbolLayer.strokeStyle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 0.26
-        mValue = mSymbolLayer.borderWidth()
+        mValue = mSymbolLayer.strokeWidth()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -710,7 +709,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = '#00ff00'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -804,7 +803,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = '#ff007f'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -893,7 +892,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = '#000000'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -991,7 +990,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = '#aaaaff'
-        mValue = mSymbolLayer.outlineColor().name()
+        mValue = mSymbolLayer.strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -1107,6 +1106,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
 
 if __name__ == '__main__':
     unittest.main()

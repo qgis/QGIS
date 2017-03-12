@@ -18,18 +18,18 @@
 #include "qgsuniquevaluewidgetwrapper.h"
 #include "qgsuniquevaluesconfigdlg.h"
 
-QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
 
-QgsEditorWidgetWrapper* QgsUniqueValueWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsUniqueValueWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsUniqueValuesWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsUniqueValueWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsUniqueValueWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsUniqueValuesConfigDlg( vl, fieldIdx, parent );
 }

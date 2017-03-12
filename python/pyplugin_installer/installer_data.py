@@ -28,10 +28,11 @@ from builtins import str
 from builtins import range
 
 from qgis.PyQt.QtCore import (pyqtSignal, QObject, QCoreApplication, QFile,
-                              QDir, QDirIterator, QSettings, QDate, QUrl,
-                              QFileInfo, QLocale, QByteArray)
+                              QDir, QDirIterator, QDate, QUrl, QFileInfo,
+                              QLocale, QByteArray)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.core import QgsSettings
 import sys
 import os
 import codecs
@@ -44,7 +45,7 @@ try:
 except ImportError:
     from imp import reload
 import qgis.utils
-from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager, QgsWkbTypes
+from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from .version_compare import compareVersions, normalizeVersion, isCompatible
@@ -235,10 +236,10 @@ class Repositories(QObject):
     # ----------------------------------------- #
     def urlParams(self):
         """ return GET parameters to be added to every request """
-        v = str(Qgis.QGIS_VERSION_INT)
+        # v = str(Qgis.QGIS_VERSION_INT)
         # TODO: make this proper again after 3.0 release, by uncommenting
         # the line below and removing the other return line:
-        #return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
+        # return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
         return "?qgis=3.0"
 
     # ----------------------------------------- #
@@ -262,21 +263,21 @@ class Repositories(QObject):
     # ----------------------------------------- #
     def checkingOnStart(self):
         """ return true if checking for news and updates is enabled """
-        settings = QSettings()
+        settings = QgsSettings()
         return settings.value(settingsGroup + "/checkOnStart", False, type=bool)
 
     # ----------------------------------------- #
     def setCheckingOnStart(self, state):
         """ set state of checking for news and updates """
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStart", state)
 
     # ----------------------------------------- #
     def checkingOnStartInterval(self):
         """ return checking for news and updates interval """
-        settings = QSettings()
+        settings = QgsSettings()
         try:
-            # QSettings may contain non-int value...
+            # QgsSettings may contain non-int value...
             i = settings.value(settingsGroup + "/checkOnStartInterval", 1, type=int)
         except:
             # fallback do 1 day by default
@@ -293,13 +294,13 @@ class Repositories(QObject):
     # ----------------------------------------- #
     def setCheckingOnStartInterval(self, interval):
         """ set checking for news and updates interval """
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStartInterval", interval)
 
     # ----------------------------------------- #
     def saveCheckingOnStartLastDate(self):
         """ set today's date as the day of last checking  """
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStartLastDate", QDate.currentDate())
 
     # ----------------------------------------- #
@@ -307,9 +308,9 @@ class Repositories(QObject):
         """ determine whether it's the time for checking for news and updates now """
         if self.checkingOnStartInterval() == 0:
             return True
-        settings = QSettings()
+        settings = QgsSettings()
         try:
-            # QSettings may contain ivalid value...
+            # QgsSettings may contain ivalid value...
             interval = settings.value(settingsGroup + "/checkOnStartLastDate", type=QDate).daysTo(QDate.currentDate())
         except:
             interval = 0
@@ -322,9 +323,9 @@ class Repositories(QObject):
     def load(self):
         """ populate the mRepositories dict"""
         self.mRepositories = {}
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(reposGroup)
-        # first, update repositories in QSettings if needed
+        # first, update repositories in QgsSettings if needed
         officialRepoPresent = False
         for key in settings.childGroups():
             url = settings.value(key + "/url", "", type=str)
@@ -353,8 +354,8 @@ class Repositories(QObject):
         """ start fetching the repository given by key """
         self.mRepositories[key]["state"] = 1
         url = QUrl(self.mRepositories[key]["url"] + self.urlParams())
-        #v=str(Qgis.QGIS_VERSION_INT)
-        #url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
+        # v=str(Qgis.QGIS_VERSION_INT)
+        # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         authcfg = self.mRepositories[key]["authcfg"]
@@ -474,10 +475,10 @@ class Repositories(QObject):
                     qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().strip()
                     if not qgisMaximumVersion:
                         qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
-                    #if compatible, add the plugin to the list
+                    # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
                         if isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
-                            #add the plugin to the cache
+                            # add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = 2
             else:
@@ -624,7 +625,7 @@ class Plugins(QObject):
             qgisMaximumVersion = pluginMetadata("qgisMaximumVersion").strip()
             if not qgisMaximumVersion:
                 qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
-            #if compatible, add the plugin to the list
+            # if compatible, add the plugin to the list
             if not isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
                 error = "incompatible"
                 errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
@@ -746,7 +747,7 @@ class Plugins(QObject):
         self.mPlugins = {}
         for i in list(self.localCache.keys()):
             self.mPlugins[i] = self.localCache[i].copy()
-        settings = QSettings()
+        settings = QgsSettings()
         allowExperimental = settings.value(settingsGroup + "/allowExperimental", False, type=bool)
         allowDeprecated = settings.value(settingsGroup + "/allowDeprecated", False, type=bool)
         for i in list(self.repoCache.values()):
@@ -808,7 +809,7 @@ class Plugins(QObject):
     # ----------------------------------------- #
     def markNews(self):
         """ mark all new plugins as new """
-        settings = QSettings()
+        settings = QgsSettings()
         seenPlugins = settings.value(seenPluginGroup, list(self.mPlugins.keys()), type=str)
         if len(seenPlugins) > 0:
             for i in list(self.mPlugins.keys()):
@@ -818,7 +819,7 @@ class Plugins(QObject):
     # ----------------------------------------- #
     def updateSeenPluginsList(self):
         """ update the list of all seen plugins """
-        settings = QSettings()
+        settings = QgsSettings()
         seenPlugins = settings.value(seenPluginGroup, list(self.mPlugins.keys()), type=str)
         for i in list(self.mPlugins.keys()):
             if seenPlugins.count(i) == 0:

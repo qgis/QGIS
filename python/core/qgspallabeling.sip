@@ -216,9 +216,9 @@ class QgsPalLayerSettings
       ShapeTransparency,
       ShapeBlendMode,
       ShapeFillColor,
-      ShapeBorderColor,
-      ShapeBorderWidth,
-      ShapeBorderWidthUnits,
+      ShapeStrokeColor,
+      ShapeStrokeWidth,
+      ShapeStrokeWidthUnits,
       ShapeJoinStyle,
 
       // drop shadow

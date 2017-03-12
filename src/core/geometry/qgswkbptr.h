@@ -45,21 +45,21 @@ class CORE_EXPORT QgsWkbPtr
 
     void verifyBound( int size ) const;
 
-    template<typename T> void read( T& v ) const
+    template<typename T> void read( T &v ) const
     {
       verifyBound( sizeof v );
       memcpy( &v, mP, sizeof v );
       mP += sizeof v;
     }
 
-    template<typename T> void write( T& v ) const
+    template<typename T> void write( T &v ) const
     {
       verifyBound( sizeof v );
       memcpy( mP, &v, sizeof v );
       mP += sizeof v;
     }
 
-    void write( const QByteArray& data ) const
+    void write( const QByteArray &data ) const
     {
       verifyBound( data.length() );
       memcpy( mP, data.constData(), data.length() );
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsWkbPtr
 
   public:
     //! Construct WKB pointer from QByteArray
-    QgsWkbPtr( QByteArray& wkb );
+    QgsWkbPtr( QByteArray &wkb );
     QgsWkbPtr( unsigned char *p, int size );
 
     inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsConstWkbPtr
     void verifyBound( int size ) const;
 
     //! Read a value
-    template<typename T> void read( T& v ) const
+    template<typename T> void read( T &v ) const
     {
       verifyBound( sizeof v );
       memcpy( &v, mP, sizeof( v ) );
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsConstWkbPtr
 
   public:
     //! Construct WKB pointer from QByteArray
-    explicit QgsConstWkbPtr( const QByteArray& wkb );
+    explicit QgsConstWkbPtr( const QByteArray &wkb );
     QgsConstWkbPtr( const unsigned char *p, int size );
     QgsWkbTypes::Type readHeader() const;
 

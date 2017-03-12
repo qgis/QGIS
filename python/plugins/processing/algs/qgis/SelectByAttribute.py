@@ -92,7 +92,7 @@ class SelectByAttribute(GeoAlgorithm):
         if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:
             op = ''.join(['"%s", ' % o for o in self.OPERATORS[-2:]])
             raise GeoAlgorithmExecutionException(
-                self.tr('Operators %s can be used only with string fields.' % op))
+                self.tr('Operators {0} can be used only with string fields.').format(op))
 
         if fieldType in [QVariant.Int, QVariant.Double, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
             expr = '"%s" %s %s' % (fieldName, operator, value)
@@ -107,7 +107,7 @@ class SelectByAttribute(GeoAlgorithm):
             expr = """"%s" %s '%s'""" % (fieldName, operator, value)
         else:
             raise GeoAlgorithmExecutionException(
-                self.tr('Unsupported field type "%s"' % fields[idx].typeName()))
+                self.tr('Unsupported field type "{0}"').format(fields[idx].typeName()))
 
         qExp = QgsExpression(expr)
         if not qExp.hasParserError():

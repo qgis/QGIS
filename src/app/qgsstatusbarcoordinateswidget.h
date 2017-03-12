@@ -44,9 +44,9 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     QgsStatusBarCoordinatesWidget( QWidget *parent );
 
     //! define the map canvas associated to the widget
-    void setMapCanvas( QgsMapCanvas* mapCanvas );
+    void setMapCanvas( QgsMapCanvas *mapCanvas );
 
-    void setFont( const QFont& myFont );
+    void setFont( const QFont &myFont );
 
     void setMouseCoordinatesPrecision( unsigned int precision );
 
@@ -55,7 +55,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
   private slots:
     void showMouseCoordinates( const QgsPoint &p );
-    void extentsViewToggled( bool theFlag );
+    void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();
     void showExtent();
@@ -70,7 +70,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
     QValidator *mCoordsEditValidator = nullptr;
     QTimer *mDizzyTimer = nullptr;
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;

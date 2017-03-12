@@ -29,10 +29,10 @@ QgsHostedRDSBuilder::QgsHostedRDSBuilder(): QgsMSLayerBuilder()
 
 }
 
-QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
+QgsMapLayer *QgsHostedRDSBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+    QList<QTemporaryFile *> &filesToRemove,
+    QList<QgsMapLayer *> &layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( filesToRemove );
@@ -51,10 +51,10 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
   else
   {
     QgsDebugMsg( "Trying to get hostedrds layer from cache with uri: " + uri );
-    QgsRasterLayer* rl = nullptr;
+    QgsRasterLayer *rl = nullptr;
     if ( allowCaching )
     {
-      rl = qobject_cast<QgsRasterLayer*>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
+      rl = qobject_cast<QgsRasterLayer *>( QgsMSLayerCache::instance()->searchLayer( uri, layerName ) );
     }
     if ( !rl || !rl->isValid() )
     {

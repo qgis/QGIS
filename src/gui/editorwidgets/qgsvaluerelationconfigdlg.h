@@ -31,7 +31,7 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
     Q_OBJECT
 
   public:
-    explicit QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
   public slots:
     void editExpression();
@@ -39,7 +39,7 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
     // QgsEditorConfigWidget interface
   public:
     QVariantMap config() override;
-    void setConfig( const QVariantMap& config ) override;
+    void setConfig( const QVariantMap &config ) override;
 };
 
 #endif // QGSVALUERELATIONCONFIGDLG_H

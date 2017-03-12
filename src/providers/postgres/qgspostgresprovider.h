@@ -56,7 +56,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * length constraints on character fields).
      */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
       const QgsCoordinateReferenceSystem &srs,
@@ -77,10 +77,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     virtual ~QgsPostgresProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
     virtual QString storageType() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
@@ -98,13 +98,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Returns a list of unquoted column names from an uri key
      */
-    static QStringList parseUriKey( const QString& key );
+    static QStringList parseUriKey( const QString &key );
 
     /**
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
      */
-    void setExtent( QgsRectangle& newExtent );
+    void setExtent( QgsRectangle &newExtent );
 
     virtual QgsRectangle extent() const override;
     virtual void updateExtents() override;
@@ -127,9 +127,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
-    virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
-        QgsFeedback* feedback = nullptr ) const override;
-    virtual void enumValues( int index, QStringList& enumList ) const override;
+    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+        QgsFeedback *feedback = nullptr ) const override;
+    virtual void enumValues( int index, QStringList &enumList ) const override;
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
     virtual bool isDeleteStyleFromDatabaseSupported() const override { return true; }
@@ -137,25 +137,25 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
-    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const override;
-    bool addFeatures( QgsFeatureList & flist ) override;
-    bool deleteFeatures( const QgsFeatureIds & id ) override;
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
+    bool addFeatures( QgsFeatureList &flist ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &name ) override;
-    virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
+    virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
 
     //! Get the postgres connection
-    PGconn * pgConnection();
+    PGconn *pgConnection();
 
     //! Get the table name associated with this provider instance
     QString getTableName();
 
     QString subsetString() const override;
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     virtual bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
@@ -170,7 +170,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString name() const override;
     QString description() const override;
-    virtual QgsTransaction* transaction() const override;
+    virtual QgsTransaction *transaction() const override;
 
     /**
      * Convert the postgres string representation into the given QVariant type.
@@ -179,9 +179,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param value the value to convert
      * @return a QVariant of the given type or a null QVariant
      */
-    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString& value );
+    static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value );
 
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const override;
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
   signals:
@@ -224,7 +224,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param offset specifies offset to use for the pk value parameter
      * @param alias specifies an optional alias given to the subject table
      */
-    QString pkParamWhereClause( int offset, const char* alias = nullptr ) const;
+    QString pkParamWhereClause( int offset, const char *alias = nullptr ) const;
     QString whereClause( QgsFeatureId featureId ) const;
     QString whereClause( QgsFeatureIds featureIds ) const;
     QString filterWhereClause() const;
@@ -248,14 +248,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     @param enumValues the stringlist where the values are appended
     @param attributeName the name of the enum attribute
     @return true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
-    bool parseEnumRange( QStringList& enumValues, const QString& attributeName ) const;
+    bool parseEnumRange( QStringList &enumValues, const QString &attributeName ) const;
 
     /** Parses the possible enum values of a domain type (given in the check constraint of the domain type)
      * @param enumValues Reference to list that receives enum values
      * @param attributeName Name of the domain type attribute
      * @return true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
      */
-    bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
+    bool parseDomainCheckConstraint( QStringList &enumValues, const QString &attributeName ) const;
 
     /** Return the type of primary key for a PK field
      *
@@ -266,12 +266,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *       whereas multi-field keys always need the PktFidMap
      *       primary key type.
      */
-    QgsPostgresPrimaryKeyType pkType( const QgsField& fld ) const;
+    QgsPostgresPrimaryKeyType pkType( const QgsField &fld ) const;
 
     /**
      * Search all the layers using the given table.
      */
-    static QList<QgsVectorLayer*> searchLayers( const QList<QgsVectorLayer*>& layers, const QString& connectionInfo, const QString& schema, const QString& tableName );
+    static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &schema, const QString &tableName );
 
     //! Old-style mapping of index to name for QgsPalLabeling fix
     QgsAttrPalIndexNameHash mAttrPalIndexName;
@@ -366,45 +366,45 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     struct PGException
     {
-      explicit PGException( QgsPostgresResult &r )
+        explicit PGException( QgsPostgresResult &r )
           : mWhat( r.PQresultErrorMessage() )
-      {}
+        {}
 
-      QString errorMessage() const
-      {
-        return mWhat;
-      }
+        QString errorMessage() const
+        {
+          return mWhat;
+        }
 
-    private:
-      QString mWhat;
+      private:
+        QString mWhat;
     };
 
     // A function that determines if the given columns contain unique entries
-    bool uniqueData( const QString& quotedColNames );
+    bool uniqueData( const QString &quotedColNames );
 
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
-    void appendGeomParam( const QgsGeometry& geom, QStringList &param ) const;
+    void appendGeomParam( const QgsGeometry &geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
 
-    QString paramValue( const QString& fieldvalue, const QString &defaultValue ) const;
+    QString paramValue( const QString &fieldvalue, const QString &defaultValue ) const;
 
     QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
     QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
 
-    QgsPostgresConn* connectionRO() const;
-    QgsPostgresConn* connectionRW();
+    QgsPostgresConn *connectionRO() const;
+    QgsPostgresConn *connectionRW();
 
     void disconnectDb();
 
-    static QString quotedIdentifier( const QString& ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
-    static QString quotedValue( const QVariant& value ) { return QgsPostgresConn::quotedValue( value ); }
+    static QString quotedIdentifier( const QString &ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
+    static QString quotedValue( const QVariant &value ) { return QgsPostgresConn::quotedValue( value ); }
 
     friend class QgsPostgresFeatureSource;
 
-    QgsPostgresTransaction* mTransaction = nullptr;
+    QgsPostgresTransaction *mTransaction = nullptr;
 
-    void setTransaction( QgsTransaction* transaction ) override;
+    void setTransaction( QgsTransaction *transaction ) override;
 
     QHash<int, QString> mDefaultValues;
 };
@@ -415,20 +415,20 @@ class QgsPostgresUtils
 {
   public:
     static QString whereClause( QgsFeatureId featureId,
-                                const QgsFields& fields,
-                                QgsPostgresConn* conn,
+                                const QgsFields &fields,
+                                QgsPostgresConn *conn,
                                 QgsPostgresPrimaryKeyType pkType,
-                                const QList<int>& pkAttrs,
-                                std::shared_ptr<QgsPostgresSharedData> sharedData );
+                                const QList<int> &pkAttrs,
+                                const std::shared_ptr<QgsPostgresSharedData> &sharedData );
 
-    static QString whereClause( const QgsFeatureIds& featureIds,
-                                const QgsFields& fields,
-                                QgsPostgresConn* conn,
+    static QString whereClause( const QgsFeatureIds &featureIds,
+                                const QgsFields &fields,
+                                QgsPostgresConn *conn,
                                 QgsPostgresPrimaryKeyType pkType,
-                                const QList<int>& pkAttrs,
-                                std::shared_ptr<QgsPostgresSharedData> sharedData );
+                                const QList<int> &pkAttrs,
+                                const std::shared_ptr<QgsPostgresSharedData> &sharedData );
 
-    static QString andWhereClauses( const QString& c1, const QString& c2 );
+    static QString andWhereClauses( const QString &c1, const QString &c2 );
 
     static const qint64 INT32PK_OFFSET = 4294967296;
 
@@ -442,7 +442,7 @@ class QgsPostgresUtils
 
     static qint32 fid_to_int32pk( qint64 x )
     {
-      return x <= (( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
+      return x <= ( ( INT32PK_OFFSET ) / 2.0 ) ? x : -( INT32PK_OFFSET - x );
     }
 };
 
@@ -460,9 +460,9 @@ class QgsPostgresSharedData
     void ensureFeaturesCountedAtLeast( long fetched );
 
     // FID lookups
-    QgsFeatureId lookupFid( const QVariantList& v ); // lookup existing mapping or add a new one
+    QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
     QVariantList removeFid( QgsFeatureId fid );
-    void insertFid( QgsFeatureId fid, const QVariantList& k );
+    void insertFid( QgsFeatureId fid, const QVariantList &k );
     QVariantList lookupKey( QgsFeatureId featureId );
     void clear();
 

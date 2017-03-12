@@ -49,13 +49,13 @@
 
 #include <QTemporaryFile>
 
-QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
-    : QgsWmsConfigParser()
-    , mXMLDoc( doc )
-    , mParameterMap( parameters )
-    , mSLDNamespace( QStringLiteral( "http://www.opengis.net/sld" ) )
-    , mOutputUnits( QgsUnitTypes::RenderUnit::RenderPixels )
-    , mFallbackParser( nullptr )
+QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument *doc, const QMap<QString, QString> &parameters )
+  : QgsWmsConfigParser()
+  , mXMLDoc( doc )
+  , mParameterMap( parameters )
+  , mSLDNamespace( QStringLiteral( "http://www.opengis.net/sld" ) )
+  , mOutputUnits( QgsUnitTypes::RenderUnit::RenderPixels )
+  , mFallbackParser( nullptr )
 {
 
   //set output units
@@ -86,7 +86,7 @@ QgsSLDConfigParser::~QgsSLDConfigParser()
   delete mXMLDoc;
 }
 
-void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings ) const
+void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement &parentElement, QDomDocument &doc, const QString &version, const QString &serviceUrl, bool fullProjectSettings ) const
 {
   Q_UNUSED( version );
   Q_UNUSED( serviceUrl );
@@ -141,7 +141,7 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
 
 
         //get QgsMapLayer object to add Ex_GeographicalBoundingBox, Bounding Box
-        QList<QgsMapLayer*> layerList = mapLayerFromStyle( nameList.item( 0 ).toElement().text(), QLatin1String( "" ) );
+        QList<QgsMapLayer *> layerList = mapLayerFromStyle( nameList.item( 0 ).toElement().text(), QLatin1String( "" ) );
         if ( layerList.size() < 1 )//error while generating the layer
         {
           QgsDebugMsg( "Error, no maplayer in layer list" );
@@ -149,18 +149,18 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
         }
 
         //get only the first layer since we don't want to have the other ones in the capabilities document
-        QgsMapLayer* theMapLayer = layerList.at( 0 );
-        if ( !theMapLayer )//error while generating the layer
+        QgsMapLayer *mapLayer = layerList.at( 0 );
+        if ( !mapLayer )//error while generating the layer
         {
           QgsDebugMsg( "Error, QgsMapLayer object is 0" );
           continue;
         }
 
         //append geographic bbox and the CRS elements
-        QStringList crsNumbers = QgsConfigParserUtils::createCrsListForLayer( theMapLayer );
+        QStringList crsNumbers = QgsConfigParserUtils::createCrsListForLayer( mapLayer );
         QStringList crsRestriction; //no crs restrictions in SLD parser
         QgsConfigParserUtils::appendCrsElementsToLayer( layerElement, doc, crsNumbers, crsRestriction );
-        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs(), crsNumbers, crsRestriction );
+        QgsConfigParserUtils::appendLayerBoundingBoxes( layerElement, doc, mapLayer->extent(), mapLayer->crs(), crsNumbers, crsRestriction );
 
         //iterate over all <UserStyle> nodes within a user layer
         QDomNodeList userStyleList = layerNodeList.item( i ).toElement().elementsByTagName( QStringLiteral( "UserStyle" ) );
@@ -206,10 +206,10 @@ void QgsSLDConfigParser::layersAndStylesCapabilities( QDomElement& parentElement
   }
 }
 
-QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache ) const
+QList<QgsMapLayer *> QgsSLDConfigParser::mapLayerFromStyle( const QString &lName, const QString &styleName, bool useCache ) const
 {
-  QList<QgsMapLayer*> fallbackLayerList;
-  QList<QgsMapLayer*> resultList;
+  QList<QgsMapLayer *> fallbackLayerList;
+  QList<QgsMapLayer *> resultList;
 
   //first check if this layer is a named layer with a user style
   QList<QDomElement> namedLayerElemList = findNamedLayerElements( lName );
@@ -221,10 +221,10 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
       fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, QLatin1String( "" ), false );
       if ( !fallbackLayerList.isEmpty() )
       {
-        QgsVectorLayer* v = dynamic_cast<QgsVectorLayer*>( fallbackLayerList.at( 0 ) );
+        QgsVectorLayer *v = dynamic_cast<QgsVectorLayer *>( fallbackLayerList.at( 0 ) );
         if ( v )
         {
-          QgsFeatureRenderer* r = rendererFromUserStyle( userStyleElement, v );
+          QgsFeatureRenderer *r = rendererFromUserStyle( userStyleElement, v );
           v->setRenderer( r );
           labelSettingsFromUserStyle( userStyleElement, v );
 
@@ -233,13 +233,13 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
         }
         else
         {
-          QgsRasterLayer* r = dynamic_cast<QgsRasterLayer*>( fallbackLayerList.at( 0 ) ); //a raster layer?
+          QgsRasterLayer *r = dynamic_cast<QgsRasterLayer *>( fallbackLayerList.at( 0 ) ); //a raster layer?
           if ( r )
           {
             rasterSymbologyFromUserStyle( userStyleElement, r );
 
             //Using a contour symbolizer, there may be a raster and a vector layer
-            QgsVectorLayer* v = contourLayerFromRaster( userStyleElement, r );
+            QgsVectorLayer *v = contourLayerFromRaster( userStyleElement, r );
             if ( v )
             {
               resultList.push_back( v ); //contour layer must be added before raster
@@ -280,25 +280,25 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
 
   QDomElement userStyleElement = findUserStyleElement( userLayerElement, styleName );
 
-  QgsMapLayer* theMapLayer = mapLayerFromUserLayer( userLayerElement, lName, useCache );
-  if ( !theMapLayer )
+  QgsMapLayer *mapLayer = mapLayerFromUserLayer( userLayerElement, lName, useCache );
+  if ( !mapLayer )
   {
     return resultList;
   }
 
-  QgsFeatureRenderer* theRenderer = nullptr;
+  QgsFeatureRenderer *renderer = nullptr;
 
-  QgsRasterLayer* theRasterLayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
-  if ( theRasterLayer )
+  QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( mapLayer );
+  if ( rasterLayer )
   {
     QgsDebugMsg( "Layer is a rasterLayer" );
     if ( !userStyleElement.isNull() )
     {
       QgsDebugMsg( "Trying to add raster symbology" );
-      rasterSymbologyFromUserStyle( userStyleElement, theRasterLayer );
+      rasterSymbologyFromUserStyle( userStyleElement, rasterLayer );
       //todo: possibility to have vector layer or raster layer
       QgsDebugMsg( "Trying to find contour symbolizer" );
-      QgsVectorLayer* v = contourLayerFromRaster( userStyleElement, theRasterLayer );
+      QgsVectorLayer *v = contourLayerFromRaster( userStyleElement, rasterLayer );
       if ( v )
       {
         QgsDebugMsg( "Returning vector layer" );
@@ -306,38 +306,38 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
         mLayersToRemove.push_back( v );
       }
     }
-    resultList.push_back( theMapLayer );
+    resultList.push_back( mapLayer );
 
     return resultList;
   }
 
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
+  QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( mapLayer );
   if ( userStyleElement.isNull() )//apply a default style
   {
-    QgsSymbol* symbol = QgsSymbol::defaultSymbol( theVectorLayer->geometryType() );
-    theRenderer = new QgsSingleSymbolRenderer( symbol );
+    QgsSymbol *symbol = QgsSymbol::defaultSymbol( vectorLayer->geometryType() );
+    renderer = new QgsSingleSymbolRenderer( symbol );
   }
   else
   {
     QgsDebugMsg( "Trying to get a renderer from the user style" );
-    theRenderer = rendererFromUserStyle( userStyleElement, theVectorLayer );
+    renderer = rendererFromUserStyle( userStyleElement, vectorLayer );
     //apply labels if <TextSymbolizer> tag is present
-    labelSettingsFromUserStyle( userStyleElement, theVectorLayer );
+    labelSettingsFromUserStyle( userStyleElement, vectorLayer );
   }
 
-  if ( !theRenderer )
+  if ( !renderer )
   {
     QgsDebugMsg( "Error, could not create a renderer" );
-    delete theVectorLayer;
+    delete vectorLayer;
     return resultList;
   }
-  theVectorLayer->setRenderer( theRenderer );
+  vectorLayer->setRenderer( renderer );
   QgsDebugMsg( "Returning the vectorlayer" );
-  resultList.push_back( theVectorLayer );
+  resultList.push_back( vectorLayer );
   return resultList;
 }
 
-int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& styles ) const
+int QgsSLDConfigParser::layersAndStyles( QStringList &layers, QStringList &styles ) const
 {
   QgsDebugMsg( "Entering." );
   layers.clear();
@@ -433,7 +433,7 @@ int QgsSLDConfigParser::layersAndStyles( QStringList& layers, QStringList& style
   return 0;
 }
 
-QDomDocument QgsSLDConfigParser::getStyle( const QString& styleName, const QString& layerName ) const
+QDomDocument QgsSLDConfigParser::getStyle( const QString &styleName, const QString &layerName ) const
 {
   QDomElement userLayerElement = findUserLayerElement( layerName );
 
@@ -454,7 +454,7 @@ QDomDocument QgsSLDConfigParser::getStyle( const QString& styleName, const QStri
   return styleDoc;
 }
 
-QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
+QDomDocument QgsSLDConfigParser::getStyles( QStringList &layerList ) const
 {
   QDomDocument styleDoc;
   for ( int i = 0; i < layerList.size(); i++ )
@@ -476,7 +476,7 @@ QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
   return styleDoc;
 }
 
-QDomDocument QgsSLDConfigParser::describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const
+QDomDocument QgsSLDConfigParser::describeLayer( QStringList &layerList, const QString &wfsHrefString, const QString &wcsHrefString ) const
 {
   if ( mFallbackParser )
   {
@@ -527,7 +527,7 @@ QHash<QString, QString> QgsSLDConfigParser::featureInfoLayerAliasMap() const
   return QHash<QString, QString>();
 }
 
-QString QgsSLDConfigParser::featureInfoDocumentElement( const QString& defaultValue ) const
+QString QgsSLDConfigParser::featureInfoDocumentElement( const QString &defaultValue ) const
 {
   return defaultValue;
 }
@@ -551,7 +551,7 @@ bool QgsSLDConfigParser::featureInfoFormatSIA2045() const
   return false;
 }
 
-void QgsSLDConfigParser::drawOverlays( QPainter* p, int dpi, int width, int height ) const
+void QgsSLDConfigParser::drawOverlays( QPainter *p, int dpi, int width, int height ) const
 {
   if ( mFallbackParser )
   {
@@ -576,7 +576,7 @@ QStringList QgsSLDConfigParser::wfsLayerNames() const
   return QStringList();
 }
 
-void QgsSLDConfigParser::owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const
+void QgsSLDConfigParser::owsGeneralAndResourceList( QDomElement &parentElement, QDomDocument &doc, const QString &strHref ) const
 {
   if ( mFallbackParser )
   {
@@ -692,7 +692,7 @@ bool QgsSLDConfigParser::wmsInspireActivated() const
   return false;
 }
 
-QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const
+QgsComposition *QgsSLDConfigParser::initComposition( const QString &composerTemplate, const QgsMapSettings &mapSettings, QList< QgsComposerMap *> &mapList, QList< QgsComposerLegend * > &legendList, QList< QgsComposerLabel * > &labelList, QList<const QgsComposerHtml *> &htmlFrameList ) const
 {
   if ( mFallbackParser )
   {
@@ -701,7 +701,7 @@ QgsComposition* QgsSLDConfigParser::initComposition( const QString& composerTemp
   return nullptr;
 }
 
-void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsSLDConfigParser::printCapabilities( QDomElement &parentElement, QDomDocument &doc ) const
 {
   if ( mFallbackParser )
   {
@@ -709,7 +709,7 @@ void QgsSLDConfigParser::printCapabilities( QDomElement& parentElement, QDomDocu
   }
 }
 
-void QgsSLDConfigParser::inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsSLDConfigParser::inspireCapabilities( QDomElement &parentElement, QDomDocument &doc ) const
 {
   if ( mFallbackParser )
   {
@@ -746,7 +746,7 @@ int QgsSLDConfigParser::nLayers() const
   return 0;
 }
 
-void QgsSLDConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsSLDConfigParser::serviceCapabilities( QDomElement &parentElement, QDomDocument &doc ) const
 {
   if ( mFallbackParser )
   {
@@ -758,7 +758,7 @@ void QgsSLDConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDo
   }
 }
 
-QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& layerName ) const
+QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString &layerName ) const
 {
   QList<QDomElement> resultList;
   if ( mXMLDoc )
@@ -783,7 +783,7 @@ QList<QDomElement> QgsSLDConfigParser::findNamedLayerElements( const QString& la
   return resultList;
 }
 
-QDomElement QgsSLDConfigParser::findUserStyleElement( const QDomElement& userLayerElement, const QString& styleName ) const
+QDomElement QgsSLDConfigParser::findUserStyleElement( const QDomElement &userLayerElement, const QString &styleName ) const
 {
   QDomElement defaultResult;
   if ( !userLayerElement.isNull() )
@@ -804,7 +804,7 @@ QDomElement QgsSLDConfigParser::findUserStyleElement( const QDomElement& userLay
   return defaultResult;
 }
 
-QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerElement, const QString& styleName ) const
+QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement &layerElement, const QString &styleName ) const
 {
   QDomElement defaultResult;
   if ( !layerElement.isNull() )
@@ -825,7 +825,7 @@ QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerE
   return defaultResult;
 }
 
-QgsFeatureRenderer* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
+QgsFeatureRenderer *QgsSLDConfigParser::rendererFromUserStyle( const QDomElement &userStyleElement, QgsVectorLayer *vec ) const
 {
   if ( !vec || userStyleElement.isNull() )
   {
@@ -835,7 +835,7 @@ QgsFeatureRenderer* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement
   QgsDebugMsg( "Entering" );
 
   QString errorMessage;
-  QgsFeatureRenderer* renderer = QgsFeatureRenderer::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
+  QgsFeatureRenderer *renderer = QgsFeatureRenderer::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
   if ( !renderer )
   {
     throw QgsMapServiceException( QStringLiteral( "SLD error" ), errorMessage );
@@ -843,7 +843,7 @@ QgsFeatureRenderer* QgsSLDConfigParser::rendererFromUserStyle( const QDomElement
   return renderer;
 }
 
-bool QgsSLDConfigParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleElement, QgsRasterLayer* r ) const
+bool QgsSLDConfigParser::rasterSymbologyFromUserStyle( const QDomElement &userStyleElement, QgsRasterLayer *r ) const
 {
   return false;
 #if 0 //needs to be fixed
@@ -873,7 +873,7 @@ bool QgsSLDConfigParser::rasterSymbologyFromUserStyle( const QDomElement& userSt
 
   //search for color map entries
   r->setColorShadingAlgorithm( QgsRasterLayer::ColorRampShader );
-  QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )r->rasterShader()->rasterShaderFunction();
+  QgsColorRampShader *myRasterShaderFunction = ( QgsColorRampShader * )r->rasterShader()->rasterShaderFunction();
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
 
   QDomNodeList colorMapEntryList = colorMapElem.elementsByTagName( "ColorMapEntry" );
@@ -936,7 +936,7 @@ bool QgsSLDConfigParser::rasterSymbologyFromUserStyle( const QDomElement& userSt
 #endif //0
 }
 
-bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
+bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement &userStyleElement, QgsVectorLayer *vec ) const
 {
   // TODO create rule based labeling from user's SLD
   // (there is QgsVectorLayer::readSldLabeling() that does something very similar)
@@ -945,7 +945,7 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   return false;
 }
 
-QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const
+QgsVectorLayer *QgsSLDConfigParser::contourLayerFromRaster( const QDomElement &userStyleElem, QgsRasterLayer *rasterLayer ) const
 {
   QgsDebugMsg( "Entering." );
 
@@ -981,7 +981,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
     return nullptr;
   }
 
-  QTemporaryFile* tmpFile1 = new QTemporaryFile();
+  QTemporaryFile *tmpFile1 = new QTemporaryFile();
   tmpFile1->open();
   mFilesToRemove.push_back( tmpFile1 );
   QString tmpBaseName = tmpFile1->fileName();
@@ -1008,7 +1008,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   if ( maxValue > minValue )
   {
     //find first level
-    currentLevel = ( int )(( minValue - offset ) / equidistance + 0.5 ) * equidistance + offset;
+    currentLevel = ( int )( ( minValue - offset ) / equidistance + 0.5 ) * equidistance + offset;
     while ( currentLevel <= maxValue )
     {
       ++numberOfLevels;
@@ -1018,7 +1018,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
 
   double *adfFixedLevels = new double[numberOfLevels];
   int    nFixedLevelCount = numberOfLevels;
-  currentLevel = ( int )(( minValue - offset ) / equidistance + 0.5 ) * equidistance + offset;
+  currentLevel = ( int )( ( minValue - offset ) / equidistance + 0.5 ) * equidistance + offset;
   for ( int i = 0; i < numberOfLevels; ++i )
   {
     adfFixedLevels[i] = currentLevel;
@@ -1124,11 +1124,11 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   mFilePathsToRemove.push_back( tmpBaseName + ".dbf" );
   mFilePathsToRemove.push_back( tmpBaseName + ".shx" );
 
-  QgsVectorLayer* contourLayer = new QgsVectorLayer( tmpFileName, QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *contourLayer = new QgsVectorLayer( tmpFileName, QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
 
   //create renderer
-  QgsFeatureRenderer* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
-  contourLayer->setRenderer( theRenderer );
+  QgsFeatureRenderer *renderer = rendererFromUserStyle( userStyleElem, contourLayer );
+  contourLayer->setRenderer( renderer );
 
   //add labeling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );
@@ -1137,7 +1137,7 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   return contourLayer;
 }
 
-QDomElement QgsSLDConfigParser::findUserLayerElement( const QString& layerName ) const
+QDomElement QgsSLDConfigParser::findUserLayerElement( const QString &layerName ) const
 {
   QDomElement defaultResult;
   if ( mXMLDoc )
@@ -1162,7 +1162,7 @@ QDomElement QgsSLDConfigParser::findUserLayerElement( const QString& layerName )
   return defaultResult;
 }
 
-QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userLayerElem, const QString& layerName, bool allowCaching ) const
+QgsMapLayer *QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement &userLayerElem, const QString &layerName, bool allowCaching ) const
 {
   if ( !mFallbackParser )
   {
@@ -1176,7 +1176,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   }
 
   QgsDebugMsg( "Entering." );
-  QgsMSLayerBuilder* layerBuilder = nullptr;
+  QgsMSLayerBuilder *layerBuilder = nullptr;
   QDomElement builderRootElement;
 
   //hosted vector data?
@@ -1240,36 +1240,36 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
     return nullptr;
   }
 
-  QgsMapLayer* theMapLayer = layerBuilder->createMapLayer( builderRootElement, layerName, mFilesToRemove, mLayersToRemove, allowCaching );
-  if ( theMapLayer )
+  QgsMapLayer *mapLayer = layerBuilder->createMapLayer( builderRootElement, layerName, mFilesToRemove, mLayersToRemove, allowCaching );
+  if ( mapLayer )
   {
-    setCrsForLayer( builderRootElement, theMapLayer ); //consider attributes "epsg" and "proj"
+    setCrsForLayer( builderRootElement, mapLayer ); //consider attributes "epsg" and "proj"
   }
 
   //maybe the datasource is defined in the fallback SLD?
-  if ( !theMapLayer && mFallbackParser )
+  if ( !mapLayer && mFallbackParser )
   {
-    QList<QgsMapLayer*> fallbackList = mFallbackParser->mapLayerFromStyle( layerName, QLatin1String( "" ), allowCaching );
+    QList<QgsMapLayer *> fallbackList = mFallbackParser->mapLayerFromStyle( layerName, QLatin1String( "" ), allowCaching );
     if ( !fallbackList.isEmpty() )
     {
-      QgsMapLayer* fallbackLayer = fallbackList.at( 0 ); //todo: prevent crash if layer list is empty
+      QgsMapLayer *fallbackLayer = fallbackList.at( 0 ); //todo: prevent crash if layer list is empty
       if ( fallbackLayer )
       {
-        theMapLayer = dynamic_cast<QgsVectorLayer*>( fallbackLayer );
+        mapLayer = dynamic_cast<QgsVectorLayer *>( fallbackLayer );
       }
     }
   }
 
 #if 0 //todo: fixme
   //GML from outside the SLD?
-  if ( !theMapLayer )
+  if ( !mapLayer )
   {
-    QMap<QString, QDomDocument*>::const_iterator gmlIt = mExternalGMLDatasets.find( layerName );
+    QMap<QString, QDomDocument *>::const_iterator gmlIt = mExternalGMLDatasets.find( layerName );
 
     if ( gmlIt != mExternalGMLDatasets.end() )
     {
       QgsDebugMsg( "Trying to get maplayer from external GML" );
-      theMapLayer = vectorLayerFromGML( gmlIt.value()->documentElement() );
+      mapLayer = vectorLayerFromGML( gmlIt.value()->documentElement() );
     }
   }
 #endif //0
@@ -1279,19 +1279,19 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
   QDomNode rasterInterpolationNode = userLayerElem.namedItem( QStringLiteral( "RasterInterpolation" ) );
   if ( !rasterInterpolationNode.isNull() )
   {
-    QgsVectorLayer* vectorCast = dynamic_cast<QgsVectorLayer*>( theMapLayer );
+    QgsVectorLayer *vectorCast = dynamic_cast<QgsVectorLayer *>( mapLayer );
     if ( vectorCast )
     {
       builderRootElement = rasterInterpolationNode.toElement();
       layerBuilder = new QgsInterpolationLayerBuilder( vectorCast );
-      theMapLayer = layerBuilder->createMapLayer( builderRootElement, layerName, mFilesToRemove, mLayersToRemove, allowCaching );
+      mapLayer = layerBuilder->createMapLayer( builderRootElement, layerName, mFilesToRemove, mLayersToRemove, allowCaching );
     }
   }
 
-  return theMapLayer;
+  return mapLayer;
 }
 
-void QgsSLDConfigParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const
+void QgsSLDConfigParser::setCrsForLayer( const QDomElement &layerElem, QgsMapLayer *ml ) const
 {
   //create CRS if specified as attribute ("epsg" or "proj")
   QString epsg = layerElem.attribute( QStringLiteral( "epsg" ), QLatin1String( "" ) );

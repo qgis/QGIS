@@ -58,7 +58,7 @@ class CORE_EXPORT QgsSimplifyMethod
     inline bool forceLocalOptimization() const { return mForceLocalOptimization; }
 
     //! Creates a geometry simplifier according to specified method
-    static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );
+    static QgsAbstractGeometrySimplifier *createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod );
 
   protected:
     //! Simplification method

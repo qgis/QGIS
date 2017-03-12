@@ -37,7 +37,7 @@ class QgsOracleTableModel : public QStandardItemModel
     void addTableEntry( const QgsOracleLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex& index, const QString& sql );
+    void setSql( const QModelIndex &index, const QString &sql );
 
     //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }

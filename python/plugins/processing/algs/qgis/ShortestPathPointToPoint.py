@@ -204,7 +204,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
 
         director.addStrategy(strategy)
         builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
-                                  iface.mapCanvas().hasCrsTransformEnabled(),
+                                  True,
                                   tolerance)
         feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, [startPoint, endPoint])

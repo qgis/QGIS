@@ -57,9 +57,9 @@
 // Default values are for C++, SIP bindings will override their
 // options in in init()
 
-QString* QgsServer::sConfigFilePath = nullptr;
-QgsCapabilitiesCache* QgsServer::sCapabilitiesCache = nullptr;
-QgsServerInterfaceImpl* QgsServer::sServerInterface = nullptr;
+QString *QgsServer::sConfigFilePath = nullptr;
+QgsCapabilitiesCache *QgsServer::sCapabilitiesCache = nullptr;
+QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
 bool QgsServer::sInitialized =  false;
 QgsServerSettings QgsServer::sSettings;
@@ -69,7 +69,7 @@ QgsServiceRegistry QgsServer::sServiceRegistry;
 QgsServer::QgsServer( )
 {
   // QgsApplication must exist
-  if ( qobject_cast<QgsApplication*>( qApp ) == nullptr )
+  if ( qobject_cast<QgsApplication *>( qApp ) == nullptr )
   {
     qFatal( "A QgsApplication must exist before a QgsServer instance can be created." );
     abort();
@@ -77,9 +77,9 @@ QgsServer::QgsServer( )
   init();
 }
 
-QString& QgsServer::serverName()
+QString &QgsServer::serverName()
 {
-  static QString* name = new QString( QStringLiteral( "qgis_server" ) );
+  static QString *name = new QString( QStringLiteral( "qgis_server" ) );
   return *name;
 }
 
@@ -134,7 +134,7 @@ QFileInfo QgsServer::defaultProjectFile()
  * @param parameterMap
  * @param logLevel
  */
-void QgsServer::printRequestParameters( const QMap< QString, QString>& parameterMap, QgsMessageLog::MessageLevel logLevel )
+void QgsServer::printRequestParameters( const QMap< QString, QString> &parameterMap, QgsMessageLog::MessageLevel logLevel )
 {
   if ( logLevel > QgsMessageLog::INFO )
   {
@@ -154,7 +154,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
  * @param parameters
  * @return config file path
  */
-QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QString, QString>& parameters )
+QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QString, QString> &parameters )
 {
   QString cfPath( defaultConfigPath );
   QString projectFile = sSettings.projectFile();
@@ -303,7 +303,7 @@ void QgsServer::putenv( const QString &var, const QString &val )
  * @return response headers and body
  */
 
-void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& response )
+void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response )
 {
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
@@ -316,32 +316,32 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
     time.start();
   }
 
-  //Pass the filters to the requestHandler, this is needed for the following reasons:
+  // Pass the filters to the requestHandler, this is needed for the following reasons:
   // Allow server request to call sendResponse plugin hook if enabled
-  QgsFilterResponseDecorator theResponse( sServerInterface->filters(), response );
+  QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
 
   //Request handler
-  QgsRequestHandler theRequestHandler( request, theResponse );
+  QgsRequestHandler requestHandler( request, response );
 
   try
   {
     // TODO: split parse input into plain parse and processing from specific services
-    theRequestHandler.parseInput();
+    requestHandler.parseInput();
   }
-  catch ( QgsMapServiceException& e )
+  catch ( QgsMapServiceException &e )
   {
     QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
-    theRequestHandler.setServiceException( e );
+    requestHandler.setServiceException( e );
   }
 
   // Set the request handler into the interface for plugins to manipulate it
-  sServerInterface->setRequestHandler( &theRequestHandler );
+  sServerInterface->setRequestHandler( &requestHandler );
 
   // Call  requestReady() method (if enabled)
-  theResponse.start();
+  responseDecorator.start();
 
   // Plugins may have set exceptions
-  if ( !theRequestHandler.exceptionRaised() )
+  if ( !requestHandler.exceptionRaised() )
   {
     try
     {
@@ -356,7 +356,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       if ( projectIt == mProjectRegistry.constEnd() )
       {
         // load the project
-        QgsProject* project = new QgsProject();
+        QgsProject *project = new QgsProject();
         project->setFileName( configFilePath );
         if ( project->read() )
         {
@@ -389,14 +389,14 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
       QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
       if ( !outputFileName.isEmpty() )
       {
-        theRequestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+        requestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
       }
 
       // Lookup for service
-      QgsService* service = sServiceRegistry.getService( serviceString, versionString );
+      QgsService *service = sServiceRegistry.getService( serviceString, versionString );
       if ( service )
       {
-        service->executeRequest( request, theResponse, projectIt.value() );
+        service->executeRequest( request, responseDecorator, projectIt.value() );
       }
       else
       {
@@ -404,20 +404,20 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
                                       QStringLiteral( "Service unknown or unsupported" ) ) ;
       }
     }
-    catch ( QgsServerException& ex )
+    catch ( QgsServerException &ex )
     {
-      theResponse.write( ex );
+      responseDecorator.write( ex );
     }
-    catch ( QgsException& ex )
+    catch ( QgsException &ex )
     {
       // Internal server error
-      theResponse.sendError( 500, ex.what() );
+      response.sendError( 500, ex.what() );
     }
   }
   // Terminate the response
-  theResponse.finish();
+  responseDecorator.finish();
 
-  // We are done using theRequestHandler in plugins, make sure we don't access
+  // We are done using requestHandler in plugins, make sure we don't access
   // to a deleted request handler from Python bindings
   sServerInterface->clearRequestHandler();
 
@@ -427,7 +427,7 @@ void QgsServer::handleRequest( QgsServerRequest& request, QgsServerResponse& res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryString )
+QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &queryString )
 {
   /*
    * This is mainly for python bindings, passing QUERY_STRING
@@ -443,11 +443,11 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   QByteArray ba;
 
   // XXX This is mainly used in tests
-  char* requestMethod = getenv( "REQUEST_METHOD" );
+  char *requestMethod = getenv( "REQUEST_METHOD" );
   if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
   {
     method = QgsServerRequest::PostMethod;
-    const char* data = getenv( "REQUEST_BODY" );
+    const char *data = getenv( "REQUEST_BODY" );
     if ( data )
     {
       ba.append( data );

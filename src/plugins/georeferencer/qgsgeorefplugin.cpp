@@ -29,7 +29,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter (prefix with 'the')
+ *   variableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -78,11 +78,11 @@ static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.p
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mActionRunGeoref( nullptr )
-    , mPluginGui( nullptr )
+QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
+  , mActionRunGeoref( nullptr )
+  , mPluginGui( nullptr )
 {
 }
 
@@ -136,25 +136,25 @@ void QgsGeorefPlugin::unload()
 }
 
 //! Set icons to the current theme
-void QgsGeorefPlugin::setCurrentTheme( const QString& )
+void QgsGeorefPlugin::setCurrentTheme( const QString & )
 {
   if ( mActionRunGeoref )
     mActionRunGeoref->setIcon( getThemeIcon( QStringLiteral( "/mGeorefRun.png" ) ) );
 }
 
-QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
+QIcon QgsGeorefPlugin::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::activeThemePath() + "/plugins" + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + name );
   }
   else
   {
-    return QIcon( ":/icons/default" + theName );
+    return QIcon( ":/icons/default" + name );
   }
 }
 
@@ -182,9 +182,9 @@ QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new QgsGeorefPlugin( theQgisInterfacePointer );
+  return new QgsGeorefPlugin( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -223,7 +223,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

@@ -40,7 +40,7 @@ class HistogramItem: public QwtPlotItem
     void setSpacing( int spacing );
     int spacing() const;
 
-    void setPen( const QPen& pen );
+    void setPen( const QPen &pen );
     QPen pen() const;
 
     virtual QwtDoubleRect boundingRect() const override;

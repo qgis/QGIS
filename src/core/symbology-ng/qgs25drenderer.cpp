@@ -60,23 +60,23 @@
   ")"
 
 Qgs25DRenderer::Qgs25DRenderer()
-    : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
+  : QgsFeatureRenderer( QStringLiteral( "25dRenderer" ) )
 {
   mSymbol.reset( new QgsFillSymbol() );
 
   mSymbol->deleteSymbolLayer( 0 ); // We never asked for the default layer
 
-  QgsSymbolLayer* floor = QgsSimpleFillSymbolLayer::create();
+  QgsSymbolLayer *floor = QgsSimpleFillSymbolLayer::create();
 
   QgsStringMap wallProperties;
   wallProperties.insert( QStringLiteral( "geometryModifier" ), WALL_EXPRESSION );
   wallProperties.insert( QStringLiteral( "symbolType" ), QStringLiteral( "Fill" ) );
-  QgsSymbolLayer* walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
+  QgsSymbolLayer *walls = QgsGeometryGeneratorSymbolLayer::create( wallProperties );
 
   QgsStringMap roofProperties;
   roofProperties.insert( QStringLiteral( "geometryModifier" ), ROOF_EXPRESSION );
   roofProperties.insert( QStringLiteral( "symbolType" ), QStringLiteral( "Fill" ) );
-  QgsSymbolLayer* roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );
+  QgsSymbolLayer *roof = QgsGeometryGeneratorSymbolLayer::create( roofProperties );
 
   floor->setLocked( true );
 
@@ -84,8 +84,8 @@ Qgs25DRenderer::Qgs25DRenderer()
   mSymbol->appendSymbolLayer( walls );
   mSymbol->appendSymbolLayer( roof );
 
-  QgsEffectStack* effectStack = new QgsEffectStack();
-  QgsOuterGlowEffect* glowEffect = new QgsOuterGlowEffect();
+  QgsEffectStack *effectStack = new QgsEffectStack();
+  QgsOuterGlowEffect *glowEffect = new QgsOuterGlowEffect();
   glowEffect->setBlurLevel( 5 );
   glowEffect->setSpreadUnit( QgsUnitTypes::RenderMapUnits );
   effectStack->appendEffect( glowEffect );
@@ -103,14 +103,14 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   QgsFeatureRequest::OrderBy orderBy;
   orderBy << QgsFeatureRequest::OrderByClause(
-    ORDER_BY_EXPRESSION,
-    false );
+            ORDER_BY_EXPRESSION,
+            false );
 
   setOrderBy( orderBy );
   setOrderByEnabled( true );
 }
 
-QDomElement Qgs25DRenderer::save( QDomDocument& doc )
+QDomElement Qgs25DRenderer::save( QDomDocument &doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
 
@@ -123,9 +123,9 @@ QDomElement Qgs25DRenderer::save( QDomDocument& doc )
   return rendererElem;
 }
 
-QgsFeatureRenderer* Qgs25DRenderer::create( QDomElement& element )
+QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element )
 {
-  Qgs25DRenderer* renderer = new Qgs25DRenderer();
+  Qgs25DRenderer *renderer = new Qgs25DRenderer();
 
   QDomNodeList symbols = element.elementsByTagName( QStringLiteral( "symbol" ) );
   if ( symbols.size() )
@@ -136,36 +136,36 @@ QgsFeatureRenderer* Qgs25DRenderer::create( QDomElement& element )
   return renderer;
 }
 
-void Qgs25DRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+void Qgs25DRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
   mSymbol->startRender( context, fields );
 }
 
-void Qgs25DRenderer::stopRender( QgsRenderContext& context )
+void Qgs25DRenderer::stopRender( QgsRenderContext &context )
 {
   mSymbol->stopRender( context );
 }
 
-QSet<QString> Qgs25DRenderer::usedAttributes( const QgsRenderContext& context ) const
+QSet<QString> Qgs25DRenderer::usedAttributes( const QgsRenderContext &context ) const
 {
   return mSymbol->usedAttributes( context );
 }
 
-QgsFeatureRenderer* Qgs25DRenderer::clone() const
+QgsFeatureRenderer *Qgs25DRenderer::clone() const
 {
-  Qgs25DRenderer* c = new Qgs25DRenderer();
+  Qgs25DRenderer *c = new Qgs25DRenderer();
   c->mSymbol.reset( mSymbol->clone() );
   return c;
 }
 
-QgsSymbol*Qgs25DRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
+QgsSymbol *Qgs25DRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
   return mSymbol.get();
 }
 
-QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext& context )
+QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext &context )
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -173,20 +173,20 @@ QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext& context )
   return lst;
 }
 
-QgsFillSymbolLayer* Qgs25DRenderer::roofLayer() const
+QgsFillSymbolLayer *Qgs25DRenderer::roofLayer() const
 {
-  return static_cast<QgsFillSymbolLayer*>( mSymbol->symbolLayer( 2 )->subSymbol()->symbolLayer( 0 ) );
+  return static_cast<QgsFillSymbolLayer *>( mSymbol->symbolLayer( 2 )->subSymbol()->symbolLayer( 0 ) );
 }
 
-QgsFillSymbolLayer* Qgs25DRenderer::wallLayer() const
+QgsFillSymbolLayer *Qgs25DRenderer::wallLayer() const
 {
-  return static_cast<QgsFillSymbolLayer*>( mSymbol->symbolLayer( 1 )->subSymbol()->symbolLayer( 0 ) );
+  return static_cast<QgsFillSymbolLayer *>( mSymbol->symbolLayer( 1 )->subSymbol()->symbolLayer( 0 ) );
 }
 
-QgsOuterGlowEffect* Qgs25DRenderer::glowEffect() const
+QgsOuterGlowEffect *Qgs25DRenderer::glowEffect() const
 {
-  QgsEffectStack* stack = static_cast<QgsEffectStack*>( mSymbol->symbolLayer( 0 )->paintEffect() );
-  return static_cast<QgsOuterGlowEffect*>( stack->effect( 0 ) );
+  QgsEffectStack *stack = static_cast<QgsEffectStack *>( mSymbol->symbolLayer( 0 )->paintEffect() );
+  return static_cast<QgsOuterGlowEffect *>( stack->effect( 0 ) );
 }
 
 bool Qgs25DRenderer::shadowEnabled() const
@@ -204,7 +204,7 @@ QColor Qgs25DRenderer::shadowColor() const
   return glowEffect()->color();
 }
 
-void Qgs25DRenderer::setShadowColor( const QColor& shadowColor )
+void Qgs25DRenderer::setShadowColor( const QColor &shadowColor )
 {
   glowEffect()->setColor( shadowColor );
 }
@@ -224,10 +224,10 @@ QColor Qgs25DRenderer::wallColor() const
   return wallLayer()->fillColor();
 }
 
-void Qgs25DRenderer::setWallColor( const QColor& wallColor )
+void Qgs25DRenderer::setWallColor( const QColor &wallColor )
 {
   wallLayer()->setFillColor( wallColor );
-  wallLayer()->setOutlineColor( wallColor );
+  wallLayer()->setStrokeColor( wallColor );
 }
 
 void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
@@ -245,17 +245,17 @@ QColor Qgs25DRenderer::roofColor() const
   return roofLayer()->fillColor();
 }
 
-void Qgs25DRenderer::setRoofColor( const QColor& roofColor )
+void Qgs25DRenderer::setRoofColor( const QColor &roofColor )
 {
   roofLayer()->setFillColor( roofColor );
-  roofLayer()->setOutlineColor( roofColor );
+  roofLayer()->setStrokeColor( roofColor );
 }
 
-Qgs25DRenderer* Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer* renderer )
+Qgs25DRenderer *Qgs25DRenderer::convertFromRenderer( QgsFeatureRenderer *renderer )
 {
   if ( renderer->type() == QLatin1String( "25dRenderer" ) )
   {
-    return static_cast<Qgs25DRenderer*>( renderer->clone() );
+    return static_cast<Qgs25DRenderer *>( renderer->clone() );
   }
   else
   {

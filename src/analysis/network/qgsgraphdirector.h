@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   signals:
     void buildProgress( int, int ) const;
-    void buildMessage( const QString& ) const;
+    void buildMessage( const QString & ) const;
 
   public:
 
@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     }
 
     //! Add optimization strategy
-    void addStrategy( QgsNetworkStrategy* prop )
+    void addStrategy( QgsNetworkStrategy *prop )
     {
       mStrategies.push_back( prop );
     }
@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     virtual QString name() const = 0;
 
   protected:
-    QList<QgsNetworkStrategy*> mStrategies;
+    QList<QgsNetworkStrategy *> mStrategies;
 };
 
 #endif // QGSGRAPHDIRECTOR_H

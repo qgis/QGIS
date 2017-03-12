@@ -32,14 +32,14 @@ namespace QgsWfs
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
-      QgsServiceException( const QString& code, const QString& message,
+      QgsServiceException( const QString &code, const QString &message,
                            int responseCode = 200 )
-          : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.2.0" ) )
+        : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.2.0" ) )
       {}
 
-      QgsServiceException( const QString& code, const QString& message, const QString& locator,
+      QgsServiceException( const QString &code, const QString &message, const QString &locator,
                            int responseCode = 200 )
-          : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
+        : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
       {}
 
   };
@@ -52,8 +52,8 @@ namespace QgsWfs
   class QgsSecurityAccessException: public QgsServiceException
   {
     public:
-      QgsSecurityAccessException( const QString& message, const QString& locator = QString() )
-          : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
+      QgsSecurityAccessException( const QString &message, const QString &locator = QString() )
+        : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
       {}
   };
 
@@ -64,8 +64,8 @@ namespace QgsWfs
   class QgsRequestNotWellFormedException: public QgsServiceException
   {
     public:
-      QgsRequestNotWellFormedException( const QString& message, const QString& locator = QString() )
-          : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
+      QgsRequestNotWellFormedException( const QString &message, const QString &locator = QString() )
+        : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
       {}
   };
 

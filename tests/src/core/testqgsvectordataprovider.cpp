@@ -30,8 +30,8 @@ class TestQgsVectorDataProvider : public QObject
     Q_OBJECT
   public:
     TestQgsVectorDataProvider()
-        : vlayerPoints( 0 )
-        , vlayerLines( 0 )
+      : vlayerPoints( 0 )
+      , vlayerLines( 0 )
     {}
 
   private slots:
@@ -51,8 +51,8 @@ class TestQgsVectorDataProvider : public QObject
 
   private:
 
-    QgsVectorLayer* vlayerPoints = nullptr;
-    QgsVectorLayer* vlayerLines = nullptr;
+    QgsVectorLayer *vlayerPoints = nullptr;
+    QgsVectorLayer *vlayerLines = nullptr;
 };
 
 void TestQgsVectorDataProvider::initTestCase()
@@ -90,12 +90,12 @@ void TestQgsVectorDataProvider::cleanupTestCase()
 
 static double keep6digits( double x )
 {
-  return qRound( x*1e6 ) / 1e6;
+  return qRound( x * 1e6 ) / 1e6;
 }
 
-static void checkFid4( QgsFeature& f, bool hasGeometry, bool hasAttrs, int onlyOneAttribute )
+static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyOneAttribute )
 {
-  const QgsAttributes& attrs = f.attributes();
+  const QgsAttributes &attrs = f.attributes();
 
   QCOMPARE( f.id(), ( QgsFeatureId )4 );
 
@@ -149,7 +149,7 @@ void TestQgsVectorDataProvider::select_checkContents()
   QFETCH( int, onlyOneAttribute );
 
   // base select: check num. features, check geometry, check attrs
-  QgsVectorDataProvider* pr = vlayerPoints->dataProvider();
+  QgsVectorDataProvider *pr = vlayerPoints->dataProvider();
   QgsFeatureIterator fi = pr->getFeatures( request );
 
   bool foundFid4 = false;
@@ -193,7 +193,7 @@ void TestQgsVectorDataProvider::select_checkSubset()
   QFETCH( int, count );
 
   // base select: check num. features, check geometry, check attrs
-  QgsVectorDataProvider* pr = vlayerLines->dataProvider();
+  QgsVectorDataProvider *pr = vlayerLines->dataProvider();
   QgsFeatureIterator fi = pr->getFeatures( request );
 
   int realCount = 0;
@@ -208,7 +208,7 @@ void TestQgsVectorDataProvider::select_checkSubset()
 
 void TestQgsVectorDataProvider::featureAtId()
 {
-  QgsVectorDataProvider* pr = vlayerLines->dataProvider();
+  QgsVectorDataProvider *pr = vlayerLines->dataProvider();
   QgsFeatureRequest request;
   request.setFilterFid( 4 );
   QVERIFY( request.filterType() == QgsFeatureRequest::FilterFid );

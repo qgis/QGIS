@@ -65,7 +65,7 @@ class SERVER_EXPORT QgsServerInterface
      * @param requestHandler request handler
      * @note not available in Python bindings
      */
-    virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
+    virtual void setRequestHandler( QgsRequestHandler *requestHandler ) = 0;
 
     /**
      * Clear the request handler
@@ -78,26 +78,26 @@ class SERVER_EXPORT QgsServerInterface
      * Get pointer to the capabiblities cache
      * @return QgsCapabilitiesCache
      */
-    virtual QgsCapabilitiesCache* capabilitiesCache() = 0;
+    virtual QgsCapabilitiesCache *capabilitiesCache() = 0;
 
     /**
      * Get pointer to the request handler
      * @return QgsRequestHandler
      */
-    virtual QgsRequestHandler* requestHandler() = 0;
+    virtual QgsRequestHandler *requestHandler() = 0;
 
     /**
      * Register a QgsServerFilter
      * @param filter the QgsServerFilter to add
      * @param priority an optional priority for the filter order
      */
-    virtual void registerFilter( QgsServerFilter* filter, int priority = 0 ) = 0;
+    virtual void registerFilter( QgsServerFilter *filter, int priority = 0 ) = 0;
 
     /**
      * Set the filters map
      * @param filters the QgsServerFiltersMap
      */
-    virtual void setFilters( QgsServerFiltersMap* filters ) = 0;
+    virtual void setFilters( QgsServerFiltersMap *filters ) = 0;
 
     /**
      * Return the list of current QgsServerFilter
@@ -109,13 +109,13 @@ class SERVER_EXPORT QgsServerInterface
      * @param accessControl the access control to register
      * @param priority the priority used to order them
      */
-    virtual void registerAccessControl( QgsAccessControlFilter* accessControl, int priority = 0 ) = 0;
+    virtual void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) = 0;
 
     //! Gets the registered access control filters
-    virtual QgsAccessControl* accessControls() const = 0;
+    virtual QgsAccessControl *accessControls() const = 0;
 
     //! Return an enrironment variable, used to pass  environment variables to python
-    virtual QString getEnv( const QString& name ) const = 0;
+    virtual QString getEnv( const QString &name ) const = 0;
 
     /**
      * Return the configuration file path
@@ -127,25 +127,25 @@ class SERVER_EXPORT QgsServerInterface
      * Set the configuration file path
      * @param configFilePath QString with the configuration file path
      */
-    virtual void setConfigFilePath( const QString& configFilePath ) = 0;
+    virtual void setConfigFilePath( const QString &configFilePath ) = 0;
 
     /**
      * Remove entry from config cache
      * @param path the path of the file to remove
      */
-    virtual void removeConfigCacheEntry( const QString& path ) = 0;
+    virtual void removeConfigCacheEntry( const QString &path ) = 0;
 
     /**
      * Remove entries from layer cache
      * @param path the path of the project which own the layers to be removed
      */
-    virtual void removeProjectLayers( const QString& path ) = 0;
+    virtual void removeProjectLayers( const QString &path ) = 0;
 
     /**
      * Return the service registry
      * @return QgsServiceResgistry
      */
-    virtual QgsServiceRegistry* serviceRegistry() = 0;
+    virtual QgsServiceRegistry *serviceRegistry() = 0;
 
     /**
      * Return the server settings
@@ -153,7 +153,7 @@ class SERVER_EXPORT QgsServerInterface
      *
      * @note not available in python bindings
      */
-    virtual QgsServerSettings* serverSettings() = 0;
+    virtual QgsServerSettings *serverSettings() = 0;
 
   private:
     QString mConfigFilePath;

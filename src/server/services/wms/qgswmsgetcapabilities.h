@@ -26,9 +26,9 @@ namespace QgsWms
 
   /** Output GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
-                             const QString& version, const QgsServerRequest& request,
-                             QgsServerResponse& response, bool projectSettings = false );
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                             const QString &version, const QgsServerRequest &request,
+                             QgsServerResponse &response, bool projectSettings = false );
 
   /**
    * Create WMS GetCapabilities document
@@ -37,8 +37,8 @@ namespace QgsWms
    * @param version WMS version
    * @param projectSettings If true: add extended project information (does not validate against WMS schema)
    */
-  QDomDocument getCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
-                                const QString& version, const QgsServerRequest& request, bool projectSettings );
+  QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                                const QString &version, const QgsServerRequest &request, bool projectSettings );
 
 
 } // samespace QgsWms

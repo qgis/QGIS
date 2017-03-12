@@ -34,17 +34,17 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      *
      * @param element XML information
      */
-    static QgsFeatureRenderer* create( QDomElement& element );
-    QDomElement save( QDomDocument& doc ) override;
+    static QgsFeatureRenderer *create( QDomElement &element );
+    QDomElement save( QDomDocument &doc ) override;
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-    void stopRender( QgsRenderContext& context ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
 
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
-    QgsFeatureRenderer* clone() const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QgsFeatureRenderer *clone() const override;
 
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /**
      * Get the roof color
@@ -54,7 +54,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the roof color
      */
-    void setRoofColor( const QColor& roofColor );
+    void setRoofColor( const QColor &roofColor );
 
     /**
      * Get the wall color
@@ -64,7 +64,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the wall color
      */
-    void setWallColor( const QColor& wallColor );
+    void setWallColor( const QColor &wallColor );
 
     /**
      * Set wall shading enabled
@@ -84,7 +84,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the shadow's color
      */
-    void setShadowColor( const QColor& shadowColor );
+    void setShadowColor( const QColor &shadowColor );
 
     /**
      * Get the shadow's spread distance in map units
@@ -101,7 +101,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
      * we assume that the internals are not compatible and create a new default
      * 2.5D renderer.
      */
-    static Qgs25DRenderer* convertFromRenderer( QgsFeatureRenderer* renderer );
+    static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer );
 
     /**
      * Is the shadow enabled
@@ -115,9 +115,9 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
 
   private:
 
-    QgsFillSymbolLayer* roofLayer() const;
-    QgsFillSymbolLayer* wallLayer() const;
-    QgsOuterGlowEffect* glowEffect() const;
+    QgsFillSymbolLayer *roofLayer() const;
+    QgsFillSymbolLayer *wallLayer() const;
+    QgsOuterGlowEffect *glowEffect() const;
 
     std::unique_ptr<QgsSymbol> mSymbol;
 };

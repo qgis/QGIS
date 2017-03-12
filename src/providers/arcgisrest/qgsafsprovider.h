@@ -33,14 +33,14 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    QgsAfsProvider( const QString& uri );
+    QgsAfsProvider( const QString &uri );
 
-    bool getFeature( QgsFeatureId id, QgsFeature& f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
+    bool getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
 
     /* Inherited from QgsVectorDataProvider */
-    QgsAbstractFeatureSource* featureSource() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override { return QStringLiteral( "ESRI ArcGIS Feature Server" ); }
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsWkbTypes::Type wkbType() const override { return static_cast<QgsWkbTypes::Type>( mGeometryType ); }
     long featureCount() const override { return mObjectIds.size(); }
     QgsFields fields() const override { return mFields; }
@@ -58,7 +58,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
     /* Inherited from QgsDataProvider */
     QgsCoordinateReferenceSystem crs() const override { return mSourceCRS; }
-    void setDataSourceUri( const QString & uri ) override;
+    void setDataSourceUri( const QString &uri ) override;
     QgsRectangle extent() const override { return mExtent; }
     bool isValid() const override { return mValid; }
     /* Read only for the moment

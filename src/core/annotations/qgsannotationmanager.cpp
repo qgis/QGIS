@@ -18,9 +18,9 @@
 #include "qgsannotation.h"
 #include "qgsannotationregistry.h"
 
-QgsAnnotationManager::QgsAnnotationManager( QgsProject* project )
-    : QObject( project )
-    , mProject( project )
+QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
+  : QObject( project )
+  , mProject( project )
 {
 
 }
@@ -30,7 +30,7 @@ QgsAnnotationManager::~QgsAnnotationManager()
   clear();
 }
 
-bool QgsAnnotationManager::addAnnotation( QgsAnnotation* annotation )
+bool QgsAnnotationManager::addAnnotation( QgsAnnotation *annotation )
 {
   if ( !annotation )
     return false;
@@ -44,7 +44,7 @@ bool QgsAnnotationManager::addAnnotation( QgsAnnotation* annotation )
   return true;
 }
 
-bool QgsAnnotationManager::removeAnnotation( QgsAnnotation* annotation )
+bool QgsAnnotationManager::removeAnnotation( QgsAnnotation *annotation )
 {
   if ( !annotation )
     return false;
@@ -62,18 +62,18 @@ bool QgsAnnotationManager::removeAnnotation( QgsAnnotation* annotation )
 
 void QgsAnnotationManager::clear()
 {
-  Q_FOREACH ( QgsAnnotation* a, mAnnotations )
+  Q_FOREACH ( QgsAnnotation *a, mAnnotations )
   {
     removeAnnotation( a );
   }
 }
 
-QList<QgsAnnotation*> QgsAnnotationManager::annotations() const
+QList<QgsAnnotation *> QgsAnnotationManager::annotations() const
 {
   return mAnnotations;
 }
 
-bool QgsAnnotationManager::readXml( const QDomElement& element, const QDomDocument& doc )
+bool QgsAnnotationManager::readXml( const QDomElement &element, const QDomDocument &doc )
 {
   clear();
   //restore each annotation
@@ -112,15 +112,15 @@ bool QgsAnnotationManager::readXml( const QDomElement& element, const QDomDocume
   return result;
 }
 
-QDomElement QgsAnnotationManager::writeXml( QDomDocument& doc ) const
+QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc ) const
 {
   QDomElement annotationsElem = doc.createElement( QStringLiteral( "Annotations" ) );
-  QListIterator<QgsAnnotation*> i( mAnnotations );
+  QListIterator<QgsAnnotation *> i( mAnnotations );
   // save lowermost annotation (at end of list) first
   i.toBack();
   while ( i.hasPrevious() )
   {
-    QgsAnnotation* annotation = i.previous();
+    QgsAnnotation *annotation = i.previous();
 
     if ( !annotation )
     {
@@ -132,10 +132,10 @@ QDomElement QgsAnnotationManager::writeXml( QDomDocument& doc ) const
   return annotationsElem;
 }
 
-void QgsAnnotationManager::createAnnotationFromXml( const QDomElement& element, const QDomDocument& doc )
+void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QDomDocument &doc )
 {
   QString type = element.tagName();
-  QgsAnnotation* annotation = QgsApplication::annotationRegistry()->create( type );
+  QgsAnnotation *annotation = QgsApplication::annotationRegistry()->create( type );
   if ( !annotation )
     return;
 

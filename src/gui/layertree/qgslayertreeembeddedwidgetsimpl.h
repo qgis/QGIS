@@ -35,7 +35,7 @@ class QgsLayerTreeTransparencyWidget : public QWidget
 {
     Q_OBJECT
   public:
-    QgsLayerTreeTransparencyWidget( QgsMapLayer* layer );
+    QgsLayerTreeTransparencyWidget( QgsMapLayer *layer );
 
     virtual QSize sizeHint() const override;
 
@@ -44,7 +44,7 @@ class QgsLayerTreeTransparencyWidget : public QWidget
       public:
         virtual QString id() const override;
         virtual QString name() const override;
-        virtual QgsLayerTreeTransparencyWidget* createWidget( QgsMapLayer* layer, int widgetIndex ) override;
+        virtual QgsLayerTreeTransparencyWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
         virtual bool supportsLayer( QgsMapLayer *layer ) override;
     };
 
@@ -54,9 +54,9 @@ class QgsLayerTreeTransparencyWidget : public QWidget
     void layerTrChanged();
 
   private:
-    QgsMapLayer* mLayer = nullptr;
-    QSlider* mSlider = nullptr;
-    QTimer* mTimer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
+    QSlider *mSlider = nullptr;
+    QTimer *mTimer = nullptr;
 };
 ///@endcond
 #endif // QGSLAYERTREEEMBEDDEDWIDGETSIMPL_H

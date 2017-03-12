@@ -52,20 +52,20 @@ class TestQgsAuthManager: public QObject
     void cleanupTempDir();
     QList<QgsAuthMethodConfig> registerAuthConfigs();
 
-    void reportRow( const QString& msg );
-    void reportHeader( const QString& msg );
+    void reportRow( const QString &msg );
+    void reportHeader( const QString &msg );
 
     QString mPkiData;
     QString mTempDir;
-    const char* mPass = nullptr;
+    const char *mPass = nullptr;
     QString mReport;
 };
 
 
 TestQgsAuthManager::TestQgsAuthManager()
-    : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
-    , mTempDir( QDir::tempPath() + "/auth" )
-    , mPass( "pass" )
+  : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
+  , mTempDir( QDir::tempPath() + "/auth" )
+  , mPass( "pass" )
 {
 }
 
@@ -163,12 +163,12 @@ void TestQgsAuthManager::init()
   mReport += "<h2>" + QString( QTest::currentTestFunction() ) + "</h2>\n";
 }
 
-void TestQgsAuthManager::reportRow( const QString& msg )
+void TestQgsAuthManager::reportRow( const QString &msg )
 {
   mReport += msg + "<br>\n";
 }
 
-void TestQgsAuthManager::reportHeader( const QString& msg )
+void TestQgsAuthManager::reportHeader( const QString &msg )
 {
   mReport += "<h3>" + msg + "</h3>\n";
 }
@@ -199,7 +199,7 @@ void TestQgsAuthManager::testMasterPassword()
 
   authm->clearMasterPassword();
   QVERIFY( !authm->masterPasswordIsSet() );
-  QVERIFY( !authm->setMasterPassword( "wrongpass" , true ) );
+  QVERIFY( !authm->setMasterPassword( "wrongpass", true ) );
   QVERIFY( !authm->masterPasswordIsSet() );
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();

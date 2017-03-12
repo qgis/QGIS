@@ -118,13 +118,13 @@ class QgsDataSourceUri
     QString geometryColumn() const;
 
     //! set use Estimated Metadata
-    void setUseEstimatedMetadata( bool theFlag );
+    void setUseEstimatedMetadata( bool flag );
 
     //! Returns true if estimated metadata are used
     bool useEstimatedMetadata() const;
 
     //! Set to true to disable selection by id
-    void disableSelectAtId( bool theFlag );
+    void disableSelectAtId( bool flag );
     //! Returns whether the selection by id is disabled
     bool selectAtIdDisabled() const;
 

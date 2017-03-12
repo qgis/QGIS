@@ -28,9 +28,9 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
 
   QgsPoint mPoint;
 };
@@ -41,11 +41,11 @@ class TestQgsSnappingUtils : public QObject
     Q_OBJECT
   public:
     TestQgsSnappingUtils()
-        : mVL( 0 )
+      : mVL( 0 )
     {}
 
   private:
-    QgsVectorLayer* mVL = nullptr;
+    QgsVectorLayer *mVL = nullptr;
   private slots:
 
     void initTestCase()
@@ -151,7 +151,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m.isValid() );
 
       // now check with our layer
-      mapSettings.setLayers( QList<QgsMapLayer*>() << mVL );
+      mapSettings.setLayers( QList<QgsMapLayer *>() << mVL );
       u.setMapSettings( mapSettings );
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );
@@ -192,7 +192,7 @@ class TestQgsSnappingUtils : public QObject
       //         \/
       //         /\    .
       // (0,0)  x  x (1,0)
-      QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsPolyline polyline1, polyline2;
       polyline1 << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
       polyline2 << QgsPoint( 1, 0 ) << QgsPoint( 0, 1 );

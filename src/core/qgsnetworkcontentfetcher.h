@@ -47,12 +47,12 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * signal will be emitted when content has been fetched.
      * @param url URL to fetch
      */
-    void fetchContent( const QUrl& url );
+    void fetchContent( const QUrl &url );
 
     /** Returns a reference to the network reply
      * @returns QNetworkReply for fetched URL content
      */
-    QNetworkReply* reply();
+    QNetworkReply *reply();
 
     /** Returns the fetched content as a string
      * @returns string containing network content
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 
   private:
 
-    QNetworkReply* mReply = nullptr;
+    QNetworkReply *mReply = nullptr;
 
     bool mContentLoaded;
 

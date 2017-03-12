@@ -6,7 +6,7 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
 
   public:
     QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent );
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent );
     ~QgsMultiBandColorRendererWidget();
 
     QgsRasterRenderer* renderer();
@@ -22,5 +22,5 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     void doComputations();
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+    void loadMinMax( int bandNo, double min, double max );
 };

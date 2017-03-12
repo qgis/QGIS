@@ -51,7 +51,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      * QGIS when it attempts to instantiate the plugin.
      * @param qI Pointer to the QgisInterface object.
      */
-    explicit QgsGrassPlugin( QgisInterface * qI );
+    explicit QgsGrassPlugin( QgisInterface *qI );
 
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
@@ -82,7 +82,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     virtual ~QgsGrassPlugin();
 
     //! Get an icon from the active theme if possible
-    static QIcon getThemeIcon( const QString &theName );
+    static QIcon getThemeIcon( const QString &name );
 
   public slots:
     //! init the gui
@@ -118,14 +118,14 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! New project
     void newProject();
     //! update plugin icons when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( QString themeName );
     void setTransform();
     //! Called when a new layer was added to map registry
-    void onLayerWasAdded( QgsMapLayer* theMapLayer );
+    void onLayerWasAdded( QgsMapLayer *mapLayer );
     //! Called when editing of a layer started
     void onEditingStarted();
     void onEditingStopped();
-    void onCurrentLayerChanged( QgsMapLayer* layer );
+    void onCurrentLayerChanged( QgsMapLayer *layer );
 
     void onFieldsChanged();
 

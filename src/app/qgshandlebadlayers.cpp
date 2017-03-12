@@ -25,20 +25,20 @@
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsmessagebar.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
 #include <QPushButton>
 #include <QMessageBox>
-#include <QSettings>
 #include <QUrl>
 
 QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
 {
 }
 
-void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode>& layers )
+void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
@@ -59,9 +59,9 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode>& layers )
 }
 
 
-QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode>& layers )
-    : QDialog( QgisApp::instance() )
-    , mLayers( layers )
+QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
+  : QDialog( QgisApp::instance() )
+  , mLayers( layers )
 {
   setupUi( this );
 
@@ -206,7 +206,7 @@ QString QgsHandleBadLayers::filename( int row )
   return QString::null;
 }
 
-void QgsHandleBadLayers::setFilename( int row, const QString& filename )
+void QgsHandleBadLayers::setFilename( int row, const QString &filename )
 {
   if ( !QFileInfo::exists( filename ) )
     return;
@@ -288,8 +288,8 @@ void QgsHandleBadLayers::browseClicked()
   {
     QString title = tr( "Select new directory of selected files" );
 
-    QSettings settings;
-    QString lastDir = settings.value( QStringLiteral( "/UI/missingDirectory" ), QDir::homePath() ).toString();
+    QgsSettings settings;
+    QString lastDir = settings.value( QStringLiteral( "UI/missingDirectory" ), QDir::homePath() ).toString();
     QString selectedFolder = QFileDialog::getExistingDirectory( this, title, lastDir );
     if ( selectedFolder.isEmpty() )
     {
@@ -324,7 +324,7 @@ void QgsHandleBadLayers::browseClicked()
 
 void QgsHandleBadLayers::editAuthCfg()
 {
-  QToolButton *btn = qobject_cast<QToolButton*>( sender() );
+  QToolButton *btn = qobject_cast<QToolButton *>( sender() );
   int row = -1;
   for ( int i = 0; i < mLayerList->rowCount(); i++ )
   {

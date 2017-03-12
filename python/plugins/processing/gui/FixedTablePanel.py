@@ -53,7 +53,7 @@ class FixedTablePanel(BASE, WIDGET):
                 self.table[i].append('0')
 
         self.leText.setText(
-            self.tr('Fixed table %dx%d' % (param.numRows, len(param.cols))))
+            self.tr('Fixed table {0}x{1}').format(param.numRows, len(param.cols)))
 
         self.btnSelect.clicked.connect(self.showFixedTableDialog)
 
@@ -63,5 +63,5 @@ class FixedTablePanel(BASE, WIDGET):
         if dlg.rettable is not None:
             self.table = dlg.rettable
 
-        self.leText.setText(self.tr('Fixed table %dx%d' % (
-            len(self.table), len(self.param.cols))))
+        self.leText.setText(self.tr('Fixed table {0}x{1}').format(
+            len(self.table), len(self.param.cols)))

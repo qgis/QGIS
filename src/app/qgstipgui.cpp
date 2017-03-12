@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QPushButton>
 
 #include "qgstipgui.h"
+#include "qgssettings.h"
 #include "qgsapplication.h"
-#include <qgstip.h>
-#include <qgstipfactory.h>
+#include "qgstip.h"
+#include "qgstipfactory.h"
 
 #ifdef Q_OS_MACX
 QgsTipGui::QgsTipGui( QWidget *parent )
-    : QDialog( parent, Qt::WindowSystemMenuHint )  // Dialog with close button only
+  : QDialog( parent, Qt::WindowSystemMenuHint )  // Dialog with close button only
 #else
-QgsTipGui::QgsTipGui( QWidget *parent )
-    : QDialog( parent )  // Normal dialog in non Mac-OS
+QgsTipGui::QgsTipGui( QWidget * parent )
+  : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
@@ -74,12 +74,12 @@ void QgsTipGui::showTip( QgsTip myTip )
   txtTip->setHtml( content );
 }
 
-void QgsTipGui::on_cbxDisableTips_toggled( bool theFlag )
+void QgsTipGui::on_cbxDisableTips_toggled( bool flag )
 {
-  QSettings settings;
+  QgsSettings settings;
   //note the ! below as when the cbx is checked (true) we want to
   //change the setting to false
-  settings.setValue( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), !theFlag );
+  settings.setValue( QStringLiteral( "/qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), !flag );
   hide();
 }
 

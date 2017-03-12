@@ -71,26 +71,26 @@ class CORE_EXPORT QgsField
      *                all the elements don't need to have the same type, leave
      *                this to QVariant::Invalid.
      */
-    QgsField( const QString& name = QString(),
+    QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              const QString& typeName = QString(),
+              const QString &typeName = QString(),
               int len = 0,
               int prec = 0,
-              const QString& comment = QString(),
+              const QString &comment = QString(),
               QVariant::Type subType = QVariant::Invalid );
 
     /** Copy constructor
      */
-    QgsField( const QgsField& other );
+    QgsField( const QgsField &other );
 
     /** Assignment operator
      */
-    QgsField& operator =( const QgsField &other );
+    QgsField &operator =( const QgsField &other );
 
     virtual ~QgsField() = default;
 
-    bool operator==( const QgsField& other ) const;
-    bool operator!=( const QgsField& other ) const;
+    bool operator==( const QgsField &other ) const;
+    bool operator!=( const QgsField &other ) const;
 
     /** Returns the name of the field.
      * @see setName()
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsField
      * Set the field name.
      * @param name Name of the field
      */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /**
      * Set variant type.
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsField
      * Set the field type.
      * @param typeName Field type
      */
-    void setTypeName( const QString& typeName );
+    void setTypeName( const QString &typeName );
 
     /**
      * Set the field length.
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsField
     /**
      * Set the field comment
      */
-    void setComment( const QString& comment );
+    void setComment( const QString &comment );
 
     /** Returns the expression used when calculating the default value for the field.
      * @returns expression evaluated when calculating default values for field, or an
@@ -206,21 +206,21 @@ class CORE_EXPORT QgsField
      * @note added in QGIS 3.0
      * @see defaultValueExpression()
      */
-    void setDefaultValueExpression( const QString& expression );
+    void setDefaultValueExpression( const QString &expression );
 
     /**
      * Returns constraints which are present for the field.
      * @note added in QGIS 3.0
      * @see setConstraints()
      */
-    const QgsFieldConstraints& constraints() const;
+    const QgsFieldConstraints &constraints() const;
 
     /**
      * Sets constraints which are present for the field.
      * @note added in QGIS 3.0
      * @see constraints()
      */
-    void setConstraints( const QgsFieldConstraints& constraints );
+    void setConstraints( const QgsFieldConstraints &constraints );
 
     /** Returns the alias for the field (the friendly displayed name of the field ),
      * or an empty string if there is no alias.
@@ -234,10 +234,10 @@ class CORE_EXPORT QgsField
      * @see alias()
      * @note added in QGIS 3.0
      */
-    void setAlias( const QString& alias );
+    void setAlias( const QString &alias );
 
     //! Formats string for display
-    QString displayString( const QVariant& v ) const;
+    QString displayString( const QVariant &v ) const;
 
     /**
      * Converts the provided variant to a compatible format
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsField
      *
      * @return   True if the conversion was successful
      */
-    bool convertCompatible( QVariant& v ) const;
+    bool convertCompatible( QVariant &v ) const;
 
     //! Allows direct construction of QVariants from fields.
     operator QVariant() const
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsField
      *
      * @param v  The value to set
      */
-    void setEditorWidgetSetup( const QgsEditorWidgetSetup& v );
+    void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
 
     /**
      * Get the editor widget setup for the field.
@@ -281,9 +281,9 @@ class CORE_EXPORT QgsField
 Q_DECLARE_METATYPE( QgsField )
 
 //! Writes the field to stream out. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsField &field );
 //! Reads a field from stream in into field. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsField &field );
 
 
 #endif

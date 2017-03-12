@@ -48,7 +48,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * @param qIface  pointer to QgisInterface instance that is passed to the rulesDialog
      * @param parent parent object
      */
-    checkDock( QgisInterface* qIface, QWidget *parent = nullptr );
+    checkDock( QgisInterface *qIface, QWidget *parent = nullptr );
     ~checkDock();
 
   private slots:
@@ -87,7 +87,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * Handles error selection
      * @param index clicked index in the table
      */
-    void errorListClicked( const QModelIndex& index );
+    void errorListClicked( const QModelIndex &index );
 
     /**
      * Deletes allocated errors' data
@@ -98,7 +98,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * Filters all errors involving features from specified layer
      * @param layerId layer ID
      */
-    void parseErrorListByLayer( const QString& layerId );
+    void parseErrorListByLayer( const QString &layerId );
 
     /**
      * Clears rubberbands when window is hidden
@@ -108,25 +108,25 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
 
 
   private:
-    rulesDialog* mConfigureDialog = nullptr;
+    rulesDialog *mConfigureDialog = nullptr;
 
-    QgsRubberBand* mRBConflict = nullptr;
-    QgsRubberBand* mRBFeature1 = nullptr;
-    QgsRubberBand* mRBFeature2 = nullptr;
-    QgsVertexMarker* mVMConflict = nullptr;
-    QgsVertexMarker* mVMFeature1 = nullptr;
-    QgsVertexMarker* mVMFeature2 = nullptr;
-    QList<QgsRubberBand*> mRbErrorMarkers;
+    QgsRubberBand *mRBConflict = nullptr;
+    QgsRubberBand *mRBFeature1 = nullptr;
+    QgsRubberBand *mRBFeature2 = nullptr;
+    QgsVertexMarker *mVMConflict = nullptr;
+    QgsVertexMarker *mVMFeature1 = nullptr;
+    QgsVertexMarker *mVMFeature2 = nullptr;
+    QList<QgsRubberBand *> mRbErrorMarkers;
 
     ErrorList mErrorList;
-    DockModel* mErrorListModel = nullptr;
+    DockModel *mErrorListModel = nullptr;
 
-    QgisInterface* qgsInterface = nullptr;
+    QgisInterface *qgsInterface = nullptr;
 
     //pointer to topology tests table
-    QTableWidget* mTestTable = nullptr;
+    QTableWidget *mTestTable = nullptr;
 
-    topolTest* mTest = nullptr;
+    topolTest *mTest = nullptr;
 
     /**
      * Runs tests from the test table

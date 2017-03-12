@@ -155,7 +155,7 @@ class QgsDataItem : QObject
       NoCapabilities,
       SetCrs,  //!< Can set CRS on layer or group of layers
       Fertile, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast     //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
+      Fast     //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
     };
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 

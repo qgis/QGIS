@@ -90,7 +90,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
-                f = os.path.join(folder, descriptionFile)
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != '':

@@ -31,8 +31,8 @@
 #include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent )
-    , mCurrentItem( nullptr )
+  : QFrame( parent )
+  , mCurrentItem( nullptr )
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -92,14 +92,14 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCountdownTimer->setInterval( 1000 );
   connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
 
-  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
-  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem * ) ), this, SLOT( updateItemCount() ) );
+  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem * ) ), this, SLOT( updateItemCount() ) );
 
   // start hidden
   setVisible( false );
 }
 
-void QgsMessageBar::mousePressEvent( QMouseEvent * e )
+void QgsMessageBar::mousePressEvent( QMouseEvent *e )
 {
   if ( mCountProgress == childAt( e->pos() ) && e->button() == Qt::LeftButton )
   {
@@ -203,22 +203,22 @@ bool QgsMessageBar::clearWidgets()
   return !mCurrentItem && mItems.empty();
 }
 
-void QgsMessageBar::pushSuccess( const QString& title, const QString& message )
+void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
 {
   pushMessage( title, message, SUCCESS );
 }
 
-void QgsMessageBar::pushInfo( const QString& title, const QString& message )
+void QgsMessageBar::pushInfo( const QString &title, const QString &message )
 {
   pushMessage( title, message, INFO );
 }
 
-void QgsMessageBar::pushWarning( const QString& title, const QString& message )
+void QgsMessageBar::pushWarning( const QString &title, const QString &message )
 {
   pushMessage( title, message, WARNING );
 }
 
-void QgsMessageBar::pushCritical( const QString& title, const QString& message )
+void QgsMessageBar::pushCritical( const QString &title, const QString &message )
 {
   pushMessage( title, message, CRITICAL );
 }
@@ -270,10 +270,10 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   showItem( item );
 }
 
-QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
+QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
 {
   QgsMessageBarItem *item = nullptr;
-  item = dynamic_cast<QgsMessageBarItem*>( widget );
+  item = dynamic_cast<QgsMessageBarItem *>( widget );
   if ( item )
   {
     item->setLevel( level )->setDuration( duration );
@@ -292,18 +292,18 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsM
   pushItem( item );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
-  QgsMessageBarItem* item = new QgsMessageBarItem( text, INFO, 0, parent );
+  QgsMessageBarItem *item = new QgsMessageBarItem( text, INFO, 0, parent );
   return item;
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
 {
   return new QgsMessageBarItem( title, text, QgsMessageBar::INFO, 0, parent );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
   return new QgsMessageBarItem( widget, INFO, 0, parent );
 }

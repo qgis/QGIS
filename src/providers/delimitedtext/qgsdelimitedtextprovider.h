@@ -75,20 +75,20 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
       GeomAsWkt
     };
 
-    explicit QgsDelimitedTextProvider( const QString& uri = QString() );
+    explicit QgsDelimitedTextProvider( const QString &uri = QString() );
 
     virtual ~QgsDelimitedTextProvider();
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
     virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     /**
      * Get feature type.
@@ -154,7 +154,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Set the subset string used to create a subset of features in
      * the layer.
      */
-    virtual bool setSubsetString( const QString& subset, bool updateFeatureCount = true ) override;
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
@@ -189,7 +189,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * @param message  Pointer to a string to receive a status message
      * @return A list of field type strings, empty if not found or not valid
      */
-    QStringList readCsvtFieldTypes( const QString& filename, QString *message = nullptr );
+    QStringList readCsvtFieldTypes( const QString &filename, QString *message = nullptr );
 
   private slots:
 
@@ -204,14 +204,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void resetCachedSubset() const;
     void resetIndexes() const;
     void clearInvalidLines() const;
-    void recordInvalidLine( const QString& message );
-    void reportErrors( const QStringList& messages = QStringList(), bool showDialog = false ) const;
+    void recordInvalidLine( const QString &message );
+    void reportErrors( const QStringList &messages = QStringList(), bool showDialog = false ) const;
     static bool recordIsEmpty( QStringList &record );
-    void setUriParameter( const QString& parameter, const QString& value );
+    void setUriParameter( const QString &parameter, const QString &value );
 
 
     static QgsGeometry geomFromWkt( QString &sWkt, bool wktHasPrefixRegexp );
-    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString& decimalPoint, bool xyDms );
+    static bool pointFromXY( QString &sX, QString &sY, QgsPoint &point, const QString &decimalPoint, bool xyDms );
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer

@@ -329,6 +329,8 @@ Depends:
  python3-yaml,
  python3-future,
  python3-plotly,
+ python3-pyproj,
+ python3-owslib,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},

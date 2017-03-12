@@ -15,6 +15,7 @@
 
 %Include qgsapplication.sip
 %Include qgsaction.sip
+%Include qgssettings.sip
 %Include qgsactionmanager.sip
 %Include qgsactionscope.sip
 %Include qgsactionscoperegistry.sip
@@ -146,6 +147,7 @@
 %Include qgstracer.sip
 %Include qgstrackedvectorlayertools.sip
 %Include qgsunittypes.sip
+%Include qgsvector.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorfilewritertask.sip

@@ -70,7 +70,7 @@ class /* Q_SQL_EXPORT */ QSqlCachedResult: public QSqlResult
     typedef QVector<QVariant> ValueCache;
 
   protected:
-    QSqlCachedResult( const QSqlDriver * db ) : QSqlResult( db ) {}
+    QSqlCachedResult( const QSqlDriver *db ) : QSqlResult( db ) {}
 
     void init( int colCount );
     void cleanup();

@@ -48,7 +48,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Constructor
      * @param ml Map layer for which properties will be displayed
      */
-    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas* theCanvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
+    QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgisGui::ModalDialogFlags );
 
     ~QgsRasterLayerProperties();
 
@@ -62,7 +62,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Called when cancel button is pressed
     void onCancel();
     //! \brief Slot to update layer display name as original is edited.
-    void on_mLayerOrigNameLineEd_textEdited( const QString& text );
+    void on_mLayerOrigNameLineEd_textEdited( const QString &text );
     //! \brief this slot asks the rasterlayer to construct pyramids
     void on_buttonBuildPyramids_clicked();
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
@@ -70,7 +70,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user presses "Add Values Manually" button on the transparency page
     void on_pbnAddValuesManually_clicked();
     //! \brief slot executed when user changes the layer's CRS
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value
     void on_pbnDefaultValues_clicked();
     //! \brief slot executed when user wishes to export transparency values
@@ -85,7 +85,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when the reset null value to file default icon is selected
     //void on_btnResetNull_clicked();
 
-    void pixelSelected( const QgsPoint& );
+    void pixelSelected( const QgsPoint & );
     //! \brief slot executed when the transparency level changes.
     void sliderTransparency_valueChanged( int );
 
@@ -115,7 +115,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void toggleColorizeControls( bool colorizeEnabled );
 
     //! Transparency cell changed
-    void transparencyCellTextEdited( const QString & text );
+    void transparencyCellTextEdited( const QString &text );
 
     void aboutToShowStyleMenu();
 
@@ -124,7 +124,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
   signals:
     //! Emitted when changes to layer were saved to update legend
-    void refreshLegend( const QString& layerID, bool expandItem );
+    void refreshLegend( const QString &layerID, bool expandItem );
 
   private:
     //! \brief  A constant that signals property not used
@@ -148,7 +148,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     bool mRGBMinimumMaximumEstimated;
 
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
-    QgsRasterLayer * mRasterLayer = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
 
     /** \brief If the underlying raster layer doesn't have a provider
 
@@ -157,14 +157,14 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     //bool mRasterLayerIsInternal;
 
-    QgsRasterRendererWidget* mRendererWidget = nullptr;
+    QgsRasterRendererWidget *mRendererWidget = nullptr;
 
     bool rasterIsMultiBandColor();
 
     void setupTransparencyTable( int nBands );
 
     //! \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type
-    void populateTransparencyTable( QgsRasterRenderer* renderer );
+    void populateTransparencyTable( QgsRasterRenderer *renderer );
 
     void setTransparencyCell( int row, int column, double value );
     void setTransparencyCellValue( int row, int column, double value );
@@ -172,7 +172,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void setTransparencyToEdited( int row );
     void adjustTransparencyCellWidth( int row, int column );
 
-    void setRendererWidget( const QString& rendererName );
+    void setRendererWidget( const QString &rendererName );
 
     //TODO: we should move these gradient generators somewhere more generic
     //so they can be used generically throughout the app
@@ -184,10 +184,10 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     qreal mGradientHeight;
     qreal mGradientWidth;
 
-    QgsMapCanvas* mMapCanvas = nullptr;
-    QgsMapToolEmitPoint* mPixelSelectorTool = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMapToolEmitPoint *mPixelSelectorTool = nullptr;
 
-    QgsRasterHistogramWidget* mHistogramWidget = nullptr;
+    QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 
     QVector<bool> mTransparencyToEdited;
 

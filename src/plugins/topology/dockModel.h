@@ -32,10 +32,10 @@ class DockModel: public QAbstractTableModel
 
     /**
      * Constructor
-     * @param theErrorList reference to the ErrorList where errors will be stored
+     * @param errorList reference to the ErrorList where errors will be stored
      * @param parent parent object
      */
-    DockModel( ErrorList& theErrorList, QObject *parent );
+    DockModel( ErrorList &errorList, QObject *parent );
 
     /**
      * Returns header data
@@ -91,7 +91,7 @@ class DockModel: public QAbstractTableModel
     void resetModel();
 
   private:
-    ErrorList& mErrorlist;
+    ErrorList &mErrorlist;
     QList<QString> mHeader;
 };
 

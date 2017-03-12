@@ -22,20 +22,15 @@
 #include "qgsgeometry.h"
 #include "qgswkbptr.h"
 
-QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData )
-    : mDataIsCached( false )
-    , mLayerData( layerData )
+QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
+  : mDataIsCached( false )
+  , mLayerData( layerData )
 {
 
 }
 
 QgsInterpolator::QgsInterpolator()
-    : mDataIsCached( false )
-{
-
-}
-
-QgsInterpolator::~QgsInterpolator()
+  : mDataIsCached( false )
 {
 
 }
@@ -51,14 +46,14 @@ int QgsInterpolator::cacheBaseData()
   mCachedBaseData.clear();
   mCachedBaseData.reserve( 100000 );
 
-  Q_FOREACH ( const LayerData& layer, mLayerData )
+  Q_FOREACH ( const LayerData &layer, mLayerData )
   {
     if ( !layer.vectorLayer )
     {
       continue;
     }
 
-    QgsVectorLayer* vlayer = layer.vectorLayer;
+    QgsVectorLayer *vlayer = layer.vectorLayer;
     if ( !vlayer )
     {
       return 2;
@@ -76,12 +71,12 @@ int QgsInterpolator::cacheBaseData()
 
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
 
-    QgsFeature theFeature;
-    while ( fit.nextFeature( theFeature ) )
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
     {
       if ( !layer.zCoordInterpolation )
       {
-        QVariant attributeVariant = theFeature.attribute( layer.interpolationAttribute );
+        QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
         if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
         {
           continue;
@@ -93,7 +88,7 @@ int QgsInterpolator::cacheBaseData()
         }
       }
 
-      if ( addVerticesToCache( theFeature.geometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
+      if ( addVerticesToCache( feature.geometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
       {
         return 3;
       }
@@ -103,7 +98,7 @@ int QgsInterpolator::cacheBaseData()
   return 0;
 }
 
-int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, double attributeValue )
+int QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue )
 {
   if ( geom.isNull() )
     return 1;
@@ -112,7 +107,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
   QByteArray wkb( geom.exportToWkb() );
   QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
-  vertexData theVertex; //the current vertex
+  vertexData vertex; //the current vertex
 
   QgsWkbTypes::Type wkbType = geom.wkbType();
   switch ( wkbType )
@@ -123,16 +118,16 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
       FALLTHROUGH;
     case QgsWkbTypes::Point:
     {
-      currentWkbPtr >> theVertex.x >> theVertex.y;
+      currentWkbPtr >> vertex.x >> vertex.y;
       if ( zCoord && hasZValue )
       {
-        currentWkbPtr >> theVertex.z;
+        currentWkbPtr >> vertex.z;
       }
       else
       {
-        theVertex.z = attributeValue;
+        vertex.z = attributeValue;
       }
-      mCachedBaseData.push_back( theVertex );
+      mCachedBaseData.push_back( vertex );
       break;
     }
     case QgsWkbTypes::LineString25D:
@@ -145,23 +140,23 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
       currentWkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
       {
-        currentWkbPtr >> theVertex.x >> theVertex.y;
+        currentWkbPtr >> vertex.x >> vertex.y;
         if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
         {
-          currentWkbPtr >> theVertex.z;
+          currentWkbPtr >> vertex.z;
         }
         else
         {
-          theVertex.z = attributeValue;
+          vertex.z = attributeValue;
         }
-        mCachedBaseData.push_back( theVertex );
+        mCachedBaseData.push_back( vertex );
       }
       break;
     }
 #if 0
     case QgsWkbTypes::Polygon25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::Polygon:
     {
       int nRings;
@@ -206,7 +201,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     }
     case QgsWkbTypes::MultiPoint25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::MultiPoint:
     {
       int nPoints;
@@ -231,7 +226,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     }
     case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::MultiLineString:
     {
       int nLines;
@@ -277,7 +272,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry& geom, bool zCoord, d
     }
     case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
-      //intentional fall-through
+    //intentional fall-through
     case QgsWkbTypes::MultiPolygon:
     {
       int nPolys;

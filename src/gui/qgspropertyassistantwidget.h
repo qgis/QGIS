@@ -41,14 +41,14 @@ class GUI_EXPORT QgsPropertyAbstractTransformerWidget : public QWidget
 
   public:
 
-    QgsPropertyAbstractTransformerWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition() )
-        : QWidget( parent )
-        , mDefinition( definition )
+    QgsPropertyAbstractTransformerWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition() )
+      : QWidget( parent )
+      , mDefinition( definition )
     {}
 
-    virtual QgsPropertyTransformer* createTransformer( double minValue, double maxValue ) const = 0;
+    virtual QgsPropertyTransformer *createTransformer( double minValue, double maxValue ) const = 0;
 
-    virtual QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const;
+    virtual QList< QgsSymbolLegendNode * > generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const;
 
   signals:
 
@@ -66,9 +66,9 @@ class GUI_EXPORT QgsPropertyGenericNumericAssistantWidget : public QgsPropertyAb
 
   public:
 
-    QgsPropertyGenericNumericAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
+    QgsPropertyGenericNumericAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty() );
 
-    virtual QgsGenericNumericTransformer* createTransformer( double minValue, double maxValue ) const override;
+    virtual QgsGenericNumericTransformer *createTransformer( double minValue, double maxValue ) const override;
 
 };
 
@@ -78,11 +78,11 @@ class GUI_EXPORT QgsPropertySizeAssistantWidget : public QgsPropertyAbstractTran
 
   public:
 
-    QgsPropertySizeAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
+    QgsPropertySizeAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty() );
 
-    virtual QgsSizeScaleTransformer* createTransformer( double minValue, double maxValue ) const override;
+    virtual QgsSizeScaleTransformer *createTransformer( double minValue, double maxValue ) const override;
 
-    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
+    QList< QgsSymbolLegendNode * > generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const override;
 };
 
 class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTransformerWidget, private Ui::PropertyColorAssistant
@@ -91,11 +91,11 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
 
   public:
 
-    QgsPropertyColorAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(), const QgsProperty& initialState = QgsProperty() );
+    QgsPropertyColorAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(), const QgsProperty &initialState = QgsProperty() );
 
-    virtual QgsColorRampTransformer* createTransformer( double minValue, double maxValue ) const override;
+    virtual QgsColorRampTransformer *createTransformer( double minValue, double maxValue ) const override;
 
-    QList< QgsSymbolLegendNode* > generatePreviews( const QList<double>& breaks, QgsLayerTreeLayer* parent, const QgsSymbol* symbol, double minValue, double maxValue ) const override;
+    QList< QgsSymbolLegendNode * > generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const override;
 };
 
 ///@endcond PRIVATE
@@ -121,21 +121,21 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      * The \a initialState dictates the initial state to show in the widget. A corresponding \a layer
      * can also be set to allow population of GUI widgets such as field selectors.
      */
-    QgsPropertyAssistantWidget( QWidget* parent = nullptr, const QgsPropertyDefinition& definition = QgsPropertyDefinition(),
-                                const QgsProperty& initialState = QgsProperty(),
-                                const QgsVectorLayer* layer = nullptr );
+    QgsPropertyAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(),
+                                const QgsProperty &initialState = QgsProperty(),
+                                const QgsVectorLayer *layer = nullptr );
 
     /**
      * Register an expression context generator class that will be used to retrieve
      * an expression context for the button when required.
      */
-    void registerExpressionContextGenerator( QgsExpressionContextGenerator* generator );
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
      * Updates a \a property in place to corresponding to the current settings shown
      * in the widget.
      */
-    void updateProperty( QgsProperty& property );
+    void updateProperty( QgsProperty &property );
 
     /**
      * Sets a symbol which can be used for previews inside the widget. If not specified, default
@@ -154,18 +154,18 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
   private:
 
     QgsPropertyDefinition mDefinition;
-    const QgsVectorLayer* mLayer = nullptr;
-    QgsExpressionContextGenerator* mExpressionContextGenerator = nullptr;
-    QgsPropertyAbstractTransformerWidget* mTransformerWidget = nullptr;
+    const QgsVectorLayer *mLayer = nullptr;
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
+    QgsPropertyAbstractTransformerWidget *mTransformerWidget = nullptr;
 
-    QgsLayerTreeLayer* mLayerTreeLayer = nullptr;
+    QgsLayerTreeLayer *mLayerTreeLayer = nullptr;
     QgsLayerTreeGroup mRoot;
     QStandardItemModel mPreviewList;
 
     std::shared_ptr< QgsSymbol > mSymbol;
 
-    bool computeValuesFromExpression( const QString& expression, double& minValue, double& maxValue ) const;
-    bool computeValuesFromField( const QString& fieldName, double& minValue, double& maxValue ) const;
+    bool computeValuesFromExpression( const QString &expression, double &minValue, double &maxValue ) const;
+    bool computeValuesFromField( const QString &fieldName, double &minValue, double &maxValue ) const;
 
 };
 
@@ -176,9 +176,9 @@ class QgsAssistantPreviewItemDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsAssistantPreviewItemDelegate( QStandardItemModel* model ) : mModel( model ) {}
+    explicit QgsAssistantPreviewItemDelegate( QStandardItemModel *model ) : mModel( model ) {}
 
-    QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
+    QSize sizeHint( const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override
     {
       QSize size = mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
       size.rheight() += 6;
@@ -186,7 +186,7 @@ class QgsAssistantPreviewItemDelegate : public QItemDelegate
     }
 
   private:
-    QStandardItemModel* mModel = nullptr;
+    QStandardItemModel *mModel = nullptr;
 
 };
 

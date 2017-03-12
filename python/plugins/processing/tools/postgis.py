@@ -33,9 +33,11 @@ __revision__ = '$Format:%H$'
 import psycopg2
 import psycopg2.extensions  # For isolation levels
 import re
+import os
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceUri, QgsCredentials
+from qgis.core import QgsDataSourceUri, QgsCredentials, QgsSettings
+
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 # Use unicode!
@@ -43,11 +45,11 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 
 
 def uri_from_name(conn_name):
-    settings = QSettings()
+    settings = QgsSettings()
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
 
     if not settings.contains("database"):  # non-existent entry?
-        raise DbError('There is no defined database connection "%s".' % conn_name)
+        raise DbError(QCoreApplication.translate("postgis", 'There is no defined database connection "{0}".').format(conn_name))
 
     uri = QgsDataSourceUri()
 
@@ -160,8 +162,8 @@ class TableField(object):
         ALTER TABLE command.
         """
 
-        data_type = (self.data_type if not self.modifier or self.modifier
-                     < 0 else '%s(%d)' % (self.data_type, self.modifier))
+        data_type = (self.data_type if not self.modifier or self.modifier <
+                     0 else '%s(%d)' % (self.data_type, self.modifier))
         txt = '%s %s %s' % (self._quote(self.name), data_type,
                             self.is_null_txt())
         if self.default and len(self.default) > 0:
@@ -220,7 +222,7 @@ class GeoDB(object):
                                                                      password,
                                                                      err)
                 if not ok:
-                    raise DbError(u'Action canceled by user')
+                    raise DbError(QCoreApplication.translate("postgis", 'Action canceled by user'))
                 if user:
                     self.uri.setUsername(user)
                 if password:

@@ -34,13 +34,13 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     ~QgsMapToolPinLabels();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     bool isShowingPinned() const { return mShowPinned; }
     void setShowingPinned( bool showing ) { mShowPinned = showing; }
@@ -62,7 +62,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
   protected:
 
     //! Mapping of feature ids of layers that have been highlighted
-    QMap<QString, QgsRubberBand*> mHighlights;
+    QMap<QString, QgsRubberBand *> mHighlights;
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
@@ -73,17 +73,17 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     QRect mSelectRect;
 
     //! Stores selection marquee
-    QgsRubberBand* mRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
 
   private:
 
     //! Highlights a given label relative to whether its pinned and editable
-    void highlightLabel( const QgsLabelPosition& labelpos,
-                         const QString& id,
-                         const QColor& color );
+    void highlightLabel( const QgsLabelPosition &labelpos,
+                         const QString &id,
+                         const QColor &color );
 
     //! Select valid labels to pin or unpin
-    void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e );
+    void pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *e );
 
     //! Pin or unpin current label relative to whether its editable
     bool pinUnpinCurrentLabel( bool pin );
