@@ -44,3 +44,27 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
     conn.zMax = mSpinZMax->value();
   return conn;
 }
+
+void QgsXyzConnectionDialog::on_mCheckBoxZMin_stateChanged( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    mSpinZMin->setEnabled( true );
+  }
+  else
+  {
+    mSpinZMin->setEnabled( false );
+  }
+}
+
+void QgsXyzConnectionDialog::on_mCheckBoxZMax_stateChanged( int state )
+{
+  if ( state == Qt::Checked )
+  {
+    mSpinZMax->setEnabled( true );
+  }
+  else
+  {
+    mSpinZMax->setEnabled( false );
+  }
+}
