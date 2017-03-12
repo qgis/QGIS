@@ -21,5 +21,5 @@ Getting your pull request merged
 This is a volunteer project, so sometimes it may take a little while to merge
 your pull request.
 
-There is a [guide with hints for getting your pull requests merged](https://www.qgis.org/en/site/getinvolved/development/qgisdevelopersguide/git.html#pull-requests)
+There is a [guide with hints for getting your pull requests merged](https://docs.qgis.org/testing/en/docs/developers_guide/git.html#pull-requests)
 in the developers guide.
