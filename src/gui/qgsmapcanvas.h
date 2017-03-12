@@ -85,8 +85,17 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.16
     double magnificationFactor() const;
 
-    //! Set list of layers that should be shown in the canvas
-    //! @note added in 3.0
+    /**
+     * Sets the list of \a layers that should be shown in the canvas.
+     *
+     * If the map canvas has been associated with a map theme via a call
+     * to setTheme(), then any calls to setLayers() are ignored. It is necessary
+     * to first clear the theme association by calling setTheme() with an
+     * empty string before setLayers() calls can be made.
+     *
+     * @note added in 3.0
+     * @see layers()
+     */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -227,7 +236,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! return number of layers on the map
     int layerCount() const;
 
-    //! return list of layers within map canvas.
+    /**
+     * Return the list of layers shown within the map canvas.
+     * @see setLayers()
+     */
     QList<QgsMapLayer *> layers() const;
 
     /**
@@ -266,17 +278,39 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
-    //! Getter for stored overrides of styles for layers.
-    //! @note added in 2.12
+    /**
+     * Returns the stored overrides of styles for layers.
+     * @note added in 2.12
+     * @see setLayerStyleOverrides().
+     */
     QMap<QString, QString> layerStyleOverrides() const;
 
-    //! Setter for stored overrides of styles for layers.
-    //! @note added in 2.12
+    /**
+     * Sets the stored overrides of styles for rendering layers.
+     *
+     * If the map canvas has been associated with a map theme via a call
+     * to setTheme(), then any calls to setLayerStyleOverrides() are ignored. It is necessary
+     * to first clear the theme association by calling setTheme() with an
+     * empty string before setLayerStyleOverrides() calls can be made.
+     *
+     * @note added in 2.12
+     * @see layerStyleOverrides()
+     */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /**
      * Sets a map \a theme to show in the canvas. The theme name must match
      * a theme present in the associated project's QgsMapThemeCollection.
+     *
+     * When the canvas is associated to a map theme, it will automatically follow
+     * the layer selection and layer styles from that theme. Calls to setLayers()
+     * or setLayerStyleOverrides() will have no effect, and canvases associated
+     * with a QgsLayerTreeMapCanvasBridge will no longer synchronize their
+     * state with the layer tree. In these cases it is necessary to call
+     * setTheme() with an empty string to clear the theme association and
+     * allow map updates with setLayers(), setLayerStyleOverrides(), or via
+     * QgsLayerTreeMapCanvasBridge.
+     *
      * If an empty string is passed then the current theme association will be
      * cleared. The layers from the previously associated theme will remain
      * in the canvas, and a call to setLayers() may be necessary to define
@@ -571,7 +605,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void layerStyleOverridesChanged();
 
     /**
-     * Emitted when the map theme set for the canvas is changed.
+     * Emitted when the canvas has been assigned a different map theme.
      * @see setTheme()
      * @note added in QGIS 3.0
      */
@@ -762,6 +796,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
         @param errorMsg error message in case of error
         @return true in case of success*/
     bool boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorLayer *layer, QgsRectangle &bbox, QString &errorMsg ) const;
+
+    void setLayersPrivate( const QList<QgsMapLayer *> &layers );
 
     friend class TestQgsMapCanvas;
 

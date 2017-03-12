@@ -292,6 +292,15 @@ const QgsMapToPixel *QgsMapCanvas::getCoordinateTransform()
 
 void QgsMapCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 {
+  // following a theme => request denied!
+  if ( !mTheme.isEmpty() )
+    return;
+
+  setLayersPrivate( layers );
+}
+
+void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
+{
   QList<QgsMapLayer *> oldLayers = mSettings.layers();
 
   // update only if needed
@@ -487,6 +496,12 @@ void QgsMapCanvas::refreshMap()
 
   if ( !mTheme.isEmpty() )
   {
+    // IMPORTANT: we MUST set the layer style overrides here! (At the time of writing this
+    // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
+    // current state of the style. If we had stored the style overrides earlier (such as in
+    // mapThemeChanged slot) then this xml could be out of date...
+    // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
+    // just return the style name, we can instead set the overrides in mapThemeChanged and not here
     mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
   }
 
@@ -530,7 +545,17 @@ void QgsMapCanvas::mapThemeChanged( const QString &theme )
 {
   if ( theme == mTheme )
   {
-    setLayers( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    // set the canvas layers to match the new layers contained in the map theme
+    // NOTE: we do this when the theme layers change and not when we are refreshing the map
+    // as setLayers() sets up necessary connections to handle changes to the layers
+    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    // IMPORTANT: we don't set the layer style overrides here! (At the time of writing this
+    // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
+    // current state of the style. If changes were made to the style then this xml
+    // snapshot goes out of sync...
+    // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
+    // just return the style name, we can instead set the overrides here and not in refreshMap()
+
     clearCache();
     refresh();
   }
@@ -1628,7 +1653,7 @@ void QgsMapCanvas::setTheme( const QString &theme )
   else
   {
     mTheme = theme;
-    setLayers( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
     emit themeChanged( theme );
   }
 }
