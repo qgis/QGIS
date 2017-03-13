@@ -52,7 +52,7 @@ class BarPlot(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),
                                               self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+                                              ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterTableField(self.VALUE_FIELD,
                                               self.tr('Value field'),
                                               self.INPUT,
@@ -68,9 +68,10 @@ class BarPlot(GeoAlgorithm):
 
         output = self.getOutputValue(self.OUTPUT)
 
-        values = vector.values(layer, namefieldname, valuefieldname)
+        values = vector.values(layer, valuefieldname)
 
-        ind = np.arange(len(values[namefieldname]))
-        data = [go.Bar(x=ind,
+        x_var = [i[namefieldname] for i in layer.getFeatures()]
+
+        data = [go.Bar(x=x_var,
                        y=values[valuefieldname])]
         plt.offline.plot(data, filename=output, auto_open=False)
