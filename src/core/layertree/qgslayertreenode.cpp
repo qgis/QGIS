@@ -126,6 +126,26 @@ bool QgsLayerTreeNode::isItemVisibilityUncheckedRecursive() const
   return true;
 }
 
+void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &layers )
+{
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    const QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+    if ( nodeLayer->isVisible() )
+      layers << nodeLayer->layer();
+  }
+
+  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
+    fetchCheckedLayers( child, layers );
+}
+
+QList<QgsMapLayer *> QgsLayerTreeNode::checkedLayers() const
+{
+  QList<QgsMapLayer *> layers;
+  fetchCheckedLayers( this, layers );
+  return layers;
+}
+
 void QgsLayerTreeNode::setExpanded( bool expanded )
 {
   if ( mExpanded == expanded )

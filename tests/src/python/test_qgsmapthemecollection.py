@@ -204,6 +204,11 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         prj.setLayerOrder([layer, layer2, layer3])
         self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer3])
 
+        # test with no project layer order set, should respect tree order
+        prj.setLayerOrder([])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer3])
+        layer_node.setItemVisibilityChecked(True)
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer2, layer3])
 
 if __name__ == '__main__':
     unittest.main()

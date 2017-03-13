@@ -185,17 +185,25 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterLayerOrder() const
 
 QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
 {
-  QList< QgsMapLayer * > visible;
-  Q_FOREACH ( QgsMapLayer *layer, masterLayerOrder() )
+  QList< QgsMapLayer *> allLayers = masterLayerOrder();
+  QList< QgsMapLayer * > visibleLayers = mProject->layerTreeRoot()->checkedLayers();
+
+  if ( allLayers.isEmpty() )
   {
-    QgsLayerTreeLayer *nodeLayer = mProject->layerTreeRoot()->findLayer( layer );
-    if ( nodeLayer )
-    {
-      if ( nodeLayer->isVisible() )
-        visible << layer;
-    }
+    // no project layer order set
+    return visibleLayers;
   }
-  return visible;
+
+  else
+  {
+    QList< QgsMapLayer * > orderedVisibleLayers;
+    Q_FOREACH ( QgsMapLayer *layer, allLayers )
+    {
+      if ( visibleLayers.contains( layer ) )
+        orderedVisibleLayers << layer;
+    }
+    return orderedVisibleLayers;
+  }
 }
 
 

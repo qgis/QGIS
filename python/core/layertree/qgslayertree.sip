@@ -12,11 +12,8 @@
  */
 namespace QgsLayerTree
 {
-  //! Check whether the node is a valid group node
-  bool isGroup( QgsLayerTreeNode* node );
-
-  //! Check whether the node is a valid layer node
-  bool isLayer( QgsLayerTreeNode* node );
+  bool isGroup( QgsLayerTreeNode *node );
+  bool isLayer( const QgsLayerTreeNode *node );
 
   //! Cast node to a group. No type checking is done - use isGroup() to find out whether this operation is legal.
   // PYTHON: automatic cast
