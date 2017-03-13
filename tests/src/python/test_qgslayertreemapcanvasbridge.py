@@ -37,10 +37,55 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
+    def testLayerOrderUpdatedThroughBridge(self):
+        """ test that project layer order is updated when layer tree changes """
+
+        prj = QgsProject.instance()
+        prj.clear()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        canvas = QgsMapCanvas()
+        bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
+
+        #custom layer order
+        bridge.setHasCustomLayerOrder(True)
+        bridge.setCustomLayerOrder([layer3.id(), layer.id(), layer2.id()])
+        app.processEvents()
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer3.id(), layer.id(), layer2.id()])
+
+        # no custom layer order
+        bridge.setHasCustomLayerOrder(False)
+        app.processEvents()
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer.id(), layer2.id(), layer3.id()])
+
+        # mess around with the layer tree order
+        root = prj.layerTreeRoot()
+        layer_node = root.findLayer(layer2.id())
+        cloned_node = layer_node.clone()
+        parent = layer_node.parent()
+        parent.insertChildNode(0, cloned_node)
+        parent.removeChildNode(layer_node)
+        app.processEvents()
+        # make sure project respects this
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
+
+        # make sure project order includes ALL layers, not just visible ones
+        layer_node = root.findLayer(layer.id())
+        layer_node.setItemVisibilityChecked(False)
+        app.processEvents()
+        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
+
     def testCustomLayerOrderUpdatedFromProject(self):
         """ test that setting project layer order is reflected in custom layer order panel """
 
         prj = QgsProject.instance()
+        prj.clear()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
