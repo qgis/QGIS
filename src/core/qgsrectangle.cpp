@@ -288,10 +288,10 @@ QString QgsRectangle::toString( int thePrecision ) const
     rep = QStringLiteral( "Empty" );
   else
     rep = QStringLiteral( "%1,%2 : %3,%4" )
-          .arg( xmin, 0, 'f', precision )
-          .arg( ymin, 0, 'f', precision )
-          .arg( xmax, 0, 'f', precision )
-          .arg( ymax, 0, 'f', precision );
+          .arg( xmin, 0, 'f', thePrecision )
+          .arg( ymin, 0, 'f', thePrecision )
+          .arg( xmax, 0, 'f', thePrecision )
+          .arg( ymax, 0, 'f', thePrecision );
 
   QgsDebugMsgLevel( QString( "Extents : %1" ).arg( rep ), 4 );
 
