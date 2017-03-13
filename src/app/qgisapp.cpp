@@ -6828,6 +6828,7 @@ QgsComposer *QgisApp::createNewComposer( QString title )
   connect( newComposerObject, &QgsComposer::composerAdded, this, &QgisApp::composerAdded );
   connect( newComposerObject, &QgsComposer::composerWillBeRemoved, this, &QgisApp::composerWillBeRemoved );
   connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+  connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, newComposerObject, &QgsComposer::onCanvasLayersChanged );
 
   markDirty();
   return newComposerObject;
@@ -6931,6 +6932,7 @@ bool QgisApp::loadComposersFromProject( const QDomDocument &doc )
     connect( composer, &QgsComposer::composerAdded, this, &QgisApp::composerAdded );
     connect( composer, &QgsComposer::composerWillBeRemoved, this, &QgisApp::composerWillBeRemoved );
     connect( composer, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+    connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, composer, &QgsComposer::onCanvasLayersChanged );
 
     QgsDebugMsg( QString( "Loaded composer %1: %2ms" ).arg( title ).arg( t.elapsed() ) );
   }

@@ -114,6 +114,16 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
      */
     bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );
 
+  public slots:
+
+    /**
+     * Should be called whenever the app's canvas layers change (or layer order
+     * changes). Required to update composer maps which are synced to the canvas
+     * layer set with the new canvas layer set.
+     * @note added in QGIS 3.0
+     */
+    void onCanvasLayersChanged( const QList< QgsMapLayer * > &layers );
+
   protected:
     //! Move event
     virtual void moveEvent( QMoveEvent * ) override;
