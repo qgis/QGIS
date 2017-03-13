@@ -9702,7 +9702,7 @@ void QgisApp::newMapCanvas()
     }
   }
 
-  createNewMapCanvas( name );
+  createNewMapCanvas( name, true );
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
@@ -11750,8 +11750,8 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "y" ), w->y() );
     node.setAttribute( QStringLiteral( "width" ), w->width() );
     node.setAttribute( QStringLiteral( "height" ), w->height() );
-    node.setAttribute( QStringLiteral( "floating" ), w->isFloating() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-    node.setAttribute( QStringLiteral( "synced" ), w->isViewExtentSynchronized() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
+    node.setAttribute( QStringLiteral( "synced" ), w->isViewExtentSynchronized() );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
