@@ -14,7 +14,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
-  qgsdatetimeeditplugin.cpp  
+  qgsdatetimeeditplugin.cpp
   qgsdockwidgetplugin.cpp
   qgsdoublespinboxplugin.cpp
   qgsexpressionbuilderwidgetplugin.cpp
@@ -25,6 +25,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfilewidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
   qgsmaplayercomboboxplugin.cpp
+  qgspasswordlineeditplugin.cpp
   qgsprojectionselectionwidgetplugin.cpp
   qgspropertyoverridebuttonplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
@@ -49,6 +50,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfilewidgetplugin.h
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
+  qgspasswordlineeditplugin.h
   qgsprojectionselectionwidgetplugin.h
   qgspropertyoverridebuttonplugin.h
   qgsrelationeditorwidgetplugin.h
