@@ -33,7 +33,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   public:
     //! Constructor
-    QgsNewHttpConnection( QWidget *parent = nullptr, const QString &baseKey = "/Qgis/connections-wms/", const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewHttpConnection( QWidget *parent = nullptr, const QString &baseKey = "qgis/connections-wms/", const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
   public slots:
     // Saves the connection to ~/.qt/qgisrc

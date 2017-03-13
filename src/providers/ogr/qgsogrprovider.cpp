@@ -3391,7 +3391,7 @@ void QgsOgrProvider::open( OpenMode mode )
     if ( QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 &&
          IsLocalFile( mFilePath ) &&
          !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) &&
-         QgsSettings().value( QStringLiteral( "/qgis/walForSqlite3" ), true ).toBool() )
+         QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
     {
       // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
       // mode so as to avoid readers blocking writer(s), and vice-versa.

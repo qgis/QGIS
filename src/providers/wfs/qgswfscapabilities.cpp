@@ -482,7 +482,7 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 int QgsWfsCapabilities::defaultExpirationInSec()
 {
   QgsSettings s;
-  return s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
+  return s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
 }
 
 void QgsWfsCapabilities::parseSupportedOperations( const QDomElement &operationsElem,

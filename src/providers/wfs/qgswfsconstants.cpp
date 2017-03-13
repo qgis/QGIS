@@ -40,7 +40,7 @@ const QString QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG( QStringLite
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
 
-const QString QgsWFSConstants::CONNECTIONS_WFS( QStringLiteral( "/Qgis/connections-wfs/" ) );
+const QString QgsWFSConstants::CONNECTIONS_WFS( QStringLiteral( "qgis/connections-wfs/" ) );
 const QString QgsWFSConstants::SETTINGS_VERSION( QStringLiteral( "version" ) );
 const QString QgsWFSConstants::SETTINGS_MAXNUMFEATURES( QStringLiteral( "maxnumfeatures" ) );
 

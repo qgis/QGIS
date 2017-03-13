@@ -96,7 +96,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
-    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
       //IMPORTANT - this MUST be the last clause added!
       QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
@@ -132,7 +132,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   //     SELECT my_int_col::text FROM some_table ORDER BY some_table.my_int_col
   // but that's non-trivial
 #if 0
-  if ( QgsSettings().value( "/qgis/compileExpressions", true ).toBool() )
+  if ( QgsSettings().value( "qgis/compileExpressions", true ).toBool() )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {

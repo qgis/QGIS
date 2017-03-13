@@ -231,7 +231,7 @@ QList<QAction *> QgsWMSConnectionItem::actions()
 
 void QgsWMSConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QStringLiteral( "/Qgis/connections-wms/" ), mName );
+  QgsNewHttpConnection nc( nullptr, QStringLiteral( "qgis/connections-wms/" ), mName );
 
   if ( nc.exec() )
   {

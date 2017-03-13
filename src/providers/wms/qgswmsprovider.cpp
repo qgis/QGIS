@@ -3320,7 +3320,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 
   // add config parameter related to resolution
   QgsSettings s;
-  int defaultLegendGraphicResolution = s.value( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), 0 ).toInt();
+  int defaultLegendGraphicResolution = s.value( QStringLiteral( "qgis/defaultLegendGraphicResolution" ), 0 ).toInt();
   QgsDebugMsg( QString( "defaultLegendGraphicResolution: %1" ).arg( defaultLegendGraphicResolution ) );
   if ( defaultLegendGraphicResolution )
   {
@@ -3781,7 +3781,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     if ( cmd.expirationDate().isNull() )
     {
       QgsSettings s;
-      cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultTileExpiry" ), "24" ).toInt() * 60 * 60 ) );
+      cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultTileExpiry" ), "24" ).toInt() * 60 * 60 ) );
     }
 
     QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
@@ -3998,7 +3998,7 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   retry++;
 
   QgsSettings s;
-  int maxRetry = s.value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt();
+  int maxRetry = s.value( QStringLiteral( "qgis/defaultTileMaxRetry" ), "3" ).toInt();
   if ( retry > maxRetry )
   {
     if ( stat.errors < 100 )

@@ -220,7 +220,7 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString> &crsSet ) co
 void QgsSourceSelectDialog::addEntryToServerList()
 {
 
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a new %1 connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -232,7 +232,7 @@ void QgsSourceSelectDialog::addEntryToServerList()
 
 void QgsSourceSelectDialog::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
