@@ -667,7 +667,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             try:
                 os.remove(filename)
             except:
-                file(filename, "w").close()
+                open(filename, "w").close()
                 assert os.path.getsize(filename) == 0, "removal and truncation of {} failed".format(filename)
             # print "Deleted file - sleeping"
             time.sleep(1)

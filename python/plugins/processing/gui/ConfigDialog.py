@@ -32,7 +32,6 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QEvent
 from qgis.PyQt.QtWidgets import (QFileDialog,
-                                 QDialog,
                                  QStyle,
                                  QMessageBox,
                                  QStyledItemDelegate,
@@ -41,12 +40,10 @@ from qgis.PyQt.QtWidgets import (QFileDialog,
                                  QToolButton,
                                  QHBoxLayout,
                                  QComboBox,
-                                 QPushButton,
-                                 QApplication)
+                                 QPushButton)
 from qgis.PyQt.QtGui import (QIcon,
                              QStandardItemModel,
-                             QStandardItem,
-                             QCursor)
+                             QStandardItem)
 
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,

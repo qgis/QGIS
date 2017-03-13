@@ -34,7 +34,7 @@ from builtins import range
 
 import json
 import os.path
-from urllib.request import build_opener, HTTPError, install_opener, HTTPBasicAuthHandler, HTTPHandler, ProxyHandler
+from urllib.request import build_opener, install_opener, ProxyHandler
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMessageBox, QTreeWidgetItem, QWidget

@@ -40,7 +40,7 @@ from qgis.PyQt.QtGui import QIcon
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
-from processing.gui.ConfigDialog import ConfigOptionsPage, ConfigDialog
+from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog

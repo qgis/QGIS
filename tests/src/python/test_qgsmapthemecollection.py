@@ -65,7 +65,7 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         self.assertEqual(len(themes_changed_spy), 3)
         # remove valid
         collection.removeMapTheme('theme1')
-        self.assertEqual(len(theme_changed_spy), 3) # not changed - removed!
+        self.assertEqual(len(theme_changed_spy), 3)  # not changed - removed!
         self.assertEqual(len(themes_changed_spy), 4)
 
         # reinsert
@@ -93,11 +93,11 @@ class TestQgsMapThemeCollection(unittest.TestCase):
 
         # now kill layer 2
         project.removeMapLayer(layer2)
-        self.assertEqual(len(theme_changed_spy), 5) # signal should not be emitted - layer is not in record
+        self.assertEqual(len(theme_changed_spy), 5)  # signal should not be emitted - layer is not in record
         # now kill layer 1
         project.removeMapLayer(layer)
         app.processEvents()
-        self.assertEqual(len(theme_changed_spy), 6) # signal should be emitted - layer is in record
+        self.assertEqual(len(theme_changed_spy), 6)  # signal should be emitted - layer is in record
 
     def testMasterLayerOrder(self):
         """ test master layer order"""
