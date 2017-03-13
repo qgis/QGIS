@@ -30,6 +30,7 @@ class QgsMapCanvas : QGraphicsView
     bool isCachingEnabled() const;
     void clearCache();
     void refreshAllLayers();
+    void waitWhileRendering();
     void setParallelRenderingEnabled( bool enabled );
     bool isParallelRenderingEnabled() const;
     void setMapUpdateInterval( int timeMilliseconds );

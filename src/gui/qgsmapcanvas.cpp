@@ -2016,6 +2016,14 @@ void QgsMapCanvas::refreshAllLayers()
   refresh();
 }
 
+void QgsMapCanvas::waitWhileRendering()
+{
+  while ( mRefreshScheduled || mJob )
+  {
+    QgsApplication::processEvents();
+  }
+}
+
 void QgsMapCanvas::setSegmentationTolerance( double tolerance )
 {
   mSettings.setSegmentationTolerance( tolerance );
