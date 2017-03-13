@@ -22,6 +22,7 @@ Download and install following packages:
 | CMake | https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi |
 | GNU flex, GNU bison and GIT | http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit) |
 | OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit) |
+| ninja | https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip |
 
 OSGeo4W does not only provide ready packages for the current QGIS release and
 nightly builds of master, but also offers most of the dependencies needs to
