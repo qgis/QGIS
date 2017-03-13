@@ -63,7 +63,7 @@ class QgsMapOverviewCanvas;
 class QgsMapTool;
 class QgsSnappingUtils;
 class QgsRubberBand;
-
+class QgsMapCanvasAnnotationItem;
 
 /** \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
@@ -468,6 +468,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     @param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
+    /**
+     * Returns a list of all annotation items in the canvas.
+     * @note added in QGIS 3.0
+     */
+    QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
+
+    /**
+     * Returns true if annotations are visible within the map canvas.
+     * @note added in QGIS 3.0
+     * @see setAnnotationsVisible()
+     */
+    bool annotationsVisible() const { return mAnnotationsVisible; }
+
+    /**
+     * Sets whether annotations are \a visible in the canvas.
+     * @note added in QGIS 3.0
+     * @see annotationsVisible()
+     */
+    void setAnnotationsVisible( bool visible );
+
   public slots:
 
     //! Repaints the canvas map
@@ -783,6 +803,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QTimer mAutoRefreshTimer;
 
     QString mTheme;
+
+    bool mAnnotationsVisible = true;
 
     //! Force a resize of the map canvas item
     //! @note added in 2.16

@@ -33,6 +33,9 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotatio
   , mAnnotation( annotation )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
+  if ( mapCanvas && !mapCanvas->annotationsVisible() )
+    setVisible( false );
+
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );

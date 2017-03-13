@@ -87,9 +87,14 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   settingsMenu->addSeparator();
   settingsMenu->addAction( mActionSetCrs );
+  settingsMenu->addAction( mActionShowAnnotations );
   settingsMenu->addAction( mActionRename );
-  settingsMenu->addSeparator();
+
+  connect( settingsMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::settingsMenuAboutToShow );
+
   connect( mActionRename, &QAction::triggered, this, &QgsMapCanvasDockWidget::renameTriggered );
+  mActionShowAnnotations->setChecked( mMapCanvas->annotationsVisible() );
+  connect( mActionShowAnnotations, &QAction::toggled, this, [ = ]( bool checked ) { mMapCanvas->setAnnotationsVisible( checked ); } );
 
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
@@ -277,6 +282,11 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
     mMenuPresetActions.append( a );
   }
   mMenu->addActions( mMenuPresetActions );
+}
+
+void QgsMapCanvasDockWidget::settingsMenuAboutToShow()
+{
+  whileBlocking( mActionShowAnnotations )->setChecked( mMapCanvas->annotationsVisible() );
 }
 
 

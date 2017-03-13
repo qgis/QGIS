@@ -97,6 +97,10 @@ class QgsMapCanvas : QGraphicsView
     void setSegmentationTolerance( double tolerance );
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 
+    QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
+    bool annotationsVisible() const;
+    void setAnnotationsVisible( bool visible );
+
   public slots:
 
     //! Repaints the canvas map

@@ -132,6 +132,17 @@
     <string>Zoom &amp;Full</string>
    </property>
   </action>
+  <action name="mActionShowAnnotations">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Annotations</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Annotations</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -1890,6 +1890,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
         setTheme( elem.attribute( QStringLiteral( "theme" ) ) );
       }
     }
+    setAnnotationsVisible( elem.attribute( QStringLiteral( "annotationsVisible" ), QStringLiteral( "1" ) ).toInt() );
   }
   else
   {
@@ -1910,9 +1911,10 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
-  mapcanvasNode.setAttribute( "name", objectName() );
+  mapcanvasNode.setAttribute( QStringLiteral( "name" ), objectName() );
   if ( !mTheme.isEmpty() )
-    mapcanvasNode.setAttribute( "theme", mTheme );
+    mapcanvasNode.setAttribute( QStringLiteral( "theme" ), mTheme );
+  mapcanvasNode.setAttribute( QStringLiteral( "annotationsVisible" ), mAnnotationsVisible );
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );
@@ -2073,4 +2075,30 @@ void QgsMapCanvas::setSegmentationTolerance( double tolerance )
 void QgsMapCanvas::setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type )
 {
   mSettings.setSegmentationToleranceType( type );
+}
+
+QList<QgsMapCanvasAnnotationItem *> QgsMapCanvas::annotationItems() const
+{
+  QList<QgsMapCanvasAnnotationItem *> annotationItemList;
+  QList<QGraphicsItem *> itemList = mScene->items();
+  QList<QGraphicsItem *>::iterator it = itemList.begin();
+  for ( ; it != itemList.end(); ++it )
+  {
+    QgsMapCanvasAnnotationItem *aItem = dynamic_cast< QgsMapCanvasAnnotationItem *>( *it );
+    if ( aItem )
+    {
+      annotationItemList.push_back( aItem );
+    }
+  }
+
+  return annotationItemList;
+}
+
+void QgsMapCanvas::setAnnotationsVisible( bool show )
+{
+  mAnnotationsVisible = show;
+  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, annotationItems() )
+  {
+    item->setVisible( show );
+  }
 }
