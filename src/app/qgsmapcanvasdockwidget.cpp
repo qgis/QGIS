@@ -17,7 +17,6 @@
 #include "qgscsexception.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsscalecombobox.h"
-#include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
 #include "qgssettings.h"
 #include "qgsmaptoolpan.h"
@@ -171,12 +170,6 @@ QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
   return mMapCanvas;
 }
 
-void QgsMapCanvasDockWidget::closeWithoutWarning()
-{
-  mShowCloseWarning = false;
-  close();
-}
-
 void QgsMapCanvasDockWidget::setViewExtentSynchronized( bool enabled )
 {
   mActionSyncView->setChecked( enabled );
@@ -185,20 +178,6 @@ void QgsMapCanvasDockWidget::setViewExtentSynchronized( bool enabled )
 bool QgsMapCanvasDockWidget::isViewExtentSynchronized() const
 {
   return mActionSyncView->isChecked();
-}
-
-void QgsMapCanvasDockWidget::closeEvent( QCloseEvent *event )
-{
-  if ( mShowCloseWarning && mMapCanvas->layerCount() > 0
-       && QMessageBox::question( this, tr( "Close map view" ),
-                                 tr( "Are you sure you want to close this map view?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
-  {
-    event->ignore();
-  }
-  else
-  {
-    event->accept();
-  }
 }
 
 void QgsMapCanvasDockWidget::setMapCrs()

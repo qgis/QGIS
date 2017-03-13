@@ -50,11 +50,6 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mapCanvas();
 
     /**
-     * Closes the dock, bypassing the usual warning prompt.
-     */
-    void closeWithoutWarning();
-
-    /**
      * Sets whether the view extent should be synchronized with the main canvas extent.
      */
     void setViewExtentSynchronized( bool enabled );
@@ -64,10 +59,6 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
   signals:
 
     void renameTriggered();
-
-  protected:
-
-    virtual void closeEvent( QCloseEvent *event ) override;
 
   private slots:
 
@@ -82,7 +73,6 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
-    bool mShowCloseWarning = true;
     QMenu *mMenu = nullptr;
     QList<QAction *> mMenuPresetActions;
     QgsScaleComboBox *mScaleCombo = nullptr;

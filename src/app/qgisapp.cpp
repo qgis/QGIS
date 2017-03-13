@@ -3177,7 +3177,7 @@ void QgisApp::closeAdditionalMapCanvases()
   freezeCanvases( true ); // closing docks may cause canvases to resize, and we don't want a map refresh occurring
   Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
   {
-    w->closeWithoutWarning();
+    w->close();
     delete w;
   }
   freezeCanvases( false );
