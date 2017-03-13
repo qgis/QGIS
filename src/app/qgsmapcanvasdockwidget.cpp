@@ -24,6 +24,9 @@
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
 #include "qgsmapthemes.h"
+#include "qgslayertreeview.h"
+#include "qgslayertreeviewdefaultactions.h"
+#include "qgisapp.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -65,7 +68,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   QMenu *settingsMenu = new QMenu();
   QToolButton *settingsButton = new QToolButton();
-  btnMapThemes->setAutoRaise( true );
+  settingsButton->setAutoRaise( true );
+  settingsButton->setToolTip( tr( "View Settings" ) );
   settingsButton->setMenu( settingsMenu );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
   settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapSettings.svg" ) ) );
@@ -73,6 +77,9 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
+  connect( mActionZoomFullExtent, &QAction::triggered, mMapCanvas, &QgsMapCanvas::zoomToFullExtent );
+  connect( mActionZoomToLayer, &QAction::triggered, mMapCanvas, [ = ] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayer( mMapCanvas ); } );
+  connect( mActionZoomToSelected, &QAction::triggered, mMapCanvas, [ = ] { mMapCanvas->zoomToSelected(); } );
   mapCrsChanged();
 
   QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( settingsMenu );

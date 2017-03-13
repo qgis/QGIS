@@ -42,6 +42,9 @@
        <bool>false</bool>
       </property>
       <addaction name="mActionSyncView"/>
+      <addaction name="mActionZoomFullExtent"/>
+      <addaction name="mActionZoomToSelected"/>
+      <addaction name="mActionZoomToLayer"/>
      </widget>
     </item>
     <item>
@@ -100,6 +103,33 @@
    </property>
    <property name="toolTip">
     <string>Rename View</string>
+   </property>
+  </action>
+  <action name="mActionZoomToSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;Selection</string>
+   </property>
+  </action>
+  <action name="mActionZoomToLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to &amp;Layer</string>
+   </property>
+  </action>
+  <action name="mActionZoomFullExtent">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom &amp;Full</string>
    </property>
   </action>
  </widget>
