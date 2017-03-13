@@ -44,6 +44,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   setWindowTitle( name );
   mMapCanvas = new QgsMapCanvas( this );
+
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );
 
@@ -53,7 +54,11 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mMainWidget->layout()->addWidget( mMapCanvas );
 
-  connect( mActionSyncView, &QAction::toggled, this, &QgsMapCanvasDockWidget::syncView );
+  connect( mActionSyncView, &QAction::toggled, this, [ = ]( bool active )
+  {
+    syncViewExtent( mMainCanvas );
+    syncView( active );
+  } );
 
   mMenu = new QMenu();
   connect( mMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::menuAboutToShow );
@@ -212,12 +217,8 @@ void QgsMapCanvasDockWidget::syncView( bool enabled )
   }
 }
 
-void QgsMapCanvasDockWidget::mapExtentChanged()
+void QgsMapCanvasDockWidget::syncViewExtent( QgsMapCanvas *sourceCanvas )
 {
-  QgsMapCanvas *sourceCanvas = qobject_cast< QgsMapCanvas * >( sender() );
-  if ( !sourceCanvas )
-    return;
-
   // avoid infinite recursion
   syncView( false );
 
@@ -237,6 +238,15 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   destCanvas->refresh();
 
   syncView( true );
+}
+
+void QgsMapCanvasDockWidget::mapExtentChanged()
+{
+  QgsMapCanvas *sourceCanvas = qobject_cast< QgsMapCanvas * >( sender() );
+  if ( !sourceCanvas )
+    return;
+
+  syncViewExtent( sourceCanvas );
 }
 
 void QgsMapCanvasDockWidget::mapCrsChanged()

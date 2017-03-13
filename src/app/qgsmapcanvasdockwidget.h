@@ -85,6 +85,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     bool mBlockRotationUpdate = false;
     bool mBlockMagnificationUpdate = false;
     QgsMapToolPan *mPanTool = nullptr;
+    void syncViewExtent( QgsMapCanvas *sourceCanvas );
 };
 
 /**
