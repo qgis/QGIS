@@ -88,7 +88,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/sync_views.svg</normaloff>:/images/themes/default/sync_views.svg</iconset>
+     <normaloff>:/images/themes/default/mActionLockExtent.svg</normaloff>:/images/themes/default/mActionLockExtent.svg</iconset>
    </property>
    <property name="text">
     <string>Synchronize view</string>
