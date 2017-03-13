@@ -63,6 +63,7 @@ email                : sherman at mrcc.com
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgscursors.h"
+#include "qgsmapthemecollection.h"
 #include <cmath>
 
 
@@ -139,6 +140,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, &QgsMapCanvas::readProject );
   connect( QgsProject::instance(), &QgsProject::writeProject,
            this, &QgsMapCanvas::writeProject );
+
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
@@ -288,6 +291,15 @@ const QgsMapToPixel *QgsMapCanvas::getCoordinateTransform()
 }
 
 void QgsMapCanvas::setLayers( const QList<QgsMapLayer *> &layers )
+{
+  // following a theme => request denied!
+  if ( !mTheme.isEmpty() )
+    return;
+
+  setLayersPrivate( layers );
+}
+
+void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 {
   QList<QgsMapLayer *> oldLayers = mSettings.layers();
 
@@ -482,6 +494,17 @@ void QgsMapCanvas::refreshMap()
 
   mSettings.setExpressionContext( expressionContext );
 
+  if ( !mTheme.isEmpty() )
+  {
+    // IMPORTANT: we MUST set the layer style overrides here! (At the time of writing this
+    // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
+    // current state of the style. If we had stored the style overrides earlier (such as in
+    // mapThemeChanged slot) then this xml could be out of date...
+    // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
+    // just return the style name, we can instead set the overrides in mapThemeChanged and not here
+    mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
+  }
+
   // create the renderer job
   Q_ASSERT( !mJob );
   mJobCanceled = false;
@@ -516,6 +539,26 @@ void QgsMapCanvas::refreshMap()
   mMapUpdateTimer.start();
 
   emit renderStarting();
+}
+
+void QgsMapCanvas::mapThemeChanged( const QString &theme )
+{
+  if ( theme == mTheme )
+  {
+    // set the canvas layers to match the new layers contained in the map theme
+    // NOTE: we do this when the theme layers change and not when we are refreshing the map
+    // as setLayers() sets up necessary connections to handle changes to the layers
+    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    // IMPORTANT: we don't set the layer style overrides here! (At the time of writing this
+    // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
+    // current state of the style. If changes were made to the style then this xml
+    // snapshot goes out of sync...
+    // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
+    // just return the style name, we can instead set the overrides here and not in refreshMap()
+
+    clearCache();
+    refresh();
+  }
 }
 
 
@@ -1595,6 +1638,25 @@ void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString> &overrid
   emit layerStyleOverridesChanged();
 }
 
+void QgsMapCanvas::setTheme( const QString &theme )
+{
+  if ( mTheme == theme )
+    return;
+
+  clearCache();
+  if ( theme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( theme ) )
+  {
+    mTheme.clear();
+    mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
+    emit themeChanged( QString() );
+  }
+  else
+  {
+    mTheme = theme;
+    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    emit themeChanged( theme );
+  }
+}
 
 void QgsMapCanvas::setRenderFlag( bool flag )
 {
@@ -1952,6 +2014,14 @@ void QgsMapCanvas::refreshAllLayers()
 
   // and then refresh
   refresh();
+}
+
+void QgsMapCanvas::waitWhileRendering()
+{
+  while ( mRefreshScheduled || mJob )
+  {
+    QgsApplication::processEvents();
+  }
 }
 
 void QgsMapCanvas::setSegmentationTolerance( double tolerance )
