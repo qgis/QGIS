@@ -210,5 +210,6 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         layer_node.setItemVisibilityChecked(True)
         self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer2, layer3])
 
+
 if __name__ == '__main__':
     unittest.main()

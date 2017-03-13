@@ -688,6 +688,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void updateAutoRefreshTimer();
 
+    void projectThemesChanged();
+
   private:
     /// this class is non-copyable
 
