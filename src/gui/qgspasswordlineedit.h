@@ -23,8 +23,6 @@
 
 #include "qgis_gui.h"
 
-class QToolButton;
-
 /** \class QgsPasswordLineEdit
  * \ingroup gui
  * QLineEdit subclass with built in support for showing/hiding
