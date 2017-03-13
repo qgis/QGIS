@@ -1500,6 +1500,7 @@ QList<QgsMapLayer *> QgsComposerMap::layers() const
 
 void QgsComposerMap::setLayers( const QList<QgsMapLayer *> &layers )
 {
+  mKeepLayerSet = true;
   mLayers = _qgis_listRawToQPointer( layers );
 }
 

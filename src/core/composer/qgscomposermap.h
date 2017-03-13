@@ -220,16 +220,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
     /**
-     * Getter for stored layer set. This will usually be synchronized with the main app canvas
-     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * Getter for stored layer set. This will only be used if the
+     * keepLayerSet() flag is true.
      * @see setLayers()
      * @see keepLayerSet()
      */
     QList<QgsMapLayer *> layers() const;
 
     /**
-     * Setter for stored layer set.  This will usually be synchronized with the main app canvas
-     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * Setter for stored layer set. Calling this will automatically set
+     * keepLayerSet() to true.
      * @see layers()
      * @see keepLayerSet()
      */
