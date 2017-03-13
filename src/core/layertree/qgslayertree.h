@@ -37,7 +37,7 @@ namespace QgsLayerTree
   }
 
   //! Check whether the node is a valid layer node
-  inline bool isLayer( QgsLayerTreeNode *node )
+  inline bool isLayer( const QgsLayerTreeNode *node )
   {
     return node && node->nodeType() == QgsLayerTreeNode::NodeLayer;
   }
@@ -52,6 +52,12 @@ namespace QgsLayerTree
   inline QgsLayerTreeLayer *toLayer( QgsLayerTreeNode *node )
   {
     return static_cast<QgsLayerTreeLayer *>( node );
+  }
+
+  //! Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
+  inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node )
+  {
+    return static_cast< const QgsLayerTreeLayer *>( node );
   }
 
 }

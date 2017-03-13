@@ -487,6 +487,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void reloadAllLayers();
 
+    QList< QgsMapLayer * > layerOrder() const;
+    void setLayerOrder( const QList< QgsMapLayer * > &order );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument& );
@@ -623,12 +626,12 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     //TODO QGIS 3.0 - rename to past tense
     void removeAll();
+    void layersAdded( const QList<QgsMapLayer *> &layers );
 
-    void layersAdded( const QList<QgsMapLayer *>& layers );
+    void layerWasAdded( QgsMapLayer *layer );
+    void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
-    void layerWasAdded( QgsMapLayer* layer );
-
-    void legendLayersAdded( const QList<QgsMapLayer*>& layers );
+    void layerOrderChanged();
 
   public slots:
     /**

@@ -323,9 +323,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * QgsLayerTreeMapCanvasBridge.
      *
      * If an empty string is passed then the current theme association will be
-     * cleared. The layers from the previously associated theme will remain
-     * in the canvas, and a call to setLayers() may be necessary to define
-     * which layers should be shown in the canvas.
+     * cleared.
      * @note added in QGIS 3.0
      * @see theme()
      */
@@ -689,6 +687,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void autoRefreshTriggered();
 
     void updateAutoRefreshTimer();
+
+    void projectThemesChanged();
 
   private:
     /// this class is non-copyable

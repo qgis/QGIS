@@ -46,13 +46,13 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
 
   mChkOverride = new QCheckBox( tr( "Control rendering order" ) );
   bridgeHasCustomLayerOrderChanged( bridge->hasCustomLayerOrder() );
-  connect( mChkOverride, SIGNAL( toggled( bool ) ), bridge, SLOT( setHasCustomLayerOrder( bool ) ) );
+  connect( mChkOverride, &QAbstractButton::toggled, bridge, &QgsLayerTreeMapCanvasBridge::setHasCustomLayerOrder );
 
-  connect( bridge, SIGNAL( hasCustomLayerOrderChanged( bool ) ), this, SLOT( bridgeHasCustomLayerOrderChanged( bool ) ) );
-  connect( bridge, SIGNAL( customLayerOrderChanged( QStringList ) ), this, SLOT( bridgeCustomLayerOrderChanged( QStringList ) ) );
+  connect( bridge, &QgsLayerTreeMapCanvasBridge::hasCustomLayerOrderChanged, this, &QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged );
+  connect( bridge, &QgsLayerTreeMapCanvasBridge::customLayerOrderChanged, this, &QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged );
 
-  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelUpdated() ) );
-  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelUpdated() ) );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsCustomLayerOrderWidget::modelUpdated );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsCustomLayerOrderWidget::modelUpdated );
 
   connect( bridge->rootGroup(), &QgsLayerTreeNode::visibilityChanged, this, &QgsCustomLayerOrderWidget::nodeVisibilityChanged );
 

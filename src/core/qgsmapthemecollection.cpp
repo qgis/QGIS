@@ -175,6 +175,37 @@ void QgsMapThemeCollection::setProject( QgsProject *project )
   emit projectChanged();
 }
 
+QList<QgsMapLayer *> QgsMapThemeCollection::masterLayerOrder() const
+{
+  if ( !mProject )
+    return QList< QgsMapLayer * >();
+
+  return mProject->layerOrder();
+}
+
+QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
+{
+  QList< QgsMapLayer *> allLayers = masterLayerOrder();
+  QList< QgsMapLayer * > visibleLayers = mProject->layerTreeRoot()->checkedLayers();
+
+  if ( allLayers.isEmpty() )
+  {
+    // no project layer order set
+    return visibleLayers;
+  }
+
+  else
+  {
+    QList< QgsMapLayer * > orderedVisibleLayers;
+    Q_FOREACH ( QgsMapLayer *layer, allLayers )
+    {
+      if ( visibleLayers.contains( layer ) )
+        orderedVisibleLayers << layer;
+    }
+    return orderedVisibleLayers;
+  }
+}
+
 
 bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const
 {
@@ -229,23 +260,39 @@ QStringList QgsMapThemeCollection::mapThemes() const
 QStringList QgsMapThemeCollection::mapThemeVisibleLayerIds( const QString &name ) const
 {
   QStringList layerIds;
-  Q_FOREACH ( const MapThemeLayerRecord &layerRec, mMapThemes.value( name ).mLayerRecords )
+  Q_FOREACH ( QgsMapLayer *layer, mapThemeVisibleLayers( name ) )
   {
-    if ( layerRec.layer() )
-      layerIds << layerRec.layer()->id();
+    layerIds << layer->id();
   }
   return layerIds;
 }
 
-
 QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString &name ) const
 {
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( const MapThemeLayerRecord &layerRec, mMapThemes.value( name ).mLayerRecords )
+  const QList<MapThemeLayerRecord> &recs = mMapThemes.value( name ).mLayerRecords;
+  QList<QgsMapLayer *> layerOrder = masterLayerOrder();
+  if ( layerOrder.isEmpty() )
   {
-    if ( layerRec.layer() )
-      layers << layerRec.layer();
+    // no master layer order - so we have to just use the stored theme layer order as a fallback
+    Q_FOREACH ( const MapThemeLayerRecord &layerRec, mMapThemes.value( name ).mLayerRecords )
+    {
+      if ( layerRec.layer() )
+        layers << layerRec.layer();
+    }
   }
+  else
+  {
+    Q_FOREACH ( QgsMapLayer *layer, layerOrder )
+    {
+      Q_FOREACH ( const MapThemeLayerRecord &layerRec, recs )
+      {
+        if ( layerRec.layer() == layer )
+          layers << layerRec.layer();
+      }
+    }
+  }
+
   return layers;
 }
 

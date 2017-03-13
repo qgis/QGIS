@@ -314,6 +314,13 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
         self.assertTrue(self.canvasImageCheck('theme4', 'theme4', canvas))
 
+        # clear theme
+        canvas.setTheme('')
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        # should be different - we should now render project layers
+        self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas))
+
     def canvasImageCheck(self, name, reference_image, canvas):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'

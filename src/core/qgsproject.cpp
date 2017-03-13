@@ -44,6 +44,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
 #include "qgssettings.h"
+#include "qgsmaplayerlistutils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -460,6 +461,7 @@ void QgsProject::clear()
   mEvaluateDefaultValues = false;
   mDirty = false;
   mCustomVariables.clear();
+  mLayerOrder.clear();
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -881,6 +883,49 @@ bool QgsProject::read()
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
 
+  // load layer order
+  QList< QgsMapLayer * > layerOrder;
+  QDomNodeList layerOrderNodes = doc->elementsByTagName( QStringLiteral( "layerorder" ) );
+  if ( layerOrderNodes.count() )
+  {
+    QDomElement layerOrderElem = layerOrderNodes.at( 0 ).toElement();
+    for ( int i = 0; i < layerOrderElem.childNodes().count(); ++i )
+    {
+      QDomElement layerElem = layerOrderElem.childNodes().at( i ).toElement();
+      layerOrder << mMapLayers.value( layerElem.attribute( QStringLiteral( "id" ) ) );
+    }
+  }
+  else
+  {
+    //old layer order nodes
+    QStringList order;
+    QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
+    if ( elem.isNull() )
+    {
+      bool oldEnabled;
+      QgsLayerTreeUtils::readOldLegendLayerOrder( doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ), oldEnabled, order );
+    }
+    else
+    {
+      QDomElement customOrderElem = elem.firstChildElement( QStringLiteral( "custom-order" ) );
+      if ( !customOrderElem.isNull() )
+      {
+
+        QDomElement itemElem = customOrderElem.firstChildElement( QStringLiteral( "item" ) );
+        while ( !itemElem.isNull() )
+        {
+          order.append( itemElem.text() );
+          itemElem = itemElem.nextSiblingElement( QStringLiteral( "item" ) );
+        }
+      }
+    }
+    Q_FOREACH ( const QString &id, order )
+    {
+      layerOrder << mMapLayers.value( id );
+    }
+  }
+  setLayerOrder( layerOrder );
+
   // now that layers are loaded, we can resolve layer tree's references to the layers
   mRootGroup->resolveReferences( this );
 
@@ -1243,6 +1288,16 @@ bool QgsProject::write()
   }
 
   qgisNode.appendChild( projectLayersNode );
+
+  QDomElement layerOrderNode = doc->createElement( QStringLiteral( "layerorder" ) );
+  Q_FOREACH ( QgsMapLayer *layer, layerOrder() )
+  {
+    QDomElement mapLayerElem = doc->createElement( QStringLiteral( "layer" ) );
+    mapLayerElem.setAttribute( QStringLiteral( "id" ), layer->id() );
+    layerOrderNode.appendChild( mapLayerElem );
+  }
+  qgisNode.appendChild( layerOrderNode );
+
 
   // now add the optional extra properties
 
@@ -2091,6 +2146,8 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
   QStringList layerIds;
   QList<QgsMapLayer *> layerList;
 
+  bool layerOrderHasChanged = false;
+  QList< QgsMapLayer * > currentOrder = layerOrder();
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     // check layer and the registry contains it
@@ -2098,6 +2155,7 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
     {
       layerIds << layer->id();
       layerList << layer;
+      layerOrderHasChanged = layerOrderHasChanged || currentOrder.contains( layer );
     }
   }
 
@@ -2121,6 +2179,8 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
   }
 
   emit layersRemoved( layerIds );
+  if ( layerOrderHasChanged )
+    emit layerOrderChanged();
 }
 
 void QgsProject::removeMapLayer( const QString &layerId )
@@ -2149,6 +2209,20 @@ void QgsProject::reloadAllLayers()
   {
     layer->reload();
   }
+}
+
+QList<QgsMapLayer *> QgsProject::layerOrder() const
+{
+  return _qgis_listQPointerToRaw( mLayerOrder );
+}
+
+void QgsProject::setLayerOrder( const QList<QgsMapLayer *> &order )
+{
+  if ( order == layerOrder() )
+    return;
+
+  mLayerOrder = _qgis_listRawToQPointer( order );
+  emit layerOrderChanged();
 }
 
 void QgsProject::onMapLayerDeleted( QObject *obj )

@@ -17,6 +17,8 @@ import qgis  # NOQA
 from qgis.core import (QgsMapThemeCollection,
                        QgsProject,
                        QgsVectorLayer)
+from qgis.gui import (QgsLayerTreeMapCanvasBridge,
+                      QgsMapCanvas)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
 
@@ -96,6 +98,117 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         project.removeMapLayer(layer)
         app.processEvents()
         self.assertEqual(len(theme_changed_spy), 6) # signal should be emitted - layer is in record
+
+    def testMasterLayerOrder(self):
+        """ test master layer order"""
+        prj = QgsProject.instance()
+        prj.clear()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().masterLayerOrder(), [layer2, layer])
+
+        prj.setLayerOrder([layer, layer2, layer3])
+        # make some themes...
+        theme1 = QgsMapThemeCollection.MapThemeRecord()
+        theme1.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(layer3),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer)])
+
+        theme2 = QgsMapThemeCollection.MapThemeRecord()
+        theme2.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(layer3),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer2),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer)])
+
+        theme3 = QgsMapThemeCollection.MapThemeRecord()
+        theme3.setLayerRecords([QgsMapThemeCollection.MapThemeLayerRecord(layer2),
+                                QgsMapThemeCollection.MapThemeLayerRecord(layer)])
+
+        prj.mapThemeCollection().insert('theme1', theme1)
+        prj.mapThemeCollection().insert('theme2', theme2)
+        prj.mapThemeCollection().insert('theme3', theme3)
+
+        #order of layers in theme should respect master order
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer, layer2, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer, layer2])
+
+        # also check ids!
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer.id(), layer2.id()])
+
+        # reset master order
+        prj.setLayerOrder([layer2, layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer2, layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer3.id(), layer.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'), [layer2.id(), layer3.id(), layer.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer2.id(), layer.id()])
+
+        # check that layers include those hidden in the layer tree
+        canvas = QgsMapCanvas()
+        bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
+        root = prj.layerTreeRoot()
+        layer_node = root.findLayer(layer2.id())
+        layer_node.setItemVisibilityChecked(False)
+        app.processEvents()
+        self.assertEqual(prj.mapThemeCollection().masterLayerOrder(), [layer, layer2, layer3])
+
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer, layer2, layer3])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer, layer2])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme1'), [layer.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme2'),
+                         [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayerIds('theme3'), [layer.id(), layer2.id()])
+
+        # no layer order - should use stored order as a last resort
+        prj.setLayerOrder([])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer3, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer3, layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer2, layer])
+
+    def testMasterVisibleLayers(self):
+        """ test master visible layers"""
+        prj = QgsProject.instance()
+        prj.clear()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        # general setup...
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer2, layer])
+        prj.setLayerOrder([layer3, layer, layer2])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer, layer2])
+
+        #hide some layers
+        root = prj.layerTreeRoot()
+        layer_node = root.findLayer(layer2)
+        layer_node.setItemVisibilityChecked(False)
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer])
+        layer_node.setItemVisibilityChecked(True)
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer, layer2])
+        layer_node.setItemVisibilityChecked(False)
+        prj.setLayerOrder([layer, layer2, layer3])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer3])
+
+        # test with no project layer order set, should respect tree order
+        prj.setLayerOrder([])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer3])
+        layer_node.setItemVisibilityChecked(True)
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer2, layer3])
 
 
 if __name__ == '__main__':
