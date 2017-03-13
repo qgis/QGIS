@@ -895,6 +895,35 @@ bool QgsProject::read()
       layerOrder << mMapLayers.value( layerElem.attribute( QStringLiteral( "id" ) ) );
     }
   }
+  else
+  {
+    //old layer order nodes
+    QStringList order;
+    QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
+    if ( elem.isNull() )
+    {
+      bool oldEnabled;
+      QgsLayerTreeUtils::readOldLegendLayerOrder( doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ), oldEnabled, order );
+    }
+    else
+    {
+      QDomElement customOrderElem = elem.firstChildElement( QStringLiteral( "custom-order" ) );
+      if ( !customOrderElem.isNull() )
+      {
+
+        QDomElement itemElem = customOrderElem.firstChildElement( QStringLiteral( "item" ) );
+        while ( !itemElem.isNull() )
+        {
+          order.append( itemElem.text() );
+          itemElem = itemElem.nextSiblingElement( QStringLiteral( "item" ) );
+        }
+      }
+    }
+    Q_FOREACH ( const QString &id, order )
+    {
+      layerOrder << mMapLayers.value( id );
+    }
+  }
   setLayerOrder( layerOrder );
 
   // now that layers are loaded, we can resolve layer tree's references to the layers

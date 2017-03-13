@@ -195,7 +195,7 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument &doc )
     if ( QgsLayerTreeUtils::readOldLegendLayerOrder( doc.documentElement().firstChildElement( QStringLiteral( "legend" ) ), oldEnabled, oldOrder ) )
     {
       setHasCustomLayerOrder( oldEnabled );
-      setCustomLayerOrder( oldOrder );
+      // oldOrder is now unused!
     }
     return;
   }
@@ -203,16 +203,7 @@ void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument &doc )
   QDomElement customOrderElem = elem.firstChildElement( QStringLiteral( "custom-order" ) );
   if ( !customOrderElem.isNull() )
   {
-    QStringList order;
-    QDomElement itemElem = customOrderElem.firstChildElement( QStringLiteral( "item" ) );
-    while ( !itemElem.isNull() )
-    {
-      order.append( itemElem.text() );
-      itemElem = itemElem.nextSiblingElement( QStringLiteral( "item" ) );
-    }
-
     setHasCustomLayerOrder( customOrderElem.attribute( QStringLiteral( "enabled" ), QString() ).toInt() );
-    setCustomLayerOrder( order );
   }
 }
 
@@ -221,15 +212,7 @@ void QgsLayerTreeMapCanvasBridge::writeProject( QDomDocument &doc )
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-canvas" ) );
   QDomElement customOrderElem = doc.createElement( QStringLiteral( "custom-order" ) );
   customOrderElem.setAttribute( QStringLiteral( "enabled" ), mHasCustomLayerOrder ? 1 : 0 );
-
-  Q_FOREACH ( const QString &layerId, mCustomLayerOrder )
-  {
-    QDomElement itemElem = doc.createElement( QStringLiteral( "item" ) );
-    itemElem.appendChild( doc.createTextNode( layerId ) );
-    customOrderElem.appendChild( itemElem );
-  }
   elem.appendChild( customOrderElem );
-
   doc.documentElement().appendChild( elem );
 }
 
@@ -328,7 +311,7 @@ void QgsLayerTreeMapCanvasBridge::projectLayerOrderChanged()
 
   setHasCustomLayerOrder( true );
   QStringList ids;
-  Q_FOREACH( QgsMapLayer* layer, QgsProject::instance()->layerOrder() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->layerOrder() )
   {
     if ( layer )
       ids << layer->id();
