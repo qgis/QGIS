@@ -3132,7 +3132,8 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
   mapCanvasWidget->setFloating( isFloating );
   if ( dockGeometry.isEmpty() )
   {
-    mapCanvasWidget->resize( 400, 400 );
+    // try to guess a nice initial placement for view - about 3/4 along, half way down
+    mapCanvasWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
   }
   else
   {
