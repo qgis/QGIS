@@ -18,18 +18,18 @@ email                : ersts@amnh.org
 
 #include "qgslinearminmaxenhancementwithclip.h"
 
-QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip( Qgis::DataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
+QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip( Qgis::DataType qgsRasterDataType, double minimumValue, double maximumValue ) : QgsContrastEnhancementFunction( qgsRasterDataType, minimumValue, maximumValue )
 {
 }
 
-int QgsLinearMinMaxEnhancementWithClip::enhance( double theValue )
+int QgsLinearMinMaxEnhancementWithClip::enhance( double value )
 {
-  if ( theValue < mMinimumValue || theValue > mMaximumValue )
+  if ( value < mMinimumValue || value > mMaximumValue )
   {
     return -1;
   }
 
-  int myStretchedValue = static_cast<int>((( theValue - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
+  int myStretchedValue = static_cast<int>( ( ( value - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
   if ( myStretchedValue < 0 )
   {
     return 0;
@@ -42,9 +42,9 @@ int QgsLinearMinMaxEnhancementWithClip::enhance( double theValue )
   return myStretchedValue;
 }
 
-bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange( double theValue )
+bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange( double value )
 {
-  if ( theValue < mMinimumValue || theValue > mMaximumValue )
+  if ( value < mMinimumValue || value > mMaximumValue )
   {
     return false;
   }

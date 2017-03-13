@@ -16,7 +16,8 @@
 #define QGSEDITORWIDGETAUTOCONF_H
 
 #include <QList>
-#include <QSharedPointer>
+#include "qgis_gui.h"
+#include <memory>
 
 class QgsVectorLayer;
 class QgsEditorWidgetSetup;
@@ -29,6 +30,7 @@ class QgsEditorWidgetSetup;
 class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 {
   public:
+
     /**
      * Typical scores are:
      *   * 0: no matching type found.
@@ -41,12 +43,13 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
      *
      * @return and integer value rating how good is the setup provided by this plugin.
      */
-    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const = 0;
+    virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const = 0;
 
 };
 
 
 ///@cond PRIVATE
+
 /** \ingroup gui
  * Class that allows to register plugins to pick automatically a widget type for editing fields.
  * This class has only one instance, owned by the QgsEditorWidgetRegistry singleton
@@ -58,6 +61,7 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 class GUI_EXPORT QgsEditorWidgetAutoConf
 {
   public:
+
     /**
      * Register the default plugins.
      */
@@ -71,17 +75,17 @@ class GUI_EXPORT QgsEditorWidgetAutoConf
      *
      * @return The best widget setup that was found
      */
-    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName ) const;
+    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const;
 
     /**
      * Register a new plugin.
      *
-     * @param plugin The plugin (ownership is transfered)
+     * @param plugin The plugin (ownership is transferred)
      */
-    void registerPlugin( QgsEditorWidgetAutoConfPlugin* plugin );
+    void registerPlugin( QgsEditorWidgetAutoConfPlugin *plugin );
 
   private:
-    QList<QSharedPointer<QgsEditorWidgetAutoConfPlugin> > plugins;
+    QList<std::shared_ptr<QgsEditorWidgetAutoConfPlugin> > plugins;
 };
 ///@endcond
 

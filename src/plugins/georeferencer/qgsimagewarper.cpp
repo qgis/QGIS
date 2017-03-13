@@ -29,16 +29,10 @@
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
+bool QgsImageWarper::sWarpCanceled = false;
 
-bool QgsImageWarper::mWarpCanceled = false;
-
-QgsImageWarper::QgsImageWarper( QWidget *theParent )
-    : mParent( theParent )
+QgsImageWarper::QgsImageWarper( QWidget *parent )
+  : mParent( parent )
 {
 }
 
@@ -48,7 +42,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
 {
   // Open input file
   GDALAllRegister();
-  hSrcDS = GDALOpen( TO8F( input ), GA_ReadOnly );
+  hSrcDS = GDALOpen( input.toUtf8().constData(), GA_ReadOnly );
   if ( !hSrcDS )
     return false;
 
@@ -74,7 +68,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
 
 bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS,
     uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans,
-    const QString& compression, const QgsCoordinateReferenceSystem& crs )
+    const QString &compression, const QgsCoordinateReferenceSystem &crs )
 {
   // create the output file
   GDALDriverH driver = GDALGetDriverByName( "GTiff" );
@@ -85,7 +79,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   char **papszOptions = nullptr;
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toLatin1() );
   hDstDS = GDALCreate( driver,
-                       TO8F( outputName ), resX, resY,
+                       outputName.toUtf8().constData(), resX, resY,
                        GDALGetRasterCount( hSrcDS ),
                        GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ),
                        papszOptions );
@@ -108,10 +102,10 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS, wkt ) != CE_None )
     {
-      OGRFree( wkt );
+      CPLFree( wkt );
       return false;
     }
-    OGRFree( wkt );
+    CPLFree( wkt );
   }
 
   for ( int i = 0; i < GDALGetRasterCount( hSrcDS ); ++i )
@@ -140,13 +134,13 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   return true;
 }
 
-int QgsImageWarper::warpFile( const QString& input,
-                              const QString& output,
+int QgsImageWarper::warpFile( const QString &input,
+                              const QString &output,
                               const QgsGeorefTransform &georefTransform,
                               ResamplingMethod resampling,
                               bool useZeroAsTrans,
-                              const QString& compression,
-                              const QgsCoordinateReferenceSystem& crs,
+                              const QString &compression,
+                              const QgsCoordinateReferenceSystem &crs,
                               double destResX, double destResY )
 {
   if ( !georefTransform.parametersInitialized() )
@@ -154,7 +148,7 @@ int QgsImageWarper::warpFile( const QString& input,
 
   CPLErr eErr;
   GDALDatasetH hSrcDS, hDstDS;
-  GDALWarpOptions *psWarpOptions;
+  GDALWarpOptions *psWarpOptions = nullptr;
   if ( !openSrcDSAndGetWarpOpt( input, resampling, georefTransform.GDALTransformer(), hSrcDS, psWarpOptions ) )
   {
     // TODO: be verbose about failures
@@ -202,8 +196,8 @@ int QgsImageWarper::warpFile( const QString& input,
     double minY = adfGeoTransform[3] + adfGeoTransform[5] * destLines;
 
     // Update line and pixel count to match extent at user-specified resolution
-    destPixels = ( int )((( maxX - minX ) / destResX ) + 0.5 );
-    destLines  = ( int )((( minY - maxY ) / destResY ) + 0.5 );
+    destPixels = ( int )( ( ( maxX - minX ) / destResX ) + 0.5 );
+    destLines  = ( int )( ( ( minY - maxY ) / destResY ) + 0.5 );
     adfGeoTransform[0] = minX;
     adfGeoTransform[3] = maxY;
     adfGeoTransform[1] = destResX;
@@ -258,7 +252,7 @@ int QgsImageWarper::warpFile( const QString& input,
   GDALClose( hSrcDS );
   GDALClose( hDstDS );
 
-  return mWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
+  return sWarpCanceled ? -1 : eErr == CE_None ? 1 : 0;
 }
 
 
@@ -267,7 +261,7 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
   TransformChain *chain = new TransformChain;
   chain->GDALTransformer = GDALTransformer;
   chain->GDALTransformerArg = GDALTransformerArg;
-  memcpy( chain->adfGeotransform, padfGeotransform, sizeof( double )*6 );
+  memcpy( chain->adfGeotransform, padfGeotransform, sizeof( double ) * 6 );
   // TODO: In reality we don't require the full homogeneous matrix, so GeoToPixelTransform and matrix inversion could
   // be optimized for simple scale+offset if there's the need (e.g. for numerical or performance reasons).
   if ( !GDALInvGeoTransform( chain->adfGeotransform, chain->adfInvGeotransform ) )
@@ -276,7 +270,7 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
     delete chain;
     return nullptr;
   }
-  return ( void* )chain;
+  return ( void * )chain;
 }
 
 void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransfomArg ) const
@@ -287,7 +281,7 @@ void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransfomArg ) c
 int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
     double *x, double *y, double *z, int *panSuccess )
 {
-  TransformChain *chain = static_cast<TransformChain*>( pTransformerArg );
+  TransformChain *chain = static_cast<TransformChain *>( pTransformerArg );
   if ( !chain )
   {
     return false;
@@ -338,17 +332,17 @@ void *QgsImageWarper::createWarpProgressArg( QProgressDialog *progressDialog ) c
 int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
   Q_UNUSED( pszMessage );
-  QProgressDialog *progress = static_cast<QProgressDialog*>( pProgressArg );
-  progress->setValue( qMin( 100u, ( uint )( dfComplete*100.0 ) ) );
+  QProgressDialog *progress = static_cast<QProgressDialog *>( pProgressArg );
+  progress->setValue( qMin( 100u, ( uint )( dfComplete * 100.0 ) ) );
   qApp->processEvents();
   // TODO: call QEventLoop manually to make "cancel" button more responsive
   if ( progress->wasCanceled() )
   {
-    mWarpCanceled = true;
+    sWarpCanceled = true;
     return false;
   }
 
-  mWarpCanceled = false;
+  sWarpCanceled = false;
   return true;
 }
 

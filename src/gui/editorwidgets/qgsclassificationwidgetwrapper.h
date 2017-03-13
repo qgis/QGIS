@@ -19,6 +19,7 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsClassificationWidgetWrapper
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsClassificationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -37,15 +38,15 @@ class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   protected:
-    QWidget*createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
 
   private:
-    QComboBox* mComboBox;
+    QComboBox *mComboBox = nullptr;
 };
 
 #endif // QGSCLASSIFICATIONWIDGETWRAPPER_H

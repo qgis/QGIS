@@ -17,6 +17,7 @@
 #ifndef QGSSHADOWEFFECT_H
 #define QGSSHADOWEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis.h"
 #include "qgssymbol.h"
@@ -35,10 +36,9 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
   public:
 
     QgsShadowEffect();
-    virtual ~QgsShadowEffect();
 
     virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
+    virtual void readProperties( const QgsStringMap &props ) override;
 
     /** Sets blur level (strength) for the shadow.
      * @param level blur level. Values between 0 and 16 are valid, with larger
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see setOffsetDistance
      * @see setOffsetUnit
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
     /** Returns the map unit scale used for the shadow offset distance.
      * @returns map unit scale for offset distance
@@ -114,13 +114,13 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      * @see offsetDistance
      * @see offsetUnit
      */
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /** Sets the color for the shadow.
      * @param color shadow color
      * @see color
      */
-    void setColor( const QColor& color ) { mColor = color; }
+    void setColor( const QColor &color ) { mColor = color; }
 
     /** Returns the color used for the shadow.
      * @returns shadow color
@@ -158,8 +158,8 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
 
   protected:
 
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const override;
-    virtual void draw( QgsRenderContext& context ) override;
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    virtual void draw( QgsRenderContext &context ) override;
 
     /** Specifies whether the shadow is drawn outside the picture or within
      * the picture.
@@ -195,13 +195,12 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
      * @param map encoded properties string map
      * @returns new QgsDropShadowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map );
 
     QgsDropShadowEffect();
-    virtual ~QgsDropShadowEffect();
 
-    virtual QString type() const override { return QString( "dropShadow" ); }
-    virtual QgsDropShadowEffect* clone() const override;
+    virtual QString type() const override { return QStringLiteral( "dropShadow" ); }
+    virtual QgsDropShadowEffect *clone() const override;
 
   protected:
 
@@ -225,13 +224,12 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
      * @param map encoded properties string map
      * @returns new QgsInnerShadowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map );
 
     QgsInnerShadowEffect();
-    virtual ~QgsInnerShadowEffect();
 
-    virtual QString type() const override { return QString( "innerShadow" ); }
-    virtual QgsInnerShadowEffect* clone() const override;
+    virtual QString type() const override { return QStringLiteral( "innerShadow" ); }
+    virtual QgsInnerShadowEffect *clone() const override;
 
   protected:
 

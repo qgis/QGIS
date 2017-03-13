@@ -20,24 +20,24 @@
 #include "qgsmapcanvas.h"
 #include "qgscsexception.h"
 
-QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( "EPSG:4326" );
-  mSvg.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
   if ( ! mSvg.isValid() )
   {
     qDebug( "GPS marker not found!" );
   }
 }
 
-void QgsGpsMarker::setSize( int theSize )
+void QgsGpsMarker::setSize( int size )
 {
-  mSize = theSize;
+  mSize = size;
 }
 
-void QgsGpsMarker::setCenter( const QgsPoint& point )
+void QgsGpsMarker::setCenter( const QgsPoint &point )
 {
   //transform to map crs
   if ( mMapCanvas )
@@ -62,7 +62,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
   setPos( pt );
 }
 
-void QgsGpsMarker::paint( QPainter* p )
+void QgsGpsMarker::paint( QPainter *p )
 {
   if ( ! mSvg.isValid() )
   {

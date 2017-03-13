@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -60,11 +61,11 @@ class proximity(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'proximity.png'))
 
     def commandLineName(self):
-        return "gdalogr:proximity"
+        return "gdal:proximity"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Proximity (raster distance)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.VALUES,
@@ -102,20 +103,20 @@ class proximity(GdalAlgorithm):
             arguments.append('-values')
             arguments.append(values)
 
-        values = unicode(self.getParameterValue(self.MAX_DIST))
-        if values < 0:
+        dist = self.getParameterValue(self.MAX_DIST)
+        if dist > 0:
             arguments.append('-maxdist')
-            arguments.append(values)
+            arguments.append(str(dist))
 
-        values = unicode(self.getParameterValue(self.NODATA))
-        if values < 0:
+        nodata = self.getParameterValue(self.NODATA)
+        if nodata > 0:
             arguments.append('-nodata')
-            arguments.append(values)
+            arguments.append(str(nodata))
 
-        values = unicode(self.getParameterValue(self.BUF_VAL))
-        if values < 0:
+        buf = self.getParameterValue(self.BUF_VAL)
+        if buf > 0:
             arguments.append('-fixed-buf-val')
-            arguments.append(values)
+            arguments.append(str(buf))
 
         commands = []
         if isWindows():

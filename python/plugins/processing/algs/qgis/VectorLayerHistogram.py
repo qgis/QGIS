@@ -25,8 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
+import plotly as plt
+import plotly.graph_objs as go
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -57,7 +57,7 @@ class VectorLayerHistogram(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         fieldname = self.getParameterValue(self.FIELD)
@@ -66,10 +66,7 @@ class VectorLayerHistogram(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         values = vector.values(layer, fieldname)
-        plt.close()
-        plt.hist(values[fieldname], bins)
-        plotFilename = output + '.png'
-        lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+
+        data = [go.Histogram(x=values[fieldname],
+                             nbinsx=bins)]
+        plt.offline.plot(data, filename=output, auto_open=False)

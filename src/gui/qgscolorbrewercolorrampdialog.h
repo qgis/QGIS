@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
+#include "qgis_gui.h"
 
 class QgsColorBrewerColorRamp;
 
@@ -39,7 +40,7 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
+    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -50,7 +51,7 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsColorBrewerColorRamp& ramp );
+    void setRamp( const QgsColorBrewerColorRamp &ramp );
 
   signals:
 
@@ -86,7 +87,7 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent = nullptr );
+    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -97,7 +98,7 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsColorBrewerColorRamp& ramp ) { mWidget->setRamp( ramp ); }
+    void setRamp( const QgsColorBrewerColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 
   signals:
 
@@ -106,7 +107,7 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
 
   private:
 
-    QgsColorBrewerColorRampWidget* mWidget;
+    QgsColorBrewerColorRampWidget *mWidget = nullptr;
 
 };
 

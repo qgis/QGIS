@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,13 +33,9 @@ from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
 
 from processing.gui.RectangleMapTool import RectangleMapTool
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterMultipleInput
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools import dataobjects
 
@@ -49,13 +46,13 @@ WIDGET, BASE = uic.loadUiType(
 
 class ExtentSelectionPanel(BASE, WIDGET):
 
-    def __init__(self, dialog, alg, default=None):
+    def __init__(self, dialog, param):
         super(ExtentSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.dialog = dialog
-        self.alg = alg
-        if alg.canUseAutoExtent():
+        self.param = param
+        if self.param.optional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
@@ -67,15 +64,15 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.tool = RectangleMapTool(canvas)
         self.tool.rectangleCreated.connect(self.updateExtent)
 
-        if default:
-            tokens = unicode(default).split(',')
+        if param.default:
+            tokens = param.default.split(',')
             if len(tokens) == 4:
                 try:
                     float(tokens[0])
                     float(tokens[1])
                     float(tokens[2])
                     float(tokens[3])
-                    self.leText.setText(unicode(default))
+                    self.leText.setText(param.default)
                 except:
                     pass
 
@@ -92,7 +89,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
 
-        if self.canUseAutoExtent():
+        if self.param.optional:
             useMincoveringExtentAction = QAction(
                 self.tr('Use min covering extent from input layers'),
                 self.btnSelect)
@@ -152,9 +149,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if unicode(self.leText.text()).strip() == '':
+        if str(self.leText.text()).strip() != '':
+            return str(self.leText.text())
+        else:
             return None
-        return unicode(self.leText.text())
 
     def setExtentFromString(self, s):
         self.leText.setText(s)

@@ -14,7 +14,7 @@ class QgsMapLayerConfigWidgetFactory
     QgsMapLayerConfigWidgetFactory();
 
     /** Constructor */
-    QgsMapLayerConfigWidgetFactory( QString title, QIcon icon );
+    QgsMapLayerConfigWidgetFactory( const QString& title, const QIcon& icon );
 
     /** Destructor */
     virtual ~QgsMapLayerConfigWidgetFactory();
@@ -77,7 +77,7 @@ class QgsMapLayerConfigWidgetFactory
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
     /**
-     * @brief Factory fucntion to create the widget on demand as needed by the dock.
+     * @brief Factory function to create the widget on demand as needed by the dock.
      * @note This function is called each time the panel is selected. Keep it light for better UX.
      * @param layer The active layer in the dock.
      * @param canvas The map canvas.

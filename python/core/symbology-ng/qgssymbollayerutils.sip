@@ -39,8 +39,31 @@ class QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString& str );
 
+    /** Encodes a QPointF to a string.
+     * @see decodePoint()
+     * @see encodeSize()
+     */
     static QString encodePoint( QPointF point );
-    static QPointF decodePoint( const QString& str );
+
+    /** Decodes a QSizeF from a string.
+     * @see encodePoint()
+     * @see decodeSize()
+     */
+    static QPointF decodePoint( const QString& string );
+
+    /** Encodes a QSizeF to a string.
+     * @see decodeSize()
+     * @see encodePoint()
+     * @note added in QGIS 3.0
+     */
+    static QString encodeSize( QSizeF size );
+
+    /** Decodes a QSizeF from a string.
+     * @see encodeSize()
+     * @see decodePoint()
+     * @note added in QGIS 3.0
+     */
+    static QSizeF decodeSize( const QString& string );
 
     static QString encodeMapUnitScale( const QgsMapUnitScale& mapUnitScale );
     static QgsMapUnitScale decodeMapUnitScale( const QString& str );
@@ -72,7 +95,23 @@ class QgsSymbolLayerUtils
 
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
-    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size );
+    /** Returns an icon preview for a color ramp.
+     * @param symbol symbol
+     * @param size target pixmap size
+     * @param padding space between icon edge and symbol
+     * @see symbolPreviewPixmap()
+     */
+    static QIcon symbolPreviewIcon( QgsSymbol* symbol, QSize size, int padding = 0 );
+
+    /** Returns a pixmap preview for a color ramp.
+     * @param symbol symbol
+     * @param size target pixmap size
+     * @param padding space between icon edge and symbol
+     * @param customContext render context to use when rendering symbol
+     * @note customContext parameter added in 2.6
+     * @see symbolPreviewIcon()
+     */
+    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, int padding = 0, QgsRenderContext* customContext = 0 );
 
     /** Draws a symbol layer preview to a QPicture
      * @param layer symbol layer to draw
@@ -95,16 +134,25 @@ class QgsSymbolLayerUtils
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer* layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
 
-    static QIcon colorRampPreviewIcon( QgsColorRamp* ramp, QSize size );
+    /** Returns a icon preview for a color ramp.
+     * @param ramp color ramp
+     * @param size target icon size
+     * @param padding space between icon edge and symbol
+     * @see colorRampPreviewPixmap()
+     */
+    static QIcon colorRampPreviewIcon( QgsColorRamp* ramp, QSize size, int padding = 0 );
+    /** Returns a pixmap preview for a color ramp.
+     * @param ramp color ramp
+     * @param size target pixmap size
+     * @param padding space between icon edge and symbol
+     * @see colorRampPreviewIcon()
+     */
+    static QPixmap colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size, int padding = 0 );
 
     static void drawStippledBackground( QPainter* painter, QRect rect );
 
-    //! @note customContext parameter added in 2.6
-    static QPixmap symbolPreviewPixmap( QgsSymbol* symbol, QSize size, QgsRenderContext* customContext = 0 );
-    static QPixmap colorRampPreviewPixmap( QgsColorRamp* ramp, QSize size );
-
     /** Returns the maximum estimated bleed for the symbol */
-    static double estimateMaxSymbolBleed( QgsSymbol* symbol );
+    static double estimateMaxSymbolBleed( QgsSymbol* symbol, const QgsRenderContext& context );
 
     /** Attempts to load a symbol from a DOM element
      * @param element DOM element representing symbol
@@ -172,13 +220,13 @@ class QgsSymbolLayerUtils
                                         QColor &color, double &size );
 
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                      const QString& name, const QColor& color, const QColor& borderColor, Qt::PenStyle borderStyle,
-                                      double borderWidth = -1, double size = -1 );
+                                      const QString& name, const QColor& color, const QColor& strokeColor, Qt::PenStyle strokeStyle,
+                                      double strokeWidth = -1, double size = -1 );
 
     //! @note available in python as wellKnownMarkerFromSld2
     static bool wellKnownMarkerFromSld( QDomElement &element,
-                                        QString &name, QColor &color, QColor &borderColor, Qt::PenStyle &borderStyle,
-                                        double &borderWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
+                                        QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
+                                        double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 
     static void externalMarkerToSld( QDomDocument &doc, QDomElement &element,
                                      const QString& path, const QString& format, int *markIndex = 0,
@@ -332,48 +380,6 @@ class QgsSymbolLayerUtils
      */
     static QColor parseColorWithAlpha( const QString& colorStr, bool &containsAlpha, bool strictEval = false );
 
-    /** Returns the line width scale factor depending on the unit and the paint device.
-     * Consider using convertToPainterUnits() instead, as convertToPainterUnits() respects the size limits specified by the scale
-     * parameter.
-     * @param c render context
-     * @param u units to convert from
-     * @param scale map unit scale, specifying limits for the map units to convert from
-     * @see convertToPainterUnits()
-     */
-    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Converts a size from the specied units to painter units. The conversion respects the limits
-     * specified by the optional scale parameter.
-     * @param c render context
-     * @param size size to convert
-     * @param unit units for specified size
-     * @param scale map unit scale
-     * @note added in QGIS 2.12
-     * @see lineWidthScaleFactor()
-     * @see convertToMapUnits()
-     */
-    static double convertToPainterUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Converts a size from the specied units to map units. The conversion respects the limits
-     * specified by the optional scale parameter.
-     * @param c render context
-     * @param size size to convert
-     * @param unit units for specified size
-     * @param scale map unit scale
-     * @note added in QGIS 2.16
-     * @see convertToPainterUnits()
-     */
-    static double convertToMapUnits( const QgsRenderContext&c, double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Returns scale factor painter units -> map units*/
-    static double mapUnitScaleFactor( const QgsRenderContext& c, QgsUnitTypes::RenderUnit u, const QgsMapUnitScale& scale = QgsMapUnitScale() );
-
-    /** Creates a render context for a pixel based device*/
-    static QgsRenderContext createRenderContext( QPainter* p );
-
     /** Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
@@ -447,7 +453,7 @@ class QgsSymbolLayerUtils
      *  returns a copy of the original point
      * @note added in 3.0
      */
-    static QPointF rescaleUom( const QPointF& point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props ) /PyName=rescalePointUom/;
+    static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap& props ) /PyName=rescalePointUom/;
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
@@ -466,5 +472,21 @@ class QgsSymbolLayerUtils
       * @note added in 3.0
       */
     static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap& props );
+
+    /**
+     * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
+     * a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
+     * that cannot do SVG at all
+     * @note added in 3.0
+     */
+    static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
+                                    const QString& path,
+                                    const QColor& fillColor, double size, const QColor& strokeColor, double strokeWidth );
+
+    /**
+     * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
+     * @note added in 3.0
+     */
+    static QString getSvgParametricPath( const QString& basePath, const QColor& fillColor, const QColor& strokeColor, double strokeWidth );
 
 };

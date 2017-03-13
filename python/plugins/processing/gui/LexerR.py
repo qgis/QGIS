@@ -52,7 +52,7 @@ class LexerR(QsciLexerCustom):
             4: 'String',
         }
 
-        for (k, v) in self._styles.iteritems():
+        for (k, v) in list(self._styles.items()):
             setattr(self, v, k)
 
     def description(self, style):
@@ -91,8 +91,7 @@ class LexerR(QsciLexerCustom):
         index = editor.SendScintilla(editor.SCI_LINEFROMPOSITION, start)
         if index > 0:
             # The previous state may be needed for multi-line styling
-            pos = editor.SendScintilla(editor.SCI_GETLINEENDPOSITION, index
-                                       - 1)
+            pos = editor.SendScintilla(editor.SCI_GETLINEENDPOSITION, index - 1)
             state = editor.SendScintilla(editor.SCI_GETSTYLEAT, pos)
         else:
             state = self.Default
@@ -104,7 +103,7 @@ class LexerR(QsciLexerCustom):
         for line in source.splitlines(True):
             length = len(line)
 
-            if line.startswith('#'):
+            if line.startswith(b'#'):
                 state = self.Comment
             else:
                 state = self.Default

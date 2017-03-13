@@ -18,7 +18,7 @@
  * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
- * by implemeting filters called from QgsMapToolAdvancedDigitizing.
+ * by implementing filters called from QgsMapToolAdvancedDigitizing.
  */
 class QgsAdvancedDigitizingDockWidget : QDockWidget
 {
@@ -269,7 +269,7 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
     /**
      * Snapped to a segment
      */
-    const QList<QgsPoint>& snappedSegment() const;
+    QList<QgsPoint> snappedSegment() const;
 
     //! return the action used to enable/disable the tools
     QAction* enableAction();
@@ -310,7 +310,7 @@ class QgsAdvancedDigitizingDockWidget : QDockWidget
 
   private slots:
     //! set the additiona constraint by clicking on the perpendicular/parallel buttons
-    void addtionalConstraintClicked( bool activated );
+    void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );

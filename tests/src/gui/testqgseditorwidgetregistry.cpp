@@ -12,10 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetautoconf.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
 
 
 class TestQgsEditorWidgetRegistry: public QObject
@@ -25,13 +27,13 @@ class TestQgsEditorWidgetRegistry: public QObject
     class DummyPlugin: public QgsEditorWidgetAutoConfPlugin
     {
       public:
-        QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
+        QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
         {
           Q_UNUSED( vl )
-          if ( fieldName == "special" )
+          if ( fieldName == QLatin1String( "special" ) )
           {
             score = 100;
-            return QgsEditorWidgetSetup( "Special", QgsEditorWidgetConfig() );
+            return QgsEditorWidgetSetup( QStringLiteral( "Special" ), QVariantMap() );
           }
           score = 0;
           return QgsEditorWidgetSetup();
@@ -55,77 +57,101 @@ class TestQgsEditorWidgetRegistry: public QObject
 
     void stringType()
     {
-      checkSimple( "string", "TextEdit" );
+      checkSimple( QStringLiteral( "string" ), QStringLiteral( "TextEdit" ) );
     }
 
     void datetimeType()
     {
-      checkSimple( "datetime", "DateTime" );
+      checkSimple( QStringLiteral( "datetime" ), QStringLiteral( "DateTime" ) );
     }
 
     void integerType()
     {
-      checkSimple( "integer", "Range" );
+      checkSimple( QStringLiteral( "integer" ), QStringLiteral( "Range" ) );
     }
 
     void longLongType()
     {
-      checkSimple( "int8", "TextEdit" ); // no current widget supports 64 bit integers => default to TextEdit
+      checkSimple( QStringLiteral( "int8" ), QStringLiteral( "TextEdit" ) ); // no current widget supports 64 bit integers => default to TextEdit
     }
 
     void doubleType()
     {
-      checkSimple( "double", "Range" );
+      checkSimple( QStringLiteral( "double" ), QStringLiteral( "Range" ) );
     }
 
     void arrayType()
     {
-      checkSimple( "double[]", "List" );
-      checkSimple( "int[]", "List" );
-      checkSimple( "string[]", "List" );
+      checkSimple( QStringLiteral( "double[]" ), QStringLiteral( "List" ) );
+      checkSimple( QStringLiteral( "int[]" ), QStringLiteral( "List" ) );
+      checkSimple( QStringLiteral( "string[]" ), QStringLiteral( "List" ) );
     }
 
     void configuredType()
     {
-      QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:string", "vl", "memory" );
-      QgsEditFormConfig formConfig = vl.editFormConfig();
-      formConfig.setWidgetType( "col1", "FooEdit" );
-      QgsEditorWidgetConfig config;
-      config["a"] = QVariant( 12 );
-      config["b"] = QVariant( "bar" );
-      formConfig.setWidgetConfig( "col1", config );
-      vl.setEditFormConfig( formConfig );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, "col1" );
+      QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+
+      QVariantMap config;
+      config[QStringLiteral( "a" )] = QVariant( 12 );
+      config[QStringLiteral( "b" )] = QVariant( "bar" );
+
+      vl.setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "FooEdit" ), config ) );
+
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, QStringLiteral( "col1" ) );
       QCOMPARE( setup.type(), QString( "FooEdit" ) );
       QCOMPARE( setup.config(), config );
     }
 
     void wrongFieldName()
     {
-      const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:string", "vl", "memory" );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, "col2" );
+      const QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, QStringLiteral( "col2" ) );
       // an unknown fields leads to a default setup with a TextEdit
       QCOMPARE( setup.type(), QString( "TextEdit" ) );
       QCOMPARE( setup.config().count(), 0 );
     }
 
+    void referencedLayers()
+    {
+      //build two layers
+      QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=name:string&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer vl2( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+      QgsProject::instance()->addMapLayer( &vl1, false, false );
+      QgsProject::instance()->addMapLayer( &vl2, false, false );
+
+      //create a relation between them
+      QgsRelation relation;
+      relation.setId( QStringLiteral( "vl1->vl2" ) );
+      relation.setName( QStringLiteral( "vl1->vl2" ) );
+      relation.setReferencingLayer( vl1.id() );
+      relation.setReferencedLayer( vl2.id() );
+      relation.addFieldPair( "fk", "pk" );
+      QVERIFY( relation.isValid() );
+      QgsProject::instance()->relationManager()->addRelation( relation );
+
+      //check the guessed editor widget type for vl1.fk is RelationReference
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl1, QStringLiteral( "fk" ) );
+      QCOMPARE( setup.type(), QString( "RelationReference" ) );
+      QCOMPARE( setup.config(), QVariantMap() );
+    }
+
     void typeFromPlugin()
     {
-      const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=special:string", "vl", "memory" );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, "special" );
+      const QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=special:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, QStringLiteral( "special" ) );
       QCOMPARE( setup.type(), QString( "Special" ) );
     }
 
   private:
 
-    static void checkSimple( const QString& dataType, const QString& widgetType )
+    static void checkSimple( const QString &dataType, const QString &widgetType )
     {
-      const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:" + dataType, "vl", "memory" );
-      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, "col1" );
+      const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:" + dataType, QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+      const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, QStringLiteral( "col1" ) );
       QCOMPARE( setup.type(), widgetType );
       QCOMPARE( setup.config().count(), 0 );
     }
 };
 
-QTEST_MAIN( TestQgsEditorWidgetRegistry )
+QGSTEST_MAIN( TestQgsEditorWidgetRegistry )
 #include "testqgseditorwidgetregistry.moc"

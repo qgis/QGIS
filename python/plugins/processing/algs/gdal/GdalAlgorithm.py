@@ -28,7 +28,9 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QUrl
+
+from qgis.core import QgsApplication
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
@@ -41,13 +43,19 @@ pluginPath = os.path.normpath(os.path.join(
 
 class GdalAlgorithm(GeoAlgorithm):
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        self._icon = None
+
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdal.svg'))
+        if self._icon is None:
+            self._icon = QgsApplication.getThemeIcon("/providerGdal.svg")
+        return self._icon
 
     def getCustomParametersDialog(self):
         return GdalAlgorithmDialog(self)
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = self.getConsoleCommands()
         layers = dataobjects.getVectorLayers()
         supported = dataobjects.getSupportedOutputVectorLayerExtensions()
@@ -64,13 +72,21 @@ class GdalAlgorithm(GeoAlgorithm):
                         c = re.sub('["\']{}["\']'.format(fileName), "'" + exportedFileName + "'", c)
 
             commands[i] = c
-        GdalUtils.runGdal(commands, progress)
+        GdalUtils.runGdal(commands, feedback)
 
     def shortHelp(self):
-        return self._formatHelp('''This algorithm is based on the GDAL %s module.
+        helpPath = GdalUtils.gdalHelpPath()
+        if helpPath == '':
+            return
 
-                For more info, see the <a href = 'http://www.gdal.org/%s.html'> module help</a>
-                ''' % (self.commandName(), self.commandName()))
+        if os.path.exists(helpPath):
+            url = QUrl.fromLocalFile(os.path.join(helpPath, '{}.html'.format(self.commandName()))).toString()
+        else:
+            url = helpPath + '{}.html'.format(self.commandName())
+
+        return self._formatHelp('''This algorithm is based on the GDAL {} module.
+                For more info, see the <a href={}> module help</a>
+                '''.format(self.commandName(), url))
 
     def commandName(self):
         alg = self.getCopy()

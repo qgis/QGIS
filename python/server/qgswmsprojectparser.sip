@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgswcsprojectparser.sip
+                              qgswmsprojectparser.sip
                               ------------------------
   begin                : May 2, 2015
   copyright            : (C) 2015 by Alessandro Pasotti
@@ -28,11 +28,9 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const  /*override*/ ;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings = false ) const  /*override*/ ;
 
     QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const  /*override*/ ;
-
-    QString serviceUrl() const  /*override*/ ;
 
     QStringList wfsLayerNames() const  /*override*/ ;
 
@@ -46,16 +44,14 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     double legendIconLabelSpace() const  /*override*/ ;
     double legendSymbolWidth() const  /*override*/ ;
     double legendSymbolHeight() const  /*override*/ ;
-    const QFont& legendLayerFont() const  /*override*/ ;
-    const QFont& legendItemFont() const  /*override*/ ;
+    QFont legendLayerFont() const  /*override*/ ;
+    QFont legendItemFont() const  /*override*/ ;
 
-    double maxWidth() const  /*override*/ ;
-    double maxHeight() const  /*override*/ ;
     double imageQuality() const  /*override*/ ;
     int wmsPrecision() const  /*override*/ ;
 
     //printing
-    //QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, //QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const  /*override*/ ;
+    //QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap* >& mapList, //QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const  /*override*/ ;
 
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const  /*override*/ ;
 
@@ -63,7 +59,7 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     void setScaleDenominator( double )  /*override*/;
     void addExternalGMLData( const QString&, QDomDocument* )  /*override*/ ;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const  /*override*/ ;
+    // QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const  /*override*/ ;
 
     /** Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     int layersAndStyles( QStringList& layers, QStringList& styles ) const  /*override*/ ;
@@ -75,10 +71,10 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     QDomDocument getStyles( QStringList& layerList ) const  /*override*/ ;
 
     /** Returns the xml fragment of layers styles description*/
-    QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const  /*override*/ ;
+    QDomDocument describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const  /*override*/ ;
 
     /** Returns if output are MM or PIXEL*/
-    QgsMapRenderer::OutputUnits outputUnits() const  /*override*/ ;
+    QgsUnitTypes::RenderUnit outputUnits() const  /*override*/ ;
 
     /** True if the feature info response should contain the wkt geometry for vector features*/
     bool featureInfoWithWktGeometry() const  /*override*/ ;
@@ -102,14 +98,16 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
     /** Draw text annotation items from the QGIS projectfile*/
     void drawOverlays( QPainter* p, int dpi, int width, int height ) const  /*override*/ ;
 
-    /** Load PAL engine settings from projectfile*/
-    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const  /*override*/ ;
+    /** Load PAL engine settings  into global project instance*/
+    void loadLabelSettings() const  /*override*/ ;
 
     int nLayers() const  /*override*/ ;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const  /*override*/ ;
 
     bool useLayerIds() const  /*override*/ ;
+
+    bool allowRequestDefinedDatasources() const;
 
   private:
 
@@ -126,7 +124,7 @@ class QgsWmsProjectParser : public QgsWmsConfigParser
                     const QDomElement &legendElem,
                     const QMap<QString, QgsMapLayer *> &layerMap,
                     const QStringList &nonIdentifiableLayers,
-                    QString version, //1.1.1 or 1.3.0
+                    const QString& version, //1.1.1 or 1.3.0
                     bool fullProjectSettings,
                     QHash<QString, QString> &idNameMap,
                     QStringList &layerIDList ) const;

@@ -16,15 +16,15 @@
 #include "qgsexpressionhighlighter.h"
 
 QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
-    : QSyntaxHighlighter( parent )
+  : QSyntaxHighlighter( parent )
 {
   HighlightingRule rule;
 
   keywordFormat.setForeground( Qt::darkBlue );
   keywordFormat.setFontWeight( QFont::Bold );
   QStringList keywordPatterns;
-  keywordPatterns << "\\bCASE\\b" << "\\bWHEN\\b" << "\\bTHEN\\b"
-  << "\\bELSE\\b" << "\\bEND\\b";
+  keywordPatterns << QStringLiteral( "\\bCASE\\b" ) << QStringLiteral( "\\bWHEN\\b" ) << QStringLiteral( "\\bTHEN\\b" )
+                  << QStringLiteral( "\\bELSE\\b" ) << QStringLiteral( "\\bEND\\b" );
 
   Q_FOREACH ( const QString &pattern, keywordPatterns )
   {
@@ -44,11 +44,11 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   highlightingRules.append( rule );
 }
 
-void QgsExpressionHighlighter::addFields( const QStringList& fieldList )
+void QgsExpressionHighlighter::addFields( const QStringList &fieldList )
 {
   columnNameFormat.setForeground( Qt::darkRed );
   HighlightingRule rule;
-  Q_FOREACH ( const QString& field, fieldList )
+  Q_FOREACH ( const QString &field, fieldList )
   {
     if ( field.isEmpty() ) // this really happened :)
       continue;

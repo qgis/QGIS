@@ -44,14 +44,14 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         bool direct;
         Description(): direct( true ) {}
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
-        Description( const Description & desc ) { label = desc.label; direct =  desc.direct; }
+        Description( const Description &desc ) { label = desc.label; direct =  desc.direct; }
     };
 
     //! Constructor
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                     bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassModule();
 
     QString translate( QString string );
@@ -88,7 +88,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     static QString libraryPathVariable();
 
     //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
-    static void setDirectLibraryPath( QProcessEnvironment & environment );
+    static void setDirectLibraryPath( QProcessEnvironment &environment );
 
     QStringList errors() { return mErrors; }
 
@@ -125,19 +125,20 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //void mapsetChanged();
 
   private:
+
     /** Set progress bar or busy indicator if percent is 100
      * @param percent progress to show in %
      * @param force to set progress for 100% */
     void setProgress( int percent, bool force = false );
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Pointer to GRASS Tools
-    QgsGrassTools *mTools;
+    QgsGrassTools *mTools = nullptr;
 
     //! Module definition file path (.qgm file)
     //QString mPath;
@@ -158,7 +159,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     QString mAppDir;
 
     //! Pointer to options widget
-    QgsGrassModuleOptions *mOptions;
+    QgsGrassModuleOptions *mOptions = nullptr;
 
     //! Last raster output
     QStringList mOutputRaster;

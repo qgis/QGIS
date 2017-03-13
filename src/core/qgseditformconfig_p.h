@@ -18,7 +18,7 @@
 
 #include <QMap>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgseditformconfig.h"
 
 /// @cond PRIVATE
@@ -27,63 +27,62 @@ class QgsEditFormConfigPrivate : public QSharedData
 {
   public:
     QgsEditFormConfigPrivate()
-        : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
-        , mConfiguredRootContainer( false )
-        , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
-        , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )
-        , mSuppressForm( QgsEditFormConfig::SuppressDefault )
+      : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
+      , mConfiguredRootContainer( false )
+      , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
+      , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )
+      , mSuppressForm( QgsEditFormConfig::SuppressDefault )
     {}
 
-    QgsEditFormConfigPrivate( const QgsEditFormConfigPrivate& o )
-        : QSharedData( o )
-        , mInvisibleRootContainer( static_cast<QgsAttributeEditorContainer*>( o.mInvisibleRootContainer->clone( nullptr ) ) )
-        , mConfiguredRootContainer( o.mConfiguredRootContainer )
-        , mConstraints( o.mConstraints )
-        , mConstraintsDescription( o.mConstraintsDescription )
-        , mFieldEditables( o.mFieldEditables )
-        , mLabelOnTop( o.mLabelOnTop )
-        , mNotNull( o.mNotNull )
-        , mEditorWidgetTypes( o.mEditorWidgetTypes )
-        , mWidgetConfigs( o.mWidgetConfigs )
-        , mEditorLayout( o.mEditorLayout )
-        , mUiFormPath( o.mUiFormPath )
-        , mInitFunction( o.mInitFunction )
-        , mInitCodeSource( o.mInitCodeSource )
-        , mInitCode( o.mInitCode )
-        , mSuppressForm( o.mSuppressForm )
-        , mFields( o.mFields )
+    QgsEditFormConfigPrivate( const QgsEditFormConfigPrivate &o )
+      : QSharedData( o )
+      , mInvisibleRootContainer( static_cast<QgsAttributeEditorContainer *>( o.mInvisibleRootContainer->clone( nullptr ) ) )
+      , mConfiguredRootContainer( o.mConfiguredRootContainer )
+      , mFieldEditables( o.mFieldEditables )
+      , mLabelOnTop( o.mLabelOnTop )
+      , mEditorWidgetTypes( o.mEditorWidgetTypes )
+      , mWidgetConfigs( o.mWidgetConfigs )
+      , mEditorLayout( o.mEditorLayout )
+      , mUiFormPath( o.mUiFormPath )
+      , mInitFunction( o.mInitFunction )
+      , mInitCodeSource( o.mInitCodeSource )
+      , mInitCode( o.mInitCode )
+      , mSuppressForm( o.mSuppressForm )
+      , mFields( o.mFields )
     {}
 
-    /** The invisible root container for attribute editors in the drag and drop designer */
-    QgsAttributeEditorContainer* mInvisibleRootContainer;
+    ~QgsEditFormConfigPrivate()
+    {
+      delete mInvisibleRootContainer;
+    }
 
-    /** This flag is set if the root container was configured by the user */
+    //! The invisible root container for attribute editors in the drag and drop designer
+    QgsAttributeEditorContainer *mInvisibleRootContainer = nullptr;
+
+    //! This flag is set if the root container was configured by the user
     bool mConfiguredRootContainer;
 
-    QMap< QString, QString> mConstraints;
-    QMap< QString, QString> mConstraintsDescription;
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
-    QMap< QString, bool> mNotNull;
 
     QMap<QString, QString> mEditorWidgetTypes;
-    QMap<QString, QgsEditorWidgetConfig > mWidgetConfigs;
+    QMap<QString, QVariantMap > mWidgetConfigs;
 
-    /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
+    //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
     QgsEditFormConfig::EditorLayout mEditorLayout;
 
-    /** Init form instance */
+    //! Init form instance
     QString mUiFormPath;
-    /** Name of the python form init function */
+    //! Name of the python form init function
     QString mInitFunction;
-    /** Path of the python external file to be loaded */
+    //! Path of the python external file to be loaded
     QString mInitFilePath;
-    /** Choose the source of the init founction */
+    //! Choose the source of the init founction
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
-    /** Python init code provided in the dialog */
+    //! Python init code provided in the dialog
     QString mInitCode;
 
-    /** Type of feature form suppression after feature creation */
+    //! Type of feature form suppression after feature creation
     QgsEditFormConfig::FeatureFormSuppress mSuppressForm;
 
     QgsFields mFields;

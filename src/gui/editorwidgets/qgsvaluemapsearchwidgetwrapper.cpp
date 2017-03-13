@@ -16,20 +16,21 @@
 #include "qgsvaluemapsearchwidgetwrapper.h"
 #include "qgstexteditconfigdlg.h"
 #include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapfieldformatter.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 
 #include <QSettings>
 #include <QSizePolicy>
 
-QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mComboBox( nullptr )
+QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mComboBox( nullptr )
 {
 }
 
-QWidget* QgsValueMapSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsValueMapSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
@@ -94,7 +95,7 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
 
-  QString currentKey = mComboBox->itemData( mComboBox->currentIndex() ).toString();
+  QString currentKey = mComboBox->currentData().toString();
 
   switch ( fldType )
   {
@@ -134,19 +135,19 @@ void QgsValueMapSearchWidgetWrapper::setEnabled( bool enabled )
   mComboBox->setEnabled( enabled );
 }
 
-void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {
-    const QgsEditorWidgetConfig cfg = config();
-    QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
+    const QVariantMap cfg = config();
+    QVariantMap::ConstIterator it = cfg.constBegin();
     mComboBox->addItem( tr( "Please select" ), "" );
 
     while ( it != cfg.constEnd() )
     {
-      if ( it.value() != QString( VALUEMAP_NULL_TEXT ) )
+      if ( it.value() != QgsValueMapFieldFormatter::NULL_VALUE )
         mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
@@ -159,9 +160,9 @@ void QgsValueMapSearchWidgetWrapper::setExpression( QString exp )
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 
-  str = QString( "%1 = '%2'" )
+  str = QStringLiteral( "%1 = '%2'" )
         .arg( QgsExpression::quotedColumnRef( fieldName ),
-              exp.replace( '\'', "''" ) );
+              exp.replace( '\'', QLatin1String( "''" ) ) );
 
   mExpression = str;
 }

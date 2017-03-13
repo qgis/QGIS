@@ -1,30 +1,28 @@
 %Module(name=qgis._core,
-        version=0,
         keyword_arguments="Optional")
-
-%Feature QT5_SUPPORT
 
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
 %Import QtSql/QtSqlmod.sip
 
-%If (QT5_SUPPORT)
-  %Import QtPrintSupport/QtPrintSupportmod.sip
-  %Import QtWidgets/QtWidgetsmod.sip
-%End
+%Import QtPrintSupport/QtPrintSupportmod.sip
+%Import QtWidgets/QtWidgetsmod.sip
 
 %Include conversions.sip
 %Include qgsexception.sip
 
 %Include qgis.sip
 
-%Include qgsannotation.sip
 %Include qgsapplication.sip
 %Include qgsaction.sip
+%Include qgssettings.sip
 %Include qgsactionmanager.sip
+%Include qgsactionscope.sip
+%Include qgsactionscoperegistry.sip
 %Include qgsaggregatecalculator.sip
 %Include qgsattributetableconfig.sip
 %Include qgsattributeeditorelement.sip
+%Include qgsbearingutils.sip
 %Include qgsbrowsermodel.sip
 %Include qgsclipper.sip
 %Include qgscolorramp.sip
@@ -36,7 +34,6 @@
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
-%Include qgsdatadefined.sip
 %Include qgsdataitem.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
@@ -47,7 +44,6 @@
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
 %Include qgseditformconfig.sip
-%Include qgseditorwidgetconfig.sip
 %Include qgseditorwidgetsetup.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
@@ -59,6 +55,10 @@
 %Include qgsfeaturerequest.sip
 %Include qgsfeedback.sip
 %Include qgsfield.sip
+%Include qgsfieldconstraints.sip
+%Include qgsfields.sip
+%Include qgsfieldformatterregistry.sip
+%Include qgsfieldformatter.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
@@ -69,15 +69,13 @@
 %Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgstransaction.sip
 %Include qgstransactiongroup.sip
-%If(!QT5_SUPPORT)
-  %Include qgshttptransaction.sip
-%End
 %Include qgsdartmeasurement.sip
 %Include qgsexpressionfieldbuffer.sip
 %Include qgsfontutils.sip
 %Include qgslabelsearchtree.sip
 %Include qgslegendrenderer.sip
 %Include qgslegendsettings.sip
+%Include qgslegendstyle.sip
 %Include qgslogger.sip
 %Include qgsmaphittest.sip
 %Include qgsmaplayer.sip
@@ -85,7 +83,6 @@
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayermodel.sip
 %Include qgsmaplayerproxymodel.sip
-%Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
 %Include qgsmaplayerstylemanager.sip
 %Include qgsmaprenderercache.sip
@@ -96,6 +93,7 @@
 %Include qgsmapsettings.sip
 %Include qgsmaptopixel.sip
 %Include qgsmapunitscale.sip
+%Include qgsmargins.sip
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
@@ -110,13 +108,19 @@
 %Include qgspaintenginehack.sip
 %Include qgspainting.sip
 %Include qgspallabeling.sip
+%Include qgspathresolver.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
 %Include qgspointlocator.sip
 %Include qgsproject.sip
+%Include qgsprojectbadlayerhandler.sip
 %Include qgsprojectproperty.sip
+%Include qgssnappingconfig.sip
 %Include qgsprojectversion.sip
+%Include qgsproperty.sip
+%Include qgspropertycollection.sip
+%Include qgspropertytransformer.sip
 %Include qgsprovidermetadata.sip
 %Include qgsproviderregistry.sip
 %Include qgspythonrunner.sip
@@ -128,7 +132,6 @@
 %Include qgsrunprocess.sip
 %Include qgsruntimeprofiler.sip
 %Include qgsscalecalculator.sip
-%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
@@ -138,18 +141,26 @@
 %Include qgsstatisticalsummary.sip
 %Include qgsstringstatisticalsummary.sip
 %Include qgsstringutils.sip
+%Include qgstaskmanager.sip
+%Include qgstextrenderer.sip
 %Include qgstolerance.sip
 %Include qgstracer.sip
+%Include qgstrackedvectorlayertools.sip
 %Include qgsunittypes.sip
+%Include qgsvector.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
+%Include qgsvectorfilewritertask.sip
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
+%Include qgsvectorlayerjoininfo.sip
+%Include qgsvectorlayertools.sip
 %Include qgsvectorlayerundocommand.sip
+%Include qgsvectorlayerutils.sip
 %Include qgsvectorsimplifymethod.sip
 
 %Include qgscachedfeatureiterator.sip
@@ -165,6 +176,12 @@
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
+
+%Include annotations/qgsannotation.sip
+%Include annotations/qgsannotationmanager.sip
+%Include annotations/qgshtmlannotation.sip
+%Include annotations/qgssvgannotation.sip
+%Include annotations/qgstextannotation.sip
 
 %Include auth/qgsauthcertutils.sip
 %Include auth/qgsauthconfig.sip
@@ -187,8 +204,6 @@
 %Include composer/qgscomposeritemgroup.sip
 %Include composer/qgscomposerlabel.sip
 %Include composer/qgscomposerlegend.sip
-%Include composer/qgscomposerlegenditem.sip
-%Include composer/qgscomposerlegendstyle.sip
 %Include composer/qgscomposermap.sip
 %Include composer/qgscomposermapgrid.sip
 %Include composer/qgscomposermapitem.sip
@@ -238,6 +253,14 @@
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsqtlocationconnection.sip
 
+%Include fieldformatter/qgsdatetimefieldformatter.sip
+%Include fieldformatter/qgsfallbackfieldformatter.sip
+%Include fieldformatter/qgskeyvaluefieldformatter.sip
+%Include fieldformatter/qgslistfieldformatter.sip
+%Include fieldformatter/qgsrelationreferencefieldformatter.sip
+%Include fieldformatter/qgsvaluemapfieldformatter.sip
+%Include fieldformatter/qgsvaluerelationfieldformatter.sip
+
 %Include layertree/qgslayertree.sip
 %Include layertree/qgslayertreegroup.sip
 %Include layertree/qgslayertreelayer.sip
@@ -246,6 +269,10 @@
 %Include layertree/qgslayertreenode.sip
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include layertree/qgslayertreeutils.sip
+
+%Include processing/qgsprocessingfeedback.sip
+%Include processing/qgsprocessingprovider.sip
+%Include processing/qgsprocessingregistry.sip
 
 %Include raster/qgsbilinearrasterresampler.sip
 %Include raster/qgsbrightnesscontrastfilter.sip
@@ -271,6 +298,7 @@
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasteriterator.sip
 %Include raster/qgsrasterlayer.sip
+%Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
 %Include raster/qgsrasterpipe.sip
 %Include raster/qgsrasterprojector.sip
@@ -301,7 +329,9 @@
 %Include symbology-ng/qgsinvertedpolygonrenderer.sip
 %Include symbology-ng/qgslegendsymbolitem.sip
 %Include symbology-ng/qgsnullsymbolrenderer.sip
+%Include symbology-ng/qgspointclusterrenderer.sip
 %Include symbology-ng/qgspointdisplacementrenderer.sip
+%Include symbology-ng/qgspointdistancerenderer.sip
 %Include symbology-ng/qgsrenderer.sip
 %Include symbology-ng/qgsrendererregistry.sip
 %Include symbology-ng/qgsrulebasedrenderer.sip
@@ -318,8 +348,6 @@
 %Include symbology-ng/qgsvectorfieldsymbollayer.sip
 %Include symbology-ng/qgsarrowsymbollayer.sip
 
-%Include symbology-ng/qgssymbologyconversion.sip
-
 %Include dxf/qgsdxfexport.sip
 
 %Include geometry/qgsabstractgeometry.sip
@@ -330,6 +358,7 @@
 %Include geometry/qgsgeometry.sip
 %Include geometry/qgsgeometrycollection.sip
 %Include geometry/qgsgeometryengine.sip
+%Include geometry/qgsgeometryutils.sip
 %Include geometry/qgslinestring.sip
 %Include geometry/qgsmulticurve.sip
 %Include geometry/qgsmultilinestring.sip

@@ -20,6 +20,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,8 +30,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsSettings
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
@@ -77,7 +78,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             self.selectedoptions.append(item.text())
         QDialog.accept(self)
@@ -86,7 +87,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def addFile(self):
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/LastInputPath'):
             path = settings.value('/Processing/LastInputPath')
         else:

@@ -77,17 +77,17 @@ static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );
 static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sIcon = ":/evis/eVisEventBrowser.png";
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
+static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 
 
 
-eVis::eVis( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mDatabaseConnectionActionPointer( nullptr )
-    , mEventIdToolActionPointer( nullptr )
-    , mEventBrowserActionPointer( nullptr )
+eVis::eVis( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
+  , mDatabaseConnectionActionPointer( nullptr )
+  , mEventIdToolActionPointer( nullptr )
+  , mEventBrowserActionPointer( nullptr )
 {
   mIdTool = nullptr;
 }
@@ -104,11 +104,11 @@ void eVis::initGui()
 
   // Create the action for tool
   mDatabaseConnectionActionPointer = new QAction( QIcon( ":/evis/eVisDatabaseConnection.png" ), tr( "eVis Database Connection" ), this );
-  mDatabaseConnectionActionPointer->setObjectName( "mDatabaseConnectionActionPointer" );
+  mDatabaseConnectionActionPointer->setObjectName( QStringLiteral( "mDatabaseConnectionActionPointer" ) );
   mEventIdToolActionPointer = new QAction( QIcon( ":/evis/eVisEventIdTool.png" ), tr( "eVis Event Id Tool" ), this );
-  mEventIdToolActionPointer->setObjectName( "mEventIdToolActionPointer" );
+  mEventIdToolActionPointer->setObjectName( QStringLiteral( "mEventIdToolActionPointer" ) );
   mEventBrowserActionPointer = new QAction( QIcon( ":/evis/eVisEventBrowser.png" ), tr( "eVis Event Browser" ), this );
-  mEventBrowserActionPointer->setObjectName( "mEventBrowserActionPointer" );
+  mEventBrowserActionPointer->setObjectName( QStringLiteral( "mEventBrowserActionPointer" ) );
 
   // Set the what's this text
   mDatabaseConnectionActionPointer->setWhatsThis( tr( "Create layer from a database query" ) );
@@ -126,9 +126,9 @@ void eVis::initGui()
   mQGisIface->addDatabaseToolBarIcon( mEventIdToolActionPointer );
   mQGisIface->addDatabaseToolBarIcon( mEventBrowserActionPointer );
 
-  mQGisIface->addPluginToDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
-  mQGisIface->addPluginToDatabaseMenu( "&eVis", mEventIdToolActionPointer );
-  mQGisIface->addPluginToDatabaseMenu( "&eVis", mEventBrowserActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( QStringLiteral( "&eVis" ), mDatabaseConnectionActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( QStringLiteral( "&eVis" ), mEventIdToolActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( QStringLiteral( "&eVis" ), mEventBrowserActionPointer );
 
   mEventIdToolActionPointer->setCheckable( true );
 }
@@ -170,21 +170,21 @@ void eVis::launchEventBrowser()
 void eVis::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
+  mQGisIface->removePluginDatabaseMenu( QStringLiteral( "&eVis" ), mDatabaseConnectionActionPointer );
   mQGisIface->removeDatabaseToolBarIcon( mDatabaseConnectionActionPointer );
   delete mDatabaseConnectionActionPointer;
 
-  mQGisIface->removePluginDatabaseMenu( "&eVis", mEventIdToolActionPointer );
+  mQGisIface->removePluginDatabaseMenu( QStringLiteral( "&eVis" ), mEventIdToolActionPointer );
   mQGisIface->removeDatabaseToolBarIcon( mEventIdToolActionPointer );
   delete mEventIdToolActionPointer;
 
-  mQGisIface->removePluginDatabaseMenu( "&eVis", mEventBrowserActionPointer );
+  mQGisIface->removePluginDatabaseMenu( QStringLiteral( "&eVis" ), mEventBrowserActionPointer );
   mQGisIface->removeDatabaseToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 
   while ( !mTemporaryFileList.isEmpty() )
   {
-    delete( mTemporaryFileList.takeLast() );
+    delete ( mTemporaryFileList.takeLast() );
   }
 
   if ( mIdTool )
@@ -193,9 +193,9 @@ void eVis::unload()
   }
 }
 
-void eVis::drawVectorLayer( const QString& thePathNameQString, const QString& theBaseNameQString, const QString& theProviderQString )
+void eVis::drawVectorLayer( const QString &pathNameQString, const QString &baseNameQString, const QString &providerQString )
 {
-  mQGisIface->addVectorLayer( thePathNameQString, theBaseNameQString, theProviderQString );
+  mQGisIface->addVectorLayer( pathNameQString, baseNameQString, providerQString );
 }
 
 
@@ -215,9 +215,9 @@ void eVis::drawVectorLayer( const QString& thePathNameQString, const QString& th
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new eVis( theQgisInterfacePointer );
+  return new eVis( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -257,7 +257,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

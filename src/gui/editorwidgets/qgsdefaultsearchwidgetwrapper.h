@@ -17,9 +17,10 @@
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
-#include <qgsfilterlineedit.h>
+#include "qgsfilterlineedit.h"
 
 #include <QCheckBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsSearchWidgetWrapper interface
   public:
@@ -51,29 +52,29 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
   private slots:
     void setCaseString( int caseSensitiveCheckState );
     void filterChanged();
-    void textChanged( const QString& text );
+    void textChanged( const QString &text );
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
     /** Returns a pointer to the line edit part of the widget.
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QgsFilterLineEdit* lineEdit();
+    QgsFilterLineEdit *lineEdit();
 
     /** Returns a pointer to the case sensitivity check box in the widget.
      * @note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QCheckBox* caseSensitiveCheckBox();
+    QCheckBox *caseSensitiveCheckBox();
 
   private:
-    QgsFilterLineEdit* mLineEdit;
-    QCheckBox* mCheckbox;
-    QWidget* mContainer;
+    QgsFilterLineEdit *mLineEdit = nullptr;
+    QCheckBox *mCheckbox = nullptr;
+    QWidget *mContainer = nullptr;
     QString mCaseString;
 };
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,9 +31,10 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -70,7 +72,7 @@ class MeanCoords(GeoAlgorithm):
 
         self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
@@ -78,12 +80,12 @@ class MeanCoords(GeoAlgorithm):
         if weightField is None:
             weightIndex = -1
         else:
-            weightIndex = layer.fieldNameIndex(weightField)
+            weightIndex = layer.fields().lookupField(weightField)
 
         if uniqueField is None:
             uniqueIndex = -1
         else:
-            uniqueIndex = layer.fieldNameIndex(uniqueField)
+            uniqueIndex = layer.fields().lookupField(uniqueField)
 
         fieldList = [QgsField('MEAN_X', QVariant.Double, '', 24, 15),
                      QgsField('MEAN_Y', QVariant.Double, '', 24, 15),
@@ -97,11 +99,11 @@ class MeanCoords(GeoAlgorithm):
         total = 100.0 / len(features)
         means = {}
         for current, feat in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
-                clazz = unicode(feat.attributes()[uniqueIndex]).strip()
+                clazz = str(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:
@@ -109,6 +111,10 @@ class MeanCoords(GeoAlgorithm):
                     weight = float(feat.attributes()[weightIndex])
                 except:
                     weight = 1.00
+
+            if weight < 0:
+                raise GeoAlgorithmExecutionException(self.tr('Negative weight value found. Please fix your data and try again.'))
+
             if clazz not in means:
                 means[clazz] = (0, 0, 0)
 
@@ -123,7 +129,7 @@ class MeanCoords(GeoAlgorithm):
 
         current = 0
         total = 100.0 / len(means)
-        for (clazz, values) in means.iteritems():
+        for (clazz, values) in list(means.items()):
             outFeat = QgsFeature()
             cx = values[0] / values[2]
             cy = values[1] / values[2]
@@ -133,6 +139,6 @@ class MeanCoords(GeoAlgorithm):
             outFeat.setAttributes([cx, cy, clazz])
             writer.addFeature(outFeat)
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

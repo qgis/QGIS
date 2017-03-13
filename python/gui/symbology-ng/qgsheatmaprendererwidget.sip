@@ -21,5 +21,5 @@ class QgsHeatmapRendererWidget : QgsRendererWidget
     /** @returns the current feature renderer */
     virtual QgsFeatureRenderer* renderer();
 
-    void setMapCanvas( QgsMapCanvas* canvas );
+    virtual void setContext( const QgsSymbolWidgetContext& context );
 };

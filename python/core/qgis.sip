@@ -31,11 +31,11 @@ class Qgis
     // Version constants
     //
     // Version string
-    static QString QGIS_VERSION;
+    static const QString QGIS_VERSION;
     // Version number used for comparing versions using the "Check QGIS Version" function
     static const int QGIS_VERSION_INT;
     // Release name
-    static QString QGIS_RELEASE_NAME;
+    static const QString QGIS_RELEASE_NAME;
     // The development version
     static const char* QGIS_DEV_VERSION;
 
@@ -91,20 +91,20 @@ class Qgis
 
     /** Default highlight buffer in mm.
      *  @note added in 2.3 */
-    static double DEFAULT_HIGHLIGHT_BUFFER_MM;
+    static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
-    /** Default highlight line/outline minimum width in mm.
+    /** Default highlight line/stroke minimum width in mm.
      *  @note added in 2.3 */
-    static double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+    static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
     /** Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      * @note added in 2.15*/
-    static double SCALE_PRECISION;
+    static const double SCALE_PRECISION;
 };
 
-/** Converts a string to a double in a permissive way, eg allowing for incorrect
+/** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
  * @param ok will be set to true if conversion was successful
@@ -114,7 +114,7 @@ class Qgis
  */
 double qgsPermissiveToDouble( QString string, bool& ok );
 
-/** Converts a string to an integer in a permissive way, eg allowing for incorrect
+/** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
  * @param ok will be set to true if conversion was successful

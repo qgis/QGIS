@@ -18,6 +18,7 @@
 
 #include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsDateTimeEditConfig
@@ -28,26 +29,16 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
 {
     Q_OBJECT
   public:
-    QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
   private slots:
     void updateDemoWidget();
     void updateFieldFormat( int idx );
-    void updateDisplayFormat( const QString& fieldFormat );
+    void updateDisplayFormat( const QString &fieldFormat );
     void displayFormatChanged( int idx );
     void showHelp( bool buttonChecked );
-
-    // QgsEditorConfigWidget interface
-  public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig &config ) override;
-
-    /**
-     * Get the default format in fonction of the type
-     * @param type the field type
-     * @return the date/time format
-     */
-    static QString defaultFormat( const QVariant::Type type );
 };
 
 #endif // QGSDATETIMEEDITCONFIG_H

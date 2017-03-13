@@ -37,7 +37,7 @@ def checkParameterValuesBeforeExecuting(alg):
 def processInputs(alg):
     # We need to import the rstable
     rstable = alg.getParameterValue('rstable')
-    if rstable in alg.exportedLayers.keys():
+    if rstable in list(alg.exportedLayers.keys()):
         return
     alg.exportedLayers[rstable] = alg.getTempFilename()
     command = 'db.in.ogr input=\"{}\" output={} --overwrite'.format(
@@ -61,7 +61,7 @@ def processCommand(alg):
         ruleFile = alg.getParameterValue('file')
 
     output = alg.getOutputFromName(u'output')
-    alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
+    alg.exportedLayers[output.value] = output.name + alg.uniqueSuffix
 
     command = 'v.lrs.segment input={} file={} rstable={} output={} --overwrite'.format(
         alg.exportedLayers[alg.getParameterValue('input')],

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -64,25 +65,24 @@ class UniqueValues(GeoAlgorithm):
         self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
         self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         outputFile = self.getOutputValue(self.OUTPUT)
-        values = vector.getUniqueValues(layer, layer.fieldNameIndex(fieldName))
+        values = vector.getUniqueValues(layer, layer.fields().lookupField(fieldName))
         self.createHTML(outputFile, values)
         self.setOutputValue(self.TOTAL_VALUES, len(values))
-        self.setOutputValue(self.UNIQUE_VALUES, ';'.join([unicode(v) for v in
+        self.setOutputValue(self.UNIQUE_VALUES, ';'.join([str(v) for v in
                                                           values]))
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>')
-        f.write('<meta http-equiv="Content-Type" content="text/html; \
-                 charset=utf-8" /></head><body>')
-        f.write(self.tr('<p>Total unique values: ') + unicode(len(algData)) + '</p>')
-        f.write(self.tr('<p>Unique values:</p>'))
-        f.write('<ul>')
-        for s in algData:
-            f.write('<li>' + unicode(s) + '</li>')
-        f.write('</ul></body></html>')
-        f.close()
+        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+            f.write('<html><head>')
+            f.write('<meta http-equiv="Content-Type" content="text/html; \
+                     charset=utf-8" /></head><body>')
+            f.write(self.tr('<p>Total unique values: ') + str(len(algData)) + '</p>')
+            f.write(self.tr('<p>Unique values:</p>'))
+            f.write('<ul>')
+            for s in algData:
+                f.write('<li>' + str(s) + '</li>')
+            f.write('</ul></body></html>')

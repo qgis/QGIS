@@ -20,6 +20,7 @@
 
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
+#include "qgis_gui.h"
 
 /// @cond PRIVATE
 class CustomActionRegistry : public QgsMapLayerActionRegistry
@@ -54,48 +55,48 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     struct ActionData
     {
       ActionData()
-          : mIsValid( false )
-          , mAllResults( false )
-          , mIsExternalAction( false )
-          , mLayer( nullptr )
-          , mFeatureId( 0 )
-          , mLevel( LayerLevel )
-          , mMapLayerAction( nullptr )
+        : mIsValid( false )
+        , mAllResults( false )
+        , mIsExternalAction( false )
+        , mLayer( nullptr )
+        , mFeatureId( 0 )
+        , mLevel( LayerLevel )
+        , mMapLayerAction( nullptr )
       {}
 
-      ActionData( QgsMapLayer* layer, QgsMapLayerAction* mapLayerAction = nullptr )
-          : mIsValid( true )
-          , mAllResults( !layer )
-          , mIsExternalAction( nullptr != mapLayerAction )
-          , mLayer( layer )
-          , mFeatureId( 0 )
-          , mLevel( LayerLevel )
-          , mMapLayerAction( mapLayerAction )
+      ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = nullptr )
+        : mIsValid( true )
+        , mAllResults( !layer )
+        , mIsExternalAction( nullptr != mapLayerAction )
+        , mLayer( layer )
+        , mFeatureId( 0 )
+        , mLevel( LayerLevel )
+        , mMapLayerAction( mapLayerAction )
       {}
 
-      ActionData( QgsMapLayer* layer, QgsFeatureId fid, QgsMapLayerAction* mapLayerAction = nullptr )
-          : mIsValid( true )
-          , mAllResults( false )
-          , mIsExternalAction( nullptr != mapLayerAction )
-          , mLayer( layer )
-          , mFeatureId( fid )
-          , mLevel( FeatureLevel )
-          , mMapLayerAction( mapLayerAction )
+      ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = nullptr )
+        : mIsValid( true )
+        , mAllResults( false )
+        , mIsExternalAction( nullptr != mapLayerAction )
+        , mLayer( layer )
+        , mFeatureId( fid )
+        , mLevel( FeatureLevel )
+        , mMapLayerAction( mapLayerAction )
       {}
 
       bool mIsValid;
       bool mAllResults;
       bool mIsExternalAction;
-      QgsMapLayer* mLayer;
+      QgsMapLayer *mLayer = nullptr;
       QgsFeatureId mFeatureId;
       MenuLevel mLevel;
-      QgsMapLayerAction* mMapLayerAction;
+      QgsMapLayerAction *mMapLayerAction = nullptr;
     };
 
     /**
      * @brief QgsIdentifyMenu is a menu to be used to choose within a list of QgsMapTool::IdentifyReults
      */
-    explicit QgsIdentifyMenu( QgsMapCanvas* canvas );
+    explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 
     ~QgsIdentifyMenu();
 
@@ -123,18 +124,18 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
     bool resultsIfExternalAction() {return mResultsIfExternalAction;}
 
-    //! Defines the maximimum number of layers displayed in the menu (default is 10).
+    //! Defines the maximum number of layers displayed in the menu (default is 10).
     //! @note 0 is unlimited.
     void setMaxLayerDisplay( int maxLayerDisplay );
     int maxLayerDisplay() {return mMaxLayerDisplay;}
 
-    //! Defines the maximimum number of features displayed in the menu for vector layers (default is 10).
+    //! Defines the maximum number of features displayed in the menu for vector layers (default is 10).
     //! @note 0 is unlimited.
     void setMaxFeatureDisplay( int maxFeatureDisplay );
     int maxFeatureDisplay() {return mMaxFeatureDisplay;}
 
     //! adds a new custom action to the menu
-    void addCustomAction( QgsMapLayerAction* action ) {mCustomActionRegistry.addMapLayerAction( action );}
+    void addCustomAction( QgsMapLayerAction *action ) {mCustomActionRegistry.addMapLayerAction( action );}
 
     //! remove all custom actions from the menu to be built
     void removeCustomActions();
@@ -144,7 +145,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      * @param idResults the list of identify results to choose within
      * @param pos the position where the menu will be executed
      */
-    QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos );
+    QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
   protected:
     virtual void closeEvent( QCloseEvent *e ) override;
@@ -158,17 +159,17 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
   private:
 
     //! adds a raster layer in the menu being built
-    void addRasterLayer( QgsMapLayer* layer );
+    void addRasterLayer( QgsMapLayer *layer );
 
     //! adds a vector layer and its results in the menu being built
     //! if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
-    void addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult>& results, bool singleLayer = false );
+    void addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapToolIdentify::IdentifyResult> &results, bool singleLayer = false );
 
     //! get the lists of results corresponding to an action in the menu
-    QList<QgsMapToolIdentify::IdentifyResult> results( QAction* action, bool& externalAction );
+    QList<QgsMapToolIdentify::IdentifyResult> results( QAction *action, bool &externalAction );
 
-    QgsMapCanvas* mCanvas;
-    QList<QgsHighlight*> mRubberBands;
+    QgsMapCanvas *mCanvas = nullptr;
+    QList<QgsHighlight *> mRubberBands;
     bool mAllowMultipleReturn;
     bool mExecWithSingleResult;
     bool mShowFeatureActions;
@@ -183,7 +184,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     CustomActionRegistry mCustomActionRegistry;
 
     // map layers with their results, this is the odering of the menu
-    QMap <QgsMapLayer*, QList<QgsMapToolIdentify::IdentifyResult> > mLayerIdResults;
+    QMap <QgsMapLayer *, QList<QgsMapToolIdentify::IdentifyResult> > mLayerIdResults;
 };
 
 Q_DECLARE_METATYPE( QgsIdentifyMenu::ActionData )

@@ -19,6 +19,7 @@
 
 #include <QAbstractItemDelegate>
 #include <QString>
+#include "qgis_gui.h"
 
 class QCheckBox;
 class QgsDetailedItemWidget;
@@ -35,45 +36,45 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
-    QgsDetailedItemDelegate( QObject * parent = nullptr );
+    QgsDetailedItemDelegate( QObject *parent = nullptr );
     ~QgsDetailedItemDelegate();
-    /** Reimplement for parent class */
-    void paint( QPainter * thePainter,
-                const QStyleOptionViewItem & theOption,
-                const QModelIndex & theIndex ) const override;
-    /** Reimplement for parent class */
-    QSize sizeHint( const QStyleOptionViewItem & theOption,
-                    const QModelIndex & theIndex ) const override;
+    //! Reimplement for parent class
+    void paint( QPainter *painter,
+                const QStyleOptionViewItem &option,
+                const QModelIndex &index ) const override;
+    //! Reimplement for parent class
+    QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const override;
 
-    void setVerticalSpacing( int theValue );
+    void setVerticalSpacing( int value );
 
     int verticalSpacing() const;
 
-    void setHorizontalSpacing( int theValue );
+    void setHorizontalSpacing( int value );
 
     int horizontalSpacing() const;
 
   private:
-    QFont detailFont( const QStyleOptionViewItem &theOption ) const;
-    QFont categoryFont( const QStyleOptionViewItem &theOption ) const;
-    QFont titleFont( const QStyleOptionViewItem &theOption ) const;
-    void drawHighlight( const QStyleOptionViewItem &theOption,
-                        QPainter * thepPainter,
-                        int theHeight ) const;
+    QFont detailFont( const QStyleOptionViewItem &option ) const;
+    QFont categoryFont( const QStyleOptionViewItem &option ) const;
+    QFont titleFont( const QStyleOptionViewItem &option ) const;
+    void drawHighlight( const QStyleOptionViewItem &option,
+                        QPainter *thepPainter,
+                        int height ) const;
 
-    QStringList wordWrap( const QString& theString,
-                          const QFontMetrics& theMetrics,
-                          int theWidth ) const;
-    void paintManually( QPainter *thePainter,
-                        const QStyleOptionViewItem &theOption,
-                        const QgsDetailedItemData &theData ) const;
-    void paintAsWidget( QPainter *thePainter,
-                        const QStyleOptionViewItem &theOption,
-                        const QgsDetailedItemData &theData ) const;
-    int height( const QStyleOptionViewItem &theOption,
-                const QgsDetailedItemData &theData ) const;
-    QgsDetailedItemWidget * mpWidget;
-    QCheckBox * mpCheckBox;
+    QStringList wordWrap( const QString &string,
+                          const QFontMetrics &metrics,
+                          int width ) const;
+    void paintManually( QPainter *painter,
+                        const QStyleOptionViewItem &option,
+                        const QgsDetailedItemData &data ) const;
+    void paintAsWidget( QPainter *painter,
+                        const QStyleOptionViewItem &option,
+                        const QgsDetailedItemData &data ) const;
+    int height( const QStyleOptionViewItem &option,
+                const QgsDetailedItemData &data ) const;
+    QgsDetailedItemWidget *mpWidget = nullptr;
+    QCheckBox *mpCheckBox = nullptr;
     int mVerticalSpacing;
     int mHorizontalSpacing;
 };

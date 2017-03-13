@@ -22,6 +22,7 @@
 #include "qgsstringstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsdockwidget.h"
+#include "qgis_app.h"
 
 class QgsBrowserModel;
 class QModelIndex;
@@ -43,7 +44,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     /** Returns the currently active layer for the widget
      * @note added in QGIS 2.12
      */
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer *layer() const { return mLayer; }
 
   public slots:
 
@@ -53,24 +54,24 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
   private slots:
 
-    void layerChanged( QgsMapLayer* layer );
+    void layerChanged( QgsMapLayer *layer );
     void statActionTriggered( bool checked );
-    void layersRemoved( const QStringList& layers );
+    void layersRemoved( const QStringList &layers );
     void layerSelectionChanged();
 
   private:
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 
-    QMap< int, QAction* > mStatsActions;
-    static QList< QgsStatisticalSummary::Statistic > mDisplayStats;
-    static QList< QgsStringStatisticalSummary::Statistic > mDisplayStringStats;
-    static QList< QgsDateTimeStatisticalSummary::Statistic > mDisplayDateTimeStats;
+    QMap< int, QAction * > mStatsActions;
+    static QList< QgsStatisticalSummary::Statistic > sDisplayStats;
+    static QList< QgsStringStatisticalSummary::Statistic > sDisplayStringStats;
+    static QList< QgsDateTimeStatisticalSummary::Statistic > sDisplayDateTimeStats;
 
     void updateNumericStatistics( bool selectedOnly );
     void updateStringStatistics( bool selectedOnly );
     void updateDateTimeStatistics( bool selectedOnly );
-    void addRow( int row, const QString& name, const QString& value, bool showValue );
+    void addRow( int row, const QString &name, const QString &value, bool showValue );
 
     QgsExpressionContext createExpressionContext() const override;
 };

@@ -197,4 +197,11 @@ class QgsJSONUtils
      * @param feature feature to export
      */
     static QString exportAttributes( const QgsFeature& feature );
+
+    /** Parse a simple array (depth=1).
+     * @param json the JSON to parse
+     * @param type the type of the elements
+     * @note added in QGIS 3.0
+     */
+    static QVariantList parseArray( const QString& json, QVariant::Type type );
 };

@@ -457,4 +457,25 @@ CREATE TABLE qgis_test.widget_styles(
 );
 
 INSERT INTO qgis_editor_widget_styles VALUES
-('qgis_test', 'widget_styles', 'fld1', 'FooEdit', '<config><option key="param1" value="value1"/><option key="param2" value="2"/></config>');
+('qgis_test', 'widget_styles', 'fld1', 'FooEdit', '<config type="Map"><Option name="param1" value="value1" type="QString"/><Option name="param2" value="2" type="QString"/></config>');
+
+
+-----------------------------
+-- Table for constraint tests
+--
+
+DROP TABLE IF EXISTS qgis_test.constraints;
+CREATE TABLE qgis_test.constraints
+(
+  gid serial NOT NULL PRIMARY KEY, -- implicit unique key
+  val int, -- unique constraint
+  name text NOT NULL, -- unique index
+  description text,
+  CONSTRAINT constraint_val UNIQUE (val),
+  CONSTRAINT constraint_val2 UNIQUE (val) -- create double unique constraint for test
+);
+
+CREATE UNIQUE INDEX constraints_uniq
+  ON qgis_test.constraints
+  USING btree
+  (name COLLATE pg_catalog."default"); -- unique index

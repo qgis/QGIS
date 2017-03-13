@@ -27,7 +27,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 {
     Q_OBJECT
   public:
-    QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame );
+    QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame );
     ~QgsComposerHtmlWidget();
 
   private slots:
@@ -50,21 +50,21 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     void on_mEmptyFrameCheckBox_toggled( bool checked );
     void on_mHideEmptyBgCheckBox_toggled( bool checked );
 
-    /** Sets the GUI elements to the values of mHtmlItem*/
+    //! Sets the GUI elements to the values of mHtmlItem
     void setGuiElementValues();
 
   protected slots:
-    /** Initializes data defined buttons to current atlas coverage layer*/
+    //! Initializes data defined buttons to current atlas coverage layer
     void populateDataDefinedButtons();
 
   private:
     QgsComposerHtmlWidget();
     void blockSignals( bool block );
 
-    QgsComposerHtml* mHtml;
-    QgsComposerFrame* mFrame;
-    QgsCodeEditorHTML *mHtmlEditor;
-    QgsCodeEditorCSS *mStylesheetEditor;
+    QgsComposerHtml *mHtml = nullptr;
+    QgsComposerFrame *mFrame = nullptr;
+    QgsCodeEditorHTML *mHtmlEditor = nullptr;
+    QgsCodeEditorCSS *mStylesheetEditor = nullptr;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

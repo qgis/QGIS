@@ -18,6 +18,7 @@
 #ifndef QGSPOINTV2_H
 #define QGSPOINTV2_H
 
+#include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
@@ -44,13 +45,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 
     /** Construct a QgsPointV2 from a QgsPoint object
      */
-    explicit QgsPointV2( const QgsPoint& p );
+    explicit QgsPointV2( const QgsPoint &p );
 
     /** Construct a QgsPointV2 from a QPointF
      */
     explicit QgsPointV2( QPointF p );
 
-    /** Construct a point with a specified type (eg PointZ, PointM) and initial x, y, z, and m values.
+    /** Construct a point with a specified type (e.g., PointZ, PointM) and initial x, y, z, and m values.
      * @param type point type
      * @param x x-coordinate of point
      * @param y y-coordinate of point
@@ -59,8 +60,8 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     QgsPointV2( QgsWkbTypes::Type type, double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0 );
 
-    bool operator==( const QgsPointV2& pt ) const;
-    bool operator!=( const QgsPointV2& pt ) const;
+    bool operator==( const QgsPointV2 &pt ) const;
+    bool operator!=( const QgsPointV2 &pt ) const;
 
     /** Returns the point's x-coordinate.
      * @see setX()
@@ -151,34 +152,170 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      */
     QPointF toQPointF() const;
 
+    /**
+     * Returns the distance between this point and a specified x, y coordinate. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+     * @see distanceSquared()
+    */
+    double distance( double x, double y ) const;
+
+    /**
+     * Returns the 2D distance between this point and another point. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+    */
+    double distance( const QgsPointV2 &other ) const;
+
+    /**
+     * Returns the squared distance between this point a specified x, y coordinate. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared( double x, double y ) const;
+
+    /**
+     * Returns the squared distance between this point another point. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared( const QgsPointV2 &other ) const;
+
+    /**
+     * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+     * @see distanceSquared()
+    */
+    double distance3D( double x, double y, double z ) const;
+
+    /**
+     * Returns the 3D distance between this point and another point. In certain
+     * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+     * when comparing distances.
+     * @note added in QGIS 3.0
+    */
+    double distance3D( const QgsPointV2 &other ) const;
+
+    /**
+     * Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared3D( double x, double y, double z ) const;
+
+    /**
+     * Returns the 3D squared distance between this point another point. Calling
+     * this is faster than calling distance(), and may be useful in use cases such as comparing
+     * distances where the extra expense of calling distance() is not required.
+     * @see distance()
+     * @note added in QGIS 3.0
+    */
+    double distanceSquared3D( const QgsPointV2 &other ) const;
+
+    /**
+     * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+     * @note added in QGIS 3.0
+     */
+    double azimuth( const QgsPointV2 &other ) const;
+
+    /** Returns a new point which correspond to this point projected by a specified distance
+     * with specified angles (azimuth and inclination).
+     * M value is preserved.
+     * @param distance distance to project
+     * @param azimuth angle to project in X Y, clockwise in degrees starting from north
+     * @param inclination angle to project in Z (3D)
+     * @return The point projected. If a 2D point is projected a 3D point will be returned except if
+     *  inclination is 90. A 3D point is always returned if a 3D point is projected.
+     * Example:
+     * \code{.py}
+     *   p = QgsPointV2( 1, 2 ) # 2D point
+     *   pr = p.project ( 1, 0 )
+     *   # pr is a 2D point: 'Point (1 3)'
+     *   pr = p.project ( 1, 0, 90 )
+     *   # pr is a 2D point: 'Point (1 3)'
+     *   pr = p.project (1, 0, 0 )
+     *   # pr is a 3D point: 'PointZ (1 2 1)'
+     *   p = QgsPointV2( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+     *   pr = p.project ( 1, 0 )
+     *   # pr is a 3D point: 'PointZ (1 3 2)'
+     *   pr = p.project ( 1, 0, 90 )
+     *   # pr is a 3D point: 'PointZ (1 3 2)'
+     *   pr = p.project (1, 0, 0 )
+     *   # pr is a 3D point: 'PointZ (1 2 3)'
+     * \endcode
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
+
+    /**
+     * Calculates the vector obtained by subtracting a point from this point.
+     * @note added in QGIS 3.0
+     */
+    QgsVector operator-( const QgsPointV2 &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
+
+    /**
+     * Adds a vector to this point in place.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 &operator+=( QgsVector v ) { mX += v.x(); mY += v.y(); return *this; }
+
+    /**
+     * Subtracts a vector from this point in place.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 &operator-=( QgsVector v ) { mX -= v.x(); mY -= v.y(); return *this; }
+
+    /**
+     * Adds a vector to this point.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 operator+( QgsVector v ) const { QgsPointV2 r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
+
+    /**
+     * Subtracts a vector from this point.
+     * @note added in QGIS 3.0
+     */
+    QgsPointV2 operator-( QgsVector v ) const { QgsPointV2 r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
+
     //implementation of inherited methods
+    bool isEmpty() const override { return false; }
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
-    virtual QString geometryType() const override { return "Point"; }
+    virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
     virtual int dimension() const override { return 0; }
-    virtual QgsPointV2* clone() const override;
+    virtual QgsPointV2 *clone() const override;
     void clear() override;
-    virtual bool fromWkb( QgsConstWkbPtr wkb ) override;
-    virtual bool fromWkt( const QString& wkt ) override;
-    int wkbSize() const override;
-    unsigned char* asWkb( int& binarySize ) const override;
+    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    virtual bool fromWkt( const QString &wkt ) override;
+    QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
-    void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    void draw( QPainter &p ) const override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform& t ) override;
+    void transform( const QTransform &t ) override;
     virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual QgsAbstractGeometry* boundary() const override;
+    virtual int nCoordinates() const override { return 1; }
+    virtual QgsAbstractGeometry *boundary() const override;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
-    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
+    double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
 
     /** Angle undefined. Always returns 0.0
         @param vertex the vertex id

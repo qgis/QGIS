@@ -23,14 +23,14 @@ class QgsWfsRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWfsRootItem( QgsDataItem* parent, QString name, QString path );
+    QgsWfsRootItem( QgsDataItem *parent, QString name, QString path );
     ~QgsWfsRootItem();
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction*> actions() override;
+    virtual QList<QAction *> actions() override;
 
-    virtual QWidget * paramWidget() override;
+    virtual QWidget *paramWidget() override;
 
   public slots:
     void connectionsChanged();
@@ -43,13 +43,13 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWfsConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
+    QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
     ~QgsWfsConnectionItem();
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
     //virtual bool equal( const QgsDataItem *other );
 
-    virtual QList<QAction*> actions() override;
+    virtual QList<QAction *> actions() override;
 
   private slots:
     void editConnection();
@@ -58,7 +58,7 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
   private:
     QString mUri;
 
-    QgsWfsCapabilities* mCapabilities;
+    QgsWfsCapabilities *mCapabilities = nullptr;
 };
 
 
@@ -67,7 +67,7 @@ class QgsWfsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsWfsLayerItem( QgsDataItem* parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
+    QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
 };

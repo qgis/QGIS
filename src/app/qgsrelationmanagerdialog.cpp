@@ -13,30 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdiscoverrelationsdlg.h"
 #include "qgsrelationadddlg.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent )
-    : QWidget( parent )
-    , Ui::QgsRelationManagerDialogBase()
-    , mRelationManager( relationMgr )
+QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relationMgr, QWidget *parent )
+  : QWidget( parent )
+  , Ui::QgsRelationManagerDialogBase()
+  , mRelationManager( relationMgr )
 {
   setupUi( this );
+
+  mBtnRemoveRelation->setEnabled( false );
+  connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRelationManagerDialog::onSelectionChanged );
 }
 
 QgsRelationManagerDialog::~QgsRelationManagerDialog()
 {
 }
 
-void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers )
+void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layers )
 {
   mLayers = layers;
 
-  const QList<QgsRelation>& relations = mRelationManager->relations().values();
+  const QList<QgsRelation> &relations = mRelationManager->relations().values();
 
-  Q_FOREACH ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation &rel, relations )
   {
     addRelation( rel );
   }
@@ -46,14 +50,14 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer* >& layers
 
 void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
 {
+  mRelationsTable->setSortingEnabled( false );
   int row = mRelationsTable->rowCount();
   mRelationsTable->insertRow( row );
 
-  QTableWidgetItem* item = new QTableWidgetItem( rel.name() );
+  QTableWidgetItem *item = new QTableWidgetItem( rel.name() );
   // Save relation in first column's item
   item->setData( Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
   mRelationsTable->setItem( row, 0, item );
-
 
   item = new QTableWidgetItem( rel.referencingLayer()->name() );
   item->setFlags( Qt::ItemIsEditable );
@@ -74,12 +78,12 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item = new QTableWidgetItem( rel.id() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 5, item );
+  mRelationsTable->setSortingEnabled( true );
 }
 
 void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
 {
   QgsRelationAddDlg addDlg;
-  addDlg.addLayers( mLayers );
 
   if ( addDlg.exec() )
   {
@@ -88,8 +92,8 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     relation.setReferencingLayer( addDlg.referencingLayerId() );
     relation.setReferencedLayer( addDlg.referencedLayerId() );
     QString relationId = addDlg.relationId();
-    if ( addDlg.relationId() == "" )
-      relationId = QString( "%1_%2_%3_%4" )
+    if ( addDlg.relationId() == QLatin1String( "" ) )
+      relationId = QStringLiteral( "%1_%2_%3_%4" )
                    .arg( addDlg.referencingLayerId(),
                          addDlg.references().at( 0 ).first,
                          addDlg.referencedLayerId(),
@@ -98,7 +102,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     QStringList existingNames;
 
 
-    Q_FOREACH ( const QgsRelation& rel, relations() )
+    Q_FOREACH ( const QgsRelation &rel, relations() )
     {
       existingNames << rel.id();
     }
@@ -110,18 +114,33 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
       relationId = tempId.arg( suffix );
       ++suffix;
     }
-    relation.setRelationId( relationId );
+    relation.setId( relationId );
     relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
-    relation.setRelationName( addDlg.relationName() );
+    relation.setName( addDlg.relationName() );
 
     addRelation( relation );
   }
 }
 
+void QgsRelationManagerDialog::on_mBtnDiscoverRelations_clicked()
+{
+  QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
+  if ( discoverDlg.exec() )
+  {
+    Q_FOREACH ( const QgsRelation &relation, discoverDlg.relations() )
+    {
+      addRelation( relation );
+    }
+  }
+}
+
 void QgsRelationManagerDialog::on_mBtnRemoveRelation_clicked()
 {
-  if ( mRelationsTable->currentIndex().isValid() )
-    mRelationsTable->removeRow( mRelationsTable->currentItem()->row() );
+  const QModelIndexList rows = mRelationsTable->selectionModel()->selectedRows();
+  for ( int i = rows.size() - 1; i >= 0; --i )
+  {
+    mRelationsTable->removeRow( rows[i].row() );
+  }
 }
 
 QList< QgsRelation > QgsRelationManagerDialog::relations()
@@ -134,10 +153,14 @@ QList< QgsRelation > QgsRelationManagerDialog::relations()
   {
     QgsRelation relation = mRelationsTable->item( i, 0 )->data( Qt::UserRole ).value<QgsRelation>();
     // The name can be editted in the table, so apply this one
-    relation.setRelationName( mRelationsTable->item( i, 0 )->data( Qt::DisplayRole ).toString() );
+    relation.setName( mRelationsTable->item( i, 0 )->data( Qt::DisplayRole ).toString() );
     relations << relation;
   }
 
   return relations;
 }
 
+void QgsRelationManagerDialog::onSelectionChanged()
+{
+  mBtnRemoveRelation->setEnabled( mRelationsTable->selectionModel()->hasSelection() );
+}

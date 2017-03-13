@@ -17,10 +17,12 @@
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 
@@ -33,13 +35,8 @@ class QgsValueRelationWidgetFactory;
 class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
-
   public:
-    typedef QPair < QVariant, QString > ValueRelationItem;
-    typedef QVector < ValueRelationItem > ValueRelationCache;
-
-  public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
@@ -49,29 +46,26 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     virtual QString createExpression( FilterFlags flags ) const override;
 
   public slots:
-
     virtual void clearWidget() override;
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
-  public slots:
-
+  protected slots:
     //! Called when current value of search widget changes
     void onValueChanged();
 
-  protected slots:
     void setExpression( QString exp ) override;
 
   private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+    QComboBox *mComboBox = nullptr;
+    QListWidget *mListWidget = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 
-    ValueRelationCache mCache;
-    QgsVectorLayer* mLayer;
+    QgsValueRelationFieldFormatter::ValueRelationCache mCache;
+    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsValueRelationWidgetFactory;
 };

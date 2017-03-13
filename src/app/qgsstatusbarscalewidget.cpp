@@ -26,12 +26,12 @@
 #include "qgsscalecombobox.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
-    : QWidget( parent )
-    , mMapCanvas( canvas )
+  : QWidget( parent )
+  , mMapCanvas( canvas )
 {
   // add a label to show current scale
   mLabel = new QLabel();
-  mLabel->setObjectName( "mScaleLabel" );
+  mLabel->setObjectName( QStringLiteral( "mScaleLabel" ) );
   mLabel->setMinimumWidth( 10 );
   //mScaleLabel->setMaximumHeight( 20 );
   mLabel->setMargin( 3 );
@@ -41,7 +41,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   mLabel->setToolTip( tr( "Current map scale" ) );
 
   mScale = new QgsScaleComboBox();
-  mScale->setObjectName( "mScaleEdit" );
+  mScale->setObjectName( QStringLiteral( "mScaleEdit" ) );
   // seems setFont() change font only for popup not for line edit,
   // so we need to set font for it separately
   mScale->setMinimumWidth( 10 );

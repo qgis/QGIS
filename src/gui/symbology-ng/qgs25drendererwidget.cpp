@@ -18,9 +18,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 
-Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
     return;
@@ -29,8 +29,8 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
   if ( layer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //setup blank dialog
-    QGridLayout* layout = new QGridLayout( this );
-    QLabel* label = new QLabel( tr( "The 2.5D renderer only can be used with polygon layers. \n"
+    QGridLayout *layout = new QGridLayout( this );
+    QLabel *label = new QLabel( tr( "The 2.5D renderer only can be used with polygon layers. \n"
                                     "'%1' is not a polygon layer and cannot be rendered in 2.5D." )
                                 .arg( layer->name() ), this );
     layout->addWidget( label );
@@ -38,16 +38,17 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
   }
 
   setupUi( this );
+  this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mWallColorButton->setColorDialogTitle( tr( "Select wall color" ) );
   mWallColorButton->setAllowAlpha( true );
-  mWallColorButton->setContext( "symbology" );
+  mWallColorButton->setContext( QStringLiteral( "symbology" ) );
   mRoofColorButton->setColorDialogTitle( tr( "Select roof color" ) );
   mRoofColorButton->setAllowAlpha( true );
-  mRoofColorButton->setContext( "symbology" );
+  mRoofColorButton->setContext( QStringLiteral( "symbology" ) );
   mShadowColorButton->setColorDialogTitle( tr( "Select shadow color" ) );
   mShadowColorButton->setAllowAlpha( true );
-  mShadowColorButton->setContext( "symbology" );
+  mShadowColorButton->setContext( QStringLiteral( "symbology" ) );
 
   if ( renderer )
   {
@@ -56,12 +57,12 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
 
   mHeightWidget->setLayer( layer );
 
-  QgsExpressionContextScope* scope = QgsExpressionContextUtils::layerScope( mLayer );
-  QVariant height = scope->variable( "qgis_25d_height" );
-  QVariant angle = scope->variable( "qgis_25d_angle" );
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( mLayer );
+  QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
+  QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
   delete scope;
 
-  mHeightWidget->setField( height.isNull() ? "10" : height.toString() );
+  mHeightWidget->setField( height.isNull() ? QStringLiteral( "10" ) : height.toString() );
   mAngleWidget->setValue( angle.isNull() ? 70 : angle.toDouble() );
   mWallColorButton->setColor( mRenderer->wallColor() );
   mRoofColorButton->setColor( mRenderer->roofColor() );
@@ -80,7 +81,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
   connect( mWallExpositionShading, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
 }
 
-QgsFeatureRenderer* Qgs25DRendererWidget::renderer()
+QgsFeatureRenderer *Qgs25DRendererWidget::renderer()
 {
   return mRenderer;
 }
@@ -100,14 +101,14 @@ void Qgs25DRendererWidget::apply()
 {
   if ( mHeightWidget )
   {
-    QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_height", mHeightWidget->currentText() );
-    QgsExpressionContextUtils::setLayerVariable( mLayer, "qgis_25d_angle", mAngleWidget->value() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, QStringLiteral( "qgis_25d_height" ), mHeightWidget->currentText() );
+    QgsExpressionContextUtils::setLayerVariable( mLayer, QStringLiteral( "qgis_25d_angle" ), mAngleWidget->value() );
 
     emit layerVariablesChanged();
   }
 }
 
-QgsRendererWidget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *Qgs25DRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new Qgs25DRendererWidget( layer, style, renderer );
 }

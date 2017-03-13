@@ -21,7 +21,7 @@
 #include <QList>
 #include <QPainter>
 
-QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar ), mLastScaleBarWidth( 0 )
+QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar *bar ): QgsScaleBarStyle( bar ), mLastScaleBarWidth( 0 )
 {
 
 }
@@ -31,17 +31,12 @@ QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( nullptr ),
 
 }
 
-QgsNumericScaleBarStyle::~QgsNumericScaleBarStyle()
-{
-
-}
-
 QString QgsNumericScaleBarStyle::name() const
 {
-  return "Numeric";
+  return QStringLiteral( "Numeric" );
 }
 
-void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
+void QgsNumericScaleBarStyle::draw( QPainter *p, double xOffset ) const
 {
   Q_UNUSED( xOffset );
   if ( !p || !mScaleBar )
@@ -103,7 +98,7 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
   if ( !qgsDoubleNear( mLastScaleBarWidth, rect.width() ) && mLastScaleBarWidth > 0 && rect.width() > 0 )
   {
     //hack to move scale bar the left / right in order to keep the bar alignment
-    const_cast<QgsComposerScaleBar*>( mScaleBar )->correctXPositionAlignment( mLastScaleBarWidth, rect.width() );
+    const_cast<QgsComposerScaleBar *>( mScaleBar )->correctXPositionAlignment( mLastScaleBarWidth, rect.width() );
   }
   mLastScaleBarWidth = rect.width();
   return rect;
@@ -116,13 +111,13 @@ QString QgsNumericScaleBarStyle::scaleText() const
   {
     //find out scale
     double scaleDenominator = 1;
-    const QgsComposerMap* composerMap = mScaleBar->composerMap();
+    const QgsComposerMap *composerMap = mScaleBar->composerMap();
     if ( composerMap )
     {
       scaleDenominator = composerMap->scale();
-      scaleBarText = "1:" + QString( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
+      scaleBarText = "1:" + QStringLiteral( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
     }
-    scaleBarText = "1:" + QString( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
+    scaleBarText = "1:" + QStringLiteral( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
   }
   return scaleBarText;
 }

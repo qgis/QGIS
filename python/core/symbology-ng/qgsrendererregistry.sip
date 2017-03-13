@@ -100,18 +100,18 @@ class QgsRendererRegistry
 
   public:
 
-    //! Returns a pointer to the QgsRendererRegistry singleton
-    static QgsRendererRegistry* instance();
+    QgsRendererRegistry();
+    ~QgsRendererRegistry();
 
     //! Adds a renderer to the registry. Takes ownership of the metadata object.
     //! @param metadata renderer metadata
     //! @returns true if renderer was added successfully, or false if renderer could not
-    //! be added (eg a renderer with a duplicate name already exists)
+    //! be added (e.g., a renderer with a duplicate name already exists)
     bool addRenderer( QgsRendererAbstractMetadata* metadata /Transfer/ );
 
     //! Removes a renderer from registry.
     //! @param rendererName name of renderer to remove from registry
-    //! @returns true if renderer was sucessfully removed, or false if matching
+    //! @returns true if renderer was successfully removed, or false if matching
     //! renderer could not be found
     bool removeRenderer( const QString& rendererName );
 
@@ -127,11 +127,6 @@ class QgsRendererRegistry
     //! @param layer vector layer
     //! @note added in QGIS 2.16
     QStringList renderersList( const QgsVectorLayer* layer ) const;
-
-  protected:
-    //! protected constructor
-    QgsRendererRegistry();
-    ~QgsRendererRegistry();
 
   private:
     QgsRendererRegistry( const QgsRendererRegistry& rh );

@@ -20,36 +20,93 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgscomposerobject.h"
-#include "qgsdatadefined.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
-QgsComposerObject::QgsComposerObject( QgsComposition* composition )
-    : QObject( nullptr )
-    , mComposition( composition )
+QgsPropertiesDefinition QgsComposerObject::sPropertyDefinitions;
+
+void QgsComposerObject::initPropertyDefinitions()
 {
+  if ( !sPropertyDefinitions.isEmpty() )
+    return;
+
+  sPropertyDefinitions = QgsPropertiesDefinition
+  {
+    { QgsComposerObject::TestProperty, QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
+    {
+      QgsComposerObject::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QLatin1String( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
+      "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
+      "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
+      "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
+                                                                                                                                                                                                     ) )
+    },
+    { QgsComposerObject::PaperWidth, QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::PaperHeight, QgsPropertyDefinition( "dataDefinedPaperHeight", QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::NumPages, QgsPropertyDefinition( "dataDefinedNumPages", QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
+    { QgsComposerObject::PaperOrientation, QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QLatin1String( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
+    { QgsComposerObject::PageNumber, QgsPropertyDefinition( "dataDefinedPageNumber", QObject::tr( "Page number" ), QgsPropertyDefinition::IntegerPositive ) },
+    { QgsComposerObject::PositionX, QgsPropertyDefinition( "dataDefinedPositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
+    { QgsComposerObject::PositionY, QgsPropertyDefinition( "dataDefinedPositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
+    { QgsComposerObject::ItemWidth, QgsPropertyDefinition( "dataDefinedWidth", QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::ItemHeight, QgsPropertyDefinition( "dataDefinedHeight", QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::ItemRotation, QgsPropertyDefinition( "dataDefinedRotation", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation ) },
+    { QgsComposerObject::Transparency, QgsPropertyDefinition( "dataDefinedTransparency", QObject::tr( "Transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsComposerObject::BlendMode, QgsPropertyDefinition( "dataDefinedBlendMode", QObject::tr( "Blend mode" ), QgsPropertyDefinition::BlendMode ) },
+    { QgsComposerObject::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
+    { QgsComposerObject::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::BackgroundColor, QgsPropertyDefinition( "dataDefinedBackgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::MapRotation, QgsPropertyDefinition( "dataDefinedMapRotation", QObject::tr( "Map rotation" ), QgsPropertyDefinition::Rotation ) },
+    { QgsComposerObject::MapScale, QgsPropertyDefinition( "dataDefinedMapScale", QObject::tr( "Map scale" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::MapXMin, QgsPropertyDefinition( "dataDefinedMapXMin", QObject::tr( "Extent minimum X" ), QgsPropertyDefinition::Double ) },
+    { QgsComposerObject::MapYMin, QgsPropertyDefinition( "dataDefinedMapYMin", QObject::tr( "Extent minimum Y" ), QgsPropertyDefinition::Double ) },
+    { QgsComposerObject::MapXMax, QgsPropertyDefinition( "dataDefinedMapXMax", QObject::tr( "Extent maximum X" ), QgsPropertyDefinition::Double ) },
+    { QgsComposerObject::MapYMax, QgsPropertyDefinition( "dataDefinedMapYMax", QObject::tr( "Extent maximum Y" ), QgsPropertyDefinition::Double ) },
+    { QgsComposerObject::MapAtlasMargin, QgsPropertyDefinition( "dataDefinedMapAtlasMargin", QObject::tr( "Atlas margin" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsComposerObject::MapLayers, QgsPropertyDefinition( "dataDefinedMapLayers", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), tr( "list of map layer names separated by | characters" ) ) },
+    { QgsComposerObject::MapStylePreset, QgsPropertyDefinition( "dataDefinedMapStylePreset", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), tr( "list of map layer names separated by | characters" ) ) },
+    { QgsComposerObject::PictureSource, QgsPropertyDefinition( "dataDefinedSource", QObject::tr( "Picture source (URL)" ), QgsPropertyDefinition::String ) },
+    { QgsComposerObject::SourceUrl, QgsPropertyDefinition( "dataDefinedSourceUrl", QObject::tr( "Source URL" ), QgsPropertyDefinition::String ) },
+    { QgsComposerObject::PictureSvgBackgroundColor, QgsPropertyDefinition( "dataDefinedSvgBackgroundColor", QObject::tr( "SVG background color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::PictureSvgStrokeColor, QgsPropertyDefinition( "dataDefinedSvgStrokeColor", QObject::tr( "SVG stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::PictureSvgStrokeWidth, QgsPropertyDefinition( "dataDefinedSvgStrokeWidth", QObject::tr( "SVG stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { QgsComposerObject::LegendTitle, QgsPropertyDefinition( "dataDefinedLegendTitle", QObject::tr( "Legend title" ), QgsPropertyDefinition::String ) },
+    { QgsComposerObject::LegendColumnCount, QgsPropertyDefinition( "dataDefinedLegendColumns", QObject::tr( "Number of columns" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) },
+    { QgsComposerObject::ScalebarFillColor, QgsPropertyDefinition( "dataDefinedScalebarFill", QObject::tr( "Fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::ScalebarFillColor2, QgsPropertyDefinition( "dataDefinedScalebarFill2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
+    { QgsComposerObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
+  };
+}
+
+const QgsPropertiesDefinition &QgsComposerObject::propertyDefinitions()
+{
+  QgsComposerObject::initPropertyDefinitions();
+  return sPropertyDefinitions;
+}
+
+QgsComposerObject::QgsComposerObject( QgsComposition *composition )
+  : QObject( nullptr )
+  , mComposition( composition )
+{
+  initPropertyDefinitions();
 
   // data defined strings
-  mDataDefinedNames.insert( QgsComposerObject::TestProperty, QString( "dataDefinedTestProperty" ) );
 
   if ( mComposition )
   {
     //connect to atlas toggling on/off and coverage layer and feature changes
     //to update data defined values
-    connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( refreshDataDefinedProperty() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( refreshDataDefinedProperty() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshDataDefinedProperty() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::toggled, this, [this] { refreshDataDefinedProperty(); } );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, [this] { refreshDataDefinedProperty(); } );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, [this] { refreshDataDefinedProperty(); } );
     //also, refreshing composition triggers a recalculation of data defined properties
-    connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshDataDefinedProperty() ) );
+    connect( mComposition, &QgsComposition::refreshItemsTriggered, this, [this] { refreshDataDefinedProperty(); } );
 
     //toggling atlas or changing coverage layer requires data defined expressions to be reprepared
-    connect( &mComposition->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( prepareDataDefinedExpressions() ) );
-    connect( &mComposition->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( prepareDataDefinedExpressions() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::toggled, this, [this] { refreshDataDefinedProperty(); } );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, [this] { refreshDataDefinedProperty(); } );
   }
 
-}
-
-QgsComposerObject::~QgsComposerObject()
-{
-  qDeleteAll( mDataDefinedProperties );
 }
 
 bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
@@ -59,8 +116,9 @@ bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
     return false;
   }
 
-  //data defined properties
-  QgsComposerUtils::writeDataDefinedPropertyMap( elem, doc, &mDataDefinedNames, &mDataDefinedProperties );
+  QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
+  mDataDefinedProperties.writeXml( ddPropsElement, doc, sPropertyDefinitions );
+  elem.appendChild( ddPropsElement );
 
   //custom properties
   mCustomProperties.writeXml( elem, doc );
@@ -76,61 +134,19 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
     return false;
   }
 
-  //data defined properties
-  QgsComposerUtils::readDataDefinedPropertyMap( itemElem, &mDataDefinedNames, &mDataDefinedProperties );
+  //old (pre 3.0) data defined properties
+  QgsComposerUtils::readOldDataDefinedPropertyMap( itemElem, mDataDefinedProperties );
+
+  QDomNode propsNode = itemElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
+  if ( !propsNode.isNull() )
+  {
+    mDataDefinedProperties.readXml( propsNode.toElement(), doc, sPropertyDefinitions );
+  }
 
   //custom properties
   mCustomProperties.readXml( itemElem );
 
   return true;
-}
-
-QgsDataDefined *QgsComposerObject::dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property ) const
-{
-  if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
-  {
-    //bad property requested, don't return anything
-    return nullptr;
-  }
-
-  //find corresponding QgsDataDefined and return it
-  QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constFind( property );
-  if ( it != mDataDefinedProperties.constEnd() )
-  {
-    return it.value();
-  }
-
-  //could not find matching QgsDataDefined
-  return nullptr;
-}
-
-void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field )
-{
-  if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
-  {
-    //bad property requested
-    return;
-  }
-
-  bool defaultVals = ( !active && !useExpression && expression.isEmpty() && field.isEmpty() );
-
-  if ( mDataDefinedProperties.contains( property ) )
-  {
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constFind( property );
-    if ( it != mDataDefinedProperties.constEnd() )
-    {
-      QgsDataDefined* dd = it.value();
-      dd->setActive( active );
-      dd->setExpressionString( expression );
-      dd->setField( field );
-      dd->setUseExpression( useExpression );
-    }
-  }
-  else if ( !defaultVals )
-  {
-    QgsDataDefined* dd = new QgsDataDefined( active, useExpression, expression, field );
-    mDataDefinedProperties.insert( property, dd );
-  }
 }
 
 void QgsComposerObject::repaint()
@@ -146,38 +162,23 @@ void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty pr
   //nothing to do in base class for now
 }
 
-bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context ) const
-{
-  if ( !mComposition )
-  {
-    return false;
-  }
-  return mComposition->dataDefinedEvaluate( property, expressionValue, context, &mDataDefinedProperties );
-}
-
-void QgsComposerObject::prepareDataDefinedExpressions() const
+void QgsComposerObject::prepareProperties() const
 {
   QgsExpressionContext context = createExpressionContext();
-
-  //prepare all QgsDataDefineds
-  QMap< DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
-  if ( it != mDataDefinedProperties.constEnd() )
-  {
-    it.value()->prepareExpression( context );
-  }
+  mDataDefinedProperties.prepare( context );
 }
 
-void QgsComposerObject::setCustomProperty( const QString& key, const QVariant& value )
+void QgsComposerObject::setCustomProperty( const QString &key, const QVariant &value )
 {
   mCustomProperties.setValue( key, value );
 }
 
-QVariant QgsComposerObject::customProperty( const QString& key, const QVariant& defaultValue ) const
+QVariant QgsComposerObject::customProperty( const QString &key, const QVariant &defaultValue ) const
 {
   return mCustomProperties.value( key, defaultValue );
 }
 
-void QgsComposerObject::removeCustomProperty( const QString& key )
+void QgsComposerObject::removeCustomProperty( const QString &key )
 {
   mCustomProperties.remove( key );
 }
@@ -195,8 +196,6 @@ QgsExpressionContext QgsComposerObject::createExpressionContext() const
   }
   else
   {
-    return QgsExpressionContext()
-           << QgsExpressionContextUtils::globalScope()
-           << QgsExpressionContextUtils::projectScope();
+    return QgsExpressionContext() << QgsExpressionContextUtils::globalScope();
   }
 }

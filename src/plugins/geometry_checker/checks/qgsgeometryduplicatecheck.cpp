@@ -19,9 +19,9 @@
 #include "qgsgeometry.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -31,7 +31,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
       continue;
     }
     QgsGeometry featureGeom = feature.geometry();
-    QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QList<QgsFeatureId> duplicates;
     QgsFeatureIds ids = mFeaturePool->getIntersects( featureGeom.geometry()->boundingBox() );
@@ -48,7 +48,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
         continue;
       }
       QString errMsg;
-      QgsAbstractGeometry* diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry(), &errMsg );
+      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry(), &errMsg );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
         duplicates.append( id );
@@ -61,14 +61,14 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     }
     if ( !duplicates.isEmpty() )
     {
-      qSort( duplicates );
+      std::sort( duplicates.begin(), duplicates.end() );
       errors.append( new QgsGeometryDuplicateCheckError( this, featureid, feature.geometry().geometry()->centroid(), duplicates ) );
     }
     delete geomEngine;
   }
 }
 
-void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -84,9 +84,9 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
   else if ( method == RemoveDuplicates )
   {
     QgsGeometry featureGeom = feature.geometry();
-    QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
-    QgsGeometryDuplicateCheckError* duplicateError = static_cast<QgsGeometryDuplicateCheckError*>( error );
+    QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
     Q_FOREACH ( QgsFeatureId id, duplicateError->duplicates() )
     {
       QgsFeature testFeature;
@@ -94,7 +94,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
       {
         continue;
       }
-      QgsAbstractGeometry* diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry() );
+      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry() );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
         mFeaturePool->deleteFeature( testFeature );
@@ -112,7 +112,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError* error, int meth
   }
 }
 
-const QStringList& QgsGeometryDuplicateCheck::getResolutionMethods() const
+QStringList QgsGeometryDuplicateCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "No action" )

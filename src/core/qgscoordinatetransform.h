@@ -17,6 +17,7 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
+#include "qgis_core.h"
 #include <QExplicitlySharedDataPointer>
 #include "qgscoordinatereferencesystem.h"
 
@@ -47,29 +48,29 @@ class CORE_EXPORT QgsCoordinateTransform
     //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection
     {
-      ForwardTransform,     /*!< Transform from source to destination CRS. */
-      ReverseTransform      /*!< Transform from destination to source CRS. */
+      ForwardTransform,     //!< Transform from source to destination CRS.
+      ReverseTransform      //!< Transform from destination to source CRS.
     };
 
-    /** Default constructor, creates an invalid QgsCoordinateTransform. */
+    //! Default constructor, creates an invalid QgsCoordinateTransform.
     QgsCoordinateTransform();
 
     /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * @param source source CRS, typically of the layer's coordinate system
      * @param destination CRS, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source,
-                            const QgsCoordinateReferenceSystem& destination );
+    QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                            const QgsCoordinateReferenceSystem &destination );
 
     /**
      * Copy constructor
      */
-    QgsCoordinateTransform( const QgsCoordinateTransform& o );
+    QgsCoordinateTransform( const QgsCoordinateTransform &o );
 
     /**
      * Assignment operator
      */
-    QgsCoordinateTransform& operator=( const QgsCoordinateTransform& o );
+    QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
 
     ~QgsCoordinateTransform();
 
@@ -86,7 +87,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * @see sourceCrs()
      * @see setDestinationCrs()
      */
-    void setSourceCrs( const QgsCoordinateReferenceSystem& crs );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
 
     /*!
      * Sets the destination coordinate reference system.
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * @see destinationCrs()
      * @see setSourceCrs()
      */
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Returns the source coordinate reference system, which the transform will
      * transform coordinates from.
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * @param direction transform direction (defaults to ForwardTransform)
      * @return transformed point
      */
-    QgsPoint transform( const QgsPoint& point, TransformDirection direction = ForwardTransform ) const;
+    QgsPoint transform( const QgsPoint &point, TransformDirection direction = ForwardTransform ) const;
 
     /** Transform the point specified by x,y from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -141,7 +142,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * crossing the 180 degree longitude line is required
      * @return rectangle in destination CRS
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle& rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
 
     /** Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -153,7 +154,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * heights) and must be expressed in its vertical units (generally meters)
      * @param direction transform direction (defaults to ForwardTransform)
      */
-    void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -166,7 +167,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * @param direction transform direction (defaults to ForwardTransform)
      * @note not available in python bindings
      */
-    void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( float &x, float &y, double &z, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -179,7 +180,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * @param direction transform direction (defaults to ForwardTransform)
      * @note not available in python bindings
      */
-    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( float &x, float &y, float &z, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a vector of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -192,7 +193,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * @param direction transform direction (defaults to ForwardTransform)
      * @note not available in python bindings
      */
-    void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
+    void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
                            TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a vector of x, y and z double coordinates in place, from the source CRS to the destination CRS.
@@ -206,14 +207,14 @@ class CORE_EXPORT QgsCoordinateTransform
      * @param direction transform direction (defaults to ForwardTransform)
      * @note not available in python bindings
      */
-    void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
+    void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
                            TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a polygon to the destination coordinate system.
      * @param polygon polygon to transform (occurs in place)
      * @param direction transform direction (defaults to forward transformation)
      */
-    void transformPolygon( QPolygonF& polygon, TransformDirection direction = ForwardTransform ) const;
+    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const;
 
     /** Transforms a rectangle to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -242,11 +243,12 @@ class CORE_EXPORT QgsCoordinateTransform
     /** Returns list of datum transformations for the given src and dest CRS
      * @note not available in python bindings
      */
-    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destinationCrs );
+    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs );
     static QString datumTransformString( int datumTransform );
+
     /** Gets name of source and dest geographical CRS (to show in a tooltip)
         @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
-    static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
+    static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
 
     int sourceDatumTransform() const;
     void setSourceDatumTransform( int dt );
@@ -254,14 +256,14 @@ class CORE_EXPORT QgsCoordinateTransform
     void setDestinationDatumTransform( int dt );
 
     //!initialize is used to actually create the Transformer instance
-    void initialise();
+    void initialize();
 
     /** Restores state from the given Dom node.
      * @param node The node from which state will be restored
      * @return bool True on success, False on failure
      * @see writeXml()
      */
-    bool readXml( const QDomNode& node );
+    bool readXml( const QDomNode &node );
 
     /** Stores state to the given Dom node in the given document
      * @param node The node in which state will be restored
@@ -269,20 +271,20 @@ class CORE_EXPORT QgsCoordinateTransform
      * @return bool True on success, False on failure
      * @see readXml()
      */
-    bool writeXml( QDomNode & node, QDomDocument & document ) const;
+    bool writeXml( QDomNode &node, QDomDocument &document ) const;
 
   private:
 
-    static void searchDatumTransform( const QString& sql, QList< int >& transforms );
+    static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
     QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 };
 
 //! Output stream operator
-inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransform &r )
+inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransform &r )
 {
-  QString mySummary( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" );
-  mySummary += "\n\tInitialised? : ";
+  QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
+  mySummary += QLatin1String( "\n\tInitialized? : " );
   //prevent warnings
   if ( r.isValid() )
   {
@@ -329,7 +331,7 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransfor
   }
 #endif
 
-  mySummary += ( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
+  mySummary += QLatin1String( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
 

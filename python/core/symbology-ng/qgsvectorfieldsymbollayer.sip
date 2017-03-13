@@ -48,7 +48,7 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayer
 
     void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size );
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     //setters and getters
     void setXAttribute( const QString& attribute );
@@ -85,4 +85,8 @@ class QgsVectorFieldSymbolLayer : QgsMarkerSymbolLayer
     const QgsMapUnitScale& distanceMapUnitScale() const;
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext& context );
+
+  private:
+
+    QgsVectorFieldSymbolLayer( const QgsVectorFieldSymbolLayer& other );
 };

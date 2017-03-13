@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRESAMPLEFILTER_H
 #define QGSRASTERRESAMPLEFILTER_H
 
+#include "qgis_core.h"
 #include "qgsrasterinterface.h"
 
 class QgsRasterResampler;
@@ -33,39 +34,39 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
     ~QgsRasterResampleFilter();
 
-    QgsRasterResampleFilter * clone() const override;
+    QgsRasterResampleFilter *clone() const override;
 
     int bandCount() const override;
 
     Qgis::DataType dataType( int bandNo ) const override;
 
-    bool setInput( QgsRasterInterface* input ) override;
+    bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    /** Set resampler for zoomed in scales. Takes ownership of the object*/
-    void setZoomedInResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedInResampler() const { return mZoomedInResampler; }
+    //! Set resampler for zoomed in scales. Takes ownership of the object
+    void setZoomedInResampler( QgsRasterResampler *r );
+    const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler; }
 
-    /** Set resampler for zoomed out scales. Takes ownership of the object*/
-    void setZoomedOutResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedOutResampler() const { return mZoomedOutResampler; }
+    //! Set resampler for zoomed out scales. Takes ownership of the object
+    void setZoomedOutResampler( QgsRasterResampler *r );
+    const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler; }
 
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
     double maxOversampling() const { return mMaxOversampling; }
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXml( const QDomElement& filterElem ) override;
+    //! Sets base class members from xml. Usually called from create() methods of subclasses
+    void readXml( const QDomElement &filterElem ) override;
 
   protected:
-    /** Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
-    QgsRasterResampler* mZoomedInResampler;
-    /** Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
-    QgsRasterResampler* mZoomedOutResampler;
+    //! Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)
+    QgsRasterResampler *mZoomedInResampler = nullptr;
+    //! Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)
+    QgsRasterResampler *mZoomedOutResampler = nullptr;
 
-    /** Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
+    //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling;
 
   private:

@@ -16,18 +16,18 @@
 #include "qgswfstransactionrequest.h"
 #include "qgslogger.h"
 
-QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString& theUri )
-    : QgsWfsRequest( theUri )
+QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString &uri )
+  : QgsWfsRequest( uri )
 {
 }
 
-bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serverResponse )
+bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
   QUrl url( baseURL() );
 
   QgsDebugMsg( doc.toString() );
 
-  if ( sendPOST( url, "text/xml", doc.toByteArray( -1 ) ) )
+  if ( sendPOST( url, QStringLiteral( "text/xml" ), doc.toByteArray( -1 ) ) )
   {
     QString errorMsg;
     if ( !serverResponse.setContent( mResponse, true, &errorMsg ) )
@@ -36,12 +36,13 @@ bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serv
       QgsDebugMsg( errorMsg );
       return false;
     }
+    QgsDebugMsg( mResponse );
     return true;
   }
   return false;
 }
 
-QString QgsWFSTransactionRequest::errorMessageWithReason( const QString& reason )
+QString QgsWFSTransactionRequest::errorMessageWithReason( const QString &reason )
 {
   return tr( "Sending of transaction failed: %1" ).arg( reason );
 }

@@ -27,12 +27,12 @@
 
 #include <QMouseEvent>
 
-QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , vlayer( nullptr )
-    , mRubberBand( nullptr )
-    , mPressedFid( 0 )
-    , mPressedPartNum( 0 )
+QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
+  : QgsMapToolEdit( canvas )
+  , vlayer( nullptr )
+  , mRubberBand( nullptr )
+  , mPressedFid( 0 )
+  , mPressedPartNum( 0 )
 {
   mToolName = tr( "Delete part" );
 }
@@ -42,20 +42,20 @@ QgsMapToolDeletePart::~QgsMapToolDeletePart()
   delete mRubberBand;
 }
 
-void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
 {
   mPressedFid = -1;
   mPressedPartNum = -1;
   delete mRubberBand;
   mRubberBand = nullptr;
 
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
+  QgsMapLayer *currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
     return;
 
@@ -84,7 +84,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
 
 }
 
-void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 
@@ -117,7 +117,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
   return;
 }
 
-QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
+QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fid, int &partNum )
 {
   QgsFeature f;
   QgsGeometry geomPart;
@@ -170,7 +170,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
       fit.nextFeature( f );
       QgsGeometry g = f.geometry();
-      if ( g.isEmpty() )
+      if ( g.isNull() )
         return geomPart;
       if ( !g.isMultipart() )
       {
@@ -180,7 +180,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
       QgsMultiPolygon mpolygon = g.asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
-        const QgsPolygon& polygon = mpolygon[part];
+        const QgsPolygon &polygon = mpolygon[part];
         QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
         if ( partGeo.contains( &layerCoords ) )
         {

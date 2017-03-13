@@ -10,11 +10,6 @@ class QgsRasterLayer : QgsMapLayer
 %End
 
   public:
-    /** \brief Default cumulative cut lower limit */
-    static const double CUMULATIVE_CUT_LOWER;
-
-    /** \brief Default cumulative cut upper limit */
-    static const double CUMULATIVE_CUT_UPPER;
 
     /** \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
     static const double SAMPLE_SIZE;
@@ -38,19 +33,9 @@ class QgsRasterLayer : QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &path,
-                    const QString &baseName = QString::null,
-                    bool loadDefaultStyleFlag = true );
-
-    //TODO - QGIS 3.0
-    //This constructor is confusing if used with string literals for providerKey,
-    //as the previous constructor will be called with the literal for providerKey
-    //implicitly converted to a bool.
-    //for QGIS 3.0, make either constructor explicit or alter the signatures
-    /** \brief [ data provider interface ] Constructor in provider mode */
     QgsRasterLayer( const QString &uri,
-                    const QString &baseName,
-                    const QString &providerKey,
+                    const QString &baseName = QString(),
+                    const QString &providerKey = "gdal",
                     bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
@@ -80,8 +65,8 @@ class QgsRasterLayer : QgsMapLayer
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
      */
-    static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
-    static bool isValidRasterFileName( const QString & theFileNameQString );
+    static bool isValidRasterFileName( const QString & fileNameQString, QString &retError );
+    static bool isValidRasterFileName( const QString & fileNameQString );
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
@@ -93,7 +78,7 @@ class QgsRasterLayer : QgsMapLayer
     LayerType rasterType();
 
     /** Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* theRenderer /Transfer/ );
+    void setRenderer( QgsRasterRenderer* renderer /Transfer/ );
     QgsRasterRenderer* renderer() const;
 
     /** Set raster resample filter. Takes ownership of the resample filter object*/
@@ -115,7 +100,7 @@ class QgsRasterLayer : QgsMapLayer
     int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
-    QString bandName( int theBandNoInt ) const;
+    QString bandName( int bandNoInt ) const;
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -136,7 +121,7 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
     void draw( QPainter * theQPainter,
                QgsRasterViewPort * myRasterViewPort,
-               const QgsMapToPixel* theQgsMapToPixel = 0 );
+               const QgsMapToPixel* qgsMapToPixel = 0 );
 
     /** Returns a list with classification items (Text and color) */
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
@@ -147,7 +132,7 @@ class QgsRasterLayer : QgsMapLayer
     QString metadata() const;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
-    QPixmap paletteAsPixmap( int theBandNumber = 1 );
+    QPixmap paletteAsPixmap( int bandNumber = 1 );
 
     /** \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
     QString providerType() const;
@@ -157,24 +142,24 @@ class QgsRasterLayer : QgsMapLayer
     double rasterUnitsPerPixelY();
 
     /** \brief Set contrast enhancement algorithm
-     *  @param theAlgorithm Contrast enhancement algorithm
-     *  @param theLimits Limits
-     *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
-     *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param theGenerateLookupTableFlag Generate lookup table. */
+     *  @param algorithm Contrast enhancement algorithm
+     *  @param limits Limits
+     *  @param extent Extent used to calculate limits, if empty, use full layer extent
+     *  @param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  @param generateLookupTableFlag Generate lookup table. */
 
 
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
-                                 const QgsRectangle& theExtent = QgsRectangle(),
-                                 int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
-                                 bool theGenerateLookupTableFlag = true );
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 const QgsRectangle& extent = QgsRectangle(),
+                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
+                                 bool generateLookupTableFlag = true );
 
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
     /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
-    void showProgress( int theValue );
+    void showProgress( int value );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
@@ -201,14 +186,14 @@ class QgsRasterLayer : QgsMapLayer
     virtual QDateTime timestamp() const;
 
   public slots:
-    void showStatusMessage( const QString & theMessage );
+    void showStatusMessage( const QString & message );
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, const QString& );
 
   signals:
     /** \brief Signal for notifying listeners of long running processes */
-    void progressUpdate( int theValue );
+    void progressUpdate( int value );
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed

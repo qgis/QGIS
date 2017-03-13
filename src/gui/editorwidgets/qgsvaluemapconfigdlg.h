@@ -19,8 +19,7 @@
 #include "ui_qgsvaluemapconfigdlgbase.h"
 
 #include "qgseditorconfigwidget.h"
-
-#define VALUEMAP_NULL_TEXT "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsValueMapConfigDlg
@@ -32,14 +31,14 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-    explicit QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
-    virtual QgsEditorWidgetConfig config() override;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
+    explicit QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
+    virtual QVariantMap config() override;
+    virtual void setConfig( const QVariantMap &config ) override;
 
     void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
 
   private:
-    void setRow( int row, const QString value, const QString description );
+    void setRow( int row, const QString &value, const QString &description );
 
   private slots:
     void vCellChanged( int row, int column );

@@ -44,28 +44,28 @@ struct SpatialiteBlobHeader
 
   SpatialiteBlobHeader();
 
-  static const size_t length = 39;
+  static const size_t LENGTH = 39;
 
-  void readFrom( const char* p );
+  void readFrom( const char *p );
 
-  void writeTo( char* p ) const;
+  void writeTo( char *p ) const;
 };
 
 //!
 //! Convert a QgsGeometry into a Spatialite geometry BLOB
 //! The blob will be allocated and must be handled by the caller
-void qgsGeometryToSpatialiteBlob( const QgsGeometry& geom, int32_t srid, char *&blob, int &size );
+void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size );
 
 //!
-//! Return the bouding box of a spatialite geometry blob
-QgsRectangle spatialiteBlobBbox( const char* blob, size_t size );
+//! Return the bounding box of a spatialite geometry blob
+QgsRectangle spatialiteBlobBbox( const char *blob, size_t size );
 
 //!
 //! Convert a Spatialite geometry BLOB to a QgsGeometry
-QgsGeometry spatialiteBlobToQgsGeometry( const char* blob, size_t size );
+QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size );
 
 //!
 //! Get geometry type and srid from a spatialite geometry blob
-QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char* blob, size_t size );
+QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, size_t size );
 
 #endif

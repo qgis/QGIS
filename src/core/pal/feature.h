@@ -30,6 +30,7 @@
 #ifndef FEATURE_H
 #define FEATURE_H
 
+#include "qgis_core.h"
 #include "pointset.h"
 #include "labelposition.h" // for LabelPosition enum
 #include "qgslabelfeature.h"
@@ -46,7 +47,7 @@
 
 namespace pal
 {
-  /** Optional additional info about label (for curved labels) */
+  //! Optional additional info about label (for curved labels)
   class CORE_EXPORT LabelInfo
   {
     public:
@@ -66,15 +67,17 @@ namespace pal
       }
       ~LabelInfo() { delete [] char_info; }
 
+      //! LabelInfo cannot be copied
+      LabelInfo( const LabelInfo &rh ) = delete;
+      //! LabelInfo cannot be copied
+      LabelInfo &operator=( const LabelInfo &rh ) = delete;
+
       double max_char_angle_inside;
       double max_char_angle_outside;
       double label_height;
       int char_num;
-      CharacterInfo* char_info;
-    private:
+      CharacterInfo *char_info = nullptr;
 
-      LabelInfo( const LabelInfo& rh );
-      LabelInfo& operator=( const LabelInfo& rh );
   };
 
   class LabelPosition;
@@ -95,9 +98,9 @@ namespace pal
         * @param lf a pointer for a feature which contains the spatial entites
         * @param geom a pointer to a GEOS geometry
         */
-      FeaturePart( QgsLabelFeature* lf, const GEOSGeometry* geom );
+      FeaturePart( QgsLabelFeature *lf, const GEOSGeometry *geom );
 
-      FeaturePart( const FeaturePart& other );
+      FeaturePart( const FeaturePart &other );
 
       /** Delete the feature
        */
@@ -105,11 +108,11 @@ namespace pal
 
       /** Returns the parent feature.
        */
-      QgsLabelFeature* feature() { return mLF; }
+      QgsLabelFeature *feature() { return mLF; }
 
       /** Returns the layer that feature belongs to.
        */
-      Layer* layer();
+      Layer *layer();
 
       /** Returns the unique ID of the feature.
        */
@@ -123,7 +126,7 @@ namespace pal
        * \param candidates index for candidates
        * \return the number of candidates generated in lPos
        */
-      int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>* candidates );
+      int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
 
       /** Generate candidates for point feature, located around a specified point.
        * @param x x coordinate of the point
@@ -143,7 +146,7 @@ namespace pal
        */
       int createCandidatesOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
 
-      /** Generates candidates following a prioritised list of predefined positions around a point.
+      /** Generates candidates following a prioritized list of predefined positions around a point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
@@ -183,18 +186,19 @@ namespace pal
        * @param orientation can be 0 for automatic calculation of orientation, or -1/+1 for a specific label orientation
        * @param index
        * @param distance distance to offset label along curve by
-       * @param flip
+       * @param reversed if true label is reversed from lefttoright to righttoleft
+       * @param flip if true label is placed on the other side of the line
        * @returns calculated label position
        */
-      LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
-                                              int& orientation, int index, double distance, bool& flip );
+      LabelPosition *curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
+                                              int &orientation, int index, double distance, bool &reversed, bool &flip );
 
       /** Generate curved candidates for line features.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param mapShape a pointer to the line
        * @returns the number of generated candidates
        */
-      int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet* mapShape );
+      int createCurvedCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape );
 
       /** Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
@@ -208,9 +212,10 @@ namespace pal
        * @param part part to compare to
        * @returns true if both parts belong to same QgsLabelFeature
        */
-      bool hasSameLabelFeatureAs( FeaturePart* part ) const;
+      bool hasSameLabelFeatureAs( FeaturePart *part ) const;
 
 #if 0
+
       /**
        * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen
@@ -248,14 +253,14 @@ namespace pal
       //! Get number of holes (inner rings) - they are considered as obstacles
       int getNumSelfObstacles() const { return mHoles.count(); }
       //! Get hole (inner ring) - considered as obstacle
-      FeaturePart* getSelfObstacle( int i ) { return mHoles.at( i ); }
+      FeaturePart *getSelfObstacle( int i ) { return mHoles.at( i ); }
 
-      /** Check whether this part is connected with some other part */
-      bool isConnected( FeaturePart* p2 );
+      //! Check whether this part is connected with some other part
+      bool isConnected( FeaturePart *p2 );
 
       /** Merge other (connected) part with this one and save the result in this part (other is unchanged).
        * Return true on success, false if the feature wasn't modified */
-      bool mergeWithFeaturePart( FeaturePart* other );
+      bool mergeWithFeaturePart( FeaturePart *other );
 
       void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
 
@@ -267,15 +272,19 @@ namespace pal
       double calculatePriority() const;
 
       //! Returns true if feature's label must be displayed upright
-      bool isUprightLabel() const;
+      bool showUprightLabels() const;
+
+      //! Returns true if the next char position is found. The referenced parameters are updated.
+      bool nextCharPosition( double charWidth, double segment_length, PointSet *path_positions, int &index, double &distance,
+                             double &start_x, double &start_y, double &end_x, double &end_y ) const;
 
     protected:
 
-      QgsLabelFeature* mLF;
-      QList<FeaturePart*> mHoles;
+      QgsLabelFeature *mLF = nullptr;
+      QList<FeaturePart *> mHoles;
 
-      /** \brief read coordinates from a GEOS geom */
-      void extractCoords( const GEOSGeometry* geom );
+      //! \brief read coordinates from a GEOS geom
+      void extractCoords( const GEOSGeometry *geom );
 
     private:
 

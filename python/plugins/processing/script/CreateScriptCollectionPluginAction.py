@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsApplication
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.ScriptSelector import ScriptSelector
 from processing.tools.system import mkdir
@@ -77,7 +78,7 @@ class CreateScriptCollectionPluginAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
         dlg = ScriptSelector()

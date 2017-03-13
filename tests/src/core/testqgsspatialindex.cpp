@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -44,9 +44,9 @@ static QList<QgsFeature> _pointFeatures()
 
   QList<QgsFeature> feats;
   feats << _pointFeature( 1,  1,  1 )
-  << _pointFeature( 2, -1,  1 )
-  << _pointFeature( 3, -1, -1 )
-  << _pointFeature( 4,  1, -1 );
+        << _pointFeature( 2, -1,  1 )
+        << _pointFeature( 3, -1, -1 )
+        << _pointFeature( 4,  1, -1 );
   return feats;
 }
 
@@ -69,7 +69,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
         index.insertFeature( f );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
@@ -84,8 +84,8 @@ class TestQgsSpatialIndex : public QObject
 
     void testCopy()
     {
-      QgsSpatialIndex* index = new QgsSpatialIndex;
-      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
+      QgsSpatialIndex *index = new QgsSpatialIndex;
+      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
         index->insertFeature( f );
 
       // create copy of the index
@@ -127,7 +127,7 @@ class TestQgsSpatialIndex : public QObject
       {
         for ( int k = 0; k < 500; ++k )
         {
-          QgsFeature f( i*1000 + k );
+          QgsFeature f( i * 1000 + k );
           QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
           f.setGeometry( g );
           index.insertFeature( f );
@@ -143,13 +143,13 @@ class TestQgsSpatialIndex : public QObject
 
     void benchmarkBulkLoad()
     {
-      QgsVectorLayer* vl = new QgsVectorLayer( "Point", "x", "memory" );
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       for ( int i = 0; i < 100; ++i )
       {
         QgsFeatureList flist;
         for ( int k = 0; k < 500; ++k )
         {
-          QgsFeature f( i*1000 + k );
+          QgsFeature f( i * 1000 + k );
           QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
           f.setGeometry( g );
           flist << f;
@@ -158,8 +158,8 @@ class TestQgsSpatialIndex : public QObject
       }
 
       QTime t;
-      QgsSpatialIndex* indexBulk;
-      QgsSpatialIndex* indexInsert;
+      QgsSpatialIndex *indexBulk = nullptr;
+      QgsSpatialIndex *indexInsert = nullptr;
 
       t.start();
       {
@@ -195,8 +195,8 @@ class TestQgsSpatialIndex : public QObject
       QCOMPARE( resBulk.count(), 500 );
       QCOMPARE( resInsert.count(), 500 );
       // the trees are built differently so they will give also different order of fids
-      qSort( resBulk );
-      qSort( resInsert );
+      std::sort( resBulk.begin(), resBulk.end() );
+      std::sort( resInsert.begin(), resInsert.end() );
       QCOMPARE( resBulk, resInsert );
 
       delete indexBulk;
@@ -205,7 +205,7 @@ class TestQgsSpatialIndex : public QObject
 
 };
 
-QTEST_MAIN( TestQgsSpatialIndex )
+QGSTEST_MAIN( TestQgsSpatialIndex )
 
 #include "testqgsspatialindex.moc"
 

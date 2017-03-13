@@ -19,6 +19,8 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from functools import partial
 from qgis.PyQt.QtCore import Qt, QObject, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, QAbstractItemModel, QModelIndex, pyqtSignal
@@ -254,9 +256,9 @@ class TableItem(TreeItem):
             if geom_type is not None:
                 if geom_type.find('POINT') != -1:
                     return self.layerPointIcon
-                elif geom_type.find('LINESTRING') != -1:
+                elif geom_type.find('LINESTRING') != -1 or geom_type in ('CIRCULARSTRING', 'COMPOUNDCURVE', 'MULTICURVE'):
                     return self.layerLineIcon
-                elif geom_type.find('POLYGON') != -1:
+                elif geom_type.find('POLYGON') != -1 or geom_type == 'MULTISURFACE':
                     return self.layerPolygonIcon
                 return self.layerUnknownIcon
 
@@ -298,6 +300,7 @@ class DBModel(QAbstractItemModel):
             self.importVector.connect(self.vectorImport)
 
         self.hasSpatialiteSupport = "spatialite" in supportedDbTypes()
+        self.hasGPKGSupport = "gpkg" in supportedDbTypes()
 
         self.rootItem = TreeItem(None, None)
         for dbtype in supportedDbTypes():
@@ -399,7 +402,7 @@ class DBModel(QAbstractItemModel):
                     flags |= Qt.ItemIsDropEnabled
 
             # SL/Geopackage db files can be dropped everywhere in the tree
-            if self.hasSpatialiteSupport:
+            if self.hasSpatialiteSupport or self.hasGPKGSupport:
                 flags |= Qt.ItemIsDropEnabled
 
         return flags
@@ -446,7 +449,7 @@ class DBModel(QAbstractItemModel):
             return False
 
         item = index.internalPointer()
-        new_value = unicode(value)
+        new_value = str(value)
 
         if isinstance(item, SchemaItem) or isinstance(item, TableItem):
             obj = item.getItemData()
@@ -597,7 +600,7 @@ class DBModel(QAbstractItemModel):
 
         if not inLayer.isValid():
             # invalid layer
-            QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer %s") % inLayer.name())
+            QMessageBox.warning(None, self.tr("Invalid layer"), self.tr("Unable to load the layer {0}").format(inLayer.name()))
             return False
 
         # retrieve information about the new table's db and schema

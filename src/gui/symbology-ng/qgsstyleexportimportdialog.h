@@ -26,6 +26,7 @@
 #include <QStandardItem>
 
 #include "ui_qgsstyleexportimportdialogbase.h"
+#include "qgis_gui.h"
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
@@ -46,54 +47,62 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleExportImportDialog( QgsStyle* style, QWidget *parent = nullptr, Mode mode = Export );
+    QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent = nullptr, Mode mode = Export );
     ~QgsStyleExportImportDialog();
 
     /**
      * @brief selectSymbols select symbols by name
      * @param symbolNames list of symbol names
      */
-    void selectSymbols( const QStringList& symbolNames );
+    void selectSymbols( const QStringList &symbolNames );
+
     /**
      * @brief deselectSymbols deselect symbols by name
      * @param symbolNames list of symbol names
      */
-    void deselectSymbols( const QStringList& symbolNames );
+    void deselectSymbols( const QStringList &symbolNames );
 
   public slots:
     void doExportImport();
+
     /**
      * @brief selectByGroup open select by group dialog
      */
     void selectByGroup();
+
     /**
      * @brief selectAll selects all symbols
      */
     void selectAll();
+
     /**
      * @brief clearSelection deselects all symbols
      */
     void clearSelection();
+
     /**
-     * Select the symbols belonging to the given group
-     * @param groupName the name of the group to be selected
+     * Select the symbols belonging to the given tag
+     * @param tagName the name of the group to be selected
      */
-    void selectGroup( const QString& groupName );
+    void selectTag( const QString &tagName );
+
     /**
-     * Deselect the symbols belonging to the given group
-     * @param groupName the name of the group to be deselected
+     * Deselect the symbols belonging to the given tag
+     * @param tagName the name of the group to be deselected
      */
-    void deselectGroup( const QString& groupName );
+    void deselectTag( const QString &tagName );
+
     /**
      * @brief selectSmartgroup selects all symbols from a smart group
      * @param groupName
      */
-    void selectSmartgroup( const QString& groupName );
+    void selectSmartgroup( const QString &groupName );
+
     /**
      * @brief deselectSmartgroup deselects all symbols from a smart group
      * @param groupName
      */
-    void deselectSmartgroup( const QString& groupName );
+    void deselectSmartgroup( const QString &groupName );
 
     void importTypeChanged( int );
     void browse();
@@ -103,24 +112,24 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void fileReadyRead();
     void updateProgress( qint64, qint64 );
     void downloadCanceled();
-    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
-    void downloadStyleXml( const QUrl& url );
-    bool populateStyles( QgsStyle* style );
-    void moveStyles( QModelIndexList* selection, QgsStyle* src, QgsStyle* dst );
+    void downloadStyleXml( const QUrl &url );
+    bool populateStyles( QgsStyle *style );
+    void moveStyles( QModelIndexList *selection, QgsStyle *src, QgsStyle *dst );
 
-    QProgressDialog *mProgressDlg;
-    QgsStyleGroupSelectionDialog *mGroupSelectionDlg;
-    QTemporaryFile *mTempFile;
-    QNetworkAccessManager *mNetManager;
-    QNetworkReply *mNetReply;
+    QProgressDialog *mProgressDlg = nullptr;
+    QgsStyleGroupSelectionDialog *mGroupSelectionDlg = nullptr;
+    QTemporaryFile *mTempFile = nullptr;
+    QNetworkAccessManager *mNetManager = nullptr;
+    QNetworkReply *mNetReply = nullptr;
 
     QString mFileName;
     Mode mDialogMode;
 
-    QgsStyle* mQgisStyle;
-    QgsStyle* mTempStyle;
+    QgsStyle *mStyle = nullptr;
+    QgsStyle *mTempStyle = nullptr;
 };
 
 #endif // QGSSTYLEV2EXPORTIMPORTDIALOG_H

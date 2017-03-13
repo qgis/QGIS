@@ -16,10 +16,11 @@
 #include "qgsglobeplugindialog.h"
 #include "globe_plugin.h"
 
-#include <qgsapplication.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsproject.h>
-#include <qgslogger.h>
+#include "qgsapplication.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -28,7 +29,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMenu>
-#include <QSettings>
 #include <QTimer>
 
 #include <osg/DisplaySettings>
@@ -36,14 +36,14 @@
 #include <osgEarth/Version>
 #include <osgEarthUtil/EarthManipulator>
 
-QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget *parent, Qt::WFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
-  QMenu* addImageryMenu = new QMenu( this );
+  QMenu *addImageryMenu = new QMenu( this );
 
-  QMenu* tmsImageryMenu = new QMenu( this );
+  QMenu *tmsImageryMenu = new QMenu( this );
   tmsImageryMenu->addAction( "Readymap: NASA BlueMarble Imagery", this, SLOT( addTMSImagery() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/1/" );
   tmsImageryMenu->addAction( "Readymap: NASA BlueMarble, ocean only", this, SLOT( addTMSImagery() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/2/" );
   tmsImageryMenu->addAction( "Readymap: High resolution insets from various world locations", this, SLOT( addTMSImagery() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/3/" );
@@ -52,11 +52,11 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   tmsImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomTMSImagery() ) );
   addImageryMenu->addAction( tr( "TMS" ) )->setMenu( tmsImageryMenu );
 
-  QMenu* wmsImageryMenu = new QMenu( this );
+  QMenu *wmsImageryMenu = new QMenu( this );
   wmsImageryMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomWMSImagery() ) );
   addImageryMenu->addAction( tr( "WMS" ) )->setMenu( wmsImageryMenu );
 
-  QMenu* fileImageryMenu = new QMenu( this );
+  QMenu *fileImageryMenu = new QMenu( this );
   QString worldtif = QDir::cleanPath( QgsApplication::pkgDataPath() + "/globe/world.tif" );
   if ( QgsApplication::isRunningFromBuildDir() )
   {
@@ -69,14 +69,14 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
   mAddImageryButton->setMenu( addImageryMenu );
 
 
-  QMenu* addElevationMenu = new QMenu( this );
+  QMenu *addElevationMenu = new QMenu( this );
 
-  QMenu* tmsElevationMenu = new QMenu( this );
+  QMenu *tmsElevationMenu = new QMenu( this );
   tmsElevationMenu->addAction( "Readymap: SRTM 90m Elevation Data", this, SLOT( addTMSElevation() ) )->setData( "http://readymap.org/readymap/tiles/1.0.0/9/" );
   tmsElevationMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomTMSElevation() ) );
   addElevationMenu->addAction( tr( "TMS" ) )->setMenu( tmsElevationMenu );
 
-  QMenu* fileElevationMenu = new QMenu( this );
+  QMenu *fileElevationMenu = new QMenu( this );
   fileElevationMenu->addAction( tr( "Custom..." ), this, SLOT( addCustomRasterElevation() ) );
   addElevationMenu->addAction( tr( "Raster" ) )->setMenu( fileElevationMenu );
 
@@ -105,7 +105,7 @@ QgsGlobePluginDialog::QgsGlobePluginDialog( QWidget* parent, Qt::WFlags fl )
 
 void QgsGlobePluginDialog::restoreSavedSettings()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // Video settings
   comboBoxStereoMode->setCurrentIndex( comboBoxStereoMode->findText( settings.value( "/Plugin-Globe/stereoMode", "OFF" ).toString() ) );
@@ -153,7 +153,7 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 
 void QgsGlobePluginDialog::apply()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // Video settings
   settings.setValue( "/Plugin-Globe/stereoMode", comboBoxStereoMode->currentText() );
@@ -177,7 +177,7 @@ void QgsGlobePluginDialog::apply()
   writeProjectSettings();
 
   // Apply stereo settings
-  int stereoMode = comboBoxStereoMode->itemData( comboBoxStereoMode->currentIndex() ).toInt();
+  int stereoMode = comboBoxStereoMode->currentData().toInt();
   if ( stereoMode == -1 )
   {
     osg::DisplaySettings::instance()->setStereo( false );
@@ -210,9 +210,9 @@ void QgsGlobePluginDialog::readProjectSettings()
 {
   // Imagery settings
   mImageryTreeView->clear();
-  foreach ( const LayerDataSource& ds, getImageryDataSources() )
+  foreach ( const LayerDataSource &ds, getImageryDataSources() )
   {
-    QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << ds.type << ds.uri );
+    QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << ds.type << ds.uri );
     item->setFlags( item->flags() & ~Qt::ItemIsDropEnabled );
     mImageryTreeView->addTopLevelItem( item );
   }
@@ -220,9 +220,9 @@ void QgsGlobePluginDialog::readProjectSettings()
 
   // Elevation settings
   mElevationTreeView->clear();
-  foreach ( const LayerDataSource& ds, getElevationDataSources() )
+  foreach ( const LayerDataSource &ds, getElevationDataSources() )
   {
-    QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << ds.type << ds.uri );
+    QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << ds.type << ds.uri );
     item->setFlags( item->flags() & ~Qt::ItemIsDropEnabled );
     mElevationTreeView->addTopLevelItem( item );
   }
@@ -246,7 +246,7 @@ void QgsGlobePluginDialog::writeProjectSettings()
   QgsProject::instance()->removeEntry( "Globe-Plugin", "/imageryDatasources/" );
   for ( int row = 0, nRows = mImageryTreeView->topLevelItemCount(); row < nRows; ++row )
   {
-    QTreeWidgetItem* item = mImageryTreeView->topLevelItem( row );
+    QTreeWidgetItem *item = mImageryTreeView->topLevelItem( row );
     QString key = QString( "/imageryDatasources/L%1" ).arg( row );
     QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/type", item->text( 0 ) );
     QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/uri", item->text( 1 ) );
@@ -256,7 +256,7 @@ void QgsGlobePluginDialog::writeProjectSettings()
   QgsProject::instance()->removeEntry( "Globe-Plugin", "/elevationDatasources/" );
   for ( int row = 0, nRows = mElevationTreeView->topLevelItemCount(); row < nRows; ++row )
   {
-    QTreeWidgetItem* item = mElevationTreeView->topLevelItem( row );
+    QTreeWidgetItem *item = mElevationTreeView->topLevelItem( row );
     QString key = QString( "/elevationDatasources/L%1" ).arg( row );
     QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/type", item->text( 0 ) );
     QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/uri", item->text( 1 ) );
@@ -274,16 +274,16 @@ void QgsGlobePluginDialog::writeProjectSettings()
   QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyMinAmbient/", horizontalSliderMinAmbient->value() );
 }
 
-bool QgsGlobePluginDialog::validateRemoteUri( const QString& uri, QString& errMsg ) const
+bool QgsGlobePluginDialog::validateRemoteUri( const QString &uri, QString &errMsg ) const
 {
   QUrl url( uri );
-  QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
-  QNetworkReply* reply = nullptr;
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  QNetworkReply *reply = nullptr;
 
   while ( true )
   {
     QNetworkRequest req( url );
-    req.setRawHeader( "User-Agent" , "Wget/1.13.4" );
+    req.setRawHeader( "User-Agent", "Wget/1.13.4" );
     reply = nam->get( req );
     QTimer timer;
     QEventLoop loop;
@@ -320,9 +320,9 @@ bool QgsGlobePluginDialog::validateRemoteUri( const QString& uri, QString& errMs
 
 /// MAP ///////////////////////////////////////////////////////////////////////
 
-void QgsGlobePluginDialog::addImagery( const QString& type, const QString& uri )
+void QgsGlobePluginDialog::addImagery( const QString &type, const QString &uri )
 {
-  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << type << uri );
+  QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << type << uri );
   item->setFlags( item->flags() & ~Qt::ItemIsDropEnabled );
   mImageryTreeView->addTopLevelItem( item );
   mImageryTreeView->resizeColumnToContents( 0 );
@@ -330,7 +330,7 @@ void QgsGlobePluginDialog::addImagery( const QString& type, const QString& uri )
 
 void QgsGlobePluginDialog::addTMSImagery()
 {
-  addImagery( "TMS", qobject_cast<QAction*>( QObject::sender() )->data().toString() );
+  addImagery( "TMS", qobject_cast<QAction *>( QObject::sender() )->data().toString() );
 }
 
 void QgsGlobePluginDialog::addCustomTMSImagery()
@@ -369,7 +369,7 @@ void QgsGlobePluginDialog::addCustomWMSImagery()
 
 void QgsGlobePluginDialog::addRasterImagery()
 {
-  addImagery( "Raster", qobject_cast<QAction*>( QObject::sender() )->data().toString() );
+  addImagery( "Raster", qobject_cast<QAction *>( QObject::sender() )->data().toString() );
 }
 
 void QgsGlobePluginDialog::addCustomRasterImagery()
@@ -381,9 +381,9 @@ void QgsGlobePluginDialog::addCustomRasterImagery()
   }
 }
 
-void QgsGlobePluginDialog::addElevation( const QString& type, const QString& uri )
+void QgsGlobePluginDialog::addElevation( const QString &type, const QString &uri )
 {
-  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << type << uri );
+  QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << type << uri );
   item->setFlags( item->flags() & ~Qt::ItemIsDropEnabled );
   mElevationTreeView->addTopLevelItem( item );
   mElevationTreeView->resizeColumnToContents( 0 );
@@ -391,7 +391,7 @@ void QgsGlobePluginDialog::addElevation( const QString& type, const QString& uri
 
 void QgsGlobePluginDialog::addTMSElevation()
 {
-  addElevation( "TMS", qobject_cast<QAction*>( QObject::sender() )->data().toString() );
+  addElevation( "TMS", qobject_cast<QAction *>( QObject::sender() )->data().toString() );
 }
 
 void QgsGlobePluginDialog::addCustomTMSElevation()

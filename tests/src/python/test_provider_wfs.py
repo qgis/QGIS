@@ -17,10 +17,10 @@ import os
 import tempfile
 import shutil
 
-# Needed on Qt 5 so that the serialization of XML is consistant among all executions
+# Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
 
 from qgis.core import (
     QgsWkbTypes,
@@ -31,7 +31,8 @@ from qgis.core import (
     QgsPoint,
     QgsVectorDataProvider,
     QgsFeatureRequest,
-    QgsMessageLog
+    QgsApplication,
+    QgsSettings
 )
 from qgis.testing import (start_app,
                           unittest
@@ -42,8 +43,8 @@ from providertestbase import ProviderTestCase
 def sanitize(endpoint, x):
     if len(endpoint + x) > 256:
         ret = endpoint + hashlib.md5(x.encode()).hexdigest()
-        #print('Before: ' + endpoint + x)
-        #print('After:  ' + ret)
+        # print('Before: ' + endpoint + x)
+        # print('After:  ' + ret)
         return ret
     return endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
 
@@ -56,11 +57,11 @@ class MessageLogger(QObject):
         self.tag = tag
 
     def __enter__(self):
-        QgsMessageLog.instance().messageReceived.connect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.connect(self.logMessage)
         return self
 
     def __exit__(self, type, value, traceback):
-        QgsMessageLog.instance().messageReceived.disconnect(self.logMessage)
+        QgsApplication.messageLog().messageReceived.disconnect(self.logMessage)
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:
@@ -79,7 +80,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
         QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         # On Windows we must make sure that any backslash in the path is
@@ -111,7 +112,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     <xsd:complexContent>
       <xsd:extension base="gml:AbstractFeatureType">
         <xsd:sequence>
-          <xsd:element maxOccurs="1" minOccurs="0" name="pk" nillable="true" type="xsd:long"/>
+          <!-- add a trailing space to the name to test http://hub.qgis.org/issues/3426 -->
+          <xsd:element maxOccurs="1" minOccurs="0" name="pk  " nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="cnt" nillable="true" type="xsd:long"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name" nillable="true" type="xsd:string"/>
           <xsd:element maxOccurs="1" minOccurs="0" name="name2" nillable="true" type="xsd:string"/>
@@ -126,7 +128,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         # Create test layer
-        cls.vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
+        cls.vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -336,14 +338,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        QSettings().clear()
+        QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
-        cls.vl = None # so as to properly close the provider and remove any temporary file
+        cls.vl = None  # so as to properly close the provider and remove any temporary file
 
-    def testInconsistantUri(self):
+    def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""
 
-        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testInconsistantUri'
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testInconsistentUri'
         with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
             f.write("""
 <wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
@@ -352,7 +354,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         # Could not find typename my:typename in capabilities
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         assert not vl.isValid()
 
     def testWFS10(self):
@@ -399,7 +401,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         self.assertEqual(len(vl.fields()), 5)
@@ -462,6 +464,31 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         assert not vl.dataProvider().deleteFeatures([0])
 
+        # Test with restrictToRequestBBOX=1
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=GetFeature&VERSION=1.0.0&TYPENAME=my:typename&SRSNAME=EPSG:32631&BBOX=400000,5400000,450000,5500000'), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs"
+                       xmlns:gml="http://www.opengis.net/gml"
+                       xmlns:my="http://my">
+  <gml:boundedBy><gml:null>unknown</gml:null></gml:boundedBy>
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:geometry>
+          <gml:Point srsName="http://www.opengis.net/gml/srs/epsg.xml#4326"><gml:coordinates decimal="." cs="," ts=" ">426858,5427937</gml:coordinates></gml:Point>
+      </my:geometry>
+      <my:INTFIELD>100</my:INTFIELD>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' restrictToRequestBBOX=1", 'test', 'WFS')
+
+        extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        values = [f['INTFIELD'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [100])
+
     def testWFS10_latlongboundingbox_in_WGS84(self):
         """Test WFS 1.0 with non conformatn LatLongBoundingBox"""
 
@@ -500,7 +527,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         assert vl.isValid()
 
         reference = QgsGeometry.fromRect(QgsRectangle(399999.9999999680439942, 5399338.9090830031782389, 449999.9999999987776391, 5500658.0448500607162714))
@@ -553,7 +580,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         assert vl.isValid()
 
         self.assertEqual(vl.dataProvider().capabilities(),
@@ -782,7 +809,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         # Create test layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
@@ -892,7 +919,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 """.encode('UTF-8'))
 
         # Create test layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' restrictToRequestBBOX=1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' restrictToRequestBBOX=1", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
@@ -1078,7 +1105,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         # Create test layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         assert vl.isValid()
 
         # Check that we get a log message
@@ -1122,7 +1149,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
@@ -1212,7 +1239,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </xsd:schema>
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
         self.assertEqual(len(vl.fields()), 1)
@@ -1366,7 +1393,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         # * syntax
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" JOIN \"my:othertypename\" o ON \"my:typename\".id = o.main_id WHERE \"my:typename\".id > 0 ORDER BY \"my:typename\".id DESC", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" JOIN \"my:othertypename\" o ON \"my:typename\".id = o.main_id WHERE \"my:typename\".id > 0 ORDER BY \"my:typename\".id DESC", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
@@ -1379,7 +1406,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [(1, 1, 2)])
 
         # * syntax with unprefixed typenames
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename JOIN othertypename o ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename JOIN othertypename o ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
@@ -1396,7 +1423,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:othertypename,my:typename'), 'wb') as f:
             f.write(schema.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o, typename WHERE typename.id = o.main_id AND typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o, typename WHERE typename.id = o.main_id AND typename.id > 0 ORDER BY typename.id DESC", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
@@ -1406,7 +1433,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields[2].name(), 'typename.id')
 
         # main table not appearing in first, not in FROM but in JOIN
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o JOIN typename ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM othertypename o JOIN typename ON typename.id = o.main_id WHERE typename.id > 0 ORDER BY typename.id DESC", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
         fields = vl.fields()
@@ -1447,36 +1474,36 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
             f.write(schema.encode('UTF-8'))
 
         # Duplicate fields
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT id, id FROM \"my:typename\"", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT id, id FROM \"my:typename\"", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
         # * syntax with single layer
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\"", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\"", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
         self.assertEqual(len(fields), 1, fields)
         self.assertEqual(fields[0].name(), 'id')
 
         # * syntax with single layer, unprefixed
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM typename", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
         self.assertEqual(len(fields), 1, fields)
         self.assertEqual(fields[0].name(), 'id')
 
         # test with unqualified field name, and geometry name specified
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT id, geometryProperty FROM typename", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT id, geometryProperty FROM typename", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         fields = vl.fields()
         self.assertEqual(len(fields), 1, fields)
         self.assertEqual(fields[0].name(), 'id')
 
         # Ambiguous typename
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='first_ns:ambiguous' version='2.0.0' sql=SELECT id FROM ambiguous", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='first_ns:ambiguous' version='2.0.0' sql=SELECT id FROM ambiguous", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
         # main table missing from SQL
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:othertypename' version='2.0.0' sql=SELECT * FROM typename", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:othertypename' version='2.0.0' sql=SELECT * FROM typename", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
     def testFunctionValidation(self):
@@ -1651,43 +1678,43 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
             f.write(schema.encode('UTF-8'))
 
         # Existing function and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE abs(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE abs(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Existing spatial predicated and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE ST_Intersects(geom, geom)", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE ST_Intersects(geom, geom)", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Non existing function and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
         # Non existing function, but validation disabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.0.0' sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Existing function and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.1.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE abs(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE abs(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Existing spatial predicated and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.1.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE ST_Intersects(geom, geom)", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE ST_Intersects(geom, geom)", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Non existing function and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.1.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
         # Existing function and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE abs(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE abs(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Existing spatial predicated and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE ST_Intersects(geom, geom)", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE ST_Intersects(geom, geom)", 'test', 'WFS')
         self.assertTrue(vl.isValid())
 
         # Non existing function and validation enabled
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' validateSQLFunctions=1 sql=SELECT * FROM \"my:typename\" WHERE non_existing(\"my:typename\".id) > 1", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
     def testSelectDistinct(self):
@@ -1788,7 +1815,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT DISTINCT * FROM \"my:typename\"", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT DISTINCT * FROM \"my:typename\"", 'test', 'WFS')
         assert vl.isValid()
 
         values = [(f['intfield'], f['longfield'], f['stringfield'], f['datetimefield']) for f in vl.getFeatures()]
@@ -1798,16 +1825,16 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                                   (1, 1234567890, 'fop', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.UTC))),
                                   (1, 1234567890, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 788, Qt.TimeSpec(Qt.UTC)))])
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' sql=SELECT DISTINCT intfield FROM \"my:typename\"", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT DISTINCT intfield FROM \"my:typename\"", 'test', 'WFS')
         assert vl.isValid()
 
         values = [(f['intfield']) for f in vl.getFeatures()]
         self.assertEqual(values, [(1), (2)])
 
     def testWrongCapabilityExtent(self):
-        """Test behaviour when capability extent is wrong."""
+        """Test behavior when capability extent is wrong."""
 
-        # Note the logic that is tested is purely heuristic, trying to recover from wrong server behaviour,
+        # Note the logic that is tested is purely heuristic, trying to recover from wrong server behavior,
         # so it might be legitimate to change that at a later point.
 
         endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_wrong_capability_extent'
@@ -1861,7 +1888,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0'", 'test', 'WFS')
         assert vl.isValid()
 
         # Download all features
@@ -1873,7 +1900,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.exportToWkt(), vl_extent.exportToWkt())
 
         # Same with restrictToRequestBBOX=1
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1", 'test', 'WFS')
         assert vl.isValid()
 
         # First request that will be attempted
@@ -2002,9 +2029,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
-        QSettings().setValue('wfs/max_feature_count_if_not_provided', '1')
+        QgsSettings().setValue('wfs/max_feature_count_if_not_provided', '1')
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='2.0.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0'", 'test', 'WFS')
         assert vl.isValid()
         self.assertEqual(vl.wkbType(), QgsWkbTypes.MultiPolygon)
 
@@ -2104,7 +2131,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.1.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0'", 'test', 'WFS')
         assert vl.isValid()
 
         got_f = [f for f in vl.getFeatures()]
@@ -2192,12 +2219,149 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
 """.encode('UTF-8'))
 
-        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename' version='1.1.0'", u'test', u'WFS')
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.1.0'", 'test', 'WFS')
         assert vl.isValid()
 
         got_f = [f for f in vl.getFeatures()]
         got = got_f[0].geometry().geometry()
         self.assertEqual((got.x(), got.y()), (2.0, 49.0))
+
+    def testWFS20TransactionsDisabled(self):
+        """Test WFS 2.0 Transaction disabled"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_2.0_transaction'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <ows:OperationsMetadata>
+    <ows:Operation name="GetFeature">
+      <ows:Constraint name="CountDefault">
+        <ows:NoValues/>
+        <ows:DefaultValue>1</ows:DefaultValue>
+      </ows:Constraint>
+    </ows:Operation>
+    <ows:Constraint name="ImplementsTransactionalWFS">
+      <ows:NoValues/>
+      <ows:DefaultValue>TRUE</ows:DefaultValue>
+    </ows:Constraint>
+  </ows:OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>-71.123 66.33</ows:LowerCorner>
+        <ows:UpperCorner>-65.32 78.3</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometryProperty" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
+        assert vl.isValid()
+        self.assertEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities, vl.dataProvider().NoCapabilities)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+    def testWFS20TransactionsEnabled(self):
+        """Test WFS 2.0 Transaction enabled"""
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_2.0_transaction'
+
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
+            f.write("""
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <ows:OperationsMetadata>
+    <ows:Operation name="GetFeature">
+      <ows:Constraint name="CountDefault">
+        <ows:NoValues/>
+        <ows:DefaultValue>1</ows:DefaultValue>
+      </ows:Constraint>
+    </ows:Operation>
+    <ows:Constraint name="ImplementsTransactionalWFS">
+      <ows:NoValues/>
+      <ows:DefaultValue>TRUE</ows:DefaultValue>
+    </ows:Constraint>
+    <ows:Operation name="Transaction">
+      <ows:DCP>
+        <ows:HTTP>
+          <ows:Get xlink:href="http://{endpoint}"/>
+          <ows:Post xlink:href="{endpoint}"/>
+        </ows:HTTP>
+      </ows:DCP>
+      <ows:Parameter name="inputFormat">
+        <ows:AllowedValues>
+          <ows:Value>text/xml; subtype=gml/3.2</ows:Value>
+        </ows:AllowedValues>
+      </ows:Parameter>
+      <ows:Parameter name="releaseAction">
+        <ows:AllowedValues>
+          <ows:Value>ALL</ows:Value>
+          <ows:Value>SOME</ows:Value>
+        </ows:AllowedValues>
+      </ows:Parameter>
+    </ows:Operation>
+  </ows:OperationsMetadata>
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
+      <ows:WGS84BoundingBox>
+        <ows:LowerCorner>-71.123 66.33</ows:LowerCorner>
+        <ows:UpperCorner>-65.32 78.3</ows:UpperCorner>
+      </ows:WGS84BoundingBox>
+    </FeatureType>
+  </FeatureTypeList>
+</wfs:WFS_Capabilities>""".format(endpoint=endpoint).encode('UTF-8'))
+
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="longfield" nillable="true" type="xsd:long"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="stringfield" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="datetimefield" nillable="true" type="xsd:dateTime"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geomfield" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer(u"url='http://" + endpoint + u"' typename='my:typename'", u'test', u'WFS')
+        assert vl.isValid()
+        self.assertNotEqual(vl.dataProvider().capabilities() & vl.dataProvider().EditingCapabilities, vl.dataProvider().NoCapabilities)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
 
 if __name__ == '__main__':

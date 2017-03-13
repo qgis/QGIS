@@ -28,6 +28,13 @@ class QgsLayerTreeMapCanvasBridge : QObject
     QgsLayerTreeGroup* rootGroup() const;
     QgsMapCanvas* mapCanvas() const;
 
+    //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
+    //! @note added in 3.0
+    void setOvervewCanvas( QgsMapOverviewCanvas* overviewCanvas );
+    //! Returns associated overview canvas (may be null)
+    //! @note added in 3.0
+    QgsMapOverviewCanvas* overviewCanvas() const;
+
     bool hasCustomLayerOrder() const;
     QStringList customLayerOrder() const;
 
@@ -37,11 +44,6 @@ class QgsLayerTreeMapCanvasBridge : QObject
     //! when first layer(s) are added
     void setAutoSetupOnFirstLayer( bool enabled );
     bool autoSetupOnFirstLayer() const;
-
-    //! if enabled, will automatically turn on on-the-fly reprojection of layers if a layer
-    //! with different source CRS is added
-    void setAutoEnableCrsTransform( bool enabled );
-    bool autoEnableCrsTransform() const;
 
   public slots:
     void setHasCustomLayerOrder( bool state );
@@ -56,12 +58,14 @@ class QgsLayerTreeMapCanvasBridge : QObject
   signals:
     void hasCustomLayerOrderChanged( bool );
     void customLayerOrderChanged( const QStringList& order );
+    void canvasLayersChanged( const QList< QgsMapLayer* >& layers );
 
   protected:
 
     void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
 
-    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers );
+    //! Fill canvasLayers and overviewLayers lists from node and its descendants
+    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapLayer*> &canvasLayers, QList<QgsMapLayer*>& overviewLayers );
 
     void deferredSetCanvasLayers();
 

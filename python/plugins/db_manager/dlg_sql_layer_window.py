@@ -21,12 +21,15 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import zip
+from builtins import next
+from builtins import str
 
-from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL, pyqtSignal
-from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
-    QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon, QStyledItemDelegate, QStandardItemModel, QStandardItem
-from PyQt4.Qsci import QsciAPIs
-from PyQt4.QtXml import QDomDocument
+from qgis.PyQt.QtCore import Qt, pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QStyledItemDelegate
+from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
+from qgis.PyQt.Qsci import QsciAPIs
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import QgsProject, QgsDataSourceUri
 
@@ -37,7 +40,7 @@ from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
 
 try:
-    from qgis.gui import QgsCodeEditorSQL
+    from qgis.gui import QgsCodeEditorSQL  # NOQA
 except:
     from .sqledit import SqlEdit
     from qgis import gui
@@ -68,6 +71,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             dbplugin = createDbPlugin('oracle', 'oracle')
         elif layer.dataProvider().name() == 'virtual':
             dbplugin = createDbPlugin('vlayers', 'virtual')
+        elif layer.dataProvider().name() == 'ogr':
+            dbplugin = createDbPlugin('gpkg', 'gpkg')
         if dbplugin:
             dbplugin.connectToUri(uri)
             db = dbplugin.db
@@ -75,8 +80,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.dbplugin = dbplugin
         self.db = db
         self.filter = ""
-        self.allowMultiColumnPk = isinstance(db, PGDatabase) # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
-        self.aliasSubQuery = isinstance(db, PGDatabase) # only PostgreSQL requires subqueries to be aliases
+        self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, spatialite doesn't
+        self.aliasSubQuery = isinstance(db, PGDatabase)  # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
         self.setWindowTitle(
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
@@ -84,9 +89,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.defaultLayerName = 'QueryLayer'
 
         if self.allowMultiColumnPk:
-            self.uniqueColumnCheck.setText(self.trUtf8("Column(s) with unique values"))
+            self.uniqueColumnCheck.setText(self.tr("Column(s) with unique values"))
         else:
-            self.uniqueColumnCheck.setText(self.trUtf8("Column with unique values"))
+            self.uniqueColumnCheck.setText(self.tr("Column with unique values"))
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -120,11 +125,11 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.uniqueCombo.setModel(self.uniqueModel)
         if self.allowMultiColumnPk:
             self.uniqueCombo.setItemDelegate(QStyledItemDelegate())
-            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                # react to the (un)checking of an item
-            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged) # there are other events that change the displayed text and some of them can not be caught directly
+            self.uniqueModel.itemChanged.connect(self.uniqueChanged)                 # react to the (un)checking of an item
+            self.uniqueCombo.lineEdit().textChanged.connect(self.uniqueTextChanged)  # there are other events that change the displayed text and some of them can not be caught directly
 
         self.layerTypeWidget.hide()  # show if load as raster is supported
-        #self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
+        # self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
         self.updateLayerBtn.clicked.connect(self.updateSqlLayer)
         self.getColumnsBtn.clicked.connect(self.fillColumnCombos)
 
@@ -135,7 +140,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         self.presetName.textChanged.connect(self.nameChanged)
 
         # Update from layer
-        # Fisrtly the SQL from QgsDataSourceUri table
+        # First the SQL from QgsDataSourceUri table
         sql = uri.table()
         if uri.keyColumn() == '_uid_':
             match = re.search('^\(SELECT .+ AS _uid_,\* FROM \((.*)\) AS _subq_.+_\s*\)$', sql, re.S)
@@ -187,8 +192,8 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query == "":
             return
         name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query', query)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -198,13 +203,13 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()))
+        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name')[0]
+        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
+        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
         self.editSql.setText(query)
 
     def clearSql(self):
@@ -233,7 +238,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             # set the new model
             model = self.db.sqlResultModel(sql, self)
             self.viewResult.setModel(model)
-            self.lblResult.setText(self.tr("%d rows, %.1f seconds") % (model.affectedRows(), model.secs()))
+            self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
             cols = self.viewResult.model().columnNames()
             for col in cols:
                 quotedCols.append(self.db.connector.quoteId(col))
@@ -279,13 +284,13 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if query.strip().endswith(';'):
             query = query.strip()[:-1]
 
-        from qgis.core import QgsMapLayer, QgsMapLayerRegistry
+        from qgis.core import QgsMapLayer
 
         layerType = QgsMapLayer.VectorLayer if self.vectorRadio.isChecked() else QgsMapLayer.RasterLayer
 
         # get a new layer name
         names = []
-        for layer in QgsMapLayerRegistry.instance().mapLayers().values():
+        for layer in list(QgsProject.instance().mapLayers().values()):
             names.append(layer.name())
 
         layerName = self.layerNameEdit.text()
@@ -309,11 +314,10 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             layer = self._getSqlLayer(self.filter)
-            if layer == None:
+            if layer is None:
                 return
 
-            from qgis.core import QgsMapLayerRegistry
-            QgsMapLayerRegistry.instance().addMapLayers([layer], True)
+            QgsProject.instance().addMapLayers([layer], True)
         finally:
             QApplication.restoreOverrideCursor()
 
@@ -321,11 +325,11 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         try:
             layer = self._getSqlLayer(self.filter)
-            if layer == None:
+            if layer is None:
                 return
 
-            #self.layer.dataProvider().setDataSourceUri(layer.dataProvider().dataSourceUri())
-            #self.layer.dataProvider().reloadData()
+            # self.layer.dataProvider().setDataSourceUri(layer.dataProvider().dataSourceUri())
+            # self.layer.dataProvider().reloadData()
             XMLDocument = QDomDocument("style")
             XMLMapLayers = XMLDocument.createElement("maplayers")
             XMLMapLayer = XMLDocument.createElement("maplayer")
@@ -337,7 +341,6 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             self.layer.reload()
             self.iface.actionDraw().trigger()
             self.iface.mapCanvas().refresh()
-            self.iface.legendInterface().refreshLayerLegend(layer)
         finally:
             QApplication.restoreOverrideCursor()
 
@@ -366,9 +369,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
                     break
                 aliasIndex += 1
 
-            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (unicode(query), connector.quoteId(alias))
+            sql = u"SELECT * FROM (%s\n) AS %s LIMIT 0" % (str(query), connector.quoteId(alias))
         else:
-            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % unicode(query)
+            sql = u"SELECT * FROM (%s\n) WHERE 1=0" % str(query)
 
         c = None
         try:
@@ -394,7 +397,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         QApplication.restoreOverrideCursor()
 
     def setColumnCombos(self, cols, quotedCols):
-        # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
+        # get sensible default columns. do this before sorting in case there's hints in the column order (e.g., id is more likely to be first)
         try:
             defaultGeomCol = next(col for col in cols if col in ['geom', 'geometry', 'the_geom', 'way'])
         except:
@@ -479,7 +482,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             dictionary = getSqlDictionary()
 
         wordlist = []
-        for name, value in dictionary.iteritems():
+        for name, value in dictionary.items():
             wordlist += value  # concat lists
         wordlist = list(set(wordlist))  # remove duplicates
 

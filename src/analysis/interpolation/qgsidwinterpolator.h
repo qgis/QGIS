@@ -19,6 +19,7 @@
 #define QGSIDWINTERPOLATOR_H
 
 #include "qgsinterpolator.h"
+#include "qgis_analysis.h"
 
 /** \ingroup analysis
  * \class QgsIDWInterpolator
@@ -26,15 +27,14 @@
 class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 {
   public:
-    QgsIDWInterpolator( const QList<LayerData>& layerData );
-    ~QgsIDWInterpolator();
+    QgsIDWInterpolator( const QList<LayerData> &layerData );
 
     /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result
        @return 0 in case of success*/
-    int interpolatePoint( double x, double y, double& result ) override;
+    int interpolatePoint( double x, double y, double &result ) override;
 
     void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}
 

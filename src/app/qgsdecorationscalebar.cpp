@@ -32,6 +32,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
 
 #include <QPainter>
 #include <QAction>
@@ -49,15 +50,15 @@ email                : sbr00pwb@users.sourceforge.net
 #include <cmath>
 
 
-QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
+  : QgsDecorationItem( parent )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
-  << tr( "Bar" ) << tr( "Box" );
+               << tr( "Bar" ) << tr( "Box" );
 
   setName( "Scale Bar" );
   projectRead();
@@ -71,28 +72,28 @@ QgsDecorationScaleBar::~QgsDecorationScaleBar()
 void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, "/PreferredSize", 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Style", 0 );
-  mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, "/Snapping", true );
-  int myRedInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorRedPart", 0 );
-  int myGreenInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorGreenPart", 0 );
-  int myBlueInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorBluePart", 0 );
+  mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), 30 );
+  mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Style" ), 0 );
+  mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Snapping" ), true );
+  int myRedInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/ColorRedPart" ), 0 );
+  int myGreenInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/ColorGreenPart" ), 0 );
+  int myBlueInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/ColorBluePart" ), 0 );
   mColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginH", 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, "/MarginV", 0 );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 }
 
 void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, "/PreferredSize", mPreferredSize );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Snapping", mSnapping );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Style", mStyleIndex );
-  QgsProject::instance()->writeEntry( mNameConfig, "/ColorRedPart", mColor.red() );
-  QgsProject::instance()->writeEntry( mNameConfig, "/ColorGreenPart", mColor.green() );
-  QgsProject::instance()->writeEntry( mNameConfig, "/ColorBluePart", mColor.blue() );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MarginH", mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, "/MarginV", mMarginVertical );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), mPreferredSize );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Snapping" ), mSnapping );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Style" ), mStyleIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ColorRedPart" ), mColor.red() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ColorGreenPart" ), mColor.green() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/ColorBluePart" ), mColor.blue() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
 
 
@@ -103,9 +104,9 @@ void QgsDecorationScaleBar::run()
 }
 
 
-void QgsDecorationScaleBar::render( QPainter * theQPainter )
+void QgsDecorationScaleBar::render( QPainter *theQPainter )
 {
-  QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
+  QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
 
   int myBufferSize = 1; //softcode this later
 
@@ -131,9 +132,9 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     int myMajorTickSize = 8;
     int myTextOffsetX = 3;
 
-    QSettings settings;
+    QgsSettings settings;
     bool ok = false;
-    QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( "/qgis/measure/displayunits" ).toString(), &ok );
+    QgsUnitTypes::DistanceUnit myPreferredUnits = QgsUnitTypes::decodeDistanceUnit( settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
     if ( !ok )
       myPreferredUnits = QgsUnitTypes::DistanceMeters;
     QgsUnitTypes::DistanceUnit myMapUnits = canvas->mapUnits();
@@ -240,7 +241,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
 
     //Set font and calculate width of unit label
     int myFontSize = 10; //we use this later for buffering
-    QFont myFont( "helvetica", myFontSize );
+    QFont myFont( QStringLiteral( "helvetica" ), myFontSize );
     theQPainter->setFont( myFont );
     QFontMetrics myFontMetrics( myFont );
     double myFontWidth = myFontMetrics.width( myScaleBarUnitLabel );
@@ -278,8 +279,8 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
       {
         float myMarginDoubledW = myMarginW * 2.0;
         float myMarginDoubledH = myMarginH * 2.0;
-        myOriginX = (( myCanvasWidth - myMarginDoubledW - myTotalScaleBarWidth ) / 100. ) * mMarginHorizontal;
-        myOriginY = (( myCanvasHeight - myMarginDoubledH ) / 100. ) * mMarginVertical;
+        myOriginX = ( ( myCanvasWidth - myMarginDoubledW - myTotalScaleBarWidth ) / 100. ) * mMarginHorizontal;
+        myOriginY = ( ( myCanvasHeight - myMarginDoubledH ) / 100. ) * mMarginVertical;
         break;
       }
 
@@ -440,7 +441,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
 
     //Draw the minimum label buffer
     theQPainter->setPen( myBackColor );
-    myFontWidth = myFontMetrics.width( "0" );
+    myFontWidth = myFontMetrics.width( QStringLiteral( "0" ) );
     myFontHeight = myFontMetrics.height();
 
     for ( int i = 0 - myBufferSize; i <= myBufferSize; i++ )
@@ -449,7 +450,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
       {
         theQPainter->drawText( int( i + ( myOriginX - ( myFontWidth / 2 ) ) ),
                                int( j + ( myOriginY - ( myFontHeight / 4 ) ) ),
-                               "0" );
+                               QStringLiteral( "0" ) );
       }
     }
 
@@ -459,7 +460,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     theQPainter->drawText(
       int( myOriginX - ( myFontWidth / 2 ) ),
       int( myOriginY - ( myFontHeight / 4 ) ),
-      "0"
+      QStringLiteral( "0" )
     );
 
     //

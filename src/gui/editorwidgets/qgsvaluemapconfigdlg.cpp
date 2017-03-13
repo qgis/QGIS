@@ -16,14 +16,16 @@
 #include "qgsvaluemapconfigdlg.h"
 
 #include "qgsattributetypeloaddialog.h"
+#include "qgsvaluemapfieldformatter.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -36,10 +38,10 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
 }
 
-QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
+QVariantMap QgsValueMapConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
-  QSettings settings;
+  QVariantMap values;
+  QgsSettings settings;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -51,23 +53,25 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
       continue;
 
     QString ks = ki->text();
-    if (( ks == settings.value( "qgis/nullValue", "NULL" ).toString() ) && !( ki->flags() & Qt::ItemIsEditable ) )
-      ks = VALUEMAP_NULL_TEXT;
+    if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+      ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
     if ( !vi || vi->text().isNull() )
     {
-      cfg.insert( ks, ks );
+      values.insert( ks, ks );
     }
     else
     {
-      cfg.insert( vi->text(), ks );
+      values.insert( vi->text(), ks );
     }
   }
 
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "map" ), values );
   return cfg;
 }
 
-void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -76,7 +80,8 @@ void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   }
 
   int row = 0;
-  for ( QgsEditorWidgetConfig::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
+  QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+  for ( QVariantMap::ConstIterator mit = values.begin(); mit != values.end(); mit++, row++ )
   {
     if ( mit.value().isNull() )
       setRow( row, mit.key(), QString() );
@@ -132,7 +137,7 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
   if ( insertNull )
   {
-    setRow( row, VALUEMAP_NULL_TEXT, "<NULL>" );
+    setRow( row, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
     ++row;
   }
 
@@ -145,17 +150,17 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
   }
 }
 
-void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString description )
+void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
-  QSettings settings;
-  QTableWidgetItem* valueCell;
-  QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
+  QgsSettings settings;
+  QTableWidgetItem *valueCell = nullptr;
+  QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
-  if ( value == QString( VALUEMAP_NULL_TEXT ) )
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
   {
     QFont cellFont;
     cellFont.setItalic( true );
-    valueCell = new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() );
+    valueCell = new QTableWidgetItem( QgsApplication::nullRepresentation() );
     valueCell->setFont( cellFont );
     valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
     descriptionCell->setFont( cellFont );
@@ -170,7 +175,7 @@ void QgsValueMapConfigDlg::setRow( int row, const QString value, const QString d
 
 void QgsValueMapConfigDlg::addNullButtonPushed()
 {
-  setRow( tableWidget->rowCount() - 1, VALUEMAP_NULL_TEXT, "<NULL>" );
+  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -184,7 +189,7 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )
@@ -230,20 +235,20 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     else
       continue;
 
-    if (( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
-        ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
+    if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
+         ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
     {
       key = key.mid( 1, key.length() - 2 );
     }
 
-    if (( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
-        ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
+    if ( ( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
+         ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
     {
       val = val.mid( 1, val.length() - 2 );
     }
 
-    if ( key == settings.value( "qgis/nullValue", "NULL" ).toString() )
-      key = QString( VALUEMAP_NULL_TEXT );
+    if ( key == QgsApplication::nullRepresentation() )
+      key = QgsValueMapFieldFormatter::NULL_VALUE;
 
     map[ key ] = val;
   }

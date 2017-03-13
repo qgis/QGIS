@@ -26,31 +26,25 @@
 #include "qgsmimedatautils.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
-
 #include "qgsbrowsermodel.h"
 #include "qgsproject.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
-    : mItem( item )
-{
-}
-
-QgsBrowserWatcher::~QgsBrowserWatcher()
+  : mItem( item )
 {
 }
 
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
-static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
+static bool cmpByDataItemName_( QgsDataItem *a, QgsDataItem *b )
 {
   return QString::localeAwareCompare( a->name(), b->name() ) < 0;
 }
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
-    : QAbstractItemModel( parent )
-    , mFavourites( nullptr )
-    , mProjectHome( nullptr )
+  : QAbstractItemModel( parent )
+  , mFavorites( nullptr )
+  , mProjectHome( nullptr )
 {
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
@@ -101,16 +95,16 @@ void QgsBrowserModel::addRootItems()
   connectItem( item );
   mRootItems << item;
 
-  // add favourite directories
-  mFavourites = new QgsFavouritesItem( nullptr, tr( "Favourites" ) );
-  if ( mFavourites )
+  // add favorite directories
+  mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
+  if ( mFavorites )
   {
-    connectItem( mFavourites );
-    mRootItems << mFavourites;
+    connectItem( mFavorites );
+    mRootItems << mFavorites;
   }
 
   // add drives
-  Q_FOREACH ( const QFileInfo& drive, QDir::drives() )
+  Q_FOREACH ( const QFileInfo &drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
 
@@ -133,7 +127,7 @@ void QgsBrowserModel::addRootItems()
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  Q_FOREACH ( QgsDataItemProvider* pr, QgsDataItemProviderRegistry::instance()->providers() )
+  Q_FOREACH ( QgsDataItemProvider *pr, QgsApplication::dataItemProviderRegistry()->providers() )
   {
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
@@ -142,7 +136,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    QgsDataItem *item = pr->createDataItem( "", nullptr );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
@@ -157,10 +151,10 @@ void QgsBrowserModel::addRootItems()
     QList<QgsDataItem *> providerGroup = providerMap.values( key );
     if ( providerGroup.size() > 1 )
     {
-      qSort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
+      std::sort( providerGroup.begin(), providerGroup.end(), cmpByDataItemName_ );
     }
 
-    Q_FOREACH ( QgsDataItem * ditem, providerGroup )
+    Q_FOREACH ( QgsDataItem *ditem, providerGroup )
     {
       mRootItems << ditem;
     }
@@ -169,7 +163,7 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  Q_FOREACH ( QgsDataItem* item, mRootItems )
+  Q_FOREACH ( QgsDataItem *item, mRootItems )
   {
     delete item;
   }
@@ -178,14 +172,14 @@ void QgsBrowserModel::removeRootItems()
 }
 
 
-Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
     return Qt::ItemFlags();
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-  QgsDataItem* ptr = reinterpret_cast< QgsDataItem* >( index.internalPointer() );
+  QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
   if ( ptr->hasDragEnabled() )
     flags |= Qt::ItemIsDragEnabled;
 
@@ -224,7 +218,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     if ( item->type() == QgsDataItem::Layer )
     {
-      QgsLayerItem* lyrItem = qobject_cast<QgsLayerItem*>( item );
+      QgsLayerItem *lyrItem = qobject_cast<QgsLayerItem *>( item );
       return lyrItem->comments();
     }
     return QVariant();
@@ -280,26 +274,26 @@ int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
   return 1;
 }
 
-QModelIndex QgsBrowserModel::findPath( const QString& path, Qt::MatchFlag matchFlag )
+QModelIndex QgsBrowserModel::findPath( const QString &path, Qt::MatchFlag matchFlag )
 {
   return findPath( this, path, matchFlag );
 }
 
-QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString& path, Qt::MatchFlag matchFlag )
+QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString &path, Qt::MatchFlag matchFlag )
 {
   if ( !model )
     return QModelIndex();
 
-  QModelIndex theIndex; // starting from root
+  QModelIndex index; // starting from root
   bool foundChild = true;
 
   while ( foundChild )
   {
     foundChild = false; // assume that the next child item will not be found
 
-    for ( int i = 0; i < model->rowCount( theIndex ); i++ )
+    for ( int i = 0; i < model->rowCount( index ); i++ )
     {
-      QModelIndex idx = model->index( i, 0, theIndex );
+      QModelIndex idx = model->index( i, 0, index );
 
       QString itemPath = model->data( idx, PathRole ).toString();
       if ( itemPath == path )
@@ -312,14 +306,14 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString&
       if ( path.startsWith( itemPath + '/' ) )
       {
         foundChild = true;
-        theIndex = idx;
+        index = idx;
         break;
       }
     }
   }
 
   if ( matchFlag == Qt::MatchStartsWith )
-    return theIndex;
+    return index;
 
   QgsDebugMsg( "path not found" );
   return QModelIndex(); // not found
@@ -340,7 +334,7 @@ QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &pare
     return QModelIndex();
 
   QgsDataItem *p = dataItem( parent );
-  const QVector<QgsDataItem*> &items = p ? p->children() : mRootItems;
+  const QVector<QgsDataItem *> &items = p ? p->children() : mRootItems;
   QgsDataItem *item = items.value( row, nullptr );
   return item ? createIndex( row, column, item ) : QModelIndex();
 }
@@ -356,7 +350,7 @@ QModelIndex QgsBrowserModel::parent( const QModelIndex &index ) const
 
 QModelIndex QgsBrowserModel::findItem( QgsDataItem *item, QgsDataItem *parent ) const
 {
-  const QVector<QgsDataItem*> &items = parent ? parent->children() : mRootItems;
+  const QVector<QgsDataItem *> &items = parent ? parent->children() : mRootItems;
 
   for ( int i = 0; i < items.size(); i++ )
   {
@@ -399,7 +393,7 @@ void QgsBrowserModel::endRemoveItems()
   QgsDebugMsgLevel( "Entered", 3 );
   endRemoveRows();
 }
-void QgsBrowserModel::itemDataChanged( QgsDataItem * item )
+void QgsBrowserModel::itemDataChanged( QgsDataItem *item )
 {
   QgsDebugMsgLevel( "Entered", 3 );
   QModelIndex idx = findItem( item );
@@ -407,7 +401,7 @@ void QgsBrowserModel::itemDataChanged( QgsDataItem * item )
     return;
   emit dataChanged( idx, idx );
 }
-void QgsBrowserModel::itemStateChanged( QgsDataItem * item, QgsDataItem::State oldState )
+void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState )
 {
   if ( !item )
     return;
@@ -417,20 +411,20 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem * item, QgsDataItem::State o
   QgsDebugMsg( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ) );
   emit stateChanged( idx, oldState );
 }
-void QgsBrowserModel::connectItem( QgsDataItem* item )
+void QgsBrowserModel::connectItem( QgsDataItem *item )
 {
-  connect( item, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
-           this, SLOT( beginInsertItems( QgsDataItem*, int, int ) ) );
+  connect( item, SIGNAL( beginInsertItems( QgsDataItem *, int, int ) ),
+           this, SLOT( beginInsertItems( QgsDataItem *, int, int ) ) );
   connect( item, SIGNAL( endInsertItems() ),
            this, SLOT( endInsertItems() ) );
-  connect( item, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
-           this, SLOT( beginRemoveItems( QgsDataItem*, int, int ) ) );
+  connect( item, SIGNAL( beginRemoveItems( QgsDataItem *, int, int ) ),
+           this, SLOT( beginRemoveItems( QgsDataItem *, int, int ) ) );
   connect( item, SIGNAL( endRemoveItems() ),
            this, SLOT( endRemoveItems() ) );
-  connect( item, SIGNAL( dataChanged( QgsDataItem* ) ),
-           this, SLOT( itemDataChanged( QgsDataItem* ) ) );
-  connect( item, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
-           this, SLOT( itemStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
+  connect( item, SIGNAL( dataChanged( QgsDataItem * ) ),
+           this, SLOT( itemDataChanged( QgsDataItem * ) ) );
+  connect( item, SIGNAL( stateChanged( QgsDataItem *, QgsDataItem::State ) ),
+           this, SLOT( itemStateChanged( QgsDataItem *, QgsDataItem::State ) ) );
 }
 
 QStringList QgsBrowserModel::mimeTypes() const
@@ -438,18 +432,18 @@ QStringList QgsBrowserModel::mimeTypes() const
   QStringList types;
   // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
   // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
-  types << "application/x-vnd.qgis.qgis.uri";
+  types << QStringLiteral( "application/x-vnd.qgis.qgis.uri" );
   return types;
 }
 
-QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() )
     {
-      QgsDataItem* ptr = reinterpret_cast< QgsDataItem* >( index.internalPointer() );
+      QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
       if ( ptr->type() == QgsDataItem::Project )
       {
         QMimeData *mimeData = new QMimeData();
@@ -468,12 +462,12 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
   return QgsMimeDataUtils::encodeUriList( lst );
 }
 
-bool QgsBrowserModel::dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
+bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( row );
   Q_UNUSED( column );
 
-  QgsDataItem* destItem = dataItem( parent );
+  QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
     QgsDebugMsg( "DROP PROBLEM!" );
@@ -486,22 +480,22 @@ bool QgsBrowserModel::dropMimeData( const QMimeData * data, Qt::DropAction actio
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
 {
   void *v = idx.internalPointer();
-  QgsDataItem *d = reinterpret_cast<QgsDataItem*>( v );
+  QgsDataItem *d = reinterpret_cast<QgsDataItem *>( v );
   Q_ASSERT( !v || d );
   return d;
 }
 
-bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
+bool QgsBrowserModel::canFetchMore( const QModelIndex &parent ) const
 {
-  QgsDataItem* item = dataItem( parent );
+  QgsDataItem *item = dataItem( parent );
   // if ( item )
   //   QgsDebugMsg( QString( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
   return ( item && item->state() == QgsDataItem::NotPopulated );
 }
 
-void QgsBrowserModel::fetchMore( const QModelIndex & parent )
+void QgsBrowserModel::fetchMore( const QModelIndex &parent )
 {
-  QgsDataItem* item = dataItem( parent );
+  QgsDataItem *item = dataItem( parent );
 
   if ( !item || item->state() == QgsDataItem::Populating || item->state() == QgsDataItem::Populated )
     return;
@@ -512,16 +506,16 @@ void QgsBrowserModel::fetchMore( const QModelIndex & parent )
 }
 
 /* Refresh dir path */
-void QgsBrowserModel::refresh( const QString& path )
+void QgsBrowserModel::refresh( const QString &path )
 {
   QModelIndex index = findPath( path );
   refresh( index );
 }
 
 /* Refresh item */
-void QgsBrowserModel::refresh( const QModelIndex& theIndex )
+void QgsBrowserModel::refresh( const QModelIndex &index )
 {
-  QgsDataItem *item = dataItem( theIndex );
+  QgsDataItem *item = dataItem( index );
   if ( !item || item->state() == QgsDataItem::Populating )
     return;
 
@@ -530,25 +524,25 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavouriteDirectory( const QString& favDir )
+void QgsBrowserModel::addFavoriteDirectory( const QString &directory )
 {
-  Q_ASSERT( mFavourites );
-  mFavourites->addDirectory( favDir );
+  Q_ASSERT( mFavorites );
+  mFavorites->addDirectory( directory );
 }
 
-void QgsBrowserModel::removeFavourite( const QModelIndex &index )
+void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 {
   QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
   if ( !item )
     return;
 
-  mFavourites->removeDirectory( item );
+  mFavorites->removeDirectory( item );
 }
 
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
-  QSettings settings;
-  QStringList hiddenItems = settings.value( "/browser/hiddenPaths",
+  QgsSettings settings;
+  QStringList hiddenItems = settings.value( QStringLiteral( "/browser/hiddenPaths" ),
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
@@ -559,7 +553,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( "/browser/hiddenPaths", hiddenItems );
+  settings.setValue( QStringLiteral( "/browser/hiddenPaths" ), hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );

@@ -22,7 +22,8 @@ from qgis.core import (QgsComposerMap,
                        QgsComposition,
                        QgsMapSettings,
                        QgsCoordinateReferenceSystem,
-                       QgsFontUtils
+                       QgsFontUtils,
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -42,8 +43,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mMapSettings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem(32633)
         self.mMapSettings.setDestinationCrs(crs)
-        self.mMapSettings.setCrsTransformEnabled(False)
-        self.mComposition = QgsComposition(self.mMapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)

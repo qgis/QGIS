@@ -136,7 +136,7 @@ void QwtPolarCanvas::setPaintAttribute( PaintAttribute attribute, bool on )
 }
 
 /*!
-  Test wether a paint attribute is enabled
+  Test whether a paint attribute is enabled
 
   \param attribute Paint attribute
   \return true if the attribute is enabled

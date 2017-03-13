@@ -23,6 +23,7 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QMap>
 #include <QPointF>
@@ -32,7 +33,8 @@
 
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
-#include "qgsfield.h"
+#include "qgsfields.h"
+#include "qgspropertycollection.h"
 
 class QPainter;
 class QSize;
@@ -40,7 +42,6 @@ class QPolygonF;
 
 class QgsDxfExport;
 class QgsExpression;
-class QgsDataDefined;
 class QgsRenderContext;
 class QgsPaintEffect;
 
@@ -51,28 +52,108 @@ class CORE_EXPORT QgsSymbolLayer
 {
   public:
 
+    /**
+     * Data definable properties.
+     * @note added in QGIS 3.0
+     */
+    enum Property
+    {
+      PropertySize = 0, //!< Symbol size
+      PropertyAngle, //!< Symbol angle
+      PropertyName, //!< Name, eg shape name for simple markers
+      PropertyFillColor, //!< Fill color
+      PropertyStrokeColor, //!< Stroke color
+      PropertyStrokeWidth, //!< Stroke width
+      PropertyStrokeStyle, //!< Stroke style (eg solid, dashed)
+      PropertyOffset, //!< Symbol offset
+      PropertyCharacter, //!< Character, eg for font marker symbol layers
+      PropertyWidth, //!< Symbol width
+      PropertyHeight, //!< Symbol height
+      PropertyFillStyle, //!< Fill style (eg solid, dots)
+      PropertyJoinStyle, //!< Line join style
+      PropertySecondaryColor, //!< Secondary color (eg for gradient fills)
+      PropertyLineAngle, //!< Line angle
+      PropertyLineDistance, //!< Distance between lines
+      PropertyGradientType, //!< Gradient fill type
+      PropertyCoordinateMode, //!< Gradient coordinate mode
+      PropertyGradientSpread, //!< Gradient spread mode
+      PropertyGradientReference1X, //!< Gradient reference point 1 x
+      PropertyGradientReference1Y, //!< Gradient reference point 1 y
+      PropertyGradientReference2X, //!< Gradient reference point 2 x
+      PropertyGradientReference2Y, //!< Gradient reference point 2 y
+      PropertyGradientReference1IsCentroid, //!< Gradient reference point 1 is centroid
+      PropertyGradientReference2IsCentroid, //!< Gradient reference point 2 is centroid
+      PropertyBlurRadius, //!< Shapeburst blur radius
+      PropertyShapeburstUseWholeShape, //!< Shapeburst use whole shape
+      PropertyShapeburstMaxDistance, //!< Shapeburst fill from edge distance
+      PropertyShapeburstIgnoreRings, //!< Shapeburst ignore rings
+      PropertyFile, //!< Filename, eg for svg files
+      PropertyDistanceX, //!< Horizontal distance between points
+      PropertyDistanceY, //!< Vertical distance between points
+      PropertyDisplacementX, //!< Horizontal displacement
+      PropertyDisplacementY, //!< Vertical displacement
+      PropertyAlpha, //!< Alpha (opacity)
+      PropertyCustomDash, //!< Custom dash pattern
+      PropertyCapStyle, //!< Line cap style
+      PropertyPlacement, //!< Line marker placement
+      PropertyInterval, //!< Line marker interval
+      PropertyOffsetAlongLine, //!< Offset along line
+      PropertyHorizontalAnchor, //!< Horizontal anchor point
+      PropertyVerticalAnchor, //!< Vertical anchor point
+      PropertyLayerEnabled, //!< Whether symbol layer is enabled
+      PropertyArrowWidth, //!< Arrow tail width
+      PropertyArrowStartWidth, //!< Arrow tail start width
+      PropertyArrowHeadLength, //!< Arrow head length
+      PropertyArrowHeadThickness, //!< Arrow head thickness
+      PropertyArrowHeadType, //!< Arrow head type
+      PropertyArrowType, //!< Arrow type
+    };
+
+    /**
+     * Returns the symbol layer property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition &propertyDefinitions();
+
     virtual ~QgsSymbolLayer();
+
+    /**
+     * Returns true if symbol layer is enabled and will be drawn.
+     * @note added in QGIS 3.0
+     * @see setEnabled()
+     */
+    bool enabled() const { return mEnabled; }
+
+    /**
+     * Sets whether symbol layer is enabled and should be drawn. Disabled
+     * layers are not drawn, but remain part of the symbol and can be re-enabled
+     * when desired.
+     * @note added in QGIS 3.0
+     * @see enabled()
+     */
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     /**
      * The fill color.
      */
     virtual QColor color() const { return mColor; }
+
     /**
      * The fill color.
      */
-    virtual void setColor( const QColor& color ) { mColor = color; }
+    virtual void setColor( const QColor &color ) { mColor = color; }
 
-    /** Set outline color. Supported by marker and fill layers.
+    /** Set stroke color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual void setOutlineColor( const QColor& color ) { Q_UNUSED( color ); }
+    virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ); }
 
-    /** Get outline color. Supported by marker and fill layers.
+    /** Get stroke color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual QColor outlineColor() const { return QColor(); }
+    virtual QColor strokeColor() const { return QColor(); }
 
     /** Set fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual void setFillColor( const QColor& color ) { Q_UNUSED( color ); }
+    virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /** Get fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
@@ -84,16 +165,16 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QString layerType() const = 0;
 
-    virtual void startRender( QgsSymbolRenderContext& context ) = 0;
-    virtual void stopRender( QgsSymbolRenderContext& context ) = 0;
+    virtual void startRender( QgsSymbolRenderContext &context ) = 0;
+    virtual void stopRender( QgsSymbolRenderContext &context ) = 0;
 
     /**
      * Shall be reimplemented by subclasses to create a deep copy of the instance.
      */
-    virtual QgsSymbolLayer* clone() const = 0;
+    virtual QgsSymbolLayer *clone() const = 0;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ); Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
@@ -104,28 +185,29 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsStringMap properties() const = 0;
 
-    virtual void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) = 0;
+    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
 
-    virtual QgsSymbol* subSymbol() { return nullptr; }
+    virtual QgsSymbol *subSymbol() { return nullptr; }
     //! set layer's subsymbol. takes ownership of the passed symbol
-    virtual bool setSubSymbol( QgsSymbol* symbol ) { delete symbol; return false; }
+    virtual bool setSubSymbol( QgsSymbol *symbol ) { delete symbol; return false; }
 
     QgsSymbol::SymbolType type() const { return mType; }
 
     //! Returns if the layer can be used below the specified symbol
-    virtual bool isCompatibleWithSymbol( QgsSymbol* symbol ) const;
+    virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
 
     /** Returns the estimated maximum distance which the layer style will bleed outside
-      the drawn shape. Eg, polygons drawn with an outline will draw half the width
-      of the outline outside of the polygon. This amount is estimated, since it may
+      the drawn shape when drawn in the specified /a context. For example, polygons
+      drawn with an stroke will draw half the width
+      of the stroke outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
-    virtual double estimateMaxBleed() const { return 0; }
+    virtual double estimateMaxBleed( const QgsRenderContext &context ) const { Q_UNUSED( context ); return 0; }
 
     /** Sets the units to use for sizes and widths within the symbol layer. Individual
-     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
      * @param unit output units
@@ -134,7 +216,7 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit ) { Q_UNUSED( unit ); }
 
     /** Returns the units to use for sizes and widths within the symbol layer. Individual
-     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
      * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
@@ -142,7 +224,7 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsUnitTypes::RenderUnit outputUnit() const { return QgsUnitTypes::RenderUnknownUnit; }
 
-    virtual void setMapUnitScale( const QgsMapUnitScale& scale ) { Q_UNUSED( scale ); }
+    virtual void setMapUnitScale( const QgsMapUnitScale &scale ) { Q_UNUSED( scale ); }
     virtual QgsMapUnitScale mapUnitScale() const { return QgsMapUnitScale(); }
 
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
@@ -152,98 +234,39 @@ class CORE_EXPORT QgsSymbolLayer
     /** Returns the set of attributes referenced by the layer. This includes attributes
      * required by any data defined properties associated with the layer.
      */
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    /** Returns the data defined property corresponding to the specified property key
-     * @param property property key
-     * @returns matching data defined property if it exists
-     * @note added in QGIS 2.9
-     * @see setDataDefinedProperty
-     * @see hasDataDefinedProperty
-     * @see evaluateDataDefinedProperty
-     */
-    virtual QgsDataDefined* getDataDefinedProperty( const QString& property ) const;
-
-    /** Sets a data defined property for the layer.
-     * @param property unique property key. Any existing data defined with the same key will be deleted and overridden.
-     * @param dataDefined data defined object to associate with property key. Ownership is transferred to the layer.
-     * @note added in QGIS 2.9
+    /** Sets a data defined property for the layer. Any existing property with the same key
+     * will be overwritten.
+     * @note added in QGIS 3.0
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
      */
-    virtual void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined );
-
-    /** Removes a data defined property from the layer.
-     * @param property unique property key. If an associated QgsDataDefined object exists,
-     * it will be deleted and removed from the layer.
-     * @note added in QGIS 2.9
-     * @see setDataDefinedProperty
-     * @see removeDataDefinedProperties
-     */
-    virtual void removeDataDefinedProperty( const QString& property );
-
-    /** Removes all data defined properties from the layer and deletes associated
-     * objects.
-     * @see removeDataDefinedProperty
-     * @note added in QGIS 2.9
-     */
-    virtual void removeDataDefinedProperties();
-
-    /** Checks whether the layer has any associated data defined properties.
-     * @returns true if layer has data defined properties
-     * @see hasDataDefinedProperty
-     */
-    virtual bool hasDataDefinedProperties() const;
-
-    /** Checks whether the layer has a matching data defined property and if
-     * that property is currently actived.
-     * @param property property key
-     * @returns true if data defined property exists and is active
-     * @see hasDataDefinedProperties
-     * @see evaluateDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.9
-     */
-    virtual bool hasDataDefinedProperty( const QString& property ) const;
-
-    /** Evaluates the matching data defined property and returns the calculated
-     * value. Prior to evaluation the data defined property must be prepared
-     * by calling @link prepareExpressions @endlink.
-     * @param property property key
-     * @param context symbol render context
-     * @param defaultVal default value to return if evaluation was not successful
-     * @param ok if specified, will be set to true if evaluation was successful
-     * @returns calculated value for data defined property, or default value
-     * if property does not exist or is deactived.
-     * @see hasDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.12
-     */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolRenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = nullptr ) const;
+    virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
 
     //! write as DXF
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
     //! get line width
-    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
+    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
     //! get offset
-    virtual double dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
     //! get color
-    virtual QColor dxfColor( QgsSymbolRenderContext& context ) const;
+    virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 
     //! get angle
-    virtual double dxfAngle( QgsSymbolRenderContext& context ) const;
+    virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 
     //! get dash pattern
-    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const;
+    virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
 
     //! get pen style
     virtual Qt::PenStyle dxfPenStyle() const;
 
     //! get brush/fill color
-    virtual QColor dxfBrushColor( QgsSymbolRenderContext& context ) const;
+    virtual QColor dxfBrushColor( QgsSymbolRenderContext &context ) const;
 
     //! get brush/fill style
     virtual Qt::BrushStyle dxfBrushStyle() const;
@@ -253,121 +276,89 @@ class CORE_EXPORT QgsSymbolLayer
      * @note added in QGIS 2.9
      * @see setPaintEffect
      */
-    QgsPaintEffect* paintEffect() const;
+    QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the layer.
      * @param effect paint effect. Ownership is transferred to the layer.
      * @note added in QGIS 2.9
      * @see paintEffect
      */
-    void setPaintEffect( QgsPaintEffect* effect );
-
-  protected:
-    QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
-
-    QgsSymbol::SymbolType mType;
-    bool mLocked;
-    QColor mColor;
-    int mRenderingPass;
-
-    QMap< QString, QgsDataDefined* > mDataDefinedProperties;
-    QgsPaintEffect* mPaintEffect;
-    QgsFields mFields;
-
-    // Configuration of selected symbology implementation
-    static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
-    static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
-    static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
+    void setPaintEffect( QgsPaintEffect *effect );
 
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
      * @param context symbol render context
      * @note added in QGIS 2.12
      */
-    virtual void prepareExpressions( const QgsSymbolRenderContext& context );
+    virtual void prepareExpressions( const QgsSymbolRenderContext &context );
 
-    /** Saves all data defined properties to a string map.
-     * @param stringMap destination string map
-     * @see restoreDataDefinedProperties
+    /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
-    /** Restores all data defined properties from string map.
-     * @param stringMap source string map
-     * @note added in QGIS 2.9
-     * @see saveDataDefinedProperties
+    /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    void restoreDataDefinedProperties( const QgsStringMap& stringMap );
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+
+    /** Sets the symbol layer's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see properties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+  protected:
+
+    QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
+
+    QgsSymbol::SymbolType mType;
+
+    //! True if layer is enabled and should be drawn
+    bool mEnabled;
+
+    bool mLocked;
+    QColor mColor;
+    int mRenderingPass;
+
+    QgsPropertyCollection mDataDefinedProperties;
+
+    QgsPaintEffect *mPaintEffect = nullptr;
+    QgsFields mFields;
+
+    // Configuration of selected symbology implementation
+    //! Whether styles for selected features ignore symbol alpha
+    static const bool SELECTION_IS_OPAQUE = true;
+    //! Whether fill styles for selected features also highlight symbol stroke
+    static const bool SELECT_FILL_BORDER = false;
+    //! Whether fill styles for selected features uses symbol layer style
+    static const bool SELECT_FILL_STYLE = false;
+
+    /** Restores older data defined properties from string map.
+     * @note added in QGIS 3.0
+     */
+    void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
 
     /** Copies all data defined properties of this layer to another symbol layer.
      * @param destLayer destination layer
      */
-    void copyDataDefinedProperties( QgsSymbolLayer* destLayer ) const;
+    void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
 
     /** Copies paint effect of this layer to another symbol layer
      * @param destLayer destination layer
      * @note added in QGIS 2.9
      */
-    void copyPaintEffect( QgsSymbolLayer* destLayer ) const;
+    void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
-    static const QString EXPR_SIZE;
-    static const QString EXPR_ANGLE;
-    static const QString EXPR_NAME;
-    static const QString EXPR_COLOR;
-    static const QString EXPR_COLOR_BORDER;
-    static const QString EXPR_OUTLINE_WIDTH;
-    static const QString EXPR_OUTLINE_STYLE;
-    static const QString EXPR_FILL;
-    static const QString EXPR_OUTLINE;
-    static const QString EXPR_OFFSET;
-    static const QString EXPR_CHAR;
-    static const QString EXPR_FILL_COLOR;
-    static const QString EXPR_OUTLINE_COLOR;
-    static const QString EXPR_WIDTH;
-    static const QString EXPR_HEIGHT;
-    static const QString EXPR_SYMBOL_NAME;
-    static const QString EXPR_ROTATION;
-    static const QString EXPR_FILL_STYLE;
-    static const QString EXPR_WIDTH_BORDER;
-    static const QString EXPR_BORDER_STYLE;
-    static const QString EXPR_JOIN_STYLE;
-    static const QString EXPR_BORDER_COLOR;
-    static const QString EXPR_COLOR2;
-    static const QString EXPR_LINEANGLE;
-    static const QString EXPR_GRADIENT_TYPE;
-    static const QString EXPR_COORDINATE_MODE;
-    static const QString EXPR_SPREAD;
-    static const QString EXPR_REFERENCE1_X;
-    static const QString EXPR_REFERENCE1_Y;
-    static const QString EXPR_REFERENCE2_X;
-    static const QString EXPR_REFERENCE2_Y;
-    static const QString EXPR_REFERENCE1_ISCENTROID;
-    static const QString EXPR_REFERENCE2_ISCENTROID;
-    static const QString EXPR_BLUR_RADIUS;
-    static const QString EXPR_DISTANCE;
-    static const QString EXPR_USE_WHOLE_SHAPE;
-    static const QString EXPR_MAX_DISTANCE;
-    static const QString EXPR_IGNORE_RINGS;
-    static const QString EXPR_SVG_FILE;
-    static const QString EXPR_SVG_FILL_COLOR;
-    static const QString EXPR_SVG_OUTLINE_COLOR;
-    static const QString EXPR_SVG_OUTLINE_WIDTH;
-    static const QString EXPR_LINEWIDTH;
-    static const QString EXPR_DISTANCE_X;
-    static const QString EXPR_DISTANCE_Y;
-    static const QString EXPR_DISPLACEMENT_X;
-    static const QString EXPR_DISPLACEMENT_Y;
-    static const QString EXPR_FILE;
-    static const QString EXPR_ALPHA;
-    static const QString EXPR_CUSTOMDASH;
-    static const QString EXPR_LINE_STYLE;
-    static const QString EXPR_JOINSTYLE; //near duplicate is required to maintain project compatibility
-    static const QString EXPR_CAPSTYLE;
-    static const QString EXPR_PLACEMENT;
-    static const QString EXPR_INTERVAL;
-    static const QString EXPR_OFFSET_ALONG_LINE;
-    static const QString EXPR_HORIZONTAL_ANCHOR_POINT;
-    static const QString EXPR_VERTICAL_ANCHOR_POINT;
+  private:
+    static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
+
 };
 
 //////////////////////
@@ -383,29 +374,29 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Symbol horizontal anchor points
     enum HorizontalAnchorPoint
     {
-      Left, /*!< Align to left side of symbol */
-      HCenter, /*!< Align to horizontal center of symbol */
-      Right, /*!< Align to right side of symbol */
+      Left, //!< Align to left side of symbol
+      HCenter, //!< Align to horizontal center of symbol
+      Right, //!< Align to right side of symbol
     };
 
     //! Symbol vertical anchor points
     enum VerticalAnchorPoint
     {
-      Top, /*!< Align to top of symbol */
-      VCenter, /*!< Align to vertical center of symbol */
-      Bottom, /*!< Align to bottom of symbol */
+      Top, //!< Align to top of symbol
+      VCenter, //!< Align to vertical center of symbol
+      Bottom, //!< Align to bottom of symbol
     };
 
-    void startRender( QgsSymbolRenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext &context ) override;
 
     /** Renders a marker at the specified point. Derived classes must implement this to
      * handle drawing the point.
      * @param point position at which to render point, in painter units
      * @param context symbol render context
      */
-    virtual void renderPoint( QPointF point, QgsSymbolRenderContext& context ) = 0;
+    virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context ) = 0;
 
-    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     /** Sets the rotation angle for the marker.
      * @param angle angle in degrees clockwise from north.
@@ -465,14 +456,14 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @see setSize()
      * @see setSizeUnit()
      */
-    void setSizeMapUnitScale( const QgsMapUnitScale& scale ) { mSizeMapUnitScale = scale; }
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale ) { mSizeMapUnitScale = scale; }
 
     /** Returns the map unit scale for the symbol's size.
      * @see setSizeMapUnitScale()
      * @see size()
      * @see sizeUnit()
      */
-    const QgsMapUnitScale& sizeMapUnitScale() const { return mSizeMapUnitScale; }
+    const QgsMapUnitScale &sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
     /** Sets the method to use for scaling the marker's size.
      * @param scaleMethod scale method
@@ -523,14 +514,14 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @see setOffset()
      * @see setOffsetUnit()
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
     /** Returns the map unit scale for the symbol's offset.
      * @see setOffsetMapUnitScale()
      * @see offset()
      * @see offsetUnit()
      */
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     /** Sets the horizontal anchor point for positioning the symbol.
      * @param h anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
@@ -562,19 +553,19 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
     /** Writes the symbol layer definition as a SLD XML element.
      * @param doc XML document
      * @param element parent XML element
      * @param props symbol layer definition (see properties())
      */
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
-    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
     /** Returns the approximate bounding box of the marker symbol layer, taking into account
@@ -582,7 +573,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @returns approximate symbol bounds, in painter units
      * @note added in QGIS 2.14
      */
-    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) = 0;
+    virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 
   protected:
 
@@ -597,7 +588,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @param offsetX will be set to required horizontal offset (in painter units)
      * @param offsetY will be set to required vertical offset (in painter units)
      */
-    void markerOffset( QgsSymbolRenderContext& context, double& offsetX, double& offsetY ) const;
+    void markerOffset( QgsSymbolRenderContext &context, double &offsetX, double &offsetY ) const;
 
     /** Calculates the required marker offset, including both the symbol offset
      * and any displacement required to align with the marker's anchor point.
@@ -608,12 +599,12 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * @param offsetY will be set to required vertical offset (in painter units)
      * @note available in python as markerOffsetWithWidthAndHeight
      */
-    void markerOffset( QgsSymbolRenderContext& context, double width, double height, double& offsetX, double& offsetY ) const;
+    void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const;
 
     //! @note available in python bindings as markerOffset2
-    void markerOffset( QgsSymbolRenderContext& context, double width, double height,
+    void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        QgsUnitTypes::RenderUnit widthUnit, QgsUnitTypes::RenderUnit heightUnit,
-                       double& offsetX, double& offsetY,
+                       double &offsetX, double &offsetY,
                        const QgsMapUnitScale &widthMapUnitScale, const QgsMapUnitScale &heightMapUnitScale ) const;
 
     /** Adjusts a marker offset to account for rotation.
@@ -647,8 +638,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     VerticalAnchorPoint mVerticalAnchorPoint;
 
   private:
-    static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
-    static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
+    static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
+    static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
 };
 
 /** \ingroup core
@@ -657,9 +648,9 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 {
   public:
-    virtual void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) = 0;
+    virtual void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) = 0;
 
-    virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    virtual void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     virtual void setWidth( double width ) { mWidth = width; }
     virtual double width() const { return mWidth; }
@@ -678,8 +669,8 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     */
     QgsUnitTypes::RenderUnit widthUnit() const { return mWidthUnit; }
 
-    void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
+    void setWidthMapUnitScale( const QgsMapUnitScale &scale ) { mWidthMapUnitScale = scale; }
+    const QgsMapUnitScale &widthMapUnitScale() const { return mWidthMapUnitScale; }
 
     /** Sets the units for the line's offset.
      * @param unit offset units
@@ -692,18 +683,18 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     */
     QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
+    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
+    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
 
   protected:
     QgsLineSymbolLayer( bool locked = false );
@@ -722,17 +713,17 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 {
   public:
-    virtual void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) = 0;
+    virtual void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) = 0;
 
-    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
 
   protected:
     QgsFillSymbolLayer( bool locked = false );
-    /** Default method to render polygon*/
-    void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    //! Default method to render polygon
+    void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
     double mAngle;
 };

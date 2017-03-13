@@ -12,10 +12,10 @@ class QgsRasterDrawer
     /** Draws raster data.
      * @param p destination QPainter
      * @param viewPort viewport to render
-     * @param theQgsMapToPixel map to pixel convertor
-     * @param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
+     * @param qgsMapToPixel map to pixel converter
+     * @param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback = nullptr );
+    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* qgsMapToPixel, QgsRasterBlockFeedback* feedback = nullptr );
 
   protected:
     /** Draws raster part

@@ -23,6 +23,9 @@
  ****************************************************************************/
 
 #include <QVariant>
+
+#include "qgis_core.h"
+
 class QString;
 
 /** \ingroup core
@@ -147,13 +150,13 @@ class CORE_EXPORT QgsInterval
      */
     void setValid( bool valid ) { mValid = valid; }
 
-    bool operator==( const QgsInterval& other ) const;
+    bool operator==( QgsInterval other ) const;
 
     /** Converts a string to an interval
      * @param string string to parse
      * @returns interval, or invalid interval if string could not be parsed
      */
-    static QgsInterval fromString( const QString& string );
+    static QgsInterval fromString( const QString &string );
 
     //! Allows direct construction of QVariants from intervals.
     operator QVariant() const
@@ -178,7 +181,7 @@ Q_DECLARE_METATYPE( QgsInterval )
  * @note added in QGIS 2.16
  * @note not available in Python bindings
  */
-QgsInterval CORE_EXPORT operator-( const QDateTime& datetime1, const QDateTime& datetime2 );
+QgsInterval CORE_EXPORT operator-( const QDateTime &datetime1, const QDateTime &datetime2 );
 
 /** Returns the interval between two dates.
  * @param date1 start date
@@ -186,7 +189,7 @@ QgsInterval CORE_EXPORT operator-( const QDateTime& datetime1, const QDateTime& 
  * @note added in QGIS 2.16
  * @note not available in Python bindings
  */
-QgsInterval CORE_EXPORT operator-( const QDate& date1, const QDate& date2 );
+QgsInterval CORE_EXPORT operator-( QDate date1, QDate date2 );
 
 /** Returns the interval between two times.
  * @param time1 start time
@@ -194,7 +197,7 @@ QgsInterval CORE_EXPORT operator-( const QDate& date1, const QDate& date2 );
  * @note added in QGIS 2.16
  * @note not available in Python bindings
  */
-QgsInterval CORE_EXPORT operator-( const QTime& time1, const QTime& time2 );
+QgsInterval CORE_EXPORT operator-( QTime time1, QTime time2 );
 
 /** Adds an interval to a datetime
  * @param start initial datetime
@@ -202,9 +205,9 @@ QgsInterval CORE_EXPORT operator-( const QTime& time1, const QTime& time2 );
  * @note added in QGIS 2.16
  * @note not available in Python bindings
  */
-QDateTime CORE_EXPORT operator+( const QDateTime& start, const QgsInterval& interval );
+QDateTime CORE_EXPORT operator+( const QDateTime &start, const QgsInterval &interval );
 
 //! Debug string representation of interval
-QDebug operator<<( QDebug dbg, const QgsInterval& interval );
+QDebug operator<<( QDebug dbg, const QgsInterval &interval );
 \
 #endif // QGSINTERVAL_H

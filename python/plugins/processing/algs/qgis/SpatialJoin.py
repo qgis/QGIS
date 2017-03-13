@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import zip
+from builtins import range
 
 __author__ = 'Joshua Arnott'
 __date__ = 'October 2013'
@@ -30,11 +33,10 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes
+from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, NULL, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
@@ -61,6 +63,15 @@ class SpatialJoin(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
+        self.predicates = (
+            ('intersects', self.tr('intersects')),
+            ('contains', self.tr('contains')),
+            ('equals', self.tr('equals')),
+            ('touches', self.tr('touches')),
+            ('overlaps', self.tr('overlaps')),
+            ('within', self.tr('within')),
+            ('crosses', self.tr('crosses')))
+
         self.summarys = [
             self.tr('Take attributes of the first located feature'),
             self.tr('Take summary of intersecting features')
@@ -75,12 +86,10 @@ class SpatialJoin(GeoAlgorithm):
                                           self.tr('Target vector layer')))
         self.addParameter(ParameterVector(self.JOIN,
                                           self.tr('Join vector layer')))
-        predicates = list(ParameterGeometryPredicate.predicates)
-        predicates.remove('disjoint')
-        self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
-                                                     self.tr('Geometric predicate'),
-                                                     left=self.TARGET, right=self.JOIN,
-                                                     enabledPredicates=predicates))
+        self.addParameter(ParameterSelection(self.PREDICATE,
+                                             self.tr('Geometric predicate'),
+                                             self.predicates,
+                                             multiple=True))
         self.addParameter(ParameterNumber(self.PRECISION,
                                           self.tr('Precision'),
                                           0.0, None, 0.0))
@@ -93,7 +102,7 @@ class SpatialJoin(GeoAlgorithm):
                                              self.tr('Joined table'), self.keeps))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         target = dataobjects.getObjectFromUri(
             self.getParameterValue(self.TARGET))
         join = dataobjects.getObjectFromUri(
@@ -113,26 +122,26 @@ class SpatialJoin(GeoAlgorithm):
 
         if not summary:
             joinFields = vector.testForUniqueness(targetFields, joinFields)
-            seq = range(len(targetFields) + len(joinFields))
+            seq = list(range(len(targetFields) + len(joinFields)))
             targetFields.extend(joinFields)
-            targetFields = dict(zip(seq, targetFields))
+            targetFields = dict(list(zip(seq, targetFields)))
         else:
             numFields = {}
-            for j in xrange(len(joinFields)):
+            for j in range(len(joinFields)):
                 if joinFields[j].type() in [QVariant.Int, QVariant.Double, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]:
                     numFields[j] = []
                     for i in sumList:
-                        field = QgsField(i + unicode(joinFields[j].name()), QVariant.Double, '', 24, 16)
+                        field = QgsField(i + str(joinFields[j].name()), QVariant.Double, '', 24, 16)
                         fieldList.append(field)
             field = QgsField('count', QVariant.Double, '', 24, 16)
             fieldList.append(field)
             joinFields = vector.testForUniqueness(targetFields, fieldList)
             targetFields.extend(fieldList)
-            seq = range(len(targetFields))
-            targetFields = dict(zip(seq, targetFields))
+            seq = list(range(len(targetFields)))
+            targetFields = dict(list(zip(seq, targetFields)))
 
         fields = QgsFields()
-        for f in targetFields.values():
+        for f in list(targetFields.values()):
             fields.append(f)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
@@ -171,20 +180,7 @@ class SpatialJoin(GeoAlgorithm):
 
                     res = False
                     for predicate in predicates:
-                        if predicate == 'intersects':
-                            res = inGeom.intersects(inGeomB)
-                        elif predicate == 'contains':
-                            res = inGeom.contains(inGeomB)
-                        elif predicate == 'equals':
-                            res = inGeom.equals(inGeomB)
-                        elif predicate == 'touches':
-                            res = inGeom.touches(inGeomB)
-                        elif predicate == 'overlaps':
-                            res = inGeom.overlaps(inGeomB)
-                        elif predicate == 'within':
-                            res = inGeom.within(inGeomB)
-                        elif predicate == 'crosses':
-                            res = inGeom.crosses(inGeomB)
+                        res = getattr(inGeom, predicate)(inGeomB)
                         if res:
                             break
 
@@ -196,15 +192,15 @@ class SpatialJoin(GeoAlgorithm):
                             atMap = atMap1
                             atMap2 = atMap2
                             atMap.extend(atMap2)
-                            atMap = dict(zip(seq, atMap))
+                            atMap = dict(list(zip(seq, atMap)))
                             break
                         else:
-                            for j in numFields.keys():
+                            for j in list(numFields.keys()):
                                 numFields[j].append(atMap2[j])
 
                 if summary and not none:
                     atMap = atMap1
-                    for j in numFields.keys():
+                    for j in list(numFields.keys()):
                         for k in sumList:
                             if k == 'sum':
                                 atMap.append(sum(self._filterNull(numFields[j])))
@@ -229,11 +225,11 @@ class SpatialJoin(GeoAlgorithm):
 
                         numFields[j] = []
                     atMap.append(count)
-                    atMap = dict(zip(seq, atMap))
+                    atMap = dict(list(zip(seq, atMap)))
             if none:
                 outFeat.setAttributes(atMap1)
             else:
-                outFeat.setAttributes(atMap.values())
+                outFeat.setAttributes(list(atMap.values()))
 
             if keep:
                 writer.addFeature(outFeat)
@@ -241,7 +237,7 @@ class SpatialJoin(GeoAlgorithm):
                 if not none:
                     writer.addFeature(outFeat)
 
-            progress.setPercentage(int(c * total))
+            feedback.setProgress(int(c * total))
         del writer
 
     def _filterNull(self, values):

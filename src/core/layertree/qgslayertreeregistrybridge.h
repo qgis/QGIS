@@ -19,9 +19,12 @@
 #include <QObject>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsMapLayer;
+class QgsProject;
 
 
 /** \ingroup core
@@ -40,7 +43,8 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup* root, QObject *parent = nullptr );
+    //! Create the instance that synchronizes given project with a layer tree root
+    explicit QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool isEnabled() const { return mEnabled; }
@@ -50,30 +54,31 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
 
     //! Set where the new layers should be inserted - can be used to follow current selection.
     //! By default it is root group with zero index.
-    void setLayerInsertionPoint( QgsLayerTreeGroup* parentGroup, int index );
+    void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
 
   signals:
     //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
     //! @note added in 2.6
-    void addedLayersToLayerTree( const QList<QgsMapLayer*>& layers );
+    void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );
 
   protected slots:
-    void layersAdded( const QList<QgsMapLayer*>& layers );
-    void layersWillBeRemoved( const QStringList& layerIds );
+    void layersAdded( const QList<QgsMapLayer *> &layers );
+    void layersWillBeRemoved( const QStringList &layerIds );
 
-    void groupWillRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void groupWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void groupRemovedChildren();
 
-    void removeLayersFromRegistry( const QStringList& layerIds );
+    void removeLayersFromRegistry( const QStringList &layerIds );
 
   protected:
-    QgsLayerTreeGroup* mRoot;
+    QgsLayerTreeGroup *mRoot = nullptr;
+    QgsProject *mProject = nullptr;
     QStringList mLayerIdsForRemoval;
     bool mRegistryRemovingLayers;
     bool mEnabled;
     bool mNewLayersVisible;
 
-    QgsLayerTreeGroup* mInsertionPointGroup;
+    QgsLayerTreeGroup *mInsertionPointGroup = nullptr;
     int mInsertionPointIndex;
 };
 

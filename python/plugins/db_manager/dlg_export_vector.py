@@ -21,12 +21,13 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
-from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import QgsVectorFileWriter, QgsVectorDataProvider, QgsCoordinateReferenceSystem, QgsVectorLayerImport
+from qgis.core import QgsVectorFileWriter, QgsVectorDataProvider, QgsCoordinateReferenceSystem, QgsVectorLayerImport, QgsSettings
 
 from .ui.ui_DlgExportVector import Ui_DbManagerDlgExportVector as Ui_Dialog
 
@@ -68,11 +69,11 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
     def chooseOutputFile(self):
         # get last used dir
-        settings = QSettings()
+        settings = QgsSettings()
         lastUsedDir = settings.value(self.lastUsedVectorDirSettingsKey, ".")
 
         # get selected filter
-        selectedFilter = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
+        selectedFilter = self.cboFileFormat.currentData()
 
         # ask for a filename
         filename, filter = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
@@ -106,11 +107,11 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
     def populateFileFilters(self):
         # populate the combo with supported vector file formats
-        for name, filt in QgsVectorFileWriter.ogrDriverList().items():
+        for name, filt in list(QgsVectorFileWriter.ogrDriverList().items()):
             self.cboFileFormat.addItem(name, filt)
 
         # set the last used filter
-        settings = QSettings()
+        settings = QgsSettings()
         filt = settings.value(self.lastUsedVectorFilterSettingsKey, "ESRI Shapefile")
 
         idx = self.cboFileFormat.findText(filt)
@@ -151,7 +152,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             options = {}
 
             # set the OGR driver will be used
-            driverName = self.cboFileFormat.itemData(self.cboFileFormat.currentIndex())
+            driverName = self.cboFileFormat.currentData()
             options['driverName'] = driverName
 
             # set the output file encoding
@@ -162,7 +163,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             if self.chkDropTable.isChecked():
                 options['overwrite'] = True
 
-            outCrs = None
+            outCrs = QgsCoordinateReferenceSystem()
             if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
                 targetSrid = int(self.editTargetSrid.text())
                 outCrs = QgsCoordinateReferenceSystem(targetSrid)
@@ -178,7 +179,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
                                                            False, options)
         except Exception as e:
             ret = -1
-            errMsg = unicode(e)
+            errMsg = str(e)
 
         finally:
             # restore input layer crs and encoding
@@ -187,7 +188,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
             QApplication.restoreOverrideCursor()
 
         if ret != 0:
-            QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error %d\n%s") % (ret, errMsg))
+            QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error {0}\n{1}").format(ret, errMsg))
             return
 
         # create spatial index

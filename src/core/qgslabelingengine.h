@@ -16,6 +16,7 @@
 #ifndef QGSLABELINGENGINEV2_H
 #define QGSLABELINGENGINEV2_H
 
+#include "qgis_core.h"
 #include "qgsmapsettings.h"
 
 #include "qgspallabeling.h"
@@ -42,37 +43,40 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
   public:
     //! Construct the provider with default values
-    QgsAbstractLabelProvider( const QString& layerId = QString(), const QString& providerId = QString() );
-    //! Vritual destructor
-    virtual ~QgsAbstractLabelProvider() {}
+    QgsAbstractLabelProvider( QgsMapLayer *layer, const QString &providerId = QString() );
+
+    virtual ~QgsAbstractLabelProvider() = default;
 
     //! Associate provider with a labeling engine (should be only called internally from QgsLabelingEngine)
-    void setEngine( const QgsLabelingEngine* engine ) { mEngine = engine; }
+    void setEngine( const QgsLabelingEngine *engine ) { mEngine = engine; }
 
     enum Flag
     {
-      DrawLabels              = 1 << 1,  //!< whether the labels should be rendered
-      DrawAllLabels           = 1 << 2,  //!< whether all features will be labelled even though overlaps occur
-      MergeConnectedLines     = 1 << 3,  //!< whether adjacent lines (with the same label text) should be merged
-      CentroidMustBeInside    = 1 << 4,  //!< whether location of centroid must be inside of polygons
-      LabelPerFeaturePart     = 1 << 6,  //!< whether to label each part of multi-part features separately
+      DrawLabels              = 1 << 1,  //!< Whether the labels should be rendered
+      DrawAllLabels           = 1 << 2,  //!< Whether all features will be labelled even though overlaps occur
+      MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
+      CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
+      LabelPerFeaturePart     = 1 << 6,  //!< Whether to label each part of multi-part features separately
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Return list of label features (they are owned by the provider and thus deleted on its destruction)
-    virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) = 0;
+    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) = 0;
 
     //! draw this label at the position determined by the labeling engine
-    virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const = 0;
+    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const = 0;
 
     //! Return list of child providers - useful if the provider needs to put labels into more layers with different configuration
-    virtual QList<QgsAbstractLabelProvider*> subProviders() { return QList<QgsAbstractLabelProvider*>(); }
+    virtual QList<QgsAbstractLabelProvider *> subProviders() { return QList<QgsAbstractLabelProvider *>(); }
 
     //! Name of the layer (for statistics, debugging etc.) - does not need to be unique
     QString name() const { return mName; }
 
     //! Returns ID of associated layer, or empty string if no layer is associated with the provider.
     QString layerId() const { return mLayerId; }
+
+    //! Returns the associated layer, or nullptr if no layer is associated with the provider.
+    QgsMapLayer *layer() const { return mLayer.data(); }
 
     //! Returns provider ID - useful in case there is more than one label provider within a layer
     //! (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
@@ -99,12 +103,14 @@ class CORE_EXPORT QgsAbstractLabelProvider
 
   protected:
     //! Associated labeling engine
-    const QgsLabelingEngine* mEngine;
+    const QgsLabelingEngine *mEngine = nullptr;
 
     //! Name of the layer
     QString mName;
     //! Associated layer's ID, if applicable
     QString mLayerId;
+    //! Weak pointer to source layer
+    QgsWeakMapLayerPointer mLayer;
     //! Associated provider ID (one layer may have multiple providers, e.g. in rule-based labeling)
     QString mProviderId;
     //! Flags altering drawing and registration of features
@@ -165,6 +171,11 @@ class CORE_EXPORT QgsLabelingEngine
     //! Clean up everything (especially the registered providers)
     ~QgsLabelingEngine();
 
+    //! QgsLabelingEngine cannot be copied.
+    QgsLabelingEngine( const QgsLabelingEngine &rh ) = delete;
+    //! QgsLabelingEngine cannot be copied.
+    QgsLabelingEngine &operator=( const QgsLabelingEngine &rh ) = delete;
+
     enum Flag
     {
       UseAllLabels          = 1 << 1,  //!< Whether to draw all labels even if there would be collisions
@@ -172,32 +183,37 @@ class CORE_EXPORT QgsLabelingEngine
       RenderOutlineLabels   = 1 << 3,  //!< Whether to render labels as text or outlines
       DrawLabelRectOnly     = 1 << 4,  //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5,  //!< Whether to draw rectangles of generated candidates (good for debugging)
-      DrawShadowRects       = 1 << 6,  //!< Whether to show debugging rectangles for drop shadows
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
     //! Associate map settings instance
-    void setMapSettings( const QgsMapSettings& mapSettings ) { mMapSettings = mapSettings; }
+    void setMapSettings( const QgsMapSettings &mapSettings ) { mMapSettings = mapSettings; }
     //! Get associated map settings
-    const QgsMapSettings& mapSettings() const { return mMapSettings; }
+    const QgsMapSettings &mapSettings() const { return mMapSettings; }
+
+    /**
+     * Returns a list of layers with providers in the engine.
+     * @note added in QGIS 3.0
+     */
+    QList< QgsMapLayer * > participatingLayers() const;
 
     //! Add provider of label features. Takes ownership of the provider
-    void addProvider( QgsAbstractLabelProvider* provider );
+    void addProvider( QgsAbstractLabelProvider *provider );
 
     //! Remove provider if the provider's initialization failed. Provider instance is deleted.
-    void removeProvider( QgsAbstractLabelProvider* provider );
+    void removeProvider( QgsAbstractLabelProvider *provider );
 
     //! compute the labeling with given map settings and providers
-    void run( QgsRenderContext& context );
+    void run( QgsRenderContext &context );
 
     //! Return pointer to recently computed results and pass the ownership of results to the caller
-    QgsLabelingResults* takeResults();
+    QgsLabelingResults *takeResults();
 
     //! For internal use by the providers
-    QgsLabelingResults* results() const { return mResults; }
+    QgsLabelingResults *results() const { return mResults.get(); }
 
     //! Set flags of the labeling engine
-    void setFlags( const Flags& flags ) { mFlags = flags; }
+    void setFlags( Flags flags ) { mFlags = flags; }
     //! Get flags of the labeling engine
     Flags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled
@@ -206,7 +222,7 @@ class CORE_EXPORT QgsLabelingEngine
     void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
     //! Get number of candidate positions that will be generated for each label feature (default to 8)
-    void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon ) { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
+    void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
     //! Set number of candidate positions that will be generated for each label feature
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
 
@@ -215,20 +231,22 @@ class CORE_EXPORT QgsLabelingEngine
     //! Which search method to use for removal collisions between labels
     QgsPalLabeling::Search searchMethod() const { return mSearchMethod; }
 
-    //! Read configuration of the labeling engine from the current project file
-    void readSettingsFromProject();
-    //! Write configuration of the labeling engine to the current project file
-    void writeSettingsToProject();
+    //! Read configuration of the labeling engine from a project
+    void readSettingsFromProject( QgsProject *project );
+    //! Write configuration of the labeling engine to a project
+    void writeSettingsToProject( QgsProject *project );
+    //! Clear configuration of the labeling engine in a project
+    static void clearSettingsInProject( QgsProject *project );
 
   protected:
-    void processProvider( QgsAbstractLabelProvider* provider, QgsRenderContext& context, pal::Pal& p );
+    void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );  //#spellok
 
   protected:
     //! Associated map settings instance
     QgsMapSettings mMapSettings;
     //! List of providers (the are owned by the labeling engine)
-    QList<QgsAbstractLabelProvider*> mProviders;
-    QList<QgsAbstractLabelProvider*> mSubProviders;
+    QList<QgsAbstractLabelProvider *> mProviders;
+    QList<QgsAbstractLabelProvider *> mSubProviders;
     //! Flags
     Flags mFlags;
     //! search method to use for removal collisions between labels
@@ -237,12 +255,8 @@ class CORE_EXPORT QgsLabelingEngine
     int mCandPoint, mCandLine, mCandPolygon;
 
     //! Resulting labeling layout
-    QgsLabelingResults* mResults;
+    std::unique_ptr< QgsLabelingResults > mResults;
 
-  private:
-
-    QgsLabelingEngine( const QgsLabelingEngine& rh );
-    QgsLabelingEngine& operator=( const QgsLabelingEngine& rh );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )
@@ -265,14 +279,14 @@ class CORE_EXPORT QgsLabelingUtils
      * @returns list encoded to string
      * @see decodePredefinedPositionOrder()
      */
-    static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition >& positions );
+    static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &positions );
 
     /** Decodes a string to an ordered list of predefined point label positions.
      * @param positionString encoded string of positions
      * @returns decoded list
      * @see encodePredefinedPositionOrder()
      */
-    static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString& positionString );
+    static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
 
 };
 

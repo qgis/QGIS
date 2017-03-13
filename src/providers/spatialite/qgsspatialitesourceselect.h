@@ -20,7 +20,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QThread>
 #include <QMap>
@@ -47,11 +47,11 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
   public:
 
     /* Open file selector to add new connection */
-    static bool newConnection( QWidget* parent );
+    static bool newConnection( QWidget *parent );
 
     //! Constructor
-    QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
-    //! Destructor
+    QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
+
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -65,6 +65,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void dbChanged();
 
   public slots:
+
     /** Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
@@ -77,32 +78,32 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     //! Deletes the selected connection
     void on_btnDelete_clicked();
     void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString & text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void on_mSearchTableEdit_textChanged( const QString &text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
     void on_cbxAllowGeometrylessTables_stateChanged( int );
-    void setSql( const QModelIndex& index );
+    void setSql( const QModelIndex &index );
     void on_cmbConnections_activated( int );
-    void setLayerType( const QString& table, const QString& column, const QString& type );
+    void setLayerType( const QString &table, const QString &column, const QString &type );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
-    void setSearchExpression( const QString & regexp );
+    void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
 
   signals:
     void connectionsChanged();
-    void addDatabaseLayers( QStringList const & paths, QString const & providerKey );
+    void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
 
   private:
-    enum columns
+    enum Columns
     {
-      dbssType = 0,
-      dbssDetail,
-      dbssSql,
-      dbssColumns,
+      DbssType = 0,
+      DbssDetail,
+      DbssSql,
+      DbssColumns,
     };
 
     typedef QPair< QString, QString > geomPair;
@@ -113,7 +114,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void setConnectionListPosition();
     // Combine the table and column data into a single string
     // useful for display to the user
-    QString fullDescription( const QString& table, const QString& column, const QString& type );
+    QString fullDescription( const QString &table, const QString &column, const QString &type );
     // The column labels
     QStringList mColumnLabels;
     QString mSqlitePath;
@@ -122,12 +123,12 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
 
     QString layerURI( const QModelIndex &index );
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
-    QPushButton *mStatsButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
+    QPushButton *mStatsButton = nullptr;
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

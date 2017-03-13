@@ -135,9 +135,9 @@ def main(options, flags):
     write_header = flags["n"]
     use_stdin = flags["i"]
 
-    #output_cat_label = flags["f"]
-    #output_color = flags["r"]
-    #output_cat = flags["i"]
+    # output_cat_label = flags["f"]
+    # output_color = flags["r"]
+    # output_cat = flags["i"]
 
     overwrite = gscript.overwrite()
 
@@ -186,11 +186,11 @@ def main(options, flags):
 
     # Setup flags are disabled due to test issues
     flags = ""
-    #if output_cat_label is True:
+    # if output_cat_label is True:
     #    flags += "f"
-    #if output_color is True:
+    # if output_color is True:
     #    flags += "r"
-    #if output_cat is True:
+    # if output_cat is True:
     #    flags += "i"
 
     # Configure the r.what module
@@ -416,7 +416,7 @@ def one_point_per_col_output(separator, output_files, output_time_list,
 
 def one_point_per_timerow_output(separator, output_files, output_time_list,
                                  output, write_header, site_input):
-    """Use the original layout of the r.waht output and print instead of
+    """Use the original layout of the r.what output and print instead of
        the raster names, the time stamps as header
 
        One point per line for all time stamps:
@@ -451,7 +451,7 @@ def one_point_per_timerow_output(separator, output_files, output_time_list,
 
         lines = in_file.readlines()
 
-        for i in xrange(len(lines)):
+        for i in range(len(lines)):
             cols = lines[i].split(separator)
 
             if first is True:
@@ -513,15 +513,16 @@ def process_loop(nprocs, maps, file_name, count, maps_per_process,
 
         output_time_list.append(map_list)
 
-        gscript.verbose(_("Process maps %(samp_start)i to %(samp_end)i (of %(total)i)"
-                          % ({"samp_start": count - len(map_names) + 1,
-                              "samp_end": count, "total": len(maps)})))
+        gscript.verbose(("Process maps %(samp_start)i to %(samp_end)i (of %(total)i)" %
+                         ({"samp_start": count - len(map_names) + 1,
+                           "samp_end": count, "total": len(maps)})))
         mod = copy.deepcopy(r_what)
         mod(map=map_names, output=final_file_name)
-        #print(mod.get_bash())
+        # print(mod.get_bash())
         process_queue.put(mod)
 
     return count
+
 
 ############################################################################
 

@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include "ui_qgsrelationmanagerdialogbase.h"
+#include "qgis_app.h"
 
 class QgsRelation;
 class QgsRelationManager;
@@ -29,21 +30,23 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
     Q_OBJECT
 
   public:
-    explicit QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent = nullptr );
+    explicit QgsRelationManagerDialog( QgsRelationManager *relationMgr, QWidget *parent = nullptr );
     ~QgsRelationManagerDialog();
 
-    void setLayers( const QList<QgsVectorLayer*>& );
+    void setLayers( const QList<QgsVectorLayer *> & );
 
-    void addRelation( const QgsRelation& rel );
+    void addRelation( const QgsRelation &rel );
     QList< QgsRelation > relations();
 
-  public slots:
+  private slots:
     void on_mBtnAddRelation_clicked();
+    void on_mBtnDiscoverRelations_clicked();
     void on_mBtnRemoveRelation_clicked();
+    void onSelectionChanged();
 
   private:
-    QgsRelationManager* mRelationManager;
-    QList< QgsVectorLayer* > mLayers;
+    QgsRelationManager *mRelationManager = nullptr;
+    QList< QgsVectorLayer * > mLayers;
 };
 
 #endif // QGSRELATIONMANAGERDIALOG_H

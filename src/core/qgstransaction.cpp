@@ -20,47 +20,44 @@
 #include "qgstransaction.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-typedef QgsTransaction* createTransaction_t( const QString& connString );
+typedef QgsTransaction *createTransaction_t( const QString &connString );
 
-QgsTransaction* QgsTransaction::create( const QString& connString, const QString& providerKey )
+QgsTransaction *QgsTransaction::create( const QString &connString, const QString &providerKey )
 {
-
-  QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( providerKey );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( providerKey ) );
   if ( !lib )
     return nullptr;
 
-  createTransaction_t* createTransaction = reinterpret_cast< createTransaction_t* >( cast_to_fptr( lib->resolve( "createTransaction" ) ) );
+  createTransaction_t *createTransaction = reinterpret_cast< createTransaction_t * >( cast_to_fptr( lib->resolve( "createTransaction" ) ) );
   if ( !createTransaction )
     return nullptr;
 
-  QgsTransaction* ts = createTransaction( connString );
-
-  delete lib;
+  QgsTransaction *ts = createTransaction( connString );
 
   return ts;
 }
 
-QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
+QgsTransaction *QgsTransaction::create( const QStringList &layerIds )
 {
   if ( layerIds.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerIds.first() ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerIds.first() ) );
   if ( !layer )
     return nullptr;
 
   QString connStr = QgsDataSourceUri( layer->source() ).connectionInfo( false );
   QString providerKey = layer->dataProvider()->name();
-  QgsTransaction* ts = QgsTransaction::create( connStr, providerKey );
+  QgsTransaction *ts = QgsTransaction::create( connStr, providerKey );
   if ( !ts )
     return nullptr;
 
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( const QString &layerId, layerIds )
   {
     if ( !ts->addLayer( layerId ) )
     {
@@ -72,9 +69,9 @@ QgsTransaction* QgsTransaction::create( const QStringList& layerIds )
 }
 
 
-QgsTransaction::QgsTransaction( const QString& connString )
-    : mConnString( connString )
-    , mTransactionActive( false )
+QgsTransaction::QgsTransaction( const QString &connString )
+  : mConnString( connString )
+  , mTransactionActive( false )
 {
 }
 
@@ -83,13 +80,13 @@ QgsTransaction::~QgsTransaction()
   setLayerTransactionIds( nullptr );
 }
 
-bool QgsTransaction::addLayer( const QString& layerId )
+bool QgsTransaction::addLayer( const QString &layerId )
 {
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   return addLayer( layer );
 }
 
-bool QgsTransaction::addLayer( QgsVectorLayer* layer )
+bool QgsTransaction::addLayer( QgsVectorLayer *layer )
 {
   if ( !layer )
     return false;
@@ -112,8 +109,8 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
     return false;
   }
 
-  connect( this, SIGNAL( afterRollback() ), layer->dataProvider(), SIGNAL( dataChanged() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
+  connect( this, &QgsTransaction::afterRollback, layer->dataProvider(), &QgsVectorDataProvider::dataChanged );
+  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersDeleted( QStringList ) ) );
   mLayers.insert( layer );
 
   if ( mTransactionActive )
@@ -122,7 +119,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer* layer )
   return true;
 }
 
-bool QgsTransaction::begin( QString& errorMsg, int statementTimeout )
+bool QgsTransaction::begin( QString &errorMsg, int statementTimeout )
 {
   if ( mTransactionActive )
     return false;
@@ -136,7 +133,7 @@ bool QgsTransaction::begin( QString& errorMsg, int statementTimeout )
   return true;
 }
 
-bool QgsTransaction::commit( QString& errorMsg )
+bool QgsTransaction::commit( QString &errorMsg )
 {
   if ( !mTransactionActive )
     return false;
@@ -149,7 +146,7 @@ bool QgsTransaction::commit( QString& errorMsg )
   return true;
 }
 
-bool QgsTransaction::rollback( QString& errorMsg )
+bool QgsTransaction::rollback( QString &errorMsg )
 {
   if ( !mTransactionActive )
     return false;
@@ -165,26 +162,26 @@ bool QgsTransaction::rollback( QString& errorMsg )
   return true;
 }
 
-bool QgsTransaction::supportsTransaction( const QgsVectorLayer* layer )
+bool QgsTransaction::supportsTransaction( const QgsVectorLayer *layer )
 {
-  QLibrary* lib = QgsProviderRegistry::instance()->providerLibrary( layer->providerType() );
+  std::unique_ptr< QLibrary > lib( QgsProviderRegistry::instance()->providerLibrary( layer->providerType() ) );
   if ( !lib )
     return false;
 
   return lib->resolve( "createTransaction" );
 }
 
-void QgsTransaction::onLayersDeleted( const QStringList& layerids )
+void QgsTransaction::onLayersDeleted( const QStringList &layerids )
 {
-  Q_FOREACH ( const QString& layerid, layerids )
-    Q_FOREACH ( QgsVectorLayer* l, mLayers )
+  Q_FOREACH ( const QString &layerid, layerids )
+    Q_FOREACH ( QgsVectorLayer *l, mLayers )
       if ( l->id() == layerid )
         mLayers.remove( l );
 }
 
-void QgsTransaction::setLayerTransactionIds( QgsTransaction* transaction )
+void QgsTransaction::setLayerTransactionIds( QgsTransaction *transaction )
 {
-  Q_FOREACH ( QgsVectorLayer* vl, mLayers )
+  Q_FOREACH ( QgsVectorLayer *vl, mLayers )
   {
     if ( vl->dataProvider() )
     {

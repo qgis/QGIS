@@ -32,7 +32,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionArrowLeft.png</normaloff>:/images/themes/default/mActionArrowLeft.png</iconset>
+         <normaloff>:/images/themes/default/mActionArrowLeft.svg</normaloff>:/images/themes/default/mActionArrowLeft.svg</iconset>
        </property>
        <property name="autoRepeat">
         <bool>false</bool>

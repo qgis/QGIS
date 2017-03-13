@@ -45,22 +45,22 @@
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
-    : PointSet()
-    , id( id )
-    , feature( feature )
-    , probFeat( 0 )
-    , nbOverlap( 0 )
-    , alpha( alpha )
-    , w( w )
-    , h( h )
-    , nextPart( nullptr )
-    , partId( -1 )
-    , reversed( isReversed )
-    , upsideDown( false )
-    , quadrant( quadrant )
-    , mCost( cost )
-    , mHasObstacleConflict( false )
-    , mUpsideDownCharCount( 0 )
+  : PointSet()
+  , id( id )
+  , feature( feature )
+  , probFeat( 0 )
+  , nbOverlap( 0 )
+  , alpha( alpha )
+  , w( w )
+  , h( h )
+  , nextPart( nullptr )
+  , partId( -1 )
+  , reversed( isReversed )
+  , upsideDown( false )
+  , quadrant( quadrant )
+  , mCost( cost )
+  , mHasObstacleConflict( false )
+  , mUpsideDownCharCount( 0 )
 {
   type = GEOS_POLYGON;
   nbPoints = 4;
@@ -68,7 +68,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   y = new double[nbPoints];
 
   // alpha take his value bw 0 and 2*pi rad
-  while ( this->alpha > 2*M_PI )
+  while ( this->alpha > 2 * M_PI )
     this->alpha -= 2 * M_PI;
 
   while ( this->alpha < 0 )
@@ -98,9 +98,9 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   // upside down ? (curved labels are always correct)
   if ( !feature->layer()->isCurved() &&
-       this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
+       this->alpha > M_PI / 2 && this->alpha <= 3 * M_PI / 2 )
   {
-    if ( feature->isUprightLabel() )
+    if ( feature->showUprightLabels() )
     {
       // Turn label upsidedown by inverting boundary points
       double tx, ty;
@@ -143,8 +143,8 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   }
 }
 
-LabelPosition::LabelPosition( const LabelPosition& other )
-    : PointSet( other )
+LabelPosition::LabelPosition( const LabelPosition &other )
+  : PointSet( other )
 {
   id = other.id;
   mCost = other.mCost;
@@ -228,7 +228,7 @@ bool LabelPosition::isInConflict( LabelPosition *lp )
     return isInConflictMultiPart( lp );
 }
 
-bool LabelPosition::isInConflictSinglePart( LabelPosition* lp )
+bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
 {
   if ( !mGeos )
     createGeosGeom();
@@ -249,14 +249,14 @@ bool LabelPosition::isInConflictSinglePart( LabelPosition* lp )
   }
 }
 
-bool LabelPosition::isInConflictMultiPart( LabelPosition* lp )
+bool LabelPosition::isInConflictMultiPart( LabelPosition *lp )
 {
   // check all parts against all parts of other one
-  LabelPosition* tmp1 = this;
+  LabelPosition *tmp1 = this;
   while ( tmp1 )
   {
     // check tmp1 against parts of other label
-    LabelPosition* tmp2 = lp;
+    LabelPosition *tmp2 = lp;
     while ( tmp2 )
     {
       if ( tmp1->isInConflictSinglePart( tmp2 ) )
@@ -319,7 +319,7 @@ void LabelPosition::validateCost()
   }
 }
 
-FeaturePart * LabelPosition::getFeaturePart()
+FeaturePart *LabelPosition::getFeaturePart()
 {
   return feature;
 }
@@ -359,10 +359,10 @@ void LabelPosition::setConflictsWithObstacle( bool conflicts )
 
 bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
 {
-  PolygonCostCalculator *pCost = reinterpret_cast< PolygonCostCalculator* >( ctx );
+  PolygonCostCalculator *pCost = reinterpret_cast< PolygonCostCalculator * >( ctx );
 
   LabelPosition *lp = pCost->getLabel();
-  if (( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
+  if ( ( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
   {
     return true;
   }
@@ -372,7 +372,7 @@ bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   return true;
 }
 
-void LabelPosition::removeFromIndex( RTree<LabelPosition*, double, 2, double> *index )
+void LabelPosition::removeFromIndex( RTree<LabelPosition *, double, 2, double> *index )
 {
   double amin[2];
   double amax[2];
@@ -380,7 +380,7 @@ void LabelPosition::removeFromIndex( RTree<LabelPosition*, double, 2, double> *i
   index->Remove( amin, amax, this );
 }
 
-void LabelPosition::insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index )
+void LabelPosition::insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index )
 {
   double amin[2];
   double amax[2];
@@ -390,15 +390,15 @@ void LabelPosition::insertIntoIndex( RTree<LabelPosition*, double, 2, double> *i
 
 bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
 {
-  FeaturePart *obstaclePart = ( reinterpret_cast< PruneCtx* >( ctx ) )->obstacle;
+  FeaturePart *obstaclePart = ( reinterpret_cast< PruneCtx * >( ctx ) )->obstacle;
 
   // test whether we should ignore this obstacle for the candidate. We do this if:
-  // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (eg
+  // 1. it's not a hole, and the obstacle belongs to the same label feature as the candidate (e.g.,
   // features aren't obstacles for their own labels)
-  // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (eg, holes
+  // 2. it IS a hole, and the hole belongs to a different label feature to the candidate (e.g., holes
   // are ONLY obstacles for the labels of the feature they belong to)
-  if (( !obstaclePart->getHoleOf() && candidatePosition->feature->hasSameLabelFeatureAs( obstaclePart ) )
-      || ( obstaclePart->getHoleOf() && !candidatePosition->feature->hasSameLabelFeatureAs( dynamic_cast< FeaturePart* >( obstaclePart->getHoleOf() ) ) ) )
+  if ( ( !obstaclePart->getHoleOf() && candidatePosition->feature->hasSameLabelFeatureAs( obstaclePart ) )
+       || ( obstaclePart->getHoleOf() && !candidatePosition->feature->hasSameLabelFeatureAs( dynamic_cast< FeaturePart * >( obstaclePart->getHoleOf() ) ) ) )
   {
     return true;
   }
@@ -410,7 +410,7 @@ bool LabelPosition::pruneCallback( LabelPosition *candidatePosition, void *ctx )
 
 bool LabelPosition::countOverlapCallback( LabelPosition *lp, void *ctx )
 {
-  LabelPosition *lp2 = reinterpret_cast< LabelPosition* >( ctx );
+  LabelPosition *lp2 = reinterpret_cast< LabelPosition * >( ctx );
 
   if ( lp2->isInConflict( lp ) )
   {
@@ -422,7 +422,7 @@ bool LabelPosition::countOverlapCallback( LabelPosition *lp, void *ctx )
 
 bool LabelPosition::countFullOverlapCallback( LabelPosition *lp, void *ctx )
 {
-  CountContext* context = reinterpret_cast< CountContext* >( ctx );
+  CountContext *context = reinterpret_cast< CountContext * >( ctx );
   LabelPosition *lp2 = context->lp;
   double *cost = context->cost;
   int *nbOv = context->nbOv;
@@ -461,7 +461,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp ) const
   return distance;
 }
 
-bool LabelPosition::crossesLine( PointSet* line ) const
+bool LabelPosition::crossesLine( PointSet *line ) const
 {
   if ( !mGeos )
     createGeosGeom();
@@ -528,7 +528,7 @@ int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   return ceil( totalCost / n );
 }
 
-bool LabelPosition::intersectsWithPolygon( PointSet* polygon ) const
+bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const
 {
   if ( !mGeos )
     createGeosGeom();
@@ -588,8 +588,8 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
         {
           if ( polygon->containsPoint( px, py ) )
             cost++;
-          px = ( x[i] + x[( i+1 ) %4] ) / 2.0;
-          py = ( y[i] + y[( i+1 ) %4] ) / 2.0;
+          px = ( x[i] + x[( i + 1 ) % 4] ) / 2.0;
+          py = ( y[i] + y[( i + 1 ) % 4] ) / 2.0;
         }
       }
 

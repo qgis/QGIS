@@ -92,18 +92,25 @@ class QgsLineString: public QgsCurve
         @return the converted geometry. Caller takes ownership*/
     QgsAbstractGeometry* toCurveType() const /Factory/;
 
+    /**
+     * Extends the line geometry by extrapolating out the start or end of the line
+     * by a specified distance. Lines are extended using the bearing of the first or last
+     * segment in the line.
+     * @note added in QGIS 3.0
+     */
+    void extend( double startDistance, double endDistance );
+
     //reimplemented methods
 
     virtual QString geometryType() const;
     virtual int dimension() const;
     virtual QgsLineString* clone() const /Factory/;
     virtual void clear();
-
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    bool isEmpty() const;
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
@@ -120,6 +127,7 @@ class QgsLineString: public QgsCurve
     virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     int numPoints() const;
+    virtual int nCoordinates() const;
     void points( QList<QgsPointV2>& pt ) const;
 
     void draw( QPainter& p ) const;

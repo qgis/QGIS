@@ -31,8 +31,8 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 }
@@ -41,7 +41,7 @@ eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget*
 * Public method that will insert the values in fieldList into the x and y coordinate selection combo boxes.
 * @param fileList - QStringList containing the field names to add to the combo boxes
 */
-void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList* fieldList )
+void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList *fieldList )
 {
 
   int xCoordinateIndex = -1;
@@ -76,6 +76,7 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList* fieldList )
  * Public and Private Slots
  *
  */
+
 /**
 * Slot called when the ok/accept button is pressed
 */
@@ -88,7 +89,7 @@ void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
   close();
 
   //reset the layer name line edit
-  leLayerName->setText( "" );
+  leLayerName->setText( QLatin1String( "" ) );
 }
 
 /**
@@ -97,5 +98,5 @@ void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
 void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_rejected()
 {
   close();
-  leLayerName->setText( "" );
+  leLayerName->setText( QLatin1String( "" ) );
 }

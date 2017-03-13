@@ -17,7 +17,7 @@
 #include "TriDecorator.h"
 #include "qgslogger.h"
 
-void TriDecorator::addLine( Line3D* line, bool breakline )
+void TriDecorator::addLine( Line3D *line, bool breakline )
 {
   if ( mTIN )
   {
@@ -29,7 +29,7 @@ void TriDecorator::addLine( Line3D* line, bool breakline )
   }
 }
 
-int TriDecorator::addPoint( Point3D* p )
+int TriDecorator::addPoint( Point3D *p )
 {
   if ( mTIN )
   {
@@ -55,7 +55,7 @@ void TriDecorator::performConsistencyTest()
   }
 }
 
-bool TriDecorator::calcNormal( double x, double y, Vector3D* result )
+bool TriDecorator::calcNormal( double x, double y, Vector3D *result )
 {
   if ( mTIN )
   {
@@ -69,7 +69,7 @@ bool TriDecorator::calcNormal( double x, double y, Vector3D* result )
   }
 }
 
-bool TriDecorator::calcPoint( double x, double y, Point3D* result )
+bool TriDecorator::calcPoint( double x, double y, Point3D *result )
 {
   if ( mTIN )
   {
@@ -83,11 +83,11 @@ bool TriDecorator::calcPoint( double x, double y, Point3D* result )
   }
 }
 
-Point3D* TriDecorator::getPoint( unsigned int i ) const
+Point3D *TriDecorator::getPoint( unsigned int i ) const
 {
   if ( mTIN )
   {
-    Point3D* p = mTIN->getPoint( i );
+    Point3D *p = mTIN->getPoint( i );
     return p;
   }
   else
@@ -97,7 +97,7 @@ Point3D* TriDecorator::getPoint( unsigned int i ) const
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 )
+bool TriDecorator::getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 )
 {
   if ( mTIN )
   {
@@ -111,7 +111,7 @@ bool TriDecorator::getTriangle( double x, double y, Point3D* p1, int* n1, Point3
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 )
+bool TriDecorator::getTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 )
 {
   if ( mTIN )
   {
@@ -152,11 +152,11 @@ int TriDecorator::getOppositePoint( int p1, int p2 )
   }
 }
 
-QList<int>* TriDecorator::getSurroundingTriangles( int pointno )
+QList<int> *TriDecorator::getSurroundingTriangles( int pointno )
 {
   if ( mTIN )
   {
-    QList<int>* vl = mTIN->getSurroundingTriangles( pointno );
+    QList<int> *vl = mTIN->getSurroundingTriangles( pointno );
     return vl;
   }
   else
@@ -221,11 +221,11 @@ double TriDecorator::getYMin() const
   }
 }
 
-void TriDecorator::setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b )
+void TriDecorator::setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b )
 {
   if ( mTIN )
   {
-    mTIN->setForcedCrossBehaviour( b );
+    mTIN->setForcedCrossBehavior( b );
   }
   else
   {
@@ -269,7 +269,7 @@ void TriDecorator::setBreakEdgeColor( int r, int g, int b )
   }
 }
 
-void TriDecorator::setTriangleInterpolator( TriangleInterpolator* interpolator )
+void TriDecorator::setTriangleInterpolator( TriangleInterpolator *interpolator )
 {
   if ( mTIN )
   {
@@ -333,7 +333,7 @@ bool TriDecorator::swapEdge( double x, double y )
   }
 }
 
-QList<int>* TriDecorator::getPointsAroundEdge( double x, double y )
+QList<int> *TriDecorator::getPointsAroundEdge( double x, double y )
 {
   if ( mTIN )
   {

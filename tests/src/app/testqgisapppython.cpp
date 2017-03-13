@@ -17,7 +17,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <qgisapp.h>
 #include <qgsapplication.h>
@@ -43,12 +43,12 @@ class TestQgisAppPython : public QObject
     void evalString();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
     QString mTestDataDir;
 };
 
 TestQgisAppPython::TestQgisAppPython()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -56,16 +56,16 @@ TestQgisAppPython::TestQgisAppPython()
 //runs before all tests
 void TestQgisAppPython::initTestCase()
 {
-  // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   qDebug() << "TestQgisAppClipboard::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mQgisApp = new QgisApp();
   mQgisApp->loadPythonSupport();
 }
@@ -94,5 +94,5 @@ void TestQgisAppPython::evalString()
   QVERIFY( !mQgisApp->mPythonUtils->evalString( "1+", result ) );
 }
 
-QTEST_MAIN( TestQgisAppPython )
+QGSTEST_MAIN( TestQgisAppPython )
 #include "testqgisapppython.moc"

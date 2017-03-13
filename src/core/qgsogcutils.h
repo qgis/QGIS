@@ -21,6 +21,7 @@ class QDomElement;
 class QDomDocument;
 class QString;
 
+#include "qgis_core.h"
 #include <list>
 #include <QVector>
 
@@ -59,80 +60,80 @@ class CORE_EXPORT QgsOgcUtils
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
-    static QgsGeometry geometryFromGML( const QString& xmlString );
+    static QgsGeometry geometryFromGML( const QString &xmlString );
 
     /** Static method that creates geometry from GML
       */
-    static QgsGeometry geometryFromGML( const QDomNode& geometryNode );
+    static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
 
-    /** Read rectangle from GML2 Box */
-    static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
+    //! Read rectangle from GML2 Box
+    static QgsRectangle rectangleFromGMLBox( const QDomNode &boxNode );
 
-    /** Read rectangle from GML3 Envelope */
-    static QgsRectangle rectangleFromGMLEnvelope( const QDomNode& envelopeNode );
+    //! Read rectangle from GML3 Envelope
+    static QgsRectangle rectangleFromGMLEnvelope( const QDomNode &envelopeNode );
 
     /** Exports the geometry to GML
         @return QDomElement
         @note Added in QGIS 2.16
      */
-    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc,
+    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
                                       GMLVersion gmlVersion,
-                                      const QString& srsName,
+                                      const QString &srsName,
                                       bool invertAxisOrientation,
-                                      const QString& gmlIdBase,
+                                      const QString &gmlIdBase,
                                       int precision = 17 );
 
     /** Exports the geometry to GML2 or GML3
         @return QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, const QString& format, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 
     /** Exports the geometry to GML2
         @return QDomElement
      */
-    static QDomElement geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, int precision = 17 );
+    static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
         @return QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc, int precision = 17 );
+    static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML2 Box
         @return QDomElement
         @note Added in QGIS 2.16
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc,
-                                          const QString& srsName,
+    static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
+                                          const QString &srsName,
                                           bool invertAxisOrientation,
                                           int precision = 17 );
 
     /** Exports the rectangle to GML3 Envelope
         @return QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc, int precision = 17 );
+    static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
 
     /** Exports the rectangle to GML3 Envelope
         @return QDomElement
         @note Added in QGIS 2.16
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc,
-        const QString& srsName,
+    static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
+        const QString &srsName,
         bool invertAxisOrientation,
         int precision = 17 );
 
 
-    /** Parse XML with OGC fill into QColor */
-    static QColor colorFromOgcFill( const QDomElement& fillElement );
+    //! Parse XML with OGC fill into QColor
+    static QColor colorFromOgcFill( const QDomElement &fillElement );
 
-    /** Parse XML with OGC filter into QGIS expression */
-    static QgsExpression* expressionFromOgcFilter( const QDomElement& element );
+    //! Parse XML with OGC filter into QGIS expression
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element );
 
     /** Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
+    static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
     /** OGC filter version
      * @note not available in Python bindings
@@ -151,35 +152,35 @@ class CORE_EXPORT QgsOgcUtils
      * @note Added in QGIS 2.16
      * @note not available in Python bindings
      */
-    static QDomElement expressionToOgcFilter( const QgsExpression& exp,
-        QDomDocument& doc,
+    static QDomElement expressionToOgcFilter( const QgsExpression &exp,
+        QDomDocument &doc,
         GMLVersion gmlVersion,
         FilterVersion filterVersion,
-        const QString& geometryName,
-        const QString& srsName,
+        const QString &geometryName,
+        const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString* errorMessage = nullptr );
+        QString *errorMessage = nullptr );
 
     /** Creates an OGC expression XML element.
      * @return valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcExpression( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = nullptr );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
     /** Creates an OGC expression XML element.
      * @return valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcExpression( const QgsExpression& exp,
-        QDomDocument& doc,
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp,
+        QDomDocument &doc,
         GMLVersion gmlVersion,
         FilterVersion filterVersion,
-        const QString& geometryName,
-        const QString& srsName,
+        const QString &geometryName,
+        const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString* errorMessage = nullptr );
+        QString *errorMessage = nullptr );
 
     /** \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
@@ -189,14 +190,14 @@ class CORE_EXPORT QgsOgcUtils
     class LayerProperties
     {
       public:
-        /** Constructor */
+        //! Constructor
         LayerProperties() {}
 
-        /** Layer name */
+        //! Layer name
         QString mName;
-        /** Geometry attribute name */
+        //! Geometry attribute name
         QString mGeometryAttribute;
-        /** SRS name */
+        //! SRS name
         QString mSRSName;
     };
 
@@ -217,35 +218,37 @@ class CORE_EXPORT QgsOgcUtils
      * @note Added in QGIS 2.16
      * @note not available in Python bindings
      */
-    static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement& statement,
-        QDomDocument& doc,
+    static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
+        QDomDocument &doc,
         GMLVersion gmlVersion,
         FilterVersion filterVersion,
-        const QList<LayerProperties>& layerProperties,
+        const QList<LayerProperties> &layerProperties,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        const QMap< QString, QString>& mapUnprefixedTypenameToPrefixedTypename,
-        QString* errorMessage = nullptr );
+        const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename,
+        QString *errorMessage = nullptr );
 
   private:
 
-    /** Static method that creates geometry from GML Point */
-    static QgsGeometry geometryFromGMLPoint( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML LineString */
-    static QgsGeometry geometryFromGMLLineString( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML Polygon */
-    static QgsGeometry geometryFromGMLPolygon( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML MultiPoint */
-    static QgsGeometry geometryFromGMLMultiPoint( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML MultiLineString */
-    static QgsGeometry geometryFromGMLMultiLineString( const QDomElement& geometryElement );
-    /** Static method that creates geometry from GML MultiPolygon */
-    static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
+    //! Static method that creates geometry from GML Point
+    static QgsGeometry geometryFromGMLPoint( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML LineString
+    static QgsGeometry geometryFromGMLLineString( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML Polygon
+    static QgsGeometry geometryFromGMLPolygon( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML MultiPoint
+    static QgsGeometry geometryFromGMLMultiPoint( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML MultiLineString
+    static QgsGeometry geometryFromGMLMultiLineString( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML MultiPolygon
+    static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
+
     /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
        @param elem the \verbatim <gml:coordinates> \endverbatim element
        @return boolean for success*/
     static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
+
     /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
        and extracts the coordinates as points
        @param coords list where the found coordinates are appended
@@ -259,32 +262,32 @@ class CORE_EXPORT QgsOgcUtils
       @param points list of data points
       @param doc the GML document
       @return QDomElement */
-    static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument& doc );
+    static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument &doc );
 
     /** Create a GML pos or posList element from a point list.
       @param points list of data points
       @param doc the GML document
       @return QDomElement */
-    static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument& doc );
+    static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument &doc );
 
     //! handle a generic sub-expression
-    static QgsExpression::Node* nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::Node *nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle a generic binary operator
-    static QgsExpression::NodeBinaryOperator* nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles various spatial operation tags (\verbatim <Intersects> \endverbatim, \verbatim <Touches> \endverbatim etc.)
-    static QgsExpression::NodeFunction* nodeSpatialOperatorFromOgcFilter( QDomElement& element, QString& errorMessage );
+    static QgsExpression::NodeFunction *nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle \verbatim <Not> \endverbatim tag
-    static QgsExpression::NodeUnaryOperator* nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeUnaryOperator *nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <Function> \endverbatim tag
-    static QgsExpression::NodeFunction* nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeFunction *nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <Literal> \endverbatim tag
-    static QgsExpression::Node* nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::Node *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyName> \endverbatim tag
-    static QgsExpression::NodeColumnRef* nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpression::NodeColumnRef *nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyIsBetween> \endverbatim tag
-    static QgsExpression::Node* nodeIsBetweenFromOgcFilter( QDomElement& element, QString& errorMessage );
+    static QgsExpression::Node *nodeIsBetweenFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyIsNull> \endverbatim tag
-    static QgsExpression::NodeBinaryOperator* nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage );
+    static QgsExpression::NodeBinaryOperator *nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage );
 };
 
 /** \ingroup core
@@ -294,43 +297,43 @@ class CORE_EXPORT QgsOgcUtils
 class QgsOgcUtilsExprToFilter
 {
   public:
-    /** Constructor */
-    QgsOgcUtilsExprToFilter( QDomDocument& doc,
+    //! Constructor
+    QgsOgcUtilsExprToFilter( QDomDocument &doc,
                              QgsOgcUtils::GMLVersion gmlVersion,
                              QgsOgcUtils::FilterVersion filterVersion,
-                             const QString& geometryName,
-                             const QString& srsName,
+                             const QString &geometryName,
+                             const QString &srsName,
                              bool honourAxisOrientation,
                              bool invertAxisOrientation );
 
-    /** Convert an expression to a OGC filter */
-    QDomElement expressionNodeToOgcFilter( const QgsExpression::Node* node );
+    //! Convert an expression to a OGC filter
+    QDomElement expressionNodeToOgcFilter( const QgsExpression::Node *node );
 
-    /** Return whether the gml: namespace is used */
+    //! Return whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    /** Return the error message. */
-    const QString& errorMessage() const { return mErrorMessage; }
+    //! Return the error message.
+    QString errorMessage() const { return mErrorMessage; }
 
   private:
-    QDomDocument& mDoc;
+    QDomDocument &mDoc;
     bool mGMLUsed;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
-    const QString& mGeometryName;
-    const QString& mSrsName;
+    const QString &mGeometryName;
+    const QString &mSrsName;
     bool mInvertAxisOrientation;
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
     int mGeomId;
 
-    QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpression::NodeUnaryOperator* node );
-    QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpression::NodeBinaryOperator* node );
-    QDomElement expressionLiteralToOgcFilter( const QgsExpression::NodeLiteral* node );
-    QDomElement expressionColumnRefToOgcFilter( const QgsExpression::NodeColumnRef* node );
-    QDomElement expressionInOperatorToOgcFilter( const QgsExpression::NodeInOperator* node );
-    QDomElement expressionFunctionToOgcFilter( const QgsExpression::NodeFunction* node );
+    QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpression::NodeUnaryOperator *node );
+    QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpression::NodeBinaryOperator *node );
+    QDomElement expressionLiteralToOgcFilter( const QgsExpression::NodeLiteral *node );
+    QDomElement expressionColumnRefToOgcFilter( const QgsExpression::NodeColumnRef *node );
+    QDomElement expressionInOperatorToOgcFilter( const QgsExpression::NodeInOperator *node );
+    QDomElement expressionFunctionToOgcFilter( const QgsExpression::NodeFunction *node );
 };
 
 /** \ingroup core
@@ -340,30 +343,30 @@ class QgsOgcUtilsExprToFilter
 class QgsOgcUtilsSQLStatementToFilter
 {
   public:
-    /** Constructor */
-    QgsOgcUtilsSQLStatementToFilter( QDomDocument& doc,
+    //! Constructor
+    QgsOgcUtilsSQLStatementToFilter( QDomDocument &doc,
                                      QgsOgcUtils::GMLVersion gmlVersion,
                                      QgsOgcUtils::FilterVersion filterVersion,
-                                     const QList<QgsOgcUtils::LayerProperties>& layerProperties,
+                                     const QList<QgsOgcUtils::LayerProperties> &layerProperties,
                                      bool honourAxisOrientation,
                                      bool invertAxisOrientation,
-                                     const QMap< QString, QString>& mapUnprefixedTypenameToPrefixedTypename );
+                                     const QMap< QString, QString> &mapUnprefixedTypenameToPrefixedTypename );
 
-    /** Convert a SQL statement to a OGC filter */
-    QDomElement toOgcFilter( const QgsSQLStatement::Node* node );
+    //! Convert a SQL statement to a OGC filter
+    QDomElement toOgcFilter( const QgsSQLStatement::Node *node );
 
-    /** Return whether the gml: namespace is used */
+    //! Return whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    /** Return the error message. */
-    const QString& errorMessage() const { return mErrorMessage; }
+    //! Return the error message.
+    QString errorMessage() const { return mErrorMessage; }
 
   private:
-    QDomDocument& mDoc;
+    QDomDocument &mDoc;
     bool mGMLUsed;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
-    const QList<QgsOgcUtils::LayerProperties>& mLayerProperties;
+    const QList<QgsOgcUtils::LayerProperties> &mLayerProperties;
     bool mHonourAxisOrientation;
     bool mInvertAxisOrientation;
     QString mErrorMessage;
@@ -372,25 +375,25 @@ class QgsOgcUtilsSQLStatementToFilter
     int mGeomId;
     QString mCurrentSRSName;
     QMap<QString, QString> mMapTableAliasToNames;
-    const QMap< QString, QString>& mMapUnprefixedTypenameToPrefixedTypename;
+    const QMap< QString, QString> &mMapUnprefixedTypenameToPrefixedTypename;
 
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeUnaryOperator* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeBinaryOperator* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeLiteral* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeColumnRef* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeInOperator* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeBetweenOperator* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeFunction* node );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeJoin* node, const QString& leftTable );
-    QDomElement toOgcFilter( const QgsSQLStatement::NodeSelect* node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeUnaryOperator *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeBinaryOperator *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeLiteral *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeColumnRef *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeInOperator *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeBetweenOperator *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeFunction *node );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeJoin *node, const QString &leftTable );
+    QDomElement toOgcFilter( const QgsSQLStatement::NodeSelect *node );
 
-    void visit( const QgsSQLStatement::NodeTableDef* node );
-    QString getGeometryColumnSRSName( const QgsSQLStatement::Node* node );
-    bool processSRSName( const QgsSQLStatement::NodeFunction* mainNode,
-                         QList<QgsSQLStatement::Node*> args,
+    void visit( const QgsSQLStatement::NodeTableDef *node );
+    QString getGeometryColumnSRSName( const QgsSQLStatement::Node *node );
+    bool processSRSName( const QgsSQLStatement::NodeFunction *mainNode,
+                         QList<QgsSQLStatement::Node *> args,
                          bool lastArgIsSRSName,
-                         QString& srsName,
-                         bool& axisInversion );
+                         QString &srsName,
+                         bool &axisInversion );
 };
 
 #endif // QGSOGCUTILS_H

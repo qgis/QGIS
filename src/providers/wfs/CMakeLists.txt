@@ -34,7 +34,7 @@ SET (WFS_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
+QT5_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ../../core
@@ -44,6 +44,8 @@ INCLUDE_DIRECTORIES (
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}

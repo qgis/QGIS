@@ -27,14 +27,14 @@
 
 ///@cond PRIVATE
 
-QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer* layer )
-    : mLayer( layer )
+QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer *layer )
+  : mLayer( layer )
 {
   setAutoFillBackground( true ); // override the content from model
-  QLabel* l = new QLabel( "Transparency", this );
+  QLabel *l = new QLabel( QStringLiteral( "Transparency" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 100 );
-  QHBoxLayout* lay = new QHBoxLayout();
+  QHBoxLayout *lay = new QHBoxLayout();
   lay->addWidget( l );
   lay->addWidget( mSlider );
   setLayout( lay );
@@ -50,12 +50,12 @@ QgsLayerTreeTransparencyWidget::QgsLayerTreeTransparencyWidget( QgsMapLayer* lay
   // init from layer
   if ( mLayer->type() == QgsMapLayer::VectorLayer )
   {
-    mSlider->setValue( qobject_cast<QgsVectorLayer*>( mLayer )->layerTransparency() );
+    mSlider->setValue( qobject_cast<QgsVectorLayer *>( mLayer )->layerTransparency() );
     connect( mLayer, SIGNAL( layerTransparencyChanged( int ) ), this, SLOT( layerTrChanged() ) );
   }
   else if ( mLayer->type() == QgsMapLayer::RasterLayer )
   {
-    mSlider->setValue( 100 - qobject_cast<QgsRasterLayer*>( mLayer )->renderer()->opacity() * 100 );
+    mSlider->setValue( 100 - qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->opacity() * 100 );
     // TODO: there is no signal for raster layers
   }
 }
@@ -81,11 +81,11 @@ void QgsLayerTreeTransparencyWidget::updateTransparencyFromSlider()
 
   if ( mLayer->type() == QgsMapLayer::VectorLayer )
   {
-    qobject_cast<QgsVectorLayer*>( mLayer )->setLayerTransparency( value );
+    qobject_cast<QgsVectorLayer *>( mLayer )->setLayerTransparency( value );
   }
   else if ( mLayer->type() == QgsMapLayer::RasterLayer )
   {
-    qobject_cast<QgsRasterLayer*>( mLayer )->renderer()->setOpacity( 1 - value / 100. );
+    qobject_cast<QgsRasterLayer *>( mLayer )->renderer()->setOpacity( 1 - value / 100. );
   }
 
   mLayer->triggerRepaint();
@@ -94,7 +94,7 @@ void QgsLayerTreeTransparencyWidget::updateTransparencyFromSlider()
 void QgsLayerTreeTransparencyWidget::layerTrChanged()
 {
   mSlider->blockSignals( true );
-  mSlider->setValue( qobject_cast<QgsVectorLayer*>( mLayer )->layerTransparency() );
+  mSlider->setValue( qobject_cast<QgsVectorLayer *>( mLayer )->layerTransparency() );
   mSlider->blockSignals( false );
 }
 
@@ -102,7 +102,7 @@ void QgsLayerTreeTransparencyWidget::layerTrChanged()
 
 QString QgsLayerTreeTransparencyWidget::Provider::id() const
 {
-  return "transparency";
+  return QStringLiteral( "transparency" );
 }
 
 QString QgsLayerTreeTransparencyWidget::Provider::name() const
@@ -110,13 +110,13 @@ QString QgsLayerTreeTransparencyWidget::Provider::name() const
   return tr( "Transparency slider" );
 }
 
-QgsLayerTreeTransparencyWidget* QgsLayerTreeTransparencyWidget::Provider::createWidget( QgsMapLayer* layer, int widgetIndex )
+QgsLayerTreeTransparencyWidget *QgsLayerTreeTransparencyWidget::Provider::createWidget( QgsMapLayer *layer, int widgetIndex )
 {
   Q_UNUSED( widgetIndex );
   return new QgsLayerTreeTransparencyWidget( layer );
 }
 
-bool QgsLayerTreeTransparencyWidget::Provider::supportsLayer( QgsMapLayer* layer )
+bool QgsLayerTreeTransparencyWidget::Provider::supportsLayer( QgsMapLayer *layer )
 {
   return layer->type() == QgsMapLayer::VectorLayer || layer->type() == QgsMapLayer::RasterLayer;
 }

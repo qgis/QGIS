@@ -16,6 +16,7 @@
 #ifndef QGSDISTANCEAREA_H
 #define QGSDISTANCEAREA_H
 
+#include "qgis_core.h"
 #include <QList>
 #include "qgscoordinatetransform.h"
 #include "qgsunittypes.h"
@@ -41,14 +42,11 @@ class CORE_EXPORT QgsDistanceArea
     //! Constructor
     QgsDistanceArea();
 
-    //! Destructor
-    ~QgsDistanceArea();
-
     //! Copy constructor
     QgsDistanceArea( const QgsDistanceArea &origDA );
 
     //! Assignment operator
-    QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
+    QgsDistanceArea &operator=( const QgsDistanceArea &origDA );
 
     /** Sets whether coordinates must be projected to ellipsoid before measuring
      * @note for calculations to use the ellipsoid, both the ellipsoid mode must be true
@@ -80,10 +78,10 @@ class CORE_EXPORT QgsDistanceArea
      * @note: missing in Python bindings in QGIS < 2.2
      * @see sourceCrs()
      */
-    void setSourceCrs( const QgsCoordinateReferenceSystem& srcCRS );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
 
     //! sets source spatial reference system by authid
-    void setSourceAuthId( const QString& authid );
+    void setSourceAuthId( const QString &authid );
 
     /** Returns the source spatial reference system.
      * @see setSourceCrs()
@@ -106,7 +104,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see setEllipsoidalMode()
      * @see willUseEllipsoid()
      */
-    bool setEllipsoid( const QString& ellipsoid );
+    bool setEllipsoid( const QString &ellipsoid );
 
     /** Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
      * both the ellipsoid has been set and ellipsoidalEnabled() is true.
@@ -142,7 +140,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see measurePerimeter()
      * @see areaUnits()
      */
-    double measureArea( const QgsGeometry* geometry ) const;
+    double measureArea( const QgsGeometry *geometry ) const;
 
     /** Measures the area of a geometry.
      * @param geometry geometry to measure
@@ -153,7 +151,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see measurePerimeter()
      * @see areaUnits()
      */
-    double measureArea( const QgsGeometry& geometry ) const;
+    double measureArea( const QgsGeometry &geometry ) const;
 
     /** Measures the length of a geometry.
      * @param geometry geometry to measure
@@ -164,7 +162,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see measureArea()
      * @see measurePerimeter()
      */
-    double measureLength( const QgsGeometry* geometry ) const;
+    double measureLength( const QgsGeometry *geometry ) const;
 
     /** Measures the length of a geometry.
      * @param geometry geometry to measure
@@ -175,7 +173,7 @@ class CORE_EXPORT QgsDistanceArea
      * @see measureArea()
      * @see measurePerimeter()
      */
-    double measureLength( const QgsGeometry& geometry ) const;
+    double measureLength( const QgsGeometry &geometry ) const;
 
     /** Measures the perimeter of a polygon geometry.
      * @param geometry geometry to measure
@@ -197,14 +195,14 @@ class CORE_EXPORT QgsDistanceArea
      * @see measureArea()
      * @see measurePerimeter()
      */
-    double measurePerimeter( const QgsGeometry& geometry ) const;
+    double measurePerimeter( const QgsGeometry &geometry ) const;
 
     /** Measures the length of a line with multiple segments.
      * @param points list of points in line
      * @returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * @see lengthUnits()
      */
-    double measureLine( const QList<QgsPoint>& points ) const;
+    double measureLine( const QList<QgsPoint> &points ) const;
 
     /** Measures length of a line with one segment.
      * @param p1 start of line
@@ -212,7 +210,7 @@ class CORE_EXPORT QgsDistanceArea
      * @returns distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
      * @see lengthUnits()
      */
-    double measureLine( const QgsPoint& p1, const QgsPoint& p2 ) const;
+    double measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
     /** Measures length of line with one segment and returns units of distance.
      * @param p1 start of line
@@ -221,7 +219,7 @@ class CORE_EXPORT QgsDistanceArea
      * @returns calculated distance between points. Distance units are stored in units parameter.
      * @note added in QGIS 2.12
      */
-    double measureLine( const QgsPoint& p1, const QgsPoint& p2, QgsUnitTypes::DistanceUnit& units ) const;
+    double measureLine( const QgsPoint &p1, const QgsPoint &p2, QgsUnitTypes::DistanceUnit &units ) const;
 
     /** Returns the units of distance for length calculations made by this object.
      * @note added in QGIS 2.14
@@ -236,16 +234,16 @@ class CORE_EXPORT QgsDistanceArea
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     //! measures polygon area
-    double measurePolygon( const QList<QgsPoint>& points ) const;
+    double measurePolygon( const QList<QgsPoint> &points ) const;
 
     //! compute bearing - in radians
-    double bearing( const QgsPoint& p1, const QgsPoint& p2 ) const;
+    double bearing( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
     /** Returns an distance formatted as a friendly string.
      * @param distance distance to format
      * @param decimals number of decimal places to show
      * @param unit unit of distance
-     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, eg meters to
+     * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * @returns formatted distance string
      * @note added in QGIS 2.16
@@ -257,7 +255,7 @@ class CORE_EXPORT QgsDistanceArea
      * @param area area to format
      * @param decimals number of decimal places to show
      * @param unit unit of area
-     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, eg square meters to
+     * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * @returns formatted area string
      * @note added in QGIS 2.14
@@ -290,7 +288,7 @@ class CORE_EXPORT QgsDistanceArea
   protected:
     //! measures polygon area and perimeter, vertices are extracted from WKB
     // @note not available in python bindings
-    QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double* area, double* perimeter, bool hasZptr = false ) const;
+    QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double *area, double *perimeter, bool hasZptr = false ) const;
 
     /**
      * calculates distance from two points on ellipsoid
@@ -302,22 +300,22 @@ class CORE_EXPORT QgsDistanceArea
      * (the same for course2)
      * @return distance in meters
      */
-    double computeDistanceBearing( const QgsPoint& p1, const QgsPoint& p2,
-                                   double* course1 = nullptr, double* course2 = nullptr ) const;
+    double computeDistanceBearing( const QgsPoint &p1, const QgsPoint &p2,
+                                   double *course1 = nullptr, double *course2 = nullptr ) const;
 
     //! uses flat / planimetric / Euclidean distance
-    double computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 ) const;
+    double computeDistanceFlat( const QgsPoint &p1, const QgsPoint &p2 ) const;
 
     //! calculate distance with given coordinates (does not do a transform anymore)
-    double computeDistance( const QList<QgsPoint>& points ) const;
+    double computeDistance( const QList<QgsPoint> &points ) const;
 
     /**
      * calculates area of polygon on ellipsoid
      * algorithm has been taken from GRASS: gis/area_poly1.c
      */
-    double computePolygonArea( const QList<QgsPoint>& points ) const;
+    double computePolygonArea( const QList<QgsPoint> &points ) const;
 
-    double computePolygonFlatArea( const QList<QgsPoint>& points ) const;
+    double computePolygonFlatArea( const QList<QgsPoint> &points ) const;
 
     /**
      * precalculates some values
@@ -335,7 +333,7 @@ class CORE_EXPORT QgsDistanceArea
     };
 
     //! Copy helper
-    void _copy( const QgsDistanceArea & origDA );
+    void _copy( const QgsDistanceArea &origDA );
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform mCoordTransform;
@@ -354,9 +352,9 @@ class CORE_EXPORT QgsDistanceArea
     double getQ( double x ) const;
     double getQbar( double x ) const;
 
-    double measure( const QgsAbstractGeometry* geomV2, MeasureType type = Default ) const;
-    double measureLine( const QgsCurve* curve ) const;
-    double measurePolygon( const QgsCurve* curve ) const;
+    double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
+    double measureLine( const QgsCurve *curve ) const;
+    double measurePolygon( const QgsCurve *curve ) const;
 
     // temporary area measurement stuff
 

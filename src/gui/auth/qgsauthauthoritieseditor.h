@@ -23,6 +23,7 @@
 #include "ui_qgsauthauthoritieseditor.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 class QMenu;
@@ -36,12 +37,12 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     Q_OBJECT
 
   public:
+
     /**
      * Widget for viewing and editing certificate authorities directly in database
      * @param parent Parent widget
      */
     explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
-    ~QgsAuthAuthoritiesEditor();
 
   private slots:
     void populateCaCertsView();
@@ -50,13 +51,13 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void showCertInfo( QTreeWidgetItem *item );
 
-    /** Pass selection change on to UI update */
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    //! Pass selection change on to UI update
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-    /** Update UI based upon current selection */
+    //! Update UI based upon current selection
     void checkSelection();
 
-    void handleDoubleClick( QTreeWidgetItem* item, int col );
+    void handleDoubleClick( QTreeWidgetItem *item, int col );
 
     void on_btnAddCa_clicked();
 
@@ -76,11 +77,11 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void showTrustedCertificateAuthorities();
 
-    /** Relay messages to widget's messagebar */
-    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
+    //! Relay messages to widget's messagebar
+    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    /** Overridden show event of base widget */
+    //! Overridden show event of base widget
     void showEvent( QShowEvent *e ) override;
 
   private:
@@ -101,14 +102,14 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void populateRootCaCerts();
 
-    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
                                  QgsAuthAuthoritiesEditor::CaType catype );
 
-    void appendCertsToGroup( const QList<QSslCertificate>& certs,
+    void appendCertsToGroup( const QList<QSslCertificate> &certs,
                              QgsAuthAuthoritiesEditor::CaType catype,
                              QTreeWidgetItem *parent = nullptr );
 
-    void appendCertsToItem( const QList<QSslCertificate>& certs,
+    void appendCertsToItem( const QList<QSslCertificate> &certs,
                             QgsAuthAuthoritiesEditor::CaType catype,
                             QTreeWidgetItem *parent = nullptr );
 
@@ -116,23 +117,23 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void populateUtilitiesMenu();
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar *messageBar();
     int messageTimeout();
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem * mRootCaSecItem;
-    QTreeWidgetItem * mFileCaSecItem;
-    QTreeWidgetItem * mDbCaSecItem;
+    QTreeWidgetItem *mRootCaSecItem = nullptr;
+    QTreeWidgetItem *mFileCaSecItem = nullptr;
+    QTreeWidgetItem *mDbCaSecItem = nullptr;
 
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
     QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
 
-    QMenu * mUtilitiesMenu;
+    QMenu *mUtilitiesMenu = nullptr;
     bool mDisabled;
-    QAction * mActionDefaultTrustPolicy;
-    QAction * mActionShowTrustedCAs;
+    QAction *mActionDefaultTrustPolicy = nullptr;
+    QAction *mActionShowTrustedCAs = nullptr;
 };
 
 #endif // QGSAUTHAUTHORITIESEDITOR_H

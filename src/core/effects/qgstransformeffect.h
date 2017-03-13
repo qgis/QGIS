@@ -17,9 +17,11 @@
 #ifndef QGSTRANSFORMEFFECT_H
 #define QGSTRANSFORMEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
+#include "qgsunittypes.h"
 #include <QPainter>
 
 /** \ingroup core
@@ -39,15 +41,14 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @param map encoded properties string map
      * @returns new QgsTransformEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map );
 
     QgsTransformEffect();
-    virtual ~QgsTransformEffect();
 
-    virtual QString type() const override { return QString( "transform" ); }
+    virtual QString type() const override { return QStringLiteral( "transform" ); }
     virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
-    virtual QgsTransformEffect* clone() const override;
+    virtual void readProperties( const QgsStringMap &props ) override;
+    virtual QgsTransformEffect *clone() const override;
 
     /** Sets the transform x translation.
      * @param translateX distance to translate along the x axis
@@ -110,7 +111,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @see setTranslateY
      * @see setTranslateUnit
      */
-    void setTranslateMapUnitScale( const QgsMapUnitScale& scale ) { mTranslateMapUnitScale = scale; }
+    void setTranslateMapUnitScale( const QgsMapUnitScale &scale ) { mTranslateMapUnitScale = scale; }
 
     /** Returns the map unit scale used for the transform translation.
      * @returns map unit scale for translation
@@ -119,7 +120,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      * @see translateY
      * @see translateUnit
      */
-    const QgsMapUnitScale& translateMapUnitScale() const { return mTranslateMapUnitScale; }
+    const QgsMapUnitScale &translateMapUnitScale() const { return mTranslateMapUnitScale; }
 
     /** Sets the x axis scaling factor.
      * @param scaleX factor to scale x axis by, where 1.0 = no scaling
@@ -218,8 +219,8 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override;
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const override;
+    virtual void draw( QgsRenderContext &context ) override;
+    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
 
   private:
 
@@ -235,7 +236,7 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
     bool mReflectX;
     bool mReflectY;
 
-    QTransform createTransform( const QgsRenderContext& context ) const;
+    QTransform createTransform( const QgsRenderContext &context ) const;
 
 };
 

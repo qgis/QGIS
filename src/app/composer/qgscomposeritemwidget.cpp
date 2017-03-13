@@ -21,7 +21,7 @@
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"
 #include "qgspoint.h"
-#include "qgsdatadefinedbutton.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
 #include <QColorDialog>
@@ -30,82 +30,79 @@
 
 //QgsComposerItemBaseWidget
 
-QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget* parent, QgsComposerObject *composerObject ): QWidget( parent ), mComposerObject( composerObject )
+QgsComposerConfigObject::QgsComposerConfigObject( QWidget *parent, QgsComposerObject *composerObject )
+  : QObject( parent )
+  , mComposerObject( composerObject )
 {
-  connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ),
+  connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ),
            this, SLOT( updateDataDefinedButtons() ) );
   connect( atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateDataDefinedButtons() ) );
 }
 
-QgsComposerItemBaseWidget::~QgsComposerItemBaseWidget()
+QgsComposerConfigObject::~QgsComposerConfigObject()
 {
 }
 
-void QgsComposerItemBaseWidget::updateDataDefinedProperty()
+void QgsComposerConfigObject::updateDataDefinedProperty()
 {
   //match data defined button to item's data defined property
-  QgsDataDefinedButton* ddButton = dynamic_cast<QgsDataDefinedButton*>( sender() );
+  QgsPropertyOverrideButton *ddButton = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   if ( !ddButton )
   {
     return;
   }
-  QgsComposerObject::DataDefinedProperty property = QgsComposerObject::NoProperty;
+  QgsComposerObject::DataDefinedProperty key = QgsComposerObject::NoProperty;
 
-  if ( ddButton->property( "property" ).isValid() )
-    property = static_cast< QgsComposerObject::DataDefinedProperty >( ddButton->property( "property" ).toInt() );
+  if ( ddButton->propertyKey() >= 0 )
+    key = static_cast< QgsComposerObject::DataDefinedProperty >( ddButton->propertyKey() );
 
-  if ( property == QgsComposerObject::NoProperty )
+  if ( key == QgsComposerObject::NoProperty )
   {
     return;
   }
 
   //set the data defined property and refresh the item
-  setDataDefinedProperty( ddButton, property );
-  mComposerObject->refreshDataDefinedProperty( property );
+  mComposerObject->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
+  mComposerObject->refreshDataDefinedProperty( key );
 }
 
-void QgsComposerItemBaseWidget::updateDataDefinedButtons()
+void QgsComposerConfigObject::updateDataDefinedButtons()
 {
-  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
   {
     button->setVectorLayer( atlasCoverageLayer() );
   }
 }
 
-void QgsComposerItemBaseWidget::setDataDefinedProperty( const QgsDataDefinedButton *ddBtn, QgsComposerObject::DataDefinedProperty p )
-{
-  if ( !mComposerObject )
-  {
-    return;
-  }
-
-  const QMap< QString, QString >& map = ddBtn->definedProperty();
-  mComposerObject->setDataDefinedProperty( p, map.value( "active" ).toInt(), map.value( "useexpr" ).toInt(), map.value( "expression" ), map.value( "field" ) );
-}
-
-void QgsComposerItemBaseWidget::registerDataDefinedButton( QgsDataDefinedButton* button, QgsComposerObject::DataDefinedProperty property,
-    QgsDataDefinedButton::DataType type, const QString& description )
+void QgsComposerConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty key )
 {
   button->blockSignals( true );
-  QgsDataDefined* dd = mComposerObject->dataDefinedProperty( property );
-  button->init( atlasCoverageLayer(), dd, type, description );
-  button->setProperty( "property", property );
-
-  connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
-  connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
-
+  button->init( key, mComposerObject->dataDefinedProperties(), QgsComposerObject::propertyDefinitions(), atlasCoverageLayer() );
+  connect( button, &QgsPropertyOverrideButton::changed, this, &QgsComposerConfigObject::updateDataDefinedProperty );
   button->registerExpressionContextGenerator( mComposerObject );
   button->blockSignals( false );
 }
 
-QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
+void QgsComposerConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  if ( !button )
+    return;
+
+  if ( button->propertyKey() < 0 )
+    return;
+
+  QgsComposerObject::DataDefinedProperty key = static_cast< QgsComposerObject::DataDefinedProperty >( button->propertyKey() );
+  whileBlocking( button )->setToProperty( mComposerObject->dataDefinedProperties().property( key ) );
+}
+
+QgsAtlasComposition *QgsComposerConfigObject::atlasComposition() const
 {
   if ( !mComposerObject )
   {
     return nullptr;
   }
 
-  QgsComposition* composition = mComposerObject->composition();
+  QgsComposition *composition = mComposerObject->composition();
 
   if ( !composition )
   {
@@ -115,9 +112,9 @@ QgsAtlasComposition* QgsComposerItemBaseWidget::atlasComposition() const
   return &composition->atlasComposition();
 }
 
-QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
+QgsVectorLayer *QgsComposerConfigObject::atlasCoverageLayer() const
 {
-  QgsAtlasComposition* atlasMap = atlasComposition();
+  QgsAtlasComposition *atlasMap = atlasComposition();
 
   if ( atlasMap && atlasMap->enabled() )
   {
@@ -139,20 +136,21 @@ void QgsComposerItemWidget::updateVariables()
     mVariableEditor->setEditableScopeIndex( editableIndex );
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
-    : QgsComposerItemBaseWidget( parent, item )
-    , mItem( item )
-    , mFreezeXPosSpin( false )
-    , mFreezeYPosSpin( false )
-    , mFreezeWidthSpin( false )
-    , mFreezeHeightSpin( false )
-    , mFreezePageSpin( false )
+QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *item )
+  : QWidget( parent )
+  , mItem( item )
+  , mConfigObject( new QgsComposerConfigObject( this, item ) )
+  , mFreezeXPosSpin( false )
+  , mFreezeYPosSpin( false )
+  , mFreezeWidthSpin( false )
+  , mFreezeHeightSpin( false )
+  , mFreezePageSpin( false )
 {
 
   setupUi( this );
 
   //make button exclusive
-  QButtonGroup* buttonGroup = new QButtonGroup( this );
+  QButtonGroup *buttonGroup = new QButtonGroup( this );
   buttonGroup->addButton( mUpperLeftCheckBox );
   buttonGroup->addButton( mUpperMiddleCheckBox );
   buttonGroup->addButton( mUpperRightCheckBox );
@@ -164,6 +162,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   buttonGroup->addButton( mLowerRightCheckBox );
   buttonGroup->setExclusive( true );
 
+  initializeDataDefinedButtons();
+
   setValuesForGuiElements();
   connect( mItem->composition(), SIGNAL( paperSizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
   connect( mItem, SIGNAL( sizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
@@ -174,26 +174,11 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   updateVariables();
   connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
   // listen out for variable edits
-  QgsApplication* app = qobject_cast<QgsApplication*>( QgsApplication::instance() );
-  if ( app )
-  {
-    connect( app, SIGNAL( settingsChanged() ), this, SLOT( updateVariables() ) );
-  }
-  connect( QgsProject::instance(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
+  connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsComposerItemWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsComposerItemWidget::updateVariables );
+
   if ( mItem->composition() )
     connect( mItem->composition(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
-}
-
-QgsComposerItemWidget::QgsComposerItemWidget()
-    : QgsComposerItemBaseWidget( nullptr, nullptr )
-    , mItem( nullptr )
-    , mFreezeXPosSpin( false )
-    , mFreezeYPosSpin( false )
-    , mFreezeWidthSpin( false )
-    , mFreezeHeightSpin( false )
-    , mFreezePageSpin( false )
-{
-
 }
 
 QgsComposerItemWidget::~QgsComposerItemWidget()
@@ -213,14 +198,14 @@ void QgsComposerItemWidget::showFrameGroup( bool showGroup )
 
 //slots
 
-void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& newFrameColor )
+void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor &newFrameColor )
 {
   if ( !mItem )
   {
     return;
   }
-  mItem->beginCommand( tr( "Frame color changed" ) );
-  mItem->setFrameOutlineColor( newFrameColor );
+  mItem->beginCommand( tr( "Frame color changed" ), QgsComposerMergeCommand::ItemStrokeColor );
+  mItem->setFrameStrokeColor( newFrameColor );
   mItem->update();
   mItem->endCommand();
 }
@@ -233,18 +218,18 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
   }
 }
 
-void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor )
+void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor )
 {
   if ( !mItem )
   {
     return;
   }
-  mItem->beginCommand( tr( "Background color changed" ) );
+  mItem->beginCommand( tr( "Background color changed" ), QgsComposerMergeCommand::ItemBackgroundColor );
   mItem->setBackgroundColor( newBackgroundColor );
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  QgsComposerMap *cm = dynamic_cast<QgsComposerMap *>( mItem );
   if ( cm )
   {
     cm->cache();
@@ -314,15 +299,15 @@ QgsComposerItem::ItemPositionMode QgsComposerItemWidget::positionMode() const
   return QgsComposerItem::UpperLeft;
 }
 
-void QgsComposerItemWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsComposerItemWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mItem )
   {
     return;
   }
 
-  mItem->beginCommand( tr( "Item outline width" ), QgsComposerMergeCommand::ItemOutlineWidth );
-  mItem->setFrameOutlineWidth( d );
+  mItem->beginCommand( tr( "Item stroke width" ), QgsComposerMergeCommand::ItemStrokeWidth );
+  mItem->setFrameStrokeWidth( d );
   mItem->endCommand();
 }
 
@@ -364,7 +349,7 @@ void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
-  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  QgsComposerMap *cm = dynamic_cast<QgsComposerMap *>( mItem );
   if ( cm )
   {
     cm->cache();
@@ -510,7 +495,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
     return;
   }
 
-  mOutlineWidthSpinBox->blockSignals( true );
+  mStrokeWidthSpinBox->blockSignals( true );
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
@@ -524,8 +509,8 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->backgroundColor() );
-  mFrameColorButton->setColor( mItem->frameOutlineColor() );
-  mOutlineWidthSpinBox->setValue( mItem->frameOutlineWidth() );
+  mFrameColorButton->setColor( mItem->frameStrokeColor() );
+  mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
@@ -539,7 +524,7 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mBackgroundColorButton->blockSignals( false );
   mFrameColorButton->blockSignals( false );
   mFrameJoinStyleCombo->blockSignals( false );
-  mOutlineWidthSpinBox->blockSignals( false );
+  mStrokeWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
@@ -550,24 +535,26 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
 
+void QgsComposerItemWidget::initializeDataDefinedButtons()
+{
+  mConfigObject->initializeDataDefinedButton( mXPositionDDBtn, QgsComposerObject::PositionX );
+  mConfigObject->initializeDataDefinedButton( mYPositionDDBtn, QgsComposerObject::PositionY );
+  mConfigObject->initializeDataDefinedButton( mWidthDDBtn, QgsComposerObject::ItemWidth );
+  mConfigObject->initializeDataDefinedButton( mHeightDDBtn, QgsComposerObject::ItemHeight );
+  mConfigObject->initializeDataDefinedButton( mItemRotationDDBtn, QgsComposerObject::ItemRotation );
+  mConfigObject->initializeDataDefinedButton( mTransparencyDDBtn, QgsComposerObject::Transparency );
+  mConfigObject->initializeDataDefinedButton( mBlendModeDDBtn, QgsComposerObject::BlendMode );
+  mConfigObject->initializeDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports );
+  mConfigObject->initializeDataDefinedButton( mItemFrameColorDDBtn, QgsComposerObject::FrameColor );
+  mConfigObject->initializeDataDefinedButton( mItemBackgroundColorDDBtn, QgsComposerObject::BackgroundColor );
+}
+
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
-  registerDataDefinedButton( mXPositionDDBtn, QgsComposerObject::PositionX,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mYPositionDDBtn, QgsComposerObject::PositionY,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mWidthDDBtn, QgsComposerObject::ItemWidth,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mHeightDDBtn, QgsComposerObject::ItemHeight,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
-  registerDataDefinedButton( mItemRotationDDBtn, QgsComposerObject::ItemRotation,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );
-  registerDataDefinedButton( mTransparencyDDBtn, QgsComposerObject::Transparency,
-                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::intTranspDesc() );
-  registerDataDefinedButton( mBlendModeDDBtn, QgsComposerObject::BlendMode,
-                             QgsDataDefinedButton::String, QgsDataDefinedButton::blendModesDesc() );
-  registerDataDefinedButton( mExcludePrintsDDBtn, QgsComposerObject::ExcludeFromExports,
-                             QgsDataDefinedButton::String, QgsDataDefinedButton::boolDesc() );
+  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  {
+    mConfigObject->updateDataDefinedButton( button );
+  }
 }
 
 void QgsComposerItemWidget::setValuesForGuiElements()
@@ -579,10 +566,10 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
-  mBackgroundColorButton->setContext( "composer" );
+  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
   mFrameColorButton->setAllowAlpha( true );
-  mFrameColorButton->setContext( "composer" );
+  mFrameColorButton->setContext( QStringLiteral( "composer" ) );
 
   setValuesForGuiPositionElements();
   setValuesForGuiNonPositionElements();
@@ -785,4 +772,31 @@ void QgsComposerItemWidget::on_mExcludeFromPrintsCheckBox_toggled( bool checked 
     mItem->setExcludeFromExports( checked );
     mItem->endCommand();
   }
+}
+
+QgsComposerItemBaseWidget::QgsComposerItemBaseWidget( QWidget *parent, QgsComposerObject *composerObject )
+  : QgsPanelWidget( parent )
+  , mConfigObject( new QgsComposerConfigObject( this, composerObject ) )
+{
+
+}
+
+void QgsComposerItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsComposerObject::DataDefinedProperty property )
+{
+  mConfigObject->initializeDataDefinedButton( button, property );
+}
+
+void QgsComposerItemBaseWidget::updateDataDefinedButton( QgsPropertyOverrideButton *button )
+{
+  mConfigObject->updateDataDefinedButton( button );
+}
+
+QgsVectorLayer *QgsComposerItemBaseWidget::atlasCoverageLayer() const
+{
+  return mConfigObject->atlasCoverageLayer();
+}
+
+QgsAtlasComposition *QgsComposerItemBaseWidget::atlasComposition() const
+{
+  return mConfigObject->atlasComposition();
 }

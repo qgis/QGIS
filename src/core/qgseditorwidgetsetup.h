@@ -16,7 +16,8 @@
 #ifndef QGSEDITORWIDGETSETUP_H
 #define QGSEDITORWIDGETSETUP_H
 
-#include "qgseditorwidgetconfig.h"
+#include "qgis_core.h"
+#include <QVariantMap>
 
 /** \ingroup core
  * Holder for the widget type and its configuration for a field.
@@ -26,10 +27,15 @@
 class CORE_EXPORT QgsEditorWidgetSetup
 {
   public:
+
     /**
      * Constructor
      */
-    QgsEditorWidgetSetup( const QString& type, const QgsEditorWidgetConfig& config ) : mType( type ), mConfig( config ) {}
+    QgsEditorWidgetSetup( const QString &type, const QVariantMap &config )
+      : mType( type )
+      , mConfig( config )
+    {}
+
     QgsEditorWidgetSetup() {}
 
     /**
@@ -40,15 +46,16 @@ class CORE_EXPORT QgsEditorWidgetSetup
     /**
      * @return the widget configuration to used
      */
-    QgsEditorWidgetConfig config() const { return mConfig; }
+    QVariantMap config() const { return mConfig; }
 
     /**
      * @return true if there is no widget configured.
      */
     bool isNull() const { return mType.isEmpty(); }
+
   private:
     QString mType;
-    QgsEditorWidgetConfig mConfig;
+    QVariantMap mConfig;
 };
 
 #endif // QGSEDITORWIDGETSETUP_H

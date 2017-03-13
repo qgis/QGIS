@@ -9,9 +9,9 @@ class DualEdgeTriangulation: Triangulation
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation* d );
     /** Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
-    void addLine( Line3D* line, bool breakline );
+    void addLine( Line3D* line /Transfer/, bool breakline );
     /** Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure*/
-    int addPoint( Point3D* p );
+    int addPoint( Point3D* p /Transfer/);
     /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest();
     /** Calculates the normal at a point on the surface*/
@@ -40,8 +40,8 @@ class DualEdgeTriangulation: Triangulation
     virtual double getYMin() const;
     /** Returns the number of points*/
     virtual int getNumberOfPoints() const;
-    /** Sets the behaviour of the triangulation in case of crossing forced lines*/
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b );
+    /** Sets the behavior of the triangulation in case of crossing forced lines*/
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b );
     /** Sets the color of the normal edges*/
     virtual void setEdgeColor( int r, int g, int b );
     /** Sets the color of the forced edges*/

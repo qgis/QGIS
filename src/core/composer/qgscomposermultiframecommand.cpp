@@ -17,18 +17,15 @@
 
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent ):
+  QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
 {
 }
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( "", nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
-{
-}
-
-QgsComposerMultiFrameCommand::~QgsComposerMultiFrameCommand()
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLatin1String( "" ), nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
 {
 }
 
@@ -56,23 +53,23 @@ void QgsComposerMultiFrameCommand::saveAfterState()
   saveState( mAfterState );
 }
 
-void QgsComposerMultiFrameCommand::saveState( QDomDocument& stateDoc )
+void QgsComposerMultiFrameCommand::saveState( QDomDocument &stateDoc )
 {
   if ( mMultiFrame )
   {
     stateDoc.clear();
-    QDomElement documentElement = stateDoc.createElement( "ComposerMultiFrameState" );
+    QDomElement documentElement = stateDoc.createElement( QStringLiteral( "ComposerMultiFrameState" ) );
     mMultiFrame->writeXml( documentElement, stateDoc );
     stateDoc.appendChild( documentElement );
   }
 }
 
-void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
+void QgsComposerMultiFrameCommand::restoreState( QDomDocument &stateDoc )
 {
   if ( mMultiFrame )
   {
     mMultiFrame->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc );
-    QgsProject::instance()->setDirty( true );
+    mMultiFrame->composition()->project()->setDirty( true );
   }
 }
 
@@ -93,20 +90,15 @@ bool QgsComposerMultiFrameCommand::containsChange() const
 
 
 QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame *multiFrame, const QString &text )
-    : QgsComposerMultiFrameCommand( multiFrame, text )
-    , mContext( c )
-{
-
-}
-
-QgsComposerMultiFrameMergeCommand::~QgsComposerMultiFrameMergeCommand()
+  : QgsComposerMultiFrameCommand( multiFrame, text )
+  , mContext( c )
 {
 
 }
 
 bool QgsComposerMultiFrameMergeCommand::mergeWith( const QUndoCommand *command )
 {
-  const QgsComposerMultiFrameCommand* c = dynamic_cast<const QgsComposerMultiFrameCommand*>( command );
+  const QgsComposerMultiFrameCommand *c = dynamic_cast<const QgsComposerMultiFrameCommand *>( command );
   if ( !c || mMultiFrame != c->multiFrame() )
   {
     return false;

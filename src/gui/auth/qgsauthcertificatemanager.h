@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <QDialog>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -31,13 +32,13 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
     Q_OBJECT
 
   public:
+
     /**
      * Construct a widget to contain various certificate editors
      * @param parent Parent widget
      */
     explicit QgsAuthCertEditors( QWidget *parent = nullptr );
 
-    ~QgsAuthCertEditors();
 };
 
 
@@ -51,19 +52,18 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog wrapper for widget to manage available certificate editors
      * @param parent Parent widget
      */
     explicit QgsAuthCertManager( QWidget *parent = nullptr );
 
-    ~QgsAuthCertManager();
-
-    /** Get access to embedded editors widget */
+    //! Get access to embedded editors widget
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }
 
   private:
-    QgsAuthCertEditors *mCertEditors;
+    QgsAuthCertEditors *mCertEditors = nullptr;
 };
 
 #endif // QGSAUTHCERTIFICATEMANAGER_H

@@ -33,7 +33,7 @@ class QgsVertexEntry;
 /**
  * Constant representing zero value for distance. It's 0 because of error in double counting.
  */
-const static double ZERO_TOLERANCE = 0.000000001;
+static const double ZERO_TOLERANCE = 0.000000001;
 
 /**
  * Class that keeps the selected feature
@@ -52,7 +52,7 @@ class QgsSelectedFeature: public QObject
      * @param vlayer vector layer in which feature is selected
      * @param canvas mapCanvas on which we are working
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas );
 
     /**
      * Function to select vertex with number
@@ -92,7 +92,7 @@ class QgsSelectedFeature: public QObject
      * Inverts selection of a set of vertices at once.
      * @param vertexIndices list of vertex indices to invert whether or not they are selected
      */
-    void invertVertexSelection( QVector<int> vertexIndices );
+    void invertVertexSelection( const QVector<int> &vertexIndices );
 
     /**
      * Tells if vertex is selected
@@ -111,7 +111,7 @@ class QgsSelectedFeature: public QObject
      * Getting vertex map of vertexes
      * @return currently used vertex map
      */
-    QList<QgsVertexEntry*> &vertexMap();
+    QList<QgsVertexEntry *> &vertexMap();
 
     /**
      * Updates whole selection object from the selected object
@@ -160,7 +160,7 @@ class QgsSelectedFeature: public QObject
     /*
      * the geometry of a feature from the layer was changed - might be the selected
      */
-    void geometryChanged( QgsFeatureId, const QgsGeometry& );
+    void geometryChanged( QgsFeatureId, const QgsGeometry & );
 
     /*
      * the current layer changed - destroy
@@ -178,6 +178,7 @@ class QgsSelectedFeature: public QObject
     void beforeRollBack();
 
   private:
+
     /**
      * Deletes whole vertex map.
      */
@@ -192,7 +193,7 @@ class QgsSelectedFeature: public QObject
      * Updates stored geometry to actual one loaded from layer
      * (or already available geometry)
      */
-    void updateGeometry( const QgsGeometry* geom );
+    void updateGeometry( const QgsGeometry *geom );
 
     /**
      * Validates the geometry
@@ -200,14 +201,14 @@ class QgsSelectedFeature: public QObject
     void validateGeometry( QgsGeometry *g = nullptr );
 
     QgsFeatureId mFeatureId;
-    QgsGeometry *mGeometry;
+    QgsGeometry *mGeometry = nullptr;
     bool mFeatureSelected;
     bool mChangingGeometry;
-    QgsVectorLayer* mVlayer;
-    QList<QgsVertexEntry*> mVertexMap;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer *mVlayer = nullptr;
+    QList<QgsVertexEntry *> mVertexMap;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QgsGeometryValidator *mValidator;
+    QgsGeometryValidator *mValidator = nullptr;
     QString mTip;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;

@@ -77,7 +77,7 @@ class SelectByAttribute(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         fieldName = self.getParameterValue(self.FIELD)
@@ -86,13 +86,13 @@ class SelectByAttribute(GeoAlgorithm):
 
         fields = layer.fields()
 
-        idx = layer.fieldNameIndex(fieldName)
+        idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()
 
         if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:
             op = ''.join(['"%s", ' % o for o in self.OPERATORS[-2:]])
             raise GeoAlgorithmExecutionException(
-                self.tr('Operators %s can be used only with string fields.' % op))
+                self.tr('Operators {0} can be used only with string fields.').format(op))
 
         if fieldType in [QVariant.Int, QVariant.Double, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
             expr = '"%s" %s %s' % (fieldName, operator, value)
@@ -107,11 +107,11 @@ class SelectByAttribute(GeoAlgorithm):
             expr = """"%s" %s '%s'""" % (fieldName, operator, value)
         else:
             raise GeoAlgorithmExecutionException(
-                self.tr('Unsupported field type "%s"' % fields[idx].typeName()))
+                self.tr('Unsupported field type "{0}"').format(fields[idx].typeName()))
 
         qExp = QgsExpression(expr)
         if not qExp.hasParserError():
-            qReq = QgsFeatureRequest(qExp)
+            qReq = QgsFeatureRequest(qExp).setSubsetOfAttributes([])
         else:
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
         selected = [f.id() for f in layer.getFeatures(qReq)]

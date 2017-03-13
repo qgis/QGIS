@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsactionmanager.h
 
- These classes store and control the managment and execution of actions
+ These classes store and control the management and execution of actions
  associated with a particular Qgis layer. Actions are defined to be
  external programs that are run with user-specified inputs that can
  depend on the contents of layer attributes.
@@ -24,6 +24,7 @@
 #ifndef QGSACTIONMANAGER_H
 #define QGSACTIONMANAGER_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QIcon>
 
@@ -34,6 +35,7 @@ class QDomNode;
 class QDomDocument;
 class QgsPythonUtils;
 class QgsVectorLayer;
+class QgsExpressionContextScope;
 class QgsExpressionContext;
 
 /** \ingroup core
@@ -49,8 +51,7 @@ class CORE_EXPORT QgsActionManager
   public:
     //! Constructor
     QgsActionManager( QgsVectorLayer *layer )
-        : mLayer( layer )
-        , mDefaultAction( -1 )
+      : mLayer( layer )
     {}
 
     /** Add an action with the given name and action details.
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsActionManager
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
+    QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture = false );
 
     /** Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
@@ -67,88 +68,85 @@ class CORE_EXPORT QgsActionManager
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
+    QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
 
     /**
      * Add a new action to this list.
      */
-    void addAction( const QgsAction& action );
+    void addAction( const QgsAction &action );
 
-    //! Remove an action at given index
-    void removeAction( int index );
+    /**
+     * Remove an action by its id.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void removeAction( const QUuid &actionId );
 
     /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
-    void doAction( int index,
-                   const QgsFeature &feat,
-                   int defaultValueIndex = 0 );
+    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 );
 
     /** Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
-     * @param index action index
+     * @param actionId action id
      * @param feature feature to run action for
-     * @param context expression context to evalute expressions under
+     * @param context expression context to evaluate expressions under
      */
-    void doAction( int index,
-                   const QgsFeature& feature,
-                   const QgsExpressionContext& context );
+    void doAction( const QUuid &actionId, const QgsFeature &feature, const QgsExpressionContext &context );
 
     //! Removes all actions
     void clearActions();
 
     /**
-     * Return a list of all actions
+     * Return a list of actions that are available in the given action scope.
+     * If no action scope is provided, all actions will be returned.
+     *
+     * @note Added in QGIS 3.0
      */
-    QList<QgsAction> listActions() const;
+    QList<QgsAction> actions( const QString &actionScope = QString() ) const;
 
     //! Return the layer
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer *layer() const { return mLayer; }
 
     //! Writes the actions out in XML format
-    bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;
+    bool writeXml( QDomNode &layer_node ) const;
 
     //! Reads the actions in in XML format
-    bool readXml( const QDomNode& layer_node );
+    bool readXml( const QDomNode &layer_node );
 
     /**
-     * Get the number of actions managed by this.
+     * Get an action by its id.
+     *
+     * @note Added in QGIS 3.0
      */
-    int size() const { return mActions.size(); }
+    QgsAction action( const QUuid &id );
 
     /**
-     * Get the action at the specified index.
+     * Each scope can have a default action. This will be saved in the project
+     * file.
+     *
+     * @note Added in QGIS 3.0
      */
-    const QgsAction& at( int idx ) const { return mActions.at( idx ); }
+    void setDefaultAction( const QString &actionScope, const QUuid &actionId );
 
     /**
-     * Get the action at the specified index.
+     * Each scope can have a default action. This will be saved in the project
+     * file.
+     *
+     * @note Added in QGIS 3.0
      */
-    QgsAction operator[]( int idx ) const { return mActions[idx]; }
-
-    /**
-     * Returns the index of the default action, or -1 if no default action is available.
-     * @see setDefaultAction()
-     */
-    int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? -1 : mDefaultAction; }
-
-    /**
-     * Set the index of the default action.
-     * @param actionNumber index of action which should be made the default for the layer
-     * @see defaultAction()
-     */
-    void setDefaultAction( int actionNumber ) { mDefaultAction = actionNumber ; }
+    QgsAction defaultAction( const QString &actionScope );
 
   private:
     QList<QgsAction> mActions;
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     static void ( *smPythonExecute )( const QString & );
 
-    void runAction( const QgsAction &action,
-                    void ( *executePython )( const QString & ) = nullptr );
+    void runAction( const QgsAction &action );
 
-    int mDefaultAction;
+    QMap<QString, QUuid> mDefaultActions;
 
     QgsExpressionContext createExpressionContext() const;
 };

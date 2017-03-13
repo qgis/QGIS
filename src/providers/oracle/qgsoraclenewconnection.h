@@ -18,7 +18,7 @@
 #define QGSORACLENEWCONNECTION_H
 #include "ui_qgsoraclenewconnectionbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 /** \class QgsOracleNewConnection
  * \brief Dialog to allow the user to configure and save connection
@@ -29,7 +29,7 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
     Q_OBJECT
   public:
     //! Constructor
-    QgsOracleNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsOracleNewConnection( QWidget *parent = 0, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOracleNewConnection();
 
@@ -39,7 +39,7 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
   public slots:
     void accept();
     void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#oracle-spatial-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
 };

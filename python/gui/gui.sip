@@ -1,5 +1,4 @@
 %Module(name=qgis._gui,
-        version=0,
         keyword_arguments="Optional")
 
 %Feature HAVE_QSCI_SIP
@@ -11,12 +10,7 @@
 %Import QtXml/QtXmlmod.sip
 
 %If (HAVE_QSCI_SIP)
-  %If (!QT5_SUPPORT)
-    %Import Qsci/qscimod4.sip
-  %End
-  %If (QT5_SUPPORT)
-    %Import Qsci/qscimod5.sip
-  %End
+  %Import Qsci/qscimod5.sip
 %End
 
 %Include qgsblendmodecombobox.sip
@@ -26,7 +20,6 @@
 %Include qgsactionmenu.sip
 %Include qgsadvanceddigitizingcanvasitem.sip
 %Include qgsadvanceddigitizingdockwidget.sip
-%Include qgsannotationitem.sip
 %Include qgsattributedialog.sip
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributeform.sip
@@ -46,7 +39,7 @@
 %Include qgscharacterselectdialog.sip
 %Include qgscolorbrewercolorrampdialog.sip
 %Include qgscolorbutton.sip
-%Include qgscolorbutton.sip
+%Include qgscolorrampbutton.sip
 %Include qgscolordialog.sip
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip
@@ -58,7 +51,7 @@
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
 %Include qgscustomdrophandler.sip
-%Include qgsdatadefinedbutton.sip
+%Include qgscurveeditorwidget.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdetaileditemwidget.sip
@@ -80,29 +73,31 @@
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
 %Include qgsfieldvalidator.sip
+%Include qgsfieldvalueslineedit.sip
 %Include qgsfiledropedit.sip
 %Include qgsfilewidget.sip
+%Include qgsfiledownloader.sip
 %Include qgsfilterlineedit.sip
+%Include qgsfloatingwidget.sip
 %Include qgsfocuswatcher.sip
-%Include qgsformannotationitem.sip
-%Include qgsgenericprojectionselector.sip
+%Include qgsformannotation.sip
 %Include qgsgeometryrubberband.sip
 %Include qgsgradientcolorrampdialog.sip
 %Include qgsgradientstopeditor.sip
 %Include qgsgroupwmsdatadialog.sip
+%Include qgshelp.sip
 %Include qgshighlight.sip
 %Include qgshistogramwidget.sip
-%Include qgshtmlannotationitem.sip
 %Include qgsidentifymenu.sip
 %Include qgskeyvaluewidget.sip
 %Include qgslistwidget.sip
 %Include qgslegendfilterbutton.sip
-%Include qgslegendinterface.sip
 %Include qgslimitedrandomcolorrampdialog.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip
 %Include qgsmapcanvas.sip
+%Include qgsmapcanvasannotationitem.sip
 %Include qgsmapcanvasitem.sip
 %Include qgsmapcanvassnapper.sip
 %Include qgsmapcanvassnappingutils.sip
@@ -122,7 +117,6 @@
 %Include qgsmaptoolidentify.sip
 %Include qgsmaptoolidentifyfeature.sip
 %Include qgsmaptoolpan.sip
-%Include qgsmaptooltouch.sip
 %Include qgsmaptoolzoom.sip
 %Include qgsmaplayerstylemanagerwidget.sip
 %Include qgsmessagebar.sip
@@ -143,9 +137,11 @@
 %Include qgspluginmanagerinterface.sip
 %Include qgspresetcolorrampdialog.sip
 %Include qgsprevieweffect.sip
-%Include qgsprojectbadlayerguihandler.sip
+%Include qgsprojectionselectiondialog.sip
+%Include qgsprojectionselectiontreewidget.sip
 %Include qgsprojectionselectionwidget.sip
-%Include qgsprojectionselector.sip
+%Include qgspropertyassistantwidget.sip
+%Include qgspropertyoverridebutton.sip
 %Include qgsquerybuilder.sip
 %Include qgsrasterformatsaveoptionswidget.sip
 %Include qgsrasterlayersaveasdialog.sip
@@ -161,17 +157,17 @@
 %Include qgsslider.sip
 %Include qgssourceselectdialog.sip
 %Include qgssublayersdialog.sip
-%Include qgssvgannotationitem.sip
+%Include qgssubstitutionlistwidget.sip
 %Include qgstablewidgetbase.sip
 %Include qgstabwidget.sip
 %Include qgstablewidgetitem.sip
-%Include qgstextannotationitem.sip
-%Include qgstrackedvectorlayertools.sip
+%Include qgstaskmanagerwidget.sip
+%Include qgstextformatwidget.sip
+%Include qgstextpreview.sip
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsuserinputdockwidget.sip
 %Include qgsvariableeditorwidget.sip
-%Include qgsvectorlayertools.sip
 %Include qgsvertexmarker.sip
 
 %Include attributetable/qgsattributetabledelegate.sip
@@ -228,7 +224,6 @@
 %Include symbology-ng/qgsarrowsymbollayerwidget.sip
 %Include symbology-ng/qgsbrushstylecombobox.sip
 %Include symbology-ng/qgscategorizedsymbolrendererwidget.sip
-%Include symbology-ng/qgscolorrampcombobox.sip
 %Include symbology-ng/qgscptcitycolorrampdialog.sip
 %Include symbology-ng/qgsdashspacedialog.sip
 %Include symbology-ng/qgsellipsesymbollayerwidget.sip
@@ -239,21 +234,23 @@
 %Include symbology-ng/qgslayerpropertieswidget.sip
 %Include symbology-ng/qgsnullsymbolrendererwidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
+%Include symbology-ng/qgspointclusterrendererwidget.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip
 %Include symbology-ng/qgsrendererpropertiesdialog.sip
 %Include symbology-ng/qgsrendererwidget.sip
 %Include symbology-ng/qgsrulebasedrendererwidget.sip
 %Include symbology-ng/qgssinglesymbolrendererwidget.sip
-%Include symbology-ng/qgssizescalewidget.sip
 %Include symbology-ng/qgssmartgroupeditordialog.sip
 %Include symbology-ng/qgsstyleexportimportdialog.sip
 %Include symbology-ng/qgsstylegroupselectiondialog.sip
 %Include symbology-ng/qgsstylemanagerdialog.sip
+%Include symbology-ng/qgsstylesavedialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
 %Include symbology-ng/qgssymbollayerwidget.sip
 %Include symbology-ng/qgssymbollevelsdialog.sip
 %Include symbology-ng/qgssymbolslistwidget.sip
 %Include symbology-ng/qgssymbolselectordialog.sip
+%Include symbology-ng/qgssymbolwidgetcontext.sip
 %Include symbology-ng/qgsvectorfieldsymbollayerwidget.sip
 
 %Include effects/qgseffectdrawmodecombobox.sip

@@ -18,6 +18,7 @@
 #ifndef QGSGROUPUNGROUPITEMSCOMMAND_H
 #define QGSGROUPUNGROUPITEMSCOMMAND_H
 
+#include "qgis_core.h"
 #include <QUndoCommand>
 #include "qgscomposeritem.h"
 
@@ -35,7 +36,7 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
 
   public:
 
-    /** Command kind, and state */
+    //! Command kind, and state
     enum State
     {
       Grouped = 0,
@@ -51,22 +52,22 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
      * @param parent parent command, if any
      *
      */
-    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
     ~QgsGroupUngroupItemsCommand();
 
     void redo() override;
     void undo() override;
 
   signals:
-    /** Signals addition of an item (the group) */
-    void itemAdded( QgsComposerItem* item );
-    /** Signals removal of an item (the group) */
-    void itemRemoved( QgsComposerItem* item );
+    //! Signals addition of an item (the group)
+    void itemAdded( QgsComposerItem *item );
+    //! Signals removal of an item (the group)
+    void itemRemoved( QgsComposerItem *item );
 
   private:
-    QgsComposerItemGroup* mGroup;
-    QSet<QgsComposerItem*> mItems;
-    QgsComposition* mComposition;
+    QgsComposerItemGroup *mGroup = nullptr;
+    QSet<QgsComposerItem *> mItems;
+    QgsComposition *mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

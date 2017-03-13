@@ -10,7 +10,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     //QgsGeometryCollection& operator=( const QgsGeometryCollection& c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection* clone() const;
+    virtual QgsGeometryCollection* clone() const /Factory/;
 
     /** Returns the number of geometries within the collection.
      */
@@ -27,6 +27,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry* geometryN( int n );
 
     //methods inherited from QgsAbstractGeometry
+    bool isEmpty() const;
     virtual int dimension() const;
     virtual QString geometryType() const;
     virtual void clear();
@@ -55,10 +56,9 @@ class QgsGeometryCollection: public QgsAbstractGeometry
 
     virtual void draw( QPainter& p ) const;
 
-    bool fromWkb( QgsConstWkbPtr wkb );
+    bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
@@ -67,6 +67,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const;
 
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
+    virtual int nCoordinates() const;
     virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 
@@ -84,7 +85,7 @@ class QgsGeometryCollection: public QgsAbstractGeometry
     /** Returns a geometry without curves. Caller takes ownership
     * @param tolerance segmentation tolerance
     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * @param vertex the vertex id

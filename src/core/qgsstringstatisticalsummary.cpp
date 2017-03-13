@@ -19,7 +19,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVariantList>
-#include "limits.h"
+#include <limits>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -27,8 +27,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsStringStatisticalSummary::QgsStringStatisticalSummary( const QgsStringStatisticalSummary::Statistics& stats )
-    : mStatistics( stats )
+QgsStringStatisticalSummary::QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats )
+  : mStatistics( stats )
 {
   reset();
 }
@@ -42,25 +42,27 @@ void QgsStringStatisticalSummary::reset()
   mMax.clear();
   mMinLength = INT_MAX;
   mMaxLength = 0;
+  mSumLengths = 0;
+  mMeanLength = 0;
 }
 
-void QgsStringStatisticalSummary::calculate( const QStringList& values )
+void QgsStringStatisticalSummary::calculate( const QStringList &values )
 {
   reset();
 
-  Q_FOREACH ( const QString& string, values )
+  Q_FOREACH ( const QString &string, values )
   {
     testString( string );
   }
   finalize();
 }
 
-void QgsStringStatisticalSummary::addString( const QString& string )
+void QgsStringStatisticalSummary::addString( const QString &string )
 {
   testString( string );
 }
 
-void QgsStringStatisticalSummary::addValue( const QVariant& value )
+void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
   if ( value.type() == QVariant::String )
   {
@@ -71,15 +73,14 @@ void QgsStringStatisticalSummary::addValue( const QVariant& value )
 
 void QgsStringStatisticalSummary::finalize()
 {
-  //nothing to do for now - this method has been added for forward compatibility
-  //if statistics are implemented which require a post-calculation step
+  mMeanLength = mSumLengths / static_cast< double >( mCount );
 }
 
-void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList& values )
+void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &values )
 {
   reset();
 
-  Q_FOREACH ( const QVariant& variant, values )
+  Q_FOREACH ( const QVariant &variant, values )
   {
     if ( variant.type() == QVariant::String )
     {
@@ -88,7 +89,7 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList& val
   }
 }
 
-void QgsStringStatisticalSummary::testString( const QString& string )
+void QgsStringStatisticalSummary::testString( const QString &string )
 {
   mCount++;
 
@@ -121,6 +122,8 @@ void QgsStringStatisticalSummary::testString( const QString& string )
       mMax = string;
     }
   }
+  if ( mStatistics & MeanLength )
+    mSumLengths += string.length();
   mMinLength = qMin( mMinLength, string.length() );
   mMaxLength = qMax( mMaxLength, string.length() );
 }
@@ -143,6 +146,8 @@ QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::St
       return mMinLength;
     case MaximumLength:
       return mMaxLength;
+    case MeanLength:
+      return mMeanLength;
     case All:
       return 0;
   }
@@ -167,6 +172,8 @@ QString QgsStringStatisticalSummary::displayName( QgsStringStatisticalSummary::S
       return QObject::tr( "Minimum length" );
     case MaximumLength:
       return QObject::tr( "Maximum length" );
+    case MeanLength:
+      return QObject::tr( "Mean length" );
     case All:
       return QString();
   }

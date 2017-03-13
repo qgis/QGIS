@@ -23,6 +23,7 @@
 #include <QString>
 #include <QVector>
 #include "gdal.h"
+#include "qgis_analysis.h"
 
 class QgsRasterLayer;
 class QProgressDialog;
@@ -31,7 +32,7 @@ class QProgressDialog;
 struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
   QString ref; //name
-  QgsRasterLayer* raster; //pointer to rasterlayer
+  QgsRasterLayer *raster; //pointer to rasterlayer
   int bandNumber; //raster band number
 };
 
@@ -44,12 +45,12 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //! Result of the calculation
     enum Result
     {
-      Success = 0, /*!< Calculation sucessful */
-      CreateOutputError = 1, /*!< Error creating output data file */
-      InputLayerError = 2, /*!< Error reading input layer */
-      Cancelled = 3, /*!< User cancelled calculation */
-      ParserError = 4, /*!< Error parsing formula */
-      MemoryError = 5, /*!< Error allocating memory for result */
+      Success = 0, //!< Calculation successful
+      CreateOutputError = 1, //!< Error creating output data file
+      InputLayerError = 2, //!< Error reading input layer
+      Canceled = 3, //!< User canceled calculation
+      ParserError = 4, //!< Error parsing formula
+      MemoryError = 5, //!< Error allocating memory for result
     };
 
     /** QgsRasterCalculator constructor.
@@ -61,8 +62,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * @param nOutputRows number of rows in output raster
      * @param rasterEntries list of referenced raster layers
      */
-    QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
-                         const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
+    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+                         const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
     /** QgsRasterCalculator constructor.
      * @param formulaString formula for raster calculation
@@ -75,14 +76,14 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * @param rasterEntries list of referenced raster layers
      * @note added in QGIS 2.10
      */
-    QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
-                         const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
+    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+                         const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
     /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
     //TODO QGIS 3.0 - return QgsRasterCalculator::Result
-    int processCalculation( QProgressDialog* p = nullptr );
+    int processCalculation( QProgressDialog *p = nullptr );
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
@@ -98,19 +99,19 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 
     /** Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
       @param transform double[6] array that receives the GDAL parameters*/
-    void outputGeoTransform( double* transform ) const;
+    void outputGeoTransform( double *transform ) const;
 
     QString mFormulaString;
     QString mOutputFile;
     QString mOutputFormat;
 
-    /** Output raster extent*/
+    //! Output raster extent
     QgsRectangle mOutputRectangle;
     QgsCoordinateReferenceSystem mOutputCrs;
 
-    /** Number of output columns*/
+    //! Number of output columns
     int mNumOutputColumns;
-    /** Number of output rows*/
+    //! Number of output rows
     int mNumOutputRows;
 
     /***/

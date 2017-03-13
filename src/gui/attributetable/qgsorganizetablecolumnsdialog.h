@@ -22,6 +22,7 @@
 #include "ui_qgsorganizetablecolumnsdialog.h"
 
 #include "qgsattributetableconfig.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
@@ -35,17 +36,15 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * @param vl The concerned vector layer
      * @param parent parent object
      * @param flags window flags
      */
-    QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::Window );
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    /**
-     * Destructor
-     */
     ~QgsOrganizeTableColumnsDialog();
 
     /**
@@ -54,6 +53,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     QgsAttributeTableConfig config() const;
 
   public slots:
+
     /**
      * showAll checks all the  fields to show them all in the attribute table
      */

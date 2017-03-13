@@ -17,6 +17,7 @@
 
 #include <QSlider>
 #include <QVariant>
+#include "qgis_gui.h"
 
 class QPaintEvent;
 
@@ -28,7 +29,7 @@ class GUI_EXPORT QgsSlider : public QSlider
     Q_OBJECT
   public:
     QgsSlider( QWidget *parent = nullptr );
-    QgsSlider( Qt::Orientation orientation, QWidget * parent = nullptr );
+    QgsSlider( Qt::Orientation orientation, QWidget *parent = nullptr );
 
     void setMinimum( const QVariant &min );
     void setMaximum( const QVariant &max );
@@ -37,13 +38,13 @@ class GUI_EXPORT QgsSlider : public QSlider
     QVariant variantValue() const;
 
   signals:
-    void valueChanged( const QVariant& );
+    void valueChanged( const QVariant & );
 
   protected slots:
     void valueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent * event ) override;
+    virtual void paintEvent( QPaintEvent *event ) override;
 
   private:
     void update();

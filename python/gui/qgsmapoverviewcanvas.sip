@@ -17,9 +17,10 @@ class QgsMapOverviewCanvas : QWidget
     void setBackgroundColor( const QColor& color );
 
     //! updates layer set for overview
-    void setLayerSet( const QStringList& layerSet );
+    void setLayers( const QList<QgsMapLayer*>& layers );
 
-    QStringList layerSet() const;
+    //! Returns list of layers visible in the overview
+    QList<QgsMapLayer*> layers() const;
 
     void enableAntiAliasing( bool flag );
 
@@ -30,9 +31,6 @@ class QgsMapOverviewCanvas : QWidget
     // ### QGIS 3: make protected
     //! used for overview canvas to reflect changed extent in main map canvas
     void drawExtentRect();
-
-    // ### QGIS 3: rename so it does not look like getter, make protected
-    void hasCrsTransformEnabled( bool flag );
 
     // ### QGIS 3: make protected
     //! Should be called when the canvas destination CRS is changed

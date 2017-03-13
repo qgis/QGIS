@@ -21,6 +21,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
+#include "qgis_gui.h"
 
 class QgsCoordinateReferenceSystem;
 
@@ -40,30 +41,30 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-    explicit QgsExtentGroupBox( QWidget* parent = nullptr );
+    explicit QgsExtentGroupBox( QWidget *parent = nullptr );
 
     enum ExtentState
     {
-      OriginalExtent,  //!<  layer's extent
-      CurrentExtent,   //!<  map canvas extent
-      UserExtent,      //!<  extent manually entered/modified by the user
+      OriginalExtent,  //!< Layer's extent
+      CurrentExtent,   //!< Map canvas extent
+      UserExtent,      //!< Extent manually entered/modified by the user
     };
 
     //! Setup original extent - should be called as part of initialization
-    void setOriginalExtent( const QgsRectangle& originalExtent, const QgsCoordinateReferenceSystem& originalCrs );
+    void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 
     QgsRectangle originalExtent() const { return mOriginalExtent; }
-    const QgsCoordinateReferenceSystem& originalCrs() const { return mOriginalCrs; }
+    const QgsCoordinateReferenceSystem &originalCrs() const { return mOriginalCrs; }
 
     //! Setup current extent - should be called as part of initialization (or whenever current extent changes)
-    void setCurrentExtent( const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs );
+    void setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs );
 
     QgsRectangle currentExtent() const { return mCurrentExtent; }
-    const QgsCoordinateReferenceSystem& currentCrs() const { return mCurrentCrs; }
+    const QgsCoordinateReferenceSystem &currentCrs() const { return mCurrentCrs; }
 
     //! Set the output CRS - may need to be used for transformation from original/current extent.
     //! Should be called as part of initialization and whenever the the output CRS is changed
-    void setOutputCrs( const QgsCoordinateReferenceSystem& outputCrs );
+    void setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs );
 
     //! Get the resulting extent - in output CRS coordinates
     QgsRectangle outputExtent() const;
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     //! Set base part of title of the group box (will be appended with extent state)
     //! @note added in 2.12
-    void setTitleBase( const QString& title );
+    void setTitleBase( const QString &title );
     //! Set base part of title of the group box (will be appended with extent state)
     //! @note added in 2.12
     QString titleBase() const;
@@ -84,12 +85,12 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! set output extent to be the same as current extent (may be transformed to output CRS)
     void setOutputExtentFromCurrent();
 
-    //! set output extent to custom extent (may be transformed to outut CRS)
-    void setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs );
+    //! set output extent to custom extent (may be transformed to output CRS)
+    void setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs );
 
   signals:
     //! emitted when extent is changed
-    void extentChanged( const QgsRectangle& r );
+    void extentChanged( const QgsRectangle &r );
 
   protected slots:
 
@@ -101,7 +102,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     void groupBoxClicked();
 
   protected:
-    void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state );
+    void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state );
     void setOutputExtentFromLineEdit();
     void updateTitle();
 

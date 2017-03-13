@@ -27,23 +27,17 @@ QgsGPSConnectionRegistry::~QgsGPSConnectionRegistry()
   qDeleteAll( mConnections );
 }
 
-QgsGPSConnectionRegistry* QgsGPSConnectionRegistry::instance()
-{
-  static QgsGPSConnectionRegistry mInstance;
-  return &mInstance;
-}
-
-void QgsGPSConnectionRegistry::registerConnection( QgsGPSConnection* c )
+void QgsGPSConnectionRegistry::registerConnection( QgsGPSConnection *c )
 {
   mConnections.insert( c );
 }
 
-void QgsGPSConnectionRegistry::unregisterConnection( QgsGPSConnection* c )
+void QgsGPSConnectionRegistry::unregisterConnection( QgsGPSConnection *c )
 {
   mConnections.remove( c );
 }
 
-QList< QgsGPSConnection* > QgsGPSConnectionRegistry::connectionList() const
+QList< QgsGPSConnection * > QgsGPSConnectionRegistry::connectionList() const
 {
   return mConnections.toList();
 }

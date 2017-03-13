@@ -21,6 +21,7 @@
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
@@ -35,18 +36,19 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     Q_OBJECT
 
   public:
+
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
      * @param layer  The vector layer for which the order by should be produced
      * @param parent The parent widget, optional
      */
-    QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /**
      * Set the order by to manage
      */
-    void setOrderBy( const QgsFeatureRequest::OrderBy& orderBy );
+    void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
      * Get the order by defined in the dialog
@@ -58,15 +60,16 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     bool eventFilter( QObject *obj, QEvent *e ) override;
 
   private slots:
-    void onExpressionChanged( const QString& expression );
+    void onExpressionChanged( const QString &expression );
 
   private:
+
     /**
      * Initialize a row with the given information
      */
-    void setRow( int row, const QgsFeatureRequest::OrderByClause& orderByClause );
+    void setRow( int row, const QgsFeatureRequest::OrderByClause &orderByClause );
 
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 
 };
 

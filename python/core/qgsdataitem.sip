@@ -43,8 +43,8 @@ class QgsDataItem : QObject
     sipType = sipType_QgsErrorItem;
   else if (qobject_cast<QgsDirectoryItem*>(sipCpp))
     sipType = sipType_QgsDirectoryItem;
-  else if (qobject_cast<QgsFavouritesItem*>(sipCpp))
-    sipType = sipType_QgsFavouritesItem;
+  else if (qobject_cast<QgsFavoritesItem*>(sipCpp))
+    sipType = sipType_QgsFavoritesItem;
   else if (qobject_cast<QgsZipItem*>(sipCpp))
     sipType = sipType_QgsZipItem;
   else if (qobject_cast<QgsDataCollectionItem*>(sipCpp))
@@ -61,8 +61,8 @@ class QgsDataItem : QObject
       Directory,
       Layer,
       Error,
-      Favourites,
-      Project //! Represents a QGIS project
+      Favorites, //!< Represents a favorite item
+      Project //!< Represents a QGIS project
     };
 
     /** Create new data item. */
@@ -155,17 +155,17 @@ class QgsDataItem : QObject
       NoCapabilities,
       SetCrs,  //!< Can set CRS on layer or group of layers
       Fertile, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast     //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
+      Fast     //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
     };
     typedef QFlags<QgsDataItem::Capability> Capabilities;
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs( QgsCoordinateReferenceSystem crs );
+    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs );
 
     // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const;
 
-    virtual void setCapabilities( const Capabilities& capabilities );
+    virtual void setCapabilities( Capabilities capabilities );
 
     // static methods
 
@@ -208,7 +208,7 @@ class QgsDataItem : QObject
 
   protected:
     virtual void populate( const QVector<QgsDataItem*>& children );
-    virtual void refresh( QVector<QgsDataItem*> children );
+    virtual void refresh( const QVector<QgsDataItem*>& children );
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.
@@ -308,12 +308,12 @@ class QgsLayerItem : QgsDataItem
     virtual QString comments() const;
 
   public:
-    static const QIcon &iconPoint();
-    static const QIcon &iconLine();
-    static const QIcon &iconPolygon();
-    static const QIcon &iconTable();
-    static const QIcon &iconRaster();
-    static const QIcon &iconDefault();
+    static QIcon iconPoint();
+    static QIcon iconLine();
+    static QIcon iconPolygon();
+    static QIcon iconTable();
+    static QIcon iconRaster();
+    static QIcon iconDefault();
 
     virtual QString layerName() const;
 };
@@ -331,8 +331,8 @@ class QgsDataCollectionItem : QgsDataItem
 
     void addChild( QgsDataItem *item /Transfer/ );
 
-    static const QIcon &iconDir(); // shared icon: open/closed directory
-    static const QIcon &iconDataCollection(); // default icon for data collection
+    static QIcon iconDir(); // shared icon: open/closed directory
+    static QIcon iconDataCollection(); // default icon for data collection
 };
 
 /** A directory: contains subdirectories and layers */
@@ -359,7 +359,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
      * @param parent
      * @param name directory name
      * @param dirPath path to directory in file system
-     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favourites: */
+     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
 
     ~QgsDirectoryItem();
@@ -378,7 +378,7 @@ class QgsDirectoryItem : QgsDataCollectionItem
     // static QVector<QLibrary*> mLibraries;
 
     /** Check if the given path is hidden from the browser model */
-    static bool hiddenPath( QString path );
+    static bool hiddenPath( const QString& path );
 
   public slots:
     virtual void childrenCreated();
@@ -444,22 +444,40 @@ class QgsDirectoryParamWidget : QTreeWidget
     void showHideColumn();
 };
 
-/** Contains various Favourites directories */
-class QgsFavouritesItem : QgsDataCollectionItem
+/** \ingroup core
+ * Contains various Favorites directories
+ * \note added in QGIS 3.0
+*/
+class QgsFavoritesItem : QgsDataCollectionItem
 {
 %TypeHeaderCode
 #include <qgsdataitem.h>
 %End
   public:
-    QgsFavouritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
-    ~QgsFavouritesItem();
+
+    /**
+     * Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
+     * the item.
+     */
+    QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
+    ~QgsFavoritesItem();
 
     QVector<QgsDataItem*> createChildren();
 
-    void addDirectory( const QString& favIcon );
+    /**
+     * Adds a new directory to the favorites group.
+     * @see removeDirectory()
+     */
+    void addDirectory( const QString& directory );
+
+    /**
+     * Removes an existing directory from the favorites group.
+     * @see addDirectory()
+     */
     void removeDirectory( QgsDirectoryItem *item );
 
-    static const QIcon &iconFavourites();
+    //! Icon for favorites group
+    static QIcon iconFavorites();
 };
 
 /** A zip file: contains layers, using GDAL/OGR VSIFILE mechanism */
@@ -474,18 +492,18 @@ class QgsZipItem : QgsDataCollectionItem
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren();
-    const QStringList & getZipFileList();
+    QStringList getZipFileList();
 
     //! @note not available via python bindings
     // static QVector<dataItem_t *> mDataItemPtr;
-    static QStringList mProviderNames;
+    static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString& uri );
 
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name ) /Factory/;
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& path, const QString& name ) /Factory/;
     //! @note available in python as itemFromFilePath
     static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path ) /Factory,PyName=itemFromFilePath/;
 
-    static const QIcon &iconZip();
+    static QIcon iconZip();
 
 };

@@ -17,6 +17,9 @@
 #define QGSLAYERPROPERTIESWIDGET_H
 
 #include "ui_widget_layerproperties.h"
+#include "qgsexpressioncontext.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -24,37 +27,35 @@ class QgsSymbolLayerWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsPanelWidget;
-class QgsExpressionContext;
 
 class SymbolLayerItem;
 
 #include <QMap>
 #include <QStandardItemModel>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsLayerPropertiesWidget
  */
-class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::LayerPropertiesWidget
+class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
 {
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
-    /** Returns the expression context used for the widget, if set. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the properties widget.
-     * @note added in QGIS 2.12
-     * @see setExpressionContext()
+    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
+     * @note added in QGIS 3.0
      */
-    QgsExpressionContext* expressionContext() const { return mPresetExpressionContext; }
+    void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    QgsSymbolWidgetContext context() const;
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
@@ -67,36 +68,38 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, private Ui::L
     void layerTypeChanged();
     void emitSignalChanged();
 
-    /** Sets the optional expression context used for the widget. This expression context is used for
-     * evaluating data defined symbol properties and for populating based expression widgets in
-     * the properties widget.
-     * @param context expression context pointer. Ownership is not transferred and the object must
-     * be kept alive for the lifetime of the properties widget.
-     * @note added in QGIS 2.12
-     * @see expressionContext()
-     */
-    void setExpressionContext( QgsExpressionContext* context );
-
   signals:
     void changed();
-    void changeLayer( QgsSymbolLayer* );
+    void changeLayer( QgsSymbolLayer * );
 
   protected:
     void populateLayerTypes();
-    void updateSymbolLayerWidget( QgsSymbolLayer* layer );
+    void updateSymbolLayerWidget( QgsSymbolLayer *layer );
+
+    QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Registers a data defined override button. Handles setting up connections
+     * for the button and initializing the button to show the correct descriptions
+     * and help text for the associated property.
+     * @note added in QGIS 3.0
+     */
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
   protected: // data
-    QgsSymbolLayer* mLayer;
+    QgsSymbolLayer *mLayer = nullptr;
 
-    const QgsSymbol* mSymbol;
-    const QgsVectorLayer* mVectorLayer;
+    const QgsSymbol *mSymbol = nullptr;
+    const QgsVectorLayer *mVectorLayer = nullptr;
 
   private slots:
     void reloadLayer();
+    void on_mEnabledCheckBox_toggled( bool enabled );
+    void updateProperty();
 
   private:
-    QgsExpressionContext* mPresetExpressionContext;
-    QgsMapCanvas* mMapCanvas;
+
+    QgsSymbolWidgetContext mContext;
 
 };
 

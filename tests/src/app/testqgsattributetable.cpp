@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
@@ -24,6 +24,9 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
+
+#include "qgstest.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the attribute table dialog
@@ -41,13 +44,14 @@ class TestQgsAttributeTable : public QObject
     void cleanup() {} // will be called after every testfunction.
     void testFieldCalculation();
     void testFieldCalculationArea();
+    void testNoGeom();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
 };
 
 TestQgsAttributeTable::TestQgsAttributeTable()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -60,6 +64,13 @@ void TestQgsAttributeTable::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
+
+  // setup the test QSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
 }
 
 //runs after all tests
@@ -73,11 +84,11 @@ void TestQgsAttributeTable::testFieldCalculation()
   //test field calculation
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "LineString?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
   QgsPolyline line3111;
   line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
   QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
@@ -85,18 +96,15 @@ void TestQgsAttributeTable::testFieldCalculation()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
   // run length calculation
-  QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg->runFieldCalculation( tempLayer.data(), "col1", "$length" );
+  dlg->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
   tempLayer->commitChanges();
   // check result
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
@@ -106,10 +114,10 @@ void TestQgsAttributeTable::testFieldCalculation()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 
   // change project length unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/DistanceUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
-  QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
+  std::unique_ptr< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg2->runFieldCalculation( tempLayer.data(), "col1", "$length" );
+  dlg2->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$length" ) );
   tempLayer->commitChanges();
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
@@ -123,11 +131,11 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   //test $area field calculation
 
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double", "vl", "memory" ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "pk", 1 );
-  f1.setAttribute( "col1", 0.0 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
   QgsPolyline polygonRing3111;
   polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
@@ -138,18 +146,15 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", srs.toProj4() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCRSID", ( int ) srs.srsid() );
-  QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectCrs", srs.authid() );
-  QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "WGS84" ) );
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMeters ) );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
   // run area calculation
-  QScopedPointer< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.data() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg->runFieldCalculation( tempLayer.data(), "col1", "$area" );
+  dlg->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
   tempLayer->commitChanges();
   // check result
   QgsFeatureIterator fit = tempLayer->dataProvider()->getFeatures();
@@ -159,10 +164,10 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
 
   // change project area unit, check calculation respects unit
-  QgsProject::instance()->writeEntry( "Measurement", "/AreaUnits", QgsUnitTypes::encodeUnit( QgsUnitTypes::AreaSquareMiles ) );
-  QScopedPointer< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.data() ) );
+  QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
+  std::unique_ptr< QgsAttributeTableDialog > dlg2( new QgsAttributeTableDialog( tempLayer.get() ) );
   tempLayer->startEditing();
-  dlg2->runFieldCalculation( tempLayer.data(), "col1", "$area" );
+  dlg2->runFieldCalculation( tempLayer.get(), QStringLiteral( "col1" ), QStringLiteral( "$area" ) );
   tempLayer->commitChanges();
   // check result
   fit = tempLayer->dataProvider()->getFeatures();
@@ -171,5 +176,39 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
 }
 
-QTEST_MAIN( TestQgsAttributeTable )
+void TestQgsAttributeTable::testNoGeom()
+{
+  QgsSettings s;
+
+  //test that by default the attribute table DOESN'T fetch geometries (because performance)
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+
+  // but if we are requesting only visible features, then geometry must be fetched...
+
+  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+  // try changing existing dialog to no geometry mode
+  dlg->filterShowAll();
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
+
+  // and back to a geometry mode
+  dlg->filterVisible();
+  QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
+
+}
+
+
+QGSTEST_MAIN( TestQgsAttributeTable )
 #include "testqgsattributetable.moc"

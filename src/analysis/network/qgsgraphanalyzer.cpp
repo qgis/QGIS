@@ -1,34 +1,30 @@
 /***************************************************************************
-    qgsgraphanlyzer.cpp - QGIS Tools for graph analysis
-                             -------------------
-    begin                : 14 april 2011
-    copyright            : (C) Sergey Yakushev
-    email                : Yakushevs@list.ru
- ***************************************************************************/
+  qgsgraphanalyzer.cpp
+  --------------------------------------
+  Date                 : 2011-04-14
+  Copyright            : (C) 2010 by Yakushev Sergey
+  Email                : YakushevS <at> list.ru
+****************************************************************************
+*                                                                          *
+*   This program is free software; you can redistribute it and/or modify   *
+*   it under the terms of the GNU General Public License as published by   *
+*   the Free Software Foundation; either version 2 of the License, or      *
+*   (at your option) any later version.                                    *
+*                                                                          *
+***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-// C++ standard includes
 #include <limits>
 
-// QT includes
 #include <QMap>
 #include <QVector>
 #include <QPair>
 
-//QGIS-uncludes
 #include "qgsgraph.h"
 #include "qgsgraphanalyzer.h"
 
-void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int criterionNum, QVector<int>* resultTree, QVector<double>* resultCost )
+void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int criterionNum, QVector<int> *resultTree, QVector<double> *resultCost )
 {
-  QVector< double > * result = nullptr;
+  QVector< double > *result = nullptr;
   if ( resultCost )
   {
     result = resultCost;
@@ -49,7 +45,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
   }
 
   // QMultiMap< cost, vertexIdx > not_begin
-  // I use it and not create any struct or class.
+  // I use it and don't create any struct or class
   QMultiMap< double, int > not_begin;
   QMultiMap< double, int >::iterator it;
 
@@ -63,12 +59,12 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
     not_begin.erase( it );
 
     // edge index list
-    QgsGraphArcIdList l = source->vertex( curVertex ).outArc();
-    QgsGraphArcIdList::iterator arcIt;
+    QgsGraphEdgeIds l = source->vertex( curVertex ).outEdges();
+    QgsGraphEdgeIds::iterator arcIt;
     for ( arcIt = l.begin(); arcIt != l.end(); ++arcIt )
     {
-      const QgsGraphArc arc = source->arc( *arcIt );
-      double cost = arc.property( criterionNum ).toDouble() + curCost;
+      const QgsGraphEdge arc = source->edge( *arcIt );
+      double cost = arc.cost( criterionNum ).toDouble() + curCost;
 
       if ( cost < ( *result )[ arc.inVertex()] )
       {
@@ -87,7 +83,7 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int 
   }
 }
 
-QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum )
+QgsGraph *QgsGraphAnalyzer::shortestTree( const QgsGraph *source, int startVertexIdx, int criterionNum )
 {
   QgsGraph *treeResult = new QgsGraph();
   QVector<int> tree;
@@ -108,15 +104,15 @@ QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVerte
     }
   }
 
-  // Add arcs to result
+  // Add arcs to the result
   for ( i = 0; i < source->vertexCount(); ++i )
   {
     if ( tree[ i ] != -1 )
     {
-      const QgsGraphArc& arc = source->arc( tree[i] );
+      const QgsGraphEdge &arc = source->edge( tree[i] );
 
-      treeResult->addArc( source2result[ arc.outVertex()], source2result[ arc.inVertex()],
-                          arc.properties() );
+      treeResult->addEdge( source2result[ arc.outVertex()], source2result[ arc.inVertex()],
+                           arc.strategies() );
     }
   }
 

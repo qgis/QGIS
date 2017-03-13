@@ -17,35 +17,35 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-QgsRelationManager::QgsRelationManager( QgsProject* project )
-    : QObject( project )
-    , mProject( project )
+QgsRelationManager::QgsRelationManager( QgsProject *project )
+  : QObject( project )
+  , mProject( project )
 {
-  connect( project, SIGNAL( readProject( const QDomDocument& ) ), SLOT( readProject( const QDomDocument& ) ) );
-  connect( project, SIGNAL( writeProject( QDomDocument& ) ), SLOT( writeProject( QDomDocument& ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
+  connect( project, SIGNAL( readProject( const QDomDocument & ) ), SLOT( readProject( const QDomDocument & ) ) );
+  connect( project, SIGNAL( writeProject( QDomDocument & ) ), SLOT( writeProject( QDomDocument & ) ) );
+  connect( project, SIGNAL( layersRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 }
 
-void QgsRelationManager::setRelations( const QList<QgsRelation>& relations )
+void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )
 {
   mRelations.clear();
-  Q_FOREACH ( const QgsRelation& rel, relations )
+  Q_FOREACH ( const QgsRelation &rel, relations )
   {
     addRelation( rel );
   }
   emit changed();
 }
 
-const QMap<QString, QgsRelation>& QgsRelationManager::relations() const
+QMap<QString, QgsRelation> QgsRelationManager::relations() const
 {
   return mRelations;
 }
 
-void QgsRelationManager::addRelation( const QgsRelation& relation )
+void QgsRelationManager::addRelation( const QgsRelation &relation )
 {
   if ( !relation.isValid() )
     return;
@@ -57,28 +57,28 @@ void QgsRelationManager::addRelation( const QgsRelation& relation )
   emit changed();
 }
 
-void QgsRelationManager::removeRelation( const QString& id )
+void QgsRelationManager::removeRelation( const QString &id )
 {
   mRelations.remove( id );
   emit changed();
 }
 
-void QgsRelationManager::removeRelation( const QgsRelation& relation )
+void QgsRelationManager::removeRelation( const QgsRelation &relation )
 {
   mRelations.remove( relation.id() );
   emit changed();
 }
 
-QgsRelation QgsRelationManager::relation( const QString& id ) const
+QgsRelation QgsRelationManager::relation( const QString &id ) const
 {
   return mRelations.value( id );
 }
 
-QList<QgsRelation> QgsRelationManager::relationsByName( const QString& name ) const
+QList<QgsRelation> QgsRelationManager::relationsByName( const QString &name ) const
 {
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation &rel, mRelations )
   {
     if ( QString::compare( rel.name(), name, Qt::CaseInsensitive ) == 0 )
       relations << rel;
@@ -93,7 +93,7 @@ void QgsRelationManager::clear()
   emit changed();
 }
 
-QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLayer* layer, int fieldIdx ) const
+QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLayer *layer, int fieldIdx ) const
 {
   if ( !layer )
   {
@@ -102,16 +102,16 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
 
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation &rel, mRelations )
   {
     if ( rel.referencingLayer() == layer )
     {
       if ( fieldIdx != -2 )
       {
         bool containsField = false;
-        Q_FOREACH ( const QgsRelation::FieldPair& fp, rel.fieldPairs() )
+        Q_FOREACH ( const QgsRelation::FieldPair &fp, rel.fieldPairs() )
         {
-          if ( fieldIdx == layer->fieldNameIndex( fp.referencingField() ) )
+          if ( fieldIdx == layer->fields().lookupField( fp.referencingField() ) )
           {
             containsField = true;
             break;
@@ -130,7 +130,7 @@ QList<QgsRelation> QgsRelationManager::referencingRelations( const QgsVectorLaye
   return relations;
 }
 
-QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* layer ) const
+QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer *layer ) const
 {
   if ( !layer )
   {
@@ -139,7 +139,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
 
   QList<QgsRelation> relations;
 
-  Q_FOREACH ( const QgsRelation& rel, mRelations )
+  Q_FOREACH ( const QgsRelation &rel, mRelations )
   {
     if ( rel.referencedLayer() == layer )
     {
@@ -150,11 +150,11 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer* laye
   return relations;
 }
 
-void QgsRelationManager::readProject( const QDomDocument & doc )
+void QgsRelationManager::readProject( const QDomDocument &doc )
 {
   mRelations.clear();
 
-  QDomNodeList nodes = doc.elementsByTagName( "relations" );
+  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "relations" ) );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
@@ -174,9 +174,9 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
   emit changed();
 }
 
-void QgsRelationManager::writeProject( QDomDocument & doc )
+void QgsRelationManager::writeProject( QDomDocument &doc )
 {
-  QDomNodeList nl = doc.elementsByTagName( "qgis" );
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
   if ( !nl.count() )
   {
     QgsDebugMsg( "Unable to find qgis element in project file" );
@@ -184,19 +184,19 @@ void QgsRelationManager::writeProject( QDomDocument & doc )
   }
   QDomNode qgisNode = nl.item( 0 );  // there should only be one
 
-  QDomElement relationsNode = doc.createElement( "relations" );
+  QDomElement relationsNode = doc.createElement( QStringLiteral( "relations" ) );
   qgisNode.appendChild( relationsNode );
 
-  Q_FOREACH ( const QgsRelation& relation, mRelations )
+  Q_FOREACH ( const QgsRelation &relation, mRelations )
   {
     relation.writeXml( relationsNode, doc );
   }
 }
 
-void QgsRelationManager::layersRemoved( const QStringList& layers )
+void QgsRelationManager::layersRemoved( const QStringList &layers )
 {
   bool relationsChanged = false;
-  Q_FOREACH ( const QString& layer, layers )
+  Q_FOREACH ( const QString &layer, layers )
   {
     QMapIterator<QString, QgsRelation> it( mRelations );
 
@@ -216,4 +216,29 @@ void QgsRelationManager::layersRemoved( const QStringList& layers )
   {
     emit changed();
   }
+}
+
+static bool hasRelationWithEqualDefinition( const QList<QgsRelation> &existingRelations, const QgsRelation &relation )
+{
+  Q_FOREACH ( const QgsRelation &cur, existingRelations )
+  {
+    if ( cur.hasEqualDefinition( relation ) ) return true;
+  }
+  return false;
+}
+
+QList<QgsRelation> QgsRelationManager::discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers )
+{
+  QList<QgsRelation> result;
+  Q_FOREACH ( const QgsVectorLayer *layer, layers )
+  {
+    Q_FOREACH ( const QgsRelation &relation, layer->dataProvider()->discoverRelations( layer, layers ) )
+    {
+      if ( !hasRelationWithEqualDefinition( existingRelations, relation ) )
+      {
+        result.append( relation );
+      }
+    }
+  }
+  return result;
 }

@@ -18,6 +18,7 @@
 #define QGSEXTERNALRESOURCEWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -28,18 +29,13 @@
 class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsExternalResourceWidgetFactory( const QString& name );
+    QgsExternalResourceWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-
-    void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
-
-  private:
-    QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETFACTORY_H

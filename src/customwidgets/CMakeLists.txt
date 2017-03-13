@@ -2,16 +2,10 @@ ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
-IF (QT5_BUILD)
-  FIND_PACKAGE(Qt5UiPlugin REQUIRED)
-  FIND_PACKAGE(Qt5Designer REQUIRED)
-ENDIF (QT5_BUILD)
+FIND_PACKAGE(Qt5UiPlugin REQUIRED)
+FIND_PACKAGE(Qt5Designer REQUIRED)
 
 SET(QT_USE_QTDESIGNER ON)
-
-
-REMOVE_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DCUSTOMWIDGETS_EXPORT=${DLLEXPORT}\"")
 
 ########################################################
 # Files
@@ -20,8 +14,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgiscustomwidgets.cpp
   qgscollapsiblegroupboxplugin.cpp
   qgscolorbuttonplugin.cpp
-  qgsdatetimeeditplugin.cpp
-  qgsdatadefinedbuttonplugin.cpp
+  qgsdatetimeeditplugin.cpp  
   qgsdockwidgetplugin.cpp
   qgsdoublespinboxplugin.cpp
   qgsexpressionbuilderwidgetplugin.cpp
@@ -33,6 +26,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfilterlineeditplugin.cpp
   qgsmaplayercomboboxplugin.cpp
   qgsprojectionselectionwidgetplugin.cpp
+  qgspropertyoverridebuttonplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
@@ -45,7 +39,6 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgsdatetimeeditplugin.h
-  qgsdatadefinedbuttonplugin.h
   qgsdockwidgetplugin.h
   qgsdoublespinboxplugin.h
   qgsexpressionbuilderwidgetplugin.h
@@ -57,6 +50,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
   qgsprojectionselectionwidgetplugin.h
+  qgspropertyoverridebuttonplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
@@ -75,7 +69,6 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgscollapsiblegroupboxplugin.h
   qgscolorbuttonplugin.h
   qgsdatetimeeditplugin.h
-  qgsdatadefinedbuttonplugin.h
   qgsdockwidgetplugin.h
   qgsdoublespinboxplugin.h
   qgsexpressionbuilderwidgetplugin.h
@@ -87,6 +80,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
   qgsprojectionselectionwidgetplugin.h
+  qgspropertyoverridebuttonplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
@@ -100,34 +94,35 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
 # )
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/symbology-ng/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/attributetable/
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
+  ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/core
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/customwidgets
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GEOS_INCLUDE_DIR}
-  ${Qt5UiPlugin_INCLUDE_DIRS} # For Qt5
-  ${Qt5Designer_INCLUDE_DIRS} # For Qt5
-  ${QT_QTDESIGNER_INCLUDE_DIR} # For Qt4
+  ${QSCINTILLA_INCLUDE_DIR}
+  ${Qt5UiPlugin_INCLUDE_DIRS}
+  ${Qt5Designer_INCLUDE_DIRS}
 )
 
-QT4_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
 #############################################################
 # qgis_customwidgets library
 
 SET(IMAGE_RCCS ../../images/images.qrc)
-QT4_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
+QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
 ADD_LIBRARY(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_HDRS} ${IMAGE_RCC_SRCS})
-
-# TODO: apple
-INSTALL(FILES ${QGIS_CUSTOMWIDGETS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 
 SET_TARGET_PROPERTIES(qgis_customwidgets PROPERTIES
   VERSION ${COMPLETE_VERSION}
@@ -139,8 +134,19 @@ ADD_DEPENDENCIES(qgis_customwidgets ui)
 
 TARGET_LINK_LIBRARIES(qgis_customwidgets qgis_gui)
 
+GENERATE_EXPORT_HEADER(
+   qgis_customwidgets
+   BASE_NAME CUSTOMWIDGETS
+   EXPORT_FILE_NAME qgis_customwidgets.h
+)
+
+SET(QGIS_CUSTOMWIDGETS_HDRS ${QGIS_CUSTOMWIDGETS_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_customwidgets.h)
+
 # install
 INSTALL(TARGETS qgis_customwidgets
   RUNTIME DESTINATION ${QT_PLUGINS_DIR}/designer
   LIBRARY DESTINATION ${QT_PLUGINS_DIR}/designer
 )
+
+# TODO: apple
+INSTALL(FILES ${QGIS_CUSTOMWIDGETS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

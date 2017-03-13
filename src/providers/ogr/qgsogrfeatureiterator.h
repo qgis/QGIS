@@ -17,7 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsogrconnpool.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include <ogr_api.h>
 
@@ -27,18 +27,18 @@ class QgsOgrProvider;
 class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsOgrFeatureSource( const QgsOgrProvider* p );
+    explicit QgsOgrFeatureSource( const QgsOgrProvider *p );
     ~QgsOgrFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
-    const QgsOgrProvider* mProvider;
+    const QgsOgrProvider *mProvider = nullptr;
     QString mDataSource;
     QString mLayerName;
     int mLayerIndex;
     QString mSubsetString;
-    QTextCodec* mEncoding;
+    QTextCodec *mEncoding = nullptr;
     QgsFields mFields;
     bool mFirstFieldIsFid;
     QgsFields mFieldsWithoutFid;
@@ -52,31 +52,25 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
 {
   public:
-    QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsOgrFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
-
-    bool readFeature( OGRFeatureH fet, QgsFeature& feature ) const;
+    bool readFeature( OGRFeatureH fet, QgsFeature &feature ) const;
 
     //! Get an attribute associated with a feature
-    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex ) const;
+    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     bool mFeatureFetched;
 
-    QgsOgrConn* mConn;
+    QgsOgrConn *mConn = nullptr;
     OGRLayerH ogrLayer;
 
     bool mSubsetStringSet;
@@ -89,7 +83,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsFeatureIds mFilterFids;
     QgsFeatureIds::const_iterator mFilterFidsIt;
 
-    bool fetchFeatureWithId( QgsFeatureId id, QgsFeature& feature ) const;
+    bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 };
 
 #endif // QGSOGRFEATUREITERATOR_H

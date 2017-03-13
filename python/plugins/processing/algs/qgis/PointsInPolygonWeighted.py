@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -63,11 +64,11 @@ class PointsInPolygonWeighted(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-        fieldIdx = pointLayer.fieldNameIndex(self.getParameterValue(self.WEIGHT))
+        fieldIdx = pointLayer.fields().lookupField(self.getParameterValue(self.WEIGHT))
 
         fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
@@ -96,14 +97,14 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             count = 0
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                progress.setText(unicode(len(points)))
-                request = QgsFeatureRequest().setFilterFids(points)
+                feedback.setProgressText(str(len(points)))
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([fieldIdx])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if engine.contains(tmpGeom.geometry()):
-                        weight = unicode(ftPoint.attributes()[fieldIdx])
+                        weight = str(ftPoint.attributes()[fieldIdx])
                         try:
                             count += float(weight)
                         except:
@@ -118,6 +119,6 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

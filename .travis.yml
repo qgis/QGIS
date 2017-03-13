@@ -1,74 +1,20 @@
 matrix:
   fast_finish: true
-  allow_failures:		
-    - os: osx
   include:
-    # QT4 based build with Python 2.7 // using container based builds and prebuild binary dependencies in osgeo4travis
-    - os: linux
-      language: cpp
-      env:
-        - BUILD=qt4
-        - QT_VERSION=4
-#        - LLVM_VERSION=3.8
-      sudo: false
-      cache:
-        apt: true
-        directories:
-          - $HOME/.ccache
-      compiler: gcc
-      addons:
-        postgresql: "9.4"
-        apt:
-          sources:
-#            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
-            - george-edison55-precise-backports # doxygen 1.8.3
-          packages:
-            - bison
-            - gcc-6
-            - g++-6
-            - doxygen
-            - flex
-            - flip
-            - libfcgi-dev
-            - libfftw3-3
-            - libpq-dev
-            - libqscintilla2-dev
-            - libqt4-dev
-            - libqt4-opengl-dev
-            - libqt4-sql-sqlite
-            - libqtwebkit-dev
-            - libqwt-dev
-            - libspatialindex-dev
-            - libspatialite-dev
-            - libsqlite3-dev
-            - pkg-config
-            - poppler-utils
-            - pyqt4-dev-tools
-            - python
-            - python-dev
-            - python-numpy
-            - python-pip
-            - python-psycopg2
-            - python-qscintilla2
-            - python-qt4-dev
-            - python-qt4-sql
-            - python-sip
-            - python-sip-dev
-            - txt2tags
-            - xvfb
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - BUILD=qt5
-        - QT_VERSION=5
         - LLVM_VERSION=3.8
+        - TRAVIS_CONFIG=linux
       sudo: false
       cache:
         apt: true
+        pip: true
         directories:
           - $HOME/.ccache
+          - $HOME/depcache
+        timeout: 1000
       compiler: clang
       python: "3.3"
       addons:
@@ -76,8 +22,8 @@ matrix:
         apt:
           sources:
             - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
             - george-edison55-precise-backports # doxygen 1.8.3
+            - ubuntu-toolchain-r-test
           packages:
             - doxygen
             - bison
@@ -85,18 +31,44 @@ matrix:
             - graphviz
             - libpq-dev
             - libfcgi-dev
-            - libfftw3-3	    
+            - libfftw3-3
+            - libgsl0-dev
             - pkg-config
             - poppler-utils
             - txt2tags
             - xvfb
-            - flip
             - clang-3.8
-    # OSX based build with QT4 and Python 2
-    - os: osx
+
+
+    - os: linux
+      language: python # This lets us use newer python versions from virtualenv
       env:
-        - BUILD=osx
-        - IGNORE_BUILD_FAILURES=YES
+        - TRAVIS_CONFIG=code_layout
+      dist: trusty
+      sudo: false
+      cache:
+        apt: true
+      #compiler: clang
+      #python: "3.3"
+      addons:
+        apt:
+          sources:
+            - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+          packages:
+            - pkg-config
+            - xvfb
+            - flip
+            # used for spell checks
+            - perl  # lookahead regex in spell check script
+            - silversearcher-ag
+            - expect-dev  # unbuffer
+            - coreutils
+    # OSX based build with QT4 and Python 2
+    # - os: osx
+    #  env:
+    #    - BUILD=osx
+    #    - IGNORE_BUILD_FAILURES=YES
+
 
 git:
   depth: 30
@@ -116,16 +88,16 @@ notifications:
     on_start: never # default: never
 
 before_install:
-  - ./ci/travis/${TRAVIS_OS_NAME}/before_install.sh
+  - ./ci/travis/${TRAVIS_CONFIG}/before_install.sh
 
 install:
-  - ./ci/travis/${TRAVIS_OS_NAME}/install.sh
+  - ./ci/travis/${TRAVIS_CONFIG}/install.sh
 
 before_script:
-  - ./ci/travis/${TRAVIS_OS_NAME}/before_script.sh
+  - ./ci/travis/${TRAVIS_CONFIG}/before_script.sh
 
 script:
-  - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
+  - ./ci/travis/${TRAVIS_CONFIG}/script.sh
 
 after_script:
-  - ./ci/travis/${TRAVIS_OS_NAME}/after_script.sh
+  - ./ci/travis/${TRAVIS_CONFIG}/after_script.sh

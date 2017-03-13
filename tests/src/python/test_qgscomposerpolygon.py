@@ -12,17 +12,16 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import qgis  # NOQA
 
-from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtGui import QPolygonF
 from qgis.PyQt.QtCore import QPointF
 
 from qgis.core import (QgsComposerPolygon,
                        QgsComposerItem,
                        QgsComposition,
-                       QgsMapSettings,
-                       QgsFillSymbol
+                       QgsFillSymbol,
+                       QgsProject
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -40,10 +39,8 @@ class TestQgsComposerPolygon(unittest.TestCase):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
-        self.mapSettings = QgsMapSettings()
-
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         # create
@@ -107,7 +104,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testSelectedNode(self):
-        """Test selectedNode and unselectNode methods"""
+        """Test selectedNode and deselectNode methods"""
 
         self.mComposerPolygon.setDisplayNodes(True)
 
@@ -118,7 +115,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         myTestResult, myMessage = checker.testComposition()
         assert myTestResult, myMessage
 
-        self.mComposerPolygon.unselectNode()
+        self.mComposerPolygon.deselectNode()
         self.mComposerPolygon.setDisplayNodes(False)
         checker = QgsCompositionChecker(
             'composerpolygon_defaultstyle', self.mComposition)
@@ -220,6 +217,7 @@ class TestQgsComposerPolygon(unittest.TestCase):
         rc = self.mComposerPolygon.nodeAtPosition(
             QPointF(100.0, 210.0), True, 10.1)
         self.assertEqual(rc, 3)
+
 
 if __name__ == '__main__':
     unittest.main()

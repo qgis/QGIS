@@ -31,16 +31,16 @@ class QgsRasterProjector : QgsRasterInterface
 
     int bandCount() const;
 
-    int dataType( int bandNo ) const;
+    Qgis::DataType dataType( int bandNo ) const;
 
-    /** \brief set source and destination CRS */
-    void setCrs( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
+    //! \brief set source and destination CRS
+    void setCrs( const QgsCoordinateReferenceSystem & srcCRS, const QgsCoordinateReferenceSystem & destCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
-    /** \brief Get source CRS */
+    //! \brief Get source CRS
     QgsCoordinateReferenceSystem sourceCrs() const;
 
-    /** \brief Get destination CRS */
+    //! \brief Get destination CRS
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     Precision precision() const;
@@ -50,12 +50,13 @@ class QgsRasterProjector : QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
 
-    /** Calculate destination extent and size from source extent and size */
-    bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
-                         QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+    //! Calculate destination extent and size from source extent and size
+    bool destExtentSize( const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
+                         QgsRectangle& destExtent, int& destXSize, int& destYSize );
 
-    /** Calculate destination extent and size from source extent and size */
+    //! Calculate destination extent and size from source extent and size
     static bool extentSize( const QgsCoordinateTransform& ct,
-                            const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
-                            QgsRectangle& theDestExtent, int& theDestXSize, int& theDestYSize );
+                            const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
+                            QgsRectangle& destExtent, int& destXSize, int& destYSize );
+
 };

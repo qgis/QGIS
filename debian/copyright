@@ -320,29 +320,6 @@ Files: src/gui/symbology-ng/characterwidget.cpp
 Copyright: 2009, Nokia Corporation and/or its subsidiary(-ies)
 License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
 
-Files: src/plugins/dxf2shp_converter/builder.cpp
- src/plugins/dxf2shp_converter/builder.h
-Copyright: 1999, Frank Warmerdam <warmerda@pobox.com>
-Comment: The code is heavily based on Christopher Michaelis' DXF to
- Shapefile Converter (http://www.wanderingidea.com/content/view/12/25/),
- released under GPL License
- .
- This code is based on two other products:
-    DXFLIB (http://www.ribbonsoft.com/dxflib.html)
- This is a library for reading DXF files, also GPL.
-    SHAPELIB (http://shapelib.maptools.org/)
- Used for the Shapefile functionality.
-License: MIT
-
-Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/*
-Copyright: 1999, 2001-2002, Frank Warmerdam
-License: MIT or LGPL-2+
-
-Files: src/plugins/dxf2shp_converter/dxflib/src/*
-Copyright: 2001-2013, RibbonSoft GmbH
-                2001, Robert J. Campbell Jr
-License: GPL-2+ or dxflib-Commercial-License
-
 Files: src/plugins/evis/*
 Copyright: 2007, American Museum of Natural History
 License: LGPL-2+
@@ -618,7 +595,7 @@ License: ElvenSword
  this situation.)
  .
  * Do not remove my name on it (preview). I saw some Turkish and
- Russian forum sites delete artists names though, and they puting
+ Russian forum sites delete artists names though, and they put
  their own cursed crappy logos on the previews. It is not sharing.
  It is ...
  .

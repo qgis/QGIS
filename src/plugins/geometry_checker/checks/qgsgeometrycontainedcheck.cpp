@@ -17,9 +17,9 @@
 #include "qgsgeometrycontainedcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -30,7 +30,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& er
     }
 
     QgsGeometry featureGeom = feature.geometry();
-    QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QgsFeatureIds ids = mFeaturePool->getIntersects( featureGeom.geometry()->boundingBox() );
     Q_FOREACH ( QgsFeatureId otherid, ids )
@@ -59,9 +59,9 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError*>& er
   }
 }
 
-void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
-  QgsGeometryContainedCheckError* coverError = static_cast<QgsGeometryContainedCheckError*>( error );
+  QgsGeometryContainedCheckError *coverError = static_cast<QgsGeometryContainedCheckError *>( error );
 
   QgsFeature feature;
   QgsFeature otherFeature;
@@ -74,7 +74,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int meth
 
   // Check if error still applies
   QgsGeometry featureGeom = feature.geometry();
-  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
   if ( !geomEngine->within( *otherFeature.geometry().geometry() ) )
   {
@@ -101,7 +101,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError* error, int meth
   }
 }
 
-const QStringList& QgsGeometryContainedCheck::getResolutionMethods() const
+QStringList QgsGeometryContainedCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Delete feature" )

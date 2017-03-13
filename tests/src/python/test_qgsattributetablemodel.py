@@ -42,7 +42,6 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         self.cache = QgsVectorLayerCache(self.layer, 100)
         self.am = QgsAttributeTableModel(self.cache)
         self.am.loadLayer()
-        self.am.loadAttributes()
 
     def tearDown(self):
         del self.am
@@ -64,16 +63,16 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         return layer
 
     def testLoad(self):
-        self.assertEquals(self.am.rowCount(), 10)
-        self.assertEquals(self.am.columnCount(), 2)
+        self.assertEqual(self.am.rowCount(), 10)
+        self.assertEqual(self.am.columnCount(), 2)
 
     def testRemove(self):
         self.layer.startEditing()
         self.layer.deleteFeature(5)
-        self.assertEquals(self.am.rowCount(), 9)
+        self.assertEqual(self.am.rowCount(), 9)
         self.layer.selectByIds([1, 3, 6, 7])
         self.layer.deleteSelectedFeatures()
-        self.assertEquals(self.am.rowCount(), 5)
+        self.assertEqual(self.am.rowCount(), 5)
 
     def testAdd(self):
         self.layer.startEditing()
@@ -83,14 +82,15 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         f.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
         self.layer.addFeature(f)
 
-        self.assertEquals(self.am.rowCount(), 11)
+        self.assertEqual(self.am.rowCount(), 11)
 
     def testRemoveColumns(self):
         self.assertTrue(self.layer.startEditing())
 
         self.assertTrue(self.layer.deleteAttribute(1))
 
-        self.assertEquals(self.am.columnCount(), 1)
+        self.assertEqual(self.am.columnCount(), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

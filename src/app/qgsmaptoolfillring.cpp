@@ -21,13 +21,13 @@
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
 #include "qgisapp.h"
-
+#include "qgsvectorlayerutils.h"
 #include <QMouseEvent>
 
 #include <limits>
 
-QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
+QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
 }
 
@@ -35,7 +35,7 @@ QgsMapToolFillRing::~QgsMapToolFillRing()
 {
 }
 
-void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -126,7 +126,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       yMin = std::numeric_limits<double>::max();
       yMax = -std::numeric_limits<double>::max();
 
-      Q_FOREACH ( const QgsPoint& point, pointList )
+      Q_FOREACH ( const QgsPoint &point, pointList )
       {
         xMin = qMin( xMin, point.x() );
         xMax = qMax( xMax, point.x() );
@@ -139,26 +139,26 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       bBox.setXMaximum( xMax );
       bBox.setYMaximum( yMax );
 
+      QgsExpressionContext context = vlayer->createExpressionContext();
+
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterFid( modifiedFid ) );
 
       QgsFeature f;
       if ( fit.nextFeature( f ) )
       {
-        //create QgsFeature with wkb representation
-        QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
-
         QgsGeometry g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
-        ft->setGeometry( g );
-        ft->setAttributes( f.attributes() );
+
+        //create QgsFeature with wkb representation
+        QgsFeature ft = QgsVectorLayerUtils::createFeature( vlayer, g, f.attributes().toMap(), &context );
 
         bool res = false;
         if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
         {
-          res = vlayer->addFeature( *ft );
+          res = vlayer->addFeature( ft );
         }
         else
         {
-          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, ft, false, nullptr, true );
+          QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true );
           dialog->setMode( QgsAttributeForm::AddFeatureMode );
           res = dialog->exec(); // will also add the feature
         }
@@ -169,7 +169,6 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
         }
         else
         {
-          delete ft;
           vlayer->destroyEditCommand();
         }
       }

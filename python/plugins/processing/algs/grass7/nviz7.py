@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -82,25 +85,25 @@ class nviz7(GeoAlgorithm):
             self.tr('GRASS region cellsize (leave 0 for default)'),
             0, None, 0.0))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         commands = []
         vector = self.getParameterValue(self.VECTOR)
         elevation = self.getParameterValue(self.ELEVATION)
         color = self.getParameterValue(self.COLOR)
 
         region = \
-            unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region '
-        command += 'n=' + unicode(regionCoords[3])
-        command += ' s=' + unicode(regionCoords[2])
-        command += ' e=' + unicode(regionCoords[1])
-        command += ' w=' + unicode(regionCoords[0])
+        command += 'n=' + str(regionCoords[3])
+        command += ' s=' + str(regionCoords[2])
+        command += ' e=' + str(regionCoords[1])
+        command += ' w=' + str(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command += ' res=' + unicode(cellsize)
+            command += ' res=' + str(cellsize)
         else:
-            command += ' res=' + unicode(self.getDefaultCellsize())
+            command += ' res=' + str(self.getDefaultCellsize())
         commands.append(command)
 
         command = 'nviz7'
@@ -129,11 +132,11 @@ class nviz7(GeoAlgorithm):
             command += ' -q'
         commands.append(command)
         Grass7Utils.createTempMapset()
-        Grass7Utils.executeGrass7(commands, progress)
+        Grass7Utils.executeGrass7(commands, feedback)
 
     def getTempFilename(self):
-        filename = 'tmp' + unicode(time.time()).replace('.', '') \
-            + unicode(getNumExportedLayers())
+        filename = 'tmp' + str(time.time()).replace('.', '') \
+            + str(getNumExportedLayers())
         return filename
 
     def exportVectorLayer(self, layer):
@@ -164,9 +167,9 @@ class nviz7(GeoAlgorithm):
                         layer = param.value
                     else:
                         layer = dataobjects.getObjectFromUri(param.value)
-                    cellsize = max(cellsize, (layer.extent().xMaximum()
-                                              - layer.extent().xMinimum())
-                                   / layer.width())
+                    cellsize = max(cellsize, (layer.extent().xMaximum() -
+                                              layer.extent().xMinimum()) /
+                                   layer.width())
                 elif isinstance(param, ParameterMultipleInput):
 
                     layers = param.value.split(';')
@@ -174,9 +177,9 @@ class nviz7(GeoAlgorithm):
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
                             cellsize = max(cellsize, (
-                                layer.extent().xMaximum()
-                                - layer.extent().xMinimum())
-                                / layer.width())
+                                layer.extent().xMaximum() -
+                                layer.extent().xMinimum()) /
+                                layer.width())
 
         if cellsize == 0:
             cellsize = 1

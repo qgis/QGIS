@@ -17,9 +17,9 @@
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -30,7 +30,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*
     }
 
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry* geom = featureGeom.geometry();
+    QgsAbstractGeometry *geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -52,7 +52,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError*
   }
 }
 
-void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -61,7 +61,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry* geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
@@ -110,7 +110,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError* error, int
   }
 }
 
-const QStringList& QgsGeometryDuplicateNodesCheck::getResolutionMethods() const
+QStringList QgsGeometryDuplicateNodesCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete duplicate node" ) << tr( "No action" );
   return methods;

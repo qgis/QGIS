@@ -33,7 +33,6 @@ class QgsComposerLegendItem;
 class QgsComposition;
 class QgsFields;
 class QgsMapLayer;
-class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsConfigParser;
@@ -60,7 +59,8 @@ class QgsWfsServer: public QgsOWSServer
 {
   public:
     /** Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
-    QgsWfsServer( const QString& configFilePath, QMap<QString, QString>& parameters, QgsWfsProjectParser* cp,
+    QgsWfsServer( const QString& configFilePath, const QgsServerSettings& settings,
+                  QMap<QString, QString>& parameters, QgsWfsProjectParser* cp,
                   QgsRequestHandler* rh, const QgsAccessControl* accessControl );
     ~QgsWfsServer();
 

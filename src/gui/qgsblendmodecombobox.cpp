@@ -25,13 +25,9 @@
 #include <QSettings>
 #include <QLineEdit>
 
-QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget* parent ) : QComboBox( parent )
+QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent ) : QComboBox( parent )
 {
   updateModes();
-}
-
-QgsBlendModeComboBox::~QgsBlendModeComboBox()
-{
 }
 
 /* Returns a QStringList of the translated blend modes
@@ -42,20 +38,20 @@ QgsBlendModeComboBox::~QgsBlendModeComboBox()
 QStringList QgsBlendModeComboBox::blendModesList() const
 {
   return QStringList() << tr( "Normal" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Lighten" )
          << tr( "Screen" )
          << tr( "Dodge" )
          << tr( "Addition" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Darken" )
          << tr( "Multiply" )
          << tr( "Burn" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Overlay" )
          << tr( "Soft light" )
          << tr( "Hard light" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Difference" )
          << tr( "Subtract" );
 }
@@ -79,7 +75,7 @@ void QgsBlendModeComboBox::updateModes()
   int blendModeIndex = 0;
   for ( ; blendModeIt != myBlendModesList.constEnd(); ++blendModeIt )
   {
-    if ( *blendModeIt == "-" )
+    if ( *blendModeIt == QLatin1String( "-" ) )
     {
       // Add separator
       insertSeparator( index );
@@ -102,7 +98,7 @@ void QgsBlendModeComboBox::updateModes()
 //! Function to read the selected blend mode
 QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return QgsPainting::getCompositionMode(( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
+  return QgsPainting::getCompositionMode( ( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
 }
 
 //! Function to set the selected blend mode

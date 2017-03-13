@@ -17,50 +17,52 @@
 
 #include "qgstextannotationdialog.h"
 #include "qgsannotationwidget.h"
-#include "qgstextannotationitem.h"
+#include "qgstextannotation.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsannotationmanager.h"
+#include "qgsproject.h"
 #include <QColorDialog>
 #include <QGraphicsScene>
 
-QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( nullptr )
+QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+  , mTextDocument( nullptr )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
-  connect( mEmbeddedWidget, SIGNAL( backgroundColorChanged( QColor ) ), this, SLOT( backgroundColorChanged( QColor ) ) );
+  connect( mEmbeddedWidget, &QgsAnnotationWidget::backgroundColorChanged, this, &QgsTextAnnotationDialog::backgroundColorChanged );
   mTextEdit->setAttribute( Qt::WA_TranslucentBackground );
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mTextDocument = mItem->document();
-    mTextEdit->setDocument( mTextDocument );
+    QgsTextAnnotation *annotation = static_cast< QgsTextAnnotation * >( mItem->annotation() );
+    mTextDocument.reset( annotation->document() ? annotation->document()->clone() : nullptr );
+    mTextEdit->setDocument( mTextDocument.get() );
   }
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setAllowAlpha( true );
-  mFontColorButton->setContext( "symbology" );
+  mFontColorButton->setContext( QStringLiteral( "symbology" ) );
 
   setCurrentFontPropertiesToGui();
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applyTextToItem() ) );
-  QObject::connect( mFontComboBox, SIGNAL( currentFontChanged( const QFont& ) ), this, SLOT( changeCurrentFormat() ) );
-  QObject::connect( mFontSizeSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( changeCurrentFormat() ) );
-  QObject::connect( mBoldPushButton, SIGNAL( toggled( bool ) ), this, SLOT( changeCurrentFormat() ) );
-  QObject::connect( mItalicsPushButton, SIGNAL( toggled( bool ) ), this, SLOT( changeCurrentFormat() ) );
-  QObject::connect( mTextEdit, SIGNAL( cursorPositionChanged() ), this, SLOT( setCurrentFontPropertiesToGui() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsTextAnnotationDialog::applyTextToItem );
+  QObject::connect( mFontComboBox, &QFontComboBox::currentFontChanged, this, &QgsTextAnnotationDialog::changeCurrentFormat );
+  QObject::connect( mFontSizeSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextAnnotationDialog::changeCurrentFormat );
+  QObject::connect( mBoldPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
+  QObject::connect( mItalicsPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
+  QObject::connect( mTextEdit, &QTextEdit::cursorPositionChanged, this, &QgsTextAnnotationDialog::setCurrentFontPropertiesToGui );
 
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsTextAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-QgsTextAnnotationDialog::~QgsTextAnnotationDialog()
+void QgsTextAnnotationDialog::showEvent( QShowEvent * )
 {
-  delete mTextDocument;
-}
-
-void QgsTextAnnotationDialog::showEvent( QShowEvent* )
-{
-  backgroundColorChanged( mItem ? mItem->frameBackgroundColor() : Qt::white );
+  backgroundColorChanged( mItem && mItem->annotation() && mItem->annotation()->fillSymbol() ? mItem->annotation()->fillSymbol()->color() : Qt::white );
 }
 
 void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
@@ -72,7 +74,7 @@ void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
   }
 }
 
-void QgsTextAnnotationDialog::backgroundColorChanged( const QColor& color )
+void QgsTextAnnotationDialog::backgroundColorChanged( const QColor &color )
 {
   QPalette p = mTextEdit->viewport()->palette();
   p.setColor( QPalette::Base, color );
@@ -81,14 +83,15 @@ void QgsTextAnnotationDialog::backgroundColorChanged( const QColor& color )
 
 void QgsTextAnnotationDialog::applyTextToItem()
 {
-  if ( mItem && mTextDocument )
+  if ( mItem && mTextDocument && mItem->annotation() )
   {
+    QgsTextAnnotation *annotation = static_cast< QgsTextAnnotation * >( mItem->annotation() );
     //apply settings from embedded item widget
     if ( mEmbeddedWidget )
     {
       mEmbeddedWidget->apply();
     }
-    mItem->setDocument( mTextDocument );
+    annotation->setDocument( mTextDocument.get() );
     mItem->update();
   }
 }
@@ -126,7 +129,7 @@ void QgsTextAnnotationDialog::changeCurrentFormat()
   mTextEdit->setTextColor( mFontColorButton->color() );
 }
 
-void QgsTextAnnotationDialog::on_mFontColorButton_colorChanged( const QColor& color )
+void QgsTextAnnotationDialog::on_mFontColorButton_colorChanged( const QColor &color )
 {
   Q_UNUSED( color )
   changeCurrentFormat();
@@ -155,12 +158,8 @@ void QgsTextAnnotationDialog::blockAllSignals( bool block )
 
 void QgsTextAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 

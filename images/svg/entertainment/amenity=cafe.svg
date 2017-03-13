@@ -1,19 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=cafe.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity=cafe.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
-	 height="580.457px" viewBox="0 0 579.997 580.457" enable-background="new 0 0 579.997 580.457" xml:space="preserve">
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
-		</inkscape:perspective>
-</defs>
-<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer3" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280">
-	</sodipodi:namedview>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M425.458,218.645c2.409-25.668,3.649-96.4,3.649-96.4H84.938
-	c0,0,1.647,373.256,112.822,373.256H310.6c61.539,0,77.553-77.021,86.905-114.08c99.341,47.617,99.872-19.131,106.64-69.332
-	C510.876,261.902,521.681,215.174,425.458,218.645z"/>
+<svg enable-background="new 0 0 579.997 580.457" height="580.457" viewBox="0 0 579.997 580.457" width="579.997" xmlns="http://www.w3.org/2000/svg">
+<path d="m425.458 218.645c2.409-25.668 3.649-96.4 3.649-96.4h-344.169c0 0 1.647 373.256 112.822 373.256h112.84c61.539 0 77.553-77.021 86.905-114.08 99.341 47.617 99.872-19.131 106.64-69.332 6.731-50.187 17.536-96.915-78.687-93.444z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

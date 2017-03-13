@@ -15,22 +15,21 @@
 
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 
-#include "qgsfield.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsfields.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsrelationreferencewidget.h"
 #include "qgsrelationmanager.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QStringListModel>
 
-QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mWidget( nullptr )
-    , mLayer( nullptr )
-    , mCanvas( canvas )
+QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mWidget( nullptr )
+  , mLayer( nullptr )
+  , mCanvas( canvas )
 {
 
 }
@@ -128,7 +127,7 @@ bool QgsRelationReferenceSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( QVariant value )
+void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &value )
 {
   if ( !value.isValid() )
   {
@@ -137,8 +136,8 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( QVariant value )
   }
   else
   {
-    QSettings settings;
-    setExpression( value.isNull() ? settings.value( "qgis/nullValue", "NULL" ).toString() : value.toString() );
+    QgsSettings settings;
+    setExpression( value.isNull() ? QgsApplication::nullRepresentation() : value.toString() );
     emit valueChanged();
   }
   emit expressionChanged( mExpression );
@@ -146,33 +145,33 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( QVariant value )
 
 void QgsRelationReferenceSearchWidgetWrapper::setExpression( QString exp )
 {
-  QSettings settings;
-  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  QgsSettings settings;
+  QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str;
   if ( exp == nullValue )
   {
-    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
-    str = QString( "%1 = '%3'" )
+    str = QStringLiteral( "%1 = '%3'" )
           .arg( QgsExpression::quotedColumnRef( fieldName ),
-                exp.replace( '\'', "''" )
+                exp.replace( '\'', QLatin1String( "''" ) )
               );
   }
   mExpression = str;
 }
 
-QWidget* QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsRelationReferenceWidget( parent );
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mWidget = qobject_cast<QgsRelationReferenceWidget*>( editor );
+  mWidget = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !mWidget )
     return;
 
@@ -180,12 +179,18 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget* editor )
 
   mWidget->setEmbedForm( false );
   mWidget->setReadOnlySelector( false );
-  mWidget->setAllowMapIdentification( config( "MapIdentification", false ).toBool() );
-  mWidget->setOrderByValue( config( "OrderByValue", false ).toBool() );
+  mWidget->setAllowMapIdentification( config( QStringLiteral( "MapIdentification" ), false ).toBool() );
+  mWidget->setOrderByValue( config( QStringLiteral( "OrderByValue" ), false ).toBool() );
   mWidget->setAllowAddFeatures( false );
   mWidget->setOpenFormButtonVisible( false );
 
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
+  if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
+  {
+    mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
+    mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
+  }
+
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();

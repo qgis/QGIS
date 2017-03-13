@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QgsRelationReferenceWidgetFactory;
 class QgsMapCanvas;
@@ -44,7 +45,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
      * @param canvas optional map canvas
      * @param parent parent widget
      */
-    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /** Returns a variant representing the current state of the widget.
      */
@@ -63,22 +64,22 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   public slots:
 
     //! Called when current value of search widget changes
-    void onValueChanged( QVariant value );
+    void onValueChanged( const QVariant &value );
 
   protected slots:
     void setExpression( QString exp ) override;
 
   private:
 
-    QgsRelationReferenceWidget* mWidget;
-    QgsVectorLayer* mLayer;
-    QgsMapCanvas* mCanvas;
+    QgsRelationReferenceWidget *mWidget = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
     friend class QgsRelationReferenceWidgetFactory;
 };

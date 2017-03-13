@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERLABELPROVIDER_H
 #define QGSVECTORLAYERLABELPROVIDER_H
 
+#include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgsrenderer.h"
 
@@ -37,26 +38,17 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
   public:
 
     //! Convenience constructor to initialize the provider from given vector layer
-    explicit QgsVectorLayerLabelProvider( QgsVectorLayer* layer,
-                                          const QString& providerId,
+    explicit QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
+                                          const QString &providerId,
                                           bool withFeatureLoop = true,
-                                          const QgsPalLayerSettings* settings = nullptr,
-                                          const QString& layerName = QString() );
-
-    //! Construct diagram provider with all the necessary configuration parameters
-    QgsVectorLayerLabelProvider( const QgsPalLayerSettings& settings,
-                                 const QString& layerId,
-                                 const QgsFields& fields,
-                                 const QgsCoordinateReferenceSystem& crs,
-                                 QgsAbstractFeatureSource* source,
-                                 bool ownsSource,
-                                 QgsFeatureRenderer* renderer = nullptr );
+                                          const QgsPalLayerSettings *settings = nullptr,
+                                          const QString &layerName = QString() );
 
     ~QgsVectorLayerLabelProvider();
 
-    virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) override;
+    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
-    virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
+    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     // new virtual methods
 
@@ -66,7 +58,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param attributeNames list of attribute names to which additional required attributes shall be added
      * @return Whether the preparation was successful - if not, the provider shall not be used
      */
-    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
+    virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
 
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mLabels
@@ -75,11 +67,11 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
-     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = nullptr );
+    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr );
 
     /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
      * obstacle geometry will respect the dimensions and offsets of the symbol used to render the
@@ -89,13 +81,13 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param symbols symbols rendered for point feature
      * @note added in QGIS 2.14
      */
-    static QgsGeometry* getPointObstacleGeometry( QgsFeature& fet, QgsRenderContext& context, const QgsSymbolList& symbols );
+    static QgsGeometry *getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols );
 
   protected:
     //! initialization method - called from constructors
     void init();
     //! Internal label drawing method
-    void drawLabelPrivate( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, QgsPalLabeling::DrawLabelType drawType, double dpiRatio = 1.0 ) const;
+    void drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, QgsTextRenderer::TextPart drawType, double dpiRatio = 1.0 ) const;
 
   protected:
     //! Layer's labeling configuration
@@ -103,7 +95,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Geometry type of layer
     QgsWkbTypes::GeometryType mLayerGeometryType;
 
-    QgsFeatureRenderer* mRenderer;
+    QgsFeatureRenderer *mRenderer = nullptr;
 
     // these are needed only if using own renderer loop
 
@@ -112,12 +104,12 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
     //! Layer's CRS
     QgsCoordinateReferenceSystem mCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource* mSource;
+    QgsAbstractFeatureSource *mSource = nullptr;
     //! Whether layer's feature source is owned
     bool mOwnsSource;
 
     //! List of generated
-    QList<QgsLabelFeature*> mLabels;
+    QList<QgsLabelFeature *> mLabels;
 
     friend class TestQgsLabelingEngine;
 };

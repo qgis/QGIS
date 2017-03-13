@@ -27,32 +27,32 @@
 
 #include <cmath>
 
-QgsComposerArrow::QgsComposerArrow( QgsComposition* c )
-    : QgsComposerItem( c )
-    , mStartPoint( 0, 0 )
-    , mStopPoint( 0, 0 )
-    , mStartXIdx( 0 )
-    , mStartYIdx( 0 )
-    , mMarkerMode( DefaultMarker )
-    , mArrowHeadOutlineWidth( 1.0 )
-    , mArrowHeadOutlineColor( Qt::black )
-    , mArrowHeadFillColor( Qt::black )
-    , mBoundsBehaviour( 24 )
-    , mLineSymbol( nullptr )
+QgsComposerArrow::QgsComposerArrow( QgsComposition *c )
+  : QgsComposerItem( c )
+  , mStartPoint( 0, 0 )
+  , mStopPoint( 0, 0 )
+  , mStartXIdx( 0 )
+  , mStartYIdx( 0 )
+  , mMarkerMode( DefaultMarker )
+  , mArrowHeadStrokeWidth( 1.0 )
+  , mArrowHeadStrokeColor( Qt::black )
+  , mArrowHeadFillColor( Qt::black )
+  , mBoundsBehavior( 24 )
+  , mLineSymbol( nullptr )
 {
   init();
 }
 
-QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition* c )
-    : QgsComposerItem( c )
-    , mStartPoint( startPoint )
-    , mStopPoint( stopPoint )
-    , mMarkerMode( DefaultMarker )
-    , mArrowHeadOutlineWidth( 1.0 )
-    , mArrowHeadOutlineColor( Qt::black )
-    , mArrowHeadFillColor( Qt::black )
-    , mBoundsBehaviour( 24 )
-    , mLineSymbol( nullptr )
+QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c )
+  : QgsComposerItem( c )
+  , mStartPoint( startPoint )
+  , mStopPoint( stopPoint )
+  , mMarkerMode( DefaultMarker )
+  , mArrowHeadStrokeWidth( 1.0 )
+  , mArrowHeadStrokeColor( Qt::black )
+  , mArrowHeadFillColor( Qt::black )
+  , mBoundsBehavior( 24 )
+  , mLineSymbol( nullptr )
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
   mStartYIdx = mStopPoint.y() < mStartPoint.y();
@@ -68,7 +68,7 @@ QgsComposerArrow::~QgsComposerArrow()
 void QgsComposerArrow::init()
 {
   setArrowHeadWidth( 4 );
-  mPen.setColor( mArrowHeadOutlineColor );
+  mPen.setColor( mArrowHeadStrokeColor );
   mPen.setWidthF( 1 );
   mBrush.setColor( mArrowHeadFillColor );
   createDefaultLineSymbol();
@@ -82,13 +82,13 @@ void QgsComposerArrow::createDefaultLineSymbol()
 {
   delete mLineSymbol;
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "1" );
-  properties.insert( "capstyle", "square" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
   mLineSymbol = QgsLineSymbol::createSimple( properties );
 }
 
-void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+void QgsComposerArrow::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -136,7 +136,7 @@ void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem 
   }
 }
 
-void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
+void QgsComposerArrow::setSceneRect( const QRectF &rectangle )
 {
   //update rect for data defined size and position
   QRectF evaluatedRect = evalItemRect( rectangle );
@@ -175,26 +175,23 @@ void QgsComposerArrow::drawLine( QPainter *painter )
     return;
   }
 
-  QPaintDevice* thePaintDevice = painter->device();
+  QPaintDevice *paintDevice = painter->device();
   painter->save();
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
+  double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
   painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); //scale painter from mm to dots
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
-  context.setPainter( painter );
+
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
   //line scaled to dots
   QPolygonF line;
   line << QPointF( mStartPoint.x() - pos().x(), mStartPoint.y() - pos().y() ) * dotsPerMM
-  << QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) * dotsPerMM;
+       << QPointF( mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y() ) * dotsPerMM;
 
   mLineSymbol->startRender( context );
   mLineSymbol->renderPolyline( line, nullptr, context );
@@ -206,7 +203,7 @@ void QgsComposerArrow::drawLine( QPainter *painter )
 void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
 {
   Q_UNUSED( type );
-  if ( mBoundsBehaviour == 22 )
+  if ( mBoundsBehavior == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
     QgsComposerUtils::drawArrowHead( p, mStopPoint.x() - pos().x(), mStopPoint.y() - pos().y(), QgsComposerUtils::angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
@@ -219,10 +216,10 @@ void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
   }
 }
 
-void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
+void QgsComposerArrow::drawSVGMarker( QPainter *p, MarkerType type, const QString &markerPath )
 {
   Q_UNUSED( markerPath );
-  double ang = QgsComposerUtils::angle( mStartPoint, mStopPoint );
+  double angle = QgsComposerUtils::angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;
   if ( type == StartMarker )
@@ -258,13 +255,13 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     return;
 
   QSvgRenderer r;
-  const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadOutlineColor, mArrowHeadOutlineWidth,
-                                 1.0, 1.0 );
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( svgFileName, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth,
+                                 1.0 );
   r.load( svgContent );
 
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
-  if ( mBoundsBehaviour == 22 )
+  if ( mBoundsBehavior == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
     //rotate image fix point for backtransform
@@ -280,7 +277,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
       fixPoint.setY( -arrowHeadHeight / 2.0 );
     }
     QPointF rotatedFixPoint;
-    double angleRad = ang / 180 * M_PI;
+    double angleRad = angle / 180 * M_PI;
     rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
     rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
     p->translate( canvasPoint.x() - rotatedFixPoint.x(), canvasPoint.y() - rotatedFixPoint.y() );
@@ -290,15 +287,13 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     p->translate( canvasPoint.x(), canvasPoint.y() );
   }
 
-  p->rotate( ang );
+  p->rotate( angle );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
   r.render( p, QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ) );
   p->restore();
-
-  return;
 }
 
-void QgsComposerArrow::setStartMarker( const QString& svgPath )
+void QgsComposerArrow::setStartMarker( const QString &svgPath )
 {
   QSvgRenderer r;
   mStartMarkerFile = svgPath;
@@ -315,7 +310,7 @@ void QgsComposerArrow::setStartMarker( const QString& svgPath )
   adaptItemSceneRect();
 }
 
-void QgsComposerArrow::setEndMarker( const QString& svgPath )
+void QgsComposerArrow::setEndMarker( const QString &svgPath )
 {
   QSvgRenderer r;
   mEndMarkerFile = svgPath;
@@ -332,9 +327,9 @@ void QgsComposerArrow::setEndMarker( const QString& svgPath )
   adaptItemSceneRect();
 }
 
-void QgsComposerArrow::setArrowHeadOutlineColor( const QColor &color )
+void QgsComposerArrow::setArrowHeadStrokeColor( const QColor &color )
 {
-  mArrowHeadOutlineColor = color;
+  mArrowHeadStrokeColor = color;
   mPen.setColor( color );
 }
 
@@ -344,10 +339,10 @@ void QgsComposerArrow::setArrowHeadFillColor( const QColor &color )
   mBrush.setColor( color );
 }
 
-void QgsComposerArrow::setArrowHeadOutlineWidth( const double width )
+void QgsComposerArrow::setArrowHeadStrokeWidth( const double width )
 {
-  mArrowHeadOutlineWidth = width;
-  mPen.setWidthF( mArrowHeadOutlineWidth );
+  mArrowHeadStrokeWidth = width;
+  mPen.setWidthF( mArrowHeadStrokeWidth );
 
   adaptItemSceneRect();
 }
@@ -370,7 +365,7 @@ double QgsComposerArrow::computeMarkerMargin() const
 {
   double margin = 0;
 
-  if ( mBoundsBehaviour == 22 )
+  if ( mBoundsBehavior == 22 )
   {
     //if arrow was created in versions prior to 2.4, use the old rendering style
     if ( mMarkerMode == DefaultMarker )
@@ -424,56 +419,56 @@ void QgsComposerArrow::setMarkerMode( MarkerMode mode )
   adaptItemSceneRect();
 }
 
-bool QgsComposerArrow::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomElement composerArrowElem = doc.createElement( "ComposerArrow" );
-  composerArrowElem.setAttribute( "arrowHeadWidth", QString::number( mArrowHeadWidth ) );
-  composerArrowElem.setAttribute( "arrowHeadFillColor", QgsSymbolLayerUtils::encodeColor( mArrowHeadFillColor ) );
-  composerArrowElem.setAttribute( "arrowHeadOutlineColor", QgsSymbolLayerUtils::encodeColor( mArrowHeadOutlineColor ) );
-  composerArrowElem.setAttribute( "outlineWidth", QString::number( mArrowHeadOutlineWidth ) );
-  composerArrowElem.setAttribute( "markerMode", mMarkerMode );
-  composerArrowElem.setAttribute( "startMarkerFile", mStartMarkerFile );
-  composerArrowElem.setAttribute( "endMarkerFile", mEndMarkerFile );
-  composerArrowElem.setAttribute( "boundsBehaviourVersion", QString::number( mBoundsBehaviour ) );
+  QDomElement composerArrowElem = doc.createElement( QStringLiteral( "ComposerArrow" ) );
+  composerArrowElem.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
+  composerArrowElem.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadFillColor ) );
+  composerArrowElem.setAttribute( QStringLiteral( "arrowHeadOutlineColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadStrokeColor ) );
+  composerArrowElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mArrowHeadStrokeWidth ) );
+  composerArrowElem.setAttribute( QStringLiteral( "markerMode" ), mMarkerMode );
+  composerArrowElem.setAttribute( QStringLiteral( "startMarkerFile" ), mStartMarkerFile );
+  composerArrowElem.setAttribute( QStringLiteral( "endMarkerFile" ), mEndMarkerFile );
+  composerArrowElem.setAttribute( QStringLiteral( "boundsBehaviorVersion" ), QString::number( mBoundsBehavior ) );
 
-  QDomElement styleElem = doc.createElement( "lineStyle" );
+  QDomElement styleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
   QDomElement lineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mLineSymbol, doc );
   styleElem.appendChild( lineStyleElem );
   composerArrowElem.appendChild( styleElem );
 
   //start point
-  QDomElement startPointElem = doc.createElement( "StartPoint" );
-  startPointElem.setAttribute( "x", QString::number( mStartPoint.x() ) );
-  startPointElem.setAttribute( "y", QString::number( mStartPoint.y() ) );
+  QDomElement startPointElem = doc.createElement( QStringLiteral( "StartPoint" ) );
+  startPointElem.setAttribute( QStringLiteral( "x" ), QString::number( mStartPoint.x() ) );
+  startPointElem.setAttribute( QStringLiteral( "y" ), QString::number( mStartPoint.y() ) );
   composerArrowElem.appendChild( startPointElem );
 
   //stop point
-  QDomElement stopPointElem = doc.createElement( "StopPoint" );
-  stopPointElem.setAttribute( "x", QString::number( mStopPoint.x() ) );
-  stopPointElem.setAttribute( "y", QString::number( mStopPoint.y() ) );
+  QDomElement stopPointElem = doc.createElement( QStringLiteral( "StopPoint" ) );
+  stopPointElem.setAttribute( QStringLiteral( "x" ), QString::number( mStopPoint.x() ) );
+  stopPointElem.setAttribute( QStringLiteral( "y" ), QString::number( mStopPoint.y() ) );
   composerArrowElem.appendChild( stopPointElem );
 
   elem.appendChild( composerArrowElem );
   return _writeXml( composerArrowElem, doc );
 }
 
-bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerArrow::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
-  mArrowHeadWidth = itemElem.attribute( "arrowHeadWidth", "2.0" ).toDouble();
-  mArrowHeadFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "arrowHeadFillColor", "0,0,0,255" ) );
-  mArrowHeadOutlineColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( "arrowHeadOutlineColor", "0,0,0,255" ) );
-  mArrowHeadOutlineWidth = itemElem.attribute( "outlineWidth", "1.0" ).toDouble();
-  setStartMarker( itemElem.attribute( "startMarkerFile", "" ) );
-  setEndMarker( itemElem.attribute( "endMarkerFile", "" ) );
-  mMarkerMode = QgsComposerArrow::MarkerMode( itemElem.attribute( "markerMode", "0" ).toInt() );
-  //if bounds behaviour version is not set, default to 2.2 behaviour
-  mBoundsBehaviour = itemElem.attribute( "boundsBehaviourVersion", "22" ).toInt();
+  mArrowHeadWidth = itemElem.attribute( QStringLiteral( "arrowHeadWidth" ), QStringLiteral( "2.0" ) ).toDouble();
+  mArrowHeadFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mArrowHeadStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mArrowHeadStrokeWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
+  setStartMarker( itemElem.attribute( QStringLiteral( "startMarkerFile" ), QLatin1String( "" ) ) );
+  setEndMarker( itemElem.attribute( QStringLiteral( "endMarkerFile" ), QLatin1String( "" ) ) );
+  mMarkerMode = QgsComposerArrow::MarkerMode( itemElem.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
+  //if bounds behavior version is not set, default to 2.2 behavior
+  mBoundsBehavior = itemElem.attribute( QStringLiteral( "boundsBehaviorVersion" ), QStringLiteral( "22" ) ).toInt();
 
   //arrow style
-  QDomElement styleElem = itemElem.firstChildElement( "lineStyle" );
+  QDomElement styleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
   if ( !styleElem.isNull() )
   {
-    QDomElement lineStyleElem = styleElem.firstChildElement( "symbol" );
+    QDomElement lineStyleElem = styleElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
@@ -486,44 +481,44 @@ bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument&
     delete mLineSymbol;
 
     QgsStringMap properties;
-    properties.insert( "width", itemElem.attribute( "outlineWidth", "1.0" ) );
+    properties.insert( QStringLiteral( "width" ), itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ) );
 
-    if ( mBoundsBehaviour == 22 )
+    if ( mBoundsBehavior == 22 )
     {
       //if arrow was created in versions prior to 2.4, use the old rendering style
-      properties.insert( "capstyle", "flat" );
+      properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
     }
     else
     {
-      properties.insert( "capstyle", "square" );
+      properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
     }
     int red = 0;
     int blue = 0;
     int green = 0;
     int alpha = 255;
 
-    QDomNodeList arrowColorList = itemElem.elementsByTagName( "ArrowColor" );
+    QDomNodeList arrowColorList = itemElem.elementsByTagName( QStringLiteral( "ArrowColor" ) );
     if ( !arrowColorList.isEmpty() )
     {
       QDomElement arrowColorElem = arrowColorList.at( 0 ).toElement();
-      red = arrowColorElem.attribute( "red", "0" ).toInt();
-      green = arrowColorElem.attribute( "green", "0" ).toInt();
-      blue = arrowColorElem.attribute( "blue", "0" ).toInt();
-      alpha = arrowColorElem.attribute( "alpha", "255" ).toInt();
+      red = arrowColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
+      green = arrowColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
+      blue = arrowColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
+      alpha = arrowColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
       mArrowHeadFillColor = QColor( red, green, blue, alpha );
-      mArrowHeadOutlineColor = QColor( red, green, blue, alpha );
+      mArrowHeadStrokeColor = QColor( red, green, blue, alpha );
     }
-    properties.insert( "color", QString( "%1,%2,%3,%4" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
+    properties.insert( QStringLiteral( "color" ), QStringLiteral( "%1,%2,%3,%4" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
     mLineSymbol = QgsLineSymbol::createSimple( properties );
   }
 
-  mPen.setColor( mArrowHeadOutlineColor );
-  mPen.setWidthF( mArrowHeadOutlineWidth );
+  mPen.setColor( mArrowHeadStrokeColor );
+  mPen.setWidthF( mArrowHeadStrokeWidth );
   mBrush.setColor( mArrowHeadFillColor );
 
   //restore general composer item properties
   //needs to be before start point / stop point because setSceneRect()
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
@@ -531,21 +526,21 @@ bool QgsComposerArrow::readXml( const QDomElement& itemElem, const QDomDocument&
   }
 
   //start point
-  QDomNodeList startPointList = itemElem.elementsByTagName( "StartPoint" );
+  QDomNodeList startPointList = itemElem.elementsByTagName( QStringLiteral( "StartPoint" ) );
   if ( !startPointList.isEmpty() )
   {
     QDomElement startPointElem = startPointList.at( 0 ).toElement();
-    mStartPoint.setX( startPointElem.attribute( "x", "0.0" ).toDouble() );
-    mStartPoint.setY( startPointElem.attribute( "y", "0.0" ).toDouble() );
+    mStartPoint.setX( startPointElem.attribute( QStringLiteral( "x" ), QStringLiteral( "0.0" ) ).toDouble() );
+    mStartPoint.setY( startPointElem.attribute( QStringLiteral( "y" ), QStringLiteral( "0.0" ) ).toDouble() );
   }
 
   //stop point
-  QDomNodeList stopPointList = itemElem.elementsByTagName( "StopPoint" );
+  QDomNodeList stopPointList = itemElem.elementsByTagName( QStringLiteral( "StopPoint" ) );
   if ( !stopPointList.isEmpty() )
   {
     QDomElement stopPointElem = stopPointList.at( 0 ).toElement();
-    mStopPoint.setX( stopPointElem.attribute( "x", "0.0" ).toDouble() );
-    mStopPoint.setY( stopPointElem.attribute( "y", "0.0" ).toDouble() );
+    mStopPoint.setX( stopPointElem.attribute( QStringLiteral( "x" ), QStringLiteral( "0.0" ) ).toDouble() );
+    mStopPoint.setY( stopPointElem.attribute( QStringLiteral( "y" ), QStringLiteral( "0.0" ) ).toDouble() );
   }
 
   mStartXIdx = mStopPoint.x() < mStartPoint.x();

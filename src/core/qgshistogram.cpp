@@ -22,21 +22,16 @@
 #include <qmath.h>
 
 QgsHistogram::QgsHistogram()
-    : mMax( 0 )
-    , mMin( 0 )
-    , mIQR( 0 )
-{
-
-}
-
-QgsHistogram::~QgsHistogram()
+  : mMax( 0 )
+  , mMin( 0 )
+  , mIQR( 0 )
 {
 
 }
 
 void QgsHistogram::prepareValues()
 {
-  qSort( mValues.begin(), mValues.end() );
+  std::sort( mValues.begin(), mValues.end() );
 
   QgsStatisticalSummary s;
   s.setStatistics( QgsStatisticalSummary::Max | QgsStatisticalSummary::Min | QgsStatisticalSummary::InterQuartileRange );
@@ -52,14 +47,14 @@ void QgsHistogram::setValues( const QList<double> &values )
   prepareValues();
 }
 
-bool QgsHistogram::setValues( QgsVectorLayer *layer, const QString &fieldOrExpression )
+bool QgsHistogram::setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback )
 {
   mValues.clear();
   if ( !layer )
     return false;
 
   bool ok;
-  mValues = layer->getDoubleValues( fieldOrExpression, ok );
+  mValues = layer->getDoubleValues( fieldOrExpression, ok, false, nullptr, feedback );
   if ( !ok )
     return false;
 
@@ -75,7 +70,7 @@ double QgsHistogram::optimalBinWidth() const
 
 int QgsHistogram::optimalNumberBins() const
 {
-  return ceil(( mMax - mMin ) / optimalBinWidth() );
+  return ceil( ( mMax - mMin ) / optimalBinWidth() );
 }
 
 QList<double> QgsHistogram::binEdges( int bins ) const

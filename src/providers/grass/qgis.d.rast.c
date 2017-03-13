@@ -39,7 +39,7 @@
 #include <grass/raster.h>
 #include <grass/display.h>
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && _MSC_VER < 1900
 #include <float.h>
 #define INFINITY (DBL_MAX+DBL_MAX)
 #define NAN (INFINITY-INFINITY)
@@ -67,8 +67,8 @@ int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format )
 
 int main( int argc, char **argv )
 {
-  char *mapset;
-  char *name;
+  char *mapset = 0;
+  char *name = 0;
   struct GModule *module;
   struct Option *map;
   struct Option *win;
@@ -106,7 +106,7 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
   mapset = G_find_cell2( name, "" );
   if ( !mapset )
-    G_fatal_error(( "Raster map <%s> not found" ), name );
+    G_fatal_error( ( "Raster map <%s> not found" ), name );
 #else
   mapset = "";
 #endif
@@ -143,7 +143,7 @@ int display( char *name,
   struct Colors colors;
 
   if ( G_read_colors( name, mapset, &colors ) == -1 )
-    G_fatal_error(( "Color file for <%s> not available" ), name );
+    G_fatal_error( ( "Color file for <%s> not available" ), name );
 
   //G_set_null_value_color(r, g, b, &colors);
 
@@ -163,15 +163,15 @@ static int cell_draw( char *name,
                       char *format )
 {
   int cellfile;
-  void *xarray;
+  void *xarray = 0;
   int row;
   int ncols, nrows;
   static unsigned char *red, *grn, *blu, *set;
   int i;
-  void *ptr;
+  void *ptr = 0;
   int big_endian;
   long one = 1;
-  FILE *fo;
+  FILE *fo = 0;
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
@@ -186,14 +186,14 @@ static int cell_draw( char *name,
   assert( dnul != dnul );
   assert( fnul != fnul );
 
-  big_endian = !( *(( char * )( &one ) ) );
+  big_endian = !( *( ( char * )( &one ) ) );
 
   ncols = G_window_cols();
   nrows = G_window_rows();
 
   /* Make sure map is available */
-  if (( cellfile = G_open_cell_old( name, mapset ) ) == -1 )
-    G_fatal_error(( "Unable to open raster map <%s>" ), name );
+  if ( ( cellfile = G_open_cell_old( name, mapset ) ) == -1 )
+    G_fatal_error( ( "Unable to open raster map <%s>" ), name );
 
   /* Allocate space for cell buffer */
   xarray = G_allocate_raster_buf( data_type );

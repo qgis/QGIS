@@ -15,14 +15,13 @@ class QgsCompoundCurve: public QgsCurve
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCompoundCurve* clone() const;
+    virtual QgsCompoundCurve* clone() const /Factory/;
     virtual void clear();
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
@@ -34,11 +33,13 @@ class QgsCompoundCurve: public QgsCurve
     virtual QgsPointV2 endPoint() const;
     virtual void points( QList<QgsPointV2>& pts ) const;
     virtual int numPoints() const;
+    bool isEmpty() const;
+
     /** Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     /** Returns the number of curves in the geometry.
      */

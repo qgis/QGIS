@@ -24,6 +24,7 @@ class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
 
 #include "ui_qgscategorizedsymbolrendererv2widget.h"
+#include "qgis_gui.h"
 
 ///@cond PRIVATE
 
@@ -31,11 +32,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsCategorizedSymbolRendererModel( QObject * parent = nullptr );
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    QgsCategorizedSymbolRendererModel( QObject *parent = nullptr );
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
@@ -45,7 +46,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    void setRenderer( QgsCategorizedSymbolRenderer* renderer );
+    void setRenderer( QgsCategorizedSymbolRenderer *renderer );
 
     void addCategory( const QgsRendererCategory &cat );
     QgsRendererCategory category( const QModelIndex &index );
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
     void rowsMoved();
 
   private:
-    QgsCategorizedSymbolRenderer* mRenderer;
+    QgsCategorizedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
 };
 
@@ -70,9 +71,9 @@ class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
     Q_OBJECT
 
   public:
-    explicit QgsCategorizedSymbolRendererViewStyle( QStyle* style = nullptr );
+    explicit QgsCategorizedSymbolRendererViewStyle( QStyle *style = nullptr );
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
+    void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };
 
 ///@endcond
@@ -84,12 +85,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 {
     Q_OBJECT
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsCategorizedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsCategorizedSymbolRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer() override;
+    virtual QgsFeatureRenderer *renderer() override;
 
     /** Replaces category symbols with the symbols from a style that have a matching
      * name.
@@ -99,15 +100,19 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      * @see matchToSymbolsFromXml
      * @note added in QGIS 2.9
      */
-    int matchToSymbols( QgsStyle* style );
+    int matchToSymbols( QgsStyle *style );
 
   public slots:
     void changeCategorizedSymbol();
-    void categoryColumnChanged( const QString& field );
-    void categoriesDoubleClicked( const QModelIndex & idx );
+    void categoryColumnChanged( const QString &field );
+    void categoriesDoubleClicked( const QModelIndex &idx );
     void addCategory();
     void addCategories();
+
+    /** Applies the color ramp passed on by the color ramp button
+     */
     void applyColorRamp();
+
     void deleteCategories();
     void deleteAllCategories();
 
@@ -133,7 +138,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
   private slots:
 
-    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
 
   protected:
@@ -156,19 +161,17 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void changeCategorySymbol();
 
-    QgsColorRamp* getColorRamp();
-
-    QList<QgsSymbol*> selectedSymbols() override;
+    QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
     void refreshSymbolView() override;
-    void keyPressEvent( QKeyEvent* event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   protected:
-    QgsCategorizedSymbolRenderer* mRenderer;
+    QgsCategorizedSymbolRenderer *mRenderer = nullptr;
 
-    QgsSymbol* mCategorizedSymbol;
+    QgsSymbol *mCategorizedSymbol = nullptr;
 
-    QgsCategorizedSymbolRendererModel* mModel;
+    QgsCategorizedSymbolRendererModel *mModel = nullptr;
 
   private:
     QString mOldClassificationAttribute;

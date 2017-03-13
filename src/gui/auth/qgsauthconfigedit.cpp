@@ -25,12 +25,12 @@
 #include "qgslogger.h"
 
 
-QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg , const QString &dataprovider )
-    : QDialog( parent )
-    , mAuthCfg( authcfg )
-    , mDataProvider( dataprovider )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
+  : QDialog( parent )
+  , mAuthCfg( authcfg )
+  , mDataProvider( dataprovider )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   bool disabled = QgsAuthManager::instance()->isDisabled();
   bool idok = true;
@@ -45,7 +45,7 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
 
-    QString msg( disabled ? QgsAuthManager::instance()->disabledMessage() : "" );
+    QString msg( disabled ? QgsAuthManager::instance()->disabledMessage() : QLatin1String( "" ) );
     if ( !authcfg.isEmpty() )
     {
       msg += "\n\n" + tr( "Authentication config id not loaded: %1" ).arg( authcfg );
@@ -92,10 +92,6 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent , const QString& authcfg ,
   }
 }
 
-QgsAuthConfigEdit::~QgsAuthConfigEdit()
-{
-}
-
 void QgsAuthConfigEdit::populateAuthMethods()
 {
   QStringList authMethodKeys = QgsAuthManager::instance()->authMethodsKeys( mDataProvider );
@@ -116,7 +112,7 @@ void QgsAuthConfigEdit::populateAuthMethods()
   QMap<QString, QgsAuthMethod *>::iterator it = descmap.begin();
   for ( it = descmap.begin(); it != descmap.end(); ++it )
   {
-    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit*>(
+    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit *>(
                                       QgsAuthManager::instance()->authMethodEditWidget( it.value()->key(), this ) );
     if ( !editWidget )
     {
@@ -220,7 +216,7 @@ void QgsAuthConfigEdit::saveConfig()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QString authMethodKey = cmbAuthMethods->itemData( cmbAuthMethods->currentIndex() ).toString();
+  QString authMethodKey = cmbAuthMethods->currentData().toString();
 
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
@@ -336,7 +332,7 @@ void QgsAuthConfigEdit::clearAll()
 
   for ( int i = 0; i < stkwAuthMethods->count(); i++ )
   {
-    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit*>( stkwAuthMethods->widget( i ) );
+    QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit *>( stkwAuthMethods->widget( i ) );
     if ( editWidget )
     {
       editWidget->clearConfig();
@@ -364,7 +360,7 @@ void QgsAuthConfigEdit::validateAuth()
   buttonBox->button( QDialogButtonBox::Save )->setEnabled( authok );
 }
 
-void QgsAuthConfigEdit::on_leName_textChanged( const QString& txt )
+void QgsAuthConfigEdit::on_leName_textChanged( const QString &txt )
 {
   Q_UNUSED( txt );
   validateAuth();
@@ -377,5 +373,5 @@ int QgsAuthConfigEdit::authMethodIndex( const QString &authMethodKey )
 
 QgsAuthMethodEdit *QgsAuthConfigEdit::currentEditWidget()
 {
-  return qobject_cast<QgsAuthMethodEdit*>( stkwAuthMethods->currentWidget() );
+  return qobject_cast<QgsAuthMethodEdit *>( stkwAuthMethods->currentWidget() );
 }

@@ -63,7 +63,7 @@ extern "C"
 
 static int cf = -1;
 
-void checkStream( QDataStream& stream )
+void checkStream( QDataStream &stream )
 {
   if ( stream.status() != QDataStream::Ok )
   {
@@ -77,7 +77,7 @@ void checkStream( QDataStream& stream )
 
 int main( int argc, char **argv )
 {
-  char *name;
+  char *name = nullptr;
   struct Option *map;
   struct Cell_head window;
 
@@ -184,20 +184,20 @@ int main( int argc, char **argv )
     float *fcell = 0;
     double *dcell = 0;
     if ( grass_type == CELL_TYPE )
-      cell = ( qint32* ) byteArray.data();
+      cell = ( qint32 * ) byteArray.data();
     else if ( grass_type == FCELL_TYPE )
-      fcell = ( float* ) byteArray.data();
+      fcell = ( float * ) byteArray.data();
     else if ( grass_type == DCELL_TYPE )
-      dcell = ( double* ) byteArray.data();
+      dcell = ( double * ) byteArray.data();
 
     void *ptr = buf;
     for ( int col = 0; col < cols; col++ )
     {
       if ( grass_type == CELL_TYPE )
       {
-        if (( CELL )cell[col] == ( CELL )noDataValue )
+        if ( ( CELL )cell[col] == ( CELL )noDataValue )
         {
-          G_set_c_null_value(( CELL* )ptr, 1 );
+          G_set_c_null_value( ( CELL * )ptr, 1 );
         }
         else
         {
@@ -206,9 +206,9 @@ int main( int argc, char **argv )
       }
       else if ( grass_type == FCELL_TYPE )
       {
-        if (( FCELL )fcell[col] == ( FCELL )noDataValue )
+        if ( ( FCELL )fcell[col] == ( FCELL )noDataValue )
         {
-          G_set_f_null_value(( FCELL* )ptr, 1 );
+          G_set_f_null_value( ( FCELL * )ptr, 1 );
         }
         else
         {
@@ -217,9 +217,9 @@ int main( int argc, char **argv )
       }
       else if ( grass_type == DCELL_TYPE )
       {
-        if (( DCELL )dcell[col] == ( DCELL )noDataValue )
+        if ( ( DCELL )dcell[col] == ( DCELL )noDataValue )
         {
-          G_set_d_null_value(( DCELL* )ptr, 1 );
+          G_set_d_null_value( ( DCELL * )ptr, 1 );
         }
         else
         {

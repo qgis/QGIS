@@ -28,8 +28,16 @@ __revision__ = '$Format:%H$'
 import os
 import math
 
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, Qgis, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsRectangle,
+                       QgsCoordinateReferenceSystem,
+                       QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointV2,
+                       QgsLineString,
+                       QgsWkbTypes)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
@@ -45,30 +53,39 @@ class GridLine(GeoAlgorithm):
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
+    HOVERLAY = 'HOVERLAY'
+    VOVERLAY = 'VOVERLAY'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
-    #def getIcon(self):
-    #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create grid (lines)')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
+        self.tags = self.tr('grid,lines,vector,create,fishnet')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Grid extent')))
+                                          self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,
-                                          self.tr('Horizontal spacing'), default=10.0))
+                                          self.tr('Horizontal spacing'), 0.0, 1000000000.0, default=0.0001))
         self.addParameter(ParameterNumber(self.VSPACING,
-                                          self.tr('Vertical spacing'), default=10.0))
-        self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
+                                          self.tr('Vertical spacing'), 0.0, 1000000000.0, default=0.0001))
+        self.addParameter(ParameterNumber(self.HOVERLAY,
+                                          self.tr('Horizontal overlay'), 0.0, 1000000000.0, default=0.0))
+        self.addParameter(ParameterNumber(self.VOVERLAY,
+                                          self.tr('Vertical overlay'), 0.0, 1000000000.0, default=0.0))
+        self.addParameter(ParameterCrs(self.CRS, 'Grid CRS', 'EPSG:4326'))
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
+        hOverlay = self.getParameterValue(self.HOVERLAY)
+        vOverlay = self.getParameterValue(self.VOVERLAY)
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         bbox = QgsRectangle(float(extent[0]), float(extent[2]),
@@ -76,12 +93,14 @@ class GridLine(GeoAlgorithm):
 
         width = bbox.width()
         height = bbox.height()
-        originX = bbox.xMinimum()
-        originY = bbox.yMaximum()
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
+                self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
+
+        if hSpacing <= hOverlay or vSpacing <= vOverlay:
+            raise GeoAlgorithmExecutionException(
+                self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
@@ -94,42 +113,78 @@ class GridLine(GeoAlgorithm):
         fields = [QgsField('left', QVariant.Double, '', 24, 16),
                   QgsField('top', QVariant.Double, '', 24, 16),
                   QgsField('right', QVariant.Double, '', 24, 16),
-                  QgsField('bottom', QVariant.Double, '', 24, 16)
+                  QgsField('bottom', QVariant.Double, '', 24, 16),
+                  QgsField('id', QVariant.Int, '', 10, 0),
+                  QgsField('coord', QVariant.Double, '', 24, 15)
                   ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      QgsWkbTypes.LineString, crs)
 
-        self._rectangleGridLine(
-            writer, width, height, originX, originY, hSpacing, vSpacing)
+        if hOverlay > 0:
+            hSpace = [hSpacing - hOverlay, hOverlay]
+        else:
+            hSpace = [hSpacing, hSpacing]
 
-    def _rectangleGridLine(self, writer, width, height, originX, originY,
-                           hSpacing, vSpacing):
-        ft = QgsFeature()
+        if vOverlay > 0:
+            vSpace = [vSpacing - vOverlay, vOverlay]
+        else:
+            vSpace = [vSpacing, vSpacing]
 
-        columns = int(math.ceil(float(width) / hSpacing))
-        rows = int(math.ceil(float(height) / vSpacing))
+        feat = QgsFeature()
+        feat.initAttributes(len(fields))
 
-        # Longitude lines
-        for col in xrange(columns + 1):
-            polyline = []
-            x = originX + (col * hSpacing)
-            for row in xrange(rows + 1):
-                y = originY - (row * vSpacing)
-                polyline.append(QgsPoint(x, y))
+        count = 0
+        id = 1
 
-            ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([x, originY, x, originY + (rows * vSpacing)])
-            writer.addFeature(ft)
+        # latitude lines
+        count_max = height / vSpacing
+        count_update = count_max * 0.10
+        y = bbox.yMaximum()
+        while y >= bbox.yMinimum():
+            pt1 = QgsPointV2(bbox.xMinimum(), y)
+            pt2 = QgsPointV2(bbox.xMaximum(), y)
+            line = QgsLineString()
+            line.setPoints([pt1, pt2])
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttributes([bbox.xMinimum(),
+                                y,
+                                bbox.xMaximum(),
+                                y,
+                                id,
+                                y])
+            writer.addFeature(feat)
+            y = y - vSpace[count % 2]
+            id += 1
+            count += 1
+            if int(math.fmod(count, count_update)) == 0:
+                feedback.setProgress(int(count / count_max * 50))
 
-        # Latitude lines
-        for row in xrange(rows + 1):
-            polyline = []
-            y = originY - (row * vSpacing)
-            for col in xrange(columns + 1):
-                x = originX + (col * hSpacing)
-                polyline.append(QgsPoint(x, y))
+        feedback.setProgress(50)
 
-            ft.setGeometry(QgsGeometry.fromPolyline(polyline))
-            ft.setAttributes([originX, y, originX + (col * hSpacing), y])
-            writer.addFeature(ft)
+        # longitude lines
+        # counters for progressbar - update every 5%
+        count = 0
+        count_max = width / hSpacing
+        count_update = count_max * 0.10
+        x = bbox.xMinimum()
+        while x <= bbox.xMaximum():
+            pt1 = QgsPointV2(x, bbox.yMaximum())
+            pt2 = QgsPointV2(x, bbox.yMinimum())
+            line = QgsLineString()
+            line.setPoints([pt1, pt2])
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttributes([x,
+                                bbox.yMaximum(),
+                                x,
+                                bbox.yMinimum(),
+                                id,
+                                x])
+            writer.addFeature(feat)
+            x = x + hSpace[count % 2]
+            id += 1
+            count += 1
+            if int(math.fmod(count, count_update)) == 0:
+                feedback.setProgress(50 + int(count / count_max * 50))
+
+        del writer

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'July 2013'
@@ -55,7 +56,7 @@ class PointsDisplacement(GeoAlgorithm):
                                            self.tr('Horizontal distribution for two point case')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -77,19 +78,18 @@ class PointsDisplacement(GeoAlgorithm):
             else:
                 duplicates[wkt].extend([f.id()])
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         current = 0
         total = 100.0 / len(duplicates)
-        progress.setPercentage(0)
+        feedback.setProgress(0)
 
         fullPerimeter = 2 * math.pi
 
-        request = QgsFeatureRequest()
-        for (geom, fids) in duplicates.iteritems():
+        for (geom, fids) in list(duplicates.items()):
             count = len(fids)
             if count == 1:
-                f = layer.getFeatures(request.setFilterFid(fids[0])).next()
+                f = next(layer.getFeatures(QgsFeatureRequest().setFilterFid(fids[0])))
                 writer.addFeature(f)
             else:
                 angleStep = fullPerimeter / count
@@ -99,16 +99,15 @@ class PointsDisplacement(GeoAlgorithm):
                     currentAngle = 0
 
                 old_point = QgsGeometry.fromWkt(geom).asPoint()
-                for fid in fids:
+
+                request = QgsFeatureRequest().setFilterFids(fids).setFlags(QgsFeatureRequest.NoGeometry)
+                for f in layer.getFeatures(request):
                     sinusCurrentAngle = math.sin(currentAngle)
                     cosinusCurrentAngle = math.cos(currentAngle)
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
 
-                    f = layer.getFeatures(request.setFilterFid(fid)).next()
-
-                    new_point = QgsPoint(old_point.x() + dx, old_point.y()
-                                         + dy)
+                    new_point = QgsPoint(old_point.x() + dx, old_point.y() + dy)
                     out_feature = QgsFeature()
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())
@@ -117,6 +116,6 @@ class PointsDisplacement(GeoAlgorithm):
                     currentAngle += angleStep
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

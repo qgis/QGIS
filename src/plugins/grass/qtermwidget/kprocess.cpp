@@ -165,7 +165,7 @@ void KProcess::setNextOpenMode(QIODevice::OpenMode mode)
 
 void KProcess::clearEnvironment()
 {
-    setEnvironment(QStringList() << QString::fromLatin1(DUMMYENV));
+    setEnvironment(QStringList() << QStringLiteral(DUMMYENV));
 }
 
 void KProcess::setEnv(const QString &name, const QString &value, bool overwrite)
@@ -173,7 +173,7 @@ void KProcess::setEnv(const QString &name, const QString &value, bool overwrite)
     QStringList env = environment();
     if (env.isEmpty()) {
         env = systemEnvironment();
-        env.removeAll(QString::fromLatin1(DUMMYENV));
+        env.removeAll(QStringLiteral(DUMMYENV));
     }
     QString fname(name);
     fname.append(QLatin1Char('='));
@@ -194,7 +194,7 @@ void KProcess::unsetEnv(const QString &name)
     QStringList env = environment();
     if (env.isEmpty()) {
         env = systemEnvironment();
-        env.removeAll(QString::fromLatin1(DUMMYENV));
+        env.removeAll(QStringLiteral(DUMMYENV));
     }
     QString fname(name);
     fname.append(QLatin1Char('='));
@@ -202,7 +202,7 @@ void KProcess::unsetEnv(const QString &name)
         if ((*it).startsWith(fname)) {
             env.erase(it);
             if (env.isEmpty())
-                env.append(QString::fromLatin1(DUMMYENV));
+                env.append(QStringLiteral(DUMMYENV));
             setEnvironment(env);
             return;
         }

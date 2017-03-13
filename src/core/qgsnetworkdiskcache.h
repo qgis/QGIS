@@ -34,7 +34,6 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
-    ~QgsNetworkDiskCache();
 
     //! @see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
@@ -91,8 +90,8 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
         qint64 runExpire() { return QNetworkDiskCache::expire(); }
     };
 
-    static ExpirableNetworkDiskCache smDiskCache;
-    static QMutex smDiskCacheMutex;
+    static ExpirableNetworkDiskCache sDiskCache;
+    static QMutex sDiskCacheMutex;
 
     friend class QgsNetworkAccessManager;
 };

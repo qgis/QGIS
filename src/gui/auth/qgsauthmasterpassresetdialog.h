@@ -20,6 +20,7 @@
 #include <QDialog>
 
 #include "ui_qgsauthmasterpassresetdialog.h"
+#include "qgis_gui.h"
 
 class QLabel;
 class QVBoxLayout;
@@ -37,13 +38,12 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
 
   public:
     explicit QgsMasterPasswordResetDialog( QWidget *parent = nullptr );
-    ~QgsMasterPasswordResetDialog();
 
     bool requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup );
 
   private slots:
-    void on_leMasterPassCurrent_textChanged( const QString& pass );
-    void on_leMasterPassNew_textChanged( const QString& pass );
+    void on_leMasterPassCurrent_textChanged( const QString &pass );
+    void on_leMasterPassNew_textChanged( const QString &pass );
 
     void on_chkPassShowCurrent_stateChanged( int state );
     void on_chkPassShowNew_stateChanged( int state );
@@ -53,8 +53,8 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
 
     bool mPassCurOk;
     bool mPassNewOk;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHMASTERPASSWORDRESETDIALOG_H

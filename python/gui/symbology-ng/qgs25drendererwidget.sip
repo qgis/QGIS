@@ -25,14 +25,14 @@ class Qgs25DRendererWidget : QgsRendererWidget
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer /Transfer/ ) /Factory/;
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)
      */
-    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer /Transfer/ );
 
     QgsFeatureRenderer* renderer();
 

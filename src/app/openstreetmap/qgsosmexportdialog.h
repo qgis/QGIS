@@ -39,14 +39,14 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
     void updateLayerName();
     void onLoadTags();
     void onSelectAll();
-    void onUnselectAll();
+    void onDeselectAll();
 
     void onOK();
     void onClose();
 
   private:
-    QgsOSMDatabase* mDatabase;
-    QStandardItemModel* mTagsModel;
+    QgsOSMDatabase *mDatabase = nullptr;
+    QStandardItemModel *mTagsModel = nullptr;
 };
 
 #endif // QGSOSMEXPORTDIALOG_H

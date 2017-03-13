@@ -18,18 +18,18 @@
 #include "qgsosmdatabase.h"
 
 #include "qgsdatasourceuri.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QStandardItemModel>
 
 QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
-    : QDialog( parent )
-    , mDatabase( new QgsOSMDatabase )
+  : QDialog( parent )
+  , mDatabase( new QgsOSMDatabase )
 {
   setupUi( this );
 
@@ -42,7 +42,7 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
   connect( radPolygons, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
   connect( btnLoadTags, SIGNAL( clicked() ), this, SLOT( onLoadTags() ) );
   connect( btnSelectAll, SIGNAL( clicked() ), this, SLOT( onSelectAll() ) );
-  connect( btnUnselectAll, SIGNAL( clicked() ), this, SLOT( onUnselectAll() ) );
+  connect( btnDeselectAll, SIGNAL( clicked() ), this, SLOT( onDeselectAll() ) );
 
   mTagsModel = new QStandardItemModel( this );
   mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) << tr( "Not null" ) );
@@ -57,14 +57,14 @@ QgsOSMExportDialog::~QgsOSMExportDialog()
 
 void QgsOSMExportDialog::onBrowse()
 {
-  QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( "/osm/lastDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editDbFileName->setText( fileName );
 }
 
@@ -74,12 +74,12 @@ void QgsOSMExportDialog::updateLayerName()
 
   QString layerType;
   if ( radPoints->isChecked() )
-    layerType = "points";
+    layerType = QStringLiteral( "points" );
   else if ( radPolylines->isChecked() )
-    layerType = "polylines";
+    layerType = QStringLiteral( "polylines" );
   else
-    layerType = "polygons";
-  editLayerName->setText( QString( "%1_%2" ).arg( baseName, layerType ) );
+    layerType = QStringLiteral( "polygons" );
+  editLayerName->setText( QStringLiteral( "%1_%2" ).arg( baseName, layerType ) );
 }
 
 
@@ -112,16 +112,16 @@ void QgsOSMExportDialog::onLoadTags()
 
   for ( int i = 0; i < pairs.count(); ++i )
   {
-    const QgsOSMTagCountPair& p = pairs[i];
-    QStandardItem* item = new QStandardItem( p.first );
+    const QgsOSMTagCountPair &p = pairs[i];
+    QStandardItem *item = new QStandardItem( p.first );
     item->setCheckable( true );
     mTagsModel->setItem( i, 0, item );
 
-    QStandardItem* item2 = new QStandardItem();
+    QStandardItem *item2 = new QStandardItem();
     item2->setData( p.second, Qt::DisplayRole );
     mTagsModel->setItem( i, 1, item2 );
 
-    QStandardItem* item3 = new QStandardItem();
+    QStandardItem *item3 = new QStandardItem();
     item3->setData( "Not null", Qt::DisplayRole );
     item3->setCheckable( true );
     mTagsModel->setItem( i, 2, item3 );
@@ -155,11 +155,11 @@ void QgsOSMExportDialog::onOK()
 
   for ( int i = 0; i < mTagsModel->rowCount(); ++i )
   {
-    QStandardItem* item = mTagsModel->item( i, 0 );
+    QStandardItem *item = mTagsModel->item( i, 0 );
     if ( item->checkState() == Qt::Checked )
       tagKeys << item->text();
 
-    QStandardItem* item2 = mTagsModel->item( i, 2 );
+    QStandardItem *item2 = mTagsModel->item( i, 2 );
     if ( item2->checkState() == Qt::Checked )
       notNullTagKeys << item->text();
   }
@@ -171,10 +171,10 @@ void QgsOSMExportDialog::onOK()
   {
     QgsDataSourceUri uri;
     uri.setDatabase( editDbFileName->text() );
-    uri.setDataSource( QString(), editLayerName->text(), "geometry" );
-    QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), "spatialite" );
+    uri.setDataSource( QString(), editLayerName->text(), QStringLiteral( "geometry" ) );
+    QgsVectorLayer *vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), QStringLiteral( "spatialite" ) );
     if ( vlayer->isValid() )
-      QgsMapLayerRegistry::instance()->addMapLayer( vlayer );
+      QgsProject::instance()->addMapLayer( vlayer );
   }
 
   QApplication::restoreOverrideCursor();
@@ -205,7 +205,7 @@ void QgsOSMExportDialog::onSelectAll()
   }
 }
 
-void QgsOSMExportDialog::onUnselectAll()
+void QgsOSMExportDialog::onDeselectAll()
 {
   for ( int i = 0; i < mTagsModel->rowCount(); ++i )
   {

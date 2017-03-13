@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox
 
 from MetaSearch.util import get_ui_class
@@ -44,7 +44,7 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.settings = QSettings()
+        self.settings = QgsSettings()
         self.conn_name = None
         self.conn_name_orig = conn_name
 
@@ -73,7 +73,7 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
             if all([self.conn_name_orig != conn_name,
                     self.settings.contains(keyurl)]):
                 res = QMessageBox.warning(self, self.tr('Save connection'),
-                                          self.tr('Overwrite %s?') % conn_name,
+                                          self.tr('Overwrite {0}?').format(conn_name),
                                           QMessageBox.Ok | QMessageBox.Cancel)
                 if res == QMessageBox.Cancel:
                     return

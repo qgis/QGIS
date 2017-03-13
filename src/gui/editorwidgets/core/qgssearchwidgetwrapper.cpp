@@ -16,7 +16,7 @@
 #include "qgssearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include <QWidget>
 
@@ -30,10 +30,10 @@ QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilte
          << GreaterThanOrEqualTo
          << LessThanOrEqualTo
          << Between
+         << IsNotBetween
          << Contains
          << DoesNotContain
          << IsNull
-         << IsNotBetween
          << IsNotNull;
 }
 
@@ -50,7 +50,7 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
     case EqualTo:
       return QObject::tr( "Equal to (=)" );
     case NotEqualTo:
-      return QObject::tr( "Not equal to" );
+      return QObject::tr( "Not equal to (!=)" );
     case GreaterThan:
       return QObject::tr( "Greater than (>)" );
     case LessThan:
@@ -61,6 +61,8 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
       return QObject::tr( "Less than or equal to (<=)" );
     case Between:
       return QObject::tr( "Between (inclusive)" );
+    case IsNotBetween:
+      return QObject::tr( "Not between (inclusive)" );
     case CaseInsensitive:
       return QObject::tr( "Case insensitive" );
     case Contains:
@@ -71,17 +73,15 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
       return QObject::tr( "Is missing (null)" );
     case IsNotNull:
       return QObject::tr( "Is not missing (not null)" );
-    case IsNotBetween:
-      return QObject::tr( "Is not between (inclusive)" );
 
   }
   return QString();
 }
 
-QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsWidgetWrapper( vl, nullptr, parent )
-    , mExpression( QString() )
-    , mFieldIdx( fieldIdx )
+QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsWidgetWrapper( vl, nullptr, parent )
+  , mExpression( QString() )
+  , mFieldIdx( fieldIdx )
 {
 }
 
@@ -96,13 +96,13 @@ QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::defaultFlags() const
 }
 
 
-void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
+void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   Q_UNUSED( feature )
 }
 
 void QgsSearchWidgetWrapper::clearExpression()
 {
-  mExpression = QString( "TRUE" );
+  mExpression = QStringLiteral( "TRUE" );
 }
 

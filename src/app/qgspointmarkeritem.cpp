@@ -17,26 +17,27 @@
 #include "qgssymbol.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include <QPainter>
 #include <cmath>
 
-QgsPointMarkerItem::QgsPointMarkerItem( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas )
-    , mOpacityEffect( new QgsDrawSourceEffect() )
+QgsPointMarkerItem::QgsPointMarkerItem( QgsMapCanvas *canvas )
+  : QgsMapCanvasItem( canvas )
+  , mOpacityEffect( new QgsDrawSourceEffect() )
 {
   setCacheMode( QGraphicsItem::ItemCoordinateCache );
 }
 
-QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
+QgsRenderContext QgsPointMarkerItem::renderContext( QPainter *painter )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-    << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else
   {
@@ -54,7 +55,7 @@ QgsRenderContext QgsPointMarkerItem::renderContext( QPainter* painter )
   return rc;
 }
 
-void QgsPointMarkerItem::paint( QPainter * painter )
+void QgsPointMarkerItem::paint( QPainter *painter )
 {
   if ( !painter )
   {
@@ -81,7 +82,7 @@ void QgsPointMarkerItem::paint( QPainter * painter )
   }
 }
 
-void QgsPointMarkerItem::setPointLocation( const QgsPoint& p )
+void QgsPointMarkerItem::setPointLocation( const QgsPoint &p )
 {
   mLocation = toCanvasCoordinates( p );
 }
@@ -91,12 +92,12 @@ void QgsPointMarkerItem::setSymbol( QgsMarkerSymbol *symbol )
   mMarkerSymbol.reset( symbol );
 }
 
-QgsMarkerSymbol*QgsPointMarkerItem::symbol()
+QgsMarkerSymbol *QgsPointMarkerItem::symbol()
 {
-  return mMarkerSymbol.data();
+  return mMarkerSymbol.get();
 }
 
-void QgsPointMarkerItem::setFeature( const QgsFeature& feature )
+void QgsPointMarkerItem::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
 }

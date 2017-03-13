@@ -134,19 +134,64 @@ class QgsComposerScaleBar: QgsComposerItem
      */
     void setFontColor( const QColor& c );
 
+    /** Returns the color used for fills in the scalebar.
+     * @see setFillColor()
+     * @see fillColor2()
+     * @note added in QGIS 3.0
+     */
+    QColor fillColor() const;
+
+    /** Sets the color used for fills in the scalebar.
+     * @see fillColor()
+     * @see setFillColor2()
+     * @note added in QGIS 3.0
+     */
+    void setFillColor( const QColor& color );
+
+    /** Returns the secondary color used for fills in the scalebar.
+     * @see setFillColor2()
+     * @see fillColor()
+     * @note added in QGIS 3.0
+     */
+    QColor fillColor2() const;
+
+    /** Sets the secondary color used for fills in the scalebar.
+     * @see fillColor2()
+     * @see setFillColor2()
+     * @note added in QGIS 3.0
+     */
+    void setFillColor2( const QColor& color );
+
+    /** Returns the color used for lines in the scalebar.
+     * @see setLineColor()
+     * @note added in QGIS 3.0
+     */
+    QColor lineColor() const;
+
+    /** Sets the color used for lines in the scalebar.
+     * @see lineColor()
+     * @note added in QGIS 3.0
+     */
+    void setLineColor( const QColor& color );
+
+    /** Returns the line width in millimeters for lines in the scalebar.
+     * @see setLineWidth()
+     * @note added in QGIS 3.0
+     */
+    double lineWidth() const;
+
+    /** Sets the line width in millimeters for lines in the scalebar.
+     * @see lineWidth()
+     * @note added in QGIS 3.0
+     */
+    void setLineWidth( double width );
+
     /** Returns the pen used for drawing the scalebar.
      * @returns QPen used for drawing the scalebar outlines.
      * @see setPen
      * @see brush
      */
     QPen pen() const;
-
-    /** Sets the pen used for drawing the scalebar.
-     * @param pen QPen to use for drawing the scalebar outlines.
-     * @see pen
-     * @see setBrush
-     */
-    void setPen( const QPen& pen );
 
     /** Returns the primary brush for the scalebar.
      * @returns QBrush used for filling the scalebar
@@ -156,14 +201,6 @@ class QgsComposerScaleBar: QgsComposerItem
      */
     QBrush brush() const;
 
-    /** Sets primary brush for the scalebar.
-     * @param brush QBrush to use for filling the scalebar
-     * @see brush
-     * @see setBrush2
-     * @see setPen
-     */
-    void setBrush( const QBrush& brush );
-
     /** Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * @returns QBrush used for secondary color areas
@@ -171,14 +208,6 @@ class QgsComposerScaleBar: QgsComposerItem
      * @see brush
      */
     QBrush brush2() const;
-
-    /** Sets secondary brush for the scalebar. This is used for alternating color style scalebars, such
-     * as single and double box styles.
-     * @param brush QBrush to use for secondary color areas
-     * @see brush2
-     * @see setBrush
-     */
-    void setBrush2( const QBrush& brush );
 
     double height() const;
     void setHeight( double h );
@@ -245,13 +274,9 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /** Returns the x - positions of the segment borders (in item coordinates) and the width
      * of the segment
-     * @note python bindings not available on android
+     * @note not available in Python bindings
      */
-%If (!ARM)
-%If (!QT5_SUPPORT)
-    void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
-%End
-%End
+    // void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 
     /** Sets box size suitable to content*/
     void adjustBoxSize();
@@ -284,6 +309,7 @@ class QgsComposerScaleBar: QgsComposerItem
     void updateSegmentSize();
     /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
 
   protected:
     /** Calculates with of a segment in mm and stores it in mSegmentMillimeters*/

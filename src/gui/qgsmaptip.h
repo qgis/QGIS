@@ -26,6 +26,7 @@ class QgsWebView;
 #include <QWidget>
 #include <QUrl>
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A maptip is a class to display a tip on a map canvas
@@ -50,25 +51,25 @@ class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
+
     /** Default constructor
      */
     QgsMapTip();
-    /** Destructor
-     */
-    virtual ~QgsMapTip();
+
     /** Show a maptip at a given point on the map canvas
      * @param thepLayer a qgis vector map layer pointer that will
      *        be used to provide the attribute data for the map tip.
-     * @param theMapPosition a reference to the position of the cursor
+     * @param mapPosition a reference to the position of the cursor
      *        in map coordinatess.
-     * @param thePixelPosition a reference to the position of the cursor
+     * @param pixelPosition a reference to the position of the cursor
      *        in pixel coordinates.
      * @param mpMapCanvas a map canvas on which the tip is drawn
      */
-    void showMapTip( QgsMapLayer * thepLayer,
-                     QgsPoint & theMapPosition,
-                     QPoint & thePixelPosition,
+    void showMapTip( QgsMapLayer *thepLayer,
+                     QgsPoint &mapPosition,
+                     QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
+
     /** Clear the current maptip if it exists
      * @param mpMapCanvas the canvas from which the tip should be cleared.
      */
@@ -76,8 +77,8 @@ class GUI_EXPORT QgsMapTip : public QWidget
   private:
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
-    QString fetchFeature( QgsMapLayer * thepLayer,
-                          QgsPoint & theMapPosition,
+    QString fetchFeature( QgsMapLayer *thepLayer,
+                          QgsPoint &mapPosition,
                           QgsMapCanvas *mapCanvas );
 
     QString replaceText(
@@ -86,10 +87,10 @@ class GUI_EXPORT QgsMapTip : public QWidget
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
 
-    QWidget* mWidget;
-    QgsWebView* mWebView;
+    QWidget *mWidget = nullptr;
+    QgsWebView *mWebView = nullptr;
 
   private slots:
-    void onLinkClicked( const QUrl& url );
+    void onLinkClicked( const QUrl &url );
 };
 #endif // QGSMAPTIP_H

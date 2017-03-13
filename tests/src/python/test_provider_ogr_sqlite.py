@@ -17,12 +17,11 @@ import qgis  # NOQA
 import os
 import tempfile
 import shutil
-import glob
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest
+from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest, QgsFieldConstraints, NULL
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 
 start_app()
 
@@ -66,7 +65,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f = None
         ds = None
 
-        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'test', u'ogr')
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
         self.assertEqual(len(vl.fields()), 3)
         got = [(f.attribute('fid'), f.attribute('strfield'), f.attribute('intfield')) for f in vl.getFeatures()]
         self.assertEqual(got, [(12, 'foo', 123)])
@@ -128,6 +127,77 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         got = [(f.attribute('fid'), f.attribute('intfield')) for f in vl.dataProvider().getFeatures(QgsFeatureRequest().setFilterExpression("fid = 12"))]
         self.assertEqual(got, [(12, 123)])
+
+    def testNotNullConstraint(self):
+        """ test detection of not null constraint on OGR layer """
+
+        tmpfile = os.path.join(self.basetestpath, 'testNotNullConstraint.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTInteger))
+        fld2 = ogr.FieldDefn('field2', ogr.OFTInteger)
+        fld2.SetNullable(False)
+        lyr.CreateField(fld2)
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # test some bad indexes
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsFieldConstraints.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsFieldConstraints.Constraints())
+
+        self.assertFalse(vl.dataProvider().fieldConstraints(0) & QgsFieldConstraints.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsFieldConstraints.ConstraintNotNull)
+
+        # test that constraints have been saved to fields correctly
+        fields = vl.fields()
+        self.assertFalse(fields.at(0).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
+        self.assertFalse(fields.at(1).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints().constraints() & QgsFieldConstraints.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.ConstraintNotNull), QgsFieldConstraints.ConstraintOriginProvider)
+
+    def testDefaultValues(self):
+        """ test detection of defaults on OGR layer """
+
+        tmpfile = os.path.join(self.basetestpath, 'testDefaults.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTInteger))
+        fld2 = ogr.FieldDefn('field2', ogr.OFTInteger)
+        fld2.SetDefault('5')
+        lyr.CreateField(fld2)
+        fld3 = ogr.FieldDefn('field3', ogr.OFTString)
+        fld3.SetDefault("'some ''default'")
+        lyr.CreateField(fld3)
+        fld4 = ogr.FieldDefn('field4', ogr.OFTDate)
+        fld4.SetDefault("CURRENT_DATE")
+        lyr.CreateField(fld4)
+        fld5 = ogr.FieldDefn('field5', ogr.OFTTime)
+        fld5.SetDefault("CURRENT_TIME")
+        lyr.CreateField(fld5)
+        fld6 = ogr.FieldDefn('field6', ogr.OFTDateTime)
+        fld6.SetDefault("CURRENT_TIMESTAMP")
+        lyr.CreateField(fld6)
+
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # test some bad indexes
+        self.assertFalse(vl.dataProvider().defaultValue(-1))
+        self.assertFalse(vl.dataProvider().defaultValue(1001))
+
+        # test default
+        self.assertEqual(vl.dataProvider().defaultValue(1), NULL)
+        self.assertEqual(vl.dataProvider().defaultValue(2), 5)
+        self.assertEqual(vl.dataProvider().defaultValue(3), "some 'default")
+        self.assertEqual(vl.dataProvider().defaultValue(4), QDate.currentDate())
+        # time may pass, so we allow 1 second difference here
+        self.assertTrue(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()) < 1)
+        self.assertTrue(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()) < 1)
 
 
 if __name__ == '__main__':

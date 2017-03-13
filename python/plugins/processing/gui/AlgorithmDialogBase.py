@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,12 +30,16 @@ import os
 import webbrowser
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QByteArray, QUrl
-from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QDesktopWidget
+from qgis.PyQt.QtCore import QCoreApplication, QByteArray, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.utils import iface
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import (QgsNetworkAccessManager,
+                       QgsProject,
+                       QgsProcessingFeedback,
+                       QgsSettings)
+
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -43,13 +48,46 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgAlgorithmBase.ui'))
 
 
+class AlgorithmDialogFeedback(QgsProcessingFeedback):
+    """
+    Directs algorithm feedback to an algorithm dialog
+    """
+
+    def __init__(self, dialog):
+        QgsProcessingFeedback.__init__(self)
+        self.dialog = dialog
+
+    def reportError(self, msg):
+        self.dialog.error(msg)
+
+    def setProgressText(self, text):
+        self.dialog.setText(text)
+
+    def setProgress(self, i):
+        self.dialog.setPercentage(i)
+
+    def pushInfo(self, msg):
+        self.dialog.setInfo(msg)
+
+    def pushCommandInfo(self, msg):
+        self.dialog.setCommand(msg)
+
+    def pushDebugInfo(self, msg):
+        self.dialog.setDebugInfo(msg)
+
+    def pushConsoleInfo(self, msg):
+        self.dialog.setConsoleInfo(msg)
+
+
 class AlgorithmDialogBase(BASE, WIDGET):
 
     def __init__(self, alg):
         super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
 
-        self.settings = QSettings()
+        self.feedback = AlgorithmDialogFeedback(self)
+
+        self.settings = QgsSettings()
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))
 
         self.executed = False
@@ -64,9 +102,9 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         self.setWindowTitle(self.alg.displayName())
 
-        #~ desktop = QDesktopWidget()
-        #~ if desktop.physicalDpiX() > 96:
-        #~ self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
+        # desktop = QDesktopWidget()
+        # if desktop.physicalDpiX() > 96:
+        # self.txtHelp.setZoomFactor(desktop.physicalDpiX() / 96)
 
         algHelp = self.alg.shortHelp()
         if algHelp is None:
@@ -99,7 +137,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
                     rq = QNetworkRequest(algHelp)
                     self.reply = QgsNetworkAccessManager.instance().get(rq)
                     self.reply.finished.connect(self.requestFinished)
-            except Exception, e:
+            except Exception:
                 self.tabWidget.removeTab(2)
         else:
             self.tabWidget.removeTab(2)
@@ -113,7 +151,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No help available for this algorithm</h2><p>{}</p>'.format(reply.errorString()))
         else:
-            html = unicode(reply.readAll())
+            html = str(reply.readAll())
         reply.deleteLater()
         self.txtHelp.setHtml(html)
 
@@ -121,8 +159,14 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.settings.setValue("/Processing/dialogBase", self.saveGeometry())
         super(AlgorithmDialogBase, self).closeEvent(evt)
 
-    def setMainWidget(self):
+    def setMainWidget(self, widget):
+        if self.mainWidget is not None:
+            QgsProject.instance().layerWasAdded.disconnect(self.mainWidget.layerRegistryChanged)
+            QgsProject.instance().layersWillBeRemoved.disconnect(self.mainWidget.layerRegistryChanged)
+        self.mainWidget = widget
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)
+        QgsProject.instance().layerWasAdded.connect(self.mainWidget.layerRegistryChanged)
+        QgsProject.instance().layersWillBeRemoved.connect(self.mainWidget.layerRegistryChanged)
 
     def error(self, msg):
         QApplication.restoreOverrideCursor()

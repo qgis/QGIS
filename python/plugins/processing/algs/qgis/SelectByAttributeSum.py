@@ -25,7 +25,7 @@ __copyright__ = '(C) 2015, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsSpatialIndex, QgsFeatureRequest, QgsGeometry
+from qgis.core import QgsSpatialIndex, QgsFeatureRequest
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -56,13 +56,13 @@ class SelectByAttributeSum(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fileName = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         value = self.getParameterValue(self.VALUE)
 
-        selected = layer.selectedFeaturesIds()
+        selected = layer.selectedFeatureIds()
         if len(selected) == 0:
             GeoAlgorithmExecutionException(
                 self.tr('There is no selection in the input layer. '
@@ -72,21 +72,21 @@ class SelectByAttributeSum(GeoAlgorithm):
         geom = ft.geometry()
         attrSum = ft[fieldName]
 
-        idx = QgsSpatialIndex(layer.getFeatures())
+        idx = QgsSpatialIndex(layer.getFeatures(QgsFeatureRequest.setSubsetOfAttributes([])))
         req = QgsFeatureRequest()
         completed = False
         while not completed:
             intersected = idx.intersects(geom.boundingBox())
             if len(intersected) < 0:
-                progress.setInfo(self.tr('No adjacent features found.'))
+                feedback.pushInfo(self.tr('No adjacent features found.'))
                 break
 
-            for i in intersected:
-                ft = layer.getFeatures(req.setFilterFid(i)).next()
+            req = QgsFeatureRequest().setFilterFids(intersected).setSubsetOfAttributes([fieldName], layer.fields())
+            for ft in layer.getFeatures(req):
                 tmpGeom = ft.geometry()
                 if tmpGeom.touches(geom):
                     geom = tmpGeom.combine(geom)
-                    selected.append(i)
+                    selected.append(ft.id())
                     attrSum += ft[fieldName]
                     if attrSum >= value:
                         completed = True

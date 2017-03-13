@@ -19,6 +19,8 @@ class QgsMapLayerModel : QAbstractItemModel
     {
       LayerIdRole, /*!< Stores the map layer ID */
       LayerRole, /*!< Stores pointer to the map layer itself */
+      EmptyRole, //!< True if index corresponds to the empty (not set) value
+      AdditionalRole, //!< True if index corresponds to an additional (non map layer) item
     };
 
     /**
@@ -38,6 +40,51 @@ class QgsMapLayerModel : QAbstractItemModel
      * @brief checkAll changes the checkstate for all the layers
      */
     void checkAll( Qt::CheckState checkState );
+
+    /**
+     * Sets whether an optional empty layer ("not set") option is present in the model.
+     * @see allowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    void setAllowEmptyLayer( bool allowEmpty );
+
+    /**
+     * Returns true if the model allows the empty layer ("not set") choice.
+     * @see setAllowEmptyLayer()
+     * @note added in QGIS 3.0
+     */
+    bool allowEmptyLayer() const;
+
+    /**
+     * Sets whether the CRS of layers is also included in the model's display role.
+     * @see showCrs()
+     * @note added in QGIS 3.0
+     */
+    void setShowCrs( bool showCrs );
+
+    /**
+     * Returns true if the model includes layer's CRS in the display role.
+     * @see setShowCrs()
+     * @note added in QGIS 3.0
+     */
+    bool showCrs() const;
+
+    /**
+     * Sets a list of additional (non map layer) items to include at the end of the model.
+     * These may represent additional layers such as layers which are not included in the map
+     * layer registry, or paths to layers which have not yet been loaded into QGIS.
+     * @see additionalItems()
+     * @note added in QGIS 3.0
+     */
+    void setAdditionalItems( const QStringList& items );
+
+    /**
+     * Return the list of additional (non map layer) items included at the end of the model.
+     * @see setAdditionalItems()
+     * @note added in QGIS 3.0
+     */
+    QStringList additionalItems() const;
+
     /**
      * @brief layersChecked returns the list of layers which are checked (or unchecked)
      */
@@ -59,17 +106,15 @@ class QgsMapLayerModel : QAbstractItemModel
   public:
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent ) const;
-    int columnCount( const QModelIndex &parent ) const;
-    QVariant data( const QModelIndex &index, int role ) const;
-%If (QT5_SUPPORT)
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
     /**
      * Returns strings for all roles supported by this model.
-     *
-     * @note Available only with Qt5 (python and c++)
      */
     QHash<int, QByteArray> roleNames() const;
-%End
-    bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole );
     Qt::ItemFlags flags( const QModelIndex &index ) const;
 };

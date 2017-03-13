@@ -18,6 +18,7 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
+#include "qgis_core.h"
 #include <QDateTime>
 #include <QDomNode>
 #include <QImage>
@@ -37,6 +38,8 @@
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
+class QgsPathResolver;
+class QgsProject;
 
 class QDomDocument;
 class QKeyEvent;
@@ -51,6 +54,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     Q_OBJECT
 
     Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
+    Q_PROPERTY( int autoRefreshInterval READ autoRefreshInterval WRITE setAutoRefreshInterval NOTIFY autoRefreshIntervalChanged )
 
   public:
 
@@ -67,15 +71,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param name display name for the layer
      * @param source datasource of layer
      */
-    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString& name = QString::null, const QString& source = QString::null );
+    QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString::null, const QString &source = QString::null );
 
     virtual ~QgsMapLayer();
+
+    //! QgsMapLayer cannot be copied
+    QgsMapLayer( QgsMapLayer const & ) = delete;
+    //! QgsMapLayer cannot be copied
+    QgsMapLayer &operator=( QgsMapLayer const & ) = delete;
 
     /** Returns the type of the layer.
      */
     QgsMapLayer::LayerType type() const;
 
-    /** Returns the layer's unique ID, which is used to access this layer from QgsMapLayerRegistry. */
+    //! Returns the layer's unique ID, which is used to access this layer from QgsProject.
     QString id() const;
 
     /**
@@ -84,7 +93,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note added in 2.16
      * @see name()
      */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /** Returns the display name of the layer.
      * @return the layer name
@@ -102,7 +111,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer short name
      * @see shortName()
      */
-    void setShortName( const QString& shortName ) { mShortName = shortName; }
+    void setShortName( const QString &shortName ) { mShortName = shortName; }
 
     /** Returns the short name of the layer
      *  used by QGIS Server to identify the layer.
@@ -116,7 +125,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer title
      * @see title()
      */
-    void setTitle( const QString& title ) { mTitle = title; }
+    void setTitle( const QString &title ) { mTitle = title; }
 
     /** Returns the title of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -130,7 +139,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer abstract
      * @see abstract()
      */
-    void setAbstract( const QString& abstract ) { mAbstract = abstract; }
+    void setAbstract( const QString &abstract ) { mAbstract = abstract; }
 
     /** Returns the abstract of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -144,7 +153,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer keyword list
      * @see keywordList()
      */
-    void setKeywordList( const QString& keywords ) { mKeywordList = keywords; }
+    void setKeywordList( const QString &keywords ) { mKeywordList = keywords; }
 
     /** Returns the keyword list of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -161,7 +170,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer DataUrl
      * @see dataUrl()
      */
-    void setDataUrl( const QString& dataUrl ) { mDataUrl = dataUrl; }
+    void setDataUrl( const QString &dataUrl ) { mDataUrl = dataUrl; }
 
     /** Returns the DataUrl of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -177,7 +186,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer DataUrl format
      * @see dataUrlFormat()
      */
-    void setDataUrlFormat( const QString& dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
+    void setDataUrlFormat( const QString &dataUrlFormat ) { mDataUrlFormat = dataUrlFormat; }
 
     /** Returns the DataUrl format of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -195,7 +204,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer attribution
      * @see attribution()
      */
-    void setAttribution( const QString& attrib ) { mAttribution = attrib; }
+    void setAttribution( const QString &attrib ) { mAttribution = attrib; }
 
     /** Returns the attribution of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -211,7 +220,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer attribution URL
      * @see attributionUrl()
      */
-    void setAttributionUrl( const QString& attribUrl ) { mAttributionUrl = attribUrl; }
+    void setAttributionUrl( const QString &attribUrl ) { mAttributionUrl = attribUrl; }
 
     /** Returns the attribution URL of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -229,7 +238,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer metadata URL
      * @see metadataUrl()
      */
-    void setMetadataUrl( const QString& metaUrl ) { mMetadataUrl = metaUrl; }
+    void setMetadataUrl( const QString &metaUrl ) { mMetadataUrl = metaUrl; }
 
     /** Returns the metadata URL of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -245,7 +254,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer metadata type
      * @see metadataUrlType()
      */
-    void setMetadataUrlType( const QString& metaUrlType ) { mMetadataUrlType = metaUrlType; }
+    void setMetadataUrlType( const QString &metaUrlType ) { mMetadataUrlType = metaUrlType; }
 
     /** Returns the metadata type of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -261,7 +270,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return the layer metadata format
      * @see metadataUrlFormat()
      */
-    void setMetadataUrlFormat( const QString& metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
+    void setMetadataUrlFormat( const QString &metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
 
     /** Returns the metadata format of the layer
      *  used by QGIS Server in GetCapabilities request.
@@ -282,7 +291,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     QPainter::CompositionMode blendMode() const;
 
-    /** Returns if this layer is read only. */
+    //! Returns if this layer is read only.
     bool readOnly() const { return isReadOnly(); }
 
     /** Synchronises with changes in the datasource
@@ -292,9 +301,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) = 0;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0;
 
-    /** Returns the extent of the layer. */
+    //! Returns the extent of the layer.
     virtual QgsRectangle extent() const;
 
     /** Return the status of the layer. An invalid layer is one which has a bad datasource
@@ -332,9 +341,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param name sublayer name
      * @param visible sublayer visibility
     */
-    virtual void setSubLayerVisibility( const QString& name, bool visible );
+    virtual void setSubLayerVisibility( const QString &name, bool visible );
 
-    /** Returns true if the layer can be edited. */
+    //! Returns true if the layer can be edited.
     virtual bool isEditable() const;
 
     /** Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
@@ -344,6 +353,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
+       @param pathResolver object for conversion between relative and absolute paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -356,13 +366,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        @returns true if successful
      */
-    bool readLayerXml( const QDomElement& layerElement );
-
+    bool readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver );
 
     /** Stores state in Dom node
      * @param layerElement is a Dom element corresponding to ``maplayer'' tag
      * @param document is a the dom document being written
-     * @param relativeBasePath base path for relative paths
+     * @param pathResolver object for conversion between relative and absolute paths
      * @note
      *
      * The Dom node corresponds to a Dom document project file XML element to be
@@ -375,33 +384,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * @returns true if successful
      */
-    bool writeLayerXml( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null ) const;
-
-    /** Returns the given layer as a layer definition document
-     *  Layer definitions store the data source as well as styling and custom properties.
-     *
-     *  Layer definitions can be used to load a layer and styling all from a single file.
-     */
-    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
-
-    /** Creates a new layer from a layer defininition document
-     */
-    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
-    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
+    bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const;
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      * @see customProperty()
      * @see removeCustomProperty()
      */
-    void setCustomProperty( const QString& key, const QVariant& value );
+    void setCustomProperty( const QString &key, const QVariant &value );
+
     /** Read a custom property from layer. Properties are stored in a map and saved in project file.
      * @see setCustomProperty()
     */
-    QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
+    QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
+
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * @see setCustomProperty()
      */
-    void removeCustomProperty( const QString& key );
+    void removeCustomProperty( const QString &key );
 
     /** Get current status error. This error describes some principal problem
      *  for which layer cannot work and thus is not valid. It is not last error
@@ -414,11 +413,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsCoordinateReferenceSystem crs() const;
 
-    /** Sets layer's spatial reference system */
-    void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
+    //! Sets layer's spatial reference system
+    void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
 
-    /** A convenience function to (un)capitalise the layer name */
-    static QString capitaliseLayerName( const QString& name );
+    //! A convenience function to (un)capitalize the layer name
+    static QString capitalizeLayerName( const QString &name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
@@ -436,7 +435,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @see also loadNamedStyle ();
      */
-    virtual QString loadDefaultStyle( bool & resultFlag );
+    virtual QString loadDefaultStyle( bool &resultFlag );
 
     /** Retrieve a named style for this layer if one
      * exists (either as a .qml file on disk or as a
@@ -451,7 +450,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString& uri, bool &resultFlag );
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag );
 
     /** Retrieve a named style for this layer from a sqlite database.
      * @param db path to sqlite database
@@ -459,7 +458,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param qml will be set to QML style content from database
      * @returns true if style was successfully loaded
      */
-    virtual bool loadNamedStyleFromDb( const QString &db, const QString &uri, QString &qml );
+    virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml );
 
     /**
      * Import the properties of this layer from a QDomDocument
@@ -469,7 +468,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return true on success
      * @note added in 2.8
      */
-    virtual bool importNamedStyle( QDomDocument& doc, QString &errorMsg );
+    virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg );
 
     /**
      * Export the properties of this layer as named style in a QDomDocument
@@ -496,7 +495,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @sa loadNamedStyle() and @see saveNamedStyle()
      */
-    virtual QString saveDefaultStyle( bool & resultFlag );
+    virtual QString saveDefaultStyle( bool &resultFlag );
 
     /** Save the properties of this layer as a named style
      * (either as a .qml file on disk or as a
@@ -532,7 +531,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage )
-    { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
+    { Q_UNUSED( node ); errorMessage = QStringLiteral( "Layer type %1 not supported" ).arg( type() ); return false; }
 
 
 
@@ -541,7 +540,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
      */
-    virtual bool readSymbology( const QDomNode& node, QString& errorMessage ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage ) = 0;
 
     /** Read the style for the current layer from the Dom node supplied.
      * @param node node that will contain the style definition for this layer.
@@ -550,7 +549,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note added in 2.16
      * @note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool readStyle( const QDomNode& node, QString& errorMessage );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage );
 
     /** Write the symbology for the layer into the docment provided.
      *  @param node the node that will have the style element added to it.
@@ -558,7 +557,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      */
-    virtual bool writeSymbology( QDomNode &node, QDomDocument& doc, QString& errorMessage ) const = 0;
+    virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const = 0;
 
     /** Write just the style information for the layer into the document
      *  @param node the node that will have the style element added to it.
@@ -568,9 +567,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @note added in 2.16
      *  @note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
-    virtual bool writeStyle( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
 
-    /** Return pointer to layer's undo stack */
+    //! Return pointer to layer's undo stack
     QUndoStack *undoStack();
 
     /** Return pointer to layer's style undo stack
@@ -579,9 +578,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QUndoStack *undoStackStyles();
 
     /* Layer legendUrl information */
-    void setLegendUrl( const QString& legendUrl ) { mLegendUrl = legendUrl; }
+    void setLegendUrl( const QString &legendUrl ) { mLegendUrl = legendUrl; }
     QString legendUrl() const { return mLegendUrl; }
-    void setLegendUrlFormat( const QString& legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
+    void setLegendUrlFormat( const QString &legendUrlFormat ) { mLegendUrlFormat = legendUrlFormat; }
     QString legendUrlFormat() const { return mLegendUrlFormat; }
 
     /**
@@ -589,18 +588,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param legend Takes ownership of the object. Can be null pointer
      * @note added in 2.6
      */
-    void setLegend( QgsMapLayerLegend* legend );
+    void setLegend( QgsMapLayerLegend *legend );
+
     /**
      * Can be null.
      * @note added in 2.6
      */
-    QgsMapLayerLegend* legend() const;
+    QgsMapLayerLegend *legend() const;
 
     /**
      * Get access to the layer's style manager. Style manager allows switching between multiple styles.
      * @note added in 2.8
      */
-    QgsMapLayerStyleManager* styleManager() const;
+    QgsMapLayerStyleManager *styleManager() const;
 
     /** Tests whether the layer should be visible at the specified scale.
      * @param scale scale denominator to test
@@ -641,9 +641,47 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool hasScaleBasedVisibility() const;
 
+    /**
+     * Returns true if auto refresh is enabled for the layer.
+     * @note added in QGIS 3.0
+     * @see autoRefreshInterval()
+     * @see setAutoRefreshEnabled()
+     */
+    bool hasAutoRefreshEnabled() const;
+
+    /**
+     * Returns the auto refresh interval (in milliseconds). Note that
+     * auto refresh is only active when hasAutoRefreshEnabled() is true.
+     * @note added in QGIS 3.0
+     * @see autoRefreshEnabled()
+     * @see setAutoRefreshInterval()
+     */
+    int autoRefreshInterval() const;
+
+    /**
+     * Sets the auto refresh interval (in milliseconds) for the layer. This
+     * will cause the layer to be automatically redrawn on a matching interval.
+     * Note that auto refresh must be enabled by calling setAutoRefreshEnabled().
+     *
+     * Note that auto refresh triggers deferred repaints of the layer. Any map
+     * canvas must be refreshed separately in order to view the refreshed layer.
+     * @note added in QGIS 3.0
+     * @see autoRefreshInterval()
+     * @see setAutoRefreshEnabled()
+     */
+    void setAutoRefreshInterval( int interval );
+
+    /**
+     * Sets whether auto refresh is enabled for the layer.
+     * @note added in QGIS 3.0
+     * @see hasAutoRefreshEnabled()
+     * @see setAutoRefreshInterval()
+     */
+    void setAutoRefreshEnabled( bool enabled );
+
   public slots:
 
-    /** Event handler for when a coordinate transform fails due to bad vertex error */
+    //! Event handler for when a coordinate transform fails due to bad vertex error
     virtual void invalidTransformInput();
 
     /** Sets the minimum scale denominator at which the layer will be visible.
@@ -673,17 +711,19 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setScaleBasedVisibility( const bool enabled );
 
     /**
-     * Will advice the map canvas (and any other interested party) that this layer requires to be repainted.
+     * Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
      * Will emit a repaintRequested() signal.
+     * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
+     * re-rendered, and will not trigger any canvas redraws itself.
      *
      * @note in 2.6 function moved from vector/raster subclasses to QgsMapLayer
      */
-    void triggerRepaint();
+    void triggerRepaint( bool deferredUpdate = false );
 
-    /** \brief Obtain Metadata for this layer */
+    //! \brief Obtain Metadata for this layer
     virtual QString metadata() const;
 
-    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const { return QDateTime() ; }
 
     /** Triggers an emission of the styleChanged() signal.
@@ -699,7 +739,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @returns false if a dependency cycle has been detected
      * @note added in QGIS 3.0
      */
-    virtual bool setDependencies( const QSet<QgsMapLayerDependency>& layers );
+    virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (@see setDataDependencies)
@@ -712,8 +752,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   signals:
 
-    /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
-    void statusChanged( const QString& status );
+    //! Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
+    void statusChanged( const QString &status );
 
     /**
      * Emitted when the name has been changed
@@ -722,21 +762,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void nameChanged();
 
-    /** Emit a signal that layer's CRS has been reset */
+    //! Emit a signal that layer's CRS has been reset
     void crsChanged();
 
     /** By emitting this signal the layer tells that either appearance or content have been changed
      * and any view showing the rendered layer should refresh itself.
+     * If \a deferredUpdate is true then the layer will only be repainted when the canvas is next
+     * re-rendered, and will not trigger any canvas redraws itself.
      */
-    void repaintRequested();
+    void repaintRequested( bool deferredUpdate = false );
 
-    /** This is used to send a request that any mapcanvas using this layer update its extents */
+    //! This is used to send a request that any mapcanvas using this layer update its extents
     void recalculateExtents() const;
 
-    /** Data of layer changed */
+    //! Data of layer changed
     void dataChanged();
 
-    /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
+    //! Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode()
     void blendModeChanged( QPainter::CompositionMode blendMode );
 
     /** Signal emitted when renderer is changed.
@@ -769,57 +811,72 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void dependenciesChanged();
 
+    /**
+     * Emitted in the destructor when the layer is about to be deleted,
+     * but it is still in a perfectly valid state: the last chance for
+     * other pieces of code for some cleanup if they use the layer.
+     * @note added in QGIS 3.0
+     */
+    void willBeDeleted();
+
+    /**
+     * Emitted when the auto refresh interval changes.
+     * @see setAutoRefreshInterval()
+     * @note added in QGIS 3.0
+     */
+    void autoRefreshIntervalChanged( int interval );
+
   protected:
-    /** Set the extent */
+    //! Set the extent
     virtual void setExtent( const QgsRectangle &rect );
 
-    /** Set whether layer is valid or not - should be used in constructor. */
+    //! Set whether layer is valid or not - should be used in constructor.
     void setValid( bool valid );
 
     /** Called by readLayerXML(), used by children to read state specific to them from
      *  project files.
      */
-    virtual bool readXml( const QDomNode& layer_node );
+    virtual bool readXml( const QDomNode &layer_node );
 
     /** Called by writeLayerXML(), used by children to write state specific to them to
      *  project files.
      */
-    virtual bool writeXml( QDomNode & layer_node, QDomDocument & document ) const;
+    virtual bool writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 
 
     /** Read custom properties from project file.
       @param layerNode note to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
-    void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = "" );
+    void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = "" );
 
-    /** Write custom properties to project file. */
-    void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
+    //! Write custom properties to project file.
+    void writeCustomProperties( QDomNode &layerNode, QDomDocument &doc ) const;
 
-    /** Read style manager's configuration (if any). To be called by subclasses. */
-    void readStyleManager( const QDomNode& layerNode );
-    /** Write style manager's configuration (if exists). To be called by subclasses. */
-    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
+    //! Read style manager's configuration (if any). To be called by subclasses.
+    void readStyleManager( const QDomNode &layerNode );
+    //! Write style manager's configuration (if exists). To be called by subclasses.
+    void writeStyleManager( QDomNode &layerNode, QDomDocument &doc ) const;
 
 #if 0
-    /** Debugging member - invoked when a connect() is made to this object */
-    void connectNotify( const char * signal ) override;
+    //! Debugging member - invoked when a connect() is made to this object
+    void connectNotify( const char *signal ) override;
 #endif
 
-    /** Add error message */
-    void appendError( const QgsErrorMessage & error ) { mError.append( error );}
-    /** Set error message */
-    void setError( const QgsError & error ) { mError = error;}
+    //! Add error message
+    void appendError( const QgsErrorMessage &error ) { mError.append( error );}
+    //! Set error message
+    void setError( const QgsError &error ) { mError = error;}
 
-    /** Extent of the layer */
+    //! Extent of the layer
     mutable QgsRectangle mExtent;
 
-    /** Indicates if the layer is valid and can be drawn */
+    //! Indicates if the layer is valid and can be drawn
     bool mValid;
 
-    /** Data source description string, varies by layer type */
+    //! Data source description string, varies by layer type
     QString mDataSource;
 
-    /** Name of the layer - used for display */
+    //! Name of the layer - used for display
     QString mLayerName;
 
     /** Original name of the layer
@@ -829,37 +886,38 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mShortName;
     QString mTitle;
 
-    /** Description of the layer*/
+    //! Description of the layer
     QString mAbstract;
     QString mKeywordList;
 
-    /** DataUrl of the layer*/
+    //! DataUrl of the layer
     QString mDataUrl;
     QString mDataUrlFormat;
 
-    /** Attribution of the layer*/
+    //! Attribution of the layer
     QString mAttribution;
     QString mAttributionUrl;
 
-    /** MetadataUrl of the layer*/
+    //! MetadataUrl of the layer
     QString mMetadataUrl;
     QString mMetadataUrlType;
     QString mMetadataUrlFormat;
 
-    /** WMS legend*/
+    //! WMS legend
     QString mLegendUrl;
     QString mLegendUrlFormat;
 
-    /** \brief Error */
+    //! \brief Error
     QgsError mError;
 
     //! List of layers that may modify this layer on modification
     QSet<QgsMapLayerDependency> mDependencies;
 
     //! Checks whether a new set of dependencies will introduce a cycle
-    bool hasDependencyCycle( const QSet<QgsMapLayerDependency>& layers ) const;
+    bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
 
   private:
+
     /**
      * This method returns true by default but can be overwritten to specify
      * that a certain layer is writable.
@@ -870,32 +928,26 @@ class CORE_EXPORT QgsMapLayer : public QObject
         private to make sure setCrs must be used and crsChanged() is emitted */
     QgsCoordinateReferenceSystem mCRS;
 
-    /** Private copy constructor - QgsMapLayer not copyable */
-    QgsMapLayer( QgsMapLayer const & );
-
-    /** Private assign operator - QgsMapLayer not copyable */
-    QgsMapLayer & operator=( QgsMapLayer const & );
-
-    /** Unique ID of this layer - used to refer to this layer in map layer registry */
+    //! Unique ID of this layer - used to refer to this layer in map layer registry
     QString mID;
 
-    /** Type of the layer (eg. vector, raster) */
+    //! Type of the layer (e.g., vector, raster)
     QgsMapLayer::LayerType mLayerType;
 
-    /** Blend mode for the layer */
+    //! Blend mode for the layer
     QPainter::CompositionMode mBlendMode;
 
-    /** Tag for embedding additional information */
+    //! Tag for embedding additional information
     QString mTag;
 
-    /** Minimum scale denominator at which this layer should be displayed */
+    //! Minimum scale denominator at which this layer should be displayed
     double mMinScale;
-    /** Maximum scale denominator at which this layer should be displayed */
+    //! Maximum scale denominator at which this layer should be displayed
     double mMaxScale;
-    /** A flag that tells us whether to use the above vars to restrict layer visibility */
+    //! A flag that tells us whether to use the above vars to restrict layer visibility
     bool mScaleBasedVisibility;
 
-    /** Collection of undoable operations for this layer. **/
+    //! Collection of undoable operations for this layer. *
     QUndoStack mUndoStack;
 
     QUndoStack mUndoStackStyles;
@@ -904,12 +956,30 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsObjectCustomProperties mCustomProperties;
 
     //! Controller of legend items of this layer
-    QgsMapLayerLegend* mLegend;
+    QgsMapLayerLegend *mLegend = nullptr;
 
     //! Manager of multiple styles available for a layer (may be null)
-    QgsMapLayerStyleManager* mStyleManager;
+    QgsMapLayerStyleManager *mStyleManager = nullptr;
+
+    //! Timer for triggering automatic refreshes of the layer
+    QTimer mRefreshTimer;
+
 };
 
-Q_DECLARE_METATYPE( QgsMapLayer* )
+Q_DECLARE_METATYPE( QgsMapLayer * )
+
+/**
+ * Weak pointer for QgsMapLayer
+ * @note added in QGIS 3.0
+ * @note not available in Python bindings
+ */
+typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
+
+/**
+ * A list of weak pointers to QgsMapLayers.
+ * @note added in QGIS 3.0
+ * @note not available in Python bindings
+ */
+typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 
 #endif

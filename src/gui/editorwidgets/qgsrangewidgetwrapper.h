@@ -20,6 +20,7 @@
 
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include "qgis_gui.h"
 
 class QAbstractSlider;
 class QSlider;
@@ -44,33 +45,33 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = nullptr );
+    explicit QgsRangeWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
     virtual QVariant value() const override;
 
   protected:
-    virtual QWidget* createWidget( QWidget* parent ) override;
-    virtual void initWidget( QWidget* editor ) override;
+    virtual QWidget *createWidget( QWidget *parent ) override;
+    virtual void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    virtual void setValue( const QVariant& value ) override;
+    virtual void setValue( const QVariant &value ) override;
 
   private slots:
 
     // NOTE - cannot be named "valueChanged", otherwise implicit conversion to QVariant results in
     // infinite recursion
-    void valueChangedVariant( const QVariant& );
+    void valueChangedVariant( const QVariant & );
 
   private:
-    QSpinBox* mIntSpinBox;
-    QDoubleSpinBox* mDoubleSpinBox;
-    QSlider* mSlider;
-    QDial* mDial;
-    QgsSlider* mQgsSlider;
-    QgsDial* mQgsDial;
+    QSpinBox *mIntSpinBox = nullptr;
+    QDoubleSpinBox *mDoubleSpinBox = nullptr;
+    QSlider *mSlider = nullptr;
+    QDial *mDial = nullptr;
+    QgsSlider *mQgsSlider = nullptr;
+    QgsDial *mQgsDial = nullptr;
 };
 
 #endif // QGSRANGEWIDGETWRAPPER_H

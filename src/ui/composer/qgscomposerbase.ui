@@ -98,10 +98,10 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="mActionZoomAll"/>
-   <addaction name="mActionZoomActual"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomActual"/>
+   <addaction name="mActionZoomAll"/>
    <addaction name="mActionRefreshView"/>
   </widget>
   <widget class="QToolBar" name="mItemActionToolbar">
@@ -1038,13 +1038,13 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Hide Panels</string>
+    <string>Toggle Panel &amp;Visibility</string>
    </property>
    <property name="toolTip">
     <string>Hide panels</string>
    </property>
    <property name="shortcut">
-    <string>F10</string>
+    <string>Ctrl+Tab</string>
    </property>
   </action>
   <action name="mActionShowPage">

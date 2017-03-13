@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2012'
@@ -25,16 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
 import math
-
-from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
@@ -87,7 +84,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                                     self.tr('Output'),
                                     datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         shape = self.getParameterValue(self.SHAPE)
@@ -102,10 +99,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 QgsWkbTypes.Polygon,
                 layer.crs())
 
-        outFeat = QgsFeature()
-
         features = vector.features(layer)
-        total = 100.0 / len(features)
 
         if shape == 0:
             self.rectangles(writer, features, width, height, rotation)
@@ -245,7 +239,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 x = point.x()
                 y = point.y()
                 points = []
-                for t in [(2 * math.pi) / segments * i for i in xrange(segments)]:
+                for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
                 polygon = [[QgsPoint(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                      -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
@@ -271,7 +265,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
                 x = point.x()
                 y = point.y()
                 points = []
-                for t in [(2 * math.pi) / segments * i for i in xrange(segments)]:
+                for t in [(2 * math.pi) / segments * i for i in range(segments)]:
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
                 polygon = [[QgsPoint(i[0] + x, i[1] + y) for i in points]]
 

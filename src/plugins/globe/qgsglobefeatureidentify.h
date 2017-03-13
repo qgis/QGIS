@@ -29,11 +29,11 @@ class QgsGlobeFeatureIdentifyCallback : public osgEarth::Picker::Callback
 #endif
 {
   public:
-    QgsGlobeFeatureIdentifyCallback( QgsMapCanvas* mapCanvas );
+    QgsGlobeFeatureIdentifyCallback( QgsMapCanvas *mapCanvas );
     ~QgsGlobeFeatureIdentifyCallback();
 
 #if OSGEARTH_VERSION_LESS_THAN(2, 7, 0)
-    void onHit( osgEarth::Features::FeatureSourceIndexNode* index, osgEarth::Features::FeatureID fid, const EventArgs& args ) override;
+    void onHit( osgEarth::Features::FeatureSourceIndexNode *index, osgEarth::Features::FeatureID fid, const EventArgs &args ) override;
     void onMiss( const EventArgs &args ) override;
 #else
     void onHit( osgEarth::ObjectID id ) override;
@@ -41,8 +41,8 @@ class QgsGlobeFeatureIdentifyCallback : public osgEarth::Picker::Callback
 #endif
 
   private:
-    QgsMapCanvas* mCanvas;
-    QgsRubberBand* mRubberBand;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
 };
 
 #endif // QGSGLOBEFEATUREIDENTIFY_H

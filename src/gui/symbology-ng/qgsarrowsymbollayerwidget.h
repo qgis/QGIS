@@ -17,6 +17,7 @@
 
 #include "ui_qgsarrowsymbollayerwidgetbase.h"
 #include "qgssymbollayerwidget.h"
+#include "qgis_gui.h"
 
 class QgsArrowSymbolLayer;
 
@@ -28,24 +29,23 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     Q_OBJECT
 
   public:
+
     /** Constructor
      * @param layer the layer where this symbol layer is applied
      * @param parent the parent widget
      */
-    QgsArrowSymbolLayerWidget( const QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /** Static creation method
      * @param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 
-    /** Set the symbol layer */
-    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
-    /** Get the current symbol layer */
-    virtual QgsSymbolLayer* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    virtual QgsSymbolLayer *symbolLayer() override;
 
   private:
-    QgsArrowSymbolLayer* mLayer;
+    QgsArrowSymbolLayer *mLayer = nullptr;
 
   private slots:
     void on_mArrowWidthSpin_valueChanged( double d );

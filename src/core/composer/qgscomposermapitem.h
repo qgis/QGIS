@@ -17,13 +17,14 @@
 #ifndef QGSCOMPOSERMAPITEM_H
 #define QGSCOMPOSERMAPITEM_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 
 class QgsComposerMap;
 
 /** \ingroup core
  *  \class QgsComposerMapItem
- *  \brief An item which is drawn inside a QgsComposerMap, eg a grid or map overview.
+ *  \brief An item which is drawn inside a QgsComposerMap, e.g., a grid or map overview.
  */
 class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 {
@@ -35,40 +36,38 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * @param name friendly display name for item
      * @param map QgsComposerMap the item is attached to
      */
-    QgsComposerMapItem( const QString& name, QgsComposerMap* map );
-
-    virtual ~QgsComposerMapItem();
+    QgsComposerMapItem( const QString &name, QgsComposerMap *map );
 
     /** Draws the item on to a painter
      * @param painter destination QPainter
      */
-    virtual void draw( QPainter* painter ) = 0;
+    virtual void draw( QPainter *painter ) = 0;
 
     /** Stores map item state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets map item state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXml
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Sets composer map for the item
      * @param map composer map
      * @see composerMap
      */
-    virtual void setComposerMap( QgsComposerMap* map );
+    virtual void setComposerMap( QgsComposerMap *map );
 
     /** Get composer map for the item
      * @returns composer map
      * @see setComposerMap
      */
-    virtual const QgsComposerMap* composerMap() const { return mComposerMap; }
+    virtual const QgsComposerMap *composerMap() const { return mComposerMap; }
 
     /** Get the unique id for the map item
      * @returns unique id
@@ -79,7 +78,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * @param name display name
      * @see name
      */
-    virtual void setName( const QString& name ) { mName = name; }
+    virtual void setName( const QString &name ) { mName = name; }
 
     /** Get friendly display name for the item
      * @returns display name
@@ -106,16 +105,16 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 
   protected:
 
-    /** Friendly display name*/
+    //! Friendly display name
     QString mName;
 
-    /** Associated composer map*/
-    QgsComposerMap* mComposerMap;
+    //! Associated composer map
+    QgsComposerMap *mComposerMap = nullptr;
 
-    /** Unique id*/
+    //! Unique id
     QString mUuid;
 
-    /** True if item is to be displayed on map*/
+    //! True if item is to be displayed on map
     bool mEnabled;
 
 };
@@ -137,7 +136,7 @@ class CORE_EXPORT QgsComposerMapItemStack
     /** Constructor for QgsComposerMapItemStack.
      * @param map QgsComposerMap the item stack is attached to
      */
-    QgsComposerMapItemStack( QgsComposerMap* map );
+    QgsComposerMapItemStack( QgsComposerMap *map );
 
     virtual ~QgsComposerMapItemStack();
 
@@ -152,7 +151,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * @returns true if write was successful
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Sets the item stack's state from a DOM document
      * @param elem is DOM node corresponding to 'a ComposerMap' tag
@@ -160,12 +159,12 @@ class CORE_EXPORT QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXml
      */
-    virtual bool readXml( const QDomElement& elem, const QDomDocument& doc ) = 0;
+    virtual bool readXml( const QDomElement &elem, const QDomDocument &doc ) = 0;
 
     /** Draws the items from the stack on a specified painter
      * @param painter destination QPainter
      */
-    void drawItems( QPainter* painter );
+    void drawItems( QPainter *painter );
 
     /** Returns whether any items within the stack contain advanced effects,
      * such as blending modes
@@ -183,7 +182,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeItem
      */
-    void addItem( QgsComposerMapItem* item );
+    void addItem( QgsComposerMapItem *item );
 
     /** Removes an item from the stack and deletes the corresponding QgsComposerMapItem
      * @param itemId id for the QgsComposerMapItem to remove
@@ -191,7 +190,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addItem
      */
-    void removeItem( const QString& itemId );
+    void removeItem( const QString &itemId );
 
     /** Moves an item up the stack, causing it to be rendered above other items
      * @param itemId id for the QgsComposerMapItem to move up
@@ -199,7 +198,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * called for the QgsComposerMap to redraw the map with the new item stack order
      * @see moveItemDown
      */
-    void moveItemUp( const QString& itemId );
+    void moveItemUp( const QString &itemId );
 
     /** Moves an item up the stack, causing it to be rendered above other items
      * @param itemId id for the QgsComposerMapItem to move down
@@ -207,28 +206,28 @@ class CORE_EXPORT QgsComposerMapItemStack
      * called for the QgsComposerMap to redraw the map with the new item stack order
      * @see moveItemUp
      */
-    void moveItemDown( const QString& itemId );
+    void moveItemDown( const QString &itemId );
 
     /** Returns a const reference to an item within the stack
      * @param itemId id for the QgsComposerMapItem to find
      * @returns const reference to item, if found
      * @see item
      */
-    const QgsComposerMapItem* constItem( const QString& itemId ) const;
+    const QgsComposerMapItem *constItem( const QString &itemId ) const;
 
     /** Returns a reference to an item within the stack
      * @param itemId id for the QgsComposerMapItem to find
      * @returns reference to item if found
      * @see constItem
      */
-    QgsComposerMapItem* item( const QString& itemId ) const;
+    QgsComposerMapItem *item( const QString &itemId ) const;
 
     /** Returns a reference to an item within the stack
      * @param index item position in the stack
      * @returns reference to item if found
      * @see constItem
      */
-    QgsComposerMapItem* item( const int index ) const;
+    QgsComposerMapItem *item( const int index ) const;
 
     /** Returns a reference to an item within the stack
      * @param idx item position in the stack
@@ -242,13 +241,13 @@ class CORE_EXPORT QgsComposerMapItemStack
     /** Returns a list of QgsComposerMapItems contained by the stack
      * @returns list of items
      */
-    QList< QgsComposerMapItem* > asList() const;
+    QList< QgsComposerMapItem * > asList() const;
 
   protected:
 
-    QList< QgsComposerMapItem* > mItems;
+    QList< QgsComposerMapItem * > mItems;
 
-    QgsComposerMap* mComposerMap;
+    QgsComposerMap *mComposerMap = nullptr;
 
     /** Clears the item stack and deletes all QgsComposerMapItems contained
      * by the stack

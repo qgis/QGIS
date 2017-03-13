@@ -24,9 +24,10 @@
 #include "qgsvectorlayer.h"
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
-    : QAbstractItemModel( parent )
-    , mLayer( nullptr )
-    , mAllowExpression( false )
+  : QAbstractItemModel( parent )
+  , mLayer( nullptr )
+  , mAllowExpression( false )
+  , mAllowEmpty( false )
 {
 }
 
@@ -44,11 +45,20 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
       fldName = fieldNameWithAlias;
   }
 
+  if ( mAllowEmpty && fieldName.isEmpty() )
+    return index( 0, 0 );
+
   int r = mFields.indexFromName( fldName );
-  QModelIndex idx = index( r, 0 );
-  if ( idx.isValid() )
+  if ( r >= 0 )
   {
-    return idx;
+    if ( mAllowEmpty )
+      r++;
+
+    QModelIndex idx = index( r, 0 );
+    if ( idx.isValid() )
+    {
+      return idx;
+    }
   }
 
   if ( mAllowExpression )
@@ -56,14 +66,14 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
     int exprIdx = mExpression.indexOf( fldName );
     if ( exprIdx != -1 )
     {
-      return index( mFields.count() + exprIdx, 0 );
+      return index( ( mAllowEmpty ? 1 : 0 ) + mFields.count() + exprIdx, 0 );
     }
   }
 
   return QModelIndex();
 }
 
-bool QgsFieldModel::isField( const QString& expression )
+bool QgsFieldModel::isField( const QString &expression ) const
 {
   int index = mFields.indexFromName( expression );
   return index >= 0;
@@ -96,6 +106,7 @@ void QgsFieldModel::layerDeleted()
 
 void QgsFieldModel::updateModel()
 {
+  int offset = mAllowEmpty ? 1 : 0;
   if ( mLayer )
   {
     QgsFields newFields = mLayer->fields();
@@ -112,7 +123,7 @@ void QgsFieldModel::updateModel()
         if ( mFields.toList() == tmpNewFields.toList() )
         {
           // the only change is a new field at the end
-          beginInsertRows( QModelIndex(), mFields.count(), mFields.count() );
+          beginInsertRows( QModelIndex(), mFields.count() + offset, mFields.count() + offset );
           mFields = newFields;
           endInsertRows();
           return;
@@ -126,7 +137,7 @@ void QgsFieldModel::updateModel()
         if ( tmpOldFields.toList() == newFields.toList() )
         {
           // the only change is a field removed at the end
-          beginRemoveRows( QModelIndex(), mFields.count() - 1, mFields.count() - 1 );
+          beginRemoveRows( QModelIndex(), mFields.count() - 1 + offset, mFields.count() - 1 + offset );
           mFields = newFields;
           endRemoveRows();
           return;
@@ -142,7 +153,7 @@ void QgsFieldModel::updateModel()
               break; // the change is more complex - go with general case
 
             // the only change is a field removed at index i
-            beginRemoveRows( QModelIndex(), i, i );
+            beginRemoveRows( QModelIndex(), i + offset, i + offset );
             mFields = newFields;
             endRemoveRows();
             return;
@@ -156,7 +167,7 @@ void QgsFieldModel::updateModel()
       endResetModel();
     }
     else
-      emit dataChanged( index( 0, 0 ), index( rowCount(), 0 ) );
+      emit dataChanged( index( 0 + offset, 0 ), index( rowCount(), 0 ) );
   }
   else
   {
@@ -182,6 +193,26 @@ void QgsFieldModel::setAllowExpression( bool allowExpression )
     endRemoveRows();
   }
 }
+
+void QgsFieldModel::setAllowEmptyFieldName( bool allowEmpty )
+{
+  if ( allowEmpty == mAllowEmpty )
+    return;
+
+  if ( allowEmpty )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = true;
+    endInsertRows();
+  }
+  else
+  {
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = false;
+    endRemoveRows();
+  }
+}
+
 
 void QgsFieldModel::setExpression( const QString &expression )
 {
@@ -229,7 +260,7 @@ int QgsFieldModel::rowCount( const QModelIndex &parent ) const
     return 0;
   }
 
-  return mAllowExpression ? mFields.count() + mExpression.count() : mFields.count();
+  return ( mAllowEmpty ? 1 : 0 ) + ( mAllowExpression ? mFields.count() + mExpression.count() : mFields.count() );
 }
 
 int QgsFieldModel::columnCount( const QModelIndex &parent ) const
@@ -244,16 +275,20 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 
   int exprIdx = index.row() - mFields.count();
+  if ( mAllowEmpty )
+    exprIdx--;
+  bool isEmpty = mAllowEmpty && index.row() == 0;
+  int fieldOffset = mAllowEmpty ? 1 : 0;
 
   switch ( role )
   {
     case FieldNameRole:
     {
-      if ( exprIdx >= 0 )
+      if ( isEmpty || exprIdx >= 0 )
       {
         return "";
       }
-      QgsField field = mFields.at( index.row() );
+      QgsField field = mFields.at( index.row() - fieldOffset );
       return field.name();
     }
 
@@ -263,20 +298,24 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return mExpression.at( exprIdx );
       }
+      else if ( isEmpty )
+      {
+        return QVariant();
+      }
       else
       {
-        QgsField field = mFields.at( index.row() );
+        QgsField field = mFields.at( index.row() - fieldOffset );
         return field.name();
       }
     }
 
     case FieldIndexRole:
     {
-      if ( exprIdx >= 0 )
+      if ( isEmpty || exprIdx >= 0 )
       {
         return QVariant();
       }
-      return index.row();
+      return index.row() - fieldOffset;
     }
 
     case IsExpressionRole:
@@ -301,9 +340,9 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
     case FieldTypeRole:
     {
-      if ( exprIdx < 0 )
+      if ( exprIdx < 0 && !isEmpty )
       {
-        QgsField field = mFields.at( index.row() );
+        QgsField field = mFields.at( index.row() - fieldOffset );
         return static_cast< int >( field.type() );
       }
       return QVariant();
@@ -311,27 +350,36 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
     case FieldOriginRole:
     {
-      if ( exprIdx < 0 )
+      if ( exprIdx < 0 && !isEmpty )
       {
-        return static_cast< int >( mFields.fieldOrigin( index.row() ) );
+        return static_cast< int >( mFields.fieldOrigin( index.row() - fieldOffset ) );
       }
       return QVariant();
+    }
+
+    case IsEmptyRole:
+    {
+      return isEmpty;
     }
 
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-      if ( exprIdx >= 0 )
+      if ( isEmpty )
+      {
+        return QVariant();
+      }
+      else if ( exprIdx >= 0 )
       {
         return mExpression.at( exprIdx );
       }
       else if ( role == Qt::EditRole )
       {
-        return mFields.at( index.row() ).name();
+        return mFields.at( index.row() - fieldOffset ).name();
       }
       else if ( mLayer )
       {
-        return mLayer->attributeDisplayName( index.row() );
+        return mLayer->attributeDisplayName( index.row() - fieldOffset );
       }
       else
         return QVariant();
@@ -339,7 +387,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
     case Qt::ForegroundRole:
     {
-      if ( exprIdx >= 0 )
+      if ( !isEmpty && exprIdx >= 0 )
       {
         // if expression, test validity
         QgsExpression exp( mExpression.at( exprIdx ) );
@@ -358,7 +406,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
     case Qt::FontRole:
     {
-      if ( exprIdx >= 0 )
+      if ( !isEmpty && exprIdx >= 0 )
       {
         // if the line is an expression, set it as italic
         QFont font = QFont();
@@ -370,9 +418,9 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DecorationRole:
     {
-      if ( exprIdx < 0 )
+      if ( !isEmpty && exprIdx < 0 )
       {
-        return mFields.iconForField( index.row() );
+        return mFields.iconForField( index.row() - fieldOffset );
       }
       return QIcon();
     }

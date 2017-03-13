@@ -507,21 +507,7 @@ QList<QextPortInfo> QextSerialEnumerator::getPorts()
     QList<QextPortInfo> ports;
 
     #ifdef Q_OS_WIN
-        OSVERSIONINFO vi;
-        vi.dwOSVersionInfoSize = sizeof(vi);
-        if (!::GetVersionEx(&vi)) {
-            qCritical("Could not get OS version.");
-            return ports;
-        }
-        // Handle windows 9x and NT4 specially
-        if (vi.dwMajorVersion < 5) {
-            qCritical("Enumeration for this version of Windows is not implemented yet");
-        /*if (vi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-                EnumPortsWNt4(ports);
-            else
-                EnumPortsW9x(ports);*/
-        } else  //w2k or later
-            setupAPIScan(ports);
+        setupAPIScan(ports);
     #endif /*Q_OS_WIN*/
     #ifdef Q_OS_UNIX
         #ifdef Q_OS_MAC

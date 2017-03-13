@@ -40,7 +40,7 @@
            <string>Use original source no data value.</string>
           </property>
           <property name="text">
-           <string>No data value:</string>
+           <string>No data value</string>
           </property>
          </widget>
         </item>
@@ -394,6 +394,22 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>gboxGlobalTransp</tabstop>
+  <tabstop>sliderTransparency</tabstop>
+  <tabstop>gboxNoDataValue</tabstop>
+  <tabstop>mSrcNoDataValueCheckBox</tabstop>
+  <tabstop>leNoDataValue</tabstop>
+  <tabstop>gboxCustomTransparency</tabstop>
+  <tabstop>cboxTransparencyBand</tabstop>
+  <tabstop>pbnExportTransparentPixelValues</tabstop>
+  <tabstop>pbnImportTransparentPixelValues</tabstop>
+  <tabstop>pbnDefaultValues</tabstop>
+  <tabstop>pbnRemoveSelectedRow</tabstop>
+  <tabstop>pbnAddValuesFromDisplay</tabstop>
+  <tabstop>pbnAddValuesManually</tabstop>
+  <tabstop>tableTransparency</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

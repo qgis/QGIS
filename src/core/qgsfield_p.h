@@ -27,10 +27,11 @@
 // version without notice, or even be removed.
 //
 
+#include "qgsfieldconstraints.h"
+#include "qgseditorwidgetsetup.h"
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
-#include "qgsfield.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -42,44 +43,46 @@ class QgsFieldPrivate : public QSharedData
 {
   public:
 
-    QgsFieldPrivate( const QString& name = QString(),
+    QgsFieldPrivate( const QString &name = QString(),
                      QVariant::Type type = QVariant::Invalid,
                      QVariant::Type subType = QVariant::Invalid,
-                     const QString& typeName = QString(),
+                     const QString &typeName = QString(),
                      int len = 0,
                      int prec = 0,
-                     const QString& comment = QString() )
-        : name( name )
-        , type( type )
-        , subType( subType )
-        , typeName( typeName )
-        , length( len )
-        , precision( prec )
-        , comment( comment )
+                     const QString &comment = QString() )
+      : name( name )
+      , type( type )
+      , subType( subType )
+      , typeName( typeName )
+      , length( len )
+      , precision( prec )
+      , comment( comment )
     {
     }
 
-    QgsFieldPrivate( const QgsFieldPrivate& other )
-        : QSharedData( other )
-        , name( other.name )
-        , type( other.type )
-        , subType( other.subType )
-        , typeName( other.typeName )
-        , length( other.length )
-        , precision( other.precision )
-        , comment( other.comment )
-        , alias( other.alias )
-        , defaultValueExpression( other.defaultValueExpression )
+    QgsFieldPrivate( const QgsFieldPrivate &other )
+      : QSharedData( other )
+      , name( other.name )
+      , type( other.type )
+      , subType( other.subType )
+      , typeName( other.typeName )
+      , length( other.length )
+      , precision( other.precision )
+      , comment( other.comment )
+      , alias( other.alias )
+      , defaultValueExpression( other.defaultValueExpression )
+      , constraints( other.constraints )
     {
     }
 
     ~QgsFieldPrivate() {}
 
-    bool operator==( const QgsFieldPrivate& other ) const
+    bool operator==( const QgsFieldPrivate &other ) const
     {
-      return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
-              && ( length == other.length ) && ( precision == other.precision )
-              && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression ) );
+      return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
+               && ( length == other.length ) && ( precision == other.precision )
+               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
+               && ( constraints == other.constraints ) );
     }
 
     //! Name
@@ -109,39 +112,10 @@ class QgsFieldPrivate : public QSharedData
     //! Default value expression
     QString defaultValueExpression;
 
+    //! Field constraints
+    QgsFieldConstraints constraints;
+
     QgsEditorWidgetSetup editorWidgetSetup;
-};
-
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfields.cpp.
- * See details in QEP #17
- ****************************************************************************/
-
-class CORE_EXPORT QgsFieldsPrivate : public QSharedData
-{
-  public:
-
-    QgsFieldsPrivate()
-    {
-    }
-
-    QgsFieldsPrivate( const QgsFieldsPrivate& other )
-        : QSharedData( other )
-        , fields( other.fields )
-        , nameToIndex( other.nameToIndex )
-    {
-    }
-
-    ~QgsFieldsPrivate() {}
-
-    //! internal storage of the container
-    QVector<QgsFields::Field> fields;
-
-    //! map for quick resolution of name to index
-    QHash<QString, int> nameToIndex;
-
 };
 
 /// @endcond

@@ -23,7 +23,7 @@ from qgis.testing import (
     unittest
 )
 from utilities import unitTestDataPath
-from osgeo import gdal, ogr
+from osgeo import gdal, ogr  # NOQA
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -72,7 +72,7 @@ class PyQgsOGRProvider(unittest.TestCase):
 
     def testUpdateMode(self):
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(self.datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(self.datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         caps = vl.dataProvider().capabilities()
         self.assertTrue(caps & QgsVectorDataProvider.AddFeatures)
@@ -95,11 +95,10 @@ class PyQgsOGRProvider(unittest.TestCase):
             f.write('1,\n')
             f.write('2,POINT(2 49)\n')
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testMixOfPolygonCurvePolygon(self):
 
         datasource = os.path.join(self.basetestpath, 'testMixOfPolygonCurvePolygon.csv')
@@ -110,12 +109,11 @@ class PyQgsOGRProvider(unittest.TestCase):
             f.write('3,"MULTIPOLYGON(((0 0,0 1,1 1,0 0)))"\n')
             f.write('4,"MULTISURFACE(((0 0,0 1,1 1,0 0)))"\n')
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
         self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfPolygonCurvePolygon:4:CurvePolygon')
 
-    @unittest.expectedFailure(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 0, 0))
     def testMixOfLineStringCompoundCurve(self):
 
         datasource = os.path.join(self.basetestpath, 'testMixOfLineStringCompoundCurve.csv')
@@ -127,7 +125,7 @@ class PyQgsOGRProvider(unittest.TestCase):
             f.write('4,"MULTICURVE((0 0,0 1))"\n')
             f.write('5,"CIRCULARSTRING(0 0,1 1,2 0)"\n')
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
         self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfLineStringCompoundCurve:5:CompoundCurve')
@@ -135,14 +133,14 @@ class PyQgsOGRProvider(unittest.TestCase):
     def testGpxElevation(self):
         # GPX without elevation data
         datasource = os.path.join(TEST_DATA_DIR, 'noelev.gpx')
-        vl = QgsVectorLayer(u'{}|layername=routes'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
         self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString)
 
         # GPX with elevation data
         datasource = os.path.join(TEST_DATA_DIR, 'elev.gpx')
-        vl = QgsVectorLayer(u'{}|layername=routes'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
         self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString25D)
@@ -159,7 +157,7 @@ class PyQgsOGRProvider(unittest.TestCase):
             f.write('1,\n')
             f.write('2,POINT(2 49)\n')
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         # The iterator will take one extra connection
         myiter = vl.getFeatures()
@@ -200,7 +198,7 @@ class PyQgsOGRProvider(unittest.TestCase):
             f.write('1,\n')
             f.write('2,POINT(2 49)\n')
 
-        vl = QgsVectorLayer(u'{}|layerid=0'.format(datasource), u'test', u'ogr')
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         # Consume all features.
         myiter = vl.getFeatures()
@@ -220,6 +218,26 @@ class PyQgsOGRProvider(unittest.TestCase):
         # Check that deletion works well (can only fail on Windows)
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
+
+    def testGeometryCollection(self):
+        ''' Test that we can at least retrieves attribute of features with geometry collection '''
+
+        datasource = os.path.join(self.basetestpath, 'testGeometryCollection.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,POINT Z(2 49 0)\n')
+            f.write('2,GEOMETRYCOLLECTION Z (POINT Z (2 49 0))\n')
+
+        vl = QgsVectorLayer('{}|layerid=0|geometrytype=GeometryCollection'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.featureCount(), 1)
+        values = [f['id'] for f in vl.getFeatures()]
+        self.assertEqual(values, ['2'])
+        del vl
+
+        os.unlink(datasource)
+        self.assertFalse(os.path.exists(datasource))
+
 
 if __name__ == '__main__':
     unittest.main()

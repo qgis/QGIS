@@ -133,6 +133,9 @@ class QgsComposerView : QGraphicsView
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
+    void setMapCanvas( QgsMapCanvas* canvas );
+    QgsMapCanvas* mapCanvas() const;
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );

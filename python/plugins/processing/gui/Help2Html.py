@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -79,16 +80,16 @@ def getHtmlFromDescriptionsDict(alg, descriptions):
         s += '<h3>' + out.description + '</h3>\n'
         s += '<p>' + getDescription(out.name, descriptions) + '</p>\n'
     s += '<br>'
-    s += tr('<p align="right">Algorithm author: %s</p>') % getDescription(ALG_CREATOR, descriptions)
-    s += tr('<p align="right">Help author: %s</p>') % getDescription(ALG_HELP_CREATOR, descriptions)
-    s += tr('<p align="right">Algorithm version: %s</p>') % getDescription(ALG_VERSION, descriptions)
+    s += tr('<p align="right">Algorithm author: {0}</p>').format(getDescription(ALG_CREATOR, descriptions))
+    s += tr('<p align="right">Help author: {0}</p>').format(getDescription(ALG_HELP_CREATOR, descriptions))
+    s += tr('<p align="right">Algorithm version: {0}</p>').format(getDescription(ALG_VERSION, descriptions))
     s += '</body></html>'
     return s
 
 
 def getDescription(name, descriptions):
     if name in descriptions:
-        return unicode(descriptions[name]).replace("\n", "<br>")
+        return str(descriptions[name]).replace("\n", "<br>")
     else:
         return ''
 

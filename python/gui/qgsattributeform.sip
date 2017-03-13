@@ -164,6 +164,12 @@ class QgsAttributeForm : QWidget
      */
     void closed();
 
+    /**
+     * Emitted when the user chooses to zoom to a filtered set of features.
+     * @note added in QGIS 3.0
+     */
+    void zoomToFeatures( const QString& filter );
+
   public slots:
     /**
      * Call this to change the content of a given attribute. Will update the editor(s) related to this field.

@@ -18,6 +18,7 @@
 
 #include "ui_qgs25drendererwidgetbase.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class Qgs25DRenderer;
 
@@ -29,21 +30,22 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
     Q_OBJECT
 
   public:
+
     /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
-     * @param renderer the mask renderer (will take ownership)
+     * @param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
-     * @param renderer the mask renderer (will take ownership)
+     * @param renderer the mask renderer (will not take ownership)
      */
-    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsFeatureRenderer* renderer() override;
+    QgsFeatureRenderer *renderer() override;
 
   private slots:
     void updateRenderer();
@@ -51,7 +53,7 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
   private:
     void apply() override;
 
-    Qgs25DRenderer* mRenderer;
+    Qgs25DRenderer *mRenderer = nullptr;
 };
 
 #endif // QGS25DRENDERERWIDGET_H

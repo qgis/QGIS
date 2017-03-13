@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
+#include "qgis_core.h"
 #include "qgscomposerobject.h"
 #include <QObject>
 #include <QSizeF>
@@ -42,13 +43,13 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
   public:
 
-    /** Specifies the behaviour for creating new frames to fit the multiframe's content
+    /** Specifies the behavior for creating new frames to fit the multiframe's content
      */
     enum ResizeMode
     {
-      UseExistingFrames = 0, /*!< don't automatically create new frames, just use existing frames */
-      ExtendToNextPage, /*!< creates new full page frames on the following page(s) until the entire multiframe content is visible */
-      RepeatOnEveryPage, /*!< repeats the same frame on every page */
+      UseExistingFrames = 0, //!< Don't automatically create new frames, just use existing frames
+      ExtendToNextPage, //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
+      RepeatOnEveryPage, //!< Repeats the same frame on every page
       RepeatUntilFinished /*!< creates new frames with the same position and dimensions as the existing frame on the following page(s),
                               until the entire multiframe content is visible */
     };
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param c parent composition
      * @param createUndoCommands
      */
-    QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands );
+    QgsComposerMultiFrame( QgsComposition *c, bool createUndoCommands );
 
     virtual ~QgsComposerMultiFrame();
 
@@ -96,14 +97,14 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param frameIndex frame number for content
      * @note added in version 2.5
      */
-    virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) = 0;
+    virtual void render( QPainter *painter, const QRectF &renderExtent, const int frameIndex ) = 0;
 
     /** Adds a frame to the multiframe.
      * @param frame frame to add
      * @param recalcFrameSizes set to true to force recalculation of all existing frame sizes
      * @see removeFrame
      */
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
+    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) = 0;
 
     /** Finds the optimal position to break a frame at.
      * @param yPos maximum vertical position for break
@@ -146,7 +147,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see _writeXML
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const = 0;
 
     /** Stores state information about base multiframe object in DOM element. Implementations of writeXml
      * should call this method.
@@ -155,7 +156,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * @see writeXml
      */
-    bool _writeXml( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
+    bool _writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
 
     /** Reads multiframe state information from a DOM element. Implementations of readXml
      * should also call the _readXML method to restore general multiframe properties.
@@ -164,7 +165,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param ignoreFrames set to false to avoid read state information about child frames from DOM
      * @see _readXML
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) = 0;
 
     /** Restores state information about base multiframe object from a DOM element. Implementations of readXml
      * should call this method.
@@ -173,12 +174,12 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param ignoreFrames set to false to avoid reading state information about child frames from DOM
      * @see readXml
      */
-    bool _readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    bool _readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
 
     /** Returns the parent composition for the multiframe.
      * @returns composition
      */
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition *composition() { return mComposition; }
 
     /** Returns whether undo commands should be created for interactions with the multiframe.
      * @returns true if undo commands should be created
@@ -202,7 +203,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @returns child frame if found
      * @see frameIndex
      */
-    QgsComposerFrame* frame( int i ) const;
+    QgsComposerFrame *frame( int i ) const;
 
     /** Returns the index of a frame within the multiframe
      * @param frame frame to find index of
@@ -214,13 +215,13 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     /** Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size
-     * and general frame properties (eg frame style, background, rendering settings).
+     * and general frame properties (e.g., frame style, background, rendering settings).
      * @param pos position of top-left corner of the new frame
      * @param size size of the new frame
      * @returns new QgsComposerFrame
      * @note added in version 2.3
      */
-    QgsComposerFrame* createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size );
+    QgsComposerFrame *createNewFrame( QgsComposerFrame *currentFrame, QPointF pos, QSizeF size );
 
     /** Get multiframe display name.
      * @returns display name for item
@@ -266,11 +267,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
   protected:
 
-    QList<QgsComposerFrame*> mFrameItems;
+    QList<QgsComposerFrame *> mFrameItems;
 
     ResizeMode mResizeMode;
 
-    /** True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )*/
+    //! True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )
     bool mCreateUndoCommands;
 
   protected slots:
@@ -278,7 +279,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Called before a frame is going to be removed. Updates frame list and recalculates
      * content of remaining frames.
      */
-    void handleFrameRemoval( QgsComposerItem* item );
+    void handleFrameRemoval( QgsComposerItem *item );
 
     /** Adapts to changed number of composition pages if resize type is RepeatOnEveryPage.
      */

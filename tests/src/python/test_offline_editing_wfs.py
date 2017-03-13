@@ -31,12 +31,15 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import re
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
-from time import sleep
-from utilities import unitTestDataPath
-from qgis.core import QgsVectorLayer
+from utilities import unitTestDataPath, waitServer
+from qgis.core import (
+    QgsVectorLayer,
+    QgsAuthManager
+)
 
 from qgis.testing import (
     start_app,
@@ -45,10 +48,11 @@ from qgis.testing import (
 
 from offlineditingtestbase import OfflineTestBase
 
+
 try:
-    QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
+    QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
 except:
-    QGIS_SERVER_WFST_DEFAULT_PORT = 8081
+    QGIS_SERVER_OFFLINE_PORT = '0'  # Auto
 
 qgis_app = start_app()
 
@@ -61,7 +65,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
+        cls.port = QGIS_SERVER_OFFLINE_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'
@@ -80,7 +84,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
                 pass
         # Clear all test layers
         cls._clearLayer(cls._getLayer('test_point'))
-        os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
         cls.server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
 
@@ -92,9 +96,12 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
     def setUp(self):
         """Run before each test."""
         self.server = subprocess.Popen([sys.executable, self.server_path],
-                                       env=os.environ)
+                                       env=os.environ, stdout=subprocess.PIPE)
+        line = self.server.stdout.readline()
+        self.port = int(re.findall(b':(\d+)', line)[0])
+        assert self.port != 0
         # Wait for the server process to start
-        sleep(2)
+        assert waitServer('http://127.0.0.1:%s' % self.port), "Server is not responding!"
         self._setUp()
 
     def tearDown(self):
@@ -103,15 +110,13 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self._clearLayer(self._getOnlineLayer('test_point'))
         # Kill the server
         self.server.terminate()
+        self.server.wait()
         del self.server
-        # Wait for the server process to stop
-        sleep(2)
         # Delete the sqlite db
         os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
         self._tearDown()
 
-    @classmethod
-    def _getOnlineLayer(cls, type_name, layer_name=None):
+    def _getOnlineLayer(self, type_name, layer_name=None):
         """
         Return a new WFS layer, overriding the WFS cache
         """
@@ -120,16 +125,17 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         parms = {
             'srsname': 'EPSG:4326',
             'typename': type_name,
-            'url': 'http://127.0.0.1:%s/%s/?map=%s' % (cls.port,
-                                                       cls.counter,
-                                                       cls.project_path),
+            'url': 'http://127.0.0.1:%s/%s/?map=%s' % (self.port,
+                                                       self.counter,
+                                                       self.project_path),
             'version': 'auto',
             'table': '',
             #'sql': '',
         }
-        cls.counter += 1
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.items()])
+        self.counter += 1
+        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
+        wfs_layer.setParent(QgsAuthManager.instance())
         assert wfs_layer.isValid()
         return wfs_layer
 
@@ -140,6 +146,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         """
         path = cls.testdata_path + layer_name + '.shp'
         layer = QgsVectorLayer(path, layer_name, "ogr")
+        layer.setParent(QgsAuthManager.instance())
         assert layer.isValid()
         return layer
 

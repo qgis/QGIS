@@ -19,13 +19,17 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import map
+from builtins import range
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from qgis.PyQt.QtCore import QSettings, Qt, QRegExp
+from qgis.PyQt.QtCore import Qt, QRegExp
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
+from qgis.core import QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
@@ -67,11 +71,11 @@ class PostGisDBPlugin(DBPlugin):
 
     def connect(self, parent=None):
         conn_name = self.connectionName()
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("database"):  # non-existent entry?
-            raise InvalidDataException(self.tr('There is no defined database connection "%s".') % conn_name)
+            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
 
         from qgis.core import QgsDataSourceUri
 
@@ -84,6 +88,9 @@ class PostGisDBPlugin(DBPlugin):
         sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
 
         settings.endGroup()
+
+        if hasattr(authcfg, 'isNull') and authcfg.isNull():
+            authcfg = ''
 
         if service:
             uri.setConnection(service, database, username, password, sslmode, authcfg)
@@ -165,6 +172,9 @@ class PGDatabase(Database):
 
         item.runRefreshMaterializedView()
 
+    def hasLowercaseFieldNamesOption(self):
+        return True
+
 
 class PGSchema(Schema):
 
@@ -194,7 +204,7 @@ class PGTable(Table):
         self.schema().refresh() if self.schema() else self.database().refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("vacuumanalyze/"):
             if action == "vacuumanalyze/run":
@@ -206,7 +216,7 @@ class PGTable(Table):
             rule_name = parts[1]
             rule_action = parts[2]
 
-            msg = u"Do you want to %s rule %s?" % (rule_action, rule_name)
+            msg = self.tr(u"Do you want to {0} rule {1}?").format(rule_action, rule_name)
 
             QApplication.restoreOverrideCursor()
 
@@ -377,7 +387,7 @@ class PGTableConstraint(TableConstraint):
     def __init__(self, row, table):
         TableConstraint.__init__(self, table)
         self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[:5]
-        self.columns = map(int, columns.split(' '))
+        self.columns = list(map(int, columns.split(' ')))
 
         if constr_type_str in TableConstraint.types:
             self.type = TableConstraint.types[constr_type_str]
@@ -399,7 +409,7 @@ class PGTableIndex(TableIndex):
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.name, columns, self.isUnique = row
-        self.columns = map(int, columns.split(' '))
+        self.columns = list(map(int, columns.split(' ')))
 
 
 class PGTableTrigger(TableTrigger):

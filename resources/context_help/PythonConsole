@@ -52,7 +52,7 @@ uncomment code, check syntax, share the code via codepad.org and much more).
 <li>Open PyQGIS Cookbook by typing <label>_pyqgis</label>.</li>
 <br>
 <li>Save and clear the command history accessing from context menu of input pane. 
-The history will be saved into the file ~/.qgis2/console_history.txt</li>
+The history will be saved into the file ~/.qgis3/console_history.txt</li>
 <br>
 </ul>
 </td>

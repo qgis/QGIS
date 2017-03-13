@@ -37,7 +37,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterTableMultipleField
+from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
 from processing.tools import vector, dataobjects
 
@@ -62,11 +62,11 @@ class Dissolve(GeoAlgorithm):
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
                                            self.tr('Dissolve all (do not use fields)'), True))
-        self.addParameter(ParameterTableMultipleField(Dissolve.FIELD,
-                                                      self.tr('Unique ID fields'), Dissolve.INPUT, optional=True))
+        self.addParameter(ParameterTableField(Dissolve.FIELD,
+                                              self.tr('Unique ID fields'), Dissolve.INPUT, optional=True, multiple=True))
         self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         field_names = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getObjectFromUri(
@@ -84,50 +84,49 @@ class Dissolve(GeoAlgorithm):
 
         if not useField:
             first = True
+            # we dissolve geometries in blocks using unaryUnion
+            geom_queue = []
             for current, inFeat in enumerate(features):
-                progress.setPercentage(int(current * total))
+                feedback.setProgress(int(current * total))
                 if first:
-                    attrs = inFeat.attributes()
-                    tmpInGeom = inFeat.geometry()
-                    if tmpInGeom.isEmpty() or tmpInGeom.isGeosEmpty():
-                        continue
-                    errors = tmpInGeom.validateGeometry()
-                    if len(errors) != 0:
-                        for error in errors:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('ValidateGeometry()'
-                                                           'error: One or more '
-                                                           'input features have '
-                                                           'invalid geometry: ')
-                                                   + error.what())
-                        continue
-                    outFeat.setGeometry(tmpInGeom)
+                    outFeat.setAttributes(inFeat.attributes())
                     first = False
-                else:
-                    tmpInGeom = inFeat.geometry()
-                    if tmpInGeom.isEmpty() or tmpInGeom.isGeosEmpty():
-                        continue
-                    tmpOutGeom = outFeat.geometry()
-                    errors = tmpInGeom.validateGeometry()
-                    if len(errors) != 0:
-                        for error in errors:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('ValidateGeometry()'
-                                                           'error:One or more input'
-                                                           'features have invalid '
-                                                           'geometry: ')
-                                                   + error.what())
-                        continue
+
+                tmpInGeom = inFeat.geometry()
+                if tmpInGeom.isNull() or tmpInGeom.isEmpty():
+                    continue
+
+                errors = tmpInGeom.validateGeometry()
+                if len(errors) != 0:
+                    for error in errors:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                               self.tr('ValidateGeometry()'
+                                                       'error: One or more '
+                                                       'input features have '
+                                                       'invalid geometry: ') +
+                                               error.what())
+                    continue
+
+                geom_queue.append(tmpInGeom)
+
+                if len(geom_queue) > 10000:
+                    # queue too long, combine it
                     try:
-                        tmpOutGeom = QgsGeometry(tmpOutGeom.combine(tmpInGeom))
-                        outFeat.setGeometry(tmpOutGeom)
+                        temp_output_geometry = QgsGeometry.unaryUnion(geom_queue)
+                        geom_queue = [temp_output_geometry]
                     except:
                         raise GeoAlgorithmExecutionException(
                             self.tr('Geometry exception while dissolving'))
-            outFeat.setAttributes(attrs)
+
+            try:
+                outFeat.setGeometry(QgsGeometry.unaryUnion(geom_queue))
+            except:
+                raise GeoAlgorithmExecutionException(
+                    self.tr('Geometry exception while dissolving'))
+
             writer.addFeature(outFeat)
         else:
-            field_indexes = [vlayerA.fieldNameIndex(f) for f in field_names.split(';')]
+            field_indexes = [vlayerA.fields().lookupField(f) for f in field_names.split(';')]
 
             attribute_dict = {}
             geometry_dict = defaultdict(lambda: [])
@@ -138,7 +137,7 @@ class Dissolve(GeoAlgorithm):
                 index_attrs = tuple([attrs[i] for i in field_indexes])
 
                 tmpInGeom = QgsGeometry(inFeat.geometry())
-                if tmpInGeom.isGeosEmpty():
+                if tmpInGeom and tmpInGeom.isEmpty():
                     continue
                 errors = tmpInGeom.validateGeometry()
                 if len(errors) != 0:
@@ -147,10 +146,10 @@ class Dissolve(GeoAlgorithm):
                                                self.tr('ValidateGeometry() '
                                                        'error: One or more input'
                                                        'features have invalid '
-                                                       'geometry: ')
-                                               + error.what())
+                                                       'geometry: ') +
+                                               error.what())
 
-                if not index_attrs in attribute_dict:
+                if index_attrs not in attribute_dict:
                     # keep attributes of first feature
                     attribute_dict[index_attrs] = attrs
 
@@ -159,10 +158,10 @@ class Dissolve(GeoAlgorithm):
             nFeat = len(attribute_dict)
 
             nElement = 0
-            for key, value in geometry_dict.items():
+            for key, value in list(geometry_dict.items()):
                 outFeat = QgsFeature()
                 nElement += 1
-                progress.setPercentage(int(nElement * 100 / nFeat))
+                feedback.setProgress(int(nElement * 100 / nFeat))
                 try:
                     tmpOutGeom = QgsGeometry.unaryUnion(value)
                 except:

@@ -21,7 +21,8 @@
 #include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
@@ -40,6 +41,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 {
     Q_OBJECT
   public:
+
     /** This constructor is used when the query builder is called from the
      * vector layer properties dialog
      * @param layer existing vector layer
@@ -66,7 +68,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void on_btnLike_clicked();
     void on_btnILike_clicked();
     QString sql();
-    void setSql( const QString& sqlStatement );
+    void setSql( const QString &sqlStatement );
     void on_lstFields_clicked( const QModelIndex &index );
     void on_lstFields_doubleClicked( const QModelIndex &index );
     void on_lstValues_doubleClicked( const QModelIndex &index );
@@ -77,7 +79,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void on_btnNot_clicked();
     void on_btnOr_clicked();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) ); }
 
     /** Test the constructed sql statement to see if the vector layer data provider likes it.
      * The number of rows that would be returned is displayed in a message box.
@@ -97,7 +99,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      */
     void on_btnSampleValues_clicked();
 
-    void setDatasourceDescription( const QString& uri );
+    void setDatasourceDescription( const QString &uri );
 
   private:
     /*!
@@ -114,14 +116,14 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     // private members
     //! Model for fields ListView
-    QStandardItemModel *mModelFields;
+    QStandardItemModel *mModelFields = nullptr;
     //! Model for values ListView
-    QStandardItemModel *mModelValues;
+    QStandardItemModel *mModelValues = nullptr;
     //! Previous field row to delete model
     int mPreviousFieldRow;
 
     //! vector layer
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 
     //! original subset string
     QString mOrigSubsetString;

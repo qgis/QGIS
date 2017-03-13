@@ -18,7 +18,7 @@ class QgsShortcutsManager: QObject
 
     /** Constructor for QgsShortcutsManager.
      * @param parent parent object
-     * @param settingsRoot root QSettings path for storing settings, eg "/myplugin/shortcuts". Leave
+     * @param settingsRoot root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave
      * as the default value to store settings alongside built in QGIS shortcuts, but care must be
      * taken to not register actions which conflict with the built in QGIS actions.
      */

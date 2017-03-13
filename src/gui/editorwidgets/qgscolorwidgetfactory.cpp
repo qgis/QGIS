@@ -18,23 +18,23 @@
 #include "qgscolorwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
 
-QgsColorWidgetFactory::QgsColorWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsColorWidgetFactory::QgsColorWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
 
-QgsEditorWidgetWrapper* QgsColorWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsColorWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsColorWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsColorWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsColorWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Field contains a color." ) );
 }
 
-unsigned int QgsColorWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsColorWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
   const QVariant::Type type = field.type();

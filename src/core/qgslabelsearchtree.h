@@ -19,6 +19,7 @@
 #ifndef QGSLABELSEARCHTREE_H
 #define QGSLABELSEARCHTREE_H
 
+#include "qgis_core.h"
 #include <QList>
 #include <QVector>
 #include <pointset.h>
@@ -36,34 +37,37 @@ class CORE_EXPORT QgsLabelSearchTree
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
-    /** Removes and deletes all the entries*/
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree( const QgsLabelSearchTree &rh ) = delete;
+    //! QgsLabelSearchTree cannot be copied.
+    QgsLabelSearchTree &operator=( const QgsLabelSearchTree &rh ) = delete;
+
+    //! Removes and deletes all the entries
     void clear();
 
     /** Returns label position(s) at a given point. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * @note not available in python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void label( const QgsPoint& p, QList<QgsLabelPosition*>& posList ) const;
+    void label( const QgsPoint &p, QList<QgsLabelPosition *> &posList ) const;
 
     /** Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
      * @note not available in python bindings
      * TODO: why does this break bindings with QList<QgsLabelPosition>?
      */
-    void labelsInRect( const QgsRectangle& r, QList<QgsLabelPosition*>& posList ) const;
+    void labelsInRect( const QgsRectangle &r, QList<QgsLabelPosition *> &posList ) const;
 
     /** Inserts label position. Does not take ownership of labelPos
      * @return true in case of success
      * @note not available in python bindings
      */
-    bool insertLabel( pal::LabelPosition* labelPos, int featureId, const QString& layerName, const QString& labeltext, const QFont& labelfont, bool diagram = false, bool pinned = false, const QString& providerId = QString() );
+    bool insertLabel( pal::LabelPosition *labelPos, int featureId, const QString &layerName, const QString &labeltext, const QFont &labelfont, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
 
   private:
     // set as mutable because RTree template is not const-correct
-    mutable pal::RTree<QgsLabelPosition*, double, 2, double> mSpatialIndex;
-    QList< QgsLabelPosition* > mOwnedPositions;
+    mutable pal::RTree<QgsLabelPosition *, double, 2, double> mSpatialIndex;
+    QList< QgsLabelPosition * > mOwnedPositions;
 
-    QgsLabelSearchTree( const QgsLabelSearchTree& rh );
-    QgsLabelSearchTree& operator=( const QgsLabelSearchTree& rh );
 };
 
 #endif // QGSLABELTREE_H

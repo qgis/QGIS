@@ -21,8 +21,8 @@
 #include "qgspointv2.h"
 #include <QPainter>
 
-QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
-    mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
+  mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
@@ -33,7 +33,7 @@ QgsGeometryRubberBand::~QgsGeometryRubberBand()
   delete mGeometry;
 }
 
-void QgsGeometryRubberBand::paint( QPainter* painter )
+void QgsGeometryRubberBand::paint( QPainter *painter )
 {
   if ( !mGeometry || !painter )
   {
@@ -54,7 +54,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
   painter->setPen( mPen );
 
 
-  QgsAbstractGeometry* paintGeom = mGeometry->clone();
+  QgsAbstractGeometry *paintGeom = mGeometry->clone();
 
   paintGeom->transform( mMapCanvas->getCoordinateTransform()->transform() );
   paintGeom->draw( *painter );
@@ -71,7 +71,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
   painter->restore();
 }
 
-void QgsGeometryRubberBand::drawVertex( QPainter* p, double x, double y )
+void QgsGeometryRubberBand::drawVertex( QPainter *p, double x, double y )
 {
   qreal s = ( mIconSize - 1 ) / 2.0;
 
@@ -107,7 +107,7 @@ void QgsGeometryRubberBand::drawVertex( QPainter* p, double x, double y )
   }
 }
 
-void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry* geom )
+void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry *geom )
 {
   delete mGeometry;
   mGeometry = geom;
@@ -118,7 +118,7 @@ void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry* geom )
   }
 }
 
-void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2& newPos )
+void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2 &newPos )
 {
   if ( mGeometry )
   {
@@ -127,17 +127,17 @@ void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2& newPos
   }
 }
 
-void QgsGeometryRubberBand::setFillColor( const QColor& c )
+void QgsGeometryRubberBand::setFillColor( const QColor &c )
 {
   mBrush.setColor( c );
 }
 
-void QgsGeometryRubberBand::setOutlineColor( const QColor& c )
+void QgsGeometryRubberBand::setStrokeColor( const QColor &c )
 {
   mPen.setColor( c );
 }
 
-void QgsGeometryRubberBand::setOutlineWidth( int width )
+void QgsGeometryRubberBand::setStrokeWidth( int width )
 {
   mPen.setWidth( width );
 }

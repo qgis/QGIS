@@ -39,7 +39,7 @@ class QgsSymbol
       ScaleDiameter  //!< Calculate scale by the diameter
     };
 
-    //! Flags controlling behaviour of symbols during rendering
+    //! Flags controlling behavior of symbols during rendering
     enum RenderHint
     {
       DynamicRotation, //!< Rotation of symbol may be changed during rendering and symbol should not be cached
@@ -155,7 +155,7 @@ class QgsSymbol
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     /** Returns the units to use for sizes and widths within the symbol. Individual
-     * symbol layer definitions will interpret this in different ways, eg a marker symbol
+     * symbol layer definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
      * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol contains mixed units
@@ -164,7 +164,7 @@ class QgsSymbol
     QgsUnitTypes::RenderUnit outputUnit() const;
 
     /** Sets the units to use for sizes and widths within the symbol. Individual
-     * symbol definitions will interpret this in different ways, eg a marker symbol
+     * symbol definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
      * @param unit output units
@@ -215,7 +215,7 @@ class QgsSymbol
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
      */
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Returns whether the symbol utilises any data defined properties.
      * @note added in QGIS 2.12
@@ -227,7 +227,7 @@ class QgsSymbol
     const QgsVectorLayer* layer() const;
 
     /**
-     * Render a feature. Before calling this the startRender() method should be called to initialise
+     * Render a feature. Before calling this the startRender() method should be called to initialize
      * the rendering process. After rendering all features stopRender() must be called.
      */
     void renderFeature( const QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, int currentVertexMarkerSize = 0 );
@@ -308,7 +308,7 @@ class QgsSymbolRenderContext
      * @param u
      * @param alpha
      * @param selected set to true if symbol should be drawn in a "selected" state
-     * @param renderHints flags controlling rendering behaviour
+     * @param renderHints flags controlling rendering behavior
      * @param f
      * @param fields
      * @param mapUnitScale
@@ -356,6 +356,9 @@ class QgsSymbolRenderContext
     void setFeature( const QgsFeature* f );
     //! Current feature being rendered - may be null
     const QgsFeature* feature() const;
+
+    void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
+    QgsWkbTypes::GeometryType originalGeometryType() const;
 
     //! Fields of the layer. Currently only available in startRender() calls
     //! to allow symbols with data-defined properties prepare the expressions
@@ -432,7 +435,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @param angle new symbol angle
      * @see angle()
      */
-    void setAngle( double angle );
+    void setAngle( double symbolAngle );
 
     /** Returns the marker angle for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the angle of
@@ -447,7 +450,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedAngle
      */
-    void setDataDefinedAngle( const QgsDataDefined& dd );
+    void setDataDefinedAngle( const QgsProperty& property );
 
     /** Returns data defined angle for whole symbol (including all symbol layers).
      * @returns data defined angle, or empty data defined if angle is not set
@@ -455,7 +458,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedAngle
      */
-    QgsDataDefined dataDefinedAngle() const;
+    QgsProperty dataDefinedAngle() const;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
@@ -524,7 +527,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedSize
      */
-    void setDataDefinedSize( const QgsDataDefined& dd );
+    void setDataDefinedSize( const QgsProperty& property );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -532,7 +535,7 @@ class QgsMarkerSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedSize
      */
-    QgsDataDefined dataDefinedSize() const;
+    QgsProperty dataDefinedSize() const;
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -578,7 +581,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see dataDefinedWidth
      */
-    void setDataDefinedWidth( const QgsDataDefined& dd );
+    void setDataDefinedWidth( const QgsProperty& dd );
 
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or empty data defined if size is not set
@@ -586,7 +589,7 @@ class QgsLineSymbol : QgsSymbol
      * @note added in QGIS 2.9
      * @see setDataDefinedWidth
      */
-    QgsDataDefined dataDefinedWidth() const;
+    QgsProperty dataDefinedWidth() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

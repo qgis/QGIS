@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include "qgis_core.h"
 #include "qgscoordinatetransform.h"
 #include "qgswkbtypes.h"
 #include "qgswkbptr.h"
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsAbstractGeometry
 {
   public:
 
-    /** Segmentation tolerance as maximum angle or maximum difference between approximation and circle*/
+    //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
     enum SegmentationToleranceType
     {
       MaximumAngle = 0,
@@ -53,13 +54,13 @@ class CORE_EXPORT QgsAbstractGeometry
     };
 
     QgsAbstractGeometry();
-    virtual ~QgsAbstractGeometry();
-    QgsAbstractGeometry( const QgsAbstractGeometry& geom );
-    virtual QgsAbstractGeometry& operator=( const QgsAbstractGeometry& geom );
+    virtual ~QgsAbstractGeometry() = default;
+    QgsAbstractGeometry( const QgsAbstractGeometry &geom );
+    QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
     /** Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometry* clone() const = 0;
+    virtual QgsAbstractGeometry *clone() const = 0;
 
     /** Clears the geometry, ie reset it to a null geometry
      */
@@ -70,6 +71,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const = 0;
 
     //mm-sql interface
+
     /** Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
      * 1 for a linestring and 2 for a polygon.
      */
@@ -105,12 +107,12 @@ class CORE_EXPORT QgsAbstractGeometry
     bool isMeasure() const;
 
 #if 0
-    virtual bool transform( const QgsCoordinateTransform& ct ) =  0;
+    virtual bool transform( const QgsCoordinateTransform &ct ) =  0;
     virtual bool isEmpty() const = 0;
     virtual bool isSimple() const = 0;
     virtual bool isValid() const = 0;
-    virtual QgsMultiPointV2* locateAlong() const = 0;
-    virtual QgsMultiCurve* locateBetween() const = 0;
+    virtual QgsMultiPointV2 *locateAlong() const = 0;
+    virtual QgsMultiCurve *locateBetween() const = 0;
     virtual QgsRectangle envelope() const = 0;
 #endif
 
@@ -119,36 +121,31 @@ class CORE_EXPORT QgsAbstractGeometry
      * @returns boundary for geometry. May be null for some geometry types.
      * @note added in QGIS 3.0
      */
-    virtual QgsAbstractGeometry* boundary() const = 0;
+    virtual QgsAbstractGeometry *boundary() const = 0;
 
     //import
 
     /** Sets the geometry from a WKB string.
+     * After successful read the wkb argument will be at the position where the reading has stopped.
      * @see fromWkt
      */
-    virtual bool fromWkb( QgsConstWkbPtr wkb ) = 0;
+    virtual bool fromWkb( QgsConstWkbPtr &wkb ) = 0;
 
     /** Sets the geometry from a WKT string.
      * @see fromWkb
      */
-    virtual bool fromWkt( const QString& wkt ) = 0;
+    virtual bool fromWkt( const QString &wkt ) = 0;
 
     //export
 
-    /** Returns the size of the WKB representation of the geometry.
-     * @see asWkb
-     */
-    virtual int wkbSize() const = 0;
-
     /** Returns a WKB representation of the geometry.
-     * @param binarySize will be set to the size of the returned WKB string
-     * @see wkbSize
      * @see asWkt
      * @see asGML2
      * @see asGML3
      * @see asJSON
+     * @note added in 3.0
      */
-    virtual unsigned char* asWkb( int& binarySize ) const = 0;
+    virtual QByteArray asWkb() const = 0;
 
     /** Returns a WKT representation of the geometry.
      * @param precision number of decimal places for coordinates
@@ -168,7 +165,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see asGML3
      * @see asJSON
      */
-    virtual QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const = 0;
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /** Returns a GML3 representation of the geometry.
      * @param doc DOM document
@@ -179,7 +176,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see asGML2
      * @see asJSON
      */
-    virtual QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const = 0;
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /** Returns a GeoJSON representation of the geometry.
      * @param precision number of decimal places for coordinates
@@ -201,22 +198,22 @@ class CORE_EXPORT QgsAbstractGeometry
      * units (generally meters). If false, then z coordinates will not be changed by the
      * transform.
      */
-    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                             bool transformZ = false ) = 0;
 
     /** Transforms the geometry using a QTransform object
      * @param t QTransform transformation
      */
-    virtual void transform( const QTransform& t ) = 0;
+    virtual void transform( const QTransform &t ) = 0;
 
 #if 0
-    virtual void clip( const QgsRectangle& rect ); //todo
+    virtual void clip( const QgsRectangle &rect ); //todo
 #endif
 
     /** Draws the geometry using the specified QPainter.
      * @param p destination QPainter
      */
-    virtual void draw( QPainter& p ) const = 0;
+    virtual void draw( QPainter &p ) const = 0;
 
     /** Returns next vertex id and coordinates
      * @param id initial value should be the starting vertex id. The next vertex id will be stored
@@ -224,7 +221,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @param vertex container for found node
      * @return false if at end
      */
-    virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const = 0;
+    virtual bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const = 0;
 
     /** Retrieves the sequence of geometries, rings and nodes.
      * @return coordinate sequence
@@ -233,7 +230,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Returns the number of nodes contained in the geometry
      */
-    int nCoordinates() const;
+    virtual int nCoordinates() const;
 
     /** Returns the point corresponding to a specified vertex id
      */
@@ -248,7 +245,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @param epsilon epsilon for segment snapping
      * @returns squared distance to closest segment or negative value on error
      */
-    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt, QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const = 0;
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const = 0;
 
     //low-level editing
 
@@ -259,7 +256,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see moveVertex
      * @see deleteVertex
      */
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) = 0;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) = 0;
 
     /** Moves a vertex within the geometry
      * @param position vertex id for vertex to move
@@ -268,7 +265,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see insertVertex
      * @see deleteVertex
      */
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) = 0;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) = 0;
 
     /** Deletes a vertex within the geometry
      * @param position vertex id for vertex to delete
@@ -296,12 +293,12 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double area() const { return 0.0; }
 
-    /** Returns the centroid of the geometry */
+    //! Returns the centroid of the geometry
     virtual QgsPointV2 centroid() const;
 
     /** Returns true if the geometry is empty
      */
-    bool isEmpty() const;
+    virtual bool isEmpty() const;
 
     /** Returns true if the geometry contains curved segments
      */
@@ -312,13 +309,13 @@ class CORE_EXPORT QgsAbstractGeometry
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsAbstractGeometry* segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const;
 
     /** Returns the geometry converted to the more generic curve type.
         E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         @return the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometry* toCurveType() const { return 0; }
+    virtual QgsAbstractGeometry *toCurveType() const { return 0; }
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
@@ -389,14 +386,14 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */
-    void setZMTypeFromSubGeometry( const QgsAbstractGeometry* subggeom, QgsWkbTypes::Type baseGeomType );
+    void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
 
     /** Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
      * if a more efficient bounding box calculation is available.
      */
     virtual QgsRectangle calculateBoundingBox() const;
 
-    /** Clears any cached parameters associated with the geometry, eg bounding boxes
+    /** Clears any cached parameters associated with the geometry, e.g., bounding boxes
      */
     virtual void clearCache() const {}
 
@@ -417,10 +414,10 @@ struct CORE_EXPORT QgsVertexId
   };
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex )
-      : part( _part )
-      , ring( _ring )
-      , vertex( _vertex )
-      , type( _type )
+    : part( _part )
+    , ring( _ring )
+    , vertex( _vertex )
+    , type( _type )
   {}
 
   /** Returns true if the vertex id is valid
@@ -447,7 +444,7 @@ struct CORE_EXPORT QgsVertexId
   {
     return ringEqual( o ) && ( vertex >= 0 && o.ring == ring );
   }
-  bool isValid( const QgsAbstractGeometry* geom ) const
+  bool isValid( const QgsAbstractGeometry *geom ) const
   {
     return ( part >= 0 && part < geom->partCount() ) &&
            ( ring < geom->ringCount( part ) ) &&

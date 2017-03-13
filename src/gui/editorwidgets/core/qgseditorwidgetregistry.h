@@ -18,10 +18,10 @@
 
 #include <QObject>
 #include <QMap>
-#include "qgseditorwidgetconfig.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetautoconf.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QDomNode;
@@ -41,13 +41,14 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * This class is a singleton and has therefore to be accessed with this method instead
      * of a constructor.
      *
      * @return The one and only instance of the editor widget registry
      */
-    static QgsEditorWidgetRegistry* instance();
+    static QgsEditorWidgetRegistry *instance();
 
     /**
      * Registers all the default widgets.
@@ -59,7 +60,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @note Added in QGIS 2.8
      * @note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas* mapCanvas = nullptr, QgsMessageBar* messageBar = nullptr );
+    static void initEditors( QgsMapCanvas *mapCanvas = nullptr, QgsMessageBar *messageBar = nullptr );
 
     /**
      * Destructor
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return The id of the widget type to use and its config
      */
-    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer *vl, const QString &fieldName ) const;
 
     /**
      * Create an attribute editor widget wrapper of a given type for a given field.
@@ -92,13 +93,13 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( const QString& widgetId,
-                                    QgsVectorLayer* vl,
+    QgsEditorWidgetWrapper *create( const QString &widgetId,
+                                    QgsVectorLayer *vl,
                                     int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
-                                    QWidget* editor,
-                                    QWidget* parent,
-                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+                                    const QVariantMap &config,
+                                    QWidget *editor,
+                                    QWidget *parent,
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /**
      * Create an attribute editor widget wrapper of the best type for a given field.
@@ -112,18 +113,18 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl,
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl,
                                     int fieldIdx,
-                                    QWidget* editor,
-                                    QWidget* parent,
-                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+                                    QWidget *editor,
+                                    QWidget *parent,
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
-    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
-        QgsVectorLayer* vl,
+    QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId,
+        QgsVectorLayer *vl,
         int fieldIdx,
-        const QgsEditorWidgetConfig& config,
-        QWidget* parent,
-        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+        const QVariantMap &config,
+        QWidget *parent,
+        const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget
@@ -135,7 +136,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new configuration widget
      */
-    QgsEditorConfigWidget* createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
     /**
      * Get the human readable name for a widget type
@@ -144,21 +145,21 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A human readable name
      */
-    QString name( const QString& widgetId );
+    QString name( const QString &widgetId );
 
     /**
      * Get access to all registered factories
      *
      * @return All ids and factories
      */
-    const QMap<QString, QgsEditorWidgetFactory*>& factories();
+    QMap<QString, QgsEditorWidgetFactory *> factories();
 
     /**
      * Get a factory for the given widget type id.
      *
      * @return A factory or Null if not existent
      */
-    QgsEditorWidgetFactory* factory( const QString& widgetId );
+    QgsEditorWidgetFactory *factory( const QString &widgetId );
 
     /**
      * Register a new widget factory with the given id
@@ -168,73 +169,23 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
-    bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory );
+    bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory );
 
     /**
      * Register a new auto-conf plugin.
      *
-     * @param plugin The plugin (ownership is transfered)
+     * @param plugin The plugin (ownership is transferred)
      */
-    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin ) { mAutoConf.registerPlugin( plugin ); }
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin ) { mAutoConf.registerPlugin( plugin ); }
 
   protected:
     QgsEditorWidgetRegistry();
 
-  private slots:
-    /**
-     * Read all the editor widget information from a map layer XML node
-     * @param mapLayer
-     * @param layerElem
-     */
-    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerElem );
-
-    /**
-     * Write all the widget config to a layer XML node
-     *
-     * @param mapLayer   The layer for which the config is being written
-     * @param layerElem  The XML element to which the config will be written
-     * @param doc        The document from which to create elements
-     */
-    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem, QDomDocument& doc ) const;
-
-    /**
-     * Will connect to appropriate signals from map layers to load and save style
-     *
-     * @param mapLayer The layer to connect
-     */
-    void mapLayerAdded( QgsMapLayer* mapLayer );
-
-    /**
-     * Will disconnect to appropriate signals from map layers to load and save style
-     *
-     * @param mapLayer The layer to disconnect
-     */
-    void mapLayerWillBeRemoved( QgsMapLayer* mapLayer );
-
-    /**
-     * Loads layer symbology for the layer that emitted the signal
-     *
-     * @param element The XML element containing the style information
-     *
-     * @param errorMessage Errors will be written into this string (unused)
-     */
-    void readSymbology( const QDomElement& element, QString& errorMessage );
-
-    /**
-     * Saves layer symbology for the layer that emitted the signal
-     *
-     * @param element The XML element where the style information be written to
-     * @param doc     The XML document where the style information be written to
-     *
-     * @param errorMessage Errors will be written into this string (unused)
-     */
-    void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
-
   private:
-    QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
+    QString findSuitableWrapper( QWidget *editor, const QString &defaultWidget );
 
-    QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
-    QMap<const char*, QPair<int, QString> > mFactoriesByType;
+    QMap<QString, QgsEditorWidgetFactory *> mWidgetFactories;
+    QMap<const char *, QPair<int, QString> > mFactoriesByType;
     QgsEditorWidgetAutoConf mAutoConf;
 };
 

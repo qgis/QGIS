@@ -21,9 +21,9 @@
 #include <QDomElement>
 #include <QTextStream>
 
-QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
-    : mLayer( layer )
-    , mOverriddenOriginalStyle( nullptr )
+QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
+  : mLayer( layer )
+  , mOverriddenOriginalStyle( nullptr )
 {
   reset();
 }
@@ -34,32 +34,32 @@ void QgsMapLayerStyleManager::reset()
   mCurrentStyle.clear();
 }
 
-void QgsMapLayerStyleManager::readXml( const QDomElement& mgrElement )
+void QgsMapLayerStyleManager::readXml( const QDomElement &mgrElement )
 {
-  mCurrentStyle = mgrElement.attribute( "current" );
+  mCurrentStyle = mgrElement.attribute( QStringLiteral( "current" ) );
 
   mStyles.clear();
-  QDomElement ch = mgrElement.firstChildElement( "map-layer-style" );
+  QDomElement ch = mgrElement.firstChildElement( QStringLiteral( "map-layer-style" ) );
   while ( !ch.isNull() )
   {
-    QString name = ch.attribute( "name" );
+    QString name = ch.attribute( QStringLiteral( "name" ) );
     QgsMapLayerStyle style;
     style.readXml( ch );
     mStyles.insert( name, style );
 
-    ch = ch.nextSiblingElement( "map-layer-style" );
+    ch = ch.nextSiblingElement( QStringLiteral( "map-layer-style" ) );
   }
 }
 
-void QgsMapLayerStyleManager::writeXml( QDomElement& mgrElement ) const
+void QgsMapLayerStyleManager::writeXml( QDomElement &mgrElement ) const
 {
   QDomDocument doc = mgrElement.ownerDocument();
-  mgrElement.setAttribute( "current", mCurrentStyle );
+  mgrElement.setAttribute( QStringLiteral( "current" ), mCurrentStyle );
 
-  Q_FOREACH ( const QString& name, styles() )
+  Q_FOREACH ( const QString &name, styles() )
   {
-    QDomElement ch = doc.createElement( "map-layer-style" );
-    ch.setAttribute( "name", name );
+    QDomElement ch = doc.createElement( QStringLiteral( "map-layer-style" ) );
+    ch.setAttribute( QStringLiteral( "name" ), name );
     mStyles[name].writeXml( ch );
     mgrElement.appendChild( ch );
   }
@@ -70,7 +70,7 @@ QStringList QgsMapLayerStyleManager::styles() const
   return mStyles.keys();
 }
 
-QgsMapLayerStyle QgsMapLayerStyleManager::style( const QString& name ) const
+QgsMapLayerStyle QgsMapLayerStyleManager::style( const QString &name ) const
 {
   if ( name == mCurrentStyle )
   {
@@ -83,7 +83,7 @@ QgsMapLayerStyle QgsMapLayerStyleManager::style( const QString& name ) const
   return mStyles.value( name );
 }
 
-bool QgsMapLayerStyleManager::addStyle( const QString& name, const QgsMapLayerStyle& style )
+bool QgsMapLayerStyleManager::addStyle( const QString &name, const QgsMapLayerStyle &style )
 {
   if ( mStyles.contains( name ) )
     return false;
@@ -95,14 +95,14 @@ bool QgsMapLayerStyleManager::addStyle( const QString& name, const QgsMapLayerSt
   return true;
 }
 
-bool QgsMapLayerStyleManager::addStyleFromLayer( const QString& name )
+bool QgsMapLayerStyleManager::addStyleFromLayer( const QString &name )
 {
   QgsMapLayerStyle style;
   style.readFromLayer( mLayer );
   return addStyle( name, style );
 }
 
-bool QgsMapLayerStyleManager::removeStyle( const QString& name )
+bool QgsMapLayerStyleManager::removeStyle( const QString &name )
 {
   if ( !mStyles.contains( name ) )
     return false;
@@ -124,7 +124,7 @@ bool QgsMapLayerStyleManager::removeStyle( const QString& name )
   return true;
 }
 
-bool QgsMapLayerStyleManager::renameStyle( const QString& name, const QString& newName )
+bool QgsMapLayerStyleManager::renameStyle( const QString &name, const QString &newName )
 {
   if ( !mStyles.contains( name ) || mStyles.contains( newName ) )
     return false;
@@ -143,7 +143,7 @@ QString QgsMapLayerStyleManager::currentStyle() const
   return mCurrentStyle;
 }
 
-bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
+bool QgsMapLayerStyleManager::setCurrentStyle( const QString &name )
 {
   if ( !mStyles.contains( name ) )
     return false;
@@ -161,7 +161,7 @@ bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
   return true;
 }
 
-bool QgsMapLayerStyleManager::setOverrideStyle( const QString& styleDef )
+bool QgsMapLayerStyleManager::setOverrideStyle( const QString &styleDef )
 {
   if ( mOverriddenOriginalStyle )
     return false; // cannot override the style more than once!
@@ -210,8 +210,8 @@ QgsMapLayerStyle::QgsMapLayerStyle()
 {
 }
 
-QgsMapLayerStyle::QgsMapLayerStyle( const QString& xmlData )
-    : mXmlData( xmlData )
+QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
+  : mXmlData( xmlData )
 {
 }
 
@@ -230,7 +230,7 @@ QString QgsMapLayerStyle::xmlData() const
   return mXmlData;
 }
 
-void QgsMapLayerStyle::readFromLayer( QgsMapLayer* layer )
+void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
 {
   QString errorMsg;
   QDomDocument doc;
@@ -246,9 +246,9 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer* layer )
   doc.documentElement().save( stream, 0 );
 }
 
-void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const
+void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
 {
-  QDomDocument doc( "qgis" );
+  QDomDocument doc( QStringLiteral( "qgis" ) );
   if ( !doc.setContent( mXmlData ) )
   {
     QgsDebugMsg( "Failed to parse XML of previously stored XML data - this should not happen!" );
@@ -262,14 +262,14 @@ void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const
   }
 }
 
-void QgsMapLayerStyle::readXml( const QDomElement& styleElement )
+void QgsMapLayerStyle::readXml( const QDomElement &styleElement )
 {
   mXmlData.clear();
   QTextStream stream( &mXmlData );
   styleElement.firstChildElement().save( stream, 0 );
 }
 
-void QgsMapLayerStyle::writeXml( QDomElement& styleElement ) const
+void QgsMapLayerStyle::writeXml( QDomElement &styleElement ) const
 {
   // the currently selected style has no content stored here (layer has all the information inside)
   if ( !isValid() )

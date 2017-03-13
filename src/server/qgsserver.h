@@ -30,16 +30,20 @@
 #include <QFileInfo>
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
 #include "qgsconfigcache.h"
 #include "qgscapabilitiescache.h"
-
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsmapsettings.h"
+#include "qgsmessagelog.h"
+#include "qgsserviceregistry.h"
+#include "qgsserversettings.h"
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
-#endif
+#include "qgis_server.h"
 
+class QgsServerRequest;
+class QgsServerResponse;
+class QgsProject;
 
 /** \ingroup server
  * The QgsServer class provides OGC web services.
@@ -47,21 +51,10 @@
 class SERVER_EXPORT QgsServer
 {
   public:
-    /**
-     * Standard ctor for CGI/FCGI
-     * @note Not available in Python bindings
-     */
-    QgsServer( int & argc, char ** argv );
-    //! The following is mainly for python bindings, that do not pass argc/argv
-    QgsServer();
-    ~QgsServer();
 
-    /** Server initialization: intialise QGIS ang QT core application.
-     * @note Not available in Python bindings
+    /** Creates the server instance
      */
-    static bool init( int & argc, char ** argv );
-    //! The following is mainly for python bindings, that do not pass argc/argv
-    static bool init();
+    QgsServer();
 
     /** Set environment variable
      * @param var environment variable name
@@ -70,73 +63,77 @@ class SERVER_EXPORT QgsServer
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request. The output is normally printed trough FCGI printf
-     * by the request handler or, in case the server has been invoked from python
-     * bindings, a flag is set that captures all the output headers and body, instead
-     * of printing it returns the output as a QPair of QByteArray.
+    /** Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param queryString optional QString containing the query string
-     * @return the response headers and body QPair of QByteArray if called from python bindings, empty otherwise
+     * @param request a QgsServerRequest holding request parameters
+     * @param response a QgsServerResponse for handling response I/O)
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString = QString() );
-#if 0
-    // The following code was used to test type conversion in python bindings
-    QPair<QByteArray, QByteArray> testQPair( QPair<QByteArray, QByteArray> pair );
-#endif
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
-    /** Returns a pointer to the server interface */
+    /** Handles the request from query string
+     * The query string is normally read from environment
+     * but can be also passed in args and in this case overrides the environment
+     * variable.
+     *
+     * @param queryString QString containing the query string
+     * @return the response headers and body QPair of QByteArray
+     */
+    QPair<QByteArray, QByteArray> handleRequest( const QString &queryString );
+
+    //! Returns a pointer to the server interface
+    QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
+    //! Initialize python
+    //! Note: not in python bindings
+    void initPython( );
 #endif
 
   private:
 
-    void saveEnvVars();
-
-    /** Saves environment variable into mEnvironmentVariables if defined*/
-    void saveEnvVar( const QString& variableName );
+    //! Server initialization
+    static bool init();
 
     // All functions that where previously in the main file are now
     // static methods of this class
-    static QString configPath( const QString& defaultConfigPath,
-                               const QMap<QString, QString>& parameters );
-    // Mainly for debug
-    static void dummyMessageHandler( QtMsgType type, const char *msg );
-    // Mainly for debug
-    static void printRequestInfos();
-    // Mainly for debug
+    static QString configPath( const QString &defaultConfigPath,
+                               const QMap<QString, QString> &parameters );
+
+    /**
+     * @brief QgsServer::printRequestParameters prints the request parameters
+     * @param parameterMap
+     * @param logLevel
+     */
     static void printRequestParameters(
-      const QMap< QString, QString>& parameterMap,
-      int logLevel );
+      const QMap< QString, QString> &parameterMap,
+      QgsMessageLog::MessageLevel logLevel );
+
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
     //! Create and return a request handler instance
-    static QgsRequestHandler* createRequestHandler( const bool captureOutput = false );
+    static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
 
     // Return the server name
     static QString &serverName();
 
     // Status
-    static QString* sConfigFilePath;
-    static QgsCapabilitiesCache* sCapabilitiesCache;
-    static QgsMapRenderer* sMapRenderer;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    static QgsServerInterfaceImpl* sServerInterface;
-    static bool sInitPython;
-#endif
+    static QString *sConfigFilePath;
+    static QgsCapabilitiesCache *sCapabilitiesCache;
+    static QgsServerInterfaceImpl *sServerInterface;
     //! Initialization must run once for all servers
-    static bool sInitialised;
-    static char* sArgv[1];
-    static int sArgc;
-    static QgsApplication* sQgsApplication;
-    static bool sCaptureOutput;
+    static bool sInitialized;
 
-    /** Pass important environment variables to the fcgi processes*/
-    QHash< QString, QString > mEnvironmentVariables;
+    //! service registry
+    static QgsServiceRegistry sServiceRegistry;
+
+    static QgsServerSettings sSettings;
+
+    // map of QgsProject
+    QMap<QString, const QgsProject *> mProjectRegistry;
 };
 #endif // QGSSERVER_H
 

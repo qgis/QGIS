@@ -15,30 +15,31 @@
 
 #include "qgssavestyletodbdialog.h"
 
+#include "qgssettings.h"
+
 #include <QFileDialog>
-#include <QSettings>
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDateTime>
 
 QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
-  setWindowTitle( "Save style in database" );
+  setWindowTitle( QStringLiteral( "Save style in database" ) );
   mDescriptionEdit->setTabChangesFocus( true );
   setTabOrder( mNameEdit, mDescriptionEdit );
   setTabOrder( mDescriptionEdit, mUseAsDefault );
   setTabOrder( mUseAsDefault, buttonBox );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/saveStyleToDb/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/saveStyleToDb/geometry" ) ).toByteArray() );
 }
 
 QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/saveStyleToDb/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Windows/saveStyleToDb/geometry" ), saveGeometry() );
 }
 
 QString QgsSaveStyleToDbDialog::getName()
@@ -73,8 +74,8 @@ void QgsSaveStyleToDbDialog::accept()
 
 void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", QDir::homePath() ).toString();
+  QgsSettings myQSettings;  // where we keep last used filter in persistent state
+  QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Designer UI file" ), myLastUsedDir, tr( "Qt Designer UI file .ui" ) + " (*.ui)" );
   if ( myFileName.isNull() )
@@ -85,14 +86,14 @@ void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
   QFile uiFile( myFI.filePath() );
 
   QString myPath = myFI.path();
-  myQSettings.setValue( "style/lastStyleDir", myPath );
+  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
 
   if ( uiFile.open( QIODevice::ReadOnly ) )
   {
     QString content( uiFile.readAll() );
     QDomDocument doc;
 
-    if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( "ui" ) )
+    if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( QLatin1String( "ui" ) ) )
     {
       QMessageBox::warning( this, tr( "Wrong file" ),
                             tr( "The selected file does not appear to be a valid Qt Designer UI file." ) );

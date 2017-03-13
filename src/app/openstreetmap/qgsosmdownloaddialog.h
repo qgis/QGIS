@@ -28,10 +28,10 @@ class QgsOSMDownloadDialog : public QDialog, private Ui::QgsOSMDownloadDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOSMDownloadDialog( QWidget* parent = nullptr );
+    explicit QgsOSMDownloadDialog( QWidget *parent = nullptr );
     ~QgsOSMDownloadDialog();
 
-    void setRect( const QgsRectangle& rect );
+    void setRect( const QgsRectangle &rect );
     void setRectReadOnly( bool readonly );
     QgsRectangle rect() const;
 
@@ -50,7 +50,7 @@ class QgsOSMDownloadDialog : public QDialog, private Ui::QgsOSMDownloadDialog
     void onDownloadProgress( qint64, qint64 );
 
   private:
-    QgsOSMDownload* mDownload;
+    QgsOSMDownload *mDownload = nullptr;
 };
 
 #endif // QGSOSMDOWNLOADDIALOG_H

@@ -82,6 +82,7 @@ groups = {'grid_analysis': 'Raster analysis',
 def decoratedGroupName(name):
     return groups.get(name, name)
 
+
 algorithms = {'Add Grid Values to Points': 'Add raster values to points',
               'Add Grid Values to Shapes': 'Add raster values to features',
               'Change Grid Values': 'Reclassify values (simple)',

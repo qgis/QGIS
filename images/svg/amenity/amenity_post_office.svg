@@ -1,30 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="amenity_post_office.svg" inkscape:version="0.46" sodipodi:version="0.32"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective3265" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-</defs>
-<sodipodi:namedview  showgrid="false" inkscape:cy="367.99332" inkscape:cx="215.15635" inkscape:zoom="0.92167712" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="25" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1048" inkscape:window-height="947">
-	</sodipodi:namedview>
-<g id="layer3" transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)" inkscape:label="Layout" display="none">
-	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
-	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
-</g>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M105.703,147.312v282.37h371.825v-282.37H105.703z M431.855,173.874
-	L313.052,292.223c-5.906,5.906-13.362,8.858-22.368,8.858c-9.318,0-17.086-3.109-23.305-9.328L149.499,173.874H431.855z
-	 M131.796,192.046l96.451,96.92l-96.451,96.451V192.046z M149.03,403.59l96.92-96.451l4.195,4.195
-	c11.186,10.873,24.699,16.309,40.539,16.309c15.841,0,29.197-5.436,40.071-16.309l4.194-4.195l96.905,96.451H149.03z
-	 M450.497,385.417l-96.451-96.451l96.451-96.92V385.417z"/>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M493.427,90.354C439.44,36.368,367.662,6.636,291.314,6.636
-	S143.189,36.368,89.203,90.354C35.217,144.34,5.486,216.118,5.486,292.466s29.731,148.126,83.717,202.112
-	c53.986,53.985,125.764,83.717,202.111,83.717s148.126-29.73,202.112-83.717s83.717-125.765,83.717-202.112
-	S547.413,144.34,493.427,90.354z M291.314,553.158c-143.746,0-260.691-116.946-260.691-260.692S147.569,31.774,291.314,31.774
-	c143.746,0,260.692,116.946,260.692,260.692S435.061,553.158,291.314,553.158z"/>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m105.703 147.312v282.37h371.825v-282.37zm326.152 26.562l-118.803 118.349c-5.906 5.906-13.362 8.858-22.368 8.858-9.318 0-17.086-3.109-23.305-9.328l-117.88-117.879zm-300.059 18.172l96.451 96.92-96.451 96.451zm17.234 211.544l96.92-96.451 4.195 4.195c11.186 10.873 24.699 16.309 40.539 16.309 15.841 0 29.197-5.436 40.071-16.309l4.194-4.195 96.905 96.451zm301.467-18.173l-96.451-96.451 96.451-96.92z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
+<path d="m493.427 90.354c-53.987-53.986-125.765-83.718-202.113-83.718s-148.125 29.732-202.111 83.718c-53.986 53.986-83.717 125.764-83.717 202.112s29.731 148.126 83.717 202.112c53.986 53.985 125.764 83.717 202.111 83.717s148.126-29.73 202.112-83.717 83.717-125.765 83.717-202.112-29.73-148.126-83.716-202.112zm-202.113 462.804c-143.746 0-260.691-116.946-260.691-260.692s116.946-260.692 260.691-260.692c143.746 0 260.692 116.946 260.692 260.692s-116.945 260.692-260.692 260.692z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

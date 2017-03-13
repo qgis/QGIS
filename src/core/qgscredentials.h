@@ -1,7 +1,7 @@
 /***************************************************************************
     qgscredentials.h  -  interface for requesting credentials
     ----------------------
-    begin                : Feburary 2010
+    begin                : February 2010
     copyright            : (C) 2010 by Juergen E. Fischer
     email                : jef at norbit dot de
  ***************************************************************************
@@ -23,6 +23,8 @@
 #include <QMap>
 #include <QMutex>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
  * This class provides abstraction of a dialog for requesting credentials to the user.
@@ -37,11 +39,11 @@
 class CORE_EXPORT QgsCredentials
 {
   public:
-    //! virtual destructor
-    virtual ~QgsCredentials();
 
-    bool get( const QString& realm, QString &username, QString &password, const QString& message = QString::null );
-    void put( const QString& realm, const QString& username, const QString& password );
+    virtual ~QgsCredentials() = default;
+
+    bool get( const QString &realm, QString &username, QString &password, const QString &message = QString::null );
+    void put( const QString &realm, const QString &username, const QString &password );
 
     bool getMasterPassword( QString &password, bool stored = false );
 
@@ -72,13 +74,13 @@ class CORE_EXPORT QgsCredentials
     QgsCredentials();
 
     //! request a password
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) = 0;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) = 0;
 
     //! request a master password
     virtual bool requestMasterPassword( QString &password, bool stored = false ) = 0;
 
     //! register instance
-    void setInstance( QgsCredentials *theInstance );
+    void setInstance( QgsCredentials *instance );
 
   private:
     Q_DISABLE_COPY( QgsCredentials )
@@ -87,7 +89,7 @@ class CORE_EXPORT QgsCredentials
     QMap< QString, QPair<QString, QString> > mCredentialCache;
 
     //! Pointer to the credential instance
-    static QgsCredentials *smInstance;
+    static QgsCredentials *sInstance;
 
     QMutex mMutex;
 };
@@ -110,7 +112,7 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
     virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 };
 
@@ -134,7 +136,7 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString& realm, QString &username, QString &password, const QString& message = QString::null ) override;
+    virtual bool request( const QString &realm, QString &username, QString &password, const QString &message = QString::null ) override;
     virtual bool requestMasterPassword( QString &password, bool stored = false ) override;
 };
 

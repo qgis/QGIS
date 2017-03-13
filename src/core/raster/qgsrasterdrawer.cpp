@@ -27,14 +27,14 @@
 #include <QPainter>
 #include <QPrinter>
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iterator )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator ): mIterator( iterator )
 {
 }
 
-void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel, QgsRasterBlockFeedback* feedback )
+void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
+  if ( !p || !mIterator || !viewPort || !qgsMapToPixel )
   {
     return;
   }
@@ -52,7 +52,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // We know that the output data type of last pipe filter is QImage data
 
-  QgsRasterBlock *block;
+  QgsRasterBlock *block = nullptr;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
   while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
@@ -66,6 +66,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
     QImage img = block->image();
 
+#ifndef QT_NO_PRINTER
     // Because of bug in Acrobat Reader we must use "white" transparent color instead
     // of "black" for PDF. See #9101.
     QPrinter *printer = dynamic_cast<QPrinter *>( p->device() );
@@ -87,6 +88,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
         }
       }
     }
+#endif
 
     if ( feedback && feedback->renderPartialOutput() )
     {
@@ -96,7 +98,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       p->setCompositionMode( QPainter::CompositionMode_Source );
     }
 
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, qgsMapToPixel );
 
     delete block;
 
@@ -104,12 +106,12 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
     // ok this does not matter much anyway as the tile size quite big so most of the time
     // there would be just one tile for the whole display area, but it won't hurt...
-    if ( feedback && feedback->isCancelled() )
+    if ( feedback && feedback->isCanceled() )
       break;
   }
 }
 
-void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow, const QgsMapToPixel* theQgsMapToPixel ) const
+void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const QImage &img, int topLeftCol, int topLeftRow, const QgsMapToPixel *qgsMapToPixel ) const
 {
   if ( !p || !viewPort )
   {
@@ -126,12 +128,12 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
 
-  if ( theQgsMapToPixel )
+  if ( qgsMapToPixel )
   {
-    int w = theQgsMapToPixel->mapWidth();
-    int h = theQgsMapToPixel->mapHeight();
+    int w = qgsMapToPixel->mapWidth();
+    int h = qgsMapToPixel->mapHeight();
 
-    double rotation = theQgsMapToPixel->mapRotation();
+    double rotation = qgsMapToPixel->mapRotation();
     if ( rotation )
     {
       // both viewPort and image sizes are dependent on scale

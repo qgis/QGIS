@@ -29,53 +29,45 @@
 #include <cpl_string.h>
 #include <gdalwarper.h>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#endif
-
-QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
-    const QgsRectangle& outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
-    : mFormulaString( formulaString )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mOutputRectangle( outputExtent )
-    , mNumOutputColumns( nOutputColumns )
-    , mNumOutputRows( nOutputRows )
-    , mRasterEntries( rasterEntries )
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+    const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
 {
   //default to first layer's crs
   mOutputCrs = mRasterEntries.at( 0 ).raster->crs();
 }
 
-QgsRasterCalculator::QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
-    const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries )
-    : mFormulaString( formulaString )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mOutputRectangle( outputExtent )
-    , mOutputCrs( outputCrs )
-    , mNumOutputColumns( nOutputColumns )
-    , mNumOutputRows( nOutputRows )
-    , mRasterEntries( rasterEntries )
+QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
+    const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries )
+  : mFormulaString( formulaString )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mOutputRectangle( outputExtent )
+  , mOutputCrs( outputCrs )
+  , mNumOutputColumns( nOutputColumns )
+  , mNumOutputRows( nOutputRows )
+  , mRasterEntries( rasterEntries )
 {
 }
 
-int QgsRasterCalculator::processCalculation( QProgressDialog* p )
+int QgsRasterCalculator::processCalculation( QProgressDialog *p )
 {
   //prepare search string / tree
   QString errorString;
-  QgsRasterCalcNode* calcNode = QgsRasterCalcNode::parseRasterCalcString( mFormulaString, errorString );
+  QgsRasterCalcNode *calcNode = QgsRasterCalcNode::parseRasterCalcString( mFormulaString, errorString );
   if ( !calcNode )
   {
     //error
     return static_cast<int>( ParserError );
   }
 
-  QMap< QString, QgsRasterBlock* > inputBlocks;
+  QMap< QString, QgsRasterBlock * > inputBlocks;
   QVector<QgsRasterCalculatorEntry>::const_iterator it = mRasterEntries.constBegin();
   for ( ; it != mRasterEntries.constEnd(); ++it )
   {
@@ -86,7 +78,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
       return static_cast< int >( InputLayerError );
     }
 
-    QgsRasterBlock* block = nullptr;
+    QgsRasterBlock *block = nullptr;
     // if crs transform needed
     if ( it->raster->crs() != mOutputCrs )
     {
@@ -149,7 +141,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     if ( calcNode->calculate( inputBlocks, resultMatrix, i ) )
     {
       bool resultIsNumber = resultMatrix.isNumber();
-      float* calcData = new float[mNumOutputColumns];
+      float *calcData = new float[mNumOutputColumns];
 
       for ( int j = 0; j < mNumOutputColumns; ++j )
       {
@@ -180,8 +172,8 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   if ( p && p->wasCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
-    return static_cast< int >( Cancelled );
+    GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
+    return static_cast< int >( Canceled );
   }
   GDALClose( outputDataset );
 
@@ -189,14 +181,14 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 }
 
 QgsRasterCalculator::QgsRasterCalculator()
-    : mNumOutputColumns( 0 )
-    , mNumOutputRows( 0 )
+  : mNumOutputColumns( 0 )
+  , mNumOutputRows( 0 )
 {
 }
 
 GDALDriverH QgsRasterCalculator::openOutputDriver()
 {
-  char **driverMetadata;
+  char **driverMetadata = nullptr;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
@@ -219,7 +211,7 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
   char **papszOptions = nullptr;
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
+  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
   if ( !outputDataset )
   {
     return outputDataset;
@@ -233,7 +225,7 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
   return outputDataset;
 }
 
-void QgsRasterCalculator::outputGeoTransform( double* transform ) const
+void QgsRasterCalculator::outputGeoTransform( double *transform ) const
 {
   transform[0] = mOutputRectangle.xMinimum();
   transform[1] = mOutputRectangle.width() / mNumOutputColumns;

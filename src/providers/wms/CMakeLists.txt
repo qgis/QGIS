@@ -1,6 +1,4 @@
-IF (QT5_BUILD)
-  FIND_PACKAGE(Qt5XmlPatterns REQUIRED)
-ENDIF()
+FIND_PACKAGE(Qt5XmlPatterns REQUIRED)
 
 
 SET (WMS_SRCS
@@ -13,6 +11,7 @@ SET (WMS_SRCS
   qgstilescalewidget.cpp
   qgswmtsdimensions.cpp
   qgsxyzconnection.cpp
+  qgsxyzconnectiondialog.cpp
 )
 SET (WMS_MOC_HDRS
   qgswmscapabilities.h
@@ -22,9 +21,10 @@ SET (WMS_MOC_HDRS
   qgswmsdataitems.h
   qgstilescalewidget.h
   qgswmtsdimensions.h
+  qgsxyzconnectiondialog.h
 )
 
-QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
+QT5_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   .
@@ -35,6 +35,8 @@ INCLUDE_DIRECTORIES(
   ../../gui
   ../../gui/auth
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}

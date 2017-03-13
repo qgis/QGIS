@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsWkbTypes,
+from qgis.core import (QgsFields, QgsField, QgsFeature, QgsPoint, QgsWkbTypes,
                        QgsGeometry, QgsSpatialIndex, QgsDistanceArea)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -74,7 +74,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.VECTOR))
         fieldName = self.getParameterValue(self.FIELD)
@@ -127,7 +127,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                     index.insertFeature(f)
                     points[nPoints] = pnt
                     nPoints += 1
-                    progress.setPercentage(int(nPoints * total))
+                    feedback.setProgress(int(nPoints * total))
                 nIterations += 1
 
             if nPoints < pointCount:
@@ -135,6 +135,6 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
                                        self.tr('Can not generate requested number of random '
                                                'points. Maximum number of attempts exceeded.'))
 
-            progress.setPercentage(0)
+            feedback.setProgress(0)
 
         del writer

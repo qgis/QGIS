@@ -17,11 +17,18 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerrenderer.h"
 
-QgsPluginLayer::QgsPluginLayer( const QString& layerType, const QString& layerName )
-    : QgsMapLayer( PluginLayer, layerName )
-    , mPluginLayerType( layerType )
+QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
+  : QgsMapLayer( PluginLayer, layerName )
+  , mPluginLayerType( layerType )
 {
   setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
+}
+
+QgsPluginLayer::~QgsPluginLayer()
+{
+  // TODO: shall we move the responsibility of emitting the signal to plugin
+  // layer implementations before they start doing their part of cleanup...?
+  emit willBeDeleted();
 }
 
 QString QgsPluginLayer::pluginLayerType()
@@ -34,7 +41,7 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
 }
 
-void QgsPluginLayer::setSource( const QString& source )
+void QgsPluginLayer::setSource( const QString &source )
 {
   mDataSource = source;
 }

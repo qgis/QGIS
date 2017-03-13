@@ -162,7 +162,7 @@ public:
          * Returns the character sequence associated with this entry,
          * with any non-printable characters replaced with escape sequences.
          *
-         * eg. \\E for Escape, \\t for tab, \\n for new line.
+         * e.g., \\E for Escape, \\t for tab, \\n for new line.
          *
          * @param expandWildCards See text()
          * @param modifiers See text()
@@ -508,7 +508,7 @@ private:
                                                      // instance
     bool _haveLoadedAll;
 
-    static KeyboardTranslatorManager * theKeyboardTranslatorManager;
+    static KeyboardTranslatorManager * sKeyboardTranslatorManager;
 };
 
 inline int KeyboardTranslator::Entry::keyCode() const { return _keyCode; }

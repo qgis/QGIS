@@ -27,13 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
-
-from qgis.PyQt.QtGui import QIcon
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterSelection, ParameterNumber
+from processing.core.parameters import ParameterVector, ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -60,7 +56,7 @@ class Translate(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Translated')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -89,6 +85,6 @@ class Translate(GeoAlgorithm):
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

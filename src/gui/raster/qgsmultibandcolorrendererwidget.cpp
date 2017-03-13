@@ -21,16 +21,17 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxwidget.h"
 
-QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
-    : QgsRasterRendererWidget( layer, extent )
-    , mMinMaxWidget( nullptr )
+QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
+  : QgsRasterRendererWidget( layer, extent )
+  , mMinMaxWidget( nullptr )
+  , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
   createValidators();
 
   if ( mRasterLayer )
   {
-    QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
     if ( !provider )
     {
       return;
@@ -43,8 +44,11 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     layout->setContentsMargins( 0, 0, 0, 0 );
     mMinMaxContainerWidget->setLayout( layout );
     layout->addWidget( mMinMaxWidget );
-    connect( mMinMaxWidget, SIGNAL( load( int, double, double, int ) ),
-             this, SLOT( loadMinMax( int, double, double, int ) ) );
+
+    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged,
+             this, &QgsMultiBandColorRendererWidget::widgetChanged );
+    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load,
+             this, &QgsMultiBandColorRendererWidget::loadMinMax );
 
     connect( mRedBandComboBox, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( onBandChanged( int ) ) );
@@ -59,10 +63,10 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     mBlueBandComboBox->addItem( tr( "Not set" ), -1 );
 
     //contrast enhancement algorithms
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "No enhancement" ), 0 );
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch to MinMax" ), 1 );
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch and clip to MinMax" ), 2 );
-    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Clip to MinMax" ), 3 );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "No enhancement" ), QgsContrastEnhancement::NoEnhancement );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch to MinMax" ), QgsContrastEnhancement::StretchToMinimumMaximum );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Stretch and clip to MinMax" ), QgsContrastEnhancement::StretchAndClipToMinimumMaximum );
+    mContrastEnhancementAlgorithmComboBox->addItem( tr( "Clip to MinMax" ), QgsContrastEnhancement::ClipToMinimumMaximum );
 
     int nBands = provider->bandCount();
     for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
@@ -76,42 +80,40 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     setFromRenderer( mRasterLayer->renderer() );
     onBandChanged( 0 ); // reset mMinMaxWidget bands
 
-    connect( mRedMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mRedMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mGreenMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mGreenMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mBlueMaxLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mBlueMinLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-
+    connect( mContrastEnhancementAlgorithmComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
   }
 }
 
-QgsMultiBandColorRendererWidget::~QgsMultiBandColorRendererWidget()
-{
-}
-
-QgsRasterRenderer* QgsMultiBandColorRendererWidget::renderer()
+QgsRasterRenderer *QgsMultiBandColorRendererWidget::renderer()
 {
   if ( !mRasterLayer )
   {
     return nullptr;
   }
-  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )
   {
     return nullptr;
   }
 
-  int redBand = mRedBandComboBox->itemData( mRedBandComboBox->currentIndex() ).toInt();
-  int greenBand = mGreenBandComboBox->itemData( mGreenBandComboBox->currentIndex() ).toInt();
-  int blueBand = mBlueBandComboBox->itemData( mBlueBandComboBox->currentIndex() ).toInt();
+  int redBand = mRedBandComboBox->currentData().toInt();
+  int greenBand = mGreenBandComboBox->currentData().toInt();
+  int blueBand = mBlueBandComboBox->currentData().toInt();
 
-  QgsMultiBandColorRenderer* r = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand );
+  QgsMultiBandColorRenderer *r = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand );
   setCustomMinMaxValues( r, provider, redBand, greenBand, blueBand );
+
+  r->setMinMaxOrigin( mMinMaxWidget->minMaxOrigin() );
+
   return r;
 }
 
-void QgsMultiBandColorRendererWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsMultiBandColorRendererWidget::doComputations()
+{
+  mMinMaxWidget->doComputations();
+}
+
+void QgsMultiBandColorRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   QgsRasterRendererWidget::setMapCanvas( canvas );
   mMinMaxWidget->setMapCanvas( canvas );
@@ -127,8 +129,8 @@ void QgsMultiBandColorRendererWidget::createValidators()
   mBlueMaxLineEdit->setValidator( new QDoubleValidator( mBlueMinLineEdit ) );
 }
 
-void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRenderer* r,
-    const QgsRasterDataProvider* provider,
+void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRenderer *r,
+    const QgsRasterDataProvider *provider,
     int redBand, int greenBand, int blueBand )
 {
   if ( !r || !provider )
@@ -136,7 +138,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
     return;
   }
 
-  if ( mContrastEnhancementAlgorithmComboBox->itemData( mContrastEnhancementAlgorithmComboBox->currentIndex() ).toInt() ==
+  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ==
        QgsContrastEnhancement::NoEnhancement )
   {
     r->setRedContrastEnhancement( nullptr );
@@ -145,16 +147,16 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
     return;
   }
 
-  QgsContrastEnhancement* redEnhancement = nullptr;
-  QgsContrastEnhancement* greenEnhancement = nullptr;
-  QgsContrastEnhancement* blueEnhancement = nullptr;
+  QgsContrastEnhancement *redEnhancement = nullptr;
+  QgsContrastEnhancement *greenEnhancement = nullptr;
+  QgsContrastEnhancement *blueEnhancement = nullptr;
 
   bool redMinOk, redMaxOk;
   double redMin = mRedMinLineEdit->text().toDouble( &redMinOk );
   double redMax = mRedMaxLineEdit->text().toDouble( &redMaxOk );
   if ( redMinOk && redMaxOk && redBand != -1 )
   {
-    redEnhancement = new QgsContrastEnhancement(( Qgis::DataType )(
+    redEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
           provider->dataType( redBand ) ) );
     redEnhancement->setMinimumValue( redMin );
     redEnhancement->setMaximumValue( redMax );
@@ -165,7 +167,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   double greenMax = mGreenMaxLineEdit->text().toDouble( &greenMaxOk );
   if ( greenMinOk && greenMaxOk && greenBand != -1 )
   {
-    greenEnhancement = new QgsContrastEnhancement(( Qgis::DataType )(
+    greenEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
           provider->dataType( greenBand ) ) );
     greenEnhancement->setMinimumValue( greenMin );
     greenEnhancement->setMaximumValue( greenMax );
@@ -176,7 +178,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   double blueMax = mBlueMaxLineEdit->text().toDouble( &blueMaxOk );
   if ( blueMinOk && blueMaxOk && blueBand != -1 )
   {
-    blueEnhancement = new QgsContrastEnhancement(( Qgis::DataType )(
+    blueEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
           provider->dataType( blueBand ) ) );
     blueEnhancement->setMinimumValue( blueMin );
     blueEnhancement->setMaximumValue( blueMax );
@@ -184,18 +186,18 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
 
   if ( redEnhancement )
   {
-    redEnhancement->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )
-        ( mContrastEnhancementAlgorithmComboBox->itemData( mContrastEnhancementAlgorithmComboBox->currentIndex() ).toInt() ) );
+    redEnhancement->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )
+        ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) );
   }
   if ( greenEnhancement )
   {
-    greenEnhancement->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )
-        ( mContrastEnhancementAlgorithmComboBox->itemData( mContrastEnhancementAlgorithmComboBox->currentIndex() ).toInt() ) );
+    greenEnhancement->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )
+        ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) );
   }
   if ( blueEnhancement )
   {
-    blueEnhancement->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )
-        ( mContrastEnhancementAlgorithmComboBox->itemData( mContrastEnhancementAlgorithmComboBox->currentIndex() ).toInt() ) );
+    blueEnhancement->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )
+        ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) );
   }
   r->setRedContrastEnhancement( redEnhancement );
   r->setGreenContrastEnhancement( greenEnhancement );
@@ -207,31 +209,74 @@ void QgsMultiBandColorRendererWidget::onBandChanged( int index )
   Q_UNUSED( index );
 
   QList<int> myBands;
-  myBands.append( mRedBandComboBox->itemData( mRedBandComboBox->currentIndex() ).toInt() );
-  myBands.append( mGreenBandComboBox->itemData( mGreenBandComboBox->currentIndex() ).toInt() );
-  myBands.append( mBlueBandComboBox->itemData( mBlueBandComboBox->currentIndex() ).toInt() );
+  myBands.append( mRedBandComboBox->currentData().toInt() );
+  myBands.append( mGreenBandComboBox->currentData().toInt() );
+  myBands.append( mBlueBandComboBox->currentData().toInt() );
   mMinMaxWidget->setBands( myBands );
   emit widgetChanged();
 }
 
-void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin )
+void QgsMultiBandColorRendererWidget::on_mRedMinLineEdit_textChanged( const QString & )
 {
-  Q_UNUSED( theOrigin );
-  QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
+  minMaxModified();
+}
+
+void QgsMultiBandColorRendererWidget::on_mRedMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsMultiBandColorRendererWidget::on_mGreenMinLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsMultiBandColorRendererWidget::on_mGreenMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsMultiBandColorRendererWidget::on_mBlueMinLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsMultiBandColorRendererWidget::on_mBlueMaxLineEdit_textChanged( const QString & )
+{
+  minMaxModified();
+}
+
+void QgsMultiBandColorRendererWidget::minMaxModified()
+{
+  if ( !mDisableMinMaxWidgetRefresh )
+  {
+    if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
+    {
+      mContrastEnhancementAlgorithmComboBox->setCurrentIndex(
+        mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
+    }
+    mMinMaxWidget->userHasSetManualMinMaxValues();
+    emit widgetChanged();
+  }
+}
+
+void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double max )
+{
+  QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   QLineEdit *myMinLineEdit, *myMaxLineEdit;
 
-  if ( mRedBandComboBox->itemData( mRedBandComboBox->currentIndex() ).toInt() == theBandNo )
+  if ( mRedBandComboBox->currentData().toInt() == bandNo )
   {
     myMinLineEdit = mRedMinLineEdit;
     myMaxLineEdit = mRedMaxLineEdit;
   }
-  else if ( mGreenBandComboBox->itemData( mGreenBandComboBox->currentIndex() ).toInt() == theBandNo )
+  else if ( mGreenBandComboBox->currentData().toInt() == bandNo )
   {
     myMinLineEdit = mGreenMinLineEdit;
     myMaxLineEdit = mGreenMaxLineEdit;
   }
-  else if ( mBlueBandComboBox->itemData( mBlueBandComboBox->currentIndex() ).toInt() == theBandNo )
+  else if ( mBlueBandComboBox->currentData().toInt() == bandNo )
   {
     myMinLineEdit = mBlueMinLineEdit;
     myMaxLineEdit = mBlueMaxLineEdit;
@@ -242,26 +287,28 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int theBandNo, double theMin, 
     return;
   }
 
-  if ( qIsNaN( theMin ) )
+  mDisableMinMaxWidgetRefresh = true;
+  if ( qIsNaN( min ) )
   {
     myMinLineEdit->clear();
   }
   else
   {
-    myMinLineEdit->setText( QString::number( theMin ) );
+    myMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( theMax ) )
+  if ( qIsNaN( max ) )
   {
     myMaxLineEdit->clear();
   }
   else
   {
-    myMaxLineEdit->setText( QString::number( theMax ) );
+    myMaxLineEdit->setText( QString::number( max ) );
   }
+  mDisableMinMaxWidgetRefresh = false;
 }
 
-void QgsMultiBandColorRendererWidget::setMinMaxValue( const QgsContrastEnhancement* ce, QLineEdit* minEdit, QLineEdit* maxEdit )
+void QgsMultiBandColorRendererWidget::setMinMaxValue( const QgsContrastEnhancement *ce, QLineEdit *minEdit, QLineEdit *maxEdit )
 {
   if ( !minEdit || !maxEdit )
   {
@@ -284,24 +331,38 @@ void QgsMultiBandColorRendererWidget::setMinMaxValue( const QgsContrastEnhanceme
         ( int )( ce->contrastEnhancementAlgorithm() ) ) );
 }
 
-void QgsMultiBandColorRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
+void QgsMultiBandColorRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsMultiBandColorRenderer* mbcr = dynamic_cast<const QgsMultiBandColorRenderer*>( r );
+  const QgsMultiBandColorRenderer *mbcr = dynamic_cast<const QgsMultiBandColorRenderer *>( r );
   if ( mbcr )
   {
     mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findData( mbcr->redBand() ) );
     mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findData( mbcr->greenBand() ) );
     mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findData( mbcr->blueBand() ) );
 
+    mDisableMinMaxWidgetRefresh = true;
     setMinMaxValue( mbcr->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
     setMinMaxValue( mbcr->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
     setMinMaxValue( mbcr->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
+    mDisableMinMaxWidgetRefresh = false;
+
+    mMinMaxWidget->setFromMinMaxOrigin( mbcr->minMaxOrigin() );
   }
   else
   {
-    mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findText( tr( "Red" ) ) );
-    mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findText( tr( "Green" ) ) );
-    mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findText( tr( "Blue" ) ) );
+    if ( mRedBandComboBox->findText( tr( "Red" ) ) > -1 && mRedBandComboBox->findText( tr( "Green" ) ) > -1 &&
+         mRedBandComboBox->findText( tr( "Blue" ) ) > -1 )
+    {
+      mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findText( tr( "Red" ) ) );
+      mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findText( tr( "Green" ) ) );
+      mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findText( tr( "Blue" ) ) );
+    }
+    else
+    {
+      mRedBandComboBox->setCurrentIndex( mRedBandComboBox->count() > 1 ? 1 : 0 );
+      mGreenBandComboBox->setCurrentIndex( mRedBandComboBox->count() > 2 ? 2 : 0 );
+      mBlueBandComboBox->setCurrentIndex( mRedBandComboBox->count() > 3 ? 3 : 0 );
+    }
   }
 }
 
@@ -337,8 +398,9 @@ QString QgsMultiBandColorRendererWidget::max( int index )
   return QString();
 }
 
-void QgsMultiBandColorRendererWidget::setMin( const QString& value, int index )
+void QgsMultiBandColorRendererWidget::setMin( const QString &value, int index )
 {
+  mDisableMinMaxWidgetRefresh = true;
   switch ( index )
   {
     case 0:
@@ -353,10 +415,12 @@ void QgsMultiBandColorRendererWidget::setMin( const QString& value, int index )
     default:
       break;
   }
+  mDisableMinMaxWidgetRefresh = false;
 }
 
-void QgsMultiBandColorRendererWidget::setMax( const QString& value, int index )
+void QgsMultiBandColorRendererWidget::setMax( const QString &value, int index )
 {
+  mDisableMinMaxWidgetRefresh = true;
   switch ( index )
   {
     case 0:
@@ -371,6 +435,7 @@ void QgsMultiBandColorRendererWidget::setMax( const QString& value, int index )
     default:
       break;
   }
+  mDisableMinMaxWidgetRefresh = false;
 }
 
 int QgsMultiBandColorRendererWidget::selectedBand( int index )

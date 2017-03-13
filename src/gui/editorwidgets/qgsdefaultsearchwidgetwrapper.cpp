@@ -15,18 +15,20 @@
 
 #include "qgsdefaultsearchwidgetwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsexpression.h"
-#include <QSettings>
+#include "qgsfieldvalueslineedit.h"
+#include "qgssettings.h"
+
 #include <QHBoxLayout>
 
-QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mLineEdit( nullptr )
-    , mCheckbox( nullptr )
-    , mContainer( nullptr )
-    , mCaseString( QString( "LIKE" ) )
+QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mLineEdit( nullptr )
+  , mCheckbox( nullptr )
+  , mContainer( nullptr )
+  , mCaseString( QStringLiteral( "LIKE" ) )
 {
 }
 
@@ -39,11 +41,11 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 {
   if ( caseSensitiveCheckState == Qt::Checked )
   {
-    mCaseString = "LIKE";
+    mCaseString = QStringLiteral( "LIKE" );
   }
   else
   {
-    mCaseString = "ILIKE";
+    mCaseString = QStringLiteral( "ILIKE" );
   }
   // need to update also the line edit
   setExpression( mLineEdit->text() );
@@ -57,28 +59,28 @@ void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
-  QSettings settings;
-  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  QgsSettings settings;
+  QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
   if ( exp == nullValue )
   {
-    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    str = QStringLiteral( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
-    str = QString( "%1 %2 '%3'" )
+    str = QStringLiteral( "%1 %2 '%3'" )
           .arg( QgsExpression::quotedColumnRef( fieldName ),
-                numeric ? "=" : mCaseString,
+                numeric ? QStringLiteral( "=" ) : mCaseString,
                 numeric ?
-                exp.replace( '\'', "''" )
+                exp.replace( '\'', QLatin1String( "''" ) )
                 :
-                '%' + exp.replace( '\'', "''" ) + '%' ); // escape quotes
+                '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
   }
   mExpression = str;
 }
 
-QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsDefaultSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QWidget( parent );
 }
@@ -100,10 +102,6 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
     case QVariant::Double:
     case QVariant::LongLong:
     case QVariant::ULongLong:
-      //numeric
-      flags |= GreaterThan | LessThan | GreaterThanOrEqualTo | LessThanOrEqualTo;
-      break;
-
     case QVariant::Date:
     case QVariant::DateTime:
     case QVariant::Time:
@@ -211,9 +209,9 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
           return fieldName + ( flags & EqualTo ? "=" : "<>" )
                  + QgsExpression::quotedString( mLineEdit->text() );
         else
-          return QString( "lower(%1)" ).arg( fieldName )
+          return QStringLiteral( "lower(%1)" ).arg( fieldName )
                  + ( flags & EqualTo ? "=" : "<>" ) +
-                 QString( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
+                 QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
       else if ( flags & Contains || flags & DoesNotContain )
       {
@@ -249,19 +247,30 @@ void QgsDefaultSearchWidgetWrapper::setEnabled( bool enabled )
     mCheckbox->setEnabled( enabled );
 }
 
-void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
+void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
 {
   mContainer = widget;
   mContainer->setLayout( new QHBoxLayout() );
   mContainer->layout()->setMargin( 0 );
   mContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mLineEdit = new QgsFilterLineEdit();
-  mContainer->layout()->addWidget( mLineEdit );
-
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
+
   if ( fldType == QVariant::String )
   {
-    mCheckbox = new QCheckBox( "Case sensitive" );
+    mLineEdit = new QgsFieldValuesLineEdit();
+    static_cast< QgsFieldValuesLineEdit * >( mLineEdit )->setLayer( layer() );
+    static_cast< QgsFieldValuesLineEdit * >( mLineEdit )->setAttributeIndex( mFieldIdx );
+  }
+  else
+  {
+    mLineEdit = new QgsFilterLineEdit();
+  }
+  mContainer->layout()->addWidget( mLineEdit );
+  mContainer->setFocusProxy( mLineEdit );
+
+  if ( fldType == QVariant::String )
+  {
+    mCheckbox = new QCheckBox( QStringLiteral( "Case sensitive" ) );
     mContainer->layout()->addWidget( mCheckbox );
     connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
     mCheckbox->setChecked( Qt::Unchecked );
@@ -271,7 +280,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   connect( mLineEdit, SIGNAL( returnPressed() ), this, SLOT( filterChanged() ) );
   connect( mLineEdit, SIGNAL( textEdited( QString ) ), this, SIGNAL( valueChanged() ) );
 
-  mCaseString = "ILIKE";
+  mCaseString = QStringLiteral( "ILIKE" );
 }
 
 bool QgsDefaultSearchWidgetWrapper::valid() const
@@ -279,12 +288,12 @@ bool QgsDefaultSearchWidgetWrapper::valid() const
   return true;
 }
 
-QgsFilterLineEdit* QgsDefaultSearchWidgetWrapper::lineEdit()
+QgsFilterLineEdit *QgsDefaultSearchWidgetWrapper::lineEdit()
 {
   return mLineEdit;
 }
 
-QCheckBox* QgsDefaultSearchWidgetWrapper::caseSensitiveCheckBox()
+QCheckBox *QgsDefaultSearchWidgetWrapper::caseSensitiveCheckBox()
 {
   return mCheckbox;
 }
@@ -294,7 +303,7 @@ void QgsDefaultSearchWidgetWrapper::filterChanged()
   emit expressionChanged( mExpression );
 }
 
-void QgsDefaultSearchWidgetWrapper::textChanged( const QString& text )
+void QgsDefaultSearchWidgetWrapper::textChanged( const QString &text )
 {
   if ( text.isEmpty() )
     emit valueCleared();

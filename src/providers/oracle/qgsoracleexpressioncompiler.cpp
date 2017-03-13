@@ -16,16 +16,16 @@
 #include "qgsoracleexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
 
-QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields )
+QgsOracleExpressionCompiler::QgsOracleExpressionCompiler( QgsOracleFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields )
 {
 }
 
-QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
 {
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
+    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator *>( node ) );
 
     switch ( bin->op() )
     {
@@ -81,12 +81,12 @@ QgsSqlExpressionCompiler::Result QgsOracleExpressionCompiler::compileNode( const
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsOracleExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsOracleExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   return QgsOracleConn::quotedIdentifier( identifier );
 }
 
-QString QgsOracleExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsOracleExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 

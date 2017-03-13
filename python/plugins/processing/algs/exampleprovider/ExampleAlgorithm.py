@@ -25,8 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsVectorFileWriter
+from qgis.core import QgsVectorFileWriter, QgsSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -75,7 +74,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
                                     self.tr('Output layer with selected features')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         """Here is where the processing itself takes place."""
 
         # The first thing to do is retrieve the values of the parameters
@@ -94,7 +93,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         # First we create the output layer. The output value entered by
         # the user is a string containing a filename, so we can use it
         # directly
-        settings = QSettings()
+        settings = QgsSettings()
         systemEncoding = settings.value('/UI/encoding', 'System')
         writer = QgsVectorFileWriter(output,
                                      systemEncoding,

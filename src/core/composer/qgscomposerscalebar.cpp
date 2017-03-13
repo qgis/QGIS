@@ -30,27 +30,29 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfontutils.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
-#include <QSettings>
+
 #include <cmath>
 
-QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mComposerMap( nullptr )
-    , mNumUnitsPerSegment( 0 )
-    , mSegmentSizeMode( SegmentSizeFixed )
-    , mMinBarWidth( 50 )
-    , mMaxBarWidth( 150 )
-    , mFontColor( QColor( 0, 0, 0 ) )
-    , mStyle( nullptr )
-    , mSegmentMillimeters( 0.0 )
-    , mAlignment( Left )
-    , mUnits( MapUnits )
-    , mLineJoinStyle( Qt::MiterJoin )
-    , mLineCapStyle( Qt::SquareCap )
+QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition *composition )
+  : QgsComposerItem( composition )
+  , mComposerMap( nullptr )
+  , mNumUnitsPerSegment( 0 )
+  , mSegmentSizeMode( SegmentSizeFixed )
+  , mMinBarWidth( 50 )
+  , mMaxBarWidth( 150 )
+  , mFontColor( QColor( 0, 0, 0 ) )
+  , mStyle( nullptr )
+  , mSegmentMillimeters( 0.0 )
+  , mAlignment( Left )
+  , mUnits( MapUnits )
+  , mLineJoinStyle( Qt::MiterJoin )
+  , mLineCapStyle( Qt::SquareCap )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -61,7 +63,7 @@ QgsComposerScaleBar::~QgsComposerScaleBar()
   delete mStyle;
 }
 
-void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerScaleBar::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -192,12 +194,12 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
+void QgsComposerScaleBar::setComposerMap( const QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
     disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
   }
   mComposerMap = map;
 
@@ -207,7 +209,7 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
   }
 
   connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  connect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
 
   refreshSegmentMillimeters();
   emit itemChanged();
@@ -221,8 +223,43 @@ void QgsComposerScaleBar::invalidateCurrentMap()
   }
 
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
   mComposerMap = nullptr;
+}
+
+void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
+{
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  bool forceUpdate = false;
+  //updates data defined properties and redraws item to match
+  if ( property == QgsComposerObject::ScalebarFillColor || property == QgsComposerObject::AllProperties )
+  {
+    mBrush.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor, *evalContext, mFillColor ) );
+    forceUpdate = true;
+  }
+  if ( property == QgsComposerObject::ScalebarFillColor2 || property == QgsComposerObject::AllProperties )
+  {
+    mBrush2.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarFillColor2, *evalContext, mFillColor2 ) );
+    forceUpdate = true;
+  }
+  if ( property == QgsComposerObject::ScalebarLineColor || property == QgsComposerObject::AllProperties )
+  {
+    mPen.setColor( mDataDefinedProperties.valueAsColor( QgsComposerObject::ScalebarLineColor, *evalContext, mLineColor ) );
+    forceUpdate = true;
+  }
+  if ( property == QgsComposerObject::ScalebarLineWidth || property == QgsComposerObject::AllProperties )
+  {
+    mPen.setWidthF( mDataDefinedProperties.valueAsDouble( QgsComposerObject::ScalebarLineWidth, *evalContext, mLineWidth ) );
+    forceUpdate = true;
+  }
+  if ( forceUpdate )
+  {
+    update();
+  }
+
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
 }
 
 // nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
@@ -302,9 +339,9 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
-    da.setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
-    da.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", "WGS84" ) );
+    da.setEllipsoidalMode( true );
+    da.setSourceCrs( mComposerMap->crs() );
+    da.setEllipsoid( mComposition->project()->ellipsoid() );
 
     QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters;
     double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ),
@@ -385,20 +422,20 @@ void QgsComposerScaleBar::applyDefaultSettings()
   //default to no background
   setBackgroundEnabled( false );
 
-  mPen = QPen( Qt::black );
+  mPen = QPen( mLineColor );
   mPen.setJoinStyle( mLineJoinStyle );
   mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( 0.3 );
+  mPen.setWidthF( mLineWidth );
 
-  mBrush.setColor( Qt::black );
+  mBrush.setColor( mFillColor );
   mBrush.setStyle( Qt::SolidPattern );
 
-  mBrush2.setColor( Qt::white );
+  mBrush2.setColor( mFillColor2 );
   mBrush2.setStyle( Qt::SolidPattern );
 
   //get default composer font from settings
-  QSettings settings;
-  QString defaultFontString = settings.value( "/Composer/defaultFont" ).toString();
+  QgsSettings settings;
+  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -468,7 +505,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
     int segmentMagnitude = floor( log10( segmentWidth ) );
     double unitsPerSegment = upperMagnitudeMultiplier * ( qPow( 10.0, segmentMagnitude ) );
-    double multiplier = floor(( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
+    double multiplier = floor( ( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
 
     if ( multiplier > 0 )
     {
@@ -516,7 +553,7 @@ void QgsComposerScaleBar::adjustBoxSize()
   QgsComposerItem::setSceneRect( newRect );
 }
 
-void QgsComposerScaleBar::setSceneRect( const QRectF& rectangle )
+void QgsComposerScaleBar::setSceneRect( const QRectF &rectangle )
 {
   QRectF box = mStyle->calculateBoxSize();
   if ( rectangle.height() > box.height() )
@@ -545,7 +582,7 @@ void QgsComposerScaleBar::setSceneRect( const QRectF& rectangle )
 void QgsComposerScaleBar::update()
 {
   //Don't adjust box size for numeric scale bars:
-  if ( mStyle && mStyle->name() != "Numeric" )
+  if ( mStyle && mStyle->name() != QLatin1String( "Numeric" ) )
   {
     adjustBoxSize();
   }
@@ -566,7 +603,7 @@ void QgsComposerScaleBar::updateSegmentSize()
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWidthList ) const
+void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> > &posWidthList ) const
 {
   posWidthList.clear();
   double mCurrentXCoord = mPen.widthF() + mBoxContentSpace;
@@ -587,38 +624,38 @@ void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWi
   }
 }
 
-void QgsComposerScaleBar::setStyle( const QString& styleName )
+void QgsComposerScaleBar::setStyle( const QString &styleName )
 {
   delete mStyle;
   mStyle = nullptr;
 
   //switch depending on style name
-  if ( styleName == "Single Box" )
+  if ( styleName == QLatin1String( "Single Box" ) )
   {
     mStyle = new QgsSingleBoxScaleBarStyle( this );
   }
-  else if ( styleName == "Double Box" )
+  else if ( styleName == QLatin1String( "Double Box" ) )
   {
     mStyle = new QgsDoubleBoxScaleBarStyle( this );
   }
-  else if ( styleName == "Line Ticks Middle"  || styleName == "Line Ticks Down" || styleName == "Line Ticks Up" )
+  else if ( styleName == QLatin1String( "Line Ticks Middle" )  || styleName == QLatin1String( "Line Ticks Down" ) || styleName == QLatin1String( "Line Ticks Up" ) )
   {
-    QgsTicksScaleBarStyle* tickStyle = new QgsTicksScaleBarStyle( this );
-    if ( styleName == "Line Ticks Middle" )
+    QgsTicksScaleBarStyle *tickStyle = new QgsTicksScaleBarStyle( this );
+    if ( styleName == QLatin1String( "Line Ticks Middle" ) )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksMiddle );
     }
-    else if ( styleName == "Line Ticks Down" )
+    else if ( styleName == QLatin1String( "Line Ticks Down" ) )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksDown );
     }
-    else if ( styleName == "Line Ticks Up" )
+    else if ( styleName == QLatin1String( "Line Ticks Up" ) )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksUp );
     }
     mStyle = tickStyle;
   }
-  else if ( styleName == "Numeric" )
+  else if ( styleName == QLatin1String( "Numeric" ) )
   {
     mStyle = new QgsNumericScaleBarStyle( this );
   }
@@ -633,7 +670,7 @@ QString QgsComposerScaleBar::style() const
   }
   else
   {
-    return "";
+    return QLatin1String( "" );
   }
 }
 
@@ -645,7 +682,7 @@ QString QgsComposerScaleBar::firstLabelString() const
   }
   else
   {
-    return "0";
+    return QStringLiteral( "0" );
   }
 }
 
@@ -654,206 +691,210 @@ QFont QgsComposerScaleBar::font() const
   return mFont;
 }
 
-void QgsComposerScaleBar::setFont( const QFont& font )
+void QgsComposerScaleBar::setFont( const QFont &font )
 {
   mFont = font;
   update();
   emit itemChanged();
 }
 
-bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerScaleBar::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
     return false;
   }
 
-  QDomElement composerScaleBarElem = doc.createElement( "ComposerScaleBar" );
-  composerScaleBarElem.setAttribute( "height", QString::number( mHeight ) );
-  composerScaleBarElem.setAttribute( "labelBarSpace", QString::number( mLabelBarSpace ) );
-  composerScaleBarElem.setAttribute( "boxContentSpace", QString::number( mBoxContentSpace ) );
-  composerScaleBarElem.setAttribute( "numSegments", mNumSegments );
-  composerScaleBarElem.setAttribute( "numSegmentsLeft", mNumSegmentsLeft );
-  composerScaleBarElem.setAttribute( "numUnitsPerSegment", QString::number( mNumUnitsPerSegment ) );
-  composerScaleBarElem.setAttribute( "segmentSizeMode", mSegmentSizeMode );
-  composerScaleBarElem.setAttribute( "minBarWidth", mMinBarWidth );
-  composerScaleBarElem.setAttribute( "maxBarWidth", mMaxBarWidth );
-  composerScaleBarElem.setAttribute( "segmentMillimeters", QString::number( mSegmentMillimeters ) );
-  composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", QString::number( mNumMapUnitsPerScaleBarUnit ) );
-  composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, "scaleBarFont" ) );
-  composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
-  composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
-  composerScaleBarElem.setAttribute( "units", mUnits );
-  composerScaleBarElem.setAttribute( "lineJoinStyle", QgsSymbolLayerUtils::encodePenJoinStyle( mLineJoinStyle ) );
-  composerScaleBarElem.setAttribute( "lineCapStyle", QgsSymbolLayerUtils::encodePenCapStyle( mLineCapStyle ) );
+  QDomElement composerScaleBarElem = doc.createElement( QStringLiteral( "ComposerScaleBar" ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "height" ), QString::number( mHeight ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "labelBarSpace" ), QString::number( mLabelBarSpace ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "boxContentSpace" ), QString::number( mBoxContentSpace ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numSegments" ), mNumSegments );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numSegmentsLeft" ), mNumSegmentsLeft );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numUnitsPerSegment" ), QString::number( mNumUnitsPerSegment ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), mSegmentSizeMode );
+  composerScaleBarElem.setAttribute( QStringLiteral( "minBarWidth" ), mMinBarWidth );
+  composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mMaxBarWidth );
+  composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mNumMapUnitsPerScaleBarUnit ) );
+  composerScaleBarElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "scaleBarFont" ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mLineWidth ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "unitLabel" ), mUnitLabeling );
+  composerScaleBarElem.setAttribute( QStringLiteral( "units" ), mUnits );
+  composerScaleBarElem.setAttribute( QStringLiteral( "lineJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mLineJoinStyle ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "lineCapStyle" ), QgsSymbolLayerUtils::encodePenCapStyle( mLineCapStyle ) );
 
   //style
   if ( mStyle )
   {
-    composerScaleBarElem.setAttribute( "style", mStyle->name() );
+    composerScaleBarElem.setAttribute( QStringLiteral( "style" ), mStyle->name() );
   }
 
   //map id
   if ( mComposerMap )
   {
-    composerScaleBarElem.setAttribute( "mapId", mComposerMap->id() );
+    composerScaleBarElem.setAttribute( QStringLiteral( "mapId" ), mComposerMap->id() );
   }
 
   //colors
 
   //fill color
-  QDomElement fillColorElem = doc.createElement( "fillColor" );
-  QColor fillColor = mBrush.color();
-  fillColorElem.setAttribute( "red", QString::number( fillColor.red() ) );
-  fillColorElem.setAttribute( "green", QString::number( fillColor.green() ) );
-  fillColorElem.setAttribute( "blue", QString::number( fillColor.blue() ) );
-  fillColorElem.setAttribute( "alpha", QString::number( fillColor.alpha() ) );
+  QDomElement fillColorElem = doc.createElement( QStringLiteral( "fillColor" ) );
+  fillColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFillColor.red() ) );
+  fillColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFillColor.green() ) );
+  fillColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFillColor.blue() ) );
+  fillColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFillColor.alpha() ) );
   composerScaleBarElem.appendChild( fillColorElem );
 
   //fill color 2
-  QDomElement fillColor2Elem = doc.createElement( "fillColor2" );
-  QColor fillColor2 = mBrush2.color();
-  fillColor2Elem.setAttribute( "red", QString::number( fillColor2.red() ) );
-  fillColor2Elem.setAttribute( "green", QString::number( fillColor2.green() ) );
-  fillColor2Elem.setAttribute( "blue", QString::number( fillColor2.blue() ) );
-  fillColor2Elem.setAttribute( "alpha", QString::number( fillColor2.alpha() ) );
+  QDomElement fillColor2Elem = doc.createElement( QStringLiteral( "fillColor2" ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "red" ), QString::number( mFillColor2.red() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "green" ), QString::number( mFillColor2.green() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "blue" ), QString::number( mFillColor2.blue() ) );
+  fillColor2Elem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFillColor2.alpha() ) );
   composerScaleBarElem.appendChild( fillColor2Elem );
 
   //pen color
-  QDomElement strokeColorElem = doc.createElement( "strokeColor" );
-  QColor strokeColor = mPen.color();
-  strokeColorElem.setAttribute( "red", QString::number( strokeColor.red() ) );
-  strokeColorElem.setAttribute( "green", QString::number( strokeColor.green() ) );
-  strokeColorElem.setAttribute( "blue", QString::number( strokeColor.blue() ) );
-  strokeColorElem.setAttribute( "alpha", QString::number( strokeColor.alpha() ) );
+  QDomElement strokeColorElem = doc.createElement( QStringLiteral( "strokeColor" ) );
+  strokeColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mLineColor.red() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mLineColor.green() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mLineColor.blue() ) );
+  strokeColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mLineColor.alpha() ) );
   composerScaleBarElem.appendChild( strokeColorElem );
 
   //font color
-  QDomElement fontColorElem = doc.createElement( "textColor" );
-  fontColorElem.setAttribute( "red", QString::number( mFontColor.red() ) );
-  fontColorElem.setAttribute( "green", QString::number( mFontColor.green() ) );
-  fontColorElem.setAttribute( "blue", QString::number( mFontColor.blue() ) );
-  fontColorElem.setAttribute( "alpha", QString::number( mFontColor.alpha() ) );
+  QDomElement fontColorElem = doc.createElement( QStringLiteral( "textColor" ) );
+  fontColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFontColor.red() ) );
+  fontColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFontColor.green() ) );
+  fontColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFontColor.blue() ) );
+  fontColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFontColor.alpha() ) );
   composerScaleBarElem.appendChild( fontColorElem );
 
   //alignment
-  composerScaleBarElem.setAttribute( "alignment", QString::number( static_cast< int >( mAlignment ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast< int >( mAlignment ) ) );
 
   elem.appendChild( composerScaleBarElem );
   return _writeXml( composerScaleBarElem, doc );
 }
 
-bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
   {
     return false;
   }
 
-  mHeight = itemElem.attribute( "height", "5.0" ).toDouble();
-  mLabelBarSpace = itemElem.attribute( "labelBarSpace", "3.0" ).toDouble();
-  mBoxContentSpace = itemElem.attribute( "boxContentSpace", "1.0" ).toDouble();
-  mNumSegments = itemElem.attribute( "numSegments", "2" ).toInt();
-  mNumSegmentsLeft = itemElem.attribute( "numSegmentsLeft", "0" ).toInt();
-  mNumUnitsPerSegment = itemElem.attribute( "numUnitsPerSegment", "1.0" ).toDouble();
-  mSegmentSizeMode = static_cast<SegmentSizeMode>( itemElem.attribute( "segmentSizeMode", "0" ).toInt() );
-  mMinBarWidth = itemElem.attribute( "minBarWidth", "50" ).toInt();
-  mMaxBarWidth = itemElem.attribute( "maxBarWidth", "150" ).toInt();
-  mSegmentMillimeters = itemElem.attribute( "segmentMillimeters", "0.0" ).toDouble();
-  mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
-  mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.3" ).toDouble() );
-  mUnitLabeling = itemElem.attribute( "unitLabel" );
-  mLineJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( "lineJoinStyle", "miter" ) );
+  mHeight = itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble();
+  mLabelBarSpace = itemElem.attribute( QStringLiteral( "labelBarSpace" ), QStringLiteral( "3.0" ) ).toDouble();
+  mBoxContentSpace = itemElem.attribute( QStringLiteral( "boxContentSpace" ), QStringLiteral( "1.0" ) ).toDouble();
+  mNumSegments = itemElem.attribute( QStringLiteral( "numSegments" ), QStringLiteral( "2" ) ).toInt();
+  mNumSegmentsLeft = itemElem.attribute( QStringLiteral( "numSegmentsLeft" ), QStringLiteral( "0" ) ).toInt();
+  mNumUnitsPerSegment = itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble();
+  mSegmentSizeMode = static_cast<SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() );
+  mMinBarWidth = itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toInt();
+  mMaxBarWidth = itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toInt();
+  mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
+  mNumMapUnitsPerScaleBarUnit = itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble();
+  mLineWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble();
+  mPen.setWidthF( mLineWidth );
+  mUnitLabeling = itemElem.attribute( QStringLiteral( "unitLabel" ) );
+  mLineJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) );
   mPen.setJoinStyle( mLineJoinStyle );
-  mLineCapStyle = QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( "lineCapStyle", "square" ) );
+  mLineCapStyle = QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) );
   mPen.setCapStyle( mLineCapStyle );
-  if ( !QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "scaleBarFont" ) )
+  if ( !QgsFontUtils::setFromXmlChildNode( mFont, itemElem, QStringLiteral( "scaleBarFont" ) ) )
   {
-    mFont.fromString( itemElem.attribute( "font", "" ) );
+    mFont.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
   }
 
   //colors
   //fill color
-  QDomNodeList fillColorList = itemElem.elementsByTagName( "fillColor" );
+  QDomNodeList fillColorList = itemElem.elementsByTagName( QStringLiteral( "fillColor" ) );
   if ( !fillColorList.isEmpty() )
   {
     QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int fillRed, fillGreen, fillBlue, fillAlpha;
 
-    fillRed = fillColorElem.attribute( "red" ).toDouble( &redOk );
-    fillGreen = fillColorElem.attribute( "green" ).toDouble( &greenOk );
-    fillBlue = fillColorElem.attribute( "blue" ).toDouble( &blueOk );
-    fillAlpha = fillColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mBrush.setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      mFillColor = QColor( fillRed, fillGreen, fillBlue, fillAlpha );
+      mBrush.setColor( mFillColor );
     }
   }
   else
   {
-    mBrush.setColor( QColor( itemElem.attribute( "brushColor", "#000000" ) ) );
+    mFillColor = QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) );
+    mBrush.setColor( mFillColor );
   }
 
   //fill color 2
-  QDomNodeList fillColor2List = itemElem.elementsByTagName( "fillColor2" );
+  QDomNodeList fillColor2List = itemElem.elementsByTagName( QStringLiteral( "fillColor2" ) );
   if ( !fillColor2List.isEmpty() )
   {
     QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int fillRed, fillGreen, fillBlue, fillAlpha;
 
-    fillRed = fillColor2Elem.attribute( "red" ).toDouble( &redOk );
-    fillGreen = fillColor2Elem.attribute( "green" ).toDouble( &greenOk );
-    fillBlue = fillColor2Elem.attribute( "blue" ).toDouble( &blueOk );
-    fillAlpha = fillColor2Elem.attribute( "alpha" ).toDouble( &alphaOk );
+    fillRed = fillColor2Elem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    fillGreen = fillColor2Elem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    fillBlue = fillColor2Elem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    fillAlpha = fillColor2Elem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mBrush2.setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      mFillColor2 = QColor( fillRed, fillGreen, fillBlue, fillAlpha );
+      mBrush2.setColor( mFillColor2 );
     }
   }
   else
   {
-    mBrush2.setColor( QColor( itemElem.attribute( "brush2Color", "#ffffff" ) ) );
+    mFillColor2 = QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) );
+    mBrush2.setColor( mFillColor2 );
   }
 
   //stroke color
-  QDomNodeList strokeColorList = itemElem.elementsByTagName( "strokeColor" );
+  QDomNodeList strokeColorList = itemElem.elementsByTagName( QStringLiteral( "strokeColor" ) );
   if ( !strokeColorList.isEmpty() )
   {
     QDomElement strokeColorElem = strokeColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int strokeRed, strokeGreen, strokeBlue, strokeAlpha;
 
-    strokeRed = strokeColorElem.attribute( "red" ).toDouble( &redOk );
-    strokeGreen = strokeColorElem.attribute( "green" ).toDouble( &greenOk );
-    strokeBlue = strokeColorElem.attribute( "blue" ).toDouble( &blueOk );
-    strokeAlpha = strokeColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    strokeRed = strokeColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    strokeGreen = strokeColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    strokeBlue = strokeColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    strokeAlpha = strokeColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      mPen.setColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
+      mLineColor = QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha );
+      mPen.setColor( mLineColor );
     }
   }
   else
   {
-    mPen.setColor( QColor( itemElem.attribute( "penColor", "#000000" ) ) );
+    mLineColor = QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) );
+    mPen.setColor( mLineColor );
   }
 
   //font color
-  QDomNodeList textColorList = itemElem.elementsByTagName( "textColor" );
+  QDomNodeList textColorList = itemElem.elementsByTagName( QStringLiteral( "textColor" ) );
   if ( !textColorList.isEmpty() )
   {
     QDomElement textColorElem = textColorList.at( 0 ).toElement();
     bool redOk, greenOk, blueOk, alphaOk;
     int textRed, textGreen, textBlue, textAlpha;
 
-    textRed = textColorElem.attribute( "red" ).toDouble( &redOk );
-    textGreen = textColorElem.attribute( "green" ).toDouble( &greenOk );
-    textBlue = textColorElem.attribute( "blue" ).toDouble( &blueOk );
-    textAlpha = textColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    textRed = textColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    textGreen = textColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    textBlue = textColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    textAlpha = textColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
@@ -862,35 +903,35 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
   }
   else
   {
-    mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
+    mFontColor.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
   }
 
   //style
   delete mStyle;
   mStyle = nullptr;
-  QString styleString = itemElem.attribute( "style", "" );
+  QString styleString = itemElem.attribute( QStringLiteral( "style" ), QLatin1String( "" ) );
   setStyle( tr( styleString.toLocal8Bit().data() ) );
 
-  mUnits = static_cast< ScaleBarUnits >( itemElem.attribute( "units" ).toInt() );
-  mAlignment = static_cast< Alignment >( itemElem.attribute( "alignment", "0" ).toInt() );
+  mUnits = static_cast< ScaleBarUnits >( itemElem.attribute( QStringLiteral( "units" ) ).toInt() );
+  mAlignment = static_cast< Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() );
 
   //map
-  int mapId = itemElem.attribute( "mapId", "-1" ).toInt();
+  int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
   if ( mapId >= 0 )
   {
-    const QgsComposerMap* composerMap = mComposition->getComposerMapById( mapId );
+    const QgsComposerMap *composerMap = mComposition->getComposerMapById( mapId );
     mComposerMap = composerMap;
     if ( mComposerMap )
     {
       connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-      connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+      connect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
     }
   }
 
   updateSegmentSize();
 
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
@@ -903,7 +944,7 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
 void QgsComposerScaleBar::correctXPositionAlignment( double width, double widthAfter )
 {
   //Don't adjust position for numeric scale bars:
-  if ( mStyle->name() == "Numeric" )
+  if ( mStyle->name() == QLatin1String( "Numeric" ) )
   {
     return;
   }

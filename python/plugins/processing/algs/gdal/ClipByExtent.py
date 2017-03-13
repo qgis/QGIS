@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -31,13 +32,11 @@ from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterString
+from processing.core.parameters import (ParameterRaster,
+                                        ParameterExtent,
+                                        ParameterString,
+                                        ParameterSelection)
 from processing.core.outputs import OutputRaster
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -50,77 +49,41 @@ class ClipByExtent(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NO_DATA = 'NO_DATA'
     PROJWIN = 'PROJWIN'
-    EXTRA = 'EXTRA'
+    OPTIONS = 'OPTIONS'
     RTYPE = 'RTYPE'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    TILED = 'TILED'
-    COMPRESS = 'COMPRESS'
-    JPEGCOMPRESSION = 'JPEGCOMPRESSION'
-    PREDICTOR = 'PREDICTOR'
-    ZLEVEL = 'ZLEVEL'
-    BIGTIFF = 'BIGTIFF'
-    BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
-    COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
-    TFW = 'TFW'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Clip raster by extent')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
-        self.addParameter(ParameterRaster(
-            self.INPUT, self.tr('Input layer'), False))
+        self.group, self.i18n_group = self.trAlgorithm('Raster extraction')
+
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '', optional=True))
+                                          '',
+                                          optional=True))
         self.addParameter(ParameterExtent(self.PROJWIN, self.tr('Clipping extent')))
-
-        params = []
-        params.append(ParameterSelection(self.RTYPE,
-                                         self.tr('Output raster type'), self.TYPE, 5))
-        params.append(ParameterSelection(self.COMPRESS,
-                                         self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        params.append(ParameterNumber(self.JPEGCOMPRESSION,
-                                      self.tr('Set the JPEG compression level'),
-                                      1, 100, 75))
-        params.append(ParameterNumber(self.ZLEVEL,
-                                      self.tr('Set the DEFLATE compression level'),
-                                      1, 9, 6))
-        params.append(ParameterNumber(self.PREDICTOR,
-                                      self.tr('Set the predictor for LZW or DEFLATE compression'),
-                                      1, 3, 1))
-        params.append(ParameterBoolean(self.TILED,
-                                       self.tr('Create tiled output (only used for the GTiff format)'), False))
-        params.append(ParameterSelection(self.BIGTIFF,
-                                         self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
-        params.append(ParameterBoolean(self.TFW,
-                                       self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
-        params.append(ParameterString(self.EXTRA,
-                                      self.tr('Additional creation parameters'), '', optional=True))
-
-        for param in params:
-            param.isAdvanced = True
-            self.addParameter(param)
+        self.addParameter(ParameterString(self.OPTIONS,
+                                          self.tr('Additional creation options'),
+                                          optional=True,
+                                          metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
+        self.addParameter(ParameterSelection(self.RTYPE,
+                                             self.tr('Output raster type'),
+                                             self.TYPE, 5))
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (extent)')))
 
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         noData = self.getParameterValue(self.NO_DATA)
+        opts = self.getParameterValue(self.OPTIONS)
+        projwin = self.getParameterValue(self.PROJWIN)
+
         if noData is not None:
-            noData = unicode(noData)
-        projwin = unicode(self.getParameterValue(self.PROJWIN))
-        extra = self.getParameterValue(self.EXTRA)
-        if extra is not None:
-            extra = unicode(extra)
-        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = unicode(self.getParameterValue(self.PREDICTOR))
-        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
-        tiled = unicode(self.getParameterValue(self.TILED))
-        compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
-        bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = unicode(self.getParameterValue(self.TFW))
+            noData = str(noData)
 
         arguments = []
         arguments.append('-of')
@@ -138,22 +101,9 @@ class ClipByExtent(GdalAlgorithm):
         arguments.append(regionCoords[1])
         arguments.append(regionCoords[2])
 
-        if extra and len(extra) > 0:
-            arguments.append(extra)
-        if GdalUtils.getFormatShortNameFromFilename(out) == "GTiff":
-            arguments.append("-co COMPRESS=" + compress)
-            if compress == 'JPEG':
-                arguments.append("-co JPEG_QUALITY=" + jpegcompression)
-            elif (compress == 'LZW') or (compress == 'DEFLATE'):
-                arguments.append("-co PREDICTOR=" + predictor)
-            if compress == 'DEFLATE':
-                arguments.append("-co ZLEVEL=" + zlevel)
-            if tiled == "True":
-                arguments.append("-co TILED=YES")
-            if tfw == "True":
-                arguments.append("-co TFW=YES")
-            if len(bigtiff) > 0:
-                arguments.append("-co BIGTIFF=" + bigtiff)
+        if opts:
+            arguments.append('-co')
+            arguments.append(opts)
 
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)

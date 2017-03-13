@@ -19,12 +19,15 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QObject, QSettings, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QObject, pyqtSignal
 from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMessageBox
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
+from qgis.core import QgsSettings
 from ..db_plugins import createDbPlugin
 
 
@@ -38,8 +41,8 @@ class BaseError(Exception):
         else:
             msg = e
 
-        if not isinstance(msg, unicode):
-            msg = unicode(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
+        if not isinstance(msg, str):
+            msg = str(msg, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
         self.msg = msg
         Exception.__init__(self, msg)
@@ -48,7 +51,7 @@ class BaseError(Exception):
         return self.msg
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
 
 class InvalidDataException(BaseError):
@@ -63,15 +66,15 @@ class DbError(BaseError):
 
     def __init__(self, e, query=None):
         BaseError.__init__(self, e)
-        self.query = unicode(query) if query is not None else None
+        self.query = str(query) if query is not None else None
 
     def __unicode__(self):
         if self.query is None:
             return BaseError.__unicode__(self)
 
-        msg = QApplication.translate("DBManagerPlugin", "Error:\n%s") % BaseError.__unicode__(self)
+        msg = QApplication.translate("DBManagerPlugin", "Error:\n{0}").format(BaseError.__unicode__(self))
         if self.query:
-            msg += QApplication.translate("DBManagerPlugin", "\n\nQuery:\n%s") % self.query
+            msg += QApplication.translate("DBManagerPlugin", "\n\nQuery:\n{0}").format(self.query)
         return msg
 
 
@@ -117,7 +120,7 @@ class DBPlugin(QObject):
         return self.connect(self.parent())
 
     def remove(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), self.connectionName()))
         settings.remove("")
         self.deleted.emit()
@@ -155,7 +158,7 @@ class DBPlugin(QObject):
     def connections(self):
         # get the list of connections
         conn_list = []
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(self.connectionSettingsKey())
         for name in settings.childGroups():
             conn_list.append(createDbPlugin(self.typeName(), name))
@@ -174,7 +177,7 @@ class DBPlugin(QObject):
         try:
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really remove connection to %s?") % item.connectionName(),
+                                                              "Really remove connection to {0}?").format(item.connectionName()),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -293,7 +296,7 @@ class Database(DbItemObject):
     def registerSubPluginActions(self, mainWindow):
         # load plugins!
         try:
-            exec (u"from .%s.plugins import load" % self.dbplugin().typeName(), globals())
+            exec(u"from .%s.plugins import load" % self.dbplugin().typeName(), globals())
         except ImportError:
             pass
         else:
@@ -384,7 +387,7 @@ class Database(DbItemObject):
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really delete schema %s?") % item.name,
+                                                              "Really delete schema {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -422,7 +425,7 @@ class Database(DbItemObject):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table for editation."),
+                parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
                                            QgsMessageBar.INFO, parent.iface.messageTimeout())
                 return
             from ..dlg_table_properties import DlgTableProperties
@@ -441,7 +444,7 @@ class Database(DbItemObject):
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really delete table/view %s?") % item.name,
+                                                              "Really delete table/view {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -459,7 +462,7 @@ class Database(DbItemObject):
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
-                                                              "Really delete all items from table %s?") % item.name,
+                                                              "Really delete all items from table {0}?").format(item.name),
                                        QMessageBox.Yes | QMessageBox.No)
             if res != QMessageBox.Yes:
                 return
@@ -550,6 +553,9 @@ class Database(DbItemObject):
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_table_column):
         return None
 
+    def hasLowercaseFieldNamesOption(self):
+        return False
+
 
 class Schema(DbItemObject):
 
@@ -593,7 +599,7 @@ class Schema(DbItemObject):
 
 
 class Table(DbItemObject):
-    TableType, VectorType, RasterType = range(3)
+    TableType, VectorType, RasterType = list(range(3))
 
     def __init__(self, db, schema=None, parent=None):
         DbItemObject.__init__(self, db)
@@ -870,7 +876,7 @@ class Table(DbItemObject):
             self.refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("rows/"):
             if action == "rows/count":
@@ -881,7 +887,7 @@ class Table(DbItemObject):
             parts = action.split('/')
             trigger_action = parts[1]
 
-            msg = QApplication.translate("DBManagerPlugin", "Do you want to %s all triggers?") % trigger_action
+            msg = QApplication.translate("DBManagerPlugin", "Do you want to {0} all triggers?").format(trigger_action)
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table triggers"), msg,
@@ -902,7 +908,7 @@ class Table(DbItemObject):
             trigger_name = parts[1]
             trigger_action = parts[2]
 
-            msg = QApplication.translate("DBManagerPlugin", "Do you want to %s trigger %s?") % (
+            msg = QApplication.translate("DBManagerPlugin", "Do you want to {0} trigger {1}?").format(
                 trigger_action, trigger_name)
             QApplication.restoreOverrideCursor()
             try:
@@ -992,13 +998,13 @@ class VectorTable(Table):
             self.refresh()
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("spatialindex/"):
             parts = action.split('/')
             spatialIndex_action = parts[1]
 
-            msg = QApplication.translate("DBManagerPlugin", "Do you want to %s spatial index for field %s?") % (
+            msg = QApplication.translate("DBManagerPlugin", "Do you want to {0} spatial index for field {1}?").format(
                 spatialIndex_action, self.geomColumn)
             QApplication.restoreOverrideCursor()
             try:
@@ -1113,7 +1119,7 @@ class TableConstraint(TableSubItemObject):
 
     """ class that represents a constraint of a table (relation) """
 
-    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = range(6)
+    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeExclusion, TypeUnknown = list(range(6))
     types = {"c": TypeCheck, "f": TypeForeignKey, "p": TypePrimaryKey, "u": TypeUnique, "x": TypeExclusion}
 
     onAction = {"a": "NO ACTION", "r": "RESTRICT", "c": "CASCADE", "n": "SET NULL", "d": "SET DEFAULT"}

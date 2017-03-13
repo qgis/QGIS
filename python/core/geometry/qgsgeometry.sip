@@ -57,12 +57,7 @@ class QgsGeometry
      */
     void setGeometry( QgsAbstractGeometry* geometry /Transfer/ );
 
-    /** Returns true if the geometry is empty (ie, contains no underlying geometry
-     * accessible via @link geometry @endlink).
-     * @see geometry
-     * @note added in QGIS 2.10
-     */
-    bool isEmpty() const;
+    bool isNull() const;
 
     /** Creates a new geometry from a WKT string */
     static QgsGeometry fromWkt( const QString& wkt );
@@ -93,37 +88,22 @@ class QgsGeometry
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
+      @note not available in python bindings
      */
-    void fromWkb( unsigned char * wkb /Array/, int length /ArraySize/ );
-%MethodCode
-  // create copy of Python's string and pass it to fromWkb()
-  unsigned char * copy = new unsigned char[a1];
-  memcpy(copy, a0, a1);
-  sipCpp->fromWkb(copy, a1);
-%End
+    // void fromWkb( unsigned char *wkb, int length );
 
     /**
-       Returns the buffer containing this geometry in WKB format.
-       You may wish to use in conjunction with wkbSize().
-       @see wkbSize
+     * Set the geometry, feeding in the buffer containing OGC Well-Known Binary
+     * @note added in 3.0
      */
-    SIP_PYOBJECT asWkb();
-%MethodCode
-  sipRes = PyBytes_FromStringAndSize((const char *)sipCpp->asWkb(), sipCpp->wkbSize());
-%End
+    void fromWkb( const QByteArray& wkb );
 
-    /**
-     * Returns the size of the WKB in asWkb().
-     * @see asWkb
-     */
-    int wkbSize() const;
-
-    /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
+    /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     *  @note this method was added in version 1.1
+     *  @note added in version 3.0
      *  @note not available in python bindings
      */
-    // const GEOSGeometry* asGeos( double precision = 0 ) const;
+    // GEOSGeometry* exportToGeos( double precision = 0 ) const;
 
     /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * @see type
@@ -134,6 +114,8 @@ class QgsGeometry
      * @see wkbType
      */
     QgsWkbTypes::GeometryType type() const;
+
+    bool isEmpty() const;
 
     /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
@@ -147,11 +129,6 @@ class QgsGeometry
       @note added in 1.5
      */
     bool isGeosValid() const;
-
-    /** Check if the geometry is empty using GEOS
-      @note added in 1.5
-     */
-    bool isGeosEmpty() const;
 
     /** Returns the area of the geometry using GEOS
       @note added in 1.5
@@ -181,7 +158,7 @@ class QgsGeometry
      * @param afterVertex will be set to the vertex index of the next vertex after the closest one. Will be set to -1 if
      * not present.
      * @param sqrDist will be set to the square distance between the closest vertex and the specified point
-     * @returns closest point in geometry
+     * @returns closest point in geometry. If not found (empty geometry), returns null point nad sqrDist is negative.
      */
     //TODO QGIS 3.0 - rename beforeVertex to previousVertex, afterVertex to nextVertex
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ ) const;
@@ -230,6 +207,19 @@ class QgsGeometry
      */
     bool insertVertex( double x, double y, int beforeVertex );
 
+    /** Insert a new vertex before the given vertex index,
+     *  ring and item (first number is index 0)
+     *  If the requested vertex number (beforeVertex.back()) is greater
+     *  than the last actual vertex on the requested ring and item,
+     *  it is assumed that the vertex is to be appended instead of inserted.
+     *  Returns false if atVertex does not correspond to a valid vertex
+     *  on this geometry (including if this geometry is a Point).
+     *  It is up to the caller to distinguish between
+     *  these error conditions.  (Or maybe we add another method to this
+     *  object to help make the distinction?)
+     */
+    bool insertVertex( const QgsPointV2& point, int beforeVertex );
+
     /** Moves the vertex at the given position number
      *  and item (first number is index 0)
      *  to the given coordinates.
@@ -250,7 +240,7 @@ class QgsGeometry
      *  (first number is index 0)
      *  Returns false if atVertex does not correspond to a valid vertex
      *  on this geometry (including if this geometry is a Point),
-     *  or if the number of remaining verticies in the linestring
+     *  or if the number of remaining vertices in the linestring
      *  would be less than two.
      *  It is up to the caller to distinguish between
      *  these error conditions.  (Or maybe we add another method to this
@@ -323,9 +313,6 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-%If (!QT5_SUPPORT)
-    int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
-%End
     int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPoints/;
 
     /** Adds a new part to a the geometry.
@@ -335,9 +322,6 @@ class QgsGeometry
      * not disjoint with existing polygons of the feature
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-%If (!QT5_SUPPORT)
-    int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
-%End
     int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry )/PyName=addPointsV2/;
 
     /** Adds a new part to this geometry.
@@ -364,7 +348,15 @@ class QgsGeometry
      @note available in python bindings as addPartGeometry (added in 2.2)
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsGeometry *newPart /Transfer/ ) /PyName=addPartGeometry/;
+    int addPart( const QgsGeometry& newPart ) /PyName=addPartGeometry/;
+
+    /**
+     * Removes the interior rings from a (multi)polygon geometry. If the minimumAllowedArea
+     * parameter is specified then only rings smaller than this minimum
+     * area will be removed.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
     /** Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -394,7 +386,7 @@ class QgsGeometry
     @return 0 in case of success, 1 if geometry has not been split, error else*/
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int splitGeometry( const QList<QgsPoint>& splitLine,
-                       QList<QgsGeometry*>&newGeometries /Out/,
+                       QList<QgsGeometry>& newGeometries /Out/,
                        bool topological,
                        QList<QgsPoint> &topologyTestPoints /Out/);
 
@@ -418,8 +410,30 @@ class QgsGeometry
      */
     QgsGeometry makeDifference( const QgsGeometry& other ) const;
 
-    /** Returns the bounding box of this feature*/
+    /**
+     * Returns the bounding box of the geometry.
+     * @see orientedMinimumBoundingBox()
+     */
     QgsRectangle boundingBox() const;
+
+    /**
+     * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
+     * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
+     * width and height of the rotated bounding box will also be returned.
+     * @note added in QGIS 3.0
+     * @see boundingBox()
+     */
+    QgsGeometry orientedMinimumBoundingBox( double& area /Out/, double &angle /Out/, double& width /Out/, double& height /Out/ ) const;
+
+    /**
+     * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
+     * angles either right angles or flat lines. This is an iterative algorithm which will loop until
+     * either the vertices are within a specified tolerance of right angles or a set number of maximum
+     * iterations is reached. The angle threshold parameter specifies how close to a right angle or
+     * straight line an angle must be before it is attempted to be straightened.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r ) const;
@@ -520,20 +534,55 @@ class QgsGeometry
                                    JoinStyle joinStyle = JoinStyleRound,
                                    double mitreLimit = 2.0 ) const;
 
+    /**
+     * Extends a (multi)line geometry by extrapolating out the start or end of the line
+     * by a specified distance. Lines are extended using the bearing of the first or last
+     * segment in the line.
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry extendLine( double startDistance, double endDistance ) const;
+
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry simplify( double tolerance )  const;
 
-    /** Returns the center of mass of a geometry
+    /**
+     * Returns the center of mass of a geometry.
      * @note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned
+     * @see pointOnSurface()
+     * @see poleOfInaccessibility()
      */
     QgsGeometry centroid() const;
 
-    /** Returns a point within a geometry */
+    /**
+     * Returns a point guaranteed to lie on the surface of a geometry. While the centroid()
+     * of a geometry may be located outside of the geometry itself (e.g., for concave shapes),
+     * the point on surface will always be inside the geometry.
+     * @see centroid()
+     * @see poleOfInaccessibility()
+     */
     QgsGeometry pointOnSurface() const;
+
+    /**
+     * Calculates the approximate pole of inaccessibility for a surface, which is the
+     * most distant internal point from the boundary of the surface. This function
+     * uses the 'polylabel' algorithm (Vladimir Agafonkin, 2016), which is an iterative
+     * approach guaranteed to find the true pole of inaccessibility within a specified
+     * tolerance. More precise tolerances require more iterations and will take longer
+     * to calculate.
+     * Optionally, the distance to the polygon boundary from the pole can be stored.
+     * @see centroid()
+     * @see pointOnSurface()
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry poleOfInaccessibility( double precision, double* distanceToBoundary /Out/ = nullptr ) const;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry convexHull() const;
+
+    QgsGeometry voronoiDiagram( const QgsGeometry& extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
+
+    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
 
     /**
      * Return interpolated point on line at distance
@@ -590,6 +639,11 @@ class QgsGeometry
 
     /** Returns an extruded version of this geometry. */
     QgsGeometry extrude( double x, double y );
+
+    /** Export the geometry to WKB
+     * @note added in 3.0
+     */
+    QByteArray exportToWkb() const;
 
     /** Exports the geometry to WKT
      *  @note precision parameter added in 2.4
@@ -696,10 +750,25 @@ class QgsGeometry
      *          1 if geometry is not of polygon type,
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
+     *  @param avoidIntersectionsLayers list of layers to check for intersections
      *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
      *  @note added in 1.5
      */
-    int avoidIntersections();
+    int avoidIntersections( const QList<QgsVectorLayer*>& avoidIntersectionsLayers );
+
+    /**
+     * Attempts to make an invalid geometry valid without losing vertices.
+     *
+     * @note Ported from PostGIS ST_MakeValid() and it should return equivalent results.
+     * Already-valid geometries are returned without further intervention.
+     * In case of full or partial dimensional collapses, the output geometry may be a collection
+     * of lower-to-equal dimension geometries or a geometry of lower dimension.
+     * Single polygons may become multi-geometries in case of self-intersections.
+     * It preserves Z values, but M values will be dropped.
+     * @return new valid QgsGeometry or null geometry on error
+     * @note added in QGIS 3.0
+     */
+    QgsGeometry makeValid();
 
     class Error
     {
@@ -724,6 +793,8 @@ class QgsGeometry
      * @returns the new computed QgsGeometry, or null
      */
     static QgsGeometry unaryUnion( const QList<QgsGeometry>& geometryList );
+
+    static QgsGeometry polygonize( const QList< QgsGeometry>& lines );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
      * @note added in QGIS 2.10
@@ -847,7 +918,7 @@ class QgsGeometry
      * @param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
      * @param offset fraction of line to create new vertices along, between 0 and 1.0
-     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * For example, the default value of 0.25 will create new vertices 25% and 75% along each line segment
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
@@ -876,7 +947,7 @@ class QgsGeometry
     operator QVariant() const;
 
     /** Returns true if the geometry is non empty (ie, isEmpty() returns false),
-     * or false if it is an empty, uninitialised geometry (ie, ieEmpty() returns true).
+     * or false if it is an empty, uninitialized geometry (ie, ieEmpty() returns true).
      * @note added in QGIS 3.0
      */
     operator bool() const;

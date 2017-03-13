@@ -51,13 +51,13 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
 
   private:
 
-    QgsPkiConfigBundle * getPkiConfigBundle( const QString &authcfg );
+    QgsPkiConfigBundle *getPkiConfigBundle( const QString &authcfg );
 
-    void putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle * pkibundle );
+    void putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle );
 
     void removePkiConfigBundle( const QString &authcfg );
 
-    static QMap<QString, QgsPkiConfigBundle *> mPkiConfigBundleCache;
+    static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 };
 
 #endif // QGSAUTHPKCS12METHOD_H

@@ -14,15 +14,15 @@ fields.append(QgsField('UNIQ_COUNT', QVariant.Int))
 writer = VectorWriter(N_unique_values, None, fields, layer.wkbType(),
                       layer.crs())
 
-class_field_index = layer.fieldNameIndex(class_field)
-value_field_index = layer.fieldNameIndex(value_field)
+class_field_index = layer.fields().lookupField(class_field)
+value_field_index = layer.fields().lookupField(value_field)
 
 outFeat = QgsFeature()
 classes = {}
 feats = processing.features(layer)
 nFeat = len(feats)
 for n, inFeat in enumerate(feats):
-    progress.setPercentage(int(100 * n / nFeat))
+    feedback.setProgress(int(100 * n / nFeat))
     attrs = inFeat.attributes()
     clazz = attrs[class_field_index]
     value = attrs[value_field_index]
@@ -33,7 +33,7 @@ for n, inFeat in enumerate(feats):
 
 feats = processing.features(layer)
 for n, inFeat in enumerate(feats):
-    progress.setPercentage(int(100 * n / nFeat))
+    feedback.setProgress(int(100 * n / nFeat))
     inGeom = inFeat.geometry()
     outFeat.setGeometry(inGeom)
     attrs = inFeat.attributes()

@@ -12,12 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
 #include "qgsstatisticalsummary.h"
 #include "qgis.h"
@@ -36,6 +35,7 @@ class TestQgsStatisticSummary: public QObject
     void individualStatCalculations();
     void maxMin();
     void countMissing();
+    void noValues();
 
   private:
 
@@ -299,5 +299,45 @@ void TestQgsStatisticSummary::countMissing()
   QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ),  3.0 );
 }
 
-QTEST_MAIN( TestQgsStatisticSummary )
+void TestQgsStatisticSummary::noValues()
+{
+  // test returned stats when no values present
+  QgsStatisticalSummary s( QgsStatisticalSummary::All );
+  s.finalize();
+
+  QCOMPARE( s.count(), 0 );
+  QCOMPARE( s.statistic( QgsStatisticalSummary::Count ), 0.0 );
+  QCOMPARE( s.countMissing(), 0 );
+  QCOMPARE( s.statistic( QgsStatisticalSummary::CountMissing ), 0.0 );
+  QCOMPARE( s.sum(), 0.0 );
+  QCOMPARE( s.statistic( QgsStatisticalSummary::Sum ), 0.0 );
+  QVERIFY( qIsNaN( s.mean() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Mean ) ) );
+  QVERIFY( qIsNaN( s.median() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Median ) ) );
+  QVERIFY( qIsNaN( s.stDev() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::StDev ) ) );
+  QVERIFY( qIsNaN( s.sampleStDev() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::StDevSample ) ) );
+  QVERIFY( qIsNaN( s.min() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Min ) ) );
+  QVERIFY( qIsNaN( s.max() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Max ) ) );
+  QVERIFY( qIsNaN( s.range() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Range ) ) );
+  QVERIFY( qIsNaN( s.minority() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Minority ) ) );
+  QVERIFY( qIsNaN( s.majority() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::Majority ) ) );
+  QCOMPARE( s.variety(), 0 );
+  QCOMPARE( s.statistic( QgsStatisticalSummary::Variety ), 0.0 );
+  QVERIFY( qIsNaN( s.firstQuartile() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::FirstQuartile ) ) );
+  QVERIFY( qIsNaN( s.thirdQuartile() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::ThirdQuartile ) ) );
+  QVERIFY( qIsNaN( s.interQuartileRange() ) );
+  QVERIFY( qIsNaN( s.statistic( QgsStatisticalSummary::InterQuartileRange ) ) );
+}
+
+QGSTEST_MAIN( TestQgsStatisticSummary )
 #include "testqgsstatisticalsummary.moc"

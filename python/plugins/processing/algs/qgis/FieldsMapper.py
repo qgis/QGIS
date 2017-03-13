@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import str
+from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -26,17 +29,13 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import QgsField, QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
-from qgis.utils import iface
+from qgis.core import QgsField, QgsExpression, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterTable
+from processing.core.parameters import Parameter
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
-
-from .fieldsmapping import ParameterFieldsMapping
-from .ui.FieldsMapperDialogs import (FieldsMapperParametersDialog,
-                                     FieldsMapperModelerParametersDialog)
 
 
 class FieldsMapper(GeoAlgorithm):
@@ -55,6 +54,37 @@ class FieldsMapper(GeoAlgorithm):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))
+
+        class ParameterFieldsMapping(Parameter):
+
+            default_metadata = {
+                'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
+            }
+
+            def __init__(self, name='', description='', parent=None):
+                Parameter.__init__(self, name, description)
+                self.parent = parent
+                self.value = []
+
+            def getValueAsCommandLineParameter(self):
+                return '"' + str(self.value) + '"'
+
+            def setValue(self, value):
+                if value is None:
+                    return False
+                if isinstance(value, list):
+                    self.value = value
+                    return True
+                if isinstance(value, str):
+                    try:
+                        self.value = eval(value)
+                        return True
+                    except Exception as e:
+                        # fix_print_with_import
+                        print(str(e))  # display error in console
+                        return False
+                return False
+
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
                                                  self.tr('Fields mapping'),
                                                  self.INPUT_LAYER))
@@ -62,7 +92,7 @@ class FieldsMapper(GeoAlgorithm):
                                     self.tr('Refactored'),
                                     base_input=self.INPUT_LAYER))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = self.getParameterValue(self.INPUT_LAYER)
         mapping = self.getParameterValue(self.FIELDS_MAPPING)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
@@ -72,16 +102,12 @@ class FieldsMapper(GeoAlgorithm):
         expressions = []
 
         da = QgsDistanceArea()
-        da.setSourceCrs(layer.crs().srsid())
-        da.setEllipsoidalMode(
-            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
+        da.setSourceCrs(layer.crs())
+        da.setEllipsoidalMode(True)
         da.setEllipsoid(QgsProject.instance().readEntry(
             'Measure', '/Ellipsoid', GEO_NONE)[0])
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = layer.createExpressionContext()
 
         for field_def in mapping:
             fields.append(QgsField(name=field_def['name'],
@@ -93,18 +119,12 @@ class FieldsMapper(GeoAlgorithm):
             expression.setGeomCalculator(da)
             expression.setDistanceUnits(QgsProject.instance().distanceUnits())
             expression.setAreaUnits(QgsProject.instance().areaUnits())
-
+            expression.prepare(exp_context)
             if expression.hasParserError():
                 raise GeoAlgorithmExecutionException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(unicode(field_def['expression']),
-                            unicode(expression.parserErrorString())))
-            expression.prepare(exp_context)
-            if expression.hasEvalError():
-                raise GeoAlgorithmExecutionException(
-                    self.tr(u'Evaluation error in expression "{}": {}')
-                    .format(unicode(field_def['expression']),
-                            unicode(expression.evalErrorString())))
+                    .format(str(expression.expression()),
+                            str(expression.parserErrorString())))
             expressions.append(expression)
 
         writer = output.getVectorWriter(fields,
@@ -112,8 +132,7 @@ class FieldsMapper(GeoAlgorithm):
                                         layer.crs())
 
         # Create output vector layer with new attributes
-        error = ''
-        calculationSuccess = True
+        error_exp = None
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         features = vector.features(layer)
@@ -125,15 +144,14 @@ class FieldsMapper(GeoAlgorithm):
             outFeat.setGeometry(geometry)
 
             attrs = []
-            for i in xrange(0, len(mapping)):
+            for i in range(0, len(mapping)):
                 field_def = mapping[i]
                 expression = expressions[i]
                 exp_context.setFeature(inFeat)
                 exp_context.lastScope().setVariable("row_number", rownum)
                 value = expression.evaluate(exp_context)
                 if expression.hasEvalError():
-                    calculationSuccess = False
-                    error = expression.evalErrorString()
+                    error_exp = expression
                     break
 
                 attrs.append(value)
@@ -141,17 +159,12 @@ class FieldsMapper(GeoAlgorithm):
 
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 
-        if not calculationSuccess:
+        if error_exp is not None:
             raise GeoAlgorithmExecutionException(
-                self.tr('An error occurred while evaluating the calculation'
-                        ' string:\n') + error)
-
-    def getCustomParametersDialog(self):
-        return FieldsMapperParametersDialog(self)
-
-    def getCustomModelerParametersDialog(self, modelAlg, algName=None):
-        return FieldsMapperModelerParametersDialog(self, modelAlg, algName)
+                self.tr(u'Evaluation error in expression "{}": {}')
+                    .format(str(error_exp.expression()),
+                            str(error_exp.parserErrorString())))

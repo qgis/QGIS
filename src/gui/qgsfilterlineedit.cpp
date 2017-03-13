@@ -23,13 +23,14 @@
 #include <QFocusEvent>
 #include <QPainter>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
-    : QLineEdit( parent )
-    , mClearButtonVisible( true )
-    , mClearMode( ClearToNull )
-    , mNullValue( nullValue )
-    , mFocusInEvent( false )
-    , mClearHover( false )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
+  : QLineEdit( parent )
+  , mClearButtonVisible( true )
+  , mSearchIconVisible( false )
+  , mClearMode( ClearToNull )
+  , mNullValue( nullValue )
+  , mFocusInEvent( false )
+  , mClearHover( false )
 {
   // need mouse tracking to handle cursor changes
   setMouseTracking( true );
@@ -40,8 +41,12 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
   QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
   mClearHoverPixmap = hoverIcon.pixmap( mClearIconSize );
 
-  connect( this, SIGNAL( textChanged( const QString& ) ), this,
-           SLOT( onTextChanged( const QString& ) ) );
+  QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
+  mSearchIconSize = QSize( 16, 16 );
+  mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
+
+  connect( this, SIGNAL( textChanged( const QString & ) ), this,
+           SLOT( onTextChanged( const QString & ) ) );
 }
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )
@@ -55,7 +60,17 @@ void QgsFilterLineEdit::setShowClearButton( bool visible )
     update();
 }
 
-void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
+void QgsFilterLineEdit::setShowSearchIcon( bool visible )
+{
+  bool changed = mSearchIconVisible != visible;
+  if ( changed )
+  {
+    mSearchIconVisible = visible;
+    update();
+  }
+}
+
+void QgsFilterLineEdit::mousePressEvent( QMouseEvent *e )
 {
   if ( !mFocusInEvent )
     QLineEdit::mousePressEvent( e );
@@ -68,7 +83,7 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
   }
 }
 
-void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
+void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent *e )
 {
   QLineEdit::mouseMoveEvent( e );
   if ( shouldShowClear() && clearRect().contains( e->pos() ) )
@@ -88,7 +103,7 @@ void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
   }
 }
 
-void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
+void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
 {
   QLineEdit::focusInEvent( e );
   if ( e->reason() == Qt::MouseFocusReason && isNull() )
@@ -104,6 +119,7 @@ void QgsFilterLineEdit::clearValue()
   {
     case ClearToNull:
       setText( mNullValue );
+      selectAll();
       break;
 
     case ClearToDefault:
@@ -121,7 +137,7 @@ void QgsFilterLineEdit::clearValue()
   emit cleared();
 }
 
-void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
+void QgsFilterLineEdit::paintEvent( QPaintEvent *e )
 {
   QLineEdit::paintEvent( e );
   if ( shouldShowClear() )
@@ -129,13 +145,20 @@ void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
     QRect r = clearRect();
     QPainter p( this );
     if ( mClearHover )
-      p.drawPixmap( r.left() , r.top() , mClearHoverPixmap );
+      p.drawPixmap( r.left(), r.top(), mClearHoverPixmap );
     else
-      p.drawPixmap( r.left() , r.top() , mClearIconPixmap );
+      p.drawPixmap( r.left(), r.top(), mClearIconPixmap );
+  }
+
+  if ( mSearchIconVisible && !shouldShowClear() )
+  {
+    QRect r = searchRect();
+    QPainter p( this );
+    p.drawPixmap( r.left(), r.top(), mSearchIconPixmap );
   }
 }
 
-void QgsFilterLineEdit::leaveEvent( QEvent* e )
+void QgsFilterLineEdit::leaveEvent( QEvent *e )
 {
   if ( mClearHover )
   {
@@ -150,7 +173,7 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
 {
   if ( isNull() )
   {
-    setStyleSheet( QString( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
+    setStyleSheet( QStringLiteral( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
     emit valueChanged( QString::null );
   }
   else
@@ -189,4 +212,13 @@ QRect QgsFilterLineEdit::clearRect() const
                 ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
                 mClearIconSize.width(),
                 mClearIconSize.height() );
+}
+
+QRect QgsFilterLineEdit::searchRect() const
+{
+  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+  return QRect( rect().left() + frameWidth * 2,
+                ( rect().bottom() + 1 - mSearchIconSize.height() ) / 2,
+                mSearchIconSize.width(),
+                mSearchIconSize.height() );
 }

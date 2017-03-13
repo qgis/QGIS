@@ -17,36 +17,24 @@
 
 #include "qgsmslayercache.h"
 #include "qgsmessagelog.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsserversettings.h"
 #include <QFile>
 
-QgsMSLayerCache* QgsMSLayerCache::instance()
+QgsMSLayerCache *QgsMSLayerCache::instance()
 {
-  static QgsMSLayerCache *mInstance = 0;
-  if ( !mInstance )
-    mInstance = new QgsMSLayerCache();
-  return mInstance;
+  static QgsMSLayerCache *sInstance = nullptr;
+  if ( !sInstance )
+    sInstance = new QgsMSLayerCache();
+  return sInstance;
 }
 
 QgsMSLayerCache::QgsMSLayerCache()
-    : mProjectMaxLayers( 0 )
 {
-  mDefaultMaxLayers = 100;
-  //max layer from environment variable overrides default
-  char* maxLayerEnv = getenv( "MAX_CACHE_LAYERS" );
-  if ( maxLayerEnv )
-  {
-    bool conversionOk = false;
-    int maxLayerInt = QString( maxLayerEnv ).toInt( &conversionOk );
-    if ( conversionOk )
-    {
-      mDefaultMaxLayers = maxLayerInt;
-    }
-  }
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeProjectFileLayers( const QString& ) ) );
+  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeProjectFileLayers( const QString & ) ) );
 }
 
 QgsMSLayerCache::~QgsMSLayerCache()
@@ -59,9 +47,14 @@ QgsMSLayerCache::~QgsMSLayerCache()
   mEntries.clear();
 }
 
-void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
+void QgsMSLayerCache::setMaxCacheLayers( int maxCacheLayers )
 {
-  QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' configFile: " + configFile, "Server", QgsMessageLog::INFO );
+  mDefaultMaxLayers = maxCacheLayers;
+}
+
+void QgsMSLayerCache::insertLayer( const QString &url, const QString &layerName, QgsMapLayer *layer, const QString &configFile, const QList<QString> &tempFiles )
+{
+  QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' configFile: " + configFile, QStringLiteral( "Server" ), QgsMessageLog::INFO );
   if ( mEntries.size() > qMax( mDefaultMaxLayers, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
   {
     updateEntries();
@@ -95,12 +88,12 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   }
 }
 
-QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName, const QString& configFile )
+QgsMapLayer *QgsMSLayerCache::searchLayer( const QString &url, const QString &layerName, const QString &configFile )
 {
   QPair<QString, QString> urlNamePair = qMakePair( url, layerName );
   if ( !mEntries.contains( urlNamePair ) )
   {
-    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", QStringLiteral( "Server" ), QgsMessageLog::INFO );
     return nullptr;
   }
   else
@@ -112,18 +105,18 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
       if ( configFile.isEmpty() || layerIt->configFile == configFile )
       {
         layerIt->lastUsedTime = time( nullptr );
-        QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " found in layer cache", "Server", QgsMessageLog::INFO );
+        QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " found in layer cache", QStringLiteral( "Server" ), QgsMessageLog::INFO );
         return layerIt->layerPointer;
       }
     }
-    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", QStringLiteral( "Server" ), QgsMessageLog::INFO );
     return nullptr;
   }
 }
 
-void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
+void QgsMSLayerCache::removeProjectFileLayers( const QString &project )
 {
-  QgsMessageLog::logMessage( "Removing cache entries for project file: " + project, "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Removing cache entries for project file: " + project, QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QVector< QPair< QString, QString > > removeEntries;
   QVector< QgsMSLayerCacheEntry > removeEntriesValues;
 
@@ -134,15 +127,15 @@ void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
     {
       removeEntries.push_back( entryIt.key() );
       removeEntriesValues.push_back( entryIt.value() );
-      freeEntryRessources( entryIt.value() );
+      freeEntryResources( entryIt.value() );
     }
   }
 
   for ( int i = 0; i < removeEntries.size(); ++i )
   {
-    const QgsMSLayerCacheEntry& removeEntry = removeEntriesValues.at( i );
+    const QgsMSLayerCacheEntry &removeEntry = removeEntriesValues.at( i );
     const QPair< QString, QString > removeKey = removeEntries.at( i );
-    QgsMessageLog::logMessage( "Removing cache entry for url:" +  removeKey.first + " layerName:" + removeKey.second + " project file:" + project, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Removing cache entry for url:" +  removeKey.first + " layerName:" + removeKey.second + " project file:" + project, QStringLiteral( "Server" ), QgsMessageLog::INFO );
     mEntries.remove( removeKey, removeEntry );
   }
 }
@@ -182,21 +175,21 @@ void QgsMSLayerCache::removeLeastUsedEntry()
     }
   }
 
-  QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache" , "Server", QgsMessageLog::INFO );
-  freeEntryRessources( *lowest_it );
+  QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache", QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  freeEntryResources( *lowest_it );
   mEntries.erase( lowest_it );
 }
 
-void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
+void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry &entry )
 {
-  // remove layer from QgsMapLayerRegistry before delete it
-  if ( QgsMapLayerRegistry::instance()->mapLayer( entry.layerPointer->id() ) )
-    QgsMapLayerRegistry::instance()->removeMapLayer( entry.layerPointer->id() );
+  // remove layer from QgsProject before delete it
+  if ( QgsProject::instance()->mapLayer( entry.layerPointer->id() ) )
+    QgsProject::instance()->removeMapLayer( entry.layerPointer->id() );
 
   delete entry.layerPointer;
 
   //remove the temporary files of a layer
-  Q_FOREACH ( const QString& file, entry.temporaryFiles )
+  Q_FOREACH ( const QString &file, entry.temporaryFiles )
   {
     //remove the temporary file
     QFile removeFile( file );
@@ -225,16 +218,16 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
 
 void QgsMSLayerCache::logCacheContents() const
 {
-  QgsMessageLog::logMessage( "Layer cache contents:" , "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "Layer cache contents:" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::const_iterator it = mEntries.constBegin();
   for ( ; it != mEntries.constEnd(); ++it )
   {
-    QgsMessageLog::logMessage( "Url: " + it.value().url + " Layer name: " + it.value().layerPointer->name() + " Project: " + it.value().configFile, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Url: " + it.value().url + " Layer name: " + it.value().layerPointer->name() + " Project: " + it.value().configFile, QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
 }
 
 
-void QgsMSLayerCache::removeProjectLayers( const QString& path )
+void QgsMSLayerCache::removeProjectLayers( const QString &path )
 {
   removeProjectFileLayers( path );
 }

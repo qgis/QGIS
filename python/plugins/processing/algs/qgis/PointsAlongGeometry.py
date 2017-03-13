@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
+from qgis.core import QgsFeature, QgsWkbTypes, QgsField
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber
@@ -55,6 +55,7 @@ class PointsAlongGeometry(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Points along lines')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.tags = self.tr('create,interpolate,points,lines')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
@@ -67,7 +68,7 @@ class PointsAlongGeometry(GeoAlgorithm):
                                           self.tr('End offset'), default=0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         distance = self.getParameterValue(self.DISTANCE)
@@ -108,6 +109,6 @@ class PointsAlongGeometry(GeoAlgorithm):
 
                     current_distance += distance
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

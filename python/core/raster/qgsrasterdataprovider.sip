@@ -52,15 +52,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface* input );
 
-    /** \brief   Renders the layer as an image
-     * \note When render caching (/qgis/enable_render_caching) is on the wms
-     * provider doesn't wait for the reply of the getmap request or all
-     * tiles replies and can return incomplete images.
-     * Temporarily disable render caching if you require the complete
-     * wms image in the first call.
-     */
-    virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
-
     /** Get the extent of the data source.
      * @return QgsRectangle containing the extent of the layer
      */
@@ -75,14 +66,14 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
-    virtual int colorInterpretation( int theBandNo ) const;
+    virtual int colorInterpretation( int bandNo ) const;
 
     QString colorName( int colorInterpretation ) const;
 
     /** Reload data (data could change) */
     virtual bool reload();
 
-    virtual QString colorInterpretationName( int theBandNo ) const;
+    virtual QString colorInterpretationName( int bandNo ) const;
 
     /** Read band scale for raster value
      * @note added in 2.3
@@ -101,8 +92,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int xSize() const;
     virtual int ySize() const;
 
-    /** Read block of data using given extent and size. */
-    virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) / Factory /;
+    //! Read block of data using given extent and size.
+    virtual QgsRasterBlock *block(int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback* feedback = 0 );
 
     /** Return true if source band has no data value */
     virtual bool sourceHasNoDataValue( int bandNo ) const;
@@ -156,19 +147,19 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) /Factory/;
 
     /** \brief Create pyramid overviews */
-    virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
-                                   const QString & theResamplingMethod = "NEAREST",
-                                   QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
-                                   const QStringList & theConfigOptions = QStringList() );
+    virtual QString buildPyramids( const QList<QgsRasterPyramid> & pyramidList,
+                                   const QString & resamplingMethod = "NEAREST",
+                                   QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                                   const QStringList & configOptions = QStringList() );
 
-    /** \brief Accessor for ths raster layers pyramid list.
+    /** \brief Accessor for the raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
+    virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int>& overviewList = QList<int>() );
 
     /** \brief Returns true if raster has at least one populated histogram. */
     bool hasPyramids();
@@ -180,7 +171,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QString metadata() = 0;
 
     /** \brief Identify raster value(s) found on the point position. The context
-     *         parameters theExtent, theWidth and theHeight are important to identify
+     *         parameters extent, width and height are important to identify
      *         on the same zoom level as a displayed map and to do effective
      *         caching (WCS). If context params are not specified the highest
      *         resolution is used. capabilities() may be used to test if format
@@ -189,12 +180,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
-     * @param thePoint coordinates in data source CRS
-     * @param theFormat result format
-     * @param theExtent context extent
-     * @param theWidth context width
-     * @param theHeight context height
-     * @param theDpi context dpi
+     * @param point coordinates in data source CRS
+     * @param format result format
+     * @param extent context extent
+     * @param width context width
+     * @param height context height
+     * @param dpi context dpi
      * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
@@ -202,8 +193,8 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 );
+    //virtual QMap<int, QVariant> identify( const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
+    virtual QgsRasterIdentifyResult identify(const QgsPoint & point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -242,9 +233,44 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const;
 
+    /** Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
+     * By default providers are not editable. Use setEditable() method to enable/disable editing.
+     * @see setEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool isEditable() const;
+
+    /** Turns on/off editing mode of the provider. When in editing mode, it is possible
+     * to overwrite data of the provider using writeBlock() calls.
+     * @note Only some providers support editing mode and even those may fail to turn
+     * the underlying data source into editing mode, so it is necessary to check the return
+     * value whether the operation was successful.
+     * @returns true if the switch to/from editing mode was successful
+     * @see isEditable(), writeBlock()
+     * @note added in QGIS 3.0
+     */
+    virtual bool setEditable( bool enabled );
+
     /** Writes into the provider datasource*/
     // TODO: add data type (may be defferent from band type)
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    /** Writes pixel data from a raster block into the provider data source.
+     *
+     * This will override previously stored pixel values. It is assumed that cells in the passed
+     * raster block are aligned with the cells of the data source. If raster block does not cover
+     * the whole area of the data source, only a subset of pixels covered by the raster block
+     * will be overwritten. By default, writing of raster data starts from the first cell
+     * of the raster - it is possible to set offset in pixels by specifying non-zero
+     * xOffset and yOffset values.
+     *
+     * Writing is supported only by some data providers. Provider has to be in editing mode
+     * in order to allow write operations.
+     * @see isEditable(), setEditable()
+     * @returns true on success
+     * @note added in QGIS 3.0
+     */
+    bool writeBlock( QgsRasterBlock* block, int band, int xOffset = 0, int yOffset = 0 );
 
     /** Creates a new dataset with mDataSourceURI */
     static QgsRasterDataProvider* create( const QString &providerKey,
@@ -279,18 +305,22 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * @note used by GDAL provider only
      */
     virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-        const QStringList & theConfigOptions, const QString & fileFormat );
+        const QStringList & configOptions, const QString & fileFormat );
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
     static QgsRaster::IdentifyFormat identifyFormatFromName( const QString& formatName );
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
+    //! Step width and height for raster iterations
+    virtual int stepWidth() const;
+    virtual int stepHeight() const;
+
   signals:
     /** Emit a signal to notify of the progress event.
-      * Emitted theProgress is in percents (0.0-100.0) */
-    void progress( int theType, double theProgress, const QString& theMessage );
-    void progressUpdate( int theProgress );
+      * Emitted progress is in percents (0.0-100.0) */
+    void progress( int type, double progress, const QString& message );
+    void progressUpdate( int progress );
 
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
      * @note added in 2.14
@@ -322,6 +352,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Source no data value is available and is set to be used or internal no data
      *  is available. Used internally only  */
-    //bool hasNoDataValue ( int theBandNo );
+    //bool hasNoDataValue ( int bandNo );
 
 };

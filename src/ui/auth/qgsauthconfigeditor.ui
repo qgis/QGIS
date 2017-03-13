@@ -14,16 +14,7 @@
    <string>Edit Authentication Configurations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item row="3" column="0">
@@ -53,12 +44,6 @@
        </property>
        <item>
         <widget class="QToolButton" name="btnAddConfig">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
           <string/>
          </property>
@@ -66,22 +51,10 @@
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
          </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnRemoveConfig">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
           <string/>
          </property>
@@ -89,34 +62,16 @@
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
          </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="btnEditConfig">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
          </property>
         </widget>
        </item>
@@ -135,24 +90,12 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnAuthUtilities">
-         <property name="minimumSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
            <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>22</width>
-           <height>20</height>
-          </size>
          </property>
          <property name="popupMode">
           <enum>QToolButton::InstantPopup</enum>

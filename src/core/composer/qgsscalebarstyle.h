@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QRectF>
 
+#include "qgis_core.h"
+
 class QgsComposerScaleBar;
 class QPainter;
 
@@ -30,15 +32,16 @@ possibility to implement custom labeling and calculate corresponding box size.
 class CORE_EXPORT QgsScaleBarStyle
 {
   public:
-    QgsScaleBarStyle( const QgsComposerScaleBar* bar );
-    virtual ~QgsScaleBarStyle();
+    QgsScaleBarStyle( const QgsComposerScaleBar *bar );
+    virtual ~QgsScaleBarStyle() = default;
 
     /** Draws the style
      @param p painter object
      @param xOffset offset to account for centered labeling*/
-    virtual void draw( QPainter* p, double xOffset = 0 ) const = 0; //to do by every subclass
-    virtual void drawLabels( QPainter* p ) const; //default implementation provided
+    virtual void draw( QPainter *p, double xOffset = 0 ) const = 0; //to do by every subclass
+    virtual void drawLabels( QPainter *p ) const; //default implementation provided
     virtual QRectF calculateBoxSize() const; //default implementation provided
+
     /**
      * Get a name for this style.
      * Needs to be remiplmeented by subclasses.
@@ -49,7 +52,7 @@ class CORE_EXPORT QgsScaleBarStyle
     QgsScaleBarStyle(); //default constructor forbidden
 
   protected:
-    const QgsComposerScaleBar* mScaleBar;
+    const QgsComposerScaleBar *mScaleBar = nullptr;
 };
 
 #endif

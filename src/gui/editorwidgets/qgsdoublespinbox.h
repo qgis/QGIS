@@ -17,6 +17,7 @@
 #define QGSDOUBLESPINBOX_H
 
 #include <QDoubleSpinBox>
+#include "qgis_gui.h"
 
 class QgsSpinBoxLineEdit;
 
@@ -34,7 +35,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
   public:
 
-    //! Behaviour when widget is cleared.
+    //! Behavior when widget is cleared.
     enum ClearValueMode
     {
       MinimumValue, //!< Reset value to minimum()
@@ -82,26 +83,26 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      * @see setClearValue()
      */
-    void setClearValue( double customValue, const QString& clearValueText = QString() );
+    void setClearValue( double customValue, const QString &clearValueText = QString() );
 
     /**
      * Defines if the clear value should be the minimum or maximum values of the widget or a custom value.
      * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValueMode( ClearValueMode mode, const QString& clearValueText = QString() );
+    void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 
     /** Returns the value used when clear() is called.
      * @see setClearValue()
      */
     double clearValue() const;
 
-    virtual double valueFromText( const QString & text ) const override;
-    virtual QValidator::State validate( QString & input, int & pos ) const override;
-    void paintEvent( QPaintEvent* e ) override;
+    virtual double valueFromText( const QString &text ) const override;
+    virtual QValidator::State validate( QString &input, int &pos ) const override;
+    void paintEvent( QPaintEvent *e ) override;
 
   protected:
-    virtual void changeEvent( QEvent* event ) override;
+    virtual void changeEvent( QEvent *event ) override;
 
   private slots:
     void changed( double value );
@@ -110,7 +111,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     int frameWidth() const;
     bool shouldShowClearForValue( const double value ) const;
 
-    QgsSpinBoxLineEdit* mLineEdit;
+    QgsSpinBoxLineEdit *mLineEdit = nullptr;
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;

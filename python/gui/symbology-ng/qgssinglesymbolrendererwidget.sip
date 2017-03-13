@@ -11,7 +11,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer* renderer();
 
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    virtual void setContext( const QgsSymbolWidgetContext& context );
 
     virtual void setDockMode( bool dockMode );
 

@@ -17,7 +17,7 @@ class QgsPanelWidget : public QWidget
      * Set the title of the panel when shown in the interface.
      * @param panelTitle The panel title.
      */
-    void setPanelTitle( QString panelTitle );
+    void setPanelTitle( const QString& panelTitle );
 
     /**
      * The title of the panel.
@@ -32,7 +32,7 @@ class QgsPanelWidget : public QWidget
     * Use this method if you have children widgets that need to show a panel to the user.
     * @param panels A list of panel widgets to connect.
     */
-    void connectChildPanels( QList<QgsPanelWidget*> panels );
+    void connectChildPanels( const QList<QgsPanelWidget*>& panels );
 
     /**
      * Connect the given sub panel widgets showPanel signals to this current panels
@@ -88,7 +88,10 @@ class QgsPanelWidget : public QWidget
      * Emitted when the panel is accepted by the user.
      * @param panel The panel widget that was accepted.
      * @note This argument is normally raised with emit panelAccepted(this)
-     * so that callers can retrive the widget easier in calling code.
+     * so that callers can retrieve the widget easier in calling code.
+     * @note this is emitted only when this panel is accepted, and is not emitted for
+     * child panels. For example, if this panel opens a second stacked panel, then this panel
+     * will not emit panelAccepted when the second panel is accepted.
      */
     void panelAccepted( QgsPanelWidget* panel );
 

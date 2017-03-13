@@ -16,13 +16,6 @@ class QgsRuntimeProfiler
      * front of the profile tag set using start.
      * @param name The name of the group.
      */
-    static QgsRuntimeProfiler * instance();
-
-    /**
-     * @brief Begin the group for the profiler. Groups will append {GroupName}/ to the
-     * front of the profile tag set using start.
-     * @param name The name of the group.
-     */
     void beginGroup( const QString& name );
 
     /**

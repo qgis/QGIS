@@ -17,6 +17,7 @@
 #ifndef QGSEFFECTSTACK_H
 #define QGSEFFECTSTACK_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 
 /** \ingroup core
@@ -48,24 +49,24 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * @param map unused encoded properties string map
      * @returns new QgsEffectStack
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map );
 
     QgsEffectStack();
-    QgsEffectStack( const QgsEffectStack& other );
+    QgsEffectStack( const QgsEffectStack &other );
 
     /** Creates a new QgsEffectStack effect from a single initial effect.
      * @param effect initial effect to add to the stack. The effect will
      * be cloned, so ownership is not transferred to the stack.
      * @returns new QgsEffectStack containing initial effect
      */
-    explicit QgsEffectStack( const QgsPaintEffect& effect );
+    explicit QgsEffectStack( const QgsPaintEffect &effect );
 
     virtual ~QgsEffectStack();
 
-    virtual QString type() const override { return QString( "effectStack" ); }
-    virtual QgsEffectStack* clone() const override;
-    virtual bool saveProperties( QDomDocument& doc, QDomElement& element ) const override;
-    virtual bool readProperties( const QDomElement& element ) override;
+    virtual QString type() const override { return QStringLiteral( "effectStack" ); }
+    virtual QgsEffectStack *clone() const override;
+    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
+    virtual bool readProperties( const QDomElement &element ) override;
 
     /** Unused for QgsEffectStack, will always return an empty string map
      */
@@ -73,14 +74,14 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
 
     /** Unused for QgsEffectStack, props parameter will be ignored
      */
-    virtual void readProperties( const QgsStringMap& props ) override;
+    virtual void readProperties( const QgsStringMap &props ) override;
 
     /** Appends an effect to the end of the stack.
      * @param effect QgsPaintEffect to append. Ownership of the effect will be
      * transferred to the stack object.
      * @see insertEffect
      */
-    void appendEffect( QgsPaintEffect* effect );
+    void appendEffect( QgsPaintEffect *effect );
 
     /** Inserts an effect at a specified index within the stack.
      * @param index position to insert the effect
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * transferred to the stack object.
      * @see appendEffect
      */
-    bool insertEffect( const int index, QgsPaintEffect* effect );
+    bool insertEffect( const int index, QgsPaintEffect *effect );
 
     /** Replaces the effect at a specified position within the stack.
      * @param index position of effect to replace
@@ -100,13 +101,13 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     /** Removes an effect from the stack and returns a pointer to it.
      * @param index position of effect to take
      */
-    QgsPaintEffect* takeEffect( const int index );
+    QgsPaintEffect *takeEffect( const int index );
 
     /** Returns a pointer to the list of effects currently contained by
      * the stack
      * @returns list of QgsPaintEffects within the stack
      */
-    QList< QgsPaintEffect* >* effectList();
+    QList< QgsPaintEffect * > *effectList();
 
     /** Returns count of effects contained by the stack
      * @returns count of effects
@@ -117,17 +118,17 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * @param index position of effect to return
      * @returns QgsPaintEffect at specified position
      */
-    QgsPaintEffect* effect( int index ) const;
+    QgsPaintEffect *effect( int index ) const;
 
-    QgsEffectStack& operator=( const QgsEffectStack& rhs );
+    QgsEffectStack &operator=( const QgsEffectStack &rhs );
 
   protected:
 
-    virtual void draw( QgsRenderContext& context ) override;
+    virtual void draw( QgsRenderContext &context ) override;
 
   private:
 
-    QList< QgsPaintEffect* > mEffectList;
+    QList< QgsPaintEffect * > mEffectList;
 
     void clearStack();
 };

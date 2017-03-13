@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -49,7 +50,7 @@ class aspect(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Aspect')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))
@@ -67,15 +68,15 @@ class aspect(GdalAlgorithm):
 
     def getConsoleCommands(self):
         arguments = ['aspect']
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        output = unicode(self.getOutputValue(self.OUTPUT))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        output = str(self.getOutputValue(self.OUTPUT))
         arguments.append(output)
 
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

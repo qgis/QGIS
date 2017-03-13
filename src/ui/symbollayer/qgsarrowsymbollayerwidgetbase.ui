@@ -13,12 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="toolTip">
-   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Symbols clip the geometry to the current canvas extent by default. This could result in undesired renderings for this kind of symbol layer. Make sure to check the corresponding &amp;quot;Clip features to canvas extent&amp;quot; advanced option of the symbol.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mArrowTypeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mArrowTypeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -96,7 +93,7 @@
     </layout>
    </item>
    <item row="5" column="2">
-    <widget class="QgsDataDefinedButton" name="mHeadHeightDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mHeadHeightDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -130,14 +127,14 @@
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QgsDataDefinedButton" name="mHeadWidthDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mHeadWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QgsDataDefinedButton" name="mArrowWidthDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mArrowWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -177,7 +174,7 @@
     </layout>
    </item>
    <item row="6" column="2">
-    <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -213,7 +210,7 @@
     </layout>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mHeadTypeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mHeadTypeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -227,7 +224,7 @@
     </widget>
    </item>
    <item row="3" column="2">
-    <widget class="QgsDataDefinedButton" name="mArrowStartWidthDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mArrowStartWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -362,9 +359,9 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>

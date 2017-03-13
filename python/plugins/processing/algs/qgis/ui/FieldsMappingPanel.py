@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -30,13 +31,14 @@ import os
 from collections import OrderedDict
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtGui import QBrush, QIcon
-from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QMessageBox, QSpinBox, QStyledItemDelegate
+from qgis.PyQt.QtGui import QBrush
+from qgis.PyQt.QtWidgets import QComboBox, QHeaderView, QLineEdit, QSpacerItem, QMessageBox, QSpinBox, QStyledItemDelegate
 from qgis.PyQt.QtCore import QItemSelectionModel, QAbstractTableModel, QModelIndex, QVariant, Qt, pyqtSlot
 
-from qgis.core import QgsExpression, QgsExpressionContextUtils, QgsApplication
+from qgis.core import QgsExpression, QgsProject, QgsApplication
 from qgis.gui import QgsFieldExpressionWidget
 
+from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
 from processing.tools import dataobjects
 
 pluginPath = os.path.dirname(__file__)
@@ -78,27 +80,36 @@ class FieldsMappingModel(QAbstractTableModel):
         self.endResetModel()
 
     def testAllExpressions(self):
-        self._errors = [None for i in xrange(len(self._mapping))]
-        for row in xrange(len(self._mapping)):
+        self._errors = [None for i in range(len(self._mapping))]
+        for row in range(len(self._mapping)):
             self.testExpression(row)
 
     def testExpression(self, row):
         self._errors[row] = None
         field = self._mapping[row]
+        exp_context = self.contextGenerator().createExpressionContext()
+
         expression = QgsExpression(field['expression'])
+        expression.prepare(exp_context)
         if expression.hasParserError():
             self._errors[row] = expression.parserErrorString()
             return
+
+        # test evaluation on the first feature
         if self._layer is None:
             return
-        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), self._layer.fields())
-        for feature in dp.getFeatures():
-            context.setFeature(feature)
-            expression.evaluate(context)
+        for feature in self._layer.getFeatures():
+            exp_context.setFeature(feature)
+            exp_context.lastScope().setVariable("row_number", 1)
+            expression.evaluate(exp_context)
             if expression.hasEvalError():
                 self._errors[row] = expression.evalErrorString()
-                return
             break
+
+    def contextGenerator(self):
+        if self._layer:
+            return self._layer
+        return QgsProject.instance()
 
     def layer(self):
         return self._layer
@@ -125,9 +136,9 @@ class FieldsMappingModel(QAbstractTableModel):
                 return section
 
     def flags(self, index):
-        flags = (Qt.ItemIsSelectable
-                 + Qt.ItemIsEditable
-                 + Qt.ItemIsEnabled)
+        flags = (Qt.ItemIsSelectable |
+                 Qt.ItemIsEditable |
+                 Qt.ItemIsEnabled)
 
         return Qt.ItemFlags(flags)
 
@@ -189,7 +200,7 @@ class FieldsMappingModel(QAbstractTableModel):
     def insertRows(self, row, count, index=QModelIndex()):
         self.beginInsertRows(index, row, row + count - 1)
 
-        for i in xrange(count):
+        for i in range(count):
             field = self.newField()
             self._mapping.insert(row + i, field)
             self._errors.insert(row + i, None)
@@ -201,7 +212,7 @@ class FieldsMappingModel(QAbstractTableModel):
     def removeRows(self, row, count, index=QModelIndex()):
         self.beginRemoveRows(index, row, row + count - 1)
 
-        for i in xrange(row + count - 1, row + 1):
+        for i in range(row + count - 1, row + 1):
             self._mapping.pop(i)
             self._errors.pop(i)
 
@@ -246,12 +257,13 @@ class FieldDelegate(QStyledItemDelegate):
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QVariant.Type:
             editor = QComboBox(parent)
-            for key, text in FieldsMappingModel.fieldTypes.iteritems():
+            for key, text in list(FieldsMappingModel.fieldTypes.items()):
                 editor.addItem(text, key)
 
         elif fieldType == QgsExpression:
             editor = QgsFieldExpressionWidget(parent)
             editor.setLayer(index.model().layer())
+            editor.registerExpressionContextGenerator(index.model().contextGenerator())
             editor.fieldChanged.connect(self.on_expression_fieldChange)
 
         else:
@@ -285,7 +297,7 @@ class FieldDelegate(QStyledItemDelegate):
 
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QVariant.Type:
-            value = editor.itemData(editor.currentIndex())
+            value = editor.currentData()
             if value is None:
                 value = QVariant.Invalid
             model.setData(index, value)
@@ -315,9 +327,9 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.addButton.setIcon(QgsApplication.getThemeIcon("/mActionNewAttribute.svg"))
         self.deleteButton.setIcon(QgsApplication.getThemeIcon('/mActionDeleteAttribute.svg'))
-        self.upButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.png'))
-        self.downButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.png'))
-        self.resetButton.setIcon(QgsApplication.getThemeIcon('/mIconClear.svg'))
+        self.upButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowUp.svg'))
+        self.downButton.setIcon(QgsApplication.getThemeIcon('/mActionArrowDown.svg'))
+        self.resetButton.setIcon(QgsApplication.getThemeIcon('/mIconClearText.svg'))
 
         self.model = FieldsMappingModel()
         self.fieldsView.setModel(self.model)
@@ -382,7 +394,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row - 1, 1)
 
-        for column in xrange(self.model.columnCount()):
+        for column in range(self.model.columnCount()):
             srcIndex = self.model.index(row + 1, column)
             dstIndex = self.model.index(row - 1, column)
             value = self.model.data(srcIndex, Qt.EditRole)
@@ -408,7 +420,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.model.insertRows(row + 2, 1)
 
-        for column in xrange(self.model.columnCount()):
+        for column in range(self.model.columnCount()):
             srcIndex = self.model.index(row, column)
             dstIndex = self.model.index(row + 2, column)
             value = self.model.data(srcIndex, Qt.EditRole)
@@ -434,7 +446,7 @@ class FieldsMappingPanel(BASE, WIDGET):
     def resizeColumns(self):
         header = self.fieldsView.horizontalHeader()
         header.resizeSections(QHeaderView.ResizeToContents)
-        for section in xrange(header.count()):
+        for section in range(header.count()):
             size = header.sectionSize(section)
             fieldType = FieldsMappingModel.columns[section]['type']
             if fieldType == QgsExpression:
@@ -444,8 +456,8 @@ class FieldsMappingPanel(BASE, WIDGET):
 
     def openPersistentEditor(self, topLeft, bottomRight):
         return
-        for row in xrange(topLeft.row(), bottomRight.row() + 1):
-            for column in xrange(topLeft.column(), bottomRight.column() + 1):
+        for row in range(topLeft.row(), bottomRight.row() + 1):
+            for column in range(topLeft.column(), bottomRight.column() + 1):
                 self.fieldsView.openPersistentEditor(self.model.index(row, column))
                 editor = self.fieldsView.indexWidget(self.model.index(row, column))
                 if isinstance(editor, QLineEdit):
@@ -468,7 +480,39 @@ class FieldsMappingPanel(BASE, WIDGET):
 
     @pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
     def on_loadLayerFieldsButton_clicked(self, checked=False):
-        layer = self.layerCombo.itemData(self.layerCombo.currentIndex())
+        layer = self.layerCombo.currentData()
         if layer is None:
             return
         self.model.loadLayerFields(layer)
+
+
+class FieldsMappingWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self):
+        return FieldsMappingPanel()
+
+    def postInitialize(self, wrappers):
+        for wrapper in wrappers:
+            if wrapper.param.name == self.param.parent:
+                wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
+                break
+        layers = dataobjects.getTables()
+        if len(layers) > 0:
+            # as first item in combobox is already selected
+            self.widget.setLayer(layers[0])
+
+        # remove exiting spacers to get FieldsMappingPanel fully expanded
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_MODELER):
+            layout = self.widget.parent().layout()
+            spacer = layout.itemAt(layout.count() - 1)
+            if isinstance(spacer, QSpacerItem):
+                layout.removeItem(spacer)
+
+    def parentLayerChanged(self):
+        self.widget.setLayer(self.sender().value())
+
+    def setValue(self, value):
+        self.widget.setValue(value)
+
+    def value(self):
+        return self.widget.value()

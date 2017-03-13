@@ -25,6 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import sys
+from inspect import isclass
 from qgis.testing import start_app, unittest
 
 from processing.core.parameters import (Parameter,
@@ -39,10 +41,13 @@ from processing.core.parameters import (Parameter,
                                         ParameterPoint,
                                         ParameterString,
                                         ParameterVector,
+                                        ParameterTable,
                                         ParameterTableField,
-                                        ParameterTableMultipleField)
+                                        ParameterSelection,
+                                        ParameterExpression,
+                                        getParameterFromString)
 from processing.tools import dataobjects
-from processing.tests.TestData import points2
+from processing.tests.TestData import points
 
 from qgis.core import (QgsRasterLayer,
                        QgsVectorLayer)
@@ -62,6 +67,19 @@ class ParameterTest(unittest.TestCase):
 
         parameter.setValue(123)
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '123')
+
+    def testScriptCode(self):
+        """Simple check that default constructed object export/import correctly"""
+        paramClasses = [c for c in list(sys.modules[__name__].__dict__.values())
+                        if isclass(c) and issubclass(c, Parameter) and c != Parameter]
+
+        for paramClass in paramClasses:
+            param = paramClass()
+            if hasattr(param, 'getAsScriptCode'):
+                code = param.getAsScriptCode()
+                importedParam = paramClass.fromScriptCode(code)
+                self.assertEquals(param.optional, importedParam.optional)
+                self.assertEquals(param.default, importedParam.default, param)
 
 
 class ParameterBooleanTest(unittest.TestCase):
@@ -95,6 +113,19 @@ class ParameterBooleanTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, True)
 
+    def testScriptCode(self):
+        parameter = ParameterBoolean('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterBoolean)
+        self.assertFalse(result.optional)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterBoolean)
+        self.assertTrue(result.optional)
+
 
 class ParameterCRSTest(unittest.TestCase):
 
@@ -117,6 +148,18 @@ class ParameterCRSTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 'EPSG:12003')
+
+    def testScriptCode(self):
+        parameter = ParameterCrs('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterCrs)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterCrs)
+        self.assertTrue(result.optional)
 
 
 class ParameterDataObjectTest(unittest.TestCase):
@@ -160,6 +203,18 @@ class ParameterExtentTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2,3,4')
 
+    def testScriptCode(self):
+        parameter = ParameterExtent('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterExtent)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterExtent)
+        self.assertTrue(result.optional)
+
 
 class ParameterPointTest(unittest.TestCase):
 
@@ -179,7 +234,7 @@ class ParameterPointTest(unittest.TestCase):
         optionalParameter.setValue('1,2')
         self.assertEqual(optionalParameter.value, '1,2')
         self.assertTrue(optionalParameter.setValue(None))
-        # Extent is unique in that it will let you set `None`, whereas other
+        # Point like Extent is unique in that it will let you set `None`, whereas other
         # optional parameters become "default" when assigning None.
         self.assertEqual(optionalParameter.value, None)
 
@@ -189,6 +244,81 @@ class ParameterPointTest(unittest.TestCase):
         self.assertEqual(requiredParameter.value, '1,2')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, '1,2')
+
+    def testScriptCode(self):
+        parameter = ParameterPoint('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterPoint)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterPoint)
+        self.assertTrue(result.optional)
+
+
+class ParameterSelectionTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'])
+        self.assertIsNone(parameter.value)
+        self.assertEqual(parameter.setValue(1), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue('1'), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue(1.0), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue('1a'), False)
+        self.assertEqual(parameter.setValue([1]), False)
+
+    def testMultiple(self):
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], multiple=True)
+        self.assertEqual(parameter.setValue(1), True)
+        self.assertEqual(parameter.value, 1)
+        self.assertEqual(parameter.setValue([0, 1]), True)
+        self.assertEqual(parameter.value, [0, 1])
+        self.assertEqual(parameter.setValue(['0', '1']), True)
+        self.assertEqual(parameter.value, [0, 1])
+
+    def testDefault(self):
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0)
+        self.assertEqual(parameter.value, 0)
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0.0)
+        self.assertEqual(parameter.value, 0)
+        parameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default='a')
+        self.assertEqual(parameter.value, None)
+
+    def testOptional(self):
+        optionalParameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0, optional=True)
+        self.assertEqual(optionalParameter.value, 0)
+        optionalParameter.setValue(1)
+        self.assertEqual(optionalParameter.value, 1)
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
+
+        requiredParameter = ParameterSelection('myName', 'myDesc', ['option1', 'option2', 'option3'], default=0, optional=False)
+        self.assertEqual(requiredParameter.value, 0)
+        requiredParameter.setValue(1)
+        self.assertEqual(requiredParameter.value, 1)
+        self.assertFalse(requiredParameter.setValue(None))
+        self.assertEqual(requiredParameter.value, 1)
+
+    def testTupleOptions(self):
+        options = (
+            ('o1', 'option1'),
+            ('o2', 'option2'),
+            ('o3', 'option3'))
+
+        optionalParameter = ParameterSelection('myName', 'myDesc', options, default='o1')
+        self.assertEqual(optionalParameter.value, 'o1')
+        optionalParameter.setValue('o2')
+        self.assertEqual(optionalParameter.value, 'o2')
+
+        optionalParameter = ParameterSelection('myName', 'myDesc', options, default=['o1', 'o2'], multiple=True)
+        self.assertEqual(optionalParameter.value, ['o1', 'o2'])
+        optionalParameter.setValue(['o2'])
+        self.assertEqual(optionalParameter.value, ['o2'])
 
 
 class ParameterFileTest(unittest.TestCase):
@@ -234,6 +364,18 @@ class ParameterFileTest(unittest.TestCase):
         parameter = ParameterFile('myName', 'myDesc')
         parameter.setValue('myFile.png')
         self.assertEqual(parameter.getValueAsCommandLineParameter(), '"myFile.png"')
+
+    def testScriptCode(self):
+        parameter = ParameterFile('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterFile)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterFile)
+        self.assertTrue(result.optional)
 
 
 class TestParameterFixedTable(unittest.TestCase):
@@ -345,6 +487,18 @@ class ParameterMultipleInputTest(unittest.TestCase):
 
         # TODO With Layer Name, instead of Layer object
 
+    def testScriptCode(self):
+        parameter = ParameterMultipleInput('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterMultipleInput)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterMultipleInput)
+        self.assertTrue(result.optional)
+
 
 class ParameterNumberTest(unittest.TestCase):
 
@@ -399,6 +553,18 @@ class ParameterNumberTest(unittest.TestCase):
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 5)
 
+    def testScriptCode(self):
+        parameter = ParameterNumber('myName', 'myDescription')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterNumber)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterNumber)
+        self.assertTrue(result.optional)
+
 
 class ParameterStringTest(unittest.TestCase):
 
@@ -415,81 +581,120 @@ class ParameterStringTest(unittest.TestCase):
         self.assertTrue(optionalParameter.setValue(None))
         self.assertEqual(optionalParameter.value, None)
 
-        requiredParameter = ParameterCrs('myName', 'myDesc', default='test', optional=False)
+        requiredParameter = ParameterString('myName', 'myDesc', default='test', optional=False)
         self.assertEqual(requiredParameter.value, 'test')
         requiredParameter.setValue('check')
         self.assertEqual(requiredParameter.value, 'check')
         self.assertFalse(requiredParameter.setValue(None))
         self.assertEqual(requiredParameter.value, 'check')
 
+    def testScriptCode(self):
+        parameter = ParameterString('myName', 'myDescription', default='test')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = None
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = 'None'
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+        parameter.default = 'It\'s Mario'
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterString)
+        self.assertTrue(result.optional)
+        self.assertEqual(result.default, parameter.default)
+
+
+class ParameterExpressionTest(unittest.TestCase):
+
+    def testSetValue(self):
+        parameter = ParameterExpression('myName', 'myDescription')
+        self.assertTrue(parameter.setValue('\'a\' || "field"'))
+        self.assertEqual(parameter.value, '\'a\' || "field"')
+
+    def testOptional(self):
+        optionalParameter = ParameterExpression('myName', 'myDesc', default='test', optional=True)
+        self.assertEqual(optionalParameter.value, 'test')
+        optionalParameter.setValue('check')
+        self.assertEqual(optionalParameter.value, 'check')
+        self.assertTrue(optionalParameter.setValue(None))
+        self.assertEqual(optionalParameter.value, None)
+
+        requiredParameter = ParameterExpression('myName', 'myDesc', default='test', optional=False)
+        self.assertEqual(requiredParameter.value, 'test')
+        requiredParameter.setValue('check')
+        self.assertEqual(requiredParameter.value, 'check')
+        self.assertFalse(requiredParameter.setValue(None))
+        self.assertEqual(requiredParameter.value, 'check')
+
+    def testScriptCode(self):
+        parameter = ParameterExpression('myName', 'myDescription', default='test')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterExpression)
+
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterExpression)
+        self.assertTrue(result.optional)
+        self.assertEquals(result.default, parameter.default)
+
 
 class ParameterTableFieldTest(unittest.TestCase):
 
     def testOptional(self):
         parent_name = 'test_parent_layer'
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')
         parent = ParameterVector(parent_name, parent_name)
         parent.setValue(test_layer)
-        parameter = ParameterTableField(
-            'myName', 'myDesc', parent_name, optional=True)
+        ParameterTableField('myName', 'myDesc', parent_name, optional=True)
 
+    def testScriptCode(self):
+        parent_name = 'test_parent_layer'
+        test_data = points()
+        test_layer = QgsVectorLayer(test_data, parent_name, 'ogr')  # NOQA
+        parameter = ParameterTableField('myName', 'myDesc', parent_name)
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterTableField)
 
-class ParameterTableMultipleFieldTest(unittest.TestCase):
-
-    def setUp(self):
-        self.parent_name = 'test_parent_layer'
-        test_data = points2()
-        test_layer = QgsVectorLayer(test_data, self.parent_name, 'ogr')
-        self.parent = ParameterVector(self.parent_name,
-                                      self.parent_name)
-        self.parent.setValue(test_layer)
-
-    def testGetAsScriptCode(self):
-        parameter = ParameterTableMultipleField(
-            'myName', 'myDesc', self.parent_name, optional=False)
-
-        self.assertEqual(
-            parameter.getAsScriptCode(),
-            '##myName=multiple field test_parent_layer')
-
-        # test optional
         parameter.optional = True
-        self.assertEqual(
-            parameter.getAsScriptCode(),
-            '##myName=optional multiple field test_parent_layer')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterTableField)
+        self.assertTrue(result.optional)
 
-    def testOptional(self):
-        parameter = ParameterTableMultipleField(
-            'myName', 'myDesc', self.parent_name, optional=True)
 
-        parameter.setValue(['my', 'super', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;super;widget;77')
+class ParameterTableTest(unittest.TestCase):
 
-        parameter.setValue([])
-        self.assertEqual(parameter.value, None)
+    def testScriptCode(self):
+        parameter = ParameterTable(
+            'myName', 'myDesc')
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterTable)
 
-        parameter.setValue(None)
-        self.assertEqual(parameter.value, None)
+        parameter.optional = True
+        code = parameter.getAsScriptCode()
+        result = getParameterFromString(code)
+        self.assertIsInstance(result, ParameterTable)
+        self.assertTrue(result.optional)
 
-        parameter.setValue(['my', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;widget;77')
-
-    def testSetValue(self):
-        parameter = ParameterTableMultipleField(
-            'myName', 'myDesc', self.parent_name, optional=False)
-
-        parameter.setValue(['my', 'super', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue([])
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue(None)
-        self.assertEqual(parameter.value, 'my;super;widget;77')
-
-        parameter.setValue(['my', 'widget', '77'])
-        self.assertEqual(parameter.value, 'my;widget;77')
 
 if __name__ == '__main__':
     unittest.main()

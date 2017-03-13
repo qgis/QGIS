@@ -29,15 +29,10 @@ QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTable
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsSpatiaLiteTableModel::~QgsSpatiaLiteTableModel()
-{
-
-}
-
-void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString& tableName, const QString& geometryColName, const QString& sql )
+void QgsSpatiaLiteTableModel::addTableEntry( const QString &type, const QString &tableName, const QString &geometryColName, const QString &sql )
 {
   //is there already a root item ?
-  QStandardItem *dbItem;
+  QStandardItem *dbItem = nullptr;
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   //there is already an item
@@ -63,7 +58,7 @@ void QgsSpatiaLiteTableModel::addTableEntry( const QString& type, const QString&
   tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   QStandardItem *geomItem = new QStandardItem( geometryColName );
   geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  QStandardItem* sqlItem = new QStandardItem( sql );
+  QStandardItem *sqlItem = new QStandardItem( sql );
   sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
 
@@ -99,13 +94,13 @@ void QgsSpatiaLiteTableModel::setSql( const QModelIndex &index, const QString &s
   }
 }
 
-void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, const QString & attribute, const QString & type )
+void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type )
 {
   bool typeIsEmpty = type.isEmpty();  //true means the table has no valid geometry entry and the item for this table should be removed
   QStringList typeList = type.split( ',' );
 
   //find schema item and table item
-  QStandardItem *dbItem;
+  QStandardItem *dbItem = nullptr;
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
   if ( dbItems.size() < 1 )
@@ -150,7 +145,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, c
       QIcon myIcon = iconForType( wkbType );
       itemFromIndex( currentTypeIndex )->setText( typeList.at( 0 ) ); //todo: add other rows
       itemFromIndex( currentTypeIndex )->setIcon( myIcon );
-      if ( !geomColText.contains( " AS " ) )
+      if ( !geomColText.contains( QLatin1String( " AS " ) ) )
       {
         itemFromIndex( currentGeomColumnIndex )->setText( geomColText + " AS " + typeList.at( 0 ) );
       }
@@ -158,7 +153,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString & table, c
       for ( int j = 1; j < typeList.size(); ++j )
       {
         //todo: add correct type
-        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), "" );
+        addTableEntry( typeList.at( j ), table, geomColText + " AS " + typeList.at( j ), QLatin1String( "" ) );
       }
     }
   }
@@ -210,32 +205,32 @@ QString QgsSpatiaLiteTableModel::displayStringForType( QgsWkbTypes::Type type ) 
   {
     return tr( "Multipolygon" );
   }
-  return "Unknown";
+  return QStringLiteral( "Unknown" );
 }
 
-QgsWkbTypes::Type QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString & dbType ) const
+QgsWkbTypes::Type QgsSpatiaLiteTableModel::qgisTypeFromDbType( const QString &dbType ) const
 {
-  if ( dbType == "POINT" )
+  if ( dbType == QLatin1String( "POINT" ) )
   {
     return QgsWkbTypes::Point;
   }
-  else if ( dbType == "MULTIPOINT" )
+  else if ( dbType == QLatin1String( "MULTIPOINT" ) )
   {
     return QgsWkbTypes::MultiPoint;
   }
-  else if ( dbType == "LINESTRING" )
+  else if ( dbType == QLatin1String( "LINESTRING" ) )
   {
     return QgsWkbTypes::LineString;
   }
-  else if ( dbType == "MULTILINESTRING" )
+  else if ( dbType == QLatin1String( "MULTILINESTRING" ) )
   {
     return QgsWkbTypes::MultiLineString;
   }
-  else if ( dbType == "POLYGON" )
+  else if ( dbType == QLatin1String( "POLYGON" ) )
   {
     return QgsWkbTypes::Polygon;
   }
-  else if ( dbType == "MULTIPOLYGON" )
+  else if ( dbType == QLatin1String( "MULTIPOLYGON" ) )
   {
     return QgsWkbTypes::MultiPolygon;
   }

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -45,7 +46,7 @@ class Explode(GeoAlgorithm):
                                           [dataobjects.TYPE_VECTOR_LINE]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
@@ -56,7 +57,7 @@ class Explode(GeoAlgorithm):
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
             atMap = feature.attributes()
             segments = self.extractAsSingleSegments(inGeom)

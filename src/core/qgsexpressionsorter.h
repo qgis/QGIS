@@ -16,6 +16,8 @@
 #ifndef QGSEXPRESSIONSORTER_H
 #define QGSEXPRESSIONSORTER_H
 
+#include <QLocale>
+
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
 
@@ -23,17 +25,21 @@
 class QgsExpressionSorter
 {
   public:
-    explicit QgsExpressionSorter( const QList<QgsFeatureRequest::OrderByClause>& preparedOrderBys )
-        : mPreparedOrderBys( preparedOrderBys )
+    explicit QgsExpressionSorter( const QList<QgsFeatureRequest::OrderByClause> &preparedOrderBys )
+      : mPreparedOrderBys( preparedOrderBys )
+        // QString::localeAwareCompare() is case insensitive for common locales,
+        // but case sensitive for the C locale. So use an explicit case
+        // insensitive comparison in that later case to avoid test failures.
+      , mUseCaseInsensitiveComparison( QLocale::system().name() == QLocale::c().name() )
     {}
 
-    bool operator()( const QgsIndexedFeature& f1, const QgsIndexedFeature& f2 ) const
+    bool operator()( const QgsIndexedFeature &f1, const QgsIndexedFeature &f2 ) const
     {
       int i = 0;
-      Q_FOREACH ( const QgsFeatureRequest::OrderByClause& orderBy, mPreparedOrderBys )
+      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderBy, mPreparedOrderBys )
       {
-        const QVariant& v1 = f1.mIndexes.at( i );
-        const QVariant& v2 = f2.mIndexes.at( i );
+        const QVariant &v1 = f1.mIndexes.at( i );
+        const QVariant &v2 = f2.mIndexes.at( i );
         ++i;
 
         // Both NULL: don't care
@@ -106,20 +112,30 @@ class QgsExpressionSorter
           default:
             if ( 0 == v1.toString().localeAwareCompare( v2.toString() ) )
               continue;
-            if ( orderBy.ascending() )
-              return v1.toString().localeAwareCompare( v2.toString() ) < 0;
+            if ( mUseCaseInsensitiveComparison )
+            {
+              if ( orderBy.ascending() )
+                return v1.toString().compare( v2.toString(), Qt::CaseInsensitive ) < 0;
+              else
+                return v1.toString().compare( v2.toString(), Qt::CaseInsensitive ) > 0;
+            }
             else
-              return v1.toString().localeAwareCompare( v2.toString() ) > 0;
+            {
+              if ( orderBy.ascending() )
+                return v1.toString().localeAwareCompare( v2.toString() ) < 0;
+              else
+                return v1.toString().localeAwareCompare( v2.toString() ) > 0;
+            }
         }
       }
 
       // Equal
-      return true;
+      return false;
     }
 
-    void sortFeatures( QList<QgsFeature>& features, QgsExpressionContext* expressionContext )
+    void sortFeatures( QList<QgsFeature> &features, QgsExpressionContext *expressionContext )
     {
-      QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Expression Sorter" ) );
+      QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Expression Sorter" ) );
 
       expressionContext->appendScope( scope );
 
@@ -127,7 +143,7 @@ class QgsExpressionSorter
 
       QgsIndexedFeature indexedFeature;
 
-      Q_FOREACH ( const QgsFeature& f, features )
+      Q_FOREACH ( const QgsFeature &f, features )
       {
         indexedFeature.mIndexes.resize( mPreparedOrderBys.size() );
         indexedFeature.mFeature = f;
@@ -135,7 +151,7 @@ class QgsExpressionSorter
         expressionContext->setFeature( indexedFeature.mFeature );
 
         int i = 0;
-        Q_FOREACH ( const QgsFeatureRequest::OrderByClause& orderBy, mPreparedOrderBys )
+        Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderBy, mPreparedOrderBys )
         {
           indexedFeature.mIndexes.replace( i++, orderBy.expression().evaluate( expressionContext ) );
         }
@@ -148,12 +164,13 @@ class QgsExpressionSorter
 
       features.clear();
 
-      Q_FOREACH ( const QgsIndexedFeature& indexedFeature, indexedFeatures )
+      Q_FOREACH ( const QgsIndexedFeature &indexedFeature, indexedFeatures )
         features.append( indexedFeature.mFeature );
     }
 
   private:
     QList<QgsFeatureRequest::OrderByClause> mPreparedOrderBys;
+    bool mUseCaseInsensitiveComparison;
 };
 
 /// @endcond

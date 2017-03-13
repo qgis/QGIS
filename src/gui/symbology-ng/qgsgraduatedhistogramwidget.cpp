@@ -45,10 +45,10 @@
 
 
 QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
-    : QgsHistogramWidget( parent )
-    , mRenderer( nullptr )
-    , mHistoPicker( nullptr )
-    , mPressedValue( 0 )
+  : QgsHistogramWidget( parent )
+  , mRenderer( nullptr )
+  , mHistoPicker( nullptr )
+  , mPressedValue( 0 )
 {
   //clear x axis title to make more room for graph
   setXAxisTitle( QString() );
@@ -66,11 +66,6 @@ QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
 #else
   mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
 #endif
-}
-
-
-QgsGraduatedHistogramWidget::~QgsGraduatedHistogramWidget()
-{
 }
 
 void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRenderer *renderer )
@@ -163,9 +158,9 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
   refresh();
 }
 
-void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRangeIndex, int& pixelDistance ) const
+void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const
 {
-  const QgsRangeList& ranges = mRenderer->ranges();
+  const QgsRangeList &ranges = mRenderer->ranges();
 
   double minDistance = DBL_MAX;
   int pressedPixel = mPlot->canvasMap( QwtPlot::xBottom ).transform( value );
@@ -183,8 +178,8 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
 /// @cond PRIVATE
 
 QgsGraduatedHistogramEventFilter::QgsGraduatedHistogramEventFilter( QwtPlot *plot )
-    : QObject( plot )
-    , mPlot( plot )
+  : QObject( plot )
+  , mPlot( plot )
 {
   mPlot->canvas()->installEventFilter( this );
 }
@@ -198,7 +193,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
   {
     case QEvent::MouseButtonPress:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mousePress( posToValue( mouseEvent->pos() ) );
@@ -207,7 +202,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
     }
     case QEvent::MouseButtonRelease:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mouseRelease( posToValue( mouseEvent->pos() ) );

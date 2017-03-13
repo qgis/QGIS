@@ -38,15 +38,15 @@
 using namespace pal;
 
 PointSet::PointSet()
-    : mGeos( nullptr )
-    , mOwnsGeom( false )
-    , holeOf( nullptr )
-    , parent( nullptr )
-    , xmin( DBL_MAX )
-    , xmax( -DBL_MAX )
-    , ymin( DBL_MAX )
-    , ymax( -DBL_MAX )
-    , mPreparedGeom( nullptr )
+  : mGeos( nullptr )
+  , mOwnsGeom( false )
+  , holeOf( nullptr )
+  , parent( nullptr )
+  , xmin( DBL_MAX )
+  , xmax( -DBL_MAX )
+  , ymin( DBL_MAX )
+  , ymax( -DBL_MAX )
+  , mPreparedGeom( nullptr )
 {
   nbPoints = cHullSize =  0;
   x = nullptr;
@@ -56,16 +56,16 @@ PointSet::PointSet()
 }
 
 PointSet::PointSet( int nbPoints, double *x, double *y )
-    : mGeos( nullptr )
-    , mOwnsGeom( false )
-    , cHullSize( 0 )
-    , holeOf( nullptr )
-    , parent( nullptr )
-    , xmin( DBL_MAX )
-    , xmax( -DBL_MAX )
-    , ymin( DBL_MAX )
-    , ymax( -DBL_MAX )
-    , mPreparedGeom( nullptr )
+  : mGeos( nullptr )
+  , mOwnsGeom( false )
+  , cHullSize( 0 )
+  , holeOf( nullptr )
+  , parent( nullptr )
+  , xmin( DBL_MAX )
+  , xmax( -DBL_MAX )
+  , ymin( DBL_MAX )
+  , ymax( -DBL_MAX )
+  , mPreparedGeom( nullptr )
 {
   this->nbPoints = nbPoints;
   this->x = new double[nbPoints];
@@ -82,13 +82,13 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
 }
 
 PointSet::PointSet( double aX, double aY )
-    : mGeos( nullptr )
-    , mOwnsGeom( false )
-    , xmin( aX )
-    , xmax( aY )
-    , ymin( aX )
-    , ymax( aY )
-    , mPreparedGeom( nullptr )
+  : mGeos( nullptr )
+  , mOwnsGeom( false )
+  , xmin( aX )
+  , xmax( aY )
+  , ymin( aX )
+  , ymax( aY )
+  , mPreparedGeom( nullptr )
 {
   nbPoints = cHullSize = 1;
   x = new double[1];
@@ -104,14 +104,14 @@ PointSet::PointSet( double aX, double aY )
 }
 
 PointSet::PointSet( const PointSet &ps )
-    : mGeos( nullptr )
-    , mOwnsGeom( false )
-    , parent( nullptr )
-    , xmin( ps.xmin )
-    , xmax( ps.xmax )
-    , ymin( ps.ymin )
-    , ymax( ps.ymax )
-    , mPreparedGeom( nullptr )
+  : mGeos( nullptr )
+  , mOwnsGeom( false )
+  , parent( nullptr )
+  , xmin( ps.xmin )
+  , xmax( ps.xmax )
+  , ymin( ps.ymin )
+  , ymax( ps.ymax )
+  , mPreparedGeom( nullptr )
 {
   int i;
 
@@ -237,7 +237,7 @@ void PointSet::deleteCoords()
   y = nullptr;
 }
 
-PointSet* PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
+PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
 {
 
   int i, j;
@@ -270,10 +270,10 @@ bool PointSet::containsPoint( double x, double y ) const
   GEOSContextHandle_t geosctxt = geosContext();
   try
   {
-    GEOSCoordSequence* seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
     GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
-    GEOSGeometry* point = GEOSGeom_createPoint_r( geosctxt, seq );
+    GEOSGeometry *point = GEOSGeom_createPoint_r( geosctxt, seq );
     bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point ) == 1 );
     GEOSGeom_destroy_r( geosctxt, point );
 
@@ -292,19 +292,19 @@ bool PointSet::containsLabelCandidate( double x, double y, double width, double 
   return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
-void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
-                              QLinkedList<PointSet*> &shapes_final,
+void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
+                              QLinkedList<PointSet *> &shapes_final,
                               double xrm, double yrm )
 {
   int i, j;
 
   int nbp;
-  double *x;
-  double *y;
+  double *x = nullptr;
+  double *y = nullptr;
 
-  int *pts;
+  int *pts = nullptr;
 
-  int *cHull;
+  int *cHull = nullptr;
   int cHullSize;
 
   double cp;
@@ -331,7 +331,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
 
   double labelArea = xrm * yrm;
 
-  PointSet *shape;
+  PointSet *shape = nullptr;
 
   while ( !shapes_toProcess.isEmpty() )
   {
@@ -444,9 +444,9 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
         fx = cx + dx;
         fy = cy - dy;
 
-        if ( seg_length < EPSILON || qAbs(( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )    // retainedPt is not fronting i->j
+        if ( seg_length < EPSILON || qAbs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
         {
-          if (( ex = GeomFunction::dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = GeomFunction::dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
+          if ( ( ex = GeomFunction::dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = GeomFunction::dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
           {
             b = ex;
             ps = i;
@@ -508,7 +508,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
 
       // we will cut the shapeu in two new shapes, one from [retainedPoint] to [newPoint] and one form [newPoint] to [retainedPoint]
       int imin = retainedPt;
-      int imax = ((( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? qMin( fps, fpe ) : qMax( fps, fpe ) );
+      int imax = ( ( ( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? qMin( fps, fpe ) : qMax( fps, fpe ) );
 
       int nbPtSh1, nbPtSh2; // how many points in new shapes ?
       if ( imax > imin )
@@ -516,7 +516,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
       else
         nbPtSh1 = imax + nbp - imin + 1 + ( fpe != fps );
 
-      if (( imax == fps ? fpe : fps ) < imin )
+      if ( ( imax == fps ? fpe : fps ) < imin )
         nbPtSh2 = imin - ( imax == fps ? fpe : fps ) + 1 + ( fpe != fps );
       else
         nbPtSh2 = imin + nbp - ( imax == fps ? fpe : fps ) + 1 + ( fpe != fps );
@@ -569,7 +569,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
   }
 }
 
-CHullBox * PointSet::compute_chull_bbox()
+CHullBox *PointSet::compute_chull_bbox()
 {
   int i;
   int j;
@@ -656,12 +656,12 @@ CHullBox * PointSet::compute_chull_bbox()
     for ( i = 0; i < 16; i += 4 )
     {
 
-      alpha_seg = (( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
+      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
 
       best_cp = DBL_MAX;
       for ( j = 0; j < nbPoints; j++ )
       {
-        cp = GeomFunction::cross_product( bb[i+2], bb[i+3], bb[i], bb[i+1], x[cHull[j]], y[cHull[j]] );
+        cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[cHull[j]], y[cHull[j]] );
         if ( cp < best_cp )
         {
           best_cp = cp;
@@ -674,9 +674,9 @@ CHullBox * PointSet::compute_chull_bbox()
       d2 = sin( alpha_seg ) * distNearestPoint;
 
       bb[i]   += d1; // x
-      bb[i+1] += d2; // y
-      bb[i+2] += d1; // x
-      bb[i+3] += d2; // y
+      bb[i + 1] += d2; // y
+      bb[i + 2] += d1; // x
+      bb[i + 3] += d2; // y
     }
 
     // compute and compare AREA
@@ -695,19 +695,19 @@ CHullBox * PointSet::compute_chull_bbox()
       best_length = length;
       best_width = width;
       best_alpha = alpha;
-      memcpy( best_bb, bb, sizeof( double ) *16 );
+      memcpy( best_bb, bb, sizeof( double ) * 16 );
     }
   }
 
   // best bbox is defined
 
-  CHullBox * finalBb = new CHullBox();
+  CHullBox *finalBb = new CHullBox();
 
   for ( i = 0; i < 16; i = i + 4 )
   {
-    GeomFunction::computeLineIntersection( best_bb[i], best_bb[i+1], best_bb[i+2], best_bb[i+3],
-                                           best_bb[( i+4 ) %16], best_bb[( i+5 ) %16], best_bb[( i+6 ) %16], best_bb[( i+7 ) %16],
-                                           &finalBb->x[int ( i/4 )], &finalBb->y[int ( i/4 )] );
+    GeomFunction::computeLineIntersection( best_bb[i], best_bb[i + 1], best_bb[i + 2], best_bb[i + 3],
+                                           best_bb[( i + 4 ) % 16], best_bb[( i + 5 ) % 16], best_bb[( i + 6 ) % 16], best_bb[( i + 7 ) % 16],
+                                           &finalBb->x[int ( i / 4 )], &finalBb->y[int ( i / 4 )] );
   }
 
   finalBb->alpha = best_alpha;
@@ -731,10 +731,10 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
     GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
-    GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+    GEOSGeometry *geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
 
     int type = GEOSGeomTypeId_r( geosctxt, mGeos );
-    const GEOSGeometry* extRing = nullptr;
+    const GEOSGeometry *extRing = nullptr;
     if ( type != GEOS_POLYGON )
     {
       extRing = mGeos;
@@ -825,14 +825,14 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
   {
     if ( dl < 0 )
     {
-      dx = x[nbPoints-1] - x[0];
-      dy = y[nbPoints-1] - y[0];
+      dx = x[nbPoints - 1] - x[0];
+      dy = y[nbPoints - 1] - y[0];
       di = sqrt( dx * dx + dy * dy );
     }
     else
     {
-      dx = x[i+1] - x[i];
-      dy = y[i+1] - y[i];
+      dx = x[i + 1] - x[i];
+      dy = y[i + 1] - y[i];
       di = d[i];
     }
 

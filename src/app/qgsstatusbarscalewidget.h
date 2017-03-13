@@ -28,6 +28,7 @@ class QgsScaleComboBox;
 
 
 #include <QWidget>
+#include "qgis_app.h"
 
 /**
   * Widget to define scale of the map canvas.
@@ -37,9 +38,9 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsStatusBarScaleWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
+    explicit QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
 
-    /** Destructor */
+
     virtual ~QgsStatusBarScaleWidget();
 
     /**
@@ -57,7 +58,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     /** Set the font of the text
       * @param font the font to use
       */
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
@@ -69,14 +70,14 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     void scaleLockChanged( bool );
 
   private:
-    QgsMapCanvas* mMapCanvas;
-    QHBoxLayout *mLayout;
-    QToolButton* mLockButton;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QHBoxLayout *mLayout = nullptr;
+    QToolButton *mLockButton = nullptr;
 
     //! Widget that will live on the statusbar to display "scale 1:"
-    QLabel* mLabel;
+    QLabel *mLabel = nullptr;
     //! Widget that will live on the statusbar to display scale value
-    QgsScaleComboBox* mScale;
+    QgsScaleComboBox *mScale = nullptr;
 };
 
 #endif // QGSSTATUSBARSCALEWIDGET_H

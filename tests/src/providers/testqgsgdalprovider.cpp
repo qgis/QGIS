@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -48,6 +48,7 @@ class TestQgsGdalProvider : public QObject
     void noData();
     void invalidNoDataInSourceIgnored();
     void isRepresentableValue();
+    void mask();
 
   private:
     QString mTestDataDir;
@@ -61,8 +62,8 @@ void TestQgsGdalProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mTestDataDir = QString( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = "<h1>GDAL Provider Tests</h1>\n";
+  mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  mReport = QStringLiteral( "<h1>GDAL Provider Tests</h1>\n" );
 }
 
 //runs after all tests
@@ -81,9 +82,9 @@ void TestQgsGdalProvider::cleanupTestCase()
 
 void TestQgsGdalProvider::scaleDataType()
 {
-  QString rasterWithOffset = QString( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
-  QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( "gdal", rasterWithOffset );
-  QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
+  QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), rasterWithOffset );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
   QCOMPARE( rp->dataType( 1 ), Qgis::Float32 );
@@ -93,9 +94,9 @@ void TestQgsGdalProvider::scaleDataType()
 
 void TestQgsGdalProvider::warpedVrt()
 {
-  QString raster = QString( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
-  QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( "gdal", raster );
-  QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), raster );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
 
   qDebug() << "x min: " << rp->extent().xMinimum();
@@ -112,10 +113,10 @@ void TestQgsGdalProvider::warpedVrt()
 
 void TestQgsGdalProvider::noData()
 {
-  QString raster = QString( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
-  QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( "gdal", raster );
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), raster );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -126,10 +127,10 @@ void TestQgsGdalProvider::noData()
 
 void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
 {
-  QString raster = QString( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
-  QgsDataProvider* provider = QgsProviderRegistry::instance()->provider( "gdal", raster );
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), raster );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider* rp = dynamic_cast< QgsRasterDataProvider* >( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -196,5 +197,28 @@ void TestQgsGdalProvider::isRepresentableValue()
   QCOMPARE( QgsRaster::isRepresentableValue( std::numeric_limits<double>::max(), Qgis::Float64 ), true );
 }
 
-QTEST_MAIN( TestQgsGdalProvider )
+void TestQgsGdalProvider::mask()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), raster );
+  QVERIFY( provider->isValid() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    QCOMPARE( rp->bandCount(), 4 );
+    QCOMPARE( rp->dataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->sourceDataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
+    QCOMPARE( rp->bandScale( 4 ), 1.0 );
+    QCOMPARE( rp->bandOffset( 4 ), 0.0 );
+    QgsRectangle rect( 0, 0, 162, 150 );
+    QgsRasterBlock *block = rp->block( 4, rect, 162, 150 );
+    QVERIFY( block );
+    delete block;
+  }
+  delete provider;
+}
+
+QGSTEST_MAIN( TestQgsGdalProvider )
 #include "testqgsgdalprovider.moc"

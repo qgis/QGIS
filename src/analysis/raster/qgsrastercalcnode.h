@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include <QString>
+#include "qgis_analysis.h"
 
 class QgsRasterBlock;
 class QgsRasterMatrix;
@@ -71,16 +72,21 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     QgsRasterCalcNode();
     QgsRasterCalcNode( double number );
-    QgsRasterCalcNode( QgsRasterMatrix* matrix );
-    QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
-    QgsRasterCalcNode( const QString& rasterName );
+    QgsRasterCalcNode( QgsRasterMatrix *matrix );
+    QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
+
+    //! QgsRasterCalcNode cannot be copied
+    QgsRasterCalcNode( const QgsRasterCalcNode &rh ) = delete;
+    //! QgsRasterCalcNode cannot be copied
+    QgsRasterCalcNode &operator=( const QgsRasterCalcNode &rh ) = delete;
 
     Type type() const { return mType; }
 
     //set left node
-    void setLeft( QgsRasterCalcNode* left ) { delete mLeft; mLeft = left; }
-    void setRight( QgsRasterCalcNode* right ) { delete mRight; mRight = right; }
+    void setLeft( QgsRasterCalcNode *left ) { delete mLeft; mLeft = left; }
+    void setRight( QgsRasterCalcNode *right ) { delete mRight; mRight = right; }
 
     /** Calculates result of raster calculation (might be real matrix or single number).
      * @param rasterData input raster data references, map of raster name to raster data block
@@ -90,21 +96,19 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * @note added in QGIS 2.10
      * @note not available in Python bindings
      */
-    bool calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row = -1 ) const;
+    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const;
 
-    static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg );
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg );
 
   private:
     Type mType;
-    QgsRasterCalcNode* mLeft;
-    QgsRasterCalcNode* mRight;
+    QgsRasterCalcNode *mLeft = nullptr;
+    QgsRasterCalcNode *mRight = nullptr;
     double mNumber;
     QString mRasterName;
-    QgsRasterMatrix* mMatrix;
+    QgsRasterMatrix *mMatrix = nullptr;
     Operator mOperator;
 
-    QgsRasterCalcNode( const QgsRasterCalcNode& rh );
-    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh );
 };
 
 

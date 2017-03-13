@@ -19,8 +19,10 @@
 #include "qgstablewidgetbase.h"
 #include <QAbstractTableModel>
 #include <QVariant>
+#include "qgis_gui.h"
 
 ///@cond PRIVATE
+
 /** @ingroup gui
  * Table model to edit a QVariantList.
  * @note added in QGIS 3.0
@@ -32,17 +34,17 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
   public:
 
     explicit QgsListModel( QVariant::Type subType, QObject *parent = 0 );
-    void setList( const QVariantList& list );
+    void setList( const QVariantList &list );
     QVariantList list() const;
     bool valid() const;
 
-    int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex& parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool insertRows( int position, int rows, const QModelIndex & parent =  QModelIndex() ) override;
+    bool insertRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
     bool removeRows( int position, int rows, const QModelIndex &parent =  QModelIndex() ) override;
 
   private:
@@ -61,15 +63,16 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
     Q_OBJECT
     Q_PROPERTY( QVariantList list READ list WRITE setList )
   public:
+
     /**
      * Constructor.
      */
-    explicit QgsListWidget( QVariant::Type subType, QWidget* parent = nullptr );
+    explicit QgsListWidget( QVariant::Type subType, QWidget *parent = nullptr );
 
     /**
      * Set the initial value of the widget.
      */
-    void setList( const QVariantList& list );
+    void setList( const QVariantList &list );
 
     /**
      * Get the edit value.

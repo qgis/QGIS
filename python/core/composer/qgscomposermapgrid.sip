@@ -684,7 +684,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see frameSideFlags
      * @see testFrameSideFlag
      */
-    void setFrameSideFlags( const FrameSideFlags& flags );
+    void setFrameSideFlags( FrameSideFlags flags );
 
     /** Sets whether the grid frame is drawn for a certain side of the map item.
      * @param flag flag for grid frame side
@@ -730,22 +730,22 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     double frameWidth() const;
 
-    /** Sets the width of the outline drawn in the grid frame.
-     * @param width width of grid frame outline
+    /** Sets the width of the stroke drawn in the grid frame.
+     * @param width width of grid frame stroke
      * @see framePenSize
      * @see setFramePenColor
      */
     void setFramePenSize( const double width );
 
-    /** Retrieves the width of the outline drawn in the grid frame.
-     * @returns width of grid frame outline
+    /** Retrieves the width of the stroke drawn in the grid frame.
+     * @returns width of grid frame stroke
      * @see setFramePenSize
      * @see framePenColor
      */
     double framePenSize() const;
 
-    /** Sets the color of the outline drawn in the grid frame.
-     * @param color color of grid frame outline
+    /** Sets the color of the stroke drawn in the grid frame.
+     * @param color color of grid frame stroke
      * @see framePenColor
      * @see setFramePenSize
      * @see setFrameFillColor1
@@ -753,8 +753,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     void setFramePenColor( const QColor& color );
 
-    /** Retrieves the color of the outline drawn in the grid frame.
-     * @returns color of grid frame outline
+    /** Retrieves the color of the stroke drawn in the grid frame.
+     * @returns color of grid frame stroke
      * @see setFramePenColor
      * @see framePenSize
      * @see frameFillColor1

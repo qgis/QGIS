@@ -20,6 +20,7 @@
 
 #include <QLineEdit>
 #include <QLabel>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -31,24 +32,24 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsUuidWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsUuidWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private:
-    QLabel* mLabel;
-    QLineEdit* mLineEdit;
+    QLabel *mLabel = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 };
 
 #endif // QGSUUIDWIDGETWRAPPER_H

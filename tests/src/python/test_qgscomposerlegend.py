@@ -20,10 +20,12 @@ from qgis.core import (QgsComposerLegend,
                        QgsComposition,
                        QgsMapSettings,
                        QgsVectorLayer,
-                       QgsMapLayerRegistry,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
-                       QgsRectangle
+                       QgsRectangle,
+                       QgsProject,
+                       QgsComposerObject,
+                       QgsProperty
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -43,27 +45,27 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
         point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
-        s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        s.setLayers([point_layer])
+        composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
         composer_map.setFrameEnabled(True)
+        composer_map.setLayers([point_layer])
         composition.addComposerMap(composer_map)
         composer_map.setNewExtent(point_layer.extent())
 
         legend = QgsComposerLegend(composition)
         legend.setSceneRect(QRectF(120, 20, 80, 80))
         legend.setFrameEnabled(True)
-        legend.setFrameOutlineWidth(2)
+        legend.setFrameStrokeWidth(2)
         legend.setBackgroundColor(QColor(200, 200, 200))
         legend.setTitle('')
         composition.addComposerLegend(legend)
@@ -75,30 +77,30 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeWithMapContent(self):
         """Test test legend resizes to match map content"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
-        s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        s.setLayers([point_layer])
+        composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
         composer_map.setFrameEnabled(True)
+        composer_map.setLayers([point_layer])
         composition.addComposerMap(composer_map)
         composer_map.setNewExtent(point_layer.extent())
 
         legend = QgsComposerLegend(composition)
         legend.setSceneRect(QRectF(120, 20, 80, 80))
         legend.setFrameEnabled(True)
-        legend.setFrameOutlineWidth(2)
+        legend.setFrameStrokeWidth(2)
         legend.setBackgroundColor(QColor(200, 200, 200))
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
@@ -113,35 +115,35 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
-        s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        s.setLayers([point_layer])
+        composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
         composer_map.setFrameEnabled(True)
+        composer_map.setLayers([point_layer])
         composition.addComposerMap(composer_map)
         composer_map.setNewExtent(point_layer.extent())
 
         legend = QgsComposerLegend(composition)
         legend.setSceneRect(QRectF(120, 20, 80, 80))
         legend.setFrameEnabled(True)
-        legend.setFrameOutlineWidth(2)
+        legend.setFrameStrokeWidth(2)
         legend.setBackgroundColor(QColor(200, 200, 200))
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
 
-        #disable auto resizing
+        # disable auto resizing
         legend.setResizeToContents(False)
 
         composition.addComposerLegend(legend)
@@ -155,30 +157,30 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testResizeDisabledCrop(self):
         """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayers([point_layer])
+        QgsProject.instance().addMapLayers([point_layer])
 
         s = QgsMapSettings()
-        s.setLayers([point_layer.id()])
-        s.setCrsTransformEnabled(False)
-        composition = QgsComposition(s)
+        s.setLayers([point_layer])
+        composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
         composer_map = QgsComposerMap(composition, 20, 20, 80, 80)
         composer_map.setFrameEnabled(True)
+        composer_map.setLayers([point_layer])
         composition.addComposerMap(composer_map)
         composer_map.setNewExtent(point_layer.extent())
 
         legend = QgsComposerLegend(composition)
         legend.setSceneRect(QRectF(120, 20, 20, 20))
         legend.setFrameEnabled(True)
-        legend.setFrameOutlineWidth(2)
+        legend.setFrameStrokeWidth(2)
         legend.setBackgroundColor(QColor(200, 200, 200))
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
@@ -197,7 +199,44 @@ class TestQgsComposerLegend(unittest.TestCase):
         result, message = checker.testComposition()
         self.assertTrue(result, message)
 
-        QgsMapLayerRegistry.instance().removeMapLayers([point_layer.id()])
+        QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testDataDefinedTitle(self):
+        mapSettings = QgsMapSettings()  # NOQA
+
+        composition = QgsComposition(QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        legend = QgsComposerLegend(composition)
+        composition.addComposerLegend(legend)
+
+        legend.setTitle('original')
+        self.assertEqual(legend.title(), 'original')
+        self.assertEqual(legend.legendSettings().title(), 'original')
+
+        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendTitle, QgsProperty.fromExpression("'new'"))
+        legend.refreshDataDefinedProperty()
+        self.assertEqual(legend.title(), 'original')
+        self.assertEqual(legend.legendSettings().title(), 'new')
+
+    def testDataDefinedColumnCount(self):
+        mapSettings = QgsMapSettings()  # NOQA
+
+        composition = QgsComposition(QgsProject.instance())
+        composition.setPaperSize(297, 210)
+
+        legend = QgsComposerLegend(composition)
+        composition.addComposerLegend(legend)
+
+        legend.setColumnCount(2)
+        self.assertEqual(legend.columnCount(), 2)
+        self.assertEqual(legend.legendSettings().columnCount(), 2)
+
+        legend.dataDefinedProperties().setProperty(QgsComposerObject.LegendColumnCount, QgsProperty.fromExpression("5"))
+        legend.refreshDataDefinedProperty()
+        self.assertEqual(legend.columnCount(), 2)
+        self.assertEqual(legend.legendSettings().columnCount(), 5)
+
 
 if __name__ == '__main__':
     unittest.main()

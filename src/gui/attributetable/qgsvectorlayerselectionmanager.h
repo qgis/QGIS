@@ -17,6 +17,7 @@
 #define QGSVECTORLAYERSELECTIONMANAGER_H
 
 #include "qgsifeatureselectionmanager.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 
@@ -29,7 +30,8 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     Q_OBJECT
 
   public:
-    explicit QgsVectorLayerSelectionManager( QgsVectorLayer* layer, QObject *parent = nullptr );
+    explicit QgsVectorLayerSelectionManager( QgsVectorLayer *layer, QObject *parent = nullptr );
+
     /**
      * The number of features that are selected in this layer
      *
@@ -42,14 +44,14 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      *
      * @param ids            Feature ids to select
      */
-    virtual void select( const QgsFeatureIds& ids ) override;
+    virtual void select( const QgsFeatureIds &ids ) override;
 
     /**
      * Deselect features
      *
      * @param ids            Feature ids to deselect
      */
-    virtual void deselect( const QgsFeatureIds& ids ) override;
+    virtual void deselect( const QgsFeatureIds &ids ) override;
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
@@ -58,7 +60,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      *
      * @param ids   The ids which will be the new selection
      */
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids ) override;
+    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) override;
 
     /**
      * Return reference to identifiers of selected features
@@ -66,10 +68,10 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      * @return A list of { @link QgsFeatureIds }
      * @see selectedFeatures()
      */
-    virtual const QgsFeatureIds& selectedFeaturesIds() const override;
+    virtual const QgsFeatureIds &selectedFeatureIds() const override;
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif // QGSVECTORLAYERSELECTIONMANAGER_H

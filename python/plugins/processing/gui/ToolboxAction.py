@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,18 +26,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
 
+from qgis.core import QgsApplication
 
-class ToolboxAction:
+
+class ToolboxAction(object):
 
     def setData(self, toolbox):
         self.toolbox = toolbox
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
     def tr(self, string, context=''):
         if context == '':

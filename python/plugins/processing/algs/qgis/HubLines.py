@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -57,7 +58,7 @@ class HubLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerHub = dataobjects.getObjectFromUri(
             self.getParameterValue(self.HUBS))
         layerSpoke = dataobjects.getObjectFromUri(
@@ -81,10 +82,10 @@ class HubLines(GeoAlgorithm):
             p = spokepoint.geometry().boundingBox().center()
             spokeX = p.x()
             spokeY = p.y()
-            spokeId = unicode(spokepoint[fieldSpoke])
+            spokeId = str(spokepoint[fieldSpoke])
 
             for hubpoint in hubs:
-                hubId = unicode(hubpoint[fieldHub])
+                hubId = str(hubpoint[fieldHub])
                 if hubId == spokeId:
                     p = hubpoint.geometry().boundingBox().center()
                     hubX = p.x()
@@ -98,6 +99,6 @@ class HubLines(GeoAlgorithm):
 
                     break
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

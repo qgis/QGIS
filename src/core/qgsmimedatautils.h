@@ -18,6 +18,8 @@
 #include <QMimeData>
 #include <QStringList>
 
+#include "qgis_core.h"
+
 class QgsLayerItem;
 class QgsLayerTreeNode;
 
@@ -33,7 +35,7 @@ class CORE_EXPORT QgsMimeDataUtils
       //! Constructs invalid URI
       Uri();
       //! Constructs URI from encoded data
-      explicit Uri( QString& encData );
+      explicit Uri( QString &encData );
 
       //! Returns whether the object contains valid data
       //! @note added in 3.0
@@ -57,24 +59,26 @@ class CORE_EXPORT QgsMimeDataUtils
     };
     typedef QList<Uri> UriList;
 
-    static QMimeData* encodeUriList( const UriList& layers );
+    static QMimeData *encodeUriList( const UriList &layers );
 
-    static bool isUriList( const QMimeData* data );
+    static bool isUriList( const QMimeData *data );
 
-    static UriList decodeUriList( const QMimeData* data );
+    static UriList decodeUriList( const QMimeData *data );
 
     /**
      * Returns encoded URI list from a list of layer tree nodes.
      * @note added in QGIS 3.0
      */
-    static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode*>& nodes );
+    static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
 
   private:
-    static QString encode( const QStringList& items );
-    static QStringList decode( const QString& encoded );
-    static QByteArray uriListToByteArray( const UriList& layers );
+    static QString encode( const QStringList &items );
+    static QStringList decode( const QString &encoded );
+    static QByteArray uriListToByteArray( const UriList &layers );
 
 };
+
+Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList );
 
 #endif // QGSMIMEDATAUTILS_H
 

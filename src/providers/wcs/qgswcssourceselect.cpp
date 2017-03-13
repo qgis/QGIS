@@ -27,8 +27,8 @@
 
 #include <QWidget>
 
-QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QgsOWSSourceSelect( "WCS", parent, fl, managerMode, embeddedMode )
+QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
+  : QgsOWSSourceSelect( QStringLiteral( "WCS" ), parent, fl, managerMode, embeddedMode )
 {
   // Hide irrelevant widgets
   mWMSGroupBox->hide();
@@ -53,7 +53,7 @@ void QgsWCSSourceSelect::populateLayerList()
 
   QgsDataSourceUri uri = mUri;
   QString cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
-  uri.setParam( "cache", cache );
+  uri.setParam( QStringLiteral( "cache" ), cache );
 
   mCapabilities.setUri( uri );
 
@@ -119,7 +119,7 @@ void QgsWCSSourceSelect::addClicked()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
 
-  uri.setParam( "identifier", identifier );
+  uri.setParam( QStringLiteral( "identifier" ), identifier );
 
   // Set crs only if necessary (multiple offered), so that we can decide in the
   // provider if WCS 1.0 with RESPONSE_CRS has to be used.  Not perfect, they can
@@ -128,27 +128,27 @@ void QgsWCSSourceSelect::addClicked()
   //       without that param user is asked for CRS
   //if ( selectedLayersCRSs().size() > 1 )
   //{
-  uri.setParam( "crs", selectedCrs() );
+  uri.setParam( QStringLiteral( "crs" ), selectedCrs() );
   //}
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
   if ( !selectedFormat().isEmpty() )
   {
-    uri.setParam( "format", selectedFormat() );
+    uri.setParam( QStringLiteral( "format" ), selectedFormat() );
   }
 
   QgsDebugMsg( "selectedTime = " +  selectedTime() );
   if ( !selectedTime().isEmpty() )
   {
-    uri.setParam( "time", selectedTime() );
+    uri.setParam( QStringLiteral( "time" ), selectedTime() );
   }
 
   QString cache;
   QgsDebugMsg( QString( "selectedCacheLoadControl = %1" ).arg( selectedCacheLoadControl() ) );
   cache = QgsNetworkAccessManager::cacheLoadControlName( selectedCacheLoadControl() );
-  uri.setParam( "cache", cache );
+  uri.setParam( QStringLiteral( "cache" ), cache );
 
-  emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
+  emit addRasterLayer( uri.encodedUri(), identifier, QStringLiteral( "wcs" ) );
 }
 
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
@@ -193,12 +193,12 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
   QList<SupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  Q_FOREACH ( const QString& mime, mimes.keys() )
+  Q_FOREACH ( const QString &mime, mimes.keys() )
   {
     SupportedFormat format = { mime, mimes.value( mime ) };
 
     // prefer tiff
-    if ( mime == "image/tiff" )
+    if ( mime == QLatin1String( "image/tiff" ) )
     {
       formats.prepend( format );
     }

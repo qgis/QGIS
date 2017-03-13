@@ -96,6 +96,8 @@ class QgsPointLocator : QObject
 
       //! Only for a valid edge match - obtain endpoints of the edge
       void edgePoints( QgsPoint& pt1 /Out/, QgsPoint& pt2 /Out/ ) const;
+
+      bool operator==( const QgsPointLocator::Match& other ) const;
     };
 
     typedef QList<QgsPointLocator::Match> MatchList;

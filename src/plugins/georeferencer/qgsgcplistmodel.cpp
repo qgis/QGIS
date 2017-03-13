@@ -18,14 +18,14 @@
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <cmath>
 
 class QgsStandardItem : public QStandardItem
 {
   public:
-    explicit QgsStandardItem( const QString& text ) : QStandardItem( text )
+    explicit QgsStandardItem( const QString &text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
       // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
@@ -50,9 +50,9 @@ class QgsStandardItem : public QStandardItem
 };
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
-    : QStandardItemModel( parent )
-    , mGCPList( nullptr )
-    , mGeorefTransform( nullptr )
+  : QStandardItemModel( parent )
+  , mGCPList( nullptr )
+  , mGeorefTransform( nullptr )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );
@@ -65,9 +65,9 @@ void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
+void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *georefTransform )
 {
-  mGeorefTransform = theGeorefTransform;
+  mGeorefTransform = georefTransform;
   updateModel();
 }
 
@@ -85,7 +85,7 @@ void QgsGCPListModel::updateModel()
   //  // Setup table header
   QStringList itemLabels;
   QString unitType;
-  QSettings s;
+  QgsSettings s;
   bool mapUnitsPossible = false;
 
   if ( mGeorefTransform )
@@ -95,7 +95,7 @@ void QgsGCPListModel::updateModel()
   }
 
 
-  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" && mapUnitsPossible )
+  if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mapUnitsPossible )
   {
     unitType = tr( "map units" );
   }
@@ -105,14 +105,14 @@ void QgsGCPListModel::updateModel()
   }
 
   itemLabels << tr( "Visible" )
-  << tr( "ID" )
-  << tr( "Source X" )
-  << tr( "Source Y" )
-  << tr( "Dest. X" )
-  << tr( "Dest. Y" )
-  << tr( "dX (%1)" ).arg( unitType )
-  << tr( "dY (%1)" ).arg( unitType )
-  << tr( "Residual (%1)" ).arg( unitType );
+             << tr( "ID" )
+             << tr( "Source X" )
+             << tr( "Source Y" )
+             << tr( "Dest. X" )
+             << tr( "Dest. Y" )
+             << tr( "dX (%1)" ).arg( unitType )
+             << tr( "dY (%1)" ).arg( unitType )
+             << tr( "Residual (%1)" ).arg( unitType );
 
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );
@@ -183,9 +183,9 @@ void QgsGCPListModel::updateModel()
     }
     else
     {
-      setItem( i, j++, new QgsStandardItem( "n/a" ) );
-      setItem( i, j++, new QgsStandardItem( "n/a" ) );
-      setItem( i, j++, new QgsStandardItem( "n/a" ) );
+      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
+      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
+      setItem( i, j++, new QgsStandardItem( QStringLiteral( "n/a" ) ) );
     }
   }
 }

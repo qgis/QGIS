@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsConnectionPool: public QObject
 {
@@ -38,12 +38,12 @@ class TestQgsConnectionPool: public QObject
   private:
     struct ReadJob
     {
-      explicit ReadJob( QgsVectorLayer* _layer ) : layer( _layer ) {}
-      QgsVectorLayer* layer;
+      explicit ReadJob( QgsVectorLayer *_layer ) : layer( _layer ) {}
+      QgsVectorLayer *layer = nullptr;
       QList<QgsFeature> features;
     };
 
-    static void processJob( ReadJob& job )
+    static void processJob( ReadJob &job )
     {
       QgsFeatureIterator it = job.layer->getFeatures();
       QgsFeature f;
@@ -74,29 +74,29 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   int nWaypoints = 100000;
   int nRoutes = 100000;
   int nRoutePts = 10;
-  QTemporaryFile testFile( "testXXXXXX.gpx" );
+  QTemporaryFile testFile( QStringLiteral( "testXXXXXX.gpx" ) );
   testFile.setAutoRemove( false );
   testFile.open();
   testFile.write( "<gpx version=\"1.1\" creator=\"qgis\">\n" );
   for ( int i = 0; i < nWaypoints; ++i )
   {
-    testFile.write( QString( "<wpt lon=\"%1\" lat=\"%1\"><name></name></wpt>\n" ).arg( i ).toLocal8Bit() );
+    testFile.write( QStringLiteral( "<wpt lon=\"%1\" lat=\"%1\"><name></name></wpt>\n" ).arg( i ).toLocal8Bit() );
   }
   for ( int i = 0; i < nRoutes; ++i )
   {
     testFile.write( "<rte><name></name><number></number>\n" );
     for ( int j = 0; j < nRoutePts; ++j )
     {
-      testFile.write( QString( "<rtept lon=\"%1\" lat=\"%2\"/>\n" ).arg( j ).arg( i ).toLocal8Bit() );
+      testFile.write( QStringLiteral( "<rtept lon=\"%1\" lat=\"%2\"/>\n" ).arg( j ).arg( i ).toLocal8Bit() );
     }
     testFile.write( "</rte>\n" );
   }
   testFile.write( "</gpx>\n" );
   testFile.close();
 
-  QgsVectorLayer* layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", "Waypoints", "ogr" );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", QStringLiteral( "Waypoints" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
-  QgsVectorLayer* layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", "Routes", "ogr" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", QStringLiteral( "Routes" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
 
   QList<ReadJob> jobs = QList<ReadJob>() << ReadJob( layer1 ) << ReadJob( layer2 );
@@ -107,8 +107,8 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   futureWatcher.setFuture( QtConcurrent::map( jobs, processJob ) );
   evLoop.exec();
 
-  QList<QgsFeature>& layer1Features = jobs[0].features;
-  QList<QgsFeature>& layer2Features = jobs[1].features;
+  QList<QgsFeature> &layer1Features = jobs[0].features;
+  QList<QgsFeature> &layer2Features = jobs[1].features;
 
   QVERIFY( layer1Features.count() == nWaypoints );
   QVERIFY( layer2Features.count() == nRoutes );
@@ -116,7 +116,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer1Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer1Features[i].geometry();
-    const QgsPointV2* geom = dynamic_cast<const QgsPointV2*>( featureGeom.geometry() );
+    const QgsPointV2 *geom = dynamic_cast<const QgsPointV2 *>( featureGeom.geometry() );
     QVERIFY( geom != nullptr );
     QVERIFY( qFuzzyCompare( geom->x(), i ) );
     QVERIFY( qFuzzyCompare( geom->y(), i ) );
@@ -124,7 +124,7 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer2Features[i].geometry();
-    const QgsLineString* geom = dynamic_cast<const QgsLineString*>( featureGeom.geometry() );
+    const QgsLineString *geom = dynamic_cast<const QgsLineString *>( featureGeom.geometry() );
     QVERIFY( geom != nullptr );
     int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );
@@ -140,5 +140,5 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   QFile( testFile.fileName() ).remove();
 }
 
-QTEST_MAIN( TestQgsConnectionPool )
+QGSTEST_MAIN( TestQgsConnectionPool )
 #include "testqgsconnectionpool.moc"

@@ -18,6 +18,7 @@
 
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMessageBar;
@@ -30,7 +31,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( const QString& name, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
     /**
      * Override this in your implementation.
@@ -44,9 +45,9 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
 
-    QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
     /**
      * Override this in your implementation.
@@ -58,40 +59,16 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
-    /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
-     *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     *
-     * @return A configuration object. This will be passed to your widget wrapper later on
-     */
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
+    virtual QHash<const char *, int> supportedWidgetTypes() override;
 
-    /**
-     * Serialize your configuration and save it in a xml doc.
-     *
-     * @param config        The configuration to serialize
-     * @param configElement The element, where you can write your configuration into
-     * @param doc           The document. You can use this to create new nodes
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-
-    virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const override;
-
-    virtual QVariant sortValue( QgsVectorLayer *vl, int fieldIdx, const QgsEditorWidgetConfig &config, const QVariant &cache, const QVariant &value ) const override;
-
-    virtual QMap<const char*, int> supportedWidgetTypes() override;
+    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 
   private:
     QgsAttributeEditorContext mEditorContext;
-    QgsMapCanvas* mCanvas;
-    QgsMessageBar* mMessageBar;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 #endif // QGSRELATIONREFERENCEFACTORY_H

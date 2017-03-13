@@ -19,6 +19,7 @@
 #define QGSPREVIEWEFFECT_H
 
 #include <QGraphicsEffect>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A graphics effect which can be applied to a widget to simulate various printing and
@@ -38,8 +39,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
       PreviewDeuteranope
     };
 
-    QgsPreviewEffect( QObject* parent );
-    ~QgsPreviewEffect();
+    QgsPreviewEffect( QObject *parent );
 
     /** Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
      * @param mode PreviewMode to use to draw the widget
@@ -47,6 +47,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
      * @see mode
      */
     void setMode( PreviewMode mode );
+
     /** Returns the mode used for the preview effect.
      * @returns PreviewMode currently used by the effect
      * @note added in 2.3

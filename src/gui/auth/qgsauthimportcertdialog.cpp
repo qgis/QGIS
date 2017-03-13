@@ -20,24 +20,24 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QPushButton>
-#include <QSettings>
 
 #include <QtCrypto>
 
+#include "qgssettings.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 
 
-QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
+QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
     QgsAuthImportCertDialog::CertFilter filter,
     QgsAuthImportCertDialog::CertInput input )
-    : QDialog( parent )
-    , mFilter( filter )
-    , mInput( input )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mFilter( filter )
+  , mInput( input )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -83,10 +83,6 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent ,
     okButton()->setEnabled( false );
     teValidation->setFocus();
   }
-}
-
-QgsAuthImportCertDialog::~QgsAuthImportCertDialog()
-{
 }
 
 const QList<QSslCertificate> QgsAuthImportCertDialog::certificatesToImport()
@@ -151,7 +147,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 {
   mCerts.clear();
   teValidation->clear();
-  teValidation->setStyleSheet( "" );
+  teValidation->setStyleSheet( QLatin1String( "" ) );
 
   bool valid = false;
   QList<QSslCertificate> certs;
@@ -208,8 +204,8 @@ void QgsAuthImportCertDialog::validateCertificates()
   if ( certssize > 0 )
   {
     teValidation->setStyleSheet(
-      valid ? QgsAuthGuiUtils::greenTextStyleSheet( "QTextEdit" )
-      : QgsAuthGuiUtils::redTextStyleSheet( "QTextEdit" ) );
+      valid ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QTextEdit" ) )
+      : QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QTextEdit" ) ) );
   }
 
   QString msg = tr( "Certificates found: %1\n"
@@ -228,7 +224,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
 void QgsAuthImportCertDialog::on_btnImportFile_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leImportFile->setText( fn );
@@ -244,8 +240,8 @@ void QgsAuthImportCertDialog::on_chkAllowInvalid_toggled( bool checked )
 
 QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
-  QSettings settings;
-  QString recentdir = settings.value( "UI/lastAuthImportCertOpenFileDir", QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac
@@ -254,12 +250,12 @@ QString QgsAuthImportCertDialog::getOpenFileName( const QString &title, const QS
 
   if ( !f.isEmpty() )
   {
-    settings.setValue( "UI/lastAuthImportCertOpenFileDir", QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( QStringLiteral( "UI/lastAuthImportCertOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }
 
-QPushButton* QgsAuthImportCertDialog::okButton()
+QPushButton *QgsAuthImportCertDialog::okButton()
 {
   return buttonBox->button( QDialogButtonBox::Ok );
 }

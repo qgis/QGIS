@@ -21,28 +21,6 @@
 #include <QDir>
 #include <QFileInfoList>
 
-//
-// Static calls to enforce singleton behaviour
-//
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::mInstance = nullptr;
-QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
-{
-  if ( !mInstance )
-  {
-    mInstance = new QgsColorSchemeRegistry();
-
-    //add default color schemes
-    mInstance->addDefaultSchemes();
-    //add user schemes
-    mInstance->addUserSchemes();
-  }
-
-  return mInstance;
-}
-
-//
-// Main class begins now...
-//
 
 QgsColorSchemeRegistry::QgsColorSchemeRegistry()
 {
@@ -57,13 +35,13 @@ QgsColorSchemeRegistry::~QgsColorSchemeRegistry()
 void QgsColorSchemeRegistry::populateFromInstance()
 {
   //get schemes from global instance
-  QList< QgsColorScheme* > schemeList = QgsColorSchemeRegistry::instance()->schemes();
+  QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes();
 
   //add to this scheme registry
-  QList< QgsColorScheme* >::iterator it = schemeList.begin();
+  QList< QgsColorScheme * >::iterator it = schemeList.begin();
   for ( ; it != schemeList.end(); ++it )
   {
-    addColorScheme(( *it )->clone() );
+    addColorScheme( ( *it )->clone() );
   }
 }
 
@@ -86,7 +64,7 @@ void QgsColorSchemeRegistry::addUserSchemes()
     return;
   }
 
-  QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( "*.gpl" ), QDir::Files );
+  QFileInfoList fileInfoList = QDir( palettesDir ).entryInfoList( QStringList( QStringLiteral( "*.gpl" ) ), QDir::Files );
   QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
   for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
@@ -101,24 +79,24 @@ void QgsColorSchemeRegistry::addColorScheme( QgsColorScheme *scheme )
 
 QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes() const
 {
-  QList< QgsColorScheme* > allSchemes;
-  QList<QgsColorScheme*>::const_iterator schemeIt;
+  QList< QgsColorScheme * > allSchemes;
+  QList<QgsColorScheme *>::const_iterator schemeIt;
   for ( schemeIt = mColorSchemeList.constBegin(); schemeIt != mColorSchemeList.constEnd(); ++schemeIt )
   {
-    allSchemes.append(( *schemeIt ) );
+    allSchemes.append( ( *schemeIt ) );
   }
   return allSchemes;
 }
 
 QList<QgsColorScheme *> QgsColorSchemeRegistry::schemes( const QgsColorScheme::SchemeFlag flag ) const
 {
-  QList< QgsColorScheme* > matchingSchemes;
-  QList<QgsColorScheme*>::const_iterator schemeIt;
+  QList< QgsColorScheme * > matchingSchemes;
+  QList<QgsColorScheme *>::const_iterator schemeIt;
   for ( schemeIt = mColorSchemeList.constBegin(); schemeIt != mColorSchemeList.constEnd(); ++schemeIt )
   {
-    if (( *schemeIt )->flags().testFlag( flag ) )
+    if ( ( *schemeIt )->flags().testFlag( flag ) )
     {
-      matchingSchemes.append(( *schemeIt ) );
+      matchingSchemes.append( ( *schemeIt ) );
     }
   }
   return matchingSchemes;

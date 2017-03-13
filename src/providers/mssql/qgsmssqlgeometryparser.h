@@ -29,8 +29,8 @@ class QgsMssqlGeometryParser
 {
 
   protected:
-    unsigned char* pszData;
-    unsigned char* pszWkb;
+    unsigned char *pszData;
+    unsigned char *pszWkb;
     int nWkbLen;
     int nWkbMaxLen;
     /* byte order */
@@ -50,7 +50,7 @@ class QgsMssqlGeometryParser
     int nSRSId;
 
   protected:
-    void CopyBytes( void* src, int len );
+    void CopyBytes( void *src, int len );
     void CopyCoordinates( int iPoint );
     void CopyPoint( int iPoint );
     void ReadPoint( int iShape );
@@ -63,10 +63,10 @@ class QgsMssqlGeometryParser
 
   public:
     QgsMssqlGeometryParser();
-    unsigned char* ParseSqlGeometry( unsigned char* pszInput, int nLen );
+    unsigned char *ParseSqlGeometry( unsigned char *pszInput, int nLen );
     int GetSRSId() { return nSRSId; }
     int GetWkbLen() { return nWkbLen; }
-    void DumpMemoryToLog( const char* pszMsg, unsigned char* pszInput, int nLen );
+    void DumpMemoryToLog( const char *pszMsg, unsigned char *pszInput, int nLen );
     /* sql geo type */
     bool IsGeography;
 };

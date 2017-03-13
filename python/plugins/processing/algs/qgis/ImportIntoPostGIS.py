@@ -25,15 +25,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsDataSourceUri, QgsVectorLayerImport
+from qgis.core import QgsVectorLayerImport, QgsSettings
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterTableField
 from processing.tools import dataobjects, postgis
 
@@ -58,14 +56,30 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Database')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to import')))
-
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
-        self.addParameter(ParameterString(self.SCHEMA,
-                                          self.tr('Schema (schema name)'), 'public'))
-        self.addParameter(ParameterString(self.TABLENAME,
-                                          self.tr('Table to import to (leave blank to use layer name)')))
+        self.addParameter(ParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'),
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
+        self.addParameter(ParameterString(
+            self.SCHEMA,
+            self.tr('Schema (schema name)'),
+            'public',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
+                    'connection_param': self.DATABASE}}))
+        self.addParameter(ParameterString(
+            self.TABLENAME,
+            self.tr('Table to import to (leave blank to use layer name)'),
+            '',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
+                    'schema_param': self.SCHEMA}}))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
                                               self.tr('Primary key field'), self.INPUT, optional=True))
         self.addParameter(ParameterString(self.GEOMETRY_COLUMN,
@@ -84,8 +98,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.FORCE_SINGLEPART,
                                            self.tr('Create single-part geometries instead of multi-part'), False))
 
-    def processAlgorithm(self, progress):
-        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
+    def processAlgorithm(self, feedback):
+        connection = self.getParameterValue(self.DATABASE)
         db = postgis.GeoDB.from_name(connection)
 
         schema = self.getParameterValue(self.SCHEMA)
@@ -94,15 +108,18 @@ class ImportIntoPostGIS(GeoAlgorithm):
         convertLowerCase = self.getParameterValue(self.LOWERCASE_NAMES)
         dropStringLength = self.getParameterValue(self.DROP_STRING_LENGTH)
         forceSinglePart = self.getParameterValue(self.FORCE_SINGLEPART)
-        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY)
+        primaryKeyField = self.getParameterValue(self.PRIMARY_KEY) or 'id'
         encoding = self.getParameterValue(self.ENCODING)
 
         layerUri = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(layerUri)
 
-        table = self.getParameterValue(self.TABLENAME).strip()
-        if table == '':
+        table = self.getParameterValue(self.TABLENAME)
+        if table:
+            table.strip()
+        if not table or table == '':
             table = layer.name()
+            table = table.replace('.', '_')
         table = table.replace(' ', '').lower()[0:62]
         providerName = 'postgres'
 
@@ -126,10 +143,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = None
 
         uri = db.uri
-        if primaryKeyField:
-            uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
-        else:
-            uri.setDataSource(schema, table, geomColumn, '')
+        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
 
         if encoding:
             layer.setProviderEncoding(encoding)
@@ -145,7 +159,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         )
         if ret != 0:
             raise GeoAlgorithmExecutionException(
-                self.tr('Error importing to PostGIS\n%s' % errMsg))
+                self.tr('Error importing to PostGIS\n{0}').format(errMsg))
 
         if geomColumn and createIndex:
             db.create_spatial_index(table, schema, geomColumn)
@@ -153,6 +167,6 @@ class ImportIntoPostGIS(GeoAlgorithm):
         db.vacuum_analyze(table, schema)
 
     def dbConnectionNames(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()

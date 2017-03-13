@@ -20,7 +20,7 @@ class QgsUnitTypes
       DistanceFeet, /*!< imperial feet */
       DistanceNauticalMiles, /*!< nautical miles */
       DistanceYards, /*!< imperial yards */
-      DistanceMiles, /*!< terrestial miles */
+      DistanceMiles, /*!< terrestrial miles */
       DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
       DistanceUnknownUnit, /*!< unknown distance unit */
     };
@@ -30,7 +30,7 @@ class QgsUnitTypes
     enum DistanceUnitType
     {
       Standard, /*!< unit is a standard measurement unit */
-      Geographic,   /*!< unit is a geographic (eg degree based) unit */
+      Geographic,   /*!< unit is a geographic (e.g., degree based) unit */
       UnknownType,  /*!< unknown unit type */
     };
 
@@ -67,7 +67,9 @@ class QgsUnitTypes
       RenderMillimeters, //!< millimeters
       RenderMapUnits, //!< map units
       RenderPixels, //!< pixels
-      RenderPercentage, //!< percentage of another measurement (eg canvas size, feature size)
+      RenderPercentage, //!< percentage of another measurement (e.g., canvas size, feature size)
+      RenderPoints, //! points (e.g., for font sizes)
+      RenderInches,
       RenderUnknownUnit, //!< mixed or unknown units
     };
 
@@ -99,11 +101,8 @@ class QgsUnitTypes
      */
     static QString toString( QgsUnitTypes::DistanceUnit unit );
 
-    /** Converts a translated string to a distance unit.
-     * @param string string representing a distance unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
-     */
+    static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
+
     static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified distance units.
@@ -138,11 +137,8 @@ class QgsUnitTypes
      */
     static QString toString( AreaUnit unit );
 
-    /** Converts a translated string to an areal unit.
-     * @param string string representing an areal unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
-     */
+    static QString toAbbreviatedString( AreaUnit unit );
+
     static AreaUnit stringToAreaUnit( const QString& string, bool *ok /Out/ = 0 );
 
     /** Returns the conversion factor between the specified areal units.
@@ -152,7 +148,7 @@ class QgsUnitTypes
      */
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
 
-    /** Converts a distance unit to its corresponding area unit, eg meters to square meters
+    /** Converts a distance unit to its corresponding area unit, e.g., meters to square meters
      * @param distanceUnit distance unit to convert
      * @return matching areal unit
      */

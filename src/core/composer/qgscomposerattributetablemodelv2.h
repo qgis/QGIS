@@ -21,6 +21,8 @@
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
 
+#include "qgis_core.h"
+
 class QgsComposerAttributeTableV2;
 class QgsComposerTableColumn;
 
@@ -39,8 +41,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     enum ShiftDirection
     {
-      ShiftUp, /*!< shift the row/column up */
-      ShiftDown /*!< shift the row/column down */
+      ShiftUp, //!< Shift the row/column up
+      ShiftDown //!< Shift the row/column down
     };
 
     /** Constructor for QgsComposerAttributeTableColumnModel.
@@ -48,7 +50,6 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @param parent optional parent
      */
     QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent = nullptr );
-    virtual ~QgsComposerAttributeTableColumnModelV2();
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see indexFromColumn
      */
-    QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
+    QgsComposerTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
     /** Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
      * @returns QModelIndex for specified QgsComposerTableColumn
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see setColumnAsSorted
      */
-    void setColumnAsUnsorted( QgsComposerTableColumn * column );
+    void setColumnAsUnsorted( QgsComposerTableColumn *column );
 
     /** Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
      * @param column a QgsComposerTableColumn
@@ -116,10 +117,10 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * @note added in 2.3
      * @see setColumnAsSorted
      */
-    bool moveColumnInSortRank( QgsComposerTableColumn * column, ShiftDirection direction );
+    bool moveColumnInSortRank( QgsComposerTableColumn *column, ShiftDirection direction );
 
   private:
-    QgsComposerAttributeTableV2 * mComposerTable;
+    QgsComposerAttributeTableV2 *mComposerTable = nullptr;
 
 };
 
@@ -139,8 +140,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      */
     enum ColumnFilterType
     {
-      ShowSortedColumns, /*!< show only sorted columns */
-      ShowUnsortedColumns/*!< show only unsorted columns */
+      ShowSortedColumns, //!< Show only sorted columns
+      ShowUnsortedColumns//!< Show only unsorted columns
     };
 
     /** Constructor for QgsComposerTableSortColumnsProxyModel.
@@ -149,8 +150,6 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * @param parent optional parent
      */
     QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent = nullptr );
-
-    virtual ~QgsComposerTableSortColumnsProxyModelV2();
 
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -165,7 +164,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * @note added in 2.3
      * @see columnFromIndex
      */
-    QgsComposerTableColumn* columnFromRow( int row );
+    QgsComposerTableColumn *columnFromRow( int row );
 
     /** Returns the QgsComposerTableColumn corresponding to an index in the proxy model.
      * @returns QgsComposerTableColumn for specified index
@@ -174,7 +173,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * @see columnFromRow
      * @see columnFromSourceIndex
      */
-    QgsComposerTableColumn* columnFromIndex( const QModelIndex & index ) const;
+    QgsComposerTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
     /** Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
@@ -184,7 +183,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * @see columnFromRow
      * @see columnFromIndex
      */
-    QgsComposerTableColumn* columnFromSourceIndex( const QModelIndex& sourceIndex ) const;
+    QgsComposerTableColumn *columnFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
     /** Invalidates the current filter used by the proxy model
      * @note added in 2.3
@@ -192,17 +191,17 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
     void resetFilter();
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-    QgsComposerAttributeTableV2 * mComposerTable;
+    QgsComposerAttributeTableV2 *mComposerTable = nullptr;
     ColumnFilterType mFilterType;
 
     /** Returns a list of QgsComposerTableColumns without a set sort rank
      * @returns QgsComposerTableColumns in attribute table without a sort rank
      * @note added in 2.3
      */
-    QList<QgsComposerTableColumn*> columnsWithoutSortRank() const;
+    QList<QgsComposerTableColumn *> columnsWithoutSortRank() const;
 
 };
 #endif // QGSCOMPOSERATTRIBUTETABLEMODELV2_H

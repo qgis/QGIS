@@ -92,15 +92,6 @@
        </item>
        <item row="0" column="1">
         <widget class="QSpinBox" name="minimumSpinBox">
-         <property name="minimum">
-          <number>−2147483648</number>
-         </property>
-         <property name="maximum">
-          <number>2147483647</number>
-         </property>
-         <property name="value">
-          <number>−2147483648</number>
-         </property>
         </widget>
        </item>
        <item row="1" column="0">
@@ -112,15 +103,6 @@
        </item>
        <item row="1" column="1">
         <widget class="QSpinBox" name="maximumSpinBox">
-         <property name="minimum">
-          <number>−2147483648</number>
-         </property>
-         <property name="maximum">
-          <number>2147483647</number>
-         </property>
-         <property name="value">
-          <number>2147483647</number>
-         </property>
         </widget>
        </item>
        <item row="2" column="0">
@@ -132,12 +114,6 @@
        </item>
        <item row="2" column="1">
         <widget class="QSpinBox" name="stepSpinBox">
-         <property name="maximum">
-          <number>2147483647</number>
-         </property>
-         <property name="value">
-          <number>1</number>
-         </property>
         </widget>
        </item>
       </layout>
@@ -227,13 +203,14 @@
  </customwidgets>
  <tabstops>
   <tabstop>rangeWidget</tabstop>
-  <tabstop>minimumDoubleSpinBox</tabstop>
-  <tabstop>maximumDoubleSpinBox</tabstop>
-  <tabstop>stepDoubleSpinBox</tabstop>
   <tabstop>minimumSpinBox</tabstop>
   <tabstop>maximumSpinBox</tabstop>
   <tabstop>stepSpinBox</tabstop>
+  <tabstop>minimumDoubleSpinBox</tabstop>
+  <tabstop>maximumDoubleSpinBox</tabstop>
+  <tabstop>stepDoubleSpinBox</tabstop>
   <tabstop>allowNullCheckBox</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>suffixLineEdit</tabstop>
  </tabstops>
  <resources/>

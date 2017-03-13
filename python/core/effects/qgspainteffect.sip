@@ -109,7 +109,7 @@ class QgsPaintEffect
     virtual void readProperties( const QgsStringMap& props ) = 0;
 
     /** Saves the current state of the effect to a DOM element. The default
-     * behaviour is to save the properties string map returned by
+     * behavior is to save the properties string map returned by
      * @link properties @endlink.
      * @param doc destination DOM document
      * @param element destination DOM element
@@ -245,7 +245,7 @@ class QgsPaintEffect
  *
  * The draw source effect can be used to draw an unaltered copy of the original source
  * picture. Minor changes like lowering the opacity and applying a blend mode are
- * supported, however these changes will force the resultant output to be rasterised.
+ * supported, however these changes will force the resultant output to be rasterized.
  * If no alterations are performed then the original picture will be rendered as a vector.
  *
  * \note Added in version 2.9
@@ -305,4 +305,37 @@ class QgsDrawSourceEffect : QgsPaintEffect
 
     virtual void draw( QgsRenderContext& context );
 
+};
+
+class QgsEffectPainter
+{
+%TypeHeaderCode
+#include <qgspainteffect.h>
+%End
+  public:
+
+    /**
+     * QgsEffectPainter constructor
+     *
+     * @param renderContext the QgsRenderContext object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext );
+
+    /**
+     * QgsEffectPainter constructor alternative if no painter translation is needed
+     *
+     * @param renderContext the QgsRenderContext object
+     * @param effect the QgsPaintEffect object
+     * @note Added in QGIS 3.0
+     */
+    QgsEffectPainter( QgsRenderContext& renderContext, QgsPaintEffect* effect );
+    ~QgsEffectPainter();
+
+    /**
+     * Sets the effect to be painted
+     *
+     * @param effect the QgsPaintEffect object
+     */
+    void setEffect( QgsPaintEffect* effect );
 };

@@ -48,6 +48,8 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s2.minLength(), 0)
         self.assertEqual(s.maxLength(), 8)
         self.assertEqual(s2.maxLength(), 8)
+        self.assertEqual(s.meanLength(), 3.33333333333333333333333)
+        self.assertEqual(s2.meanLength(), 3.33333333333333333333333)
 
         #extra check for minLength without empty strings
         s.calculate(['1111111', '111', '11111'])
@@ -63,6 +65,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
                  {'stat': QgsStringStatisticalSummary.Max, 'expected': 'eeee'},
                  {'stat': QgsStringStatisticalSummary.MinimumLength, 'expected': 0},
                  {'stat': QgsStringStatisticalSummary.MaximumLength, 'expected': 8},
+                 {'stat': QgsStringStatisticalSummary.MeanLength, 'expected': 3.3333333333333335},
                  ]
 
         s = QgsStringStatisticalSummary()
@@ -98,6 +101,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.countMissing(), 1)
         self.assertEqual(s.min(), '9')
         self.assertEqual(s.max(), 'eeee')
+
 
 if __name__ == '__main__':
     unittest.main()

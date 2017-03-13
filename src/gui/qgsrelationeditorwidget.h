@@ -25,6 +25,7 @@
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
+#include "qgis_gui.h"
 
 class QgsFeature;
 class QgsGenericFeatureSelectionManager;
@@ -41,10 +42,11 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     Q_PROPERTY( bool showLabel READ showLabel WRITE setShowLabel )
 
   public:
+
     /**
      * @param parent parent widget
      */
-    QgsRelationEditorWidget( QWidget* parent = nullptr );
+    QgsRelationEditorWidget( QWidget *parent = nullptr );
 
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
@@ -52,7 +54,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Get the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
-    void setRelationFeature( const QgsRelation& relation, const QgsFeature& feature );
+    void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
      * Set the relation(s) for this widget
@@ -63,17 +65,17 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * @param relation    Relation referencing the edited table
      * @param nmrelation  Optional reference from the referencing table to a 3rd N:M table
      */
-    void setRelations( const QgsRelation& relation, const QgsRelation& nmrelation );
+    void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature &feature );
 
-    void setEditorContext( const QgsAttributeEditorContext& context );
+    void setEditorContext( const QgsAttributeEditorContext &context );
 
     /**
      * The feature selection manager is responsible for the selected features
      * which are currently being edited.
      */
-    QgsIFeatureSelectionManager* featureSelectionManager();
+    QgsIFeatureSelectionManager *featureSelectionManager();
 
     /**
      * Defines if a title label should be shown for this widget.
@@ -88,6 +90,34 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * @note Added in QGIS 2.18
      */
     void setShowLabel( bool showLabel );
+
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLinkButton() const;
+
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLinkButton( bool showLinkButton );
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showUnlinkButton() const;
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowUnlinkButton( bool showUnlinkButton );
 
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
@@ -104,24 +134,24 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
   private:
     void updateUi();
 
-    QgsDualView* mDualView;
+    QgsDualView *mDualView = nullptr;
     QgsDualView::ViewMode mViewMode;
-    QgsGenericFeatureSelectionManager* mFeatureSelectionMgr;
+    QgsGenericFeatureSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
     QgsFeature mFeature;
 
-    QToolButton* mToggleEditingButton;
-    QToolButton* mSaveEditsButton;
-    QToolButton* mAddFeatureButton;
-    QToolButton* mDeleteFeatureButton;
-    QToolButton* mLinkFeatureButton;
-    QToolButton* mUnlinkFeatureButton;
-    QToolButton* mFormViewButton;
-    QToolButton* mTableViewButton;
-    QGridLayout* mRelationLayout;
-    QButtonGroup* mViewModeButtonGroup;
+    QToolButton *mToggleEditingButton = nullptr;
+    QToolButton *mSaveEditsButton = nullptr;
+    QToolButton *mAddFeatureButton = nullptr;
+    QToolButton *mDeleteFeatureButton = nullptr;
+    QToolButton *mLinkFeatureButton = nullptr;
+    QToolButton *mUnlinkFeatureButton = nullptr;
+    QToolButton *mFormViewButton = nullptr;
+    QToolButton *mTableViewButton = nullptr;
+    QGridLayout *mRelationLayout = nullptr;
+    QButtonGroup *mViewModeButtonGroup = nullptr;
 
     bool mShowLabel;
     bool mVisible;

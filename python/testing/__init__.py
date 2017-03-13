@@ -16,6 +16,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from builtins import zip
+from builtins import map
+from builtins import str
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -31,7 +35,7 @@ import difflib
 import functools
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
+from qgis.core import QgsApplication, QgsFeatureRequest
 from nose2.compat import unittest
 
 # Get a backup, we will patch this one later
@@ -74,7 +78,7 @@ class TestCase(_TestCase):
             precision = 14
 
         expected_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
-        result_features = sorted(layer_expected.getFeatures(request), key=lambda f: f.id())
+        result_features = sorted(layer_result.getFeatures(request), key=lambda f: f.id())
 
         for feats in zip(expected_features, result_features):
             if feats[0].hasGeometry():
@@ -98,10 +102,8 @@ class TestCase(_TestCase):
             )
 
             for attr_expected, field_expected in zip(feats[0].attributes(), layer_expected.fields().toList()):
-                attr_result = feats[1][field_expected.name()]
-                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
                 try:
-                    cmp = compare['fields'][field1.name()]
+                    cmp = compare['fields'][field_expected.name()]
                 except KeyError:
                     try:
                         cmp = compare['fields']['__all__']
@@ -111,6 +113,9 @@ class TestCase(_TestCase):
                 # Skip field
                 if 'skip' in cmp:
                     continue
+
+                attr_result = feats[1][field_expected.name()]
+                field_result = [fld for fld in layer_expected.fields().toList() if fld.name() == field_expected.name()][0]
 
                 # Cast field to a given type
                 if 'cast' in cmp:
@@ -221,6 +226,7 @@ def expectedFailure(*args):
 
         return realExpectedFailure
 
+
 # Patch unittest
 unittest.TestCase = TestCase
 unittest.expectedFailure = expectedFailure
@@ -267,6 +273,11 @@ def start_app(cleanup=True):
 
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
+
+        def debug_log_message(message, tag, level):
+            print('{}({}): {}'.format(tag, level, message))
+
+        QgsApplication.instance().messageLog().messageReceived.connect(debug_log_message)
 
         if cleanup:
             import atexit

@@ -1,5 +1,4 @@
 %Module(name=qgis._analysis,
-        version=0,
         keyword_arguments="Optional")
 
 %Import QtCore/QtCoremod.sip
@@ -9,6 +8,7 @@
 %Import core/core.sip
 
 %Include vector/qgsgeometryanalyzer.sip
+%Include vector/qgsgeometrysnapper.sip
 %Include vector/qgsoverlayanalyzer.sip
 %Include vector/qgspointsample.sip
 %Include vector/qgstransectsample.sip
@@ -43,6 +43,7 @@
 %Include raster/qgsderivativefilter.sip
 %Include raster/qgsaspectfilter.sip
 %Include raster/qgshillshadefilter.sip
+%Include raster/qgskde.sip
 %Include raster/qgsninecellfilter.sip
 %Include raster/qgsrastercalcnode.sip
 %Include raster/qgsrastercalculator.sip
@@ -51,3 +52,13 @@
 %Include raster/qgsruggednessfilter.sip
 %Include raster/qgsslopefilter.sip
 %Include raster/qgstotalcurvaturefilter.sip
+
+%Include network/qgsgraph.sip
+%Include network/qgsnetworkstrategy.sip
+%Include network/qgsnetworkspeedstrategy.sip
+%Include network/qgsnetworkdistancestrategy.sip
+%Include network/qgsgraphbuilderinterface.sip
+%Include network/qgsgraphbuilder.sip
+%Include network/qgsgraphdirector.sip
+%Include network/qgsvectorlayerdirector.sip
+%Include network/qgsgraphanalyzer.sip

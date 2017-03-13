@@ -18,6 +18,7 @@
 
 #include "qgsmaptool.h"
 #include <QRect>
+#include "qgis_gui.h"
 
 class QgsRubberBand;
 
@@ -31,21 +32,13 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 
   public:
     //! constructor
-    QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
-
+    QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
     ~QgsMapToolZoom();
 
     virtual Flags flags() const override { return QgsMapTool::Transient; }
-
-    //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     virtual void deactivate() override;
 
   protected:
@@ -58,7 +51,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 };
 
 #endif

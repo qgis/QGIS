@@ -23,15 +23,15 @@ class QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometrySegmentLengthCheck( QgsFeaturePool* featurePool, double minLength )
-        : QgsGeometryCheck( FeatureNodeCheck, featurePool )
-        , mMinLength( minLength )
+    QgsGeometrySegmentLengthCheck( QgsFeaturePool *featurePool, double minLength )
+      : QgsGeometryCheck( FeatureNodeCheck, featurePool )
+      , mMinLength( minLength )
     {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
-    const QStringList& getResolutionMethods() const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
+    QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal segment length" ); }
-    QString errorName() const override { return "QgsGeometrySegmentLengthCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
   private:
     enum ResolutionMethod { NoChange };
     double mMinLength;

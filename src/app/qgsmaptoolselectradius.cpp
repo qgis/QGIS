@@ -30,14 +30,14 @@ email                : jpalmer at linz dot govt dot nz
 
 const int RADIUS_SEGMENTS = 40;
 
-QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
@@ -45,7 +45,7 @@ QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -54,7 +54,7 @@ void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -65,7 +65,7 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
       mRubberBand->setFillColor( mFillColor );
-      mRubberBand->setBorderColor( mBorderColour );
+      mRubberBand->setStrokeColor( mStrokeColor );
     }
     mDragging = true;
   }
@@ -74,7 +74,7 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -85,7 +85,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
     {
       mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
       mRubberBand->setFillColor( mFillColor );
-      mRubberBand->setBorderColor( mBorderColour );
+      mRubberBand->setStrokeColor( mStrokeColor );
     }
     mRadiusCenter = toMapCoordinates( e->pos() );
     QgsPoint radiusEdge = toMapCoordinates( QPoint( e->pos().x() + 1, e->pos().y() + 1 ) );
@@ -100,7 +100,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
+void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint &radiusEdge )
 {
   double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
   mRubberBand->reset( QgsWkbTypes::PolygonGeometry );

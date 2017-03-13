@@ -15,6 +15,7 @@
 #ifndef QGSWKBPTR_H
 #define QGSWKBPTR_H
 
+#include "qgis_core.h"
 #include "qgswkbtypes.h"
 #include "qgsapplication.h"
 #include "qgis.h"
@@ -44,21 +45,30 @@ class CORE_EXPORT QgsWkbPtr
 
     void verifyBound( int size ) const;
 
-    template<typename T> void read( T& v ) const
+    template<typename T> void read( T &v ) const
     {
       verifyBound( sizeof v );
       memcpy( &v, mP, sizeof v );
       mP += sizeof v;
     }
 
-    template<typename T> void write( T& v ) const
+    template<typename T> void write( T &v ) const
     {
       verifyBound( sizeof v );
       memcpy( mP, &v, sizeof v );
       mP += sizeof v;
     }
 
+    void write( const QByteArray &data ) const
+    {
+      verifyBound( data.length() );
+      memcpy( mP, data.constData(), data.length() );
+      mP += data.length();
+    }
+
   public:
+    //! Construct WKB pointer from QByteArray
+    QgsWkbPtr( QByteArray &wkb );
     QgsWkbPtr( unsigned char *p, int size );
 
     inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; }
@@ -74,6 +84,8 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; }
+    //! Append data from a byte array
+    inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; }
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; }
 
@@ -100,7 +112,7 @@ class CORE_EXPORT QgsConstWkbPtr
     void verifyBound( int size ) const;
 
     //! Read a value
-    template<typename T> void read( T& v ) const
+    template<typename T> void read( T &v ) const
     {
       verifyBound( sizeof v );
       memcpy( &v, mP, sizeof( v ) );
@@ -110,6 +122,8 @@ class CORE_EXPORT QgsConstWkbPtr
     }
 
   public:
+    //! Construct WKB pointer from QByteArray
+    explicit QgsConstWkbPtr( const QByteArray &wkb );
     QgsConstWkbPtr( const unsigned char *p, int size );
     QgsWkbTypes::Type readHeader() const;
 

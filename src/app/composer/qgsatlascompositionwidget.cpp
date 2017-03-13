@@ -20,22 +20,21 @@
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"
 #include "qgsfieldmodel.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscomposermap.h"
 #include "qgsvectorlayer.h"
 
-QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsComposition* c ):
-    QWidget( parent ), mComposition( c )
+QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget *parent, QgsComposition *c ):
+  QWidget( parent ), mComposition( c )
 {
   setupUi( this );
 
   mAtlasCoverageLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
 
-  connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mAtlasSortFeatureKeyComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
-  connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mPageNameWidget, SLOT( setLayer( QgsMapLayer* ) ) );
-  connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeCoverageLayer( QgsMapLayer* ) ) );
+  connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortFeatureKeyComboBox, &QgsFieldComboBox::setLayer );
+  connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );
+  connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SLOT( changeCoverageLayer( QgsMapLayer * ) ) );
   connect( mAtlasSortFeatureKeyComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( changesSortFeatureField( QString ) ) );
   connect( mPageNameWidget, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( pageNameExpressionChanged( QString, bool ) ) );
 
@@ -57,7 +56,7 @@ QgsAtlasCompositionWidget::~QgsAtlasCompositionWidget()
 
 void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( state == Qt::Checked )
   {
     atlasMap->setEnabled( true );
@@ -74,13 +73,13 @@ void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
 
 void QgsAtlasCompositionWidget::changeCoverageLayer( QgsMapLayer *layer )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
   }
 
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
 
   if ( !vl )
   {
@@ -95,7 +94,7 @@ void QgsAtlasCompositionWidget::changeCoverageLayer( QgsMapLayer *layer )
 
 void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_editingFinished()
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -115,14 +114,14 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenamePatternEdit_editingFinished()
 
 void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap || !atlasMap->coverageLayer() )
   {
     return;
   }
 
   QgsExpressionContext context = mComposition->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( atlasMap->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, "generic", context );
+  QgsExpressionBuilderDialog exprDlg( atlasMap->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression based filename" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -148,7 +147,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
 
 void QgsAtlasCompositionWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int state )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -158,7 +157,7 @@ void QgsAtlasCompositionWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int 
 
 void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int state )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -178,7 +177,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int st
 
 void QgsAtlasCompositionWidget::on_mAtlasSortFeatureCheckBox_stateChanged( int state )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -207,7 +206,7 @@ void QgsAtlasCompositionWidget::updateAtlasFeatures()
   }
 
   //update atlas features
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -227,9 +226,9 @@ void QgsAtlasCompositionWidget::updateAtlasFeatures()
   }
 }
 
-void QgsAtlasCompositionWidget::changesSortFeatureField( const QString& fieldName )
+void QgsAtlasCompositionWidget::changesSortFeatureField( const QString &fieldName )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -240,7 +239,7 @@ void QgsAtlasCompositionWidget::changesSortFeatureField( const QString& fieldNam
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int state )
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -260,10 +259,10 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int
   updateAtlasFeatures();
 }
 
-void QgsAtlasCompositionWidget::pageNameExpressionChanged( const QString&, bool valid )
+void QgsAtlasCompositionWidget::pageNameExpressionChanged( const QString &, bool valid )
 {
   QString expression = mPageNameWidget->asExpression();
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap || ( !valid && !expression.isEmpty() ) )
   {
     return;
@@ -274,7 +273,7 @@ void QgsAtlasCompositionWidget::pageNameExpressionChanged( const QString&, bool 
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_editingFinished()
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -286,8 +285,8 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_editingFinished()
 
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
 {
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( mAtlasCoverageLayerComboBox->currentLayer() );
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
+  QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mAtlasCoverageLayerComboBox->currentLayer() );
 
   if ( !atlasMap || !vl )
   {
@@ -295,7 +294,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
   }
 
   QgsExpressionContext context = mComposition->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, "generic", context );
+  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -316,7 +315,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
   at = ( at == Qt::UpArrow ) ? Qt::DownArrow : Qt::UpArrow;
   mAtlasSortFeatureDirectionButton->setArrowType( at );
 
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
@@ -329,7 +328,7 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
 void QgsAtlasCompositionWidget::updateGuiElements()
 {
   blockAllSignals( true );
-  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
 
   mUseAtlasCheckBox->setCheckState( atlasMap->enabled() ? Qt::Checked : Qt::Unchecked );
   mConfigurationGroup->setEnabled( atlasMap->enabled() );

@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERLABEL_H
 #define QGSCOMPOSERLABEL_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QFont>
 
@@ -35,39 +36,43 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerLabel; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    //! \brief Reimplementation of QCanvasItem::paint
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    /** Resizes the widget such that the text fits to the item. Keeps top left point*/
+    //! Resizes the widget such that the text fits to the item. Keeps top left point
     void adjustSizeToText();
 
     QString text() { return mText; }
-    void setText( const QString& text );
+    void setText( const QString &text );
 
     int htmlState() { return mHtmlState; }
     void setHtmlState( int state );
 
-    /** Returns the text as it appears on screen (with replaced data field) */
+    //! Returns the text as it appears on screen (with replaced data field)
     QString displayText() const;
 
     QFont font() const;
-    void setFont( const QFont& f );
+    void setFont( const QFont &f );
+
     /** Accessor for the vertical alignment of the label
      * @returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag vAlign() const { return mVAlignment; }
+
     /** Accessor for the horizontal alignment of the label
      * @returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag hAlign() const { return mHAlignment; }
+
     /** Mutator for the horizontal alignment of the label
      * @param a alignment
      * @returns void
      */
     void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+
     /** Mutator for the vertical alignment of the label
      * @param a alignment
      * @returns void
@@ -116,22 +121,22 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      */
     void setMarginY( const double margin );
 
-    /** Sets text color */
-    void setFontColor( const QColor& c ) { mFontColor = c; }
-    /** Get font color */
+    //! Sets text color
+    void setFontColor( const QColor &c ) { mFontColor = c; }
+    //! Get font color
     QColor fontColor() const { return mFontColor; }
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
      * @param doc document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //Overridden to contain part of label's text
     virtual QString displayName() const override;
@@ -145,9 +150,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      */
     virtual void setFrameEnabled( const bool drawFrame ) override;
 
-    /** Reimplemented to call prepareGeometryChange after changing outline width
+    /** Reimplemented to call prepareGeometryChange after changing stroke width
      */
-    virtual void setFrameOutlineWidth( const double outlineWidth ) override;
+    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
 
   public slots:
     void refreshExpressionContext();
@@ -166,18 +171,18 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     double htmlUnitsToMM(); //calculate scale factor
     bool mHtmlLoaded;
 
-    /** Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
-    void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
+    //! Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment
+    void itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const;
 
-    /** Called when the content is changed to handle HTML loading */
+    //! Called when the content is changed to handle HTML loading
     void contentChanged();
 
     // Font
     QFont mFont;
 
-    /** Horizontal margin between contents and frame (in mm)*/
+    //! Horizontal margin between contents and frame (in mm)
     double mMarginX;
-    /** Vertical margin between contents and frame (in mm)*/
+    //! Vertical margin between contents and frame (in mm)
     double mMarginY;
 
     // Font color
@@ -189,17 +194,17 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     // Vertical Alignment
     Qt::AlignmentFlag mVAlignment;
 
-    /** Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
-    void replaceDateText( QString& text ) const;
+    //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
+    void replaceDateText( QString &text ) const;
 
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;
 
-    QScopedPointer<QgsFeature> mExpressionFeature;
-    QgsVectorLayer* mExpressionLayer;
-    QgsDistanceArea* mDistanceArea;
+    std::unique_ptr<QgsFeature> mExpressionFeature;
+    QgsVectorLayer *mExpressionLayer = nullptr;
+    QgsDistanceArea *mDistanceArea = nullptr;
 
-    QgsWebPage* mWebPage;
+    QgsWebPage *mWebPage = nullptr;
 };
 
 #endif

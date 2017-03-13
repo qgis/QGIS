@@ -223,7 +223,9 @@ expression:
             exp_error(parser_ctx, "Function is not known");
             YYERROR;
           }
-          if ( QgsExpression::Functions()[fnIndex]->params() != 0 )
+          // 0 parameters is expected, -1 parameters means leave it to the
+          // implementation
+          if ( QgsExpression::Functions()[fnIndex]->params() > 0 )
           {
             exp_error(parser_ctx, QString( "%1 function is called with wrong number of arguments" ).arg( QgsExpression::Functions()[fnIndex]->name() ).toLocal8Bit().constData() );
             YYERROR;

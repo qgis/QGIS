@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 from __future__ import print_function
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2014'
@@ -35,35 +36,34 @@ def getAlgParams(f):
     params = []
     booleanparams = []
     numparams = []
-    lines = open(f)
-    line = lines.readline().strip('\n').strip()
-    name = line
-    if '|' in name:
-        tokens = name.split('|')
-        cmdname = tokens[1]
-    else:
-        cmdname = name
-    line = lines.readline().strip('\n').strip()
-    group = line
-    line = lines.readline().strip('\n').strip()
-    while line != '':
-        if line.startswith('Hardcoded'):
-            pass
-        elif line.startswith('AllowUnmatching'):
-            pass
-        elif line.startswith('Extent'):
-            extentParamNames = line[6:].strip().split(' ')
-            params.extend(["-" + p for p in extentParamNames])
-        else:
-            tokens = line.split("|")
-            if tokens[0] == "ParameterBoolean":
-                booleanparams.append("-" + tokens[1].strip())
-            elif tokens[0] == "ParameterNumber":
-                numparams.append("-" + tokens[1].strip())
-            else:
-                params.append("-" + tokens[1])
+    with open(f) as lines:
         line = lines.readline().strip('\n').strip()
-    lines.close()
+        name = line
+        if '|' in name:
+            tokens = name.split('|')
+            cmdname = tokens[1]
+        else:
+            cmdname = name
+        line = lines.readline().strip('\n').strip()
+        group = line
+        line = lines.readline().strip('\n').strip()
+        while line != '':
+            if line.startswith('Hardcoded'):
+                pass
+            elif line.startswith('AllowUnmatching'):
+                pass
+            elif line.startswith('Extent'):
+                extentParamNames = line[6:].strip().split(' ')
+                params.extend(["-" + p for p in extentParamNames])
+            else:
+                tokens = line.split("|")
+                if tokens[0] == "ParameterBoolean":
+                    booleanparams.append("-" + tokens[1].strip())
+                elif tokens[0] == "ParameterNumber":
+                    numparams.append("-" + tokens[1].strip())
+                else:
+                    params.append("-" + tokens[1])
+            line = lines.readline().strip('\n').strip()
     return cmdname, group, params, booleanparams, numparams
 
 
@@ -82,7 +82,7 @@ def testDescriptionFile(f):
         command,
         shell=True,
         stdout=subprocess.PIPE,
-        stdin=open(os.devnull),
+        stdin=subprocess.DEVNULL,
         stderr=subprocess.STDOUT,
         universal_newlines=True,
     ).stdout
@@ -104,7 +104,7 @@ def testDescriptionFile(f):
         # fix_print_with_import
         print("Name in description:" + cmdname)
         # fix_print_with_import
-        print("Parameters in description:" + unicode(params))
+        print("Parameters in description:" + str(params))
         # fix_print_with_import
         print("-" * 50)
         print()

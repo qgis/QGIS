@@ -27,7 +27,6 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
@@ -39,18 +38,18 @@
 #include "qgssymbolselectordialog.h"
 #include "qgssinglesymbolrenderer.h"
 
-QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
-    : mView( view )
-    , mCanvas( canvas )
+QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
+  : mView( view )
+  , mCanvas( canvas )
 {
 }
 
 
-QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
+QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 {
-  QMenu* menu = new QMenu;
+  QMenu *menu = new QMenu;
 
-  QgsLayerTreeViewDefaultActions* actions = mView->defaultActions();
+  QgsLayerTreeViewDefaultActions *actions = mView->defaultActions();
 
   QModelIndex idx = mView->currentIndex();
   if ( !idx.isValid() )
@@ -58,28 +57,32 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
 
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionExpandTree.svg" ) ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCollapseTree.svg" ) ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
 
     // TODO: update drawing order
   }
-  else if ( QgsLayerTreeNode* node = mView->layerTreeModel()->index2node( idx ) )
+  else if ( QgsLayerTreeNode *node = mView->layerTreeModel()->index2node( idx ) )
   {
     // layer or group selected
     if ( QgsLayerTree::isGroup( node ) )
     {
       menu->addAction( actions->actionZoomToGroup( mCanvas, menu ) );
 
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ),
                        tr( "&Set Group CRS" ), QgisApp::instance(), SLOT( legendGroupSetCrs() ) );
 
       menu->addAction( actions->actionRenameGroupOrLayer( menu ) );
 
-      menu->addAction( tr( "&Set Group WMS data" ), QgisApp::instance(), SLOT( legendGroupSetWMSData() ) );
+      menu->addAction( tr( "&Set Group WMS data" ), QgisApp::instance(), SLOT( legendGroupSetWmsData() ) );
 
       menu->addAction( actions->actionMutuallyExclusiveGroup( menu ) );
+
+      menu->addAction( actions->actionCheckAndAllChildren( menu ) );
+
+      menu->addAction( actions->actionUncheckAndAllChildren( menu ) );
 
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
@@ -99,21 +102,24 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
-      menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
-      menu->addAction( actions->actionShowInOverview( menu ) );
+      if ( layer && layer->isSpatial() )
+      {
+        menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
+        menu->addAction( actions->actionShowInOverview( menu ) );
+      }
 
       if ( rlayer )
       {
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionZoomActual.svg" ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomActual.svg" ) ), tr( "&Zoom to Native Resolution (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
         if ( rlayer->rasterType() != QgsRasterLayer::Palette )
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
       }
 
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.svg" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       // duplicate layer
-      QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
+      QAction *duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateLayer.svg" ) ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
       if ( layer && layer->isSpatial() )
       {
@@ -123,11 +129,13 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
 
+        menu->addAction( actions->actionCheckAndAllParents( menu ) );
+
         // set layer crs
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
 
         // assign layer crs to project
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCrsFromLayer() ) );
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetProjectCRS.png" ) ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCrsFromLayer() ) );
       }
 
       // style-related actions
@@ -147,38 +155,38 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         if ( vlayer )
         {
-          const QgsSingleSymbolRenderer* singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer* >( vlayer->renderer() );
+          const QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( vlayer->renderer() );
           if ( !singleRenderer && vlayer->renderer() && vlayer->renderer()->embeddedRenderer() )
           {
-            singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer* >( vlayer->renderer()->embeddedRenderer() );
+            singleRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( vlayer->renderer()->embeddedRenderer() );
           }
           if ( singleRenderer && singleRenderer->symbol() )
           {
             //single symbol renderer, so add set color/edit symbol actions
             menuStyleManager->addSeparator();
-            QgsColorWheel* colorWheel = new QgsColorWheel( menuStyleManager );
+            QgsColorWheel *colorWheel = new QgsColorWheel( menuStyleManager );
             colorWheel->setColor( singleRenderer->symbol()->color() );
-            QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menuStyleManager, menuStyleManager );
+            QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, menuStyleManager, menuStyleManager );
             colorAction->setDismissOnColorSelection( false );
-            connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setVectorSymbolColor( const QColor& ) ) );
+            connect( colorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setVectorSymbolColor( const QColor & ) ) );
             //store the layer id in action, so we can later retrieve the corresponding layer
             colorAction->setProperty( "layerId", vlayer->id() );
             menuStyleManager->addAction( colorAction );
 
             //add recent colors action
             QList<QgsRecentColorScheme *> recentSchemes;
-            QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+            QgsApplication::colorSchemeRegistry()->schemes( recentSchemes );
             if ( !recentSchemes.isEmpty() )
             {
-              QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menuStyleManager, "symbology", menuStyleManager );
+              QgsColorSwatchGridAction *recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menuStyleManager, QStringLiteral( "symbology" ), menuStyleManager );
               recentColorAction->setProperty( "layerId", vlayer->id() );
               recentColorAction->setDismissOnColorSelection( false );
               menuStyleManager->addAction( recentColorAction );
-              connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setVectorSymbolColor( const QColor& ) ) );
+              connect( recentColorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setVectorSymbolColor( const QColor & ) ) );
             }
 
             menuStyleManager->addSeparator();
-            QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menuStyleManager );
+            QAction *editSymbolAction = new QAction( tr( "Edit Symbol..." ), menuStyleManager );
             //store the layer id in action, so we can later retrieve the corresponding layer
             editSymbolAction->setProperty( "layerId", vlayer->id() );
             connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editVectorSymbol() ) );
@@ -205,7 +213,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.svg" ), tr( "&Open Attribute Table" ),
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "&Open Attribute Table" ),
                          QgisApp::instance(), SLOT( attributeTable() ) );
 
         // allow editing
@@ -227,7 +235,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           menu->addAction( allEditsAction );
 
         // disable duplication of memory layers
-        if ( vlayer->storageType() == "Memory storage" && mView->selectedLayerNodes().count() == 1 )
+        if ( vlayer->storageType() == QLatin1String( "Memory storage" ) && mView->selectedLayerNodes().count() == 1 )
           duplicateLayersAction->setEnabled( false );
 
         // save as vector file
@@ -268,34 +276,34 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
-      if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer*>( layer )->providerType() == "virtual" )
+      if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer )->providerType() == QLatin1String( "virtual" ) )
       {
         menu->addAction( tr( "Edit virtual layer settings" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
       }
     }
 
   }
-  else if ( QgsLayerTreeModelLegendNode* node = mView->layerTreeModel()->index2legendNode( idx ) )
+  else if ( QgsLayerTreeModelLegendNode *node = mView->layerTreeModel()->index2legendNode( idx ) )
   {
-    if ( QgsSymbolLegendNode* symbolNode = dynamic_cast< QgsSymbolLegendNode* >( node ) )
+    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( node ) )
     {
       // symbology item
       if ( symbolNode->flags() & Qt::ItemIsUserCheckable )
       {
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ), tr( "&Show All Items" ),
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), tr( "&Show All Items" ),
                          symbolNode, SLOT( checkAllItems() ) );
-        menu->addAction( QgsApplication::getThemeIcon( "/mActionHideAllLayers.svg" ), tr( "&Hide All Items" ),
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) ), tr( "&Hide All Items" ),
                          symbolNode, SLOT( uncheckAllItems() ) );
         menu->addSeparator();
       }
 
       if ( symbolNode->symbol() )
       {
-        QgsColorWheel* colorWheel = new QgsColorWheel( menu );
+        QgsColorWheel *colorWheel = new QgsColorWheel( menu );
         colorWheel->setColor( symbolNode->symbol()->color() );
-        QgsColorWidgetAction* colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
+        QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
         colorAction->setDismissOnColorSelection( false );
-        connect( colorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
+        connect( colorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setSymbolLegendNodeColor( const QColor & ) ) );
         //store the layer id and rule key in action, so we can later retrieve the corresponding
         //legend node, if it still exists
         colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
@@ -304,21 +312,21 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         //add recent colors action
         QList<QgsRecentColorScheme *> recentSchemes;
-        QgsColorSchemeRegistry::instance()->schemes( recentSchemes );
+        QgsApplication::colorSchemeRegistry()->schemes( recentSchemes );
         if ( !recentSchemes.isEmpty() )
         {
-          QgsColorSwatchGridAction* recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, "symbology", menu );
+          QgsColorSwatchGridAction *recentColorAction = new QgsColorSwatchGridAction( recentSchemes.at( 0 ), menu, QStringLiteral( "symbology" ), menu );
           recentColorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
           recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
           recentColorAction->setDismissOnColorSelection( false );
           menu->addAction( recentColorAction );
-          connect( recentColorAction, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolLegendNodeColor( const QColor& ) ) );
+          connect( recentColorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setSymbolLegendNodeColor( const QColor & ) ) );
         }
 
         menu->addSeparator();
       }
 
-      QAction* editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
+      QAction *editSymbolAction = new QAction( tr( "Edit Symbol..." ), menu );
       //store the layer id and rule key in action, so we can later retrieve the corresponding
       //legend node, if it still exists
       editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
@@ -333,13 +341,13 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
 
 
-void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction* action, const QString& menu, const QString& id,
+void QgsAppLayerTreeViewMenuProvider::addLegendLayerAction( QAction *action, const QString &menu,
     QgsMapLayer::LayerType type, bool allLayers )
 {
-  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, id, allLayers ) );
+  mLegendLayerActionMap[type].append( LegendLayerAction( action, menu, allLayers ) );
 }
 
-bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
+bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction *action )
 {
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it;
   for ( it = mLegendLayerActionMap.begin();
@@ -347,7 +355,7 @@ bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
   {
     for ( int i = 0; i < it->count(); i++ )
     {
-      if (( *it )[i].action == action )
+      if ( ( *it )[i].action == action )
       {
         ( *it ).removeAt( i );
         return true;
@@ -357,7 +365,7 @@ bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
   return false;
 }
 
-void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
+void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction *action, QgsMapLayer *layer )
 {
   if ( !action || !layer )
     return;
@@ -367,10 +375,10 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* act
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
-  = mLegendLayerActionMap.find( layer->type() );
+    = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
-    if (( *it )[i].action == action )
+    if ( ( *it )[i].action == action )
     {
       ( *it )[i].layers.append( layer );
       return;
@@ -378,13 +386,13 @@ void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* act
   }
 }
 
-void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLayer* layer )
+void QgsAppLayerTreeViewMenuProvider::removeLegendLayerActionsForLayer( QgsMapLayer *layer )
 {
   if ( ! layer || ! mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
-  = mLegendLayerActionMap.find( layer->type() );
+    = mLegendLayerActionMap.find( layer->type() );
   for ( int i = 0; i < it->count(); i++ )
   {
     ( *it )[i].layers.removeAll( layer );
@@ -398,7 +406,7 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
   {
     QgsDebugMsg( QString( "legendLayerActions for layers of type %1:" ).arg( type ) );
 
-    Q_FOREACH ( const LegendLayerAction& lyrAction, mLegendLayerActionMap[ type ] )
+    Q_FOREACH ( const LegendLayerAction &lyrAction, mLegendLayerActionMap[ type ] )
     {
       Q_UNUSED( lyrAction );
       QgsDebugMsg( QString( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
@@ -409,7 +417,7 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
   return mLegendLayerActionMap.contains( type ) ? mLegendLayerActionMap.value( type ) : QList< LegendLayerAction >();
 }
 
-void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMapLayer* layer )
+void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu *menu, QgsMapLayer *layer )
 {
   if ( !layer )
     return;
@@ -420,7 +428,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
   if ( ! lyrActions.isEmpty() )
   {
     menu->addSeparator();
-    QList<QMenu*> theMenus;
+    QList<QMenu *> menus;
     for ( int i = 0; i < lyrActions.count(); i++ )
     {
       if ( lyrActions[i].allLayers || lyrActions[i].layers.contains( layer ) )
@@ -438,11 +446,11 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           // Mac doesn't have '&' keyboard shortcuts.
           menuName.remove( QChar( '&' ) );
 #endif
-          QAction* before = nullptr;
-          QMenu* newMenu = nullptr;
+          QAction *before = nullptr;
+          QMenu *newMenu = nullptr;
           QString dst = menuName;
           dst.remove( QChar( '&' ) );
-          Q_FOREACH ( QMenu* menu, theMenus )
+          Q_FOREACH ( QMenu *menu, menus )
           {
             QString src = menu->title();
             src.remove( QChar( '&' ) );
@@ -464,11 +472,11 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           {
             // It doesn't exist, so create
             newMenu = new QMenu( menuName );
-            theMenus.append( newMenu );
+            menus.append( newMenu );
             // Where to put it? - we worked that out above...
             menu->insertMenu( before, newMenu );
           }
-          // QMenu* menu = getMenu( lyrActions[i].menu, &theBeforeSep, &theAfterSep, &theMenu );
+          // QMenu* menu = getMenu( lyrActions[i].menu, &beforeSep, &afterSep, &menu );
           newMenu->addAction( lyrActions[i].action );
         }
       }
@@ -479,52 +487,54 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
 
 void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
 {
-  QAction* action = qobject_cast< QAction*>( sender() );
+  QAction *action = qobject_cast< QAction *>( sender() );
   if ( !action )
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
-  QgsSingleSymbolRenderer* singleRenderer = dynamic_cast< QgsSingleSymbolRenderer* >( layer->renderer() );
+  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
   if ( !singleRenderer )
     return;
 
-  QScopedPointer< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
-  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), layer, mView->window() );
+  std::unique_ptr< QgsSymbol > symbol( singleRenderer->symbol() ? singleRenderer->symbol()->clone() : nullptr );
+  QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), layer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
-  dlg.setMapCanvas( mCanvas );
+  QgsSymbolWidgetContext context;
+  context.setMapCanvas( mCanvas );
+  dlg.setContext( context );
   if ( dlg.exec() )
   {
-    singleRenderer->setSymbol( symbol.take() );
+    singleRenderer->setSymbol( symbol.release() );
     layer->triggerRepaint();
     mView->refreshLayerSymbology( layer->id() );
   }
 }
 
-void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color )
+void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color )
 {
-  QAction* action = qobject_cast< QAction*>( sender() );
+  QAction *action = qobject_cast< QAction *>( sender() );
   if ( !action )
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
-  QgsSingleSymbolRenderer* singleRenderer = dynamic_cast< QgsSingleSymbolRenderer* >( layer->renderer() );
-  QgsSymbol* newSymbol = nullptr;
+  QgsSingleSymbolRenderer *singleRenderer = dynamic_cast< QgsSingleSymbolRenderer * >( layer->renderer() );
+  QgsSymbol *newSymbol = nullptr;
 
   if ( singleRenderer && singleRenderer->symbol() )
     newSymbol = singleRenderer->symbol()->clone();
 
-  const QgsSingleSymbolRenderer* embeddedRenderer = nullptr;
+  const QgsSingleSymbolRenderer *embeddedRenderer = nullptr;
   if ( !newSymbol && layer->renderer()->embeddedRenderer() )
   {
-    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRenderer* >( layer->renderer()->embeddedRenderer() );
+    embeddedRenderer = dynamic_cast< const QgsSingleSymbolRenderer * >( layer->renderer()->embeddedRenderer() );
     if ( embeddedRenderer && embeddedRenderer->symbol() )
       newSymbol = embeddedRenderer->symbol()->clone();
   }
@@ -539,7 +549,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
   }
   else if ( embeddedRenderer )
   {
-    QgsSingleSymbolRenderer* newRenderer = embeddedRenderer->clone();
+    QgsSingleSymbolRenderer *newRenderer = embeddedRenderer->clone();
     newRenderer->setSymbol( newSymbol );
     layer->renderer()->setEmbeddedRenderer( newRenderer );
   }
@@ -551,29 +561,31 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor& color 
 
 void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
 {
-  QAction* action = qobject_cast< QAction*>( sender() );
+  QAction *action = qobject_cast< QAction *>( sender() );
   if ( !action )
     return;
 
   QString layerId = action->property( "layerId" ).toString();
   QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolLegendNode* node = dynamic_cast<QgsSymbolLegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
-  const QgsSymbol* originalSymbol = node->symbol();
+  const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
     return;
 
-  QScopedPointer< QgsSymbol > symbol( originalSymbol->clone() );
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( node->layerNode()->layer() );
-  QgsSymbolSelectorDialog dlg( symbol.data(), QgsStyle::defaultStyle(), vlayer, mView->window() );
+  std::unique_ptr< QgsSymbol > symbol( originalSymbol->clone() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( node->layerNode()->layer() );
+  QgsSymbolSelectorDialog dlg( symbol.get(), QgsStyle::defaultStyle(), vlayer, mView->window() );
   dlg.setWindowTitle( tr( "Symbol selector" ) );
-  dlg.setMapCanvas( mCanvas );
+  QgsSymbolWidgetContext context;
+  context.setMapCanvas( mCanvas );
+  dlg.setContext( context );
   if ( dlg.exec() )
   {
-    node->setSymbol( symbol.take() );
+    node->setSymbol( symbol.release() );
     if ( vlayer )
     {
       vlayer->emitStyleChanged();
@@ -583,25 +595,25 @@ void QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol()
 
 void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &color )
 {
-  QAction* action = qobject_cast< QAction*>( sender() );
+  QAction *action = qobject_cast< QAction *>( sender() );
   if ( !action )
     return;
 
   QString layerId = action->property( "layerId" ).toString();
   QString ruleKey = action->property( "ruleKey" ).toString();
 
-  QgsSymbolLegendNode* node = dynamic_cast<QgsSymbolLegendNode*>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
+  QgsSymbolLegendNode *node = dynamic_cast<QgsSymbolLegendNode *>( mView->layerTreeModel()->findLegendNode( layerId, ruleKey ) );
   if ( !node )
     return;
 
-  const QgsSymbol* originalSymbol = node->symbol();
+  const QgsSymbol *originalSymbol = node->symbol();
   if ( !originalSymbol )
     return;
 
-  QgsSymbol* newSymbol = originalSymbol->clone();
+  QgsSymbol *newSymbol = originalSymbol->clone();
   newSymbol->setColor( color );
   node->setSymbol( newSymbol );
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) ) )
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
   {
     layer->emitStyleChanged();
   }

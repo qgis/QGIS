@@ -19,6 +19,7 @@
 #include "ui_qgsvaluerelationconfigdlgbase.h"
 
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsValueRelationConfigDlg
@@ -30,15 +31,15 @@ class GUI_EXPORT QgsValueRelationConfigDlg : public QgsEditorConfigWidget, priva
     Q_OBJECT
 
   public:
-    explicit QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
   public slots:
     void editExpression();
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() override;
-    void setConfig( const QgsEditorWidgetConfig& config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 };
 
 #endif // QGSVALUERELATIONCONFIGDLG_H

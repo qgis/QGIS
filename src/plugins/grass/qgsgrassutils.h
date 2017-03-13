@@ -33,7 +33,7 @@ class QgsGrassUtils
     //! Constructor
     QgsGrassUtils();
 
-    //! Destructor
+
     ~QgsGrassUtils();
 
   public:
@@ -62,7 +62,7 @@ class QgsGrassElementDialog: public QObject
     //! Constructor
     explicit QgsGrassElementDialog( QWidget *parent );
 
-    //! Destructor
+
     ~QgsGrassElementDialog();
 
   public:
@@ -71,7 +71,7 @@ class QgsGrassElementDialog: public QObject
     QString getItem( QString element,
                      QString title, QString label,
                      QString text, QString source = 0,
-                     bool * ok = 0 );
+                     bool *ok = 0 );
 
   public slots:
     void textChanged();
@@ -79,13 +79,13 @@ class QgsGrassElementDialog: public QObject
   private:
     QString mElement;
     QString mSource;
-    QDialog *mDialog;
-    QLineEdit *mLineEdit;
-    QLabel *mLabel;
-    QLabel *mErrorLabel;
-    QPushButton *mOkButton;
-    QPushButton *mCancelButton;
-    QWidget *mParent;
+    QDialog *mDialog = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QLabel *mLabel = nullptr;
+    QLabel *mErrorLabel = nullptr;
+    QPushButton *mOkButton = nullptr;
+    QPushButton *mCancelButton = nullptr;
+    QWidget *mParent = nullptr;
 };
 
 #endif // QGSGRASSUTILS_H

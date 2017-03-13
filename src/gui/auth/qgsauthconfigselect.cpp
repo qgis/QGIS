@@ -29,13 +29,13 @@
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
-    : QWidget( parent )
-    , mAuthCfg( QString() )
-    , mDataProvider( dataprovider )
-    , mConfigs( QgsAuthMethodConfigsMap() )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QWidget( parent )
+  , mAuthCfg( QString() )
+  , mDataProvider( dataprovider )
+  , mConfigs( QgsAuthMethodConfigsMap() )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -49,7 +49,7 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   {
     setupUi( this );
 
-    leConfigMsg->setStyleSheet( QString( "QLineEdit{background-color: %1}" )
+    leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
                                 .arg( QgsAuthGuiUtils::yellowColor().name() ) );
 
     clearConfig();
@@ -58,11 +58,7 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   }
 }
 
-QgsAuthConfigSelect::~QgsAuthConfigSelect()
-{
-}
-
-void QgsAuthConfigSelect::setConfigId( const QString& authcfg )
+void QgsAuthConfigSelect::setConfigId( const QString &authcfg )
 {
   if ( mDisabled && mAuthNotify )
   {
@@ -97,7 +93,7 @@ void QgsAuthConfigSelect::loadConfig()
   if ( !mAuthCfg.isEmpty() && mConfigs.contains( mAuthCfg ) )
   {
     QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
-    QgsAuthMethod * authmethod = QgsAuthManager::instance()->configAuthMethod( mAuthCfg );
+    QgsAuthMethod *authmethod = QgsAuthManager::instance()->configAuthMethod( mAuthCfg );
     QString methoddesc = tr( "Missing authentication method description" );
     if ( authmethod )
     {
@@ -199,7 +195,7 @@ void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this, QString(), mDataProvider );
+  QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, QString(), mDataProvider );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -213,7 +209,7 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
 
-  QgsAuthConfigEdit * ace = new QgsAuthConfigEdit( this, mAuthCfg, mDataProvider );
+  QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, mAuthCfg, mDataProvider );
   ace->setWindowModality( Qt::WindowModal );
   if ( ace->exec() )
   {
@@ -252,13 +248,13 @@ void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
 #include <QPushButton>
 
 QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &datauri, const QString &dataprovider )
-    : QDialog( parent )
-    , mAuthCfg( QString() )
-    , mDataUri( QString() )
-    , mDataUriOrig( QString() )
-    , mDisabled( false )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mAuthCfg( QString() )
+  , mDataUri( QString() )
+  , mDataUriOrig( QString() )
+  , mDisabled( false )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -280,16 +276,12 @@ QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &data
 
     connect( buttonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetChanges() ) );
 
-    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdChanged( QString ) ), this , SLOT( authCfgUpdated( QString ) ) );
-    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdRemoved( QString ) ), this , SLOT( authCfgRemoved( QString ) ) );
+    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdChanged( QString ) ), this, SLOT( authCfgUpdated( QString ) ) );
+    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdRemoved( QString ) ), this, SLOT( authCfgRemoved( QString ) ) );
 
     wdgtAuthSelect->setDataProviderKey( dataprovider );
     setDataSourceUri( datauri );
   }
-}
-
-QgsAuthConfigUriEdit::~QgsAuthConfigUriEdit()
-{
 }
 
 void QgsAuthConfigUriEdit::setDataSourceUri( const QString &datauri )

@@ -23,8 +23,9 @@
 #include <QComboBox>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
-class QgsGenericProjectionSelector;
+class QgsProjectionSelectionDialog;
 
 /**
  * \class QgsProjectionSelectionWidget
@@ -41,11 +42,12 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     enum CrsOption
     {
-      LayerCrs, /*!< optional layer CRS */
-      ProjectCrs, /*!< current project CRS (if OTF reprojection enabled) */
-      CurrentCrs, /*!< current user selected CRS */
-      DefaultCrs, /*!< global default QGIS CRS */
-      RecentCrs /*!< recently used CRS */
+      LayerCrs, //!< Optional layer CRS
+      ProjectCrs, //!< Current project CRS (if OTF reprojection enabled)
+      CurrentCrs, //!< Current user selected CRS
+      DefaultCrs, //!< Global default QGIS CRS
+      RecentCrs, //!< Recently used CRS
+      CrsNotSet, //!< Not set (hidden by default)
     };
 
     explicit QgsProjectionSelectionWidget( QWidget *parent = nullptr );
@@ -54,7 +56,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Can be used to modify how the projection selector dialog behaves.
      * @returns projection selector dialog
      */
-    QgsGenericProjectionSelector* dialog() { return mDialog; }
+    QgsProjectionSelectionDialog *dialog() { return mDialog; }
 
     /** Returns the currently selected CRS for the widget
      * @returns current CRS
@@ -64,27 +66,48 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     /** Sets whether a predefined CRS option should be shown in the widget.
      * @param option CRS option to show/hide
      * @param visible whether the option should be shown
+     * @see optionVisible()
      */
     void setOptionVisible( const CrsOption option, const bool visible );
+
+    /**
+     * Returns whether the specified CRS option is visible in the widget.
+     * @note added in QGIS 3.0
+     * @see setOptionVisible()
+     */
+    bool optionVisible( CrsOption option ) const;
+
+    /**
+     * Sets the text to show for the not set option. Note that this option is not shown
+     * by default and must be set visible by calling setOptionVisible().
+     * @note added in QGIS 3.0
+     */
+    void setNotSetText( const QString &text );
 
   signals:
 
     /** Emitted when the selected CRS is changed
      */
-    void crsChanged( const QgsCoordinateReferenceSystem& );
+    void crsChanged( const QgsCoordinateReferenceSystem & );
+
+    /**
+     * Emitted when the not set option is selected.
+     * @note added in QGIS 3.0
+     */
+    void cleared();
 
   public slots:
 
     /** Sets the current CRS for the widget
      * @param crs new CRS
      */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Sets the layer CRS for the widget. If set, this will be added as an option
      * to the preset CRSes shown in the widget.
      * @param crs layer CRS
      */
-    void setLayerCrs( const QgsCoordinateReferenceSystem& crs );
+    void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 
     /** Opens the dialog for selecting a new CRS
      */
@@ -96,12 +119,16 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QgsCoordinateReferenceSystem mLayerCrs;
     QgsCoordinateReferenceSystem mProjectCrs;
     QgsCoordinateReferenceSystem mDefaultCrs;
-    QComboBox* mCrsComboBox;
-    QToolButton* mButton;
-    QgsGenericProjectionSelector* mDialog;
+    QComboBox *mCrsComboBox = nullptr;
+    QToolButton *mButton = nullptr;
+    QgsProjectionSelectionDialog *mDialog = nullptr;
+    QString mNotSetText;
 
+    void addNotSetOption();
     void addProjectCrsOption();
     void addDefaultCrsOption();
+    void addCurrentCrsOption();
+    QString currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const;
     void addRecentCrs();
     bool crsIsShown( const long srsid ) const;
 

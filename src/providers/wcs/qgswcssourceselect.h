@@ -54,15 +54,15 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
   public:
     //! Constructor
     QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsWCSSourceSelect();
 
   public slots:
 
   signals:
-    void addRasterLayer( QString const & rasterLayerPath,
-                         QString const & baseName,
-                         QString const & providerKey );
+    void addRasterLayer( QString const &rasterLayerPath,
+                         QString const &baseName,
+                         QString const &providerKey );
 
   private:
     QgsWcsCapabilities mCapabilities;

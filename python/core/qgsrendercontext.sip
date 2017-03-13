@@ -30,7 +30,7 @@ class QgsRenderContext
     /** Set combination of flags that will be used for rendering.
      * @note added in QGIS 2.14
      */
-    void setFlags( const QgsRenderContext::Flags& flags );
+    void setFlags( QgsRenderContext::Flags flags );
 
     /** Enable or disable a particular flag (other flags are not affected)
      * @note added in QGIS 2.14
@@ -51,10 +51,17 @@ class QgsRenderContext
     //! @note added in 2.4
     static QgsRenderContext fromMapSettings( const QgsMapSettings& mapSettings );
 
+    /**
+     * Creates a default render context given a pixel based QPainter destination.
+     * If no painter is specified or the painter has no device, then a default
+     * DPI of 88 will be assumed.
+     * @note added in QGIS 3.0
+     */
+    static QgsRenderContext fromQPainter( QPainter* painter );
+
     //getters
 
     QPainter* painter();
-    const QPainter* constPainter() const;
 
     /** Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.
@@ -66,8 +73,6 @@ class QgsRenderContext
     const QgsMapToPixel& mapToPixel() const;
 
     double scaleFactor() const;
-
-    double rasterScaleFactor() const;
 
     bool renderingStopped() const;
 
@@ -85,11 +90,9 @@ class QgsRenderContext
 
     double rendererScale() const;
 
-    QgsLabelingEngineInterface* labelingEngine();
-
     //! Get access to new labeling engine (may be nullptr)
     //! @note not available in Python bindings
-    // QgsLabelingEngine* labelingEngineV2() const { return mLabelingEngine2; }
+    // QgsLabelingEngine* labelingEngine() const;
 
     QColor selectionColor() const;
 
@@ -113,16 +116,14 @@ class QgsRenderContext
 
     void setRenderingStopped( bool stopped );
     void setScaleFactor( double factor );
-    void setRasterScaleFactor( double factor );
     void setRendererScale( double scale );
     void setPainter( QPainter* p );
 
     void setForceVectorOutput( bool force );
 
-    void setLabelingEngine( QgsLabelingEngineInterface* iface );
     //! Assign new labeling engine
     //! @note not available in Python bindings
-    // void setLabelingEngineV2( QgsLabelingEngine* engine2 ) { mLabelingEngine2 = engine2; }
+    // void setLabelingEngine( QgsLabelingEngine* engine2 );
     void setSelectionColor( const QColor& color );
 
     /** Sets whether vector selections should be shown in the rendered map
@@ -195,4 +196,9 @@ class QgsRenderContext
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
     /** Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)*/
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
+
+    double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+    double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& scale = QgsMapUnitScale() ) const;
+    double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
+
 };

@@ -26,27 +26,26 @@
 #include <QMouseEvent>
 #include <QRect>
 #include <QColor>
-#include <QScopedPointer>
 
 
-QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
   mToolName = tr( "Select" );
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
-void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( !vlayer )
     return;
 
   QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
   rubberBand.setFillColor( mFillColor );
-  rubberBand.setBorderColor( mBorderColour );
+  rubberBand.setStrokeColor( mStrokeColor );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -28,7 +28,7 @@
 #include "qgsfeatureiterator.h"
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 //qgis test includes
@@ -40,10 +40,10 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-        : QObject( 0 )
-        , rendererChanged( false )
-        , featureBlendMode( QPainter::CompositionMode( 0 ) )
-        , transparency( 0 )
+      : QObject( 0 )
+      , rendererChanged( false )
+      , featureBlendMode( QPainter::CompositionMode( 0 ) )
+      , transparency( 0 )
     {}
     bool rendererChanged;
     QPainter::CompositionMode featureBlendMode;
@@ -71,19 +71,19 @@ class TestQgsVectorLayer : public QObject
     Q_OBJECT
   public:
     TestQgsVectorLayer()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
-        , mpNonSpatialLayer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mpPolysLayer( 0 )
+      , mpNonSpatialLayer( 0 )
     {}
 
   private:
     bool mTestHasError;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
-    QgsVectorLayer * mpNonSpatialLayer;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsMapLayer *mpLinesLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
+    QgsVectorLayer *mpNonSpatialLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 
@@ -122,9 +122,9 @@ void TestQgsVectorLayer::initTestCase()
   QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
   QFileInfo myDbfFileInfo( myDbfFileName );
   mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),
-                                          myDbfFileInfo.completeBaseName(), "ogr" );
+                                          myDbfFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpNonSpatialLayer );
   //
   //create a point layer that will be used in all tests...
@@ -132,9 +132,9 @@ void TestQgsVectorLayer::initTestCase()
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
@@ -143,9 +143,9 @@ void TestQgsVectorLayer::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
 
 
@@ -155,12 +155,12 @@ void TestQgsVectorLayer::initTestCase()
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
   mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
+  QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
 
-  mReport += "<h1>Vector Renderer Tests</h1>\n";
+  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 
 void TestQgsVectorLayer::cleanupTestCase()
@@ -194,16 +194,16 @@ void TestQgsVectorLayer::QgsVectorLayerNonSpatialIterator()
 
 void TestQgsVectorLayer::QgsVectorLayerGetValues()
 {
-  QgsVectorLayer* layer = new QgsVectorLayer( "Point?field=col1:real", "layer", "memory" );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
   QgsFeature f1( layer->dataProvider()->fields(), 1 );
-  f1.setAttribute( "col1", 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 1 );
   QgsFeature f2( layer->dataProvider()->fields(), 2 );
-  f2.setAttribute( "col1", 2 );
+  f2.setAttribute( QStringLiteral( "col1" ), 2 );
   QgsFeature f3( layer->dataProvider()->fields(), 3 );
-  f3.setAttribute( "col1", 3 );
+  f3.setAttribute( QStringLiteral( "col1" ), 3 );
   QgsFeature f4( layer->dataProvider()->fields(), 4 );
-  f4.setAttribute( "col1", QVariant() );
+  f4.setAttribute( QStringLiteral( "col1" ), QVariant() );
   layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
 
   //make a selection
@@ -212,7 +212,7 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   layer->selectByIds( ids );
 
   bool ok;
-  QList<QVariant> varList = layer->getValues( "col1", ok );
+  QList<QVariant> varList = layer->getValues( QStringLiteral( "col1" ), ok );
   QVERIFY( ok );
   QCOMPARE( varList.length(), 4 );
   QCOMPARE( varList.at( 0 ), QVariant( 1 ) );
@@ -221,14 +221,14 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   QCOMPARE( varList.at( 3 ), QVariant() );
 
   //check with selected features
-  varList = layer->getValues( "col1", ok, true );
+  varList = layer->getValues( QStringLiteral( "col1" ), ok, true );
   QVERIFY( ok );
   QCOMPARE( varList.length(), 2 );
   QCOMPARE( varList.at( 0 ), QVariant( 2 ) );
   QCOMPARE( varList.at( 1 ), QVariant( 3 ) );
 
   int nulls = 0;
-  QList<double> doubleList = layer->getDoubleValues( "col1", ok, false, &nulls );
+  QList<double> doubleList = layer->getDoubleValues( QStringLiteral( "col1" ), ok, false, &nulls );
   QVERIFY( ok );
   QCOMPARE( doubleList.length(), 3 );
   QCOMPARE( doubleList.at( 0 ), 1.0 );
@@ -237,14 +237,14 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   QCOMPARE( nulls, 1 );
 
   //check with selected features
-  doubleList = layer->getDoubleValues( "col1", ok, true, &nulls );
+  doubleList = layer->getDoubleValues( QStringLiteral( "col1" ), ok, true, &nulls );
   QVERIFY( ok );
   QCOMPARE( doubleList.length(), 2 );
   QCOMPARE( doubleList.at( 0 ), 2.0 );
   QCOMPARE( doubleList.at( 1 ), 3.0 );
   QCOMPARE( nulls, 0 );
 
-  QList<QVariant> expVarList = layer->getValues( "tostring(col1) || ' '", ok );
+  QList<QVariant> expVarList = layer->getValues( QStringLiteral( "tostring(col1) || ' '" ), ok );
   QVERIFY( ok );
   QCOMPARE( expVarList.length(), 4 );
   QCOMPARE( expVarList.at( 0 ).toString(), QString( "1 " ) );
@@ -252,7 +252,7 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
   QCOMPARE( expVarList.at( 2 ).toString(), QString( "3 " ) );
   QCOMPARE( expVarList.at( 3 ), QVariant() );
 
-  QList<double> expDoubleList = layer->getDoubleValues( "col1 * 2", ok, false, &nulls );
+  QList<double> expDoubleList = layer->getDoubleValues( QStringLiteral( "col1 * 2" ), ok, false, &nulls );
   QVERIFY( ok );
   QCOMPARE( expDoubleList.length(), 3 );
   QCOMPARE( expDoubleList.at( 0 ), 2.0 );
@@ -265,11 +265,11 @@ void TestQgsVectorLayer::QgsVectorLayerGetValues()
 
 void TestQgsVectorLayer::QgsVectorLayersetRenderer()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( rendererChanged() ),
                     &receiver, SLOT( onRendererChanged() ) );
-  QgsSingleSymbolRenderer* symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
+  QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   QCOMPARE( receiver.rendererChanged, false );
   vLayer->setRenderer( symbolRenderer );
@@ -292,7 +292,7 @@ void TestQgsVectorLayer::QgsVectorLayersetFeatureBlendMode()
 
 void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
   TestSignalReceiver receiver;
   QObject::connect( vLayer, SIGNAL( layerTransparencyChanged( int ) ),
                     &receiver, SLOT( onLayerTransparencyChanged( int ) ) );
@@ -305,7 +305,7 @@ void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
 
 void TestQgsVectorLayer::uniqueValues()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
 
   //test with invalid field
   QList<QVariant> values;
@@ -315,7 +315,7 @@ void TestQgsVectorLayer::uniqueValues()
 
 void TestQgsVectorLayer::minimumValue()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
 
   //test with invalid field
   QCOMPARE( vLayer->minimumValue( 1000 ), QVariant() );
@@ -323,7 +323,7 @@ void TestQgsVectorLayer::minimumValue()
 
 void TestQgsVectorLayer::maximumValue()
 {
-  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+  QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
 
   //test with invalid field
   QCOMPARE( vLayer->maximumValue( 1000 ), QVariant() );
@@ -337,5 +337,5 @@ void TestQgsVectorLayer::isSpatial()
   QVERIFY( !mpNonSpatialLayer->isSpatial() );
 }
 
-QTEST_MAIN( TestQgsVectorLayer )
+QGSTEST_MAIN( TestQgsVectorLayer )
 #include "testqgsvectorlayer.moc"

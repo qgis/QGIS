@@ -20,21 +20,23 @@
 
 #include <QMutex>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  */
 class CORE_EXPORT QgsLocaleNumC
 {
-    char *mOldlocale;
+    char *mOldlocale = nullptr;
     static QMutex sLocaleLock;
 
   public:
     QgsLocaleNumC();
     ~QgsLocaleNumC();
 
-  private:
-
-    QgsLocaleNumC( const QgsLocaleNumC& rh );
-    QgsLocaleNumC& operator=( const QgsLocaleNumC& rh );
+    //! QgsLocaleNumC cannot be copied
+    QgsLocaleNumC( const QgsLocaleNumC &rh ) = delete;
+    //! QgsLocaleNumC cannot be copied
+    QgsLocaleNumC &operator=( const QgsLocaleNumC &rh ) = delete;
 
 };
 

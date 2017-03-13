@@ -2,7 +2,8 @@
   <GMLFeatureClass>
     <Name>clip_polys_by_multipolygon</Name>
     <ElementPath>clip_polys_by_multipolygon</ElementPath>
-    <GeometryType>3</GeometryType>
+    <!--MULTIPOLYGON-->
+    <GeometryType>6</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>3</FeatureCount>

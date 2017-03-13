@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -42,11 +42,11 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     void testAttributesAsDisplayedValues();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
 };
 
 TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -71,21 +71,19 @@ void TestQgsVectorLayerSaveAsDialog::cleanupTestCase()
 void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 {
   //create a temporary layer
-  QScopedPointer< QgsVectorLayer> tempLayer( new QgsVectorLayer( "none?field=code:int&field=regular:string", "vl", "memory" ) );
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
   // Set a widget
-  QgsEditFormConfig editFormConfig = tempLayer->editFormConfig();
-  editFormConfig.setWidgetType( 0, "ValueRelation" );
-  tempLayer->setEditFormConfig( editFormConfig );
+  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
 
-  QgsVectorLayerSaveAsDialog d( tempLayer.data() );
+  QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
-  QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( "mDeselectAllAttributes" );
+  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( "mAttributeTable" );
-  QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( "mReplaceRawFieldValues" );
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( QStringLiteral( "mAttributeTable" ) );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->columnCount(), 3 );
@@ -135,5 +133,5 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   //d.exec();
 }
 
-QTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
+QGSTEST_MAIN( TestQgsVectorLayerSaveAsDialog )
 #include "testqgsvectorlayersaveasdialog.moc"

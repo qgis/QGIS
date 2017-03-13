@@ -27,17 +27,17 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f )
+static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f )
 {
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
 
-  QgsPaintEffectAbstractMetadata* abstractMetadata = registry->effectMetadata( name );
+  QgsPaintEffectAbstractMetadata *abstractMetadata = registry->effectMetadata( name );
   if ( !abstractMetadata )
   {
     QgsDebugMsg( QString( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
     return false;
   }
-  QgsPaintEffectMetadata* metadata = dynamic_cast<QgsPaintEffectMetadata*>( abstractMetadata );
+  QgsPaintEffectMetadata *metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
   if ( !metadata )
   {
     QgsDebugMsg( QString( "Failed to cast paint effect's metadata: " ) .arg( name ) );
@@ -49,26 +49,26 @@ static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f
 
 static void _initWidgetFunctions()
 {
-  static bool initialized = false;
-  if ( initialized )
+  static bool sInitialized = false;
+  if ( sInitialized )
     return;
 
-  _initWidgetFunction( "blur", QgsBlurWidget::create );
-  _initWidgetFunction( "dropShadow", QgsShadowEffectWidget::create );
-  _initWidgetFunction( "innerShadow", QgsShadowEffectWidget::create );
-  _initWidgetFunction( "drawSource", QgsDrawSourceWidget::create );
-  _initWidgetFunction( "outerGlow", QgsGlowWidget::create );
-  _initWidgetFunction( "innerGlow", QgsGlowWidget::create );
-  _initWidgetFunction( "transform", QgsTransformWidget::create );
-  _initWidgetFunction( "color", QgsColorEffectWidget::create );
+  _initWidgetFunction( QStringLiteral( "blur" ), QgsBlurWidget::create );
+  _initWidgetFunction( QStringLiteral( "dropShadow" ), QgsShadowEffectWidget::create );
+  _initWidgetFunction( QStringLiteral( "innerShadow" ), QgsShadowEffectWidget::create );
+  _initWidgetFunction( QStringLiteral( "drawSource" ), QgsDrawSourceWidget::create );
+  _initWidgetFunction( QStringLiteral( "outerGlow" ), QgsGlowWidget::create );
+  _initWidgetFunction( QStringLiteral( "innerGlow" ), QgsGlowWidget::create );
+  _initWidgetFunction( QStringLiteral( "transform" ), QgsTransformWidget::create );
+  _initWidgetFunction( QStringLiteral( "color" ), QgsColorEffectWidget::create );
 
-  initialized = true;
+  sInitialized = true;
 }
 
 
-QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget *parent )
-    : QWidget( parent )
-    , mEffect( effect )
+QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent )
+  : QWidget( parent )
+  , mEffect( effect )
 {
   setupUi( this );
   _initWidgetFunctions();
@@ -88,20 +88,20 @@ QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect* 
 
 void QgsPaintEffectPropertiesWidget::populateEffectTypes()
 {
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   QStringList types = registry->effects();
 
-  Q_FOREACH ( const QString& type, types )
+  Q_FOREACH ( const QString &type, types )
   {
     //don't show stack effect
-    if ( type == "effectStack" )
+    if ( type == QLatin1String( "effectStack" ) )
       continue;
 
     mEffectTypeCombo->addItem( registry->effectMetadata( type )->visibleName(), type );
   }
 }
 
-void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect* effect )
+void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect )
 {
   if ( !effect )
   {
@@ -116,11 +116,11 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect* effect 
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
 
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
-  QgsPaintEffectAbstractMetadata* am = registry->effectMetadata( effect->type() );
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
+  QgsPaintEffectAbstractMetadata *am = registry->effectMetadata( effect->type() );
   if ( am )
   {
-    QgsPaintEffectWidget* w = am->createWidget();
+    QgsPaintEffectWidget *w = am->createWidget();
     if ( w )
     {
       w->setPaintEffect( effect );
@@ -137,23 +137,23 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect* effect 
 
 void QgsPaintEffectPropertiesWidget::effectTypeChanged()
 {
-  QgsPaintEffect* effect = mEffect;
+  QgsPaintEffect *effect = mEffect;
   if ( !effect )
     return;
 
-  QString newEffectType = mEffectTypeCombo->itemData( mEffectTypeCombo->currentIndex() ).toString();
+  QString newEffectType = mEffectTypeCombo->currentData().toString();
   if ( effect->type() == newEffectType )
     return;
 
   // get creation function for new effect from registry
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
-  QgsPaintEffectAbstractMetadata* am = registry->effectMetadata( newEffectType );
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
+  QgsPaintEffectAbstractMetadata *am = registry->effectMetadata( newEffectType );
   if ( !am ) // check whether the metadata is assigned
     return;
 
   // change effect to a new (with different type)
   // base new effect on existing effect's properties
-  QgsPaintEffect* newEffect = am->createPaintEffect( effect->properties() );
+  QgsPaintEffect *newEffect = am->createPaintEffect( effect->properties() );
   if ( !newEffect )
     return;
 

@@ -18,11 +18,13 @@
 
 
 #include <QWidget>
-#include <QPrinter>
 
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #include <QDesktopWidget>
+
+#include "qgis_core.h"
+
 
 /** \ingroup core
  */
@@ -31,8 +33,8 @@ class CORE_EXPORT QgsWebView : public QWebView
     Q_OBJECT
 
   public:
-    explicit QgsWebView( QWidget* parent = nullptr )
-        : QWebView( parent )
+    explicit QgsWebView( QWidget *parent = nullptr )
+      : QWebView( parent )
     {
       QDesktopWidget desktop;
       // Apply zoom factor for HiDPI screens
@@ -45,6 +47,8 @@ class CORE_EXPORT QgsWebView : public QWebView
 #else
 #include "qgswebpage.h"
 #include <QTextBrowser>
+class QPrinter;
+
 
 /** \ingroup core
  * @brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
@@ -61,11 +65,12 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = 0 )
-        : QTextBrowser( parent )
-        , mSettings( new QWebSettings() )
-        , mPage( new QWebPage( this ) )
+      : QTextBrowser( parent )
+      , mSettings( new QWebSettings() )
+      , mPage( new QWebPage( this ) )
     {
       connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
+      connect( this, SIGNAL( pageLoadFinished( bool ) ), mPage, SIGNAL( loadFinished( bool ) ) );
     }
 
     ~QgsWebView()
@@ -74,45 +79,54 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       delete mPage;
     }
 
-    void setUrl( const QUrl& url )
+    void setUrl( const QUrl &url )
     {
       setSource( url );
     }
 
-    void load( const QUrl& url )
+    void load( const QUrl &url )
     {
       setSource( url );
     }
 
-    QWebPage* page() const
+    QWebPage *page() const
     {
       return mPage;
     }
 
-    QWebSettings* settings() const
+    QWebSettings *settings() const
     {
       return mSettings;
     }
 
-    virtual QgsWebView* createWindow( QWebPage::WebWindowType )
+    virtual QgsWebView *createWindow( QWebPage::WebWindowType )
     {
       return new QgsWebView();
     }
 
-    void setContent( const QByteArray&, const QString&, const QUrl& )
+    void setContent( const QByteArray &data, const QString &contentType, const QUrl & )
     {
+      QString text = QString::fromUtf8( data );
+      if ( contentType == "text/html" )
+        setHtml( text );
+      else
+        setPlainText( text );
+
+      emit pageLoadFinished( true );
     }
 
-    void print( QPrinter* )
+    void print( QPrinter * )
     {
     }
 
   signals:
     void linkClicked( const QUrl &link );
 
+    void pageLoadFinished( bool ok );
+
   private:
-    QWebSettings *mSettings;
-    QWebPage *mPage;
+    QWebSettings *mSettings = nullptr;
+    QWebPage *mPage = nullptr;
 
 /// @endcond
 };

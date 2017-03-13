@@ -19,6 +19,7 @@
 #ifndef QGSDATASOURCEURI_H
 #define QGSDATASOURCEURI_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 
 #include <QMap>
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsDataSourceUri
     QgsDataSourceUri( QString uri );
 
     //! constructor which parses input encoded URI (generic mode)
-    QgsDataSourceUri( const QByteArray & uri );
+    QgsDataSourceUri( const QByteArray &uri );
 
     //! return connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
@@ -57,10 +58,10 @@ class CORE_EXPORT QgsDataSourceUri
 
     //! set complete encoded uri (generic mode)
     // \note not available in python bindings
-    void setEncodedUri( const QByteArray & uri );
+    void setEncodedUri( const QByteArray &uri );
 
     //! set complete encoded uri (generic mode)
-    void setEncodedUri( const QString & uri );
+    void setEncodedUri( const QString &uri );
 
     //! quoted table name
     QString quotedTablename() const;
@@ -85,43 +86,43 @@ class CORE_EXPORT QgsDataSourceUri
     bool hasParam( const QString &key ) const;
 
     //! Set all connection related members at once
-    void setConnection( const QString& aHost,
-                        const QString& aPort,
-                        const QString& aDatabase,
-                        const QString& aUsername,
-                        const QString& aPassword,
+    void setConnection( const QString &aHost,
+                        const QString &aPort,
+                        const QString &aDatabase,
+                        const QString &aUsername,
+                        const QString &aPassword,
                         SslMode sslmode = SslPrefer,
-                        const QString& authConfigId = QString() );
+                        const QString &authConfigId = QString() );
 
     //! Set all connection related members at once (for the service case)
-    void setConnection( const QString& aService,
-                        const QString& aDatabase,
-                        const QString& aUsername,
-                        const QString& aPassword,
+    void setConnection( const QString &aService,
+                        const QString &aDatabase,
+                        const QString &aUsername,
+                        const QString &aPassword,
                         SslMode sslmode = SslPrefer,
-                        const QString& authConfigId = QString() );
+                        const QString &authConfigId = QString() );
 
     //! Set database
     void setDatabase( const QString &database );
 
     //! Set all data source related members at once
-    void setDataSource( const QString& aSchema,
-                        const QString& aTable,
-                        const QString& aGeometryColumn,
-                        const QString& aSql = QString(),
-                        const QString& aKeyColumn = QString() );
+    void setDataSource( const QString &aSchema,
+                        const QString &aTable,
+                        const QString &aGeometryColumn,
+                        const QString &aSql = QString(),
+                        const QString &aKeyColumn = QString() );
 
     //! Set authentication configuration ID
-    void setAuthConfigId( const QString& authcfg );
+    void setAuthConfigId( const QString &authcfg );
 
     //! set username
-    void setUsername( const QString& username );
+    void setUsername( const QString &username );
 
     //! set password
-    void setPassword( const QString& password );
+    void setPassword( const QString &password );
 
     //! Removes password element from uris
-    static QString removePassword( const QString& aUri );
+    static QString removePassword( const QString &aUri );
 
     //! Any associated authentication configuration ID
     QString authConfigId() const;
@@ -142,13 +143,13 @@ class CORE_EXPORT QgsDataSourceUri
     QString geometryColumn() const;
 
     //! set use Estimated Metadata
-    void setUseEstimatedMetadata( bool theFlag );
+    void setUseEstimatedMetadata( bool flag );
 
     //! Returns true if estimated metadata are used
     bool useEstimatedMetadata() const;
 
     //! Set to true to disable selection by id
-    void disableSelectAtId( bool theFlag );
+    void disableSelectAtId( bool flag );
     //! Returns whether the selection by id is disabled
     bool selectAtIdDisabled() const;
 
@@ -157,10 +158,10 @@ class CORE_EXPORT QgsDataSourceUri
 
     //! set the table schema
     // @note added in 2.11
-    void setSchema( const QString& schema );
+    void setSchema( const QString &schema );
 
     //! Sets the SQL query
-    void setSql( const QString& sql );
+    void setSql( const QString &sql );
 
     //! Returns the host
     QString host() const;
@@ -173,7 +174,7 @@ class CORE_EXPORT QgsDataSourceUri
     QString driver() const;
     //! Sets the driver name
     // @note added in QGIS 2.16
-    void setDriver( const QString& driver );
+    void setDriver( const QString &driver );
     //! Returns the password
     QString password() const;
     //! Returns the SSL mode
@@ -185,7 +186,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the name of the (primary) key column
     QString keyColumn() const;
     //! Sets the name of the (primary) key column
-    void setKeyColumn( const QString& column );
+    void setKeyColumn( const QString &column );
 
     /** The wkb type.
      */
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Returns the srid
     QString srid() const;
     //! Sets the srid
-    void setSrid( const QString& srid );
+    void setSrid( const QString &srid );
 
   private:
     void skipBlanks( const QString &uri, int &i );
@@ -236,9 +237,9 @@ class CORE_EXPORT QgsDataSourceUri
     QString mKeyColumn;
     //! Use estimated metadata flag
     bool mUseEstimatedMetadata;
-    //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
+    //! Disable SelectAtId capability (e.g., to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
-    //! geometry type (or QGis::WKBUnknown if not specified)
+    //! geometry type (or QgsWkbTypes::Unknown if not specified)
     QgsWkbTypes::Type mWkbType;
     //! SRID or a null string if not specified
     QString mSrid;

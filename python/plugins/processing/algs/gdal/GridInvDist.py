@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -63,11 +64,11 @@ class GridInvDist(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
     def commandLineName(self):
-        return "gdalogr:gridinvdist"
+        return "gdal:gridinvdist"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Grid (Inverse distance to a power)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
@@ -98,7 +99,7 @@ class GridInvDist(GdalAlgorithm):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(
-                unicode(self.getParameterValue(self.INPUT)))[0]))
+                str(self.getParameterValue(self.INPUT)))[0]))
 
         fieldName = self.getParameterValue(self.Z_FIELD)
         if fieldName is not None and fieldName != '':
@@ -119,7 +120,7 @@ class GridInvDist(GdalAlgorithm):
         arguments.append(params)
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
-        arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
+        arguments.append(str(self.getParameterValue(self.INPUT)))
+        arguments.append(str(self.getOutputValue(self.OUTPUT)))
 
         return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

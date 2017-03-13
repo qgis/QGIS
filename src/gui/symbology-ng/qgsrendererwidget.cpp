@@ -17,20 +17,20 @@
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
 #include "qgssymbollevelsdialog.h"
+#include "qgssymbollayer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
-#include "qgsdatadefined.h"
+#include "qgsproject.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
 
-QgsRendererWidget::QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style )
-    : QgsPanelWidget()
-    , mLayer( layer )
-    , mStyle( style )
-    , mMapCanvas( nullptr )
+QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
+  : QgsPanelWidget()
+  , mLayer( layer )
+  , mStyle( style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
 
@@ -62,14 +62,14 @@ void QgsRendererWidget::contextMenuViewCategories( QPoint )
 
 void QgsRendererWidget::changeSymbolColor()
 {
-  QList<QgsSymbol*> symbolList = selectedSymbols();
+  QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
-  QgsSymbol* firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol* symbol, symbolList )
+  QgsSymbol *firstSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol *symbol, symbolList )
   {
     if ( symbol )
     {
@@ -80,10 +80,10 @@ void QgsRendererWidget::changeSymbolColor()
   if ( !firstSymbol )
     return;
 
-  QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, "Change Symbol Color", true );
+  QColor color = QgsColorDialog::getColor( firstSymbol->color(), this, QStringLiteral( "Change Symbol Color" ), true );
   if ( color.isValid() )
   {
-    Q_FOREACH ( QgsSymbol* symbol, symbolList )
+    Q_FOREACH ( QgsSymbol *symbol, symbolList )
     {
       if ( symbol )
         symbol->setColor( color );
@@ -94,14 +94,14 @@ void QgsRendererWidget::changeSymbolColor()
 
 void QgsRendererWidget::changeSymbolTransparency()
 {
-  QList<QgsSymbol*> symbolList = selectedSymbols();
+  QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
-  QgsSymbol* firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol* symbol, symbolList )
+  QgsSymbol *firstSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol *symbol, symbolList )
   {
     if ( symbol )
     {
@@ -117,7 +117,7 @@ void QgsRendererWidget::changeSymbolTransparency()
   double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
-    Q_FOREACH ( QgsSymbol* symbol, symbolList )
+    Q_FOREACH ( QgsSymbol *symbol, symbolList )
     {
       if ( symbol )
         symbol->setAlpha( 1 - transparency / 100 );
@@ -128,14 +128,14 @@ void QgsRendererWidget::changeSymbolTransparency()
 
 void QgsRendererWidget::changeSymbolUnit()
 {
-  QList<QgsSymbol*> symbolList = selectedSymbols();
+  QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
-  QgsSymbol* firstSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol* symbol, symbolList )
+  QgsSymbol *firstSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol *symbol, symbolList )
   {
     if ( symbol )
     {
@@ -153,7 +153,7 @@ void QgsRendererWidget::changeSymbolUnit()
   {
     QgsUnitTypes::RenderUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsUnitTypes::RenderMillimeters : QgsUnitTypes::RenderMapUnits;
 
-    Q_FOREACH ( QgsSymbol* symbol, symbolList )
+    Q_FOREACH ( QgsSymbol *symbol, symbolList )
     {
       if ( symbol )
         symbol->setOutputUnit( unit );
@@ -164,26 +164,27 @@ void QgsRendererWidget::changeSymbolUnit()
 
 void QgsRendererWidget::changeSymbolWidth()
 {
-  QList<QgsSymbol*> symbolList = selectedSymbols();
+  QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
   QgsDataDefinedWidthDialog dlg( symbolList, mLayer );
-  dlg.setMapCanvas( mMapCanvas );
+
+  dlg.setContext( mContext );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbol* symbol, symbolList )
+      Q_FOREACH ( QgsSymbol *symbol, symbolList )
       {
         if ( !symbol )
           continue;
 
         if ( symbol->type() == QgsSymbol::Line )
-          static_cast<QgsLineSymbol*>( symbol )->setWidth( dlg.mSpinBox->value() );
+          static_cast<QgsLineSymbol *>( symbol )->setWidth( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
@@ -192,26 +193,26 @@ void QgsRendererWidget::changeSymbolWidth()
 
 void QgsRendererWidget::changeSymbolSize()
 {
-  QList<QgsSymbol*> symbolList = selectedSymbols();
+  QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
   QgsDataDefinedSizeDialog dlg( symbolList, mLayer );
-  dlg.setMapCanvas( mMapCanvas );
+  dlg.setContext( mContext );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbol* symbol, symbolList )
+      Q_FOREACH ( QgsSymbol *symbol, symbolList )
       {
         if ( !symbol )
           continue;
 
         if ( symbol->type() == QgsSymbol::Marker )
-          static_cast<QgsMarkerSymbol*>( symbol )->setSize( dlg.mSpinBox->value() );
+          static_cast<QgsMarkerSymbol *>( symbol )->setSize( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
@@ -220,33 +221,33 @@ void QgsRendererWidget::changeSymbolSize()
 
 void QgsRendererWidget::changeSymbolAngle()
 {
-  QList<QgsSymbol*> symbolList = selectedSymbols();
+  QList<QgsSymbol *> symbolList = selectedSymbols();
   if ( symbolList.isEmpty() )
   {
     return;
   }
 
   QgsDataDefinedRotationDialog dlg( symbolList, mLayer );
-  dlg.setMapCanvas( mMapCanvas );
+  dlg.setContext( mContext );
 
   if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
-      Q_FOREACH ( QgsSymbol* symbol, symbolList )
+      Q_FOREACH ( QgsSymbol *symbol, symbolList )
       {
         if ( !symbol )
           continue;
 
         if ( symbol->type() == QgsSymbol::Marker )
-          static_cast<QgsMarkerSymbol*>( symbol )->setAngle( dlg.mSpinBox->value() );
+          static_cast<QgsMarkerSymbol *>( symbol )->setAngle( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
   }
 }
 
-void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer* r )
+void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
   QgsLegendSymbolList symbols = r->legendSymbolItems();
 
@@ -259,14 +260,14 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer* r )
   }
 }
 
-void QgsRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
+void QgsRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
-  mMapCanvas = canvas;
+  mContext = context;
 }
 
-const QgsMapCanvas* QgsRendererWidget::mapCanvas() const
+QgsSymbolWidgetContext QgsRendererWidget::context() const
 {
-  return mMapCanvas;
+  return mContext;
 }
 
 void QgsRendererWidget::applyChanges()
@@ -278,44 +279,36 @@ void QgsRendererWidget::applyChanges()
 // QgsDataDefinedValueDialog
 //
 
-QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label )
-    : mSymbolList( symbolList )
-    , mLayer( layer )
-    , mMapCanvas( nullptr )
+QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label )
+  : mSymbolList( symbolList )
+  , mLayer( layer )
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
   mLabel->setText( label );
-  connect( mDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( dataDefinedChanged() ) );
-  connect( mDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( dataDefinedChanged() ) );
-
+  connect( mDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsDataDefinedValueDialog::dataDefinedChanged );
 }
 
-void QgsDataDefinedValueDialog::setMapCanvas( QgsMapCanvas *canvas )
+void QgsDataDefinedValueDialog::setContext( const QgsSymbolWidgetContext &context )
 {
-  mMapCanvas = canvas;
-  Q_FOREACH ( QgsDataDefinedButton* ddButton, findChildren<QgsDataDefinedButton*>() )
-  {
-    if ( ddButton->assistant() )
-      ddButton->assistant()->setMapCanvas( mMapCanvas );
-  }
+  mContext = context;
 }
 
-const QgsMapCanvas *QgsDataDefinedValueDialog::mapCanvas() const
+QgsSymbolWidgetContext QgsDataDefinedValueDialog::context() const
 {
-  return mMapCanvas;
+  return mContext;
 }
 
 QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::atlasScope( nullptr );
-  if ( mapCanvas() )
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr );
+  if ( mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mapCanvas()->mapSettings() )
-    << new QgsExpressionContextScope( mapCanvas()->expressionContextScope() );
+    expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )
+               << new QgsExpressionContextScope( mContext.mapCanvas()->expressionContextScope() );
   }
   else
   {
@@ -325,17 +318,24 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
   if ( vectorLayer() )
     expContext << QgsExpressionContextUtils::layerScope( vectorLayer() );
 
+  // additional scopes
+  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
+  {
+    expContext.appendScope( new QgsExpressionContextScope( scope ) );
+  }
+
   return expContext;
 }
 
-void QgsDataDefinedValueDialog::init( const QString& description )
+void QgsDataDefinedValueDialog::init( int propertyKey )
 {
-  QgsDataDefined dd = symbolDataDefined();
-  mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
+  QgsProperty dd( symbolDataDefined() );
+
+  mDDBtn->init( propertyKey, dd, QgsSymbolLayer::propertyDefinitions(), mLayer );
   mDDBtn->registerExpressionContextGenerator( this );
 
-  QgsSymbol* initialSymbol = nullptr;
-  Q_FOREACH ( QgsSymbol* symbol, mSymbolList )
+  QgsSymbol *initialSymbol = nullptr;
+  Q_FOREACH ( QgsSymbol *symbol, mSymbolList )
   {
     if ( symbol )
     {
@@ -346,70 +346,73 @@ void QgsDataDefinedValueDialog::init( const QString& description )
   mSpinBox->setEnabled( !mDDBtn->isActive() );
 }
 
-QgsDataDefined QgsDataDefinedValueDialog::symbolDataDefined() const
+QgsProperty QgsDataDefinedValueDialog::symbolDataDefined() const
 {
   if ( mSymbolList.isEmpty() || !mSymbolList.back() )
-    return QgsDataDefined();
+    return QgsProperty();
 
   // check that all symbols share the same size expression
-  QgsDataDefined dd = symbolDataDefined( mSymbolList.back() );
-  Q_FOREACH ( QgsSymbol * it, mSymbolList )
+  QgsProperty dd = symbolDataDefined( mSymbolList.back() );
+  Q_FOREACH ( QgsSymbol *it, mSymbolList )
   {
-    if ( !it || symbolDataDefined( it ) != dd )
-      return QgsDataDefined();
+    QgsProperty symbolDD( symbolDataDefined( it ) );
+    if ( !it || !dd || !symbolDD || symbolDD != dd )
+      return QgsProperty();
   }
   return dd;
 }
 
 void QgsDataDefinedValueDialog::dataDefinedChanged()
 {
-  QgsDataDefined dd = mDDBtn->currentDataDefined();
+  QgsProperty dd( mDDBtn->toProperty() );
   mSpinBox->setEnabled( !dd.isActive() );
 
+  QgsProperty symbolDD( symbolDataDefined() );
+
   if ( // shall we remove datadefined expressions for layers ?
-    ( symbolDataDefined().isActive() && !dd.isActive() )
+    ( symbolDD && symbolDD.isActive() && !dd.isActive() )
     // shall we set the "en masse" expression for properties ?
     || dd.isActive() )
   {
-    Q_FOREACH ( QgsSymbol * it, mSymbolList )
+    Q_FOREACH ( QgsSymbol *it, mSymbolList )
       setDataDefined( it, dd );
   }
 }
 
-QgsDataDefined QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsProperty QgsDataDefinedSizeDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
+  const QgsMarkerSymbol *marker = static_cast<const QgsMarkerSymbol *>( symbol );
   return marker->dataDefinedSize();
 }
 
-void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd )
+void QgsDataDefinedSizeDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty &dd )
 {
-  static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedSize( dd );
-  static_cast<QgsMarkerSymbol*>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
+  static_cast<QgsMarkerSymbol *>( symbol )->setDataDefinedSize( dd );
+  static_cast<QgsMarkerSymbol *>( symbol )->setScaleMethod( QgsSymbol::ScaleDiameter );
 }
 
 
-QgsDataDefined QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsProperty QgsDataDefinedRotationDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsMarkerSymbol* marker = static_cast<const QgsMarkerSymbol*>( symbol );
+  const QgsMarkerSymbol *marker = static_cast<const QgsMarkerSymbol *>( symbol );
   return marker->dataDefinedAngle();
 }
 
-void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedRotationDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty &dd )
 {
-  static_cast<QgsMarkerSymbol*>( symbol )->setDataDefinedAngle( dd );
+  static_cast<QgsMarkerSymbol *>( symbol )->setDataDefinedAngle( dd );
 }
 
 
-QgsDataDefined QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
+QgsProperty QgsDataDefinedWidthDialog::symbolDataDefined( const QgsSymbol *symbol ) const
 {
-  const QgsLineSymbol* line = static_cast<const QgsLineSymbol*>( symbol );
+  const QgsLineSymbol *line = static_cast<const QgsLineSymbol *>( symbol );
   return line->dataDefinedWidth();
 }
 
-void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsDataDefined &dd )
+void QgsDataDefinedWidthDialog::setDataDefined( QgsSymbol *symbol, const QgsProperty &dd )
 {
-  static_cast<QgsLineSymbol*>( symbol )->setDataDefinedWidth( dd );
+  static_cast<QgsLineSymbol *>( symbol )->setDataDefinedWidth( dd );
 }
 
 void QgsRendererWidget::apply()

@@ -17,12 +17,12 @@
 #include "qgsapplication.h"
 #include <QMenu>
 
-QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget* parent )
-    : QToolButton( parent )
-    , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
-    , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-    , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-    , mMenu( nullptr )
+QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget *parent )
+  : QToolButton( parent )
+  , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
+  , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
+  , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
+  , mMenu( nullptr )
 {
   setFocusPolicy( Qt::StrongFocus );
   setPopupMode( QToolButton::InstantPopup );
@@ -133,7 +133,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
       continue;
     }
 
-    QAction* action = mMenu->addAction( QgsSearchWidgetWrapper::toString( flag ) );
+    QAction *action = mMenu->addAction( QgsSearchWidgetWrapper::toString( flag ) );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( actionSelected() ) );
     action->setData( flag );
     action->setCheckable( true );
@@ -144,7 +144,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
     }
   }
 
-  QAction* clearAction = mMenu->addAction( tr( "Exclude field" ) );
+  QAction *clearAction = mMenu->addAction( tr( "Exclude field" ) );
   connect( clearAction, SIGNAL( triggered( bool ) ), this, SLOT( setInactive() ) );
   clearAction->setCheckable( true );
   clearAction->setChecked( !fieldActive );
@@ -166,7 +166,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
       continue;
     }
 
-    QAction* action = mMenu->addAction( QgsSearchWidgetWrapper::toString( flag ) );
+    QAction *action = mMenu->addAction( QgsSearchWidgetWrapper::toString( flag ) );
     connect( action, SIGNAL( triggered( bool ) ), this, SLOT( actionSelected() ) );
     action->setData( flag );
     action->setCheckable( true );
@@ -177,7 +177,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
 
 void QgsSearchWidgetToolButton::actionSelected()
 {
-  QgsSearchWidgetWrapper::FilterFlag flag = static_cast< QgsSearchWidgetWrapper::FilterFlag >( qobject_cast< QAction* >( sender() )->data().toInt() );
+  QgsSearchWidgetWrapper::FilterFlag flag = static_cast< QgsSearchWidgetWrapper::FilterFlag >( qobject_cast< QAction * >( sender() )->data().toInt() );
   toggleFlag( flag );
 }
 
@@ -239,7 +239,7 @@ void QgsSearchWidgetToolButton::updateState()
 
   if ( active )
   {
-    QString text = toolTips.join( ", " );
+    QString text = toolTips.join( QStringLiteral( ", " ) );
     setText( text );
     setToolTip( text );
   }

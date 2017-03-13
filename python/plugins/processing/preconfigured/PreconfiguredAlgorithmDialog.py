@@ -35,8 +35,10 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.core.alglist import algList
 
-from PyQt4.QtGui import QMessageBox, QPalette, QColor, QVBoxLayout, QLabel, \
-    QLineEdit, QWidget
+from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
+from qgis.PyQt.QtGui import QPalette, QColor
+
+from qgis.gui import QgsMessageBar
 
 
 class PreconfiguredAlgorithmDialog(AlgorithmDialog):
@@ -72,13 +74,13 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             algList.reloadProvider('preconfigured')
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox.accepted.connect(lambda:
-                                                e.widget.setPalette(QPalette()))
+                self.buttonBox.accepted.connect(lambda: e.widget.setPalette(QPalette()))
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.lblProgress.setText(
-                    self.tr('<b>Missing parameter value: %s</b>') % e.parameter.description)
+                self.parent.bar.pushMessage("", self.tr('Missing parameter value: {0}').format(
+                                            e.parameter.description),
+                                            level=QgsMessageBar.WARNING, duration=5)
                 return
             except:
                 QMessageBox.critical(self,

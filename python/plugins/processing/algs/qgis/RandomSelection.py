@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -52,7 +53,6 @@ class RandomSelection(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
@@ -67,7 +67,7 @@ class RandomSelection(GeoAlgorithm):
                                           self.tr('Number/percentage of selected features'), 0, None, 10))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
@@ -89,7 +89,7 @@ class RandomSelection(GeoAlgorithm):
                             "different value and try again."))
             value = int(round(value / 100.0, 4) * featureCount)
 
-        selran = random.sample(xrange(featureCount), value)
+        selran = random.sample(list(range(featureCount)), value)
 
         layer.selectByIds(selran)
         self.setOutputValue(self.OUTPUT, filename)

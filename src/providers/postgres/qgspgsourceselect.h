@@ -22,7 +22,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgspgtablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QMap>
 #include <QPair>
@@ -41,7 +41,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
 
   public:
     explicit QgsPgSourceSelectDelegate( QObject *parent = nullptr )
-        : QItemDelegate( parent )
+      : QItemDelegate( parent )
     {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
@@ -64,7 +64,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
     //! Constructor
     QgsPgSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -76,11 +76,11 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QgsDataSourceUri dataSourceUri();
 
   signals:
-    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
+    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void connectionsChanged();
-    void addGeometryColumn( const QgsPostgresLayerProperty& );
+    void addGeometryColumn( const QgsPostgresLayerProperty & );
     void progress( int, int );
-    void progressMessage( const QString& );
+    void progressMessage( const QString & );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -103,20 +103,20 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString & text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void on_mSearchTableEdit_textChanged( const QString &text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex& index );
+    void setSql( const QModelIndex &index );
     //! Store the selected database
-    void setLayerType( const QgsPostgresLayerProperty& layerProperty );
+    void setLayerType( const QgsPostgresLayerProperty &layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
-    void setSearchExpression( const QString& regexp );
+    void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#postgis-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -131,18 +131,18 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mEmbeddedMode;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( const QgsPostgresLayerProperty& layerProperty );
+    void addSearchGeometryColumn( const QgsPostgresLayerProperty &layerProperty );
 
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
-    QString fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type );
+    QString fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type );
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsGeomColumnTypeThread* mColumnTypeThread;
+    QgsGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QgsDataSourceUri mDataSrcUri;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
@@ -151,10 +151,10 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsPgTableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

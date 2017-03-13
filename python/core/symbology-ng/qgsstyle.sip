@@ -8,15 +8,16 @@ class QgsStyle : QObject
     QgsStyle();
     ~QgsStyle();
 
-    //! Enum for Entities involved in a style
-    /*!
-        The enumerator is used for identifying the entity being operated on when generic
-        database functions are being run.
-        \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
+    /** Enum for Entities involved in a style
+    /*
+     *  The enumerator is used for identifying the entity being operated on when generic
+     *  database functions are being run.
+     *  \sa group(), rename(), remove(), symbolsOfGroup(), symbolsWithTag(), symbolsOfSmartgroup()
      */
-    enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
+    enum StyleEntity { SymbolEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
 
     /** Adds a color ramp to the style. Calling this method takes the ramp's ownership.
+     *
      *  \note Adding a color ramp with the name of existing one replaces it.
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the color ramp. Ownership is transferred.
@@ -25,24 +26,16 @@ class QgsStyle : QObject
      */
     bool addColorRamp( const QString& name, QgsColorRamp* colorRamp /Transfer/, bool update = false );
 
-    //! adds a new group and returns the group's id
-    /*!
-     *  \param groupName the name of the new group as QString
-     *  \param parent is the id of the parent group when a subgrouo is to be created. By default it is 0 indicating it is not a sub-group
-     *  \return returns an int, which is the DB id of the new group created, 0 if the group couldn't be created
-     */
-    int addGroup( const QString& groupName, int parent = 0 );
-
-    //! adds new smartgroup to the database and returns the id
-    /*!
+    /** Adds new smartgroup to the database and returns the id
+     *
      *  \param name is the name of the new Smart Group to be added
      *  \param op is the operator between the conditions; AND/OR as QString
      *  \param conditions are the smart group conditions
      */
     int addSmartgroup( const QString& name, const QString& op, QMultiMap<QString, QString> conditions );
 
-    //! add symbol to style. takes symbol's ownership
-    /*!
+    /** Adds symbol to style and takes symbol's ownership
+     *
      *  \note Adding a symbol with the name of existing one replaces it.
      *  \param name is the name of the symbol being added or updated
      *  \param symbol is the Vector symbol
@@ -51,21 +44,18 @@ class QgsStyle : QObject
      */
     bool addSymbol( const QString& name, QgsSymbol* symbol /Transfer/, bool update = false );
 
-    //! adds a new tag and returns the tag's id
-    /*!
+    /** Adds a new tag and returns the tag's id
+     *
      *  \param tagName the name of the new tag to be created
      *  \return returns an int, which is the DB id of the new tag created, 0 if the tag couldn't be created
      */
     int addTag( const QString& tagName );
 
     /** Returns a list of all tags in the style database
-     * @note added in QGIS 2.16
-     * @see addTag()
+     *  @note added in QGIS 2.16
+     *  @see addTag()
      */
     QStringList tags() const;
-
-    //! return a map of groupid and names for the given parent group
-    QMap<int, QString> childGroupNames( const QString& parent = "" );
 
     //! remove all contents of the style
     void clear();
@@ -75,24 +65,25 @@ class QgsStyle : QObject
      */
     QgsColorRamp* colorRamp( const QString& name ) const /Factory/;
 
-    //! return count of color ramps
+    //! Returns count of color ramps
     int colorRampCount();
 
-    //! return a list of names of color ramps
+    //! Returns a list of names of color ramps
     QStringList colorRampNames();
 
-    //! return a const pointer to a symbol (doesn't create new instance)
+    //! Returns a const pointer to a symbol (doesn't create new instance)
     const QgsColorRamp* colorRampRef( const QString& name ) const;
 
-    //! return the id in the style database for the given colorramp name
-    //! returns 0 if not found
+    /** Returns the id in the style database for the given colorramp name
+     *  returns 0 if not found
+     */
     int colorrampId( const QString& name );
 
-    //! return default application-wide style
+    //! Returns default application-wide style
     static QgsStyle* defaultStyle();
 
-    //! tags the symbol with the tags in the list
-    /*!
+    /** Tags the symbol with the tags in the list
+     *
      *  Applies the given tags to the given symbol or colorramp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or colorramp as QString
@@ -101,8 +92,8 @@ class QgsStyle : QObject
      */
     bool tagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags );
 
-    //! detags the symbol with the given list
-    /*!
+    /** Detags the symbol with the given list
+     *
      *  Removes the given tags for the specified symbol or colorramp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or colorramp
@@ -110,85 +101,89 @@ class QgsStyle : QObject
      *  \return returns the success state of the operation
      */
     bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
+    /** Clears the symbol from all attached tags
+     *
+     *  Removes all tags for the specified symbol or colorramp
+     *  \param type is either SymbolEntity or ColorrampEntity
+     *  \param symbol is the name of the symbol or colorramp
+     *  \return returns the success state of the operation
+     */
+    bool detagSymbol( StyleEntity type, QString symbol );
 
-    //! remove symbol from style (and delete it)
+    //! Removes symbol from style (and delete it)
     bool removeSymbol( const QString& name );
 
-    //! change symbol's name
+    //! Changes symbol's name
     bool renameSymbol( const QString& oldName, const QString& newName );
 
-    //! return a NEW copy of symbol
+    //! Returns a NEW copy of symbol
     QgsSymbol* symbol( const QString& name ) /Factory/;
 
-    //! return a const pointer to a symbol (doesn't create new instance)
+    //! Returns a const pointer to a symbol (doesn't create new instance)
     const QgsSymbol* symbolRef( const QString& name ) const;
 
-    //! return count of symbols in style
+    //! Returns count of symbols in style
     int symbolCount();
 
-    //! return a list of names of symbols
+    //! Returns a list of names of symbols
     QStringList symbolNames();
 
-    //! return the id in the style database for the given symbol name
-    //! returns 0 if not found
+    /** Returns the id in the style database for the given symbol name
+     *  returns 0 if not found
+     */
     int symbolId( const QString& name );
-    //! return the DB id for the given group name
-    int groupId( const QString& group );
-    //! return the group name for the given DB id
-    QString groupName( int groupId ) const;
-    //! return the DB id for the given tag name
+    //! Returns the DB id for the given tag name
     int tagId( const QString& tag );
-    //! return the DB id for the given smartgroup name
+    //! Returns the DB id for the given smartgroup name
     int smartgroupId( const QString& smartgroup );
 
-    //! return the all the groups in the style
-    QStringList groupNames();
-
-    //! return the ids of all the groups in the style
-    QList<int> groupIds() const;
-
-    //! returns the symbolnames of a given groupid
-    /*!
+    /** Returns the symbol names which are flagged as favorite
+     *
      *  \param type is either SymbolEntity or ColorampEntity
-     *  \param groupid is id of the group to which the symbols belong to, as int
-     *  \return A QStringList of the symbol or colorramp names for the given group id
+     *  \return A QStringList of the symbol or colorramp names flagged as favorite
      */
-    QStringList symbolsOfGroup( StyleEntity type, int groupid );
+    QStringList symbolsOfFavorite( StyleEntity type );
 
-    //! returns the symbol names with which have the given tag
-    /*!
+    /** Returns the symbol names with which have the given tag
+     *
      *  \param type is either SymbolEntity or ColorampEntity
      *  \param tagid is id of the tag which has been applied over the symbol as int
      *  \return A QStringList of the symbol or colorramp names for the given tag id
      */
     QStringList symbolsWithTag( StyleEntity type, int tagid );
 
-    //! applies the specified group to the symbol or colorramp specified by StyleEntity
-    /*!
+    /** Adds the specified symbol to favorites
+     *
      *  \param type is either SymbolEntity of ColorrampEntity
-     *  \param name is the name of the symbol or coloramp whose group is to be set
-     *  \param groupid is the id of the group to which the entity is assigned
+     *  \param name is the name of the symbol or coloramp whose is to be added to favorites
      *  \return returns the success state as bool
      */
-    bool group( StyleEntity type, const QString& name, int groupid );
+    bool addFavorite( StyleEntity type, const QString& name );
+    /** Removes the specified symbol from favorites
+     *
+     *  \param type is either SymbolEntity of ColorrampEntity
+     *  \param name is the name of the symbol or coloramp whose is to be removed from favorites
+     *  \return returns the success state as bool
+     */
+    bool removeFavorite( StyleEntity type, const QString& name );
 
-    //! rename the given entity with the specified id
-    /*!
-     *  \param type is any of the style entites. Refer enum StyleEntity.
+    /** Renames the given entity with the specified id
+     *
+     *  \param type is any of the style entities. Refer enum StyleEntity.
      *  \param id is the DB id of the entity which is to be renamed
      *  \param newName is the new name of the entity
      */
     void rename( StyleEntity type, int id, const QString& newName );
 
-    //! remove the specified entity from the db
-    /*!
-     *  \param type is any of the style entites. Refer enum StyleEntity.
+    /** Removes the specified entity from the db
+     *
+     *  \param type is any of the style entities. Refer enum StyleEntity.
      *  \param id is the DB id of the entity to be removed
      */
     void remove( StyleEntity type, int id );
 
-    //! add the symbol to the DB with the tags
-    /*!
+    /** Adds the symbol to the DB with the tags
+     *
      *  \param name is the name of the symbol as QString
      *  \param symbol is the pointer to the new QgsSymbol being saved
      *  \param groupid is the id of the group to which the symbol belongs. Pass 0 if it doesn't belong to any group or not known.
@@ -197,8 +192,8 @@ class QgsStyle : QObject
      */
     bool saveSymbol( const QString& name, QgsSymbol* symbol /Transfer/, int groupid, const QStringList& tags );
 
-    //! add the colorramp to the DB
-    /*!
+    /** Adds the colorramp to the DB
+     *
      *  \param name is the name of the colorramp as QString
      *  \param ramp is the pointer to the new QgsColorRamp being saved
      *  \param groupid is the id of the group to which the Color Ramp belongs. Pass 0 if it doesn't belong to any group or not known.
@@ -207,54 +202,93 @@ class QgsStyle : QObject
      */
     bool saveColorRamp( const QString& name, QgsColorRamp* ramp, int groupid, const QStringList& tags );
 
-    //! remove color ramp from style (and delete it)
+    //! Removes color ramp from style (and delete it)
     bool removeColorRamp( const QString& name );
 
-    //! change ramp's name
+    //! Changes ramp's name
     bool renameColorRamp( const QString& oldName, const QString& newName );
 
-    //! load a file into the style
+    /** Creates an on-disk database
+     *
+     *  This function creates a new on-disk permanent style database.
+     *  \return returns the success state of the database creation
+     *  \note added in QGIS 3.0
+     *  \see createMemoryDb()
+     */
+    bool createDatabase( const QString& filename );
+
+    /** Creates a temporary memory database
+     *
+     *  This function is used to create a temporary style database in case a permanent on-disk database is not needed.
+     *  \return returns the success state of the temporary memory database creation
+     *  \note added in QGIS 3.0
+     *  \see createDb()
+     */
+    bool createMemoryDatabase();
+
+    /** Creates tables structure for new database
+     *
+     *  This function is used to create the tables structure in a newly-created database.
+     *  \return returns the success state of the temporary memory database creation
+     *  \note added in QGIS 3.0
+     *  \see createDB(), createMemoryDB()
+     */
+    void createTables();
+
+    //! Loads a file into the style
     bool load( const QString& filename );
 
-    //! save style into a file (will use current filename if empty string is passed)
+    //! Saves style into a file (will use current filename if empty string is passed)
     bool save( QString filename = QString() );
 
-    //! return last error from load/save operation
+    //! Returns last error from load/save operation
     QString errorString();
 
-    //! return current file name of the style
+    //! Returns current file name of the style
     QString fileName();
 
-    //! return the names of the symbols which have a matching 'substring' in its defintion
-    /*!
+    /** Returns the names of the symbols which have a matching 'substring' in its definition
+     *
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param qword is the query string to search the symbols or colorramps.
      *  \return A QStringList of the matched symbols or colorramps
      * */
     QStringList findSymbols( StyleEntity type, const QString& qword );
 
-    //! return the tags associated with the symbol
-    /*!
+    /** Returns the tags associated with the symbol
+     *
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or color ramp
      *  \return A QStringList of the tags that have been applied to that symbol/colorramp
      */
     QStringList tagsOfSymbol( StyleEntity type, const QString& symbol );
 
-    //! returns the smart groups map with id as key and name as value
+    /** Returns whether a given tag is associated with the symbol
+     *
+     *  \param type is either SymbolEntity or ColorrampEntity
+     *  \param symbol is the name of the symbol or color ramp
+     *  \param tag the name of the tag to look for
+     *  \return A boolean value identicating whether a tag was found attached to the symbol
+     */
+    bool symbolHasTag( StyleEntity type, const QString& symbol, const QString& tag );
+
+    //! Returns the tag name for the given id
+    QString tag( int id ) const;
+
+    //! Returns the smart groups map with id as key and name as value
     QMap<int, QString> smartgroupsListMap();
 
-    //! returns the smart groups list
+    //! Returns the smart groups list
     QStringList smartgroupNames();
 
-    //! returns the QgsSmartConditionMap for the given id
+    //! Returns the QgsSmartConditionMap for the given id
     QMultiMap<QString, QString> smartgroup( int id );
 
-    //! returns the operator for the smartgroup
+    //! Returns the operator for the smartgroup
     //clumsy implementation TODO create a class for smartgroups
     QString smartgroupOperator( int id );
 
-    //! returns the symbols for the smartgroup
+    //! Returns the symbols for the smartgroup
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );
 
     //! Exports the style as a XML file
@@ -264,29 +298,30 @@ class QgsStyle : QObject
     bool importXml( const QString& filename );
 
   signals:
+    //! Is emitted every time a new symbol has been added to the database
     void symbolSaved( const QString& name, QgsSymbol* symbol );
+    //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
+    void groupsModified();
 
   protected:
-    //! convenience function to open the DB and return a sqlite3 object
-    bool openDB( const QString& filename );
+    //! Convenience function to open the DB and return a sqlite3 object
+    bool openDatabase( const QString& filename );
 
-    //! convenience function that would run queries which don't generate return values
-    //! \param query query to run
-    //! \param freeQuery release query memory
-    //! \return success true on success
+    /** Convenience function that would run queries which don't generate return values
+     *  \param query query to run
+     *  \param freeQuery release query memory
+     *  \return success true on success
+     */
     bool runEmptyQuery( char* query, bool freeQuery = true );
 
-    //! prepares the complex query for removing a group, so that the children are not abandoned
-    char* getGroupRemoveQuery( int id );
-
-    //! gets the id from the table for the given name from the database, 0 if not found
+    //! Gets the id from the table for the given name from the database, 0 if not found
     int getId( const QString& table, const QString& name );
 
-    //! gets the name from the table for the given id from the database, empty if not found
+    //! Gets the name from the table for the given id from the database, empty if not found
     QString getName( const QString& table, int id ) const;
 
-    //! updates the properties of an existing symbol/colorramp
-    /*!
+    /** Updates the properties of an existing symbol/colorramp
+     *
      *  \note This should not be called separately, only called through addSymbol or addColorRamp
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param name is the name of an existing symbol or a color ramp

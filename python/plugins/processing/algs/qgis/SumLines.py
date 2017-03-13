@@ -66,7 +66,7 @@ class SumLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
@@ -99,15 +99,18 @@ class SumLines(GeoAlgorithm):
             length = 0
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
+            engine = None
             if len(lines) > 0:
                 hasIntersections = True
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(inGeom.geometry())
+                engine.prepareGeometry()
 
             if hasIntersections:
-                for i in lines:
-                    request = QgsFeatureRequest().setFilterFid(i)
-                    ftLine = lineLayer.getFeatures(request).next()
+                request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([])
+                for ftLine in lineLayer.getFeatures(request):
                     tmpGeom = ftLine.geometry()
-                    if inGeom.intersects(tmpGeom):
+                    if engine.intersects(tmpGeom.geometry()):
                         outGeom = inGeom.intersection(tmpGeom)
                         length += distArea.measureLength(outGeom)
                         count += 1
@@ -124,6 +127,6 @@ class SumLines(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

@@ -21,6 +21,8 @@
 #include "effects/qgspainteffect.h"
 #include <QFontMetricsF>
 #include <QPixmap>
+#include "qgis_app.h"
+#include <memory>
 
 class QgsMarkerSymbol;
 
@@ -33,14 +35,14 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
 {
   public:
 
-    QgsPointMarkerItem( QgsMapCanvas* canvas = nullptr );
+    QgsPointMarkerItem( QgsMapCanvas *canvas = nullptr );
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter *painter ) override;
 
     /** Sets the center point of the marker symbol (in map coordinates)
      * @param p center point
     */
-    void setPointLocation( const QgsPoint& p );
+    void setPointLocation( const QgsPoint &p );
 
     /** Sets the marker symbol to use for rendering the point. Note - you may need to call
      * updateSize() after setting the symbol.
@@ -48,12 +50,12 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
      * @see symbol()
      * @see updateSize()
      */
-    void setSymbol( QgsMarkerSymbol* symbol );
+    void setSymbol( QgsMarkerSymbol *symbol );
 
     /** Returns the marker symbol used for rendering the point.
      * @see setSymbol()
      */
-    QgsMarkerSymbol* symbol();
+    QgsMarkerSymbol *symbol();
 
     /** Sets the feature used for rendering the marker symbol. The feature's attributes
      * may affect the rendered symbol if data defined overrides are in place.
@@ -61,7 +63,7 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
      * @see feature()
      * @see updateSize()
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature &feature );
 
     /** Returns the feature used for rendering the marker symbol.
      * @see setFeature()
@@ -90,11 +92,11 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
   private:
 
     QgsFeature mFeature;
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     QPointF mLocation;
-    QScopedPointer< QgsDrawSourceEffect > mOpacityEffect;
+    std::unique_ptr< QgsDrawSourceEffect > mOpacityEffect;
 
-    QgsRenderContext renderContext( QPainter* painter );
+    QgsRenderContext renderContext( QPainter *painter );
 };
 
 #endif // QGSPOINTMARKERITEM_H

@@ -27,8 +27,8 @@
 
 #include <QMouseEvent>
 
-QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add part" );
 }
@@ -37,7 +37,7 @@ QgsMapToolAddPart::~QgsMapToolAddPart()
 {
 }
 
-void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
   {
@@ -49,7 +49,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
   }
 }
 
-void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = currentVectorLayer();
@@ -64,6 +64,10 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     notifyNotEditableLayer();
     return;
   }
+
+  bool isGeometryEmpty = false;
+  if ( vlayer->selectedFeatures()[0].geometry().isNull() )
+    isGeometryEmpty = true;
 
   if ( !checkSelection() )
   {
@@ -132,7 +136,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurve* curveToAdd = nullptr;
+      QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -146,12 +150,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       if ( mode() == CapturePolygon )
       {
         //avoid intersections
-        QgsCurvePolygon* cp = new QgsCurvePolygon();
+        QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
-        QgsGeometry* geom = new QgsGeometry( cp );
-        geom->avoidIntersections();
+        QgsGeometry *geom = new QgsGeometry( cp );
+        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
-        const QgsCurvePolygon* cpGeom = dynamic_cast<const QgsCurvePolygon*>( geom->geometry() );
+        const QgsCurvePolygon *cpGeom = dynamic_cast<const QgsCurvePolygon *>( geom->geometry() );
         if ( !cpGeom )
         {
           stopCapturing();
@@ -185,7 +189,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       emit messageDiscarded();
 
       //add points to other features to keep topology up-to-date
-      int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+      bool topologicalEditing = QgsProject::instance()->topologicalEditing();
       if ( topologicalEditing )
       {
         addTopologicalPoints( points() );
@@ -194,6 +198,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       vlayer->endEditCommand();
 
       vlayer->triggerRepaint();
+
+      if ( ( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
+      {
+        emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), QgsMessageBar::WARNING );
+      }
+
       return;
     }
 
@@ -242,7 +252,7 @@ bool QgsMapToolAddPart::checkSelection()
     return false;
   }
 
-  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
+  //inform user at the begin of the digitizing action that the island tool only works if exactly one feature is selected
   int nSelectedFeatures = vlayer->selectedFeatureCount();
   QString selectionErrorMsg;
   if ( nSelectedFeatures < 1 )

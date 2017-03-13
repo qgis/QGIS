@@ -25,34 +25,34 @@
 #include <QFileInfo>
 
 // ---------------------------------------------------------------------------
-QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = "mIconConnect.png";
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()
 {
 }
 
-QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
+QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
 {
-  QVector<QgsDataItem*> children;
-  QMap<QgsDataItem*, QString> serviceItems; // service/provider key
+  QVector<QgsDataItem *> children;
+  QHash<QgsDataItem *, QString> serviceItems; // service/provider key
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
-  Q_FOREACH ( const QString& key, QStringList() << "wms" << "WFS" << "wcs" )
+  Q_FOREACH ( const QString &key, QStringList() << "wms" << "WFS" << "wcs" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( key ) );
     if ( !library )
     {
       QgsDebugMsg( "Cannot get provider " + key );
       continue;
     }
 
-    dataItem_t * dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
+    dataItem_t *dItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );
@@ -82,18 +82,18 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
     }
   }
 
-  Q_FOREACH ( QgsDataItem* item, serviceItems.keys() )
+  Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
   {
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
     QString providerKey = serviceItems.value( item );
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
-      Q_FOREACH ( QgsDataItem* subItem, item->children() )
+      Q_FOREACH ( QgsDataItem *subItem, item->children() )
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
-        replacePath( subItem, providerKey.toLower() + ":/", "ows:/" );
+        replacePath( subItem, providerKey.toLower() + ":/", QStringLiteral( "ows:/" ) );
         children.append( subItem );
       }
       delete item;
@@ -109,10 +109,10 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 }
 
 // reset path recursively
-void QgsOWSConnectionItem::replacePath( QgsDataItem* item, QString before, QString after )
+void QgsOWSConnectionItem::replacePath( QgsDataItem *item, QString before, QString after )
 {
   item->setPath( item->path().replace( before, after ) );
-  Q_FOREACH ( QgsDataItem* subItem, item->children() )
+  Q_FOREACH ( QgsDataItem *subItem, item->children() )
   {
     replacePath( subItem, before, after );
   }
@@ -128,15 +128,15 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
   return ( o && mPath == o->mPath && mName == o->mName );
 }
 
-QList<QAction*> QgsOWSConnectionItem::actions()
+QList<QAction *> QgsOWSConnectionItem::actions()
 {
-  QList<QAction*> lst;
+  QList<QAction *> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
-  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst.append( actionDelete );
 
@@ -169,11 +169,11 @@ void QgsOWSConnectionItem::deleteConnection()
 // ---------------------------------------------------------------------------
 
 
-QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsOWSRootItem::QgsOWSRootItem( QgsDataItem *parent, QString name, QString path )
+  : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
-  mIconName = "mIconOws.svg";
+  mIconName = QStringLiteral( "mIconOws.svg" );
   populate();
 }
 
@@ -181,14 +181,14 @@ QgsOWSRootItem::~QgsOWSRootItem()
 {
 }
 
-QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
+QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 {
-  QVector<QgsDataItem*> connections;
+  QVector<QgsDataItem *> connections;
   // Combine all WMS,WFS,WCS connections
   QStringList connNames;
-  Q_FOREACH ( const QString& service, QStringList() << "WMS" << "WFS" << "WCS" )
+  Q_FOREACH ( const QString &service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    Q_FOREACH ( const QString& connName, QgsOwsConnection::connectionList( service ) )
+    Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( service ) )
     {
       if ( !connNames.contains( connName ) )
       {
@@ -196,20 +196,20 @@ QVector<QgsDataItem*> QgsOWSRootItem::createChildren()
       }
     }
   }
-  Q_FOREACH ( const QString& connName, connNames )
+  Q_FOREACH ( const QString &connName, connNames )
   {
-    QgsDataItem * conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
+    QgsDataItem *conn = new QgsOWSConnectionItem( this, connName, "ows:/" + connName );
     connections.append( conn );
   }
   return connections;
 }
 
-QList<QAction*> QgsOWSRootItem::actions()
+QList<QAction *> QgsOWSRootItem::actions()
 {
-  QList<QAction*> lst;
+  QList<QAction *> lst;
 
 #if 0
-  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 #endif
@@ -218,7 +218,7 @@ QList<QAction*> QgsOWSRootItem::actions()
 }
 
 
-QWidget * QgsOWSRootItem::paramWidget()
+QWidget *QgsOWSRootItem::paramWidget()
 {
 #if 0
   QgsOWSSourceSelect *select = new QgsOWSSourceSelect( 0, 0, true, true );
@@ -255,17 +255,17 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Net;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  if ( thePath.isEmpty() )
+  if ( path.isEmpty() )
   {
-    return new QgsOWSRootItem( parentItem, "OWS", "ows:" );
+    return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }
   return nullptr;
 }
 
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
-QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WindowFlags fl )
+QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl )
 {
   Q_UNUSED( parent );
   Q_UNUSED( fl );

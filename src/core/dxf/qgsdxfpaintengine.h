@@ -18,8 +18,10 @@
 #ifndef QGSDXFPAINTENGINE_H
 #define QGSDXFPAINTENGINE_H
 
+#include "qgis_core.h"
 #include <QPaintEngine>
 #include "qgsabstractgeometry.h"
+#include "qgspointv2.h"
 
 class QgsDxfExport;
 class QgsDxfPaintDevice;
@@ -33,28 +35,27 @@ class QgsDxfPaintDevice;
 class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
 {
   public:
-    QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf );
-    ~QgsDxfPaintEngine();
+    QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf );
 
-    bool begin( QPaintDevice* pdev ) override;
+    bool begin( QPaintDevice *pdev ) override;
     bool end() override;
     QPaintEngine::Type type() const override;
-    void updateState( const QPaintEngineState& state ) override;
+    void updateState( const QPaintEngineState &state ) override;
 
-    void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
+    void drawPixmap( const QRectF &r, const QPixmap &pm, const QRectF &sr ) override;
 
-    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
-    void drawPath( const QPainterPath& path ) override;
-    void drawLines( const QLineF* lines, int lineCount ) override;
+    void drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode ) override;
+    void drawPath( const QPainterPath &path ) override;
+    void drawLines( const QLineF *lines, int lineCount ) override;
 
-    void setLayer( const QString& layer ) { mLayer = layer; }
+    void setLayer( const QString &layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }
 
     void setShift( QPointF shift ) { mShift = shift; }
 
   private:
-    const QgsDxfPaintDevice* mPaintDevice;
-    QgsDxfExport* mDxf;
+    const QgsDxfPaintDevice *mPaintDevice = nullptr;
+    QgsDxfExport *mDxf = nullptr;
 
     //painter state information
     QTransform mTransform;
@@ -75,10 +76,10 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void endPolygon();
     void endCurve();
 
-    void setRing( QgsPointSequence &polyline, const QPointF * points, int pointCount );
+    void setRing( QgsPointSequence &polyline, const QPointF *points, int pointCount );
 
     //utils for bezier curve calculation
-    static QPointF bezierPoint( const QList<QPointF>& controlPolygon, double t );
+    static QPointF bezierPoint( const QList<QPointF> &controlPolygon, double t );
     static double bernsteinPoly( int n, int i, double t );
     static int lower( int n, int i );
     static double power( double a, int b );

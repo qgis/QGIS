@@ -32,17 +32,17 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
 
     virtual ~QgsGrassEditRenderer();
 
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
-    virtual void stopRender( QgsRenderContext& context ) override;
+    virtual void stopRender( QgsRenderContext &context ) override;
 
-    virtual QList<QString> usedAttributes() override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    virtual QgsFeatureRenderer* clone() const override;
+    virtual QgsFeatureRenderer *clone() const override;
 
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     virtual QString dump() const override;
 
@@ -52,31 +52,31 @@ class QgsGrassEditRenderer : public QgsFeatureRenderer
     void setLineRenderer( QgsFeatureRenderer *renderer );
     void setMarkerRenderer( QgsFeatureRenderer *renderer );
 
-    virtual QDomElement save( QDomDocument& doc ) override;
+    virtual QDomElement save( QDomDocument &doc ) override;
 
-    static QgsFeatureRenderer* create( QDomElement& element );
+    static QgsFeatureRenderer *create( QDomElement &element );
 
   protected:
-    QgsFeatureRenderer *mLineRenderer;
-    QgsFeatureRenderer *mMarkerRenderer;
+    QgsFeatureRenderer *mLineRenderer = nullptr;
+    QgsFeatureRenderer *mMarkerRenderer = nullptr;
 };
 
 class QgsGrassEditRendererWidget : public QgsRendererWidget
 {
     Q_OBJECT
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsGrassEditRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsGrassEditRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsGrassEditRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer() override;
+    virtual QgsFeatureRenderer *renderer() override;
 
   protected:
-    QgsGrassEditRenderer* mRenderer;
+    QgsGrassEditRenderer *mRenderer = nullptr;
 
-    QgsRendererWidget* mLineRendererWidget;
-    QgsRendererWidget* mPointRendererWidget;
+    QgsRendererWidget *mLineRendererWidget = nullptr;
+    QgsRendererWidget *mPointRendererWidget = nullptr;
 };
 
 #endif // QGSGRASSEDITRENDERER_H

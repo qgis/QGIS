@@ -15,6 +15,7 @@
 #ifndef QGSRASTERFILEWRITER_H
 #define QGSRASTERFILEWRITER_H
 
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -52,7 +53,19 @@ class CORE_EXPORT QgsRasterFileWriter
       NoDataConflict = 5
     };
 
-    QgsRasterFileWriter( const QString& outputUrl );
+    QgsRasterFileWriter( const QString &outputUrl );
+
+    /** Create a raster file with one band without initializing the pixel data.
+     * Returned provider may be used to initialize the raster using writeBlock() calls.
+     * Ownership of the returned provider is passed to the caller.
+     * @note Does not work with tiled mode enabled.
+     * @returns Instance of data provider in editing mode (on success) or null on error.
+     * @note added in QGIS 3.0
+     */
+    QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
+        int width, int height,
+        const QgsRectangle &extent,
+        const QgsCoordinateReferenceSystem &crs );
 
     /** Write raster file
         @param pipe raster pipe
@@ -61,13 +74,13 @@ class CORE_EXPORT QgsRasterFileWriter
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
-                             const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = nullptr );
+    WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
+                             const QgsCoordinateReferenceSystem &crs, QProgressDialog *p = nullptr );
 
-    void setOutputFormat( const QString& format ) { mOutputFormat = format; }
+    void setOutputFormat( const QString &format ) { mOutputFormat = format; }
     QString outputFormat() const { return mOutputFormat; }
 
-    void setOutputProviderKey( const QString& key ) { mOutputProviderKey = key; }
+    void setOutputProviderKey( const QString &key ) { mOutputProviderKey = key; }
     QString outputProviderKey() const { return mOutputProviderKey; }
 
     void setTiledMode( bool t ) { mTiledMode = t; }
@@ -80,10 +93,10 @@ class CORE_EXPORT QgsRasterFileWriter
     void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f ) { mBuildPyramidsFlag = f; }
 
     QList< int > pyramidsList() const { return mPyramidsList; }
-    void setPyramidsList( const QList< int > & list ) { mPyramidsList = list; }
+    void setPyramidsList( const QList< int > &list ) { mPyramidsList = list; }
 
     QString pyramidsResampling() const { return mPyramidsResampling; }
-    void setPyramidsResampling( const QString & str ) { mPyramidsResampling = str; }
+    void setPyramidsResampling( const QString &str ) { mPyramidsResampling = str; }
 
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsFormat; }
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f ) { mPyramidsFormat = f; }
@@ -91,31 +104,31 @@ class CORE_EXPORT QgsRasterFileWriter
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
 
-    void setCreateOptions( const QStringList& list ) { mCreateOptions = list; }
+    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
     QStringList createOptions() const { return mCreateOptions; }
 
-    void setPyramidsConfigOptions( const QStringList& list ) { mPyramidsConfigOptions = list; }
+    void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
   private:
     QgsRasterFileWriter(); //forbidden
-    WriterError writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = nullptr );
+    WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
+                                 const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
 
     // Helper method used by previous one
-    WriterError writeDataRaster( const QgsRasterPipe* pipe,
-                                 QgsRasterIterator* iter,
+    WriterError writeDataRaster( const QgsRasterPipe *pipe,
+                                 QgsRasterIterator *iter,
                                  int nCols, int nRows,
-                                 const QgsRectangle& outputExtent,
-                                 const QgsCoordinateReferenceSystem& crs,
+                                 const QgsRectangle &outputExtent,
+                                 const QgsCoordinateReferenceSystem &crs,
                                  Qgis::DataType destDataType,
-                                 const QList<bool>& destHasNoDataValueList,
-                                 const QList<double>& destNoDataValueList,
-                                 QgsRasterDataProvider* destProvider,
-                                 QProgressDialog* progressDialog );
+                                 const QList<bool> &destHasNoDataValueList,
+                                 const QList<double> &destNoDataValueList,
+                                 QgsRasterDataProvider *destProvider,
+                                 QProgressDialog *progressDialog );
 
-    WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = nullptr );
+    WriterError writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
+                                  const QgsCoordinateReferenceSystem &crs, QProgressDialog *progressDialog = nullptr );
 
     /** \brief Initialize vrt member variables
      *  @param xSize width of vrt
@@ -126,18 +139,18 @@ class CORE_EXPORT QgsRasterFileWriter
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */
-    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, Qgis::DataType type, const QList<bool>& destHasNoDataValueList, const QList<double>& destNoDataValueList );
+    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem &crs, double *geoTransform, Qgis::DataType type, const QList<bool> &destHasNoDataValueList, const QList<double> &destNoDataValueList );
     //write vrt document to disk
-    bool writeVRT( const QString& file );
+    bool writeVRT( const QString &file );
     //add file entry to vrt
-    void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
-    void buildPyramids( const QString& filename );
+    void addToVRT( const QString &filename, int band, int xSize, int ySize, int xOffset, int yOffset );
+    void buildPyramids( const QString &filename );
 
-    /** Create provider and datasource for a part image (vrt mode)*/
-    QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
+    //! Create provider and datasource for a part image (vrt mode)
+    QgsRasterDataProvider *createPartProvider( const QgsRectangle &extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
-        const QString& outputUrl, int fileIndex, int nBands, Qgis::DataType type,
-        const QgsCoordinateReferenceSystem& crs );
+        const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
+        const QgsCoordinateReferenceSystem &crs );
 
     /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
      *  @param nCols number of tile columns
@@ -149,13 +162,13 @@ class CORE_EXPORT QgsRasterFileWriter
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */
-    QgsRasterDataProvider* initOutput( int nCols, int nRows,
-                                       const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
+    QgsRasterDataProvider *initOutput( int nCols, int nRows,
+                                       const QgsCoordinateReferenceSystem &crs, double *geoTransform, int nBands,
                                        Qgis::DataType type,
-                                       const QList<bool>& destHasNoDataValueList = QList<bool>(), const QList<double>& destNoDataValueList = QList<double>() );
+                                       const QList<bool> &destHasNoDataValueList = QList<bool>(), const QList<double> &destNoDataValueList = QList<double>() );
 
-    /** Calculate nRows, geotransform and pixel size for output*/
-    void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );
+    //! Calculate nRows, geotransform and pixel size for output
+    void globalOutputParameters( const QgsRectangle &extent, int nCols, int &nRows, double *geoTransform, double &pixelSize );
 
     QString partFileName( int fileIndex );
     QString vrtFileName();
@@ -167,7 +180,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
-    /** False: Write one file, true: create a directory and add the files numbered*/
+    //! False: Write one file, true: create a directory and add the files numbered
     bool mTiledMode;
     double mMaxTileWidth;
     double mMaxTileHeight;
@@ -181,10 +194,10 @@ class CORE_EXPORT QgsRasterFileWriter
     QDomDocument mVRTDocument;
     QList<QDomElement> mVRTBands;
 
-    QProgressDialog* mProgressDialog;
+    QProgressDialog *mProgressDialog = nullptr;
 
-    const QgsRasterPipe* mPipe;
-    const QgsRasterInterface* mInput;
+    const QgsRasterPipe *mPipe = nullptr;
+    const QgsRasterInterface *mInput = nullptr;
 };
 
 #endif // QGSRASTERFILEWRITER_H

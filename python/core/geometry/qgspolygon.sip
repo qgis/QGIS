@@ -11,21 +11,20 @@ class QgsPolygonV2: public QgsCurvePolygon
     bool operator!=( const QgsPolygonV2& other ) const;
 
     virtual QString geometryType() const;
-    virtual QgsPolygonV2* clone() const;
+    virtual QgsPolygonV2* clone() const /Factory/;
     void clear();
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
 
     // inherited: bool fromWkt( const QString &wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     // inherited: QString asWkt( int precision = 17 ) const;
     // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2* surfaceToPolygon() const;
+    QgsPolygonV2* surfaceToPolygon() const /Factory/;
 
     /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
      @return the converted geometry. Caller takes ownership*/
@@ -36,4 +35,12 @@ class QgsPolygonV2: public QgsCurvePolygon
     virtual void setExteriorRing( QgsCurve* ring /Transfer/ );
 
     virtual QgsAbstractGeometry* boundary() const /Factory/;
+
+    /**
+     * Returns the distance from a point to the boundary of the polygon (either the
+     * exterior ring or any closer interior rings). The returned distance will be
+     * negative if the point lies outside the polygon.
+     * @note added in QGIS 3.0
+     */
+    double pointDistanceToBoundary( double x, double y ) const;
 };

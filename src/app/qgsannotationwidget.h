@@ -19,17 +19,20 @@
 #define QGSANNOTATIONWIDGET_H
 
 #include "ui_qgsannotationwidgetbase.h"
+#include "qgis_app.h"
+#include <memory>
 
-class QgsAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
+class QgsFillSymbol;
 
-/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
+/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
 subclass configuration dialogs*/
 class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsAnnotationWidget();
 
     void apply();
@@ -37,17 +40,20 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
   signals:
 
     //! Emitted when the background color of the annotation is changed
-    void backgroundColorChanged( const QColor& color );
+    void backgroundColorChanged( const QColor &color );
 
   private slots:
     void on_mMapMarkerButton_clicked();
+    void on_mFrameStyleButton_clicked();
 
   private:
-    QgsAnnotationItem* mItem;
-    QScopedPointer< QgsMarkerSymbol > mMarkerSymbol;
+    QgsMapCanvasAnnotationItem *mItem = nullptr;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();
+    void updateFillIcon();
 };
 
 #endif // QGSANNOTATIONWIDGET_H

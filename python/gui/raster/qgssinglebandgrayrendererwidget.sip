@@ -7,7 +7,7 @@ class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
     QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandGrayRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &extent ) /Factory/;
 
     QgsRasterRenderer* renderer();
     void setMapCanvas( QgsMapCanvas* canvas );
@@ -19,7 +19,8 @@ class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
     void setMin( const QString& value, int index = 0 );
     void setMax( const QString& value, int index = 0 );
     int selectedBand( int index = 0 );
+    void doComputations();
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+    void loadMinMax( int bandNo, double min, double max );
 };

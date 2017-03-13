@@ -22,18 +22,18 @@
 #include "mersenne-twister.h"
 
 
-QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, const QString& nPointsAttribute, const QString& minDistAttribute ): mInputLayer( inputLayer ),
-    mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
+QgsPointSample::QgsPointSample( QgsVectorLayer *inputLayer, const QString &outputLayer, const QString &nPointsAttribute, const QString &minDistAttribute ): mInputLayer( inputLayer ),
+  mOutputLayer( outputLayer ), mNumberOfPointsAttribute( nPointsAttribute ), mMinDistanceAttribute( minDistAttribute ), mNCreatedPoints( 0 )
 {
 }
 
 QgsPointSample::QgsPointSample()
-    : mInputLayer( nullptr )
-    , mNCreatedPoints( 0 )
+  : mInputLayer( nullptr )
+  , mNCreatedPoints( 0 )
 {
 }
 
-int QgsPointSample::createRandomPoints( QProgressDialog* pd )
+int QgsPointSample::createRandomPoints( QProgressDialog *pd )
 {
   Q_UNUSED( pd );
 
@@ -56,15 +56,15 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
 
   //create vector file writer
   QgsFields outputFields;
-  outputFields.append( QgsField( "id", QVariant::Int ) );
-  outputFields.append( QgsField( "station_id", QVariant::Int ) );
-  outputFields.append( QgsField( "stratum_id", QVariant::Int ) );
-  QgsVectorFileWriter writer( mOutputLayer, "UTF-8",
+  outputFields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "station_id" ), QVariant::Int ) );
+  outputFields.append( QgsField( QStringLiteral( "stratum_id" ), QVariant::Int ) );
+  QgsVectorFileWriter writer( mOutputLayer, QStringLiteral( "UTF-8" ),
                               outputFields,
                               QgsWkbTypes::Point,
                               mInputLayer->crs() );
 
-  //check if creation of output layer successfull
+  //check if creation of output layer successful
   if ( writer.hasError() != QgsVectorFileWriter::NoError )
   {
     return 3;
@@ -92,7 +92,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   return 0;
 }
 
-void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWriter& writer, int nPoints, double minDistance )
+void QgsPointSample::addSamplePoints( QgsFeature &inputFeature, QgsVectorFileWriter &writer, int nPoints, double minDistance )
 {
   if ( !inputFeature.hasGeometry() )
     return;
@@ -116,17 +116,17 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
 
   while ( nIterations < maxIterations && points < nPoints )
   {
-    randX = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
-    randY = (( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
+    randX = ( ( double )mt_rand() / MD_RAND_MAX ) * geomRect.width() + geomRect.xMinimum();
+    randY = ( ( double )mt_rand() / MD_RAND_MAX ) * geomRect.height() + geomRect.yMinimum();
     QgsPoint randPoint( randX, randY );
     QgsGeometry ptGeom = QgsGeometry::fromPoint( randPoint );
     if ( ptGeom.within( geom ) && checkMinDistance( randPoint, sIndex, minDistance, pointMapForFeature ) )
     {
       //add feature to writer
       QgsFeature f( mNCreatedPoints );
-      f.setAttribute( "id", mNCreatedPoints + 1 );
-      f.setAttribute( "station_id", points + 1 );
-      f.setAttribute( "stratum_id", inputFeature.id() );
+      f.setAttribute( QStringLiteral( "id" ), mNCreatedPoints + 1 );
+      f.setAttribute( QStringLiteral( "station_id" ), points + 1 );
+      f.setAttribute( QStringLiteral( "stratum_id" ), inputFeature.id() );
       f.setGeometry( ptGeom );
       writer.addFeature( f );
       sIndex.insertFeature( f );
@@ -138,7 +138,7 @@ void QgsPointSample::addSamplePoints( QgsFeature& inputFeature, QgsVectorFileWri
   }
 }
 
-bool QgsPointSample::checkMinDistance( QgsPoint& pt, QgsSpatialIndex& index, double minDistance, QMap< QgsFeatureId, QgsPoint >& pointMap )
+bool QgsPointSample::checkMinDistance( QgsPoint &pt, QgsSpatialIndex &index, double minDistance, QMap< QgsFeatureId, QgsPoint > &pointMap )
 {
   if ( minDistance <= 0 )
   {

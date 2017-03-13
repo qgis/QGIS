@@ -18,7 +18,6 @@
 #include "qgsfeatureiterator.h"
 
 #include <QQueue>
-#include <QSharedPointer>
 
 #include "qgspostgresprovider.h"
 
@@ -30,10 +29,10 @@ class QgsPostgresTransaction;
 class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsPostgresFeatureSource( const QgsPostgresProvider* p );
+    explicit QgsPostgresFeatureSource( const QgsPostgresProvider *p );
     ~QgsPostgresFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
 
@@ -53,14 +52,14 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QString mQuery;
     // TODO: loadFields()
 
-    QSharedPointer<QgsPostgresSharedData> mShared;
+    std::shared_ptr<QgsPostgresSharedData> mShared;
 
     /* The transaction connection (if any) gets refed/unrefed when creating/
      * destroying the QgsPostgresFeatureSource, to ensure that the transaction
      * connection remains valid during the life time of the feature source
      * even if the QgsPostgresTransaction object which initially created the
      * connection has since been destroyed. */
-    QgsPostgresConn* mTransactionConnection;
+    QgsPostgresConn *mTransactionConnection = nullptr;
 
     friend class QgsPostgresFeatureIterator;
     friend class QgsPostgresExpressionCompiler;
@@ -72,33 +71,25 @@ class QgsPostgresConn;
 class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
 {
   public:
-    QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest &request );
+    QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsPostgresFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
+    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
-    //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
-
-    //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
-
-    QgsPostgresConn* mConn;
+    QgsPostgresConn *mConn = nullptr;
 
 
     QString whereClauseRect();
     bool getFeature( QgsPostgresResult &queryResult, int row, QgsFeature &feature );
-    void getFeatureAttribute( int idx, QgsPostgresResult& queryResult, int row, int& col, QgsFeature& feature );
-    bool declareCursor( const QString& whereClause, long limit = -1, bool closeOnFail = true , const QString& orderBy = QString() );
+    void getFeatureAttribute( int idx, QgsPostgresResult &queryResult, int row, int &col, QgsFeature &feature );
+    bool declareCursor( const QString &whereClause, long limit = -1, bool closeOnFail = true, const QString &orderBy = QString() );
 
     QString mCursorName;
 
@@ -119,10 +110,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     bool mIsTransactionConnection;
 
-    static const int sFeatureQueueSize;
-
   private:
-    //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;

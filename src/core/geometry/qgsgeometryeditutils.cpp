@@ -21,22 +21,21 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmultisurface.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include <limits>
 
-int QgsGeometryEditUtils::addRing( QgsAbstractGeometry* geom, QgsCurve* ring )
+int QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *ring )
 {
   if ( !ring )
   {
     return 1;
   }
 
-  QList< QgsCurvePolygon* > polygonList;
-  QgsCurvePolygon* curvePoly = dynamic_cast< QgsCurvePolygon* >( geom );
-  QgsGeometryCollection* multiGeom = dynamic_cast< QgsGeometryCollection* >( geom );
+  QList< QgsCurvePolygon * > polygonList;
+  QgsCurvePolygon *curvePoly = dynamic_cast< QgsCurvePolygon * >( geom );
+  QgsGeometryCollection *multiGeom = dynamic_cast< QgsGeometryCollection * >( geom );
   if ( curvePoly )
   {
     polygonList.append( curvePoly );
@@ -46,7 +45,7 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometry* geom, QgsCurve* ring )
     polygonList.reserve( multiGeom->numGeometries() );
     for ( int i = 0; i < multiGeom->numGeometries(); ++i )
     {
-      polygonList.append( dynamic_cast< QgsCurvePolygon* >( multiGeom->geometryN( i ) ) );
+      polygonList.append( dynamic_cast< QgsCurvePolygon * >( multiGeom->geometryN( i ) ) );
     }
   }
   else
@@ -67,11 +66,11 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometry* geom, QgsCurve* ring )
     return 3;
   }
 
-  QScopedPointer<QgsGeometryEngine> ringGeom( QgsGeometry::createGeometryEngine( ring ) );
+  std::unique_ptr<QgsGeometryEngine> ringGeom( QgsGeometry::createGeometryEngine( ring ) );
   ringGeom->prepareGeometry();
 
   //for each polygon, test if inside outer ring and no intersection with other interior ring
-  QList< QgsCurvePolygon* >::iterator polyIter = polygonList.begin();
+  QList< QgsCurvePolygon * >::iterator polyIter = polygonList.begin();
   for ( ; polyIter != polygonList.end(); ++polyIter )
   {
     if ( ringGeom->within( **polyIter ) )
@@ -101,7 +100,7 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometry* geom, QgsCurve* ring )
   return 5; //not contained in any outer ring
 }
 
-int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometry* part )
+int QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, QgsAbstractGeometry *part )
 {
   if ( !geom )
   {
@@ -114,7 +113,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometr
   }
 
   //multitype?
-  QgsGeometryCollection* geomCollection = dynamic_cast<QgsGeometryCollection*>( geom );
+  QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( geom );
   if ( !geomCollection )
   {
     return 1;
@@ -124,7 +123,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometr
   if ( QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiSurface
        || QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
   {
-    QgsCurve* curve = dynamic_cast<QgsCurve*>( part );
+    QgsCurve *curve = dynamic_cast<QgsCurve *>( part );
     if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
       QgsCurvePolygon *poly = nullptr;
@@ -145,7 +144,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometr
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon )
     {
-      QgsGeometryCollection *parts = static_cast<QgsGeometryCollection*>( part );
+      QgsGeometryCollection *parts = static_cast<QgsGeometryCollection *>( part );
 
       int i;
       int n = geomCollection->numGeometries();
@@ -176,7 +175,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometry* geom, QgsAbstractGeometr
   return added ? 0 : 2;
 }
 
-bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry* geom, int ringNum, int partNum )
+bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry *geom, int ringNum, int partNum )
 {
   if ( !geom || partNum < 0 )
   {
@@ -188,8 +187,8 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry* geom, int ringNum, i
     return false;
   }
 
-  QgsAbstractGeometry* g = geom;
-  QgsGeometryCollection* c = dynamic_cast<QgsGeometryCollection*>( geom );
+  QgsAbstractGeometry *g = geom;
+  QgsGeometryCollection *c = dynamic_cast<QgsGeometryCollection *>( geom );
   if ( c )
   {
     g = c->geometryN( partNum );
@@ -200,7 +199,7 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry* geom, int ringNum, i
     return false;
   }
 
-  QgsCurvePolygon* cpoly = dynamic_cast<QgsCurvePolygon*>( g );
+  QgsCurvePolygon *cpoly = dynamic_cast<QgsCurvePolygon *>( g );
   if ( !cpoly )
   {
     return false;
@@ -209,14 +208,14 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry* geom, int ringNum, i
   return cpoly->removeInteriorRing( ringNum - 1 );
 }
 
-bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry* geom, int partNum )
+bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
 {
   if ( !geom )
   {
     return false;
   }
 
-  QgsGeometryCollection* c = dynamic_cast<QgsGeometryCollection*>( geom );
+  QgsGeometryCollection *c = dynamic_cast<QgsGeometryCollection *>( geom );
   if ( !c )
   {
     return false;
@@ -225,10 +224,12 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry* geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry& geom, QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures )
+QgsAbstractGeometry *QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
+    const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+    QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
 {
-  QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
-  if ( geomEngine.isNull() )
+  std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
+  if ( !geomEngine )
   {
     return nullptr;
   }
@@ -241,41 +242,32 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     return nullptr;
   }
 
-  //read avoid intersections list from project properties
-  bool listReadOk;
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", QStringList(), &listReadOk );
-  if ( !listReadOk )
+  if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
-  QList< QgsAbstractGeometry* > nearGeometries;
+  QList< QgsAbstractGeometry * > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  QgsVectorLayer* currentLayer = nullptr;
-  QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
-  for ( ; aIt != avoidIntersectionsList.constEnd(); ++aIt )
+  Q_FOREACH ( QgsVectorLayer *currentLayer, avoidIntersectionsLayers )
   {
-    currentLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *aIt ) );
-    if ( currentLayer )
+    QgsFeatureIds ignoreIds;
+    QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+    if ( ignoreIt != ignoreFeatures.constEnd() )
+      ignoreIds = ignoreIt.value();
+
+    QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
+                            .setFlags( QgsFeatureRequest::ExactIntersect )
+                            .setSubsetOfAttributes( QgsAttributeList() ) );
+    QgsFeature f;
+    while ( fi.nextFeature( f ) )
     {
-      QgsFeatureIds ignoreIds;
-      QMap<QgsVectorLayer*, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
-      if ( ignoreIt != ignoreFeatures.constEnd() )
-        ignoreIds = ignoreIt.value();
+      if ( ignoreIds.contains( f.id() ) )
+        continue;
 
-      QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
-                              .setFlags( QgsFeatureRequest::ExactIntersect )
-                              .setSubsetOfAttributes( QgsAttributeList() ) );
-      QgsFeature f;
-      while ( fi.nextFeature( f ) )
-      {
-        if ( ignoreIds.contains( f.id() ) )
-          continue;
+      if ( !f.hasGeometry() )
+        continue;
 
-        if ( !f.hasGeometry() )
-          continue;
-
-        nearGeometries << f.geometry().geometry()->clone();
-      }
+      nearGeometries << f.geometry().geometry()->clone();
     }
   }
 
@@ -285,14 +277,14 @@ QgsAbstractGeometry* QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
   }
 
 
-  QgsAbstractGeometry* combinedGeometries = geomEngine.data()->combine( nearGeometries );
+  QgsAbstractGeometry *combinedGeometries = geomEngine->combine( nearGeometries );
   qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
     return nullptr;
   }
 
-  QgsAbstractGeometry* diffGeom = geomEngine.data()->difference( *combinedGeometries );
+  QgsAbstractGeometry *diffGeom = geomEngine->difference( *combinedGeometries );
 
   delete combinedGeometries;
   return diffGeom;

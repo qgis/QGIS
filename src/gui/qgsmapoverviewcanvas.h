@@ -32,6 +32,7 @@ class QgsRectangle;
 
 class QgsMapRendererQImageJob;
 #include "qgsmapsettings.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A widget that displays an overview map.
@@ -41,20 +42,19 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     Q_OBJECT
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
-
-    ~QgsMapOverviewCanvas();
+    QgsMapOverviewCanvas( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
 
     //! renders overview and updates panning widget
     void refresh();
 
     //! changes background color
-    void setBackgroundColor( const QColor& color );
+    void setBackgroundColor( const QColor &color );
 
     //! updates layer set for overview
-    void setLayerSet( const QStringList& layerSet );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 
-    QStringList layerSet() const;
+    //! Returns list of layers visible in the overview
+    QList<QgsMapLayer *> layers() const;
 
     void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
 
@@ -66,48 +66,49 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     //! used for overview canvas to reflect changed extent in main map canvas
     void drawExtentRect();
 
-    // ### QGIS 3: rename so it does not look like getter, make protected
-    void hasCrsTransformEnabled( bool flag );
-
     // ### QGIS 3: make protected
     //! Should be called when the canvas destination CRS is changed
     void destinationCrsChanged();
 
   protected slots:
     void mapRenderingFinished();
-    void layerRepaintRequested();
+
+    /**
+     * Triggered when a layer in the overview requests a repaint.
+     */
+    void layerRepaintRequested( bool deferred = false );
 
   protected:
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * pe ) override;
+    void paintEvent( QPaintEvent *pe ) override;
 
     //! Overridden show event
-    void showEvent( QShowEvent * e ) override;
+    void showEvent( QShowEvent *e ) override;
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e ) override;
+    void resizeEvent( QResizeEvent *e ) override;
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e ) override;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
     //! called when panning to reflect mouse movement
     void updatePanningWidget( QPoint pos );
 
     //! widget for panning map in overview
-    QgsPanningWidget* mPanningWidget;
+    QgsPanningWidget *mPanningWidget = nullptr;
 
     //! position of cursor inside panning widget
     QPoint mPanningCursorOffset;
 
     //! main map canvas - used to get/set extent
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     //! pixmap where the map is stored
     QPixmap mPixmap;
@@ -116,7 +117,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     QgsMapSettings mSettings;
 
     //! for rendering overview
-    QgsMapRendererQImageJob* mJob;
+    QgsMapRendererQImageJob *mJob = nullptr;
 };
 
 
@@ -129,11 +130,11 @@ class QgsPanningWidget : public QWidget
     QPolygon mPoly;
 
   public:
-    explicit QgsPanningWidget( QWidget* parent );
+    explicit QgsPanningWidget( QWidget *parent );
 
-    void setPolygon( const QPolygon& p );
+    void setPolygon( const QPolygon &p );
 
-    void paintEvent( QPaintEvent* pe ) override;
+    void paintEvent( QPaintEvent *pe ) override;
 
 };
 ///@endcond

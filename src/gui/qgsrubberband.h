@@ -21,41 +21,48 @@
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QPaintEvent;
 
 /** \ingroup gui
- * A class for drawing transient features (e.g. digitising lines) on the map.
+ * A class for drawing transient features (e.g. digitizing lines) on the map.
  * It may be used
  */
 class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 {
   public:
 
-    /** Icons */
+    //! Icons
     enum IconType
     {
+
       /**
        * No icon is used
        */
       ICON_NONE,
+
       /**
        * A cross is used to highlight points (+)
        */
       ICON_CROSS,
+
       /**
        * A cross is used to highlight points (x)
        */
       ICON_X,
+
       /**
        * A box is used to highlight points (□)
        */
       ICON_BOX,
+
       /**
        * A circle is used to highlight points (○)
        */
       ICON_CIRCLE,
+
       /**
        * A full box is used to highlight points (■)
        */
@@ -67,31 +74,30 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param geometryType Defines how the data should be drawn onto the screen. (Use Qgis::Line, Qgis::Polygon or Qgis::Point)
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
-    ~QgsRubberBand();
+    QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
      * Set the color for the rubberband
      *  @param color  The color used to render this rubberband
      */
-    void setColor( const QColor & color );
+    void setColor( const QColor &color );
 
     /**
      * Set the fill color for the rubberband
      *  @param color  The color used to render this rubberband
      *  @note Added in 2.6
      */
-    void setFillColor( const QColor & color );
+    void setFillColor( const QColor &color );
 
     /**
-     * Set the border color for the rubberband
+     * Set the stroke color for the rubberband
      *  @param color  The color used to render this rubberband
      *  @note Added in 2.6
      */
-    void setBorderColor( const QColor & color );
+    void setStrokeColor( const QColor &color );
 
     /**
-     * Set the width of the line. Outline width for polygon.
+     * Set the width of the line. Stroke width for polygon.
      *  @param width The width for any lines painted for this rubberband
      */
     void setWidth( int width );
@@ -132,7 +138,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param doUpdate      Should the map canvas be updated immediately?
      *  @param geometryIndex The index of the feature part (in case of multipart geometries)
      */
-    void addPoint( const QgsPoint & p, bool doUpdate = true, int geometryIndex = 0 );
+    void addPoint( const QgsPoint &p, bool doUpdate = true, int geometryIndex = 0 );
 
     /** Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
@@ -159,13 +165,13 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( const QgsPoint & p, int geometryIndex = 0 );
+    void movePoint( const QgsPoint &p, int geometryIndex = 0 );
 
     /**
      * Moves the rubber band point specified by index. Note that if the rubber band is
      * not used to track the last mouse position, the first point of the rubber band has two vertices
      */
-    void movePoint( int index, const QgsPoint& p, int geometryIndex = 0 );
+    void movePoint( int index, const QgsPoint &p, int geometryIndex = 0 );
 
     /**
      * Returns number of vertices in feature part
@@ -182,7 +188,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void setToGeometry( const QgsGeometry& geom, QgsVectorLayer* layer );
+    void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
     /**
      * Sets this rubber band to a map canvas rectangle
@@ -201,7 +207,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( const QgsGeometry& geom, QgsVectorLayer* layer );
+    void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)
@@ -238,7 +244,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     virtual void updatePosition() override;
 
   protected:
-    virtual void paint( QPainter* p ) override;
+    virtual void paint( QPainter *p ) override;
 
     //! recalculates needed rectangle
     void updateRect();
@@ -247,10 +253,10 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QBrush mBrush;
     QPen mPen;
 
-    /** The size of the icon for points. */
+    //! The size of the icon for points.
     int mIconSize;
 
-    /** Icon to be shown. */
+    //! Icon to be shown.
     IconType mIconType;
 
     /**
@@ -263,7 +269,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     QgsRubberBand();
 
-    static QgsPolyline getPolyline( const QList<QgsPoint> & points );
+    static QgsPolyline getPolyline( const QList<QgsPoint> &points );
 
 };
 

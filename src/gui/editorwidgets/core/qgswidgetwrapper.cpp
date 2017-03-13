@@ -18,23 +18,23 @@
 
 #include <QWidget>
 
-QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer* vl, QWidget* editor, QWidget* parent )
-    : QObject( parent )
-    , mWidget( editor )
-    , mParent( parent )
-    , mLayer( vl )
-    , mInitialized( false )
+QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget *parent )
+  : QObject( parent )
+  , mWidget( editor )
+  , mParent( parent )
+  , mLayer( vl )
+  , mInitialized( false )
 {
 }
 
-QWidget* QgsWidgetWrapper::widget()
+QWidget *QgsWidgetWrapper::widget()
 {
   if ( !mWidget )
     mWidget = createWidget( mParent );
 
   if ( !mInitialized )
   {
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper*>( this ) );
+    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper *>( this ) );
     initWidget( mWidget );
     mInitialized = true;
   }
@@ -42,7 +42,7 @@ QWidget* QgsWidgetWrapper::widget()
   return mWidget;
 }
 
-void QgsWidgetWrapper::setConfig( const QgsEditorWidgetConfig& config )
+void QgsWidgetWrapper::setConfig( const QVariantMap &config )
 {
   mConfig = config;
 }
@@ -52,7 +52,7 @@ void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
   mContext = context;
 }
 
-QVariant QgsWidgetWrapper::config( const QString& key, const QVariant& defaultVal ) const
+QVariant QgsWidgetWrapper::config( const QString &key, const QVariant &defaultVal ) const
 {
   if ( mConfig.contains( key ) )
   {
@@ -61,27 +61,27 @@ QVariant QgsWidgetWrapper::config( const QString& key, const QVariant& defaultVa
   return defaultVal;
 }
 
-QgsEditorWidgetConfig QgsWidgetWrapper::config() const
+QVariantMap QgsWidgetWrapper::config() const
 {
   return mConfig;
 }
 
-const QgsAttributeEditorContext& QgsWidgetWrapper::context() const
+const QgsAttributeEditorContext &QgsWidgetWrapper::context() const
 {
   return mContext;
 }
 
-QgsVectorLayer* QgsWidgetWrapper::layer() const
+QgsVectorLayer *QgsWidgetWrapper::layer() const
 {
   return mLayer;
 }
 
-QgsWidgetWrapper* QgsWidgetWrapper::fromWidget( QWidget* widget )
+QgsWidgetWrapper *QgsWidgetWrapper::fromWidget( QWidget *widget )
 {
-  return widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>();
+  return widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper *>();
 }
 
-void QgsWidgetWrapper::initWidget( QWidget* editor )
+void QgsWidgetWrapper::initWidget( QWidget *editor )
 {
   Q_UNUSED( editor )
 }

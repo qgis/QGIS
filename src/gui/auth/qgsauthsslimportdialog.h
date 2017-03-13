@@ -67,6 +67,7 @@
 #include <QDialog>
 #include <QAbstractSocket>
 #include <QSslSocket>
+#include "qgis_gui.h"
 
 class QPushButton;
 class QSslSocket;
@@ -80,15 +81,14 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 {
     Q_OBJECT
   public:
+
     /**
      * Construct dialog for importing certificates
      * @param parent
      */
     QgsAuthSslImportDialog( QWidget *parent = nullptr );
-    ~QgsAuthSslImportDialog();
 
   public slots:
-    /** Overridden slot of base dialog */
     void accept() override;
 
   private slots:
@@ -119,18 +119,18 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 
     void appendString( const QString &line );
 
-    QPushButton* saveButton();
-    QPushButton* closeButton();
-    QString getOpenFileName( const QString& title, const QString& extfilter );
+    QPushButton *saveButton();
+    QPushButton *closeButton();
+    QString getOpenFileName( const QString &title, const QString &extfilter );
 
-    QSslSocket *mSocket;
+    QSslSocket *mSocket = nullptr;
     bool mExecErrorsDialog;
-    QTimer *mTimer;
+    QTimer *mTimer = nullptr;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;
 
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHSSLIMPORTDIALOG_H

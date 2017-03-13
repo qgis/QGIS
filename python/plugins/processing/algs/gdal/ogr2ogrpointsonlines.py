@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -48,7 +49,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create points along lines')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
@@ -67,19 +68,18 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         layername = "'" + ogrLayerName(inLayer) + "'"
-        distance = unicode(self.getParameterValue(self.DISTANCE))
-        geometry = unicode(self.getParameterValue(self.GEOMETRY))
+        distance = str(self.getParameterValue(self.DISTANCE))
+        geometry = str(self.getParameterValue(self.GEOMETRY))
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
 
         arguments.append('-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(')
         arguments.append(geometry)
@@ -90,7 +90,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         arguments.append(layername)
         arguments.append('"')
 
-        if len(options) > 0:
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         commands = []

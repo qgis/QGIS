@@ -18,6 +18,7 @@
 
 #include "qgssearchwidgetwrapper.h"
 #include <QComboBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Wraps a value map search widget. This widget will offer a combobox with values from another layer
@@ -29,7 +30,7 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
@@ -43,8 +44,8 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   protected slots:
     void setExpression( QString exp ) override;
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void comboBoxIndexChanged( int idx );
 
   private:
-    QComboBox * mComboBox;
+    QComboBox *mComboBox = nullptr;
 };
 
 #endif // QGSVALUEMAPSEARCHWIDGETWRAPPER_H

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QtTest/QSignalSpy>
 
 #include <qgsapplication.h>
@@ -31,7 +31,7 @@ class TestOpenStreetMap : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() ;// will be called before each testfunction is executed.
     void cleanup() ;// will be called after every testfunction.
-    /** Our tests proper begin here */
+    //! Our tests proper begin here
     void download();
     void importAndQueries();
   private:
@@ -77,8 +77,8 @@ void TestOpenStreetMap::download()
   QVERIFY( res );
 
   // wait for finished() signal
-  int timeout = 15000; // in miliseconds - max waiting time
-  int waitTime = 500; // in miliseconds - unit waiting time
+  int timeout = 15000; // in milliseconds - max waiting time
+  int waitTime = 500; // in milliseconds - unit waiting time
   QSignalSpy spy( &download, SIGNAL( finished() ) );
   while ( timeout > 0 && spy.count() == 0 )
   {
@@ -170,14 +170,14 @@ void TestOpenStreetMap::importAndQueries()
   QCOMPARE( ways.next().isValid(), false );
   ways.close();
 
-  bool exportRes1 = db.exportSpatiaLite( QgsOSMDatabase::Point, "sl_points", QStringList( "addr:postcode" ) );
+  bool exportRes1 = db.exportSpatiaLite( QgsOSMDatabase::Point, QStringLiteral( "sl_points" ), QStringList( QStringLiteral( "addr:postcode" ) ) );
   //bool exportRes = db.exportSpatiaLite( QStringList("amenity") << "name" << "highway" );
   if ( !db.errorString().isEmpty() )
     qDebug( "EXPORT-1 ERR: %s", db.errorString().toAscii().data() );
   QCOMPARE( exportRes1, true );
 
 
-  bool exportRes2 = db.exportSpatiaLite( QgsOSMDatabase::Polyline, "sl_lines", QStringList( "building" ) );
+  bool exportRes2 = db.exportSpatiaLite( QgsOSMDatabase::Polyline, QStringLiteral( "sl_lines" ), QStringList( QStringLiteral( "building" ) ) );
   //bool exportRes2 = db.exportSpatiaLite( QStringList("amenity") << "name" << "highway" );
   if ( !db.errorString().isEmpty() )
     qDebug( "EXPORT-2 ERR: %s", db.errorString().toAscii().data() );
@@ -188,6 +188,6 @@ void TestOpenStreetMap::importAndQueries()
 }
 
 
-QTEST_MAIN( TestOpenStreetMap )
+QGSTEST_MAIN( TestOpenStreetMap )
 
 #include "testopenstreetmap.moc"

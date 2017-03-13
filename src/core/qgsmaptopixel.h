@@ -17,9 +17,10 @@
 #ifndef QGSMAPTOPIXEL
 #define QGSMAPTOPIXEL
 
+#include "qgis_core.h"
 #include <QTransform>
 #include <vector>
-
+#include "qgsunittypes.h"
 #include <cassert>
 
 class QgsPoint;
@@ -52,6 +53,15 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsMapToPixel( double mapUnitsPerPixel );
 
+    /** Returns a new QgsMapToPixel created using a specified scale and distance unit.
+     * @param scale map scale
+     * @param dpi screen DPI
+     * @param mapUnits map units
+     * @returns matching QgsMapToPixel
+     * @note added in QGIS 3.0
+     */
+    static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
+
     /**
      * Constructor
      *
@@ -64,9 +74,9 @@ class CORE_EXPORT QgsMapToPixel
      * @param p Point to transform
      * @return QgsPoint in device coordinates
      */
-    QgsPoint transform( const QgsPoint& p ) const;
+    QgsPoint transform( const QgsPoint &p ) const;
 
-    void transform( QgsPoint* p ) const;
+    void transform( QgsPoint *p ) const;
 
     /**
      * Transform the point specified by x,y from map (world)
@@ -82,10 +92,10 @@ class CORE_EXPORT QgsMapToPixel
      * given coordinates in place. Intended as a fast way to do the
      * transform.
      */
-    void transformInPlace( double& x, double& y ) const;
+    void transformInPlace( double &x, double &y ) const;
 
     // @note not available in python bindings
-    void transformInPlace( float& x, float& y ) const;
+    void transformInPlace( float &x, float &y ) const;
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -94,7 +104,7 @@ class CORE_EXPORT QgsMapToPixel
      * @note not available in python bindings
      */
     template <class T>
-    void transformInPlace( QVector<T>& x, QVector<T>& y ) const
+    void transformInPlace( QVector<T> &x, QVector<T> &y ) const
     {
       assert( x.size() == y.size() );
       for ( int i = 0; i < x.size(); ++i )

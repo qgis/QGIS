@@ -17,7 +17,9 @@
 #ifndef QGSCOMPOSERUTILS_H
 #define QGSCOMPOSERUTILS_H
 
+#include "qgis_core.h"
 #include "qgscomposition.h" //for page size and orientation enums
+#include "qgsrendercontext.h"
 #include <QPointF>
 #include <QRectF>
 
@@ -38,7 +40,7 @@ class CORE_EXPORT QgsComposerUtils
      * clockwise from pointing vertical upward
      * @param arrowHeadWidth size of arrow head
      */
-    static void drawArrowHead( QPainter* p, const double x, const double y, const double angle, const double arrowHeadWidth );
+    static void drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth );
 
     /** Calculates the angle of the line from p1 to p2 (counter clockwise,
      * starting from a line from north to south)
@@ -53,7 +55,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param x in/out: x coordinate before / after the rotation
      * @param y in/out: y cooreinate before / after the rotation
      */
-    static void rotate( const double angle, double& x, double& y );
+    static void rotate( const double angle, double &x, double &y );
 
     /** Ensures that an angle is in the range 0 <= angle < 360
      * @param angle angle in degrees
@@ -113,7 +115,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param ok will be true if string could be decoded
      * @returns decoded paper orientation
      */
-    static QgsComposition::PaperOrientation decodePaperOrientation( const QString& orientationString, bool &ok );
+    static QgsComposition::PaperOrientation decodePaperOrientation( const QString &orientationString, bool &ok );
 
     /** Decodes a string representing a preset page size
      * @param presetString string to decode
@@ -121,42 +123,21 @@ class CORE_EXPORT QgsComposerUtils
      * @param height double for decoded paper height
      * @returns true if string could be decoded successfully
      */
-    static bool decodePresetPaperSize( const QString& presetString, double &width, double &height );
+    static bool decodePresetPaperSize( const QString &presetString, double &width, double &height );
 
-    /** Reads all data defined properties from xml
-     * @param itemElem dom element containing data defined properties
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
+    /** Reads all pre 3.0 data defined properties from an XML element.
+     * @note this method was added in version 3.0
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
      */
-    static void readDataDefinedPropertyMap( const QDomElement &itemElem,
-                                            QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-                                            QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties
-                                          );
+    static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
+        QgsPropertyCollection &dataDefinedProperties );
 
-    /** Reads a single data defined property from xml DOM element
-     * @param property data defined property to read
-     * @param ddElem dom element containing settings for data defined property
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined in which to store properties from xml
-     * @note this method was added in version 2.5
+    /** Reads a pre 3.0 data defined property from an XML DOM element.
+     * @note this method was added in version 3.0
      * @see readDataDefinedPropertyMap
      */
-    static void readDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem,
-                                         QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /** Writes data defined properties to xml
-     * @param itemElem DOM element in which to store data defined properties
-     * @param doc DOM document
-     * @param dataDefinedNames map of data defined property to name used within xml
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined for storing in xml
-     * @note this method was added in version 2.5
-     * @see readDataDefinedPropertyMap
-     */
-    static void writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc,
-        const QMap< QgsComposerObject::DataDefinedProperty, QString >* dataDefinedNames,
-        const QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
+    static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
 
     /** Returns a font where size is set in pixels and the size has been upscaled with FONT_WORKAROUND_SCALE
      * to workaround QT font rendering bugs
@@ -164,7 +145,7 @@ class CORE_EXPORT QgsComposerUtils
      * @returns font with size set in pixels
      * @note added in version 2.5
      */
-    static QFont scaledFontPixelSize( const QFont& font );
+    static QFont scaledFontPixelSize( const QFont &font );
 
     /** Calculate font ascent in millimeters, including workarounds for QT font rendering issues
      * @param font input font
@@ -175,7 +156,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textWidthMM
      */
-    static double fontAscentMM( const QFont& font );
+    static double fontAscentMM( const QFont &font );
 
     /** Calculate font descent in millimeters, including workarounds for QT font rendering issues
      * @param font input font
@@ -186,7 +167,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textWidthMM
      */
-    static double fontDescentMM( const QFont& font );
+    static double fontDescentMM( const QFont &font );
 
     /** Calculate font height in millimeters, including workarounds for QT font rendering issues
      * The font height is the font ascent + descent + 1 (for the baseline).
@@ -198,7 +179,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textWidthMM
      */
-    static double fontHeightMM( const QFont& font );
+    static double fontHeightMM( const QFont &font );
 
     /** Calculate font height in millimeters of a single character, including workarounds for QT font
      * rendering issues
@@ -211,7 +192,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontHeightMM
      * @see textWidthMM
      */
-    static double fontHeightCharacterMM( const QFont& font, QChar character );
+    static double fontHeightCharacterMM( const QFont &font, QChar character );
 
     /** Calculate font width in millimeters for a string, including workarounds for QT font
      * rendering issues
@@ -225,7 +206,7 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontHeightCharacterMM
      * @see textHeightMM
      */
-    static double textWidthMM( const QFont& font, const QString& text );
+    static double textWidthMM( const QFont &font, const QString &text );
 
     /** Calculate font height in millimeters for a string, including workarounds for QT font
      * rendering issues. Note that this method uses a non-standard measure of text height,
@@ -237,7 +218,7 @@ class CORE_EXPORT QgsComposerUtils
      * @note added in version 2.12
      * @see textWidthMM
      */
-    static double textHeightMM( const QFont& font, const QString& text, double multiLineHeight = 1.0 );
+    static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
 
     /** Draws text on a painter at a specific position, taking care of composer specific issues (calculation to pixel,
      * scaling of font and painter to work around Qt font bugs)
@@ -248,7 +229,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param color color to draw text
      * @note added in version 2.5
      */
-    static void drawText( QPainter* painter, QPointF pos, const QString& text, const QFont& font, const QColor& color = QColor() );
+    static void drawText( QPainter *painter, QPointF pos, const QString &text, const QFont &font, const QColor &color = QColor() );
 
     /** Draws text on a painter within a rectangle, taking care of composer specific issues (calculation to pixel,
      * scaling of font and painter to work around Qt font bugs)
@@ -262,7 +243,26 @@ class CORE_EXPORT QgsComposerUtils
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
      * @note added in version 2.5
      */
-    static void drawText( QPainter* painter, const QRectF& rect, const QString& text, const QFont& font, const QColor& color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+    static void drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+
+    /**
+     * Creates a render context suitable for the specified composer \a map and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings of the
+     * target map. If the \a dpi argument is not specified then the dpi will be taken from the destinatation
+     * painter device.
+     * @note added in QGIS 3.0
+     * @see createRenderContextForComposition()
+     */
+    static QgsRenderContext createRenderContextForMap( QgsComposerMap *map, QPainter *painter, double dpi = -1 );
+
+    /**
+     * Creates a render context suitable for the specified \a composition and \a painter destination.
+     * This method returns a new QgsRenderContext which matches the scale and settings from the composition's
+     * QgsComposition::referenceMap().
+     * @note added in QGIS 3.0
+     * @see createRenderContextForMap()
+     */
+    static QgsRenderContext createRenderContextForComposition( QgsComposition *composition, QPainter *painter );
 
 };
 

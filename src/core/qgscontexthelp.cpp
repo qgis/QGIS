@@ -26,17 +26,17 @@
 #include "qgslogger.h"
 
 
-QgsContextHelp *QgsContextHelp::gContextHelp = nullptr;  // Singleton instance
+QgsContextHelp *QgsContextHelp::sContextHelp = nullptr;  // Singleton instance
 
-void QgsContextHelp::run( const QString& context )
+void QgsContextHelp::run( const QString &context )
 {
-  if ( !gContextHelp )
+  if ( !sContextHelp )
   {
     // Create singleton instance if it does not exist
-    gContextHelp = new QgsContextHelp();
+    sContextHelp = new QgsContextHelp();
   }
 
-  gContextHelp->showContext( context );
+  sContextHelp->showContext( context );
 }
 
 QgsContextHelp::QgsContextHelp()
@@ -79,11 +79,11 @@ void QgsContextHelp::error( QProcess::ProcessError error )
   QgsMessageLog::logMessage( tr( "Error starting help viewer [%1]" ).arg( error ), tr( "Context help" ) );
 }
 
-void QgsContextHelp::showContext( const QString& context )
+void QgsContextHelp::showContext( const QString &context )
 {
   init();
 
-  QString helpContents = gContextHelpTexts.value( context,
+  QString helpContents = sContextHelpTexts.value( context,
                          tr( "<h3>Oops! QGIS can't find help for this form.</h3>"
                              "The help file for %1 was not found for your language<br>"
                              "If you would like to create it, contact the QGIS development team"
@@ -98,6 +98,6 @@ void QgsContextHelp::showContext( const QString& context )
 void QgsContextHelp::processExited()
 {
   // Delete this object if the process terminates
-  delete gContextHelp;
-  gContextHelp = nullptr;
+  delete sContextHelp;
+  sContextHelp = nullptr;
 }

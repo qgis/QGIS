@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from r_li import checkMovingWindow, configFile, moveOutputTxtFile
+from .r_li import checkMovingWindow, configFile, moveOutputTxtFile
 
 
 def checkParameterValuesBeforeExecuting(alg):

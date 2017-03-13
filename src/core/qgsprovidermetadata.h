@@ -22,6 +22,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Holds data provider key, description, and associated shared library file information.
 
@@ -38,7 +40,7 @@ class CORE_EXPORT QgsProviderMetadata
 {
   public:
 
-    QgsProviderMetadata( const QString & _key, const QString & _description, const QString & _library );
+    QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
 
     /** This returns the unique key associated with the provider
 

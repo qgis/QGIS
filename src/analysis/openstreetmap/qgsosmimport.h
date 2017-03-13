@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgsosmbase.h"
+#include "qgis_analysis.h"
 
 class QXmlStreamReader;
 
@@ -27,7 +28,7 @@ class QXmlStreamReader;
  * @brief The QgsOSMXmlImport class imports OpenStreetMap XML format to our topological representation
  * in a SQLite database (see QgsOSMDatabase for details).
  *
- * How to use the classs:
+ * How to use the class:
  * 1. set input XML file name and output DB file name (in constructor or with respective functions)
  * 2. run import()
  * 3. check errorString() if the import failed
@@ -36,13 +37,22 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsOSMXmlImport( const QString& xmlFileName = QString(), const QString& dbFileName = QString() );
+    explicit QgsOSMXmlImport( const QString &xmlFileName = QString(), const QString &dbFileName = QString() );
 
-    void setInputXmlFileName( const QString& xmlFileName ) { mXmlFileName = xmlFileName; }
+    void setInputXmlFileName( const QString &xmlFileName ) { mXmlFileName = xmlFileName; }
     QString inputXmlFileName() const { return mXmlFileName; }
 
-    void setOutputDbFileName( const QString& dbFileName ) { mDbFileName = dbFileName; }
-    QString outputDbFileName() const { return mDbFileName; }
+    /**
+     * Sets the filename for the output database.
+     * @see outputDatabaseFileName()
+     */
+    void setOutputDatabaseFileName( const QString &fileName ) { mDbFileName = fileName; }
+
+    /**
+     * Returns the filename for the output database.
+     * @see setOutputDatabaseFileName()
+     */
+    QString outputDatabaseFileName() const { return mDbFileName; }
 
     /**
      * Run import. This will parse the XML file and store the data in a SQLite database.
@@ -62,14 +72,14 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
     bool closeDatabase();
 
     //! @note not available in Python bindings
-    void deleteStatement( sqlite3_stmt*& stmt );
+    void deleteStatement( sqlite3_stmt *&stmt );
 
     bool createIndexes();
 
-    void readRoot( QXmlStreamReader& xml );
-    void readNode( QXmlStreamReader& xml );
-    void readWay( QXmlStreamReader& xml );
-    void readTag( bool way, QgsOSMId id, QXmlStreamReader& xml );
+    void readRoot( QXmlStreamReader &xml );
+    void readNode( QXmlStreamReader &xml );
+    void readWay( QXmlStreamReader &xml );
+    void readTag( bool way, QgsOSMId id, QXmlStreamReader &xml );
 
   private:
     QString mXmlFileName;
@@ -79,12 +89,12 @@ class ANALYSIS_EXPORT QgsOSMXmlImport : public QObject
 
     QFile mInputFile;
 
-    sqlite3* mDatabase;
-    sqlite3_stmt* mStmtInsertNode;
-    sqlite3_stmt* mStmtInsertNodeTag;
-    sqlite3_stmt* mStmtInsertWay;
-    sqlite3_stmt* mStmtInsertWayNode;
-    sqlite3_stmt* mStmtInsertWayTag;
+    sqlite3 *mDatabase = nullptr;
+    sqlite3_stmt *mStmtInsertNode = nullptr;
+    sqlite3_stmt *mStmtInsertNodeTag = nullptr;
+    sqlite3_stmt *mStmtInsertWay = nullptr;
+    sqlite3_stmt *mStmtInsertWayNode = nullptr;
+    sqlite3_stmt *mStmtInsertWayTag = nullptr;
 };
 
 

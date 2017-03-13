@@ -12,7 +12,7 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 //header for class being tested
 #include <qgsgeometryanalyzer.h>
@@ -26,9 +26,9 @@ class TestQgsVectorAnalyzer : public QObject
 
   public:
     TestQgsVectorAnalyzer()
-        : mpLineLayer( 0 )
-        , mpPolyLayer( 0 )
-        , mpPointLayer( 0 )
+      : mpLineLayer( 0 )
+      , mpPolyLayer( 0 )
+      , mpPointLayer( 0 )
     {}
 
   private slots:
@@ -36,7 +36,7 @@ class TestQgsVectorAnalyzer : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() ;// will be called before each testfunction is executed.
     void cleanup() ;// will be called after every testfunction.
-    /** Our tests proper begin here */
+    //! Our tests proper begin here
     void singleToMulti();
     void multiToSingle();
     void extractNodes();
@@ -47,9 +47,9 @@ class TestQgsVectorAnalyzer : public QObject
     void layerExtent();
   private:
     QgsGeometryAnalyzer mAnalyzer;
-    QgsVectorLayer * mpLineLayer;
-    QgsVectorLayer * mpPolyLayer;
-    QgsVectorLayer * mpPointLayer;
+    QgsVectorLayer *mpLineLayer = nullptr;
+    QgsVectorLayer *mpPolyLayer = nullptr;
+    QgsVectorLayer *mpPointLayer = nullptr;
 
 };
 
@@ -66,24 +66,24 @@ void  TestQgsVectorAnalyzer::initTestCase()
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
   QString myBaseFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myEndName = "lines.shp";
+  QString myEndName = QStringLiteral( "lines.shp" );
   QString myFileName = myBaseFileName + '/' + myEndName;
   qDebug() << myFileName;
   QFileInfo myLineInfo( myFileName );
   mpLineLayer = new QgsVectorLayer( myLineInfo.filePath(),
-                                    myLineInfo.completeBaseName(), "ogr" );
+                                    myLineInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  myEndName = "polys.shp";
+  myEndName = QStringLiteral( "polys.shp" );
   myFileName = myBaseFileName + '/' + myEndName;
   QFileInfo myPolyInfo( myFileName );
   mpPolyLayer = new QgsVectorLayer( myPolyInfo.filePath(),
-                                    myPolyInfo.completeBaseName(), "ogr" );
+                                    myPolyInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
-  myEndName = "points.shp";
+  myEndName = QStringLiteral( "points.shp" );
   myFileName = myBaseFileName + '/' + myEndName;
   QFileInfo myPointInfo( myFileName );
   mpPointLayer = new QgsVectorLayer( myPointInfo.filePath(),
-                                     myPointInfo.completeBaseName(), "ogr" );
+                                     myPointInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 void  TestQgsVectorAnalyzer::cleanupTestCase()
 {
@@ -141,5 +141,5 @@ void TestQgsVectorAnalyzer::layerExtent()
   QVERIFY( mAnalyzer.extent( mpPointLayer, myFileName ) );
 }
 
-QTEST_MAIN( TestQgsVectorAnalyzer )
+QGSTEST_MAIN( TestQgsVectorAnalyzer )
 #include "testqgsvectoranalyzer.moc"

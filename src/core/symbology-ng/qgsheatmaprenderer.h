@@ -15,12 +15,12 @@
 #ifndef QGSHEATMAPRENDERER_H
 #define QGSHEATMAPRENDERER_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include <QScopedPointer>
 
 class QgsColorRamp;
 
@@ -36,24 +36,29 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     QgsHeatmapRenderer();
     virtual ~QgsHeatmapRenderer();
 
+    //! Direct copies are forbidden. Use clone() instead.
+    QgsHeatmapRenderer( const QgsHeatmapRenderer & ) = delete;
+    //! Direct copies are forbidden. Use clone() instead.
+    QgsHeatmapRenderer &operator=( const QgsHeatmapRenderer & ) = delete;
+
     //reimplemented methods
-    virtual QgsHeatmapRenderer* clone() const override;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual void stopRender( QgsRenderContext& context ) override;
+    virtual QgsHeatmapRenderer *clone() const override;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    virtual void stopRender( QgsRenderContext &context ) override;
     //! @note symbolForFeature2 in python bindings
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext &context ) override;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
-    virtual QList<QString> usedAttributes() override;
-    static QgsFeatureRenderer* create( QDomElement& element );
-    virtual QDomElement save( QDomDocument& doc ) override;
-    static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    static QgsFeatureRenderer *create( QDomElement &element );
+    virtual QDomElement save( QDomDocument &doc ) override;
+    static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
-    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) override;
+    virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context ) override;
 
     //heatmap specific methods
 
@@ -61,26 +66,13 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @returns color ramp for heatmap
      * @see setColorRamp
      */
-    QgsColorRamp* colorRamp() const { return mGradientRamp; }
+    QgsColorRamp *colorRamp() const { return mGradientRamp; }
+
     /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
      */
-    void setColorRamp( QgsColorRamp* ramp );
-
-    /** Returns whether the ramp is inverted
-     * @returns true if color ramp is inverted
-     * @see setInvertRamp
-     * @see colorRamp
-     */
-    bool invertRamp() const { return mInvertRamp; }
-
-    /** Sets whether the ramp is inverted
-     * @param invert set to true to invert color ramp
-     * @see invertRamp
-     * @see setColorRamp
-     */
-    void setInvertRamp( const bool invert ) { mInvertRamp = invert; }
+    void setColorRamp( QgsColorRamp *ramp );
 
     /** Returns the radius for the heatmap
      * @returns heatmap radius
@@ -89,6 +81,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see radiusMapUnitScale
      */
     double radius() const { return mRadius; }
+
     /** Sets the radius for the heatmap
      * @param radius heatmap radius
      * @see radius
@@ -104,6 +97,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see radiusMapUnitScale
      */
     QgsUnitTypes::RenderUnit radiusUnit() const { return mRadiusUnit; }
+
     /** Sets the units used for the heatmap's radius
      * @param unit units for heatmap radius
      * @see radiusUnit
@@ -118,14 +112,15 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see radiusUnit
      * @see setRadiusMapUnitScale
      */
-    const QgsMapUnitScale& radiusMapUnitScale() const { return mRadiusMapUnitScale; }
+    const QgsMapUnitScale &radiusMapUnitScale() const { return mRadiusMapUnitScale; }
+
     /** Sets the map unit scale used for the heatmap's radius
      * @param scale map unit scale for heatmap's radius
      * @see setRadius
      * @see setRadiusUnit
      * @see radiusMapUnitScale
      */
-    void setRadiusMapUnitScale( const QgsMapUnitScale& scale ) { mRadiusMapUnitScale = scale; }
+    void setRadiusMapUnitScale( const QgsMapUnitScale &scale ) { mRadiusMapUnitScale = scale; }
 
     /** Returns the maximum value used for shading the heatmap.
      * @returns maximum value for heatmap shading. If 0, then maximum value will be automatically
@@ -133,6 +128,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see setMaximumValue
      */
     double maximumValue() const { return mExplicitMax; }
+
     /** Sets the maximum value used for shading the heatmap.
      * @param value maximum value for heatmap shading. Set to 0 for automatic calculation of
      * maximum value.
@@ -146,6 +142,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @see setRenderQuality
      */
     double renderQuality() const { return mRenderQuality; }
+
     /** Sets the render quality used for drawing the heatmap.
      * @param quality render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.
@@ -163,13 +160,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
      * @param expression point weight expression. If set to empty, all points are equally weighted.
      * @see weightExpression
      */
-    void setWeightExpression( const QString& expression ) { mWeightExpressionString = expression; }
+    void setWeightExpression( const QString &expression ) { mWeightExpressionString = expression; }
 
   private:
-    /** Private copy constructor. @see clone() */
-    QgsHeatmapRenderer( const QgsHeatmapRenderer& );
-    /** Private assignment operator. @see clone() */
-    QgsHeatmapRenderer& operator=( const QgsHeatmapRenderer& );
 
     QVector<double> mValues;
 
@@ -183,10 +176,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 
     QString mWeightExpressionString;
     int mWeightAttrNum;
-    QScopedPointer<QgsExpression> mWeightExpression;
+    std::unique_ptr<QgsExpression> mWeightExpression;
 
-    QgsColorRamp* mGradientRamp;
-    bool mInvertRamp;
+    QgsColorRamp *mGradientRamp = nullptr;
 
     double mExplicitMax;
     int mRenderQuality;
@@ -200,7 +192,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     double triangularKernel( const double distance, const int bandwidth ) const;
 
     QgsMultiPoint convertToMultipoint( const QgsGeometry *geom );
-    void initializeValues( QgsRenderContext& context );
+    void initializeValues( QgsRenderContext &context );
     void renderImage( QgsRenderContext &context );
 };
 

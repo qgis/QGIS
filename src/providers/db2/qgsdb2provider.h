@@ -22,7 +22,7 @@
 #include "qgsvectorlayerimport.h"
 #include <qgscoordinatereferencesystem.h>
 #include "qgsgeometry.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QtSql>
 
 /**
@@ -34,7 +34,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( QString uri = QString() );
+    explicit QgsDb2Provider( const QString &uri = QString() );
 
     virtual ~QgsDb2Provider();
 
@@ -50,20 +50,12 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     static bool openDatabase( QSqlDatabase db );
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    /**
-     * Get feature type.
-     * @return int representing the feature type
-     */
     virtual QgsWkbTypes::Type wkbType() const override;
 
-    /**
-     * Number of features in the layer
-     * @return long containing number of features
-     */
     virtual long featureCount() const override;
 
     /**
@@ -79,67 +71,46 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool isValid() const override;
     QString subsetString() const override;
 
-    /**
-     * Mutator for SQL WHERE clause used to limit dataset size.
-     */
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
-    /** Return a provider name
-
-        Essentially just returns the provider key.  Should be used to build file
-        dialogs so that providers can be shown with their supported types. Thus
-        if more than one provider supports a given format, the user is able to
-        select a specific provider to open that file.
-     */
     virtual QString name() const override;
 
-    /** Return description
-
-        Return a terse string describing what the provider is.
-     */
     virtual QString description() const override;
 
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
-     */
+    QgsAttributeList pkAttributeIndexes() const override;
+
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /** Writes a list of features to the database*/
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
-    /** Deletes a feature*/
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
-    /** Changes attribute values of existing features */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    /** Changes existing geometries*/
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /** Import a vector layer into the database */
+    //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem& srs,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
       const QMap<QString, QVariant> *options = nullptr
     );
 
-    /** Convert a QgsField to work with DB2 */
+    //! Convert a QgsField to work with DB2
     static bool convertField( QgsField &field );
 
-    /** Convert a QgsField to work with DB2 */
-    static QString qgsFieldToDb2Field( QgsField field );
+    //! Convert a QgsField to work with DB2
+    static QString qgsFieldToDb2Field( const QgsField &field );
 
   protected:
-    /** Loads fields from input file to member attributeFields */
+    //! Loads fields from input file to member attributeFields
     QVariant::Type decodeSqlType( int typeId );
     void loadMetadata();
     void loadFields();
@@ -155,6 +126,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
     long mNumberFeatures;
+    int mFidColIdx;
     QString mFidColName;
     QString mExtents;
     mutable long mSRId;
@@ -172,7 +144,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     static int sConnectionId;
 
     //sets the error messages
-    void setLastError( const QString& error )
+    void setLastError( const QString &error )
     {
       mLastError = error;
     }

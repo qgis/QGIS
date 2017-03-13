@@ -21,9 +21,9 @@
 #include <qgslogger.h>
 
 
-QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase db )
-    : mDatabase( db )
-    , mEnvironment( ENV_LUW )
+QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
+  : mDatabase( db )
+  , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "constructing" );
 }
@@ -52,7 +52,7 @@ int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &table
 
   if ( !schemaName.isEmpty() && !tableName.isEmpty() )
   {
-    QString whereClause = QString( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
+    QString whereClause = QStringLiteral( " WHERE TABLE_SCHEMA = '%1' AND TABLE_NAME = '%2'" )
                           .arg( schemaName, tableName );
     queryExtents += whereClause;
     queryNoExtents += whereClause;
@@ -111,15 +111,15 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   layer.type = mQuery.value( 3 ).toString();
   if ( mQuery.value( 4 ).isNull() )
   {
-    layer.srid = QString( "" );
-    layer.srsName = QString( "" );
+    layer.srid = QLatin1String( "" );
+    layer.srsName = QLatin1String( "" );
   }
   else
   {
     layer.srid = mQuery.value( 4 ).toString();
     layer.srsName = mQuery.value( 5 ).toString();
   }
-  layer.extents = QString( "0 0 0 0" ); // no extents
+  layer.extents = QStringLiteral( "0 0 0 0" ); // no extents
   if ( ENV_LUW == mEnvironment )
   {
     if ( !mQuery.value( 6 ).isNull() ) // Don't get values if null
@@ -142,13 +142,13 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   // to set the FID column.
   // We can only use the primary key if it only has one column and
   // the type is Integer or BigInt.
-  QString table = QString( "%1.%2" ).arg( layer.schemaName, layer.tableName );
+  QString table = QStringLiteral( "%1.%2" ).arg( layer.schemaName, layer.tableName );
   QSqlIndex pk = mDatabase.primaryIndex( table );
   if ( pk.count() == 1 )
   {
     QSqlField pkFld = pk.field( 0 );
     QVariant::Type pkType = pkFld.type();
-    if (( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
+    if ( ( pkType == QVariant::Int ||  pkType == QVariant::LongLong ) )
     {
       QString fidColName = pk.fieldName( 0 );
       layer.pkCols.append( fidColName );

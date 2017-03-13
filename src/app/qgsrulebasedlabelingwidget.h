@@ -22,6 +22,7 @@
 #include <ui_qgsrulebasedlabelingwidget.h>
 
 #include "qgsrulebasedlabeling.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsVectorLayer;
@@ -32,7 +33,7 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule* rootRule, QObject* parent = nullptr );
+    QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule *rootRule, QObject *parent = nullptr );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -46,7 +47,7 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     virtual QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
-    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const override;
@@ -54,23 +55,23 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     // new methods
 
-    QgsRuleBasedLabeling::Rule* ruleForIndex( const QModelIndex& index ) const;
+    QgsRuleBasedLabeling::Rule *ruleForIndex( const QModelIndex &index ) const;
 
-    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedLabeling::Rule* newrule );
-    void updateRule( const QModelIndex& parent, int row );
+    void insertRule( const QModelIndex &parent, int before, QgsRuleBasedLabeling::Rule *newrule );
+    void updateRule( const QModelIndex &parent, int row );
     // update rule and all its descendants
-    void updateRule( const QModelIndex& index );
-    void removeRule( const QModelIndex& index );
+    void updateRule( const QModelIndex &index );
+    void removeRule( const QModelIndex &index );
 
-    void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
+    void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
     void finishedAddingRules(); // call endInsertRows
 
   protected:
-    QgsRuleBasedLabeling::Rule* mRootRule;
+    QgsRuleBasedLabeling::Rule *mRootRule = nullptr;
 };
 
 
@@ -81,7 +82,7 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
 {
     Q_OBJECT
   public:
-    QgsRuleBasedLabelingWidget( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget* parent = nullptr );
+    QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
     ~QgsRuleBasedLabelingWidget();
 
     //! save config to layer
@@ -93,28 +94,28 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
   protected slots:
     void addRule();
     void editRule();
-    void editRule( const QModelIndex& index );
+    void editRule( const QModelIndex &index );
     void removeRule();
     void copy();
     void paste();
 
   private slots:
-    void ruleWidgetPanelAccepted( QgsPanelWidget* panel );
+    void ruleWidgetPanelAccepted( QgsPanelWidget *panel );
     void liveUpdateRuleFromPanel();
 
   protected:
-    QgsRuleBasedLabeling::Rule* currentRule();
+    QgsRuleBasedLabeling::Rule *currentRule();
 
   protected:
-    QgsVectorLayer* mLayer;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QgsRuleBasedLabeling::Rule* mRootRule;
-    QgsRuleBasedLabelingModel* mModel;
+    QgsRuleBasedLabeling::Rule *mRootRule = nullptr;
+    QgsRuleBasedLabelingModel *mModel = nullptr;
 
-    QAction* mCopyAction;
-    QAction* mPasteAction;
-    QAction* mDeleteAction;
+    QAction *mCopyAction = nullptr;
+    QAction *mPasteAction = nullptr;
+    QAction *mDeleteAction = nullptr;
 };
 
 
@@ -135,11 +136,11 @@ class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
       Editing
     };
 
-    QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule* rule, QgsVectorLayer* layer,
-                                QWidget* parent = nullptr, QgsMapCanvas* mapCanvas = nullptr );
+    QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
+                                QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
     ~QgsLabelingRulePropsWidget();
 
-    QgsRuleBasedLabeling::Rule* rule() { return mRule; }
+    QgsRuleBasedLabeling::Rule *rule() { return mRule; }
 
     virtual void setDockMode( bool dockMode ) override;
 
@@ -156,13 +157,13 @@ class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     void apply();
 
   protected:
-    QgsRuleBasedLabeling::Rule* mRule; // borrowed
-    QgsVectorLayer* mLayer;
+    QgsRuleBasedLabeling::Rule *mRule; // borrowed
+    QgsVectorLayer *mLayer = nullptr;
 
-    QgsLabelingGui* mLabelingGui;
-    QgsPalLayerSettings* mSettings; // a clone of original settings
+    QgsLabelingGui *mLabelingGui = nullptr;
+    QgsPalLayerSettings *mSettings; // a clone of original settings
 
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 

@@ -21,14 +21,17 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
+from builtins import range
 
 import functools
 
-from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QSize
+from qgis.PyQt.QtCore import Qt, QByteArray, QSize
 from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, QDockWidget, QStatusBar, QMenuBar, QToolBar, QTabBar
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
+from qgis.core import QgsSettings
 from .info_viewer import InfoViewer
 from .table_viewer import TableViewer
 from .layer_preview import LayerPreview
@@ -48,7 +51,7 @@ class DBManager(QMainWindow):
         self.iface = iface
 
         # restore the window state
-        settings = QSettings()
+        settings = QgsSettings()
         self.restoreGeometry(settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray))
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
@@ -62,7 +65,7 @@ class DBManager(QMainWindow):
         self.preview.loadPreview(None)
 
         # save the window state
-        settings = QSettings()
+        settings = QgsSettings()
         settings.setValue("/DB_Manager/mainWindow/windowState", self.saveState())
         settings.setValue("/DB_Manager/mainWindow/geometry", self.saveGeometry())
 
@@ -193,19 +196,19 @@ class DBManager(QMainWindow):
 
         query = DlgSqlWindow(self.iface, db, self)
         dbname = db.connection().connectionName()
-        tabname = self.tr("Query") + u" (%s)" % dbname
+        tabname = self.tr("Query ({0})").format(dbname)
         index = self.tabs.addTab(query, tabname)
         self.tabs.setTabIcon(index, db.connection().icon())
         self.tabs.setCurrentIndex(index)
         query.nameChanged.connect(functools.partial(self.update_query_tab_name, index, dbname))
 
     def runSqlLayerWindow(self, layer):
-        from dlg_sql_layer_window import DlgSqlLayerWindow
+        from .dlg_sql_layer_window import DlgSqlLayerWindow
         query = DlgSqlLayerWindow(self.iface, layer, self)
         lname = layer.name()
-        tabname = self.tr("Layer") + u" (%s)" % lname
+        tabname = self.tr("Layer ({0})").format(lname)
         index = self.tabs.addTab(query, tabname)
-        #self.tabs.setTabIcon(index, db.connection().icon())
+        # self.tabs.setTabIcon(index, db.connection().icon())
         self.tabs.setCurrentIndex(index)
 
     def update_query_tab_name(self, index, dbname, queryname):

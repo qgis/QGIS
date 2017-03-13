@@ -19,6 +19,7 @@
 #ifndef QGSMAPLAYERDEPENDENCY_H
 #define QGSMAPLAYERDEPENDENCY_H
 
+#include "qgis_core.h"
 #include <QString>
 
 /** \ingroup core
@@ -48,10 +49,10 @@ class CORE_EXPORT QgsMapLayerDependency
     };
 
     //! Standard constructor
-    QgsMapLayerDependency( QString layerId, Type type = DataDependency, Origin origin = FromUser ) :
-        mType( type ),
-        mOrigin( origin ),
-        mLayerId( layerId )
+    QgsMapLayerDependency( const QString &layerId, Type type = DataDependency, Origin origin = FromUser ) :
+      mType( type ),
+      mOrigin( origin ),
+      mLayerId( layerId )
     {}
 
     //! Return the dependency type
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsMapLayerDependency
     QString layerId() const { return mLayerId; }
 
     //! Comparison operator
-    bool operator==( const QgsMapLayerDependency& other ) const
+    bool operator==( const QgsMapLayerDependency &other ) const
     {
       return layerId() == other.layerId() && origin() == other.origin() && type() == other.type();
     }
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsMapLayerDependency
 /**
  * global qHash function for QgsMapLayerDependency, so that it can be used in a QSet
  */
-inline uint qHash( const QgsMapLayerDependency& dep )
+inline uint qHash( const QgsMapLayerDependency &dep )
 {
   return qHash( dep.layerId() ) + dep.origin() + dep.type();
 }

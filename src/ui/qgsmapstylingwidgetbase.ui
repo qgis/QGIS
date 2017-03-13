@@ -203,9 +203,7 @@
         </layout>
        </item>
        <item row="1" column="1">
-        <widget class="QgsPanelWidgetStack" name="mWidgetStack" native="true">
-         <layout class="QVBoxLayout" name="mWidgetArea"/>
-        </widget>
+        <widget class="QgsPanelWidgetStack" name="mWidgetStack" native="true"/>
        </item>
       </layout>
      </widget>
@@ -226,6 +224,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLayerCombo</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>mUndoButton</tabstop>
+  <tabstop>mRedoButton</tabstop>
+  <tabstop>mLiveApplyCheck</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

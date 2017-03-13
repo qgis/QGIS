@@ -16,9 +16,9 @@
 #include "qgsgeometryholecheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -29,7 +29,7 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     }
 
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry* geom = featureGeom.geometry();
+    QgsAbstractGeometry *geom = featureGeom.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       // Rings after the first one are interiors
@@ -41,7 +41,7 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
   }
 }
 
-void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -50,7 +50,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry* geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
@@ -76,7 +76,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 }
 
-const QStringList& QgsGeometryHoleCheck::getResolutionMethods() const
+QStringList QgsGeometryHoleCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Remove hole" ) << tr( "No action" );
   return methods;

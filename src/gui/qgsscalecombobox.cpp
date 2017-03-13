@@ -18,16 +18,16 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsscalecombobox.h"
+#include "qgssettings.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
-#include <QSettings>
 #include <QLineEdit>
 
-QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
-    : QComboBox( parent )
-    , mScale( 1.0 )
-    , mMinScale( 0.0 )
+QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
+  : QComboBox( parent )
+  , mScale( 1.0 )
+  , mMinScale( 0.0 )
 {
   updateScales();
 
@@ -39,10 +39,6 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent )
   fixupScale();
 }
 
-QgsScaleComboBox::~QgsScaleComboBox()
-{
-}
-
 void QgsScaleComboBox::updateScales( const QStringList &scales )
 {
   QStringList myScalesList;
@@ -50,8 +46,8 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
 
   if ( scales.isEmpty() )
   {
-    QSettings settings;
-    QString myScales = settings.value( "Map/scales", PROJECT_SCALES ).toString();
+    QgsSettings settings;
+    QString myScales = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
     if ( !myScales.isEmpty() )
     {
       myScalesList = myScales.split( ',' );
@@ -125,12 +121,12 @@ QString QgsScaleComboBox::scaleString()
 }
 
 //! Function to set the selected scale from text
-bool QgsScaleComboBox::setScaleString( const QString& scaleTxt )
+bool QgsScaleComboBox::setScaleString( const QString &scaleTxt )
 {
   bool ok;
   double newScale = toDouble( scaleTxt, &ok );
   double oldScale = mScale;
-  if ( newScale < mMinScale )
+  if ( newScale < mMinScale && newScale != 0 )
   {
     newScale = mMinScale;
   }
@@ -192,19 +188,19 @@ QString QgsScaleComboBox::toString( double scale )
 {
   if ( scale == 0 )
   {
-    return "0";
+    return QStringLiteral( "0" );
   }
   else if ( scale > 1 )
   {
-    return QString( "%1:1" ).arg( QLocale::system().toString( qRound( scale ) ) );
+    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( qRound( scale ) ) );
   }
   else
   {
-    return QString( "1:%1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ) );
   }
 }
 
-double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
+double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
 {
   bool ok = false;
   QString scaleTxt( scaleString );
@@ -246,7 +242,7 @@ double QgsScaleComboBox::toDouble( const QString& scaleString, bool * returnOk )
 void QgsScaleComboBox::setMinScale( double scale )
 {
   mMinScale = scale;
-  if ( mScale < scale )
+  if ( mScale < scale && mScale != 0 )
   {
     setScale( scale );
   }

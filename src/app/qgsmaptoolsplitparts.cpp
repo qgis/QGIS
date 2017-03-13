@@ -23,8 +23,8 @@
 
 #include <QMouseEvent>
 
-QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
+QgsMapToolSplitParts::QgsMapToolSplitParts( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
   mToolName = tr( "Split parts" );
 }
@@ -34,7 +34,7 @@ QgsMapToolSplitParts::~QgsMapToolSplitParts()
 
 }
 
-void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -94,7 +94,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
-    int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Parts split" ) );
     int returnCode = vlayer->splitParts( points(), topologicalEditing );
     vlayer->endEditCommand();

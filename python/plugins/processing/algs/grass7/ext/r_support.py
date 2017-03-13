@@ -25,8 +25,6 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-import os
-
 
 def processCommand(alg):
     # We temporary remove the output
@@ -52,7 +50,7 @@ def processOutputs(alg):
             'source1': 'TIFFTAG_COPYRIGHT', 'units': 'TIFFTAG_RESOLUTIONUNIT',
             'source2': 'GRASS_SOURCE2', 'comments': 'GRASS_HISTORY', 'vdatum': 'GRASS_VDATUM'}
     awk = "awk -F '=' '"
-    for support, tag in tags.items():
+    for support, tag in list(tags.items()):
         awk = '{0} /{1}=".+"/{{ print \"{2}=\"substr($0,{3},length($0) - {3})"," }}'.format(
             awk, support, tag, len(support) + 3)
 

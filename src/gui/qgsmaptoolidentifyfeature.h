@@ -17,6 +17,7 @@
 #define QGSMAPTOOLIDENTIFYFEATURE_H
 
 #include "qgsmaptoolidentify.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief The QgsMapToolIdentifyFeature class is a map tool to identify a feature on a chosen layer.
@@ -28,30 +29,29 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
+
     /**
      * @brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
      * @param canvas the map canvas
      * @param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
      */
-    QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl = nullptr );
-
-    ~QgsMapToolIdentifyFeature();
+    QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = nullptr );
 
     //! change the layer used by the map tool to identify
-    void setLayer( QgsVectorLayer* vl ) { mLayer = vl; }
+    void setLayer( QgsVectorLayer *vl ) { mLayer = vl; }
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   signals:
-    void featureIdentified( const QgsFeature& );
+    void featureIdentified( const QgsFeature & );
     void featureIdentified( QgsFeatureId );
 
   protected:
-    virtual void keyPressEvent( QKeyEvent* e ) override;
+    virtual void keyPressEvent( QKeyEvent *e ) override;
 
   private:
-    QgsMapCanvas* mCanvas;
-    QgsVectorLayer* mLayer;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif // QGSMAPTOOLIDENTIFYFEATURE_H

@@ -20,6 +20,7 @@
 
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsRelationReferenceConfigDlg
@@ -31,17 +32,17 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     Q_OBJECT
 
   public:
-    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
-    virtual QgsEditorWidgetConfig config() override;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
+    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
+    virtual QVariantMap config() override;
+    virtual void setConfig( const QVariantMap &config ) override;
 
   private:
     void loadFields();
-    void addFilterField( const QString& field );
-    void addFilterField( QListWidgetItem* item );
-    int indexFromListWidgetItem( QListWidgetItem* item );
+    void addFilterField( const QString &field );
+    void addFilterField( QListWidgetItem *item );
+    int indexFromListWidgetItem( QListWidgetItem *item );
 
-    QgsVectorLayer* mReferencedLayer;
+    QgsVectorLayer *mReferencedLayer = nullptr;
 
   private slots:
     void relationChanged( int idx );

@@ -29,21 +29,24 @@ class QgsVertexEntry
     int mPenWidth;
     QString mToolTip;
     QgsVertexMarker::IconType mType;
-    QgsVertexMarker *mMarker;
-    QgsMapCanvas *mCanvas;
-    QgsMapLayer *mLayer;
+    QgsVertexMarker *mMarker = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMapLayer *mLayer = nullptr;
 
   public:
     QgsVertexEntry( QgsMapCanvas *canvas,
                     QgsMapLayer *layer,
-                    const QgsPointV2& p,
+                    const QgsPointV2 &p,
                     QgsVertexId vertexId,
-                    const QString& tooltip = QString::null,
+                    const QString &tooltip = QString::null,
                     QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
                     int penWidth = 2 );
     ~QgsVertexEntry();
 
-    const QgsPointV2& point() const { return mPoint; }
+    QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
+    QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;
+
+    const QgsPointV2 &point() const { return mPoint; }
     QgsPoint pointV1() const { return QgsPoint( mPoint.x(), mPoint.y() ); }
     QgsVertexId vertexId() const { return mVertexId; }
     bool isSelected() const { return mSelected; }
@@ -52,10 +55,6 @@ class QgsVertexEntry
 
     void setSelected( bool selected = true );
 
-  private:
-
-    QgsVertexEntry( const QgsVertexEntry& rh );
-    QgsVertexEntry& operator=( const QgsVertexEntry& rh );
 };
 
 #endif

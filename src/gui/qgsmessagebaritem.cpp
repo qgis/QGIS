@@ -24,59 +24,55 @@
 #include <QTextEdit>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( "" )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( QLatin1String( "" ) )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( nullptr )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( nullptr )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( "" )
-    , mText( "" )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( QLatin1String( "" ) )
+  , mText( QLatin1String( "" ) )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
-}
-
-QgsMessageBarItem::~QgsMessageBarItem()
-{
 }
 
 void QgsMessageBarItem::writeContent()
@@ -102,17 +98,17 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    QString msgIcon( "/mIconInfo.png" );
+    QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
       case QgsMessageBar::CRITICAL:
-        msgIcon = QString( "/mIconCritical.png" );
+        msgIcon = QStringLiteral( "/mIconCritical.png" );
         break;
       case QgsMessageBar::WARNING:
-        msgIcon = QString( "/mIconWarning.svg" );
+        msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
       case QgsMessageBar::SUCCESS:
-        msgIcon = QString( "/mIconSuccess.png" );
+        msgIcon = QStringLiteral( "/mIconSuccess.png" );
         break;
       default:
         break;
@@ -135,7 +131,7 @@ void QgsMessageBarItem::writeContent()
     if ( !mTextEdit )
     {
       mTextEdit = new QTextEdit( this );
-      mTextEdit->setObjectName( "textEdit" );
+      mTextEdit->setObjectName( QStringLiteral( "textEdit" ) );
       mTextEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
       mTextEdit->setReadOnly( true );
       mTextEdit->setFrameShape( QFrame::NoFrame );
@@ -152,9 +148,9 @@ void QgsMessageBarItem::writeContent()
     {
       // add ':' to end of title
       QString t = mTitle.trimmed();
-      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( ": " ) )
-        t += ": ";
-      content.prepend( QLatin1String( "<b>" ) + t + " </b>" );
+      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( QLatin1String( ": " ) ) )
+        t += QLatin1String( ": " );
+      content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
     mTextEdit->setText( content );
   }
@@ -190,17 +186,17 @@ void QgsMessageBarItem::writeContent()
     mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
                   "QLabel,QTextEdit { color: #2554a1; } ";
   }
-  mStyleSheet += "QLabel#mItemCount { font-style: italic; }";
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )
+QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
 {
   mText = text;
   writeContent();
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString& title )
+QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
 {
   mTitle = title;
   writeContent();
@@ -219,7 +215,7 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
   if ( mWidget )
   {
-    QLayoutItem *item;
+    QLayoutItem *item = nullptr;
     item = mLayout->itemAt( 2 );
     if ( item->widget() == mWidget )
     {
@@ -231,14 +227,14 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setIcon( const QIcon &icon )
+QgsMessageBarItem *QgsMessageBarItem::setIcon( const QIcon &icon )
 {
   mUserIcon = icon;
   return this;
 }
 
 
-QgsMessageBarItem* QgsMessageBarItem::setDuration( int duration )
+QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
 {
   mDuration = duration;
   return this;

@@ -272,10 +272,10 @@ qreal ColorScheme::opacity() const { return _opacity; }
 void ColorScheme::read(const QString & fileName)
 {
     QSettings s(fileName, QSettings::IniFormat);
-    s.beginGroup("General");
+    s.beginGroup(QStringLiteral("General"));
 
-    _description = s.value("Description", QObject::tr("Un-named Color Scheme")).toString();
-    _opacity = s.value("Opacity",qreal(1.0)).toDouble();
+    _description = s.value(QStringLiteral("Description"), QObject::tr("Un-named Color Scheme")).toString();
+    _opacity = s.value(QStringLiteral("Opacity"),qreal(1.0)).toDouble();
     s.endGroup();
 
     for (int i=0 ; i < TABLE_COLORS ; i++)
@@ -333,7 +333,7 @@ void ColorScheme::readColorEntry(QSettings * s , int index)
 
     ColorEntry entry;
 
-    QStringList rgbList = s->value("Color", QStringList()).toStringList();
+    QStringList rgbList = s->value(QStringLiteral("Color"), QStringList()).toStringList();
     if (rgbList.count() != 3)
     {
         Q_ASSERT(0);
@@ -344,20 +344,20 @@ void ColorScheme::readColorEntry(QSettings * s , int index)
     b = rgbList[2].toInt();
     entry.color = QColor(r, g, b);
 
-    entry.transparent = s->value("Transparent",false).toBool();
+    entry.transparent = s->value(QStringLiteral("Transparent"),false).toBool();
 
     // Deprecated key from KDE 4.0 which set 'Bold' to true to force
     // a color to be bold or false to use the current format
     //
     // TODO - Add a new tri-state key which allows for bold, normal or
     // current format
-    if (s->contains("Bold"))
-        entry.fontWeight = s->value("Bold",false).toBool() ? ColorEntry::Bold :
+    if (s->contains(QStringLiteral("Bold")))
+        entry.fontWeight = s->value(QStringLiteral("Bold"),false).toBool() ? ColorEntry::Bold :
                                                                  ColorEntry::UseCurrentFormat;
 
-    quint16 hue = s->value("MaxRandomHue",0).toInt();
-    quint8 value = s->value("MaxRandomValue",0).toInt();
-    quint8 saturation = s->value("MaxRandomSaturation",0).toInt();
+    quint16 hue = s->value(QStringLiteral("MaxRandomHue"),0).toInt();
+    quint8 value = s->value(QStringLiteral("MaxRandomValue"),0).toInt();
+    quint8 saturation = s->value(QStringLiteral("MaxRandomSaturation"),0).toInt();
 
     setColorTableEntry( index , entry );
 
@@ -500,7 +500,7 @@ bool KDE3ColorSchemeReader::readColorLine(const QString& line,ColorScheme* schem
 
     if (list.count() != 7)
         return false;
-    if (list.first() != "color")
+    if (list.first() != QLatin1String("color"))
         return false;
 
     int index = list[1].toInt();
@@ -689,7 +689,7 @@ QList<QString> ColorSchemeManager::listKDE3ColorSchemes()
     QString dname(get_color_schemes_dir());
     QDir dir(dname);
     QStringList filters;
-    filters << "*.schema";
+    filters << QStringLiteral("*.schema");
     dir.setNameFilters(filters);
     QStringList list = dir.entryList(filters);
     QStringList ret;
@@ -706,7 +706,7 @@ QList<QString> ColorSchemeManager::listColorSchemes()
     QString dname(get_color_schemes_dir());
     QDir dir(dname);
     QStringList filters;
-    filters << "*.colorscheme";
+    filters << QStringLiteral("*.colorscheme");
     dir.setNameFilters(filters);
     QStringList list = dir.entryList(filters);
     QStringList ret;
@@ -778,11 +778,11 @@ const ColorScheme* ColorSchemeManager::findColorScheme(const QString& name)
     }
 }
 
-ColorSchemeManager* ColorSchemeManager::theColorSchemeManager = 0;
-//K_GLOBAL_STATIC( ColorSchemeManager , theColorSchemeManager )
+ColorSchemeManager* ColorSchemeManager::sColorSchemeManager = 0;
+//K_GLOBAL_STATIC( ColorSchemeManager , colorSchemeManager )
 ColorSchemeManager* ColorSchemeManager::instance()
 {
-    if (! theColorSchemeManager)
-        theColorSchemeManager = new ColorSchemeManager();
-    return theColorSchemeManager;
+    if (! sColorSchemeManager)
+        sColorSchemeManager = new ColorSchemeManager();
+    return sColorSchemeManager;
 }

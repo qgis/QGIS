@@ -171,5 +171,6 @@ class TestQgsCategorizedSymbolRenderer(unittest.TestCase):
         assert renderer.updateCategoryRenderState(1, False)
         self.assertEqual(renderer.filter(fields), "FALSE")
 
+
 if __name__ == "__main__":
     unittest.main()

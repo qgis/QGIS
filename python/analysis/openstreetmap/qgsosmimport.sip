@@ -3,7 +3,7 @@
  * @brief The QgsOSMXmlImport class imports OpenStreetMap XML format to our topological representation
  * in a SQLite database (see QgsOSMDatabase for details).
  *
- * How to use the classs:
+ * How to use the class:
  * 1. set input XML file name and output DB file name (in constructor or with respective functions)
  * 2. run import()
  * 3. check errorString() if the import failed
@@ -19,8 +19,8 @@ class QgsOSMXmlImport : public QObject
     void setInputXmlFileName( const QString& xmlFileName );
     QString inputXmlFileName() const;
 
-    void setOutputDbFileName( const QString& dbFileName );
-    QString outputDbFileName() const;
+    void setOutputDatabaseFileName( const QString& fileName );
+    QString outputDatabaseFileName() const;
 
     /**
      * Run import. This will parse the XML file and store the data in a SQLite database.

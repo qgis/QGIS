@@ -23,15 +23,15 @@
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
 const unsigned int COUNT_VALID_MAGNITUDES = 5;
-const int QgsComposerRuler::validScaleMultiples[] = {1, 2, 5};
-const int QgsComposerRuler::validScaleMagnitudes[] = {1, 10, 100, 1000, 10000};
+const int QgsComposerRuler::VALID_SCALE_MULTIPLES[] = {1, 2, 5};
+const int QgsComposerRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000};
 
 QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
-    : QWidget( nullptr )
-    , mDirection( d )
-    , mComposition( nullptr )
-    , mLineSnapItem( nullptr )
-    , mScaleMinPixelsWidth( 0 )
+  : QWidget( nullptr )
+  , mDirection( d )
+  , mComposition( nullptr )
+  , mLineSnapItem( nullptr )
+  , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
 
@@ -43,7 +43,7 @@ QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
   //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
-  mScaleMinPixelsWidth = mRulerFontMetrics->width( "000" ) * 2.5;
+  mScaleMinPixelsWidth = mRulerFontMetrics->width( QStringLiteral( "000" ) ) * 2.5;
   //minimum ruler height is twice the font height in pixels
   mRulerMinSize = mRulerFontMetrics->height() * 1.5;
 
@@ -68,7 +68,7 @@ QSize QgsComposerRuler::minimumSizeHint() const
   return QSize( mRulerMinSize, mRulerMinSize );
 }
 
-void QgsComposerRuler::paintEvent( QPaintEvent* event )
+void QgsComposerRuler::paintEvent( QPaintEvent *event )
 {
   Q_UNUSED( event );
   if ( !mComposition )
@@ -196,7 +196,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
         nextPageStartPixel = 0;
       }
 
-      while (( totalCoord < nextPageStartPos ) || (( nextPageStartPos == 0 ) && ( totalCoord <= endY ) ) )
+      while ( ( totalCoord < nextPageStartPos ) || ( ( nextPageStartPos == 0 ) && ( totalCoord <= endY ) ) )
       {
         double pixelCoord = mTransform.map( QPointF( 0, totalCoord ) ).y();
         p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
@@ -205,8 +205,8 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
         int labelSize = mRulerFontMetrics->width( label );
 
         //draw label only if it fits in before start of next page
-        if (( pixelCoord + labelSize + 8 < nextPageStartPixel )
-            || ( nextPageStartPixel == 0 ) )
+        if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel )
+             || ( nextPageStartPixel == 0 ) )
         {
           drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
         }
@@ -281,7 +281,7 @@ void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, i
 
     //calculate height of small division line
     double lineSize;
-    if (( numDivisions == 10 && i == 4 ) || ( numDivisions == 4 && i == 1 ) )
+    if ( ( numDivisions == 10 && i == 4 ) || ( numDivisions == 4 && i == 1 ) )
     {
       //if drawing the 5th line of 10 or drawing the 2nd line of 4, then draw it slightly longer
       lineSize = mRulerMinSize / 1.5;
@@ -312,14 +312,14 @@ int QgsComposerRuler::optimumScale( double minPixelDiff, int &magnitude, int &mu
   {
     for ( unsigned int multipleCandidate = 0; multipleCandidate < COUNT_VALID_MULTIPLES; ++multipleCandidate )
     {
-      int candidateScale = validScaleMultiples[multipleCandidate] * validScaleMagnitudes[magnitudeCandidate];
+      int candidateScale = VALID_SCALE_MULTIPLES[multipleCandidate] * VALID_SCALE_MAGNITUDES[magnitudeCandidate];
       //find pixel size for each step using this candidate scale
       double pixelDiff = mTransform.map( QPointF( candidateScale, 0 ) ).x() - mTransform.map( QPointF( 0, 0 ) ).x();
       if ( pixelDiff > minPixelDiff )
       {
         //found the optimum major scale
-        magnitude = validScaleMagnitudes[magnitudeCandidate];
-        multiple = validScaleMultiples[multipleCandidate];
+        magnitude = VALID_SCALE_MAGNITUDES[magnitudeCandidate];
+        multiple = VALID_SCALE_MULTIPLES[multipleCandidate];
         return candidateScale;
       }
     }
@@ -338,17 +338,17 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
   switch ( scaleMultiple )
   {
     case 1:
-      //numbers increase by 1 increment each time, eg 1, 2, 3 or 10, 20, 30
+      //numbers increase by 1 increment each time, e.g., 1, 2, 3 or 10, 20, 30
       //so we can draw either 10, 5 or 2 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 5 << 2;
       break;
     case 2:
-      //numbers increase by 2 increments each time, eg 2, 4, 6 or 20, 40, 60
+      //numbers increase by 2 increments each time, e.g., 2, 4, 6 or 20, 40, 60
       //so we can draw either 10, 4 or 2 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 4 << 2;
       break;
     case 5:
-      //numbers increase by 5 increments each time, eg 5, 10, 15 or 100, 500, 1000
+      //numbers increase by 5 increments each time, e.g., 5, 10, 15 or 100, 500, 1000
       //so we can draw either 10 or 5 small ticks and have each fall on a nice value
       validSmallDivisions << 10 << 5;
       break;
@@ -373,7 +373,7 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
 }
 
 
-void QgsComposerRuler::setSceneTransform( const QTransform& transform )
+void QgsComposerRuler::setSceneTransform( const QTransform &transform )
 {
 #if 0
   QString debug = QString::number( transform.dx() ) + ',' + QString::number( transform.dy() ) + ','
@@ -383,7 +383,7 @@ void QgsComposerRuler::setSceneTransform( const QTransform& transform )
   update();
 }
 
-void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
+void QgsComposerRuler::mouseMoveEvent( QMouseEvent *event )
 {
   //qWarning( "QgsComposerRuler::mouseMoveEvent" );
   updateMarker( event->posF() );
@@ -404,7 +404,7 @@ void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
   emit cursorPosChanged( displayPos );
 }
 
-void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
+void QgsComposerRuler::mouseReleaseEvent( QMouseEvent *event )
 {
   Q_UNUSED( event );
 
@@ -428,7 +428,7 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
   mLineSnapItem = nullptr;
 }
 
-void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
+void QgsComposerRuler::mousePressEvent( QMouseEvent *event )
 {
   double x = 0;
   double y = 0;
@@ -442,7 +442,7 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
   }
 
   //horizontal ruler means vertical snap line
-  QGraphicsLineItem* line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0, mSnappedItems );
+  QGraphicsLineItem *line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0, mSnappedItems );
   if ( !line )
   {
     //create new snap line
@@ -478,7 +478,7 @@ void QgsComposerRuler::setSnapLinePosition( QPointF pos )
   }
 
   //move snapped items together with the snap line
-  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::const_iterator itemIt = mSnappedItems.constBegin();
+  QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > >::const_iterator itemIt = mSnappedItems.constBegin();
   for ( ; itemIt != mSnappedItems.constEnd(); ++itemIt )
   {
     if ( mDirection == Horizontal )

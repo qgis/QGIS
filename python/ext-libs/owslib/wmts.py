@@ -747,7 +747,7 @@ class ContentMetadata:
 
     @property
     def tilematrixsets(self):
-        # NB. This attribute has been superseeded by the
+        # NB. This attribute has been superceeded by the
         # `tilematrixsetlinks` attribute defined below, but is included
         # for now to provide continuity.
         warnings.warn("The 'tilematrixsets' attribute has been deprecated"

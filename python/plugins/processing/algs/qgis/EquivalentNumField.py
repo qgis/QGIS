@@ -49,12 +49,12 @@ class EquivalentNumField(GeoAlgorithm):
                                               self.tr('Class field'), self.INPUT))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         fieldname = self.getParameterValue(self.FIELD)
         output = self.getOutputFromName(self.OUTPUT)
         vlayer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
-        fieldindex = vlayer.fieldNameIndex(fieldname)
+        fieldindex = vlayer.fields().lookupField(fieldname)
         fields = vlayer.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
         writer = output.getVectorWriter(fields, vlayer.wkbType(),
@@ -65,14 +65,14 @@ class EquivalentNumField(GeoAlgorithm):
         features = vector.features(vlayer)
         total = 100.0 / len(features)
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             inGeom = feature.geometry()
             outFeat.setGeometry(inGeom)
             atMap = feature.attributes()
             clazz = atMap[fieldindex]
 
             if clazz not in classes:
-                classes[clazz] = len(classes.keys())
+                classes[clazz] = len(list(classes.keys()))
 
             atMap.append(classes[clazz])
             outFeat.setAttributes(atMap)

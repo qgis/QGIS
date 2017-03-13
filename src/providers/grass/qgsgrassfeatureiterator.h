@@ -27,18 +27,18 @@ class QgsGrassVectorMapLayer;
 class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsGrassFeatureSource( const QgsGrassProvider* provider );
+    QgsGrassFeatureSource( const QgsGrassProvider *provider );
     ~QgsGrassFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
 #if 0
     enum Selection
     {
 
-      NotSelected = 0, /*!< not selected */
-      Selected = 1, /*!< line/area selected */
+      NotSelected = 0, //!< Not selected
+      Selected = 1, //!< Line/area selected
       Used = 2 /*!< the line was already used to create feature read in this cycle.
                 * The codes Used must be reset to Selected if getFirstFeature() or select() is called.
                 * Distinction between Selected and Used is used if attribute table exists, in which case
@@ -49,15 +49,15 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 #endif
 
 
-    struct Map_info* map();
-    QgsGrassVectorMapLayer * mLayer;
+    struct Map_info *map();
+    QgsGrassVectorMapLayer *mLayer = nullptr;
     int mLayerType;     // layer type POINT, LINE, ...
     int mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
 
     QgsWkbTypes::Type mQgisType; // WKBPoint, WKBLineString, ...
 
     QgsFields mFields;
-    QTextCodec* mEncoding;
+    QTextCodec *mEncoding = nullptr;
 
     bool mEditing; // Standard QGIS editing mode
 
@@ -71,17 +71,12 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
 {
     Q_OBJECT
   public:
-    QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsGrassFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! reset the iterator to the starting position
+    virtual bool fetchFeature( QgsFeature &feature ) override;
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
     // create QgsFeatureId from GRASS geometry object id, cat and layer number (editing)
@@ -100,6 +95,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     static QVariant nonEditableValue( int layerNumber );
 
   public slots:
+
     /** Cancel iterator, iterator will be closed on next occasion, probably when next getFeature() gets called.
      * This function can be called directly from other threads (setting bool is atomic) */
     void cancel();
@@ -110,12 +106,12 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     //void lock();
     //void unlock();
 
-    /** Reset selection */
+    //! Reset selection
     void resetSelection( bool value );
 
-    void setSelectionRect( const QgsRectangle& rect, bool useIntersect );
+    void setSelectionRect( const QgsRectangle &rect, bool useIntersect );
 
-    void setFeatureGeometry( QgsFeature& feature, int id, int type );
+    void setFeatureGeometry( QgsFeature &feature, int id, int type );
 
     /** Set feature attributes.
      *  @param feature
@@ -128,12 +124,12 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassVectorMap::TopoSymbol symbol );
+    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList &attlist, QgsGrassVectorMap::TopoSymbol symbol );
 
-    /** Canceled -> close when possible */
+    //! Canceled -> close when possible
     bool mCanceled;
 
-    /** Selection array */
+    //! Selection array
     QBitArray mSelection; // !UPDATE!
 
     // Edit mode is using mNextLid + mNextCidx

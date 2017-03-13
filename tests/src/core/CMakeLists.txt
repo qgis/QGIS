@@ -8,13 +8,17 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -119,7 +123,6 @@ ADD_QGIS_TEST(connectionpooltest testqgsconnectionpool.cpp)
 ADD_QGIS_TEST(contrastenhancementtest  testcontrastenhancements.cpp)
 ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
 ADD_QGIS_TEST(coordinatetransformtest testqgscoordinatetransform.cpp)
-ADD_QGIS_TEST(datadefined testqgsdatadefined.cpp)
 ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
 ADD_QGIS_TEST(datasourceuritest testqgsdatasourceuri.cpp)
 ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
@@ -142,6 +145,7 @@ ADD_QGIS_TEST(graduatedsymbolrenderertest testqgsgraduatedsymbolrenderer.cpp)
 ADD_QGIS_TEST(histogramtest testqgshistogram.cpp)
 ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
 ADD_QGIS_TEST(invertedpolygontest testqgsinvertedpolygonrenderer.cpp )
+ADD_QGIS_TEST(jsonutilstest testqgsjsonutils.cpp )
 ADD_QGIS_TEST(labelingengine testqgslabelingengine.cpp)
 ADD_QGIS_TEST(layertree testqgslayertree.cpp)
 ADD_QGIS_TEST(legendrenderertest testqgslegendrenderer.cpp )
@@ -164,16 +168,18 @@ ADD_QGIS_TEST(pallabelingtest testqgspallabeling.cpp)
 ADD_QGIS_TEST(pointlocatortest testqgspointlocator.cpp )
 ADD_QGIS_TEST(pointpatternfillsymboltest testqgspointpatternfillsymbol.cpp )
 ADD_QGIS_TEST(pointtest testqgspoint.cpp)
+ADD_QGIS_TEST(processingtest testqgsprocessing.cpp)
 ADD_QGIS_TEST(projecttest testqgsproject.cpp)
+ADD_QGIS_TEST(propertytest testqgsproperty.cpp)
 ADD_QGIS_TEST(qgistest testqgis.cpp)
 ADD_QGIS_TEST(rasterfilewritertest testqgsrasterfilewriter.cpp)
 ADD_QGIS_TEST(rasterfilltest testqgsrasterfill.cpp )
+ADD_QGIS_TEST(rasterblocktest testqgsrasterblock.cpp)
 ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
 ADD_QGIS_TEST(rastersublayertest testqgsrastersublayer.cpp)
 ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
 ADD_QGIS_TEST(rendererstest testqgsrenderers.cpp)
 ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
-ADD_QGIS_TEST(scaleexpressiontest testqgsscaleexpression.cpp)
 ADD_QGIS_TEST(shapebursttest testqgsshapeburst.cpp )
 ADD_QGIS_TEST(simplemarkertest testqgssimplemarker.cpp)
 ADD_QGIS_TEST(snappingutilstest testqgssnappingutils.cpp )
@@ -183,6 +189,7 @@ ADD_QGIS_TEST(stringutilstest testqgsstringutils.cpp)
 ADD_QGIS_TEST(styletest testqgsstyle.cpp)
 ADD_QGIS_TEST(svgmarkertest testqgssvgmarker.cpp)
 ADD_QGIS_TEST(symboltest testqgssymbol.cpp)
+ADD_QGIS_TEST(taskmanagertest testqgstaskmanager.cpp)
 ADD_QGIS_TEST(tracertest testqgstracer.cpp)
 #for some obscure reason calling this test "fontutils" kills the build on Ubuntu 15.10
 ADD_QGIS_TEST(typographicstylingutils testqgsfontutils.cpp)

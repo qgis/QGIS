@@ -19,6 +19,9 @@
 #define QGSADDREMOVEITEMCOMMAND_H
 
 #include <QUndoCommand>
+
+#include "qgis_core.h"
+
 class QgsComposerItem;
 class QgsComposition;
 
@@ -37,19 +40,19 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
     ~QgsAddRemoveItemCommand();
 
     void redo() override;
     void undo() override;
 
   signals:
-    void itemAdded( QgsComposerItem* item );
-    void itemRemoved( QgsComposerItem* item );
+    void itemAdded( QgsComposerItem *item );
+    void itemRemoved( QgsComposerItem *item );
 
   private:
-    QgsComposerItem* mItem;
-    QgsComposition* mComposition;
+    QgsComposerItem *mItem = nullptr;
+    QgsComposition *mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

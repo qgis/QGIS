@@ -19,12 +19,10 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
 
-
-QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& settings )
-    : QgsMapRendererQImageJob( settings )
-    , mInternalJob( nullptr )
-    , mPainter( nullptr )
-    , mLabelingResults( nullptr )
+QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
+  : QgsMapRendererQImageJob( settings )
+  , mInternalJob( nullptr )
+  , mPainter( nullptr )
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 
@@ -40,14 +38,11 @@ QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
   if ( isActive() )
   {
     // still running!
-    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (cancelling)" );
+    QgsDebugMsg( "SEQUENTIAL destruct -- still running! (canceling)" );
     cancel();
   }
 
   Q_ASSERT( !mInternalJob && !mPainter );
-
-  delete mLabelingResults;
-  mLabelingResults = nullptr;
 }
 
 
@@ -55,6 +50,8 @@ void QgsMapRendererSequentialJob::start()
 {
   if ( isActive() )
     return; // do nothing if we are already running
+
+  mLabelingResults.reset();
 
   mRenderingStart.start();
 
@@ -86,6 +83,15 @@ void QgsMapRendererSequentialJob::cancel()
   Q_ASSERT( !mInternalJob && !mPainter );
 }
 
+void QgsMapRendererSequentialJob::cancelWithoutBlocking()
+{
+  if ( !isActive() )
+    return;
+
+  QgsDebugMsg( "sequential - cancel internal" );
+  mInternalJob->cancelWithoutBlocking();
+}
+
 void QgsMapRendererSequentialJob::waitForFinished()
 {
   if ( !isActive() )
@@ -99,11 +105,14 @@ bool QgsMapRendererSequentialJob::isActive() const
   return nullptr != mInternalJob;
 }
 
-QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
+bool QgsMapRendererSequentialJob::usedCachedLabels() const
 {
-  QgsLabelingResults* tmp = mLabelingResults;
-  mLabelingResults = nullptr;
-  return tmp;
+  return mUsedCachedLabels;
+}
+
+QgsLabelingResults *QgsMapRendererSequentialJob::takeLabelingResults()
+{
+  return mLabelingResults.release();
 }
 
 
@@ -111,7 +120,7 @@ QImage QgsMapRendererSequentialJob::renderedImage()
 {
   if ( isActive() && mCache )
     // this will allow immediate display of cached layers and at the same time updates of the layer being rendered
-    return composeImage( mSettings, mInternalJob->jobs() );
+    return composeImage( mSettings, mInternalJob->jobs(), LabelRenderJob() );
   else
     return mImage;
 }
@@ -125,7 +134,8 @@ void QgsMapRendererSequentialJob::internalFinished()
   delete mPainter;
   mPainter = nullptr;
 
-  mLabelingResults = mInternalJob->takeLabelingResults();
+  mLabelingResults.reset( mInternalJob->takeLabelingResults() );
+  mUsedCachedLabels = mInternalJob->usedCachedLabels();
 
   mErrors = mInternalJob->errors();
 
@@ -138,4 +148,3 @@ void QgsMapRendererSequentialJob::internalFinished()
 
   emit finished();
 }
-

@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday June 09, 2016</H3>
+<H3>Wednesday February 22, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday June 09, 2016
-Last Change : Thursday June 09, 2016
+Last Updated: Wednesday February 22, 2017
+Last Change : Thursday January 12, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -92,7 +92,7 @@ Last Change : Thursday June 09, 2016
   <LI><A HREF="#toc2">Overview</A>
   <LI><A HREF="#toc3">Building on GNU/Linux</A>
     <UL>
-    <LI><A HREF="#toc4">3.1. Building QGIS with Qt 4.x</A>
+    <LI><A HREF="#toc4">3.1. Building QGIS with Qt 5.x</A>
     <LI><A HREF="#toc5">3.2. Prepare apt</A>
     <LI><A HREF="#toc6">3.3. Install build dependencies</A>
     <LI><A HREF="#toc7">3.4. Setup ccache (Optional)</A>
@@ -100,39 +100,37 @@ Last Change : Thursday June 09, 2016
     <LI><A HREF="#toc9">3.6. Check out the QGIS Source Code</A>
     <LI><A HREF="#toc10">3.7. Starting the compile</A>
     <LI><A HREF="#toc11">3.8. Building Debian packages</A>
-    <LI><A HREF="#toc12">3.9. Building QGIS with Qt 5.x</A>
-    <LI><A HREF="#toc13">3.10. On Debian Linux</A>
-    <LI><A HREF="#toc14">3.11. On Fedora Linux</A>
+    <LI><A HREF="#toc12">3.9. On Fedora Linux</A>
     </UL>
-  <LI><A HREF="#toc15">Building on Windows</A>
+  <LI><A HREF="#toc13">Building on Windows</A>
     <UL>
-    <LI><A HREF="#toc16">4.1. Building with Microsoft Visual Studio</A>
-    <LI><A HREF="#toc17">4.2. Building using MinGW</A>
-    <LI><A HREF="#toc18">4.3. Creation of MSYS environment for compilation of QGIS</A>
+    <LI><A HREF="#toc14">4.1. Building with Microsoft Visual Studio</A>
+    <LI><A HREF="#toc15">4.2. Building using MinGW</A>
+    <LI><A HREF="#toc16">4.3. Creation of MSYS environment for compilation of QGIS</A>
     </UL>
-  <LI><A HREF="#toc19">Building on MacOS X</A>
+  <LI><A HREF="#toc17">Building on MacOS X</A>
     <UL>
-    <LI><A HREF="#toc20">5.1. Install Developer Tools</A>
-    <LI><A HREF="#toc21">5.2. Install Qt4 from disk image</A>
-    <LI><A HREF="#toc22">5.3. Install CMake for OSX</A>
-    <LI><A HREF="#toc23">5.4. Install development frameworks for QGIS dependencies</A>
-    <LI><A HREF="#toc24">5.5. API documentation</A>
-    <LI><A HREF="#toc25">5.6. QGIS source</A>
-    <LI><A HREF="#toc26">5.7. Configure the build</A>
-    <LI><A HREF="#toc27">5.8. Building</A>
-    <LI><A HREF="#toc28">5.9. Post-Install</A>
+    <LI><A HREF="#toc18">5.1. Install Developer Tools</A>
+    <LI><A HREF="#toc19">5.2. Install Qt4 from disk image</A>
+    <LI><A HREF="#toc20">5.3. Install CMake for OSX</A>
+    <LI><A HREF="#toc21">5.4. Install development frameworks for QGIS dependencies</A>
+    <LI><A HREF="#toc22">5.5. API documentation</A>
+    <LI><A HREF="#toc23">5.6. QGIS source</A>
+    <LI><A HREF="#toc24">5.7. Configure the build</A>
+    <LI><A HREF="#toc25">5.8. Building</A>
+    <LI><A HREF="#toc26">5.9. Post-Install</A>
     </UL>
-  <LI><A HREF="#toc29">Setting up the WCS test server on GNU/Linux</A>
+  <LI><A HREF="#toc27">Setting up the WCS test server on GNU/Linux</A>
     <UL>
-    <LI><A HREF="#toc30">6.1. Preparation</A>
-    <LI><A HREF="#toc31">6.2. Setup mapserver</A>
-    <LI><A HREF="#toc32">6.3. Create a home page</A>
-    <LI><A HREF="#toc33">6.4. Now deploy it</A>
-    <LI><A HREF="#toc34">6.5. Debugging</A>
+    <LI><A HREF="#toc28">6.1. Preparation</A>
+    <LI><A HREF="#toc29">6.2. Setup mapserver</A>
+    <LI><A HREF="#toc30">6.3. Create a home page</A>
+    <LI><A HREF="#toc31">6.4. Now deploy it</A>
+    <LI><A HREF="#toc32">6.5. Debugging</A>
     </UL>
-  <LI><A HREF="#toc35">Setting up a Jenkins Build Server</A>
-  <LI><A HREF="#toc36">Debug output and running tests</A>
-  <LI><A HREF="#toc37">Authors and Acknowledgments</A>
+  <LI><A HREF="#toc33">Setting up a Jenkins Build Server</A>
+  <LI><A HREF="#toc34">Debug output and running tests</A>
+  <LI><A HREF="#toc35">Authors and Acknowledgments</A>
   </OL>
 
 </DIV>
@@ -186,7 +184,7 @@ source directory.
 <H1>2. Overview</H1>
 
 <P>
-QGIS, like a number of major projects (eg. KDE 4.0), uses CMake
+QGIS, like a number of major projects (e.g., KDE 4.0), uses CMake
 (<A HREF="http://www.cmake.org">http://www.cmake.org</A>) for building from source.
 </P>
 <P>
@@ -207,14 +205,17 @@ Required build dependencies:
 </P>
 
 <UL>
-<LI>Qt &gt;= 4.8.0
+<LI>Qt &gt;= 5.3.0
 <LI>Proj &gt;= 4.4.x
 <LI>GEOS &gt;= 3.4
 <LI>Sqlite3 &gt;= 3.0.0
-<LI>GDAL/OGR &gt;= 1.4.x
+<LI>SpatiaLite
+<LI>libspatialindex
+<LI>GDAL/OGR &gt;= 2.0
 <LI>Qwt &gt;= 5.0 &amp; (&lt; 6.1 with internal QwtPolar)
 <LI>expat &gt;= 1.95
 <LI>QScintilla2
+<LI>QCA
 </UL>
 
 <P>
@@ -229,8 +230,8 @@ Optional dependencies:
 <LI>for georeferencer - GSL &gt;= 1.8
 <LI>for postgis support and SPIT plugin - PostgreSQL &gt;= 8.0.x
 <LI>for gps plugin - gpsbabel
-<LI>for mapserver export and PyQGIS - Python &gt;= 2.3 (2.5+ preferred)
-<LI>for python support - SIP &gt;= 4.12, PyQt &gt;= 4.8.3 must match Qt version, Qscintilla2
+<LI>for mapserver export and PyQGIS - Python &gt;= 3.3
+<LI>for python support - SIP &gt;= 4.12, PyQt &gt;= 5.3 must match Qt version, Qscintilla2
 <LI>for qgis mapserver - FastCGI
 <LI>for oracle provider - Oracle OCI library
 </UL>
@@ -239,7 +240,7 @@ Optional dependencies:
 Indirect dependencies:
 </P>
 <P>
-Some proprietary formats (eg. ECW and MrSid) supported by GDAL require
+Some proprietary formats (e.g., ECW and MrSid) supported by GDAL require
 proprietary third party libraries.  QGIS doesn't need any of those itself to
 build, but will only support those formats if GDAL is built accordingly.  Refer
 to <A HREF="http://gdal.org/formats_list.html">http://gdal.org/formats_list.html</A> ff. for instructions how to include
@@ -250,14 +251,14 @@ those formats in GDAL.
 <H1>3. Building on GNU/Linux</H1>
 
 <A NAME="toc4"></A>
-<H2>3.1. Building QGIS with Qt 4.x</H2>
+<H2>3.1. Building QGIS with Qt 5.x</H2>
 
 <P>
 <B>Requires:</B> Ubuntu / Debian derived distro
 </P>
 <P>
 /!\ <B>Note:</B> Refer to the section Building Debian packages for building
-debian packages.  Unless you plan to develop on QGIS, that is probably the
+debian packages. Unless you plan to develop on QGIS, that is probably the
 easiest option to compile and install QGIS.
 </P>
 <P>
@@ -312,36 +313,20 @@ sudo apt-get update
 <TH>install command for packages</TH>
 </TR>
 <TR>
-<TD>wheezy</TD>
-<TD><CODE>apt-get install bison cmake doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-dev python-gdal python-mock python-nose2 python-psycopg2 python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
-</TR>
-<TR>
-<TD>jessie</TD>
-<TD><CODE>apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
-</TR>
-<TR>
 <TD>stretch</TD>
-<TD><CODE>apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
-</TR>
-<TR>
-<TD>precise</TD>
-<TD><CODE>apt-get install bison cmake doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-gdal python-mock python-psycopg2 python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
-</TR>
-<TR>
-<TD>trusty</TD>
-<TD><CODE>apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
-</TR>
-<TR>
-<TD>wily</TD>
-<TD><CODE>apt-get install bison cmake cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 <TR>
 <TD>xenial</TD>
-<TD><CODE>apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+</TR>
+<TR>
+<TD>yakkety</TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 <TR>
 <TD>sid</TD>
-<TD><CODE>apt-get install bison cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqca2-dev libqca2-plugin-ossl libqjson-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-future python-gdal python-mock python-nose2 python-psycopg2 python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-qt4-sql python-sip python-sip-dev python-yaml qt4-dev-tools qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates cmake dh-python doxygen flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dev python3-future python3-gdal python3-mock python3-nose2 python3-psycopg2 python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-sip python3-sip-dev python3-termcolor python3-yaml qtbase5-dev qtpositioning5-dev qtscript5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui</CODE></TD>
 </TR>
 </TABLE>
 
@@ -446,17 +431,39 @@ After the 'g' generation is complete, press 'q' to exit the ccmake
 interactive dialog.
 </P>
 <P>
+/!\ <B>Warning:</B> Make sure that your build directory is completely empty when you 
+enter the command. Do never try to "re-use" an existing <B>Qt4</B> build directory.
+If you want to use `ccmake` or other interactive tools, run the command in
+the empty build directory once before starting to use the interactive tools.
+</P>
+<P>
 Now on with the build:
 </P>
 
 <div class="code"><PRE>
-make
-make install
+make -jX
 </PRE></div>
 
 <P>
-It may take a little while to build depending on your platform.
+where X is the number of available cores. Depending on your platform,
+this can speed up the build time considerably.
 </P>
+<P>
+Then you can directly run from the build directory:
+</P>
+
+<div class="code"><PRE>
+./output/bin/qgis
+</PRE></div>
+
+<P>
+Another option is to install to your system:
+</P>
+
+<div class="code"><PRE>
+make install
+</PRE></div>
+
 <P>
 After that you can try to run QGIS:
 </P>
@@ -467,7 +474,7 @@ $HOME/apps/bin/qgis
 
 <P>
 If all has worked properly the QGIS application should start up and appear
-on your screen.  If you get the error message "error while loading shared libraries",
+on your screen. If you get the error message "error while loading shared libraries",
 execute this command in your shell.
 </P>
 
@@ -475,12 +482,47 @@ execute this command in your shell.
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 </PRE></div>
 
+<P>
+Optionally, if you already know what aspects you want in your custom build
+then you can skip the interactive ccmake .. part by using the cmake -D
+option for each aspect, e.g.:
+</P>
+
+<div class="code"><PRE>
+cmake -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+</PRE></div>
+
+<P>
+Also, if you want to speed your build times, you can easily do it with ninja,
+an alternative to make with similar build options.
+</P>
+<P>
+For example, to configure your build you can do either one of:
+</P>
+
+<div class="code"><PRE>
+ccmake -G Ninja ..
+</PRE></div>
+
+<div class="code"><PRE>
+cmake -G Ninja -D CMAKE_BUILD_TYPE=Debug -D CMAKE_INSTALL_PREFIX=${HOME}/apps ..
+</PRE></div>
+
+<P>
+Build and install with ninja:
+</P>
+
+<div class="code"><PRE>
+ninja (uses all cores by default; also supports the above described -jX option)
+ninja install
+</PRE></div>
+
 <A NAME="toc11"></A>
 <H2>3.8. Building Debian packages</H2>
 
 <P>
 Instead of creating a personal installation as in the previous step you can
-also create debian package.  This is done from the QGIS root directory, where
+also create debian package. This is done from the QGIS root directory, where
 you'll find a debian directory.
 </P>
 <P>
@@ -536,67 +578,14 @@ sudo debi
 </PRE></div>
 
 <A NAME="toc12"></A>
-<H2>3.9. Building QGIS with Qt 5.x</H2>
-
-<P>
-/!\ <B>Warning:</B> Qt 5 is not officially supported. Building against Qt 5
-libraries seems to work quite well already but be prepared that you are one
-of very few with this setup. We strongly recommend using QGIS with Qt 4 for
-production work.
-</P>
-<P>
-Python bindings in particular are not expected to be compatible. When Qt 5
-is enabled, the build system automatically activates Python 3 and PyQt5 as well.
-There are no plugins and not even the python code shipped along the QGIS source
-code is compatible with PyQt5.
-</P>
-<P>
-You have been warned.
-</P>
-
-<A NAME="toc13"></A>
-<H2>3.10. On Debian Linux</H2>
-
-<P>
-We assume that you have the source code of QGIS ready and created a new
-subdirectory called `build` or `build-qt5` in it.
-</P>
-
-<H3>3.10.1. Install build dependencies</H3>
-
-<div class="code"><PRE>
-apt-get install git build-essential cmake flex bison pyqt5-dev qttools5-dev qtpositioning5-dev libqt5svg5-dev libqt5webkit5-dev  libqt5gui5 libqt5scripttools5 qtscript5-dev libqca-qt5-2-dev grass-dev libgeos-dev libgdal-dev libqt5xmlpatterns5-dev libqt5scintilla2-dev pyqt5.qsci-dev python3-pyqt5.qsci libgsl-dev txt2tags libproj-dev libqwt-qt5-dev libspatialindex-dev pyqt5-dev-tools qttools5-dev-tools qt5-default python3-future python3-pyqt5.qtsql python3-psycopg2
-</PRE></div>
-
-<P>
-Make sure that your build directory is completely empty when you enter the
-following command. Do never try to "re-use" an existing Qt4 build directory.
-If you want to use `ccmake` or other interactive tools, run the following
-command in the empty build directory once before starting to use the
-interactive tools.
-</P>
-
-<div class="code"><PRE>
-cmake -DENABLE_QT5=ON -DPORT_PLUGINS=ON
-</PRE></div>
-
-<P>
-If everything went ok you can finally start to compile. (As usual append a -jX where X is the number of available cores option to make to speed up your build process)
-</P>
-
-<div class="code"><PRE>
-make
-</PRE></div>
-
-<A NAME="toc14"></A>
-<H2>3.11. On Fedora Linux</H2>
+<H2>3.9. On Fedora Linux</H2>
 
 <P>
 We assume that you have the source code of QGIS ready and created a
 new subdirectory called `build` or `build-qt5` in it.
 </P>
 
-<H3>3.11.1. Install build dependencies</H3>
+<H3>3.9.1. Install build dependencies</H3>
 
 <div class="code"><PRE>
 dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static
@@ -604,7 +593,16 @@ qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel
 qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5
 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel
 qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel
-qwt-devel gsl-devel postgresql-devel
+qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3
+python3-psycopg2 python3-PyYAML qca-qt5-ossl
+</PRE></div>
+
+<P>
+To build QGIS server additional dependencies are required:
+</P>
+
+<div class="code"><PRE>
+dnf install fcgi-devel
 </PRE></div>
 
 <P>
@@ -616,7 +614,7 @@ tools.
 </P>
 
 <div class="code"><PRE>
-cmake -DENABLE_QT5=ON -DWITH_QWTPOLAR=OFF ..
+cmake ..
 </PRE></div>
 
 <P>
@@ -645,10 +643,10 @@ Or install to your system
 make install
 </PRE></div>
 
-<A NAME="toc15"></A>
+<A NAME="toc13"></A>
 <H1>4. Building on Windows</H1>
 
-<A NAME="toc16"></A>
+<A NAME="toc14"></A>
 <H2>4.1. Building with Microsoft Visual Studio</H2>
 
 <P>
@@ -661,19 +659,13 @@ This section describes the setup required to allow Visual Studio to be used to
 build QGIS. 
 </P>
 
-<H3>4.1.1. Visual C++ Express Edition</H3>
+<H3>4.1.1. Visual C++ Community Edition</H3>
 
 <P>
-The free (as in free beer) Express Edition installer is available under:
+The free (as in free beer) Community installer is available under:
 </P>
 	<BLOCKQUOTE>
-	<A HREF="http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe">http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe</A>
-	</BLOCKQUOTE>
-<P>
-You also need the Windows SDK for Windows 7 and .NET Framework 4:
-</P>
-	<BLOCKQUOTE>
-	<A HREF="http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe">http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/winsdk_web.exe</A>
+	<A HREF="http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe">http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe</A>
 	</BLOCKQUOTE>
 
 <H3>4.1.2. Other tools and dependencies</H3>
@@ -689,7 +681,7 @@ Download and install following packages:
 </TR>
 <TR>
 <TD>CMake</TD>
-<TD><A HREF="http://www.cmake.org/files/v3.0/cmake-3.0.2-win32-x86.exe">http://www.cmake.org/files/v3.0/cmake-3.0.2-win32-x86.exe</A></TD>
+<TD><A HREF="https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi">https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi</A></TD>
 </TR>
 <TR>
 <TD>GNU flex, GNU bison and GIT</TD>
@@ -727,25 +719,40 @@ and from OSGeo4W (select <I>Advanced Installation</I>):
 <LI>grass
 <LI>gsl-devel
 <LI>iconv
-<LI>pyqt4
-<LI>qt4-devel
-<LI>qwt5-devel-qt4
-<LI>sip
-<LI>spatialite
 <LI>libspatialindex-devel
-<LI>python-qscintilla
-<P></P>
+<LI>pyqt5
+<LI>python3-devel
+<LI>python3-qscintilla
+<LI>python3-nose2
+<LI>python3-future
+<LI>python3-pyyaml
+<LI>python3-mock
+<LI>qca-qt5-devel
+<LI>qca-qt5-libs
+<LI>qscintilla-qt5
+<LI>qt5-devel
+<LI>qt5-libs-debug
+<LI>qtwebkit-qt5-devel
+<LI>qtwebkit-qt5-libs-debug
+<LI>qwt-devel-qt5
+<LI>sip-qt5
+<LI>spatialite
+</UL>
+
+<P>
 This will also select packages the above packages depend on.
-<P></P>
+</P>
+<P>
 If you install other packages, this might cause issues. Particularly, make sure
 <B>not</B> to install the msinttypes package. It installs a stdint.h file in
 OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
 example breaks the build of the virtuallayer provider.
-<P></P>
+</P>
+<P>
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
-</UL>
+</P>
 
 <H3>4.1.3. Setting up the Visual Studio project with CMake</H3>
 
@@ -906,7 +913,7 @@ look at:
 <I>ms-windows/osgeo4w/package.cmd</I>
 </P>
 
-<A NAME="toc17"></A>
+<A NAME="toc15"></A>
 <H2>4.2. Building using MinGW</H2>
 
 <P>
@@ -1047,7 +1054,7 @@ make install
 
 <P>
 /!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
-successfull install, they're not needed anymore.
+successful install, they're not needed anymore.
 </P>
 
 <H3>4.2.5. git</H3>
@@ -1175,7 +1182,7 @@ tree. Read the READMEfile there and follow the instructions. Next right click
 on qgis.nsi and choose the option 'Compile NSIS Script'. 
 </P>
 
-<A NAME="toc18"></A>
+<A NAME="toc16"></A>
 <H2>4.3. Creation of MSYS environment for compilation of QGIS</H2>
 
 <H3>4.3.1. Initial setup</H3>
@@ -1432,7 +1439,7 @@ We're done with preparation of MSYS environment. Now you can delete all stuff in
 of space and it's not necessary at all.
 </P>
 
-<A NAME="toc19"></A>
+<A NAME="toc17"></A>
 <H1>5. Building on MacOS X</H1>
 
 <P>
@@ -1499,7 +1506,7 @@ so it's just 'make', or using a smaller number.  Sometimes make can hiccup on to
 many threads.
 </P>
 
-<A NAME="toc20"></A>
+<A NAME="toc18"></A>
 <H2>5.1. Install Developer Tools</H2>
 
 <P>
@@ -1556,7 +1563,7 @@ If you have trouble building some of the dependencies listed below with clang
 (e.g. OSG &amp; osgEarth), try using only the LLVM compilers.
 </P>
 
-<A NAME="toc21"></A>
+<A NAME="toc19"></A>
 <H2>5.2. Install Qt4 from disk image</H2>
 
 <P>
@@ -1616,7 +1623,7 @@ may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
 CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
 </P>
 
-<A NAME="toc22"></A>
+<A NAME="toc20"></A>
 <H2>5.3. Install CMake for OSX</H2>
 
 <P>
@@ -1698,7 +1705,7 @@ If you have trouble building some of the dependencies listed below (e.g. OSG &am
 osgEarth), try bypassing ccache.
 </P>
 
-<A NAME="toc23"></A>
+<A NAME="toc21"></A>
 <H2>5.4. Install development frameworks for QGIS dependencies</H2>
 
 <P>
@@ -2371,7 +2378,7 @@ folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Hea
 And as for OSG, you can leave the bin/ executables where they are.
 </P>
 
-<A NAME="toc24"></A>
+<A NAME="toc22"></A>
 <H2>5.5. API documentation</H2>
 
 <P>
@@ -2407,7 +2414,7 @@ QGIS.app bundling on install, inside the app in:
 QGIS.app/Contents/Resources/doc
 </P>
 
-<A NAME="toc25"></A>
+<A NAME="toc23"></A>
 <H2>5.6. QGIS source</H2>
 
 <P>
@@ -2442,7 +2449,7 @@ git merge qgisupstream
 
 </PRE></div>
 
-<A NAME="toc26"></A>
+<A NAME="toc24"></A>
 <H2>5.7. Configure the build</H2>
 
 <P>
@@ -2583,7 +2590,7 @@ non-standard, libs (ie postgres' libpq) set the bundle value to 2:
 -D QGIS_MACAPP_BUNDLE=2 \
 </PRE></div>
 
-<A NAME="toc27"></A>
+<A NAME="toc25"></A>
 <H2>5.8. Building</H2>
 
 <P>
@@ -2611,7 +2618,7 @@ or, for an /Applications build:
 sudo make install
 </PRE></div>
 
-<A NAME="toc28"></A>
+<A NAME="toc26"></A>
 <H2>5.9. Post-Install</H2>
 
 <P>
@@ -2647,7 +2654,7 @@ for instructions on setting up Apache fastcgi and testing Mapserver, including
 installing the mod-fastcgi that is missing on Lion.
 </P>
 
-<A NAME="toc29"></A>
+<A NAME="toc27"></A>
 <H1>6. Setting up the WCS test server on GNU/Linux</H1>
 
 <P>
@@ -2658,7 +2665,7 @@ These notes are for Ubuntu - other versions and Debian derived distros may
 require slight variations in package names.
 </P>
 
-<A NAME="toc30"></A>
+<A NAME="toc28"></A>
 <H2>6.1. Preparation</H2>
 
 <P>
@@ -2678,7 +2685,7 @@ is integrated into master.
   cd cgi-bin/
 </P>
 
-<A NAME="toc31"></A>
+<A NAME="toc29"></A>
 <H2>6.2. Setup mapserver</H2>
 
 <P>
@@ -2744,7 +2751,7 @@ Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
   &lt;/VirtualHost&gt;
 </PRE></div>
 
-<A NAME="toc32"></A>
+<A NAME="toc30"></A>
 <H2>6.3. Create a home page</H2>
 
 <div class="code"><PRE>
@@ -2762,7 +2769,7 @@ Set the contents to:
   http://wcs.qgis.org/1.9.0/wcs
 </PRE></div>
 
-<A NAME="toc33"></A>
+<A NAME="toc31"></A>
 <H2>6.4. Now deploy it</H2>
 
 <div class="code"><PRE>
@@ -2775,14 +2782,14 @@ Set the contents to:
   sudo /etc/init.d/apache2 reload
 </PRE></div>
 
-<A NAME="toc34"></A>
+<A NAME="toc32"></A>
 <H2>6.5. Debugging</H2>
 
 <div class="code"><PRE>
   sudo tail -f /var/log/apache2/wcs_qgis.org/error.log
 </PRE></div>
 
-<A NAME="toc35"></A>
+<A NAME="toc33"></A>
 <H1>7. Setting up a Jenkins Build Server</H1>
 
 <P>
@@ -2884,7 +2891,7 @@ I based some of the set up from this nice blog article here:
 <A HREF="http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html">http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html</A>
 </UL>
 
-<A NAME="toc36"></A>
+<A NAME="toc34"></A>
 <H1>8. Debug output and running tests</H1>
 
 <P>
@@ -2950,7 +2957,7 @@ ctest --show-only
 ctest --verbose --tests-regex SomeTestName
 </PRE></div>
 
-<A NAME="toc37"></A>
+<A NAME="toc35"></A>
 <H1>9. Authors and Acknowledgments</H1>
 
 <P>
@@ -3016,5 +3023,5 @@ The following people have contributed to this document:
 
 </DIV>
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -\-encoding=utf-8 -o/home/fischer/src/qgis/debian/build-master-pyqtwrapper-qt4/doc/INSTALL.html -t html /home/fischer/src/qgis/doc/INSTALL.t2t -->
+<!-- cmdline: txt2tags -\-encoding=utf-8 -o/home/fischer/src/qgis/debian/build-master-qt5/doc/INSTALL.html -t html /home/fischer/src/qgis/doc/INSTALL.t2t -->
 </BODY></HTML>

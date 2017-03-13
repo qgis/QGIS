@@ -18,29 +18,25 @@
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 
-QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
-    : QgsMapToolEdit( canvas )
-    , mCaptureMode( CapturePoint )
-    , mSnapOnPress( false )
-    , mSnapOnRelease( false )
-    , mSnapOnMove( false )
-    , mSnapOnDoubleClick( false )
-    , mCadDockWidget( cadDockWidget )
+QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
+  : QgsMapToolEdit( canvas )
+  , mCaptureMode( CapturePoint )
+  , mSnapOnPress( false )
+  , mSnapOnRelease( false )
+  , mSnapOnMove( false )
+  , mSnapOnDoubleClick( false )
+  , mCadDockWidget( cadDockWidget )
 {
 }
 
-QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()
-{
-}
-
-void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
   snap( e );
   if ( !mCadDockWidget->canvasPressEvent( e ) )
     cadCanvasPressEvent( e );
 }
 
-void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   snap( e );
 
@@ -63,7 +59,7 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent* e )
     cadCanvasReleaseEvent( e );
 }
 
-void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   snap( e );
   if ( !mCadDockWidget->canvasMoveEvent( e ) )
@@ -84,14 +80,14 @@ void QgsMapToolAdvancedDigitizing::deactivate()
   mCadDockWidget->disable();
 }
 
-void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint& point )
+void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint &point )
 {
   Q_UNUSED( point );
-  QMouseEvent* ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
+  QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
 }
 
-void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent* e )
+void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent *e )
 {
   if ( !mCadDockWidget->cadEnabled() )
     e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );

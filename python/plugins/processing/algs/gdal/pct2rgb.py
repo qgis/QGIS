@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -50,12 +52,12 @@ class pct2rgb(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('PCT to RGB')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
+        self.group, self.i18n_group = self.trAlgorithm('Raster conversion')
         self.addParameter(ParameterRaster(pct2rgb.INPUT,
                                           self.tr('Input layer'), False))
         options = []
         for i in range(25):
-            options.append(unicode(i + 1))
+            options.append(str(i + 1))
         self.addParameter(ParameterSelection(pct2rgb.NBAND,
                                              self.tr('Band to convert'), options))
         self.addOutput(OutputRaster(pct2rgb.OUTPUT, self.tr('PCT to RGB')))
@@ -63,7 +65,7 @@ class pct2rgb(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(pct2rgb.NBAND) + 1))
+        arguments.append(str(self.getParameterValue(pct2rgb.NBAND) + 1))
         arguments.append('-of')
         out = self.getOutputValue(pct2rgb.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -31,7 +32,6 @@ import os
 
 def processCommand(alg):
     # We create the output sequence according to percentiles number
-    base = alg.getParameterValue('base')
     quantiles = alg.getParameterValue('quantiles') - 1
     outputs = []
     for i in range(0, int(quantiles)):

@@ -20,6 +20,8 @@
 
 #include <QtGlobal>
 
+#include "qgis_core.h"
+
 class QString;
 class QgsVectorLayer;
 class QgsFeatureRequest;
@@ -37,23 +39,22 @@ class CORE_EXPORT QgsFeatureFilterProvider
 {
   public:
 
-    /** Constructor */
+    //! Constructor
     QgsFeatureFilterProvider() {}
 
-    /** Destructor */
-    virtual ~QgsFeatureFilterProvider() {}
+    virtual ~QgsFeatureFilterProvider() = default;
 
     /** Add additional filters to the feature request to further restrict the features returned by the request.
      * Derived classes must implement this method.
      * @param layer the layer to filter
      * @param featureRequest the feature request to update
      */
-    virtual void filterFeatures( const QgsVectorLayer* layer, QgsFeatureRequest& featureRequest ) const = 0;
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
 
     /** Create a clone of the feature filter provider
      * @return a new clone
      */
-    virtual QgsFeatureFilterProvider* clone() const = 0;
+    virtual QgsFeatureFilterProvider *clone() const = 0;
 };
 
 #endif

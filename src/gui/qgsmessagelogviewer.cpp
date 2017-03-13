@@ -31,18 +31,23 @@
 
 
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   Q_UNUSED( statusBar )
   setupUi( this );
 
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
+  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
            this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 
   connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
 }
 
-QgsMessageLogViewer::~QgsMessageLogViewer()
+void QgsMessageLogViewer::closeEvent( QCloseEvent *e )
+{
+  e->ignore();
+}
+
+void QgsMessageLogViewer::reject()
 {
 }
 
@@ -55,7 +60,7 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
     ;
 
-  QPlainTextEdit *w;
+  QPlainTextEdit *w = nullptr;
   if ( i < tabWidget->count() )
   {
     w = qobject_cast<QPlainTextEdit *>( tabWidget->widget( i ) );
@@ -67,17 +72,18 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
     w->setReadOnly( true );
     tabWidget->addTab( w, tag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
+    tabWidget->setTabsClosable( true );
   }
 
-  QString prefix = QString( "%1\t%2\t" )
+  QString prefix = QStringLiteral( "%1\t%2\t" )
                    .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
                    .arg( level );
-  w->appendPlainText( message.prepend( prefix ).replace( '\n', "\n\t\t\t" ) );
+  w->appendPlainText( message.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) ) );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  if ( tabWidget->count() > 1 )
-    tabWidget->removeTab( index );
+  tabWidget->removeTab( index );
+  tabWidget->setTabsClosable( tabWidget->count() > 1 );
 }

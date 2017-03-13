@@ -22,7 +22,7 @@
 class QgsGrassPlugin;
 class QgisInterface;
 class QgsPoint;
-class QgsProjectionSelector;
+class QgsProjectionSelectionTreeWidget;
 
 extern "C"
 {
@@ -40,22 +40,22 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
   public:
 
-    enum PAGE
+    enum Page
     {
-      DATABASE,
-      LOCATION,
-      CRS,
-      REGION,
-      MAPSET,
-      FINISH
+      Database,
+      Location,
+      Crs,
+      Region,
+      MapSet,
+      Finish
     };
 
     //! Constructor
     QgsGrassNewMapset( QgisInterface *iface,
                        QgsGrassPlugin *plugin,
-                       QWidget * parent = 0, Qt::WindowFlags f = 0 );
+                       QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-    //! Destructor
+
     ~QgsGrassNewMapset();
 
     //! Next page
@@ -94,7 +94,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     {
       existingLocationChanged( txt );
     }
-    void existingLocationChanged( const QString& );
+    void existingLocationChanged( const QString & );
 
     //! New location name has changed
     void on_mLocationLineEdit_returnPressed() { newLocationChanged(); }
@@ -109,7 +109,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setProjectionPage();
 
     //! Projection selected
-    void sridSelected( QString );
+    void sridSelected();
     void projectionSelected();
 
     //! Location radio switched
@@ -179,7 +179,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void closeEvent( QCloseEvent *e ) override;
 
     //! Key event
-    void keyPressEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
     //! Set error line
     void setError( QLabel *line, const QString &err = QString() );
@@ -191,16 +191,16 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     bool gisdbaseExists();
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mIface;
+    QgisInterface *mIface = nullptr;
 
     //! Plugin
-    QgsGrassPlugin *mPlugin;
+    QgsGrassPlugin *mPlugin = nullptr;
 
     //! Editing is already running
-    static bool mRunning;
+    static bool sRunning;
 
     //! Projection selector
-    QgsProjectionSelector *mProjectionSelector;
+    QgsProjectionSelectionTreeWidget *mProjectionSelector = nullptr;
 
     //! GRASS projection
     struct Cell_head mCellHead;

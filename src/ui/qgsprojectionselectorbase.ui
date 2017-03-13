@@ -39,7 +39,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Selected CRS:</string>
+        <string>Selected CRS</string>
        </property>
       </widget>
      </item>

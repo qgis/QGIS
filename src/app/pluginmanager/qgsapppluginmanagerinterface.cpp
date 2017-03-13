@@ -19,8 +19,8 @@
 #include <qgslogger.h>
 
 
-QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager * pluginManager )
-    : mPluginManager( pluginManager )
+QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pluginManager )
+  : mPluginManager( pluginManager )
 {
 }
 
@@ -54,14 +54,14 @@ void QgsAppPluginManagerInterface::clearPythonPluginMetadata()
 
 
 //! add a single plugin to the metadata registry
-void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QString>& metadata )
+void QgsAppPluginManagerInterface::addPluginMetadata( const QMap<QString, QString> &metadata )
 {
-  if ( metadata.isEmpty() || !metadata.contains( "id" ) )
+  if ( metadata.isEmpty() || !metadata.contains( QStringLiteral( "id" ) ) )
   {
     QgsDebugMsg( "Warning: incomplete metadata" );
     return;
   }
-  mPluginManager->addPluginMetadata( metadata.value( "id" ), metadata );
+  mPluginManager->addPluginMetadata( metadata.value( QStringLiteral( "id" ) ), metadata );
 }
 
 
@@ -73,7 +73,7 @@ void QgsAppPluginManagerInterface::reloadModel()
 
 
 //! return given plugin metadata
-const QMap<QString, QString> * QgsAppPluginManagerInterface::pluginMetadata( const QString& key ) const
+const QMap<QString, QString> *QgsAppPluginManagerInterface::pluginMetadata( const QString &key ) const
 {
   return mPluginManager->pluginMetadata( key );
 }
@@ -87,7 +87,7 @@ void QgsAppPluginManagerInterface::clearRepositoryList()
 
 
 //! add repository to the repository listWidget
-void QgsAppPluginManagerInterface::addToRepositoryList( const QMap<QString, QString>& repository )
+void QgsAppPluginManagerInterface::addToRepositoryList( const QMap<QString, QString> &repository )
 {
   mPluginManager->addToRepositoryList( repository );
 }

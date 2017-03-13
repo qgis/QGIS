@@ -16,13 +16,13 @@
 #include "qwt5_histogram_item.h"
 
 HistogramItem::HistogramItem( const QwtText &title ):
-    QwtPlotItem( title )
+  QwtPlotItem( title )
 {
   init();
 }
 
 HistogramItem::HistogramItem( const QString &title ):
-    QwtPlotItem( QwtText( title ) )
+  QwtPlotItem( QwtText( title ) )
 {
   init();
 }
@@ -197,7 +197,7 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
       int y1 = yMap.transform( iData.interval( i ).minValue() );
       int y2 = yMap.transform( iData.interval( i ).maxValue() );
       if ( y1 > y2 )
-        qSwap( y1, y2 );
+        std::swap( y1, y2 );
 
       if ( i < ( int )iData.size() - 2 )
       {
@@ -208,8 +208,8 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
         {
           const int xx2 = xMap.transform(
                             iData.interval( i + 1 ).minValue() );
-          if ( xx2 != x0 && (( xx2 < x0 && x2 < x0 ) ||
-                             ( xx2 > x0 && x2 > x0 ) ) )
+          if ( xx2 != x0 && ( ( xx2 < x0 && x2 < x0 ) ||
+                              ( xx2 > x0 && x2 > x0 ) ) )
           {
             // distance between neighboured bars
             y2 += d_data->spacing;
@@ -229,7 +229,7 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
       int x1 = xMap.transform( iData.interval( i ).minValue() );
       int x2 = xMap.transform( iData.interval( i ).maxValue() );
       if ( x1 > x2 )
-        qSwap( x1, x2 );
+        std::swap( x1, x2 );
 
       if ( i < ( int )iData.size() - 2 )
       {
@@ -239,8 +239,8 @@ void HistogramItem::draw( QPainter *painter, const QwtScaleMap &xMap,
         if ( x2 == qwtMin( xx1, xx2 ) )
         {
           const int yy2 = yMap.transform( iData.value( i + 1 ) );
-          if ( yy2 != y0 && (( yy2 < y0 && y2 < y0 ) ||
-                             ( yy2 > y0 && y2 > y0 ) ) )
+          if ( yy2 != y0 && ( ( yy2 < y0 && y2 < y0 ) ||
+                              ( yy2 > y0 && y2 > y0 ) ) )
           {
             //distance between neighboured bars
             x2 -= d_data->spacing;

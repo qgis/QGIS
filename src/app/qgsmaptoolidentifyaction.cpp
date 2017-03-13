@@ -20,7 +20,7 @@
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsidentifyresultsdialog.h"
@@ -34,31 +34,30 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsrenderer.h"
 #include "qgsunittypes.h"
 
-#include <QSettings>
+#include "qgssettings.h"
 #include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
 
-QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas * canvas )
-    : QgsMapToolIdentify( canvas )
+QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
+  : QgsMapToolIdentify( canvas )
 {
   mToolName = tr( "Identify" );
   // set cursor
-  QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );
+  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
-  connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult>& ) ), this, SLOT( handleChangedRasterResults( QList<IdentifyResult>& ) ) );
+  connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult> & ) ), this, SLOT( handleChangedRasterResults( QList<IdentifyResult> & ) ) );
 
   mIdentifyMenu->setAllowMultipleReturn( true );
 
-  QgsMapLayerAction* attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
-  connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer*, const QList<QgsFeature> ) ), this, SLOT( showAttributeTable( QgsMapLayer*, const QList<QgsFeature> ) ) );
+  QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
+  connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer *, const QList<QgsFeature> ) ), this, SLOT( showAttributeTable( QgsMapLayer *, const QList<QgsFeature> ) ) );
   identifyMenu()->addCustomAction( attrTableAction );
 }
 
@@ -83,37 +82,37 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   return mResultsDialog;
 }
 
-void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature>& featureList )
+void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList )
 {
   resultsDialog()->clear();
 
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vl )
     return;
 
-  QString filter = "$id IN (";
+  QString filter = QStringLiteral( "$id IN (" );
   Q_FOREACH ( const QgsFeature &feature, featureList )
   {
-    filter.append( QString( "%1," ).arg( feature.id() ) );
+    filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
   }
-  filter = filter.replace( QRegExp( ",$" ), ")" );
+  filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
 
-  QgsAttributeTableDialog* tableDialog = new QgsAttributeTableDialog( vl );
+  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl );
   tableDialog->setFilterExpression( filter );
   tableDialog->show();
 }
 
-void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolIdentifyAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   resultsDialog()->clear();
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
@@ -142,7 +141,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     // Show the dialog before items are inserted so that items can resize themselves
     // according to dialog size also the first time, see also #9377
-    if ( results.size() != 1 || !QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+    if ( results.size() != 1 || !QgsSettings().value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() )
       resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;
@@ -195,7 +194,7 @@ QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
   return QgsProject::instance()->areaUnits();
 }
 
-void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureStore )
+void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureStore )
 {
   QgsDebugMsg( QString( "features count = %1" ).arg( featureStore.features().size() ) );
   emit copyToClipboard( featureStore );

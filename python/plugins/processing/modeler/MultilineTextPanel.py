@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'
@@ -57,9 +59,9 @@ class MultilineTextPanel(QWidget):
 
     def getValue(self):
         if self.combo.currentIndex() == 0:
-            return unicode(self.textBox.toPlainText())
+            return str(self.textBox.toPlainText())
         else:
-            return self.combo.itemData(self.combo.currentIndex())
+            return self.combo.currentData()
 
     def setValue(self, value):
         items = [self.combo.itemData(i) for i in range(1, self.combo.count())]

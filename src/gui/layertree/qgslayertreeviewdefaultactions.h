@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEWDEFAULTACTIONS_H
 
 #include <QObject>
+#include "qgis_gui.h"
 
 class QAction;
 
@@ -38,26 +39,35 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 {
     Q_OBJECT
   public:
-    QgsLayerTreeViewDefaultActions( QgsLayerTreeView* view );
+    QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
 
-    QAction* actionAddGroup( QObject* parent = nullptr );
-    QAction* actionRemoveGroupOrLayer( QObject* parent = nullptr );
-    QAction* actionShowInOverview( QObject* parent = nullptr );
-    QAction* actionRenameGroupOrLayer( QObject* parent = nullptr );
-    QAction* actionShowFeatureCount( QObject* parent = nullptr );
+    QAction *actionAddGroup( QObject *parent = nullptr );
+    QAction *actionRemoveGroupOrLayer( QObject *parent = nullptr );
+    QAction *actionShowInOverview( QObject *parent = nullptr );
+    QAction *actionRenameGroupOrLayer( QObject *parent = nullptr );
+    QAction *actionShowFeatureCount( QObject *parent = nullptr );
 
-    QAction* actionZoomToLayer( QgsMapCanvas* canvas, QObject* parent = nullptr );
-    QAction* actionZoomToGroup( QgsMapCanvas* canvas, QObject* parent = nullptr );
+    //! Action to check a group and all its children
+    QAction *actionCheckAndAllChildren( QObject *parent = nullptr );
+
+    //! Action to uncheck a group and all its children
+    QAction *actionUncheckAndAllChildren( QObject *parent = nullptr );
+
+    //! Action to check a group and all its parents
+    QAction *actionCheckAndAllParents( QObject *parent = nullptr );
+
+    QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = nullptr );
     // TODO: zoom to selected
 
-    QAction* actionMakeTopLevel( QObject* parent = nullptr );
-    QAction* actionGroupSelected( QObject* parent = nullptr );
+    QAction *actionMakeTopLevel( QObject *parent = nullptr );
+    QAction *actionGroupSelected( QObject *parent = nullptr );
     //! Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
     //! @note added in 2.12
-    QAction* actionMutuallyExclusiveGroup( QObject* parent = nullptr );
+    QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr );
 
-    void zoomToLayer( QgsMapCanvas* canvas );
-    void zoomToGroup( QgsMapCanvas* canvas );
+    void zoomToLayer( QgsMapCanvas *canvas );
+    void zoomToGroup( QgsMapCanvas *canvas );
 
   public slots:
     void showInOverview();
@@ -75,13 +85,18 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     //! @note added in 2.12
     void mutuallyExclusiveGroup();
 
-  protected:
-    void zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers );
+  private slots:
+    void checkAndAllChildren();
+    void uncheckAndAllChildren();
+    void checkAndAllParents();
 
-    QString uniqueGroupName( QgsLayerTreeGroup* parentGroup );
+  protected:
+    void zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers );
+
+    QString uniqueGroupName( QgsLayerTreeGroup *parentGroup );
 
   protected:
-    QgsLayerTreeView* mView;
+    QgsLayerTreeView *mView = nullptr;
 };
 
 

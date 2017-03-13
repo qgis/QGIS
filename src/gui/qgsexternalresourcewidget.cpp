@@ -28,18 +28,18 @@
 
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
-    : QWidget( parent )
-    , mFileWidgetVisible( true )
-    , mDocumentViewerContent( NoContent )
-    , mDocumentViewerHeight( 0 )
-    , mDocumentViewerWidth( 0 )
-    , mRelativeStorage( QgsFileWidget::Absolute )
+  : QWidget( parent )
+  , mFileWidgetVisible( true )
+  , mDocumentViewerContent( NoContent )
+  , mDocumentViewerHeight( 0 )
+  , mDocumentViewerWidth( 0 )
+  , mRelativeStorage( QgsFileWidget::Absolute )
 
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
-  QGridLayout* layout = new QGridLayout();
+  QGridLayout *layout = new QGridLayout();
   layout->setMargin( 0 );
 
   mFileWidget = new QgsFileWidget( this );
@@ -74,12 +74,12 @@ QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
   }
 }
 
-void QgsExternalResourceWidget::setDocumentPath( const QVariant& path )
+void QgsExternalResourceWidget::setDocumentPath( const QVariant &path )
 {
   mFileWidget->setFilePath( path.toString() );
 }
 
-QgsFileWidget*QgsExternalResourceWidget::fileWidget()
+QgsFileWidget *QgsExternalResourceWidget::fileWidget()
 {
   return mFileWidget;
 }
@@ -143,7 +143,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
   if ( mDocumentViewerContent == Image )
   {
-    const QPixmap* pm = mPixmapLabel->pixmap();
+    const QPixmap *pm = mPixmapLabel->pixmap();
 
     if ( !pm || pm->isNull() )
     {
@@ -170,7 +170,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   }
 }
 
-QString QgsExternalResourceWidget::resolvePath( const QString& path )
+QString QgsExternalResourceWidget::resolvePath( const QString &path )
 {
   switch ( mRelativeStorage )
   {
@@ -192,7 +192,7 @@ QString QgsExternalResourceWidget::defaultRoot() const
   return mDefaultRoot;
 }
 
-void QgsExternalResourceWidget::setDefaultRoot( const QString& defaultRoot )
+void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
 {
   mFileWidget->setDefaultRoot( defaultRoot );
   mDefaultRoot = defaultRoot;
@@ -203,13 +203,13 @@ QgsFileWidget::RelativeStorage QgsExternalResourceWidget::relativeStorage() cons
   return mRelativeStorage;
 }
 
-void QgsExternalResourceWidget::setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage )
+void QgsExternalResourceWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage )
 {
   mFileWidget->setRelativeStorage( relativeStorage );
   mRelativeStorage = relativeStorage;
 }
 
-void QgsExternalResourceWidget::loadDocument( const QString& path )
+void QgsExternalResourceWidget::loadDocument( const QString &path )
 {
   QString resolvedPath;
 
@@ -218,7 +218,7 @@ void QgsExternalResourceWidget::loadDocument( const QString& path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( "about:blank" ) );
+      mWebView->setUrl( QUrl( QStringLiteral( "about:blank" ) ) );
     }
 #endif
     if ( mDocumentViewerContent == Image )

@@ -423,19 +423,19 @@
      </layout>
     </widget>
    </item>
-           <item row="7">
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
+   <item row="7" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -451,6 +451,25 @@
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cboRenderers</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mSliderBrightness</tabstop>
+  <tabstop>mBrightnessSpinBox</tabstop>
+  <tabstop>sliderSaturation</tabstop>
+  <tabstop>spinBoxSaturation</tabstop>
+  <tabstop>mSliderContrast</tabstop>
+  <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>comboGrayscale</tabstop>
+  <tabstop>mColorizeCheck</tabstop>
+  <tabstop>btnColorizeColor</tabstop>
+  <tabstop>sliderColorizeStrength</tabstop>
+  <tabstop>spinColorizeStrength</tabstop>
+  <tabstop>mResetColorRenderingBtn</tabstop>
+  <tabstop>mZoomedInResamplingComboBox</tabstop>
+  <tabstop>mZoomedOutResamplingComboBox</tabstop>
+  <tabstop>mMaximumOversamplingSpinBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

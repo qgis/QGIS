@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
@@ -51,7 +52,7 @@ class DlgFieldProperties(QDialog, Ui_Dialog):
         self.editName.setText(fld.name)
         self.cboType.setEditText(fld.dataType)
         if fld.modifier:
-            self.editLength.setText(unicode(fld.modifier))
+            self.editLength.setText(str(fld.modifier))
         self.chkNull.setChecked(not fld.notNull)
         if fld.hasDefault:
             self.editDefault.setText(fld.default)

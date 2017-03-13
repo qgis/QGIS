@@ -15,6 +15,7 @@ SET(PYQT_COMPAT_FILES
   QtTest.py
   QtSvg.py
   Qsci.py
+  Qt.py
   uic/__init__.py
   uic/pyuic.py
   uic/properties.py
@@ -23,11 +24,7 @@ SET(PYQT_COMPAT_FILES
 ADD_CUSTOM_TARGET(pyqtcompat ALL)
 ADD_DEPENDENCIES(pyqtcompat pyutils)
 
-IF(ENABLE_QT5)
-  SET(PYQT_PREFIX PyQt5)
-ELSE(ENABLE_QT5)
-  SET(PYQT_PREFIX PyQt4)
-ENDIF(ENABLE_QT5)
+SET(PYQT_PREFIX PyQt5)
 
 FOREACH(pyfile ${PYQT_COMPAT_FILES})
   GET_FILENAME_COMPONENT(_dir ${pyfile} PATH)

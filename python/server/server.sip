@@ -1,5 +1,4 @@
 %Module(name=qgis._server,
-        version=0,
         keyword_arguments="Optional")
 
 
@@ -18,14 +17,22 @@
 %Include qgsaccesscontrol.sip
 %End
 
-%Include qgsmaprenderer.sip
 %Include qgsmapserviceexception.sip
 %Include qgscapabilitiescache.sip
 %Include qgsrequesthandler.sip
 %Include qgsserverprojectparser.sip
-%Include qgswcsprojectparser.sip
 %Include qgswmsconfigparser.sip
 %Include qgswmsprojectparser.sip
 %Include qgswfsprojectparser.sip
 %Include qgsconfigcache.sip
+%Include qgsserversettings.sip
+%Include qgsserverprojectutils.sip
 %Include qgsserver.sip
+
+%Include qgsserverrequest.sip
+%Include qgsserverresponse.sip
+%Include qgsserverexception.sip
+%Include qgsservice.sip
+%Include qgsservicemodule.sip
+%Include qgsserviceregistry.sip
+

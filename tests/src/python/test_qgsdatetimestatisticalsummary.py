@@ -15,7 +15,8 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsDateTimeStatisticalSummary,
-                       QgsInterval
+                       QgsInterval,
+                       NULL
                        )
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest
@@ -122,13 +123,13 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
                      QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
                      QDateTime(),
                      QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54))])
-        self.assertEqual(s.count(), 7)
+        self.assertEqual(s.count(), 9)
         self.assertEqual(set(s.distinctValues()), set([QDateTime(QDate(2015, 3, 4), QTime(11, 10, 54)),
                                                        QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)),
                                                        QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)),
                                                        QDateTime(QDate(2011, 1, 5), QTime(11, 10, 54)),
                                                        QDateTime()]))
-        self.assertEqual(s.countMissing(), 2)
+        self.assertEqual(s.countMissing(), 4)
         self.assertEqual(s.min(), QDateTime(QDate(1998, 1, 2), QTime(1, 10, 54)))
         self.assertEqual(s.max(), QDateTime(QDate(2019, 12, 28), QTime(23, 10, 1)))
         self.assertEqual(s.range(), QgsInterval(693871147))
@@ -155,6 +156,32 @@ class PyQgsDateTimeStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.min(), QDateTime(QDate(1998, 1, 2), QTime()))
         self.assertEqual(s.max(), QDateTime(QDate(2019, 12, 28), QTime()))
         self.assertEqual(s.range(), QgsInterval(693792000))
+
+    def testTimes(self):
+        """ test with time values """
+        s = QgsDateTimeStatisticalSummary()
+        self.assertEqual(s.statistics(), QgsDateTimeStatisticalSummary.All)
+        s.calculate([QTime(11, 3, 4),
+                     QTime(15, 3, 4),
+                     QTime(19, 12, 28),
+                     QTime(),
+                     QTime(8, 1, 2),
+                     QTime(),
+                     QTime(19, 12, 28)])
+        self.assertEqual(s.count(), 7)
+        self.assertEqual(s.countDistinct(), 5)
+        self.assertEqual(s.countMissing(), 2)
+        self.assertEqual(s.min().time(), QTime(8, 1, 2))
+        self.assertEqual(s.max().time(), QTime(19, 12, 28))
+        self.assertEqual(s.statistic(QgsDateTimeStatisticalSummary.Min), QTime(8, 1, 2))
+        self.assertEqual(s.statistic(QgsDateTimeStatisticalSummary.Max), QTime(19, 12, 28))
+        self.assertEqual(s.range(), QgsInterval(40286))
+
+    def testMissing(self):
+        s = QgsDateTimeStatisticalSummary()
+        s.calculate([NULL,
+                     'not a date'])
+        self.assertEqual(s.countMissing(), 2)
 
 
 if __name__ == '__main__':

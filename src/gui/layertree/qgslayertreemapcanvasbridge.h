@@ -20,9 +20,11 @@
 #include <QStringList>
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
-class QgsMapCanvasLayer;
+class QgsMapLayer;
+class QgsMapOverviewCanvas;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
@@ -47,12 +49,19 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     Q_OBJECT
   public:
     //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent = nullptr );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     void clear();
 
-    QgsLayerTreeGroup* rootGroup() const { return mRoot; }
-    QgsMapCanvas* mapCanvas() const { return mCanvas; }
+    QgsLayerTreeGroup *rootGroup() const { return mRoot; }
+    QgsMapCanvas *mapCanvas() const { return mCanvas; }
+
+    //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
+    //! @note added in 3.0
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) { mOverviewCanvas = overviewCanvas; }
+    //! Returns associated overview canvas (may be null)
+    //! @note added in 3.0
+    QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }
 
     bool hasCustomLayerOrder() const { return mHasCustomLayerOrder; }
     QStringList customLayerOrder() const { return mCustomLayerOrder; }
@@ -64,42 +73,46 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void setAutoSetupOnFirstLayer( bool enabled ) { mAutoSetupOnFirstLayer = enabled; }
     bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
 
-    //! if enabled, will automatically turn on on-the-fly reprojection of layers if a layer
-    //! with different source CRS is added
-    void setAutoEnableCrsTransform( bool enabled ) { mAutoEnableCrsTransform = enabled; }
-    bool autoEnableCrsTransform() const { return mAutoEnableCrsTransform; }
-
   public slots:
     void setHasCustomLayerOrder( bool state );
-    void setCustomLayerOrder( const QStringList& order );
+    void setCustomLayerOrder( const QStringList &order );
 
     //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.
     void setCanvasLayers();
 
-    void readProject( const QDomDocument& doc );
-    void writeProject( QDomDocument& doc );
+    void readProject( const QDomDocument &doc );
+    void writeProject( QDomDocument &doc );
 
   signals:
     void hasCustomLayerOrderChanged( bool );
-    void customLayerOrderChanged( const QStringList& order );
+    void customLayerOrderChanged( const QStringList &order );
+
+    /**
+     * Emitted when the set of layers (or order of layers) visible in the
+     * canvas changes.
+     * @note added in QGIS 3.0
+     */
+    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
 
   protected:
 
-    void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
+    void defaultLayerOrder( QgsLayerTreeNode *node, QStringList &order ) const;
 
-    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers );
+    //! Fill canvasLayers and overviewLayers lists from node and its descendants
+    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers );
 
     void deferredSetCanvasLayers();
 
   protected slots:
-    void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void nodeAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void nodeRemovedChildren();
     void nodeVisibilityChanged();
-    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
+    void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
   protected:
-    QgsLayerTreeGroup* mRoot;
-    QgsMapCanvas* mCanvas;
+    QgsLayerTreeGroup *mRoot = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMapOverviewCanvas *mOverviewCanvas = nullptr;
 
     bool mPendingCanvasUpdate;
 
@@ -107,7 +120,6 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     QStringList mCustomLayerOrder;
 
     bool mAutoSetupOnFirstLayer;
-    bool mAutoEnableCrsTransform;
 
     bool mHasFirstLayer;
     bool mLastLayerCount;

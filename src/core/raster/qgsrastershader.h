@@ -20,6 +20,8 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERSHADER_H
 #define QGSRASTERSHADER_H
 
+#include "qgis_core.h"
+
 class QDomDocument;
 class QDomElement;
 class QgsRasterShaderFunction;
@@ -31,59 +33,68 @@ class CORE_EXPORT QgsRasterShader
 {
 
   public:
-    QgsRasterShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+    QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
     ~QgsRasterShader();
+
+    //! QgsRasterShader cannot be copied
+    QgsRasterShader( const QgsRasterShader &rh ) = delete;
+    //! QgsRasterShader cannot be copied
+    QgsRasterShader &operator=( const QgsRasterShader &rh ) = delete;
 
     /*
      *
      * Non-Static Inline methods
      *
      */
-    /** \brief Return the maximum value for the raster shader */
+    //! \brief Return the maximum value for the raster shader
     double maximumValue() { return mMaximumValue; }
 
-    /** \brief Return the minimum value for the raster shader */
+    //! \brief Return the minimum value for the raster shader
     double minimumValue() { return mMinimumValue; }
 
-    QgsRasterShaderFunction* rasterShaderFunction() { return mRasterShaderFunction; }
-    const QgsRasterShaderFunction* rasterShaderFunction() const { return mRasterShaderFunction; }
+    QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction; }
+    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction; }
 
     /*
      *
      * Non-Static methods
      *
      */
-    /** \brief generates and new RGBA value based on one input value */
-    bool shade( double, int*, int*, int*, int* );
+    //! \brief generates and new RGBA value based on one input value
+    bool shade( double, int *, int *, int *, int * );
 
-    /** \brief generates and new RGBA value based on original RGBA value */
-    bool shade( double, double, double, double, int*, int*, int*, int* );
+    //! \brief generates and new RGBA value based on original RGBA value
+    bool shade( double, double, double, double, int *, int *, int *, int * );
 
     /** \brief A public method that allows the user to set their own shader function
       \note Raster shader takes ownership of the shader function instance */
-    void setRasterShaderFunction( QgsRasterShaderFunction* );
+    void setRasterShaderFunction( QgsRasterShaderFunction * );
 
-    /** \brief Set the maximum value */
+    //! \brief Set the maximum value
     void setMaximumValue( double );
 
-    /** \brief Return the minimum value */
+    //! \brief Return the minimum value
     void setMinimumValue( double );
 
-    void writeXml( QDomDocument& doc, QDomElement& parent ) const;
+    /**
+     * Writes shader state to an XML element.
+     */
+    void writeXml( QDomDocument &doc, QDomElement &parent ) const;
 
-    void readXml( const QDomElement& elem );
+    /**
+     * Reads shader state from an XML element.
+     */
+    void readXml( const QDomElement &elem );
 
   private:
-    /** \brief User defineable minimum value for the raster shader */
+    //! \brief User defineable minimum value for the raster shader
     double mMinimumValue;
 
-    /** \brief user defineable maximum value for the raster shader */
+    //! \brief user defineable maximum value for the raster shader
     double mMaximumValue;
 
-    /** \brief Pointer to the shader function */
-    QgsRasterShaderFunction* mRasterShaderFunction;
+    //! \brief Pointer to the shader function
+    QgsRasterShaderFunction *mRasterShaderFunction = nullptr;
 
-    QgsRasterShader( const QgsRasterShader& rh );
-    QgsRasterShader& operator=( const QgsRasterShader& rh );
 };
 #endif

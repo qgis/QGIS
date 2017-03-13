@@ -18,6 +18,7 @@
 #define QGSDOCKWIDGET_H
 
 #include <QDockWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsDockWidget
@@ -35,14 +36,14 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * @param parent parent widget
      * @param flags window flags
      */
-    explicit QgsDockWidget( QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 
     /** Constructor for QgsDockWidget.
      * @param title dock title
      * @param parent parent widget
      * @param flags window flags
      */
-    explicit QgsDockWidget( const QString &title, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 
   public slots:
 
@@ -69,7 +70,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
   protected:
 
     virtual void closeEvent( QCloseEvent * ) override;
-    virtual void showEvent( QShowEvent* event ) override;
+    virtual void showEvent( QShowEvent *event ) override;
 
   signals:
 

@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import QgsWkbTypes
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -45,6 +45,9 @@ class PointOnSurface(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Point on surface')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
@@ -53,7 +56,7 @@ class PointOnSurface(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -78,6 +81,6 @@ class PointOnSurface(GeoAlgorithm):
                 output_feature.setGeometry(output_geometry)
 
             writer.addFeature(output_feature)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

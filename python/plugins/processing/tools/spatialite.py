@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'René-Luc Dhont'
 __date__ = 'November 2015'
@@ -26,20 +28,21 @@ __copyright__ = '(C) 2015, René-Luc Dhont'
 __revision__ = '$Format:%H$'
 
 from qgis.utils import spatialite_connect
+import sqlite3 as sqlite
 
 
 class DbError(Exception):
 
     def __init__(self, message, query=None):
         # Save error. funny that the variables are in utf-8
-        self.message = unicode(message, 'utf-8')
-        self.query = (unicode(query, 'utf-8') if query is not None else None)
+        self.message = str(message)
+        self.query = (str(query) if query is not None else None)
 
     def __str__(self):
         return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
 
 
-class GeoDB:
+class GeoDB(object):
 
     def __init__(self, uri=None):
         self.uri = uri
@@ -49,14 +52,14 @@ class GeoDB:
             self.con = spatialite_connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(unicode(e))
+            raise DbError(str(e))
 
         self.has_spatialite = self.check_spatialite()
         if not self.has_spatialite:
             self.has_spatialite = self.init_spatialite()
 
     def con_info(self):
-        return unicode(self.dbname)
+        return str(self.dbname)
 
     def init_spatialite(self):
         # Get spatialite version
@@ -84,7 +87,7 @@ class GeoDB:
             self.con = spatialite_connect(self.con_info())
 
         except (sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(unicode(e))
+            raise DbError(str(e))
 
         return self.check_spatialite()
 
@@ -106,7 +109,7 @@ class GeoDB:
         try:
             cursor.execute(sql)
         except (sqlite.Error, sqlite.ProgrammingError, sqlite.Warning, sqlite.InterfaceError, sqlite.OperationalError) as e:
-            raise DbError(unicode(e), sql)
+            raise DbError(str(e), sql)
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls
@@ -120,3 +123,13 @@ class GeoDB:
         except DbError:
             self.con.rollback()
             raise
+
+    def create_spatial_index(self, table, geom_column='the_geom'):
+        sql = u"SELECT CreateSpatialIndex(%s, %s)" % (self._quote(table), self._quote(geom_column))
+        self._exec_sql_and_commit(sql)
+
+    def _quote(self, identifier):
+        """Quote identifier."""
+
+        # quote identifier, and double the double-quotes
+        return u"'%s'" % identifier.replace("'", "''")

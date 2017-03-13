@@ -134,11 +134,11 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 # the soname might stay the same, it won't work anymore.
 #http://hub.qgis.org/issues/5274
 Requires:       grass = 6.4.4
-  
+
 %description grass
 GRASS plugin for QGIS required to interface with the GRASS system.
 
-%package python 
+%package python
 Summary:        Python integration and plug-ins for QGIS
 Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{version}-%{release}
@@ -158,7 +158,7 @@ Requires:       qscintilla-python
 %description python
 Python integration and plug-ins for QGIS.
 
-%package server 
+%package server
 Summary:        FCGI-based OGC web map server
 Group:          Applications/Engineering
 Requires:       %{name}%{?_isa} = %{version}-%{release}
@@ -167,7 +167,7 @@ Provides: mapserver = %{version}-%{release}
 Obsoletes: mapserver < 2.8.1-1
 
 %description server
-This FastCGI OGC web map server implements OGC WMS 1.3.0 and 1.1.1. 
+This FastCGI OGC web map server implements OGC WMS 1.3.0 and 1.1.1.
 The services are prepared as regular projects in QGIS. They're rendered using
 the QGIS libraries. The server also supports SLD (Styled Layer Descriptor)
 for styling. Sample configurations for Httpd and Lighttpd are included.
@@ -190,9 +190,6 @@ rm -rf src/core/gps/qextserialport/
 rm -rf src/core/gps/qextserialport/
 rm -rf "python/ext-libs/!(CMakeLists.txt|tests)"
 
-rm -rf src/plugins/dxf2shp_converter/
-sed -i '/dxf2shp_converter/d' src/plugins/CMakeLists.txt
-
 gzip ChangeLog
 
 
@@ -201,7 +198,6 @@ gzip ChangeLog
 # Necessary for the test suite
 #export LD_LIBRARY_PATH=%{_builddir}%{name}-%{version}/output/%{_lib}
 
-#Info: TOUCH needs Qt >= 4.5
 %cmake \
       %{_cmake_skip_rpath} \
       -D QGIS_LIB_SUBDIR=%{_lib} \
@@ -227,7 +223,6 @@ gzip ChangeLog
       -D WITH_INTERNAL_SIX:BOOL=FALSE \
       -D WITH_PYSPATIALITE:BOOL=FALSE \
       -D WITH_SERVER:BOOL=TRUE \
-      -D WITH_TOUCH:BOOL=TRUE \
       %{configure_with_spatialite} \
       .
       #-D WITH_QTMOBILITY:BOOL=TRUE \
@@ -252,9 +247,6 @@ desktop-file-install \
     --remove-mime-type="application/x-raster-mrsid" \
     --dir=%{buildroot}%{_datadir}/applications \
     debian/qgis.desktop
-
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications \
-    debian/qbrowser.desktop
 
 # Install MIME type definitions
 install -d %{buildroot}%{_datadir}/mime/packages
@@ -346,14 +338,11 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_libdir}/lib%{name}_analysis.so.*
 %{_libdir}/lib%{name}_core.so.*
 %{_libdir}/lib%{name}_gui.so.*
-%{_libdir}/lib%{name}_networkanalysis.so.*
 %{_libdir}/lib%{name}_server.so.*
 %{_libdir}/%{name}/
 %{_qt4_prefix}/plugins/sqldrivers/libqsqlspatialite.so
 %{_bindir}/%{name}
-%{_bindir}/qbrowser
 %{_mandir}/man1/%{name}.1*
-%{_mandir}/man1/qbrowser.1*
 %dir %{_datadir}/%{name}/
 %{_datadir}/mime/packages/qgis.xml
 %{_datadir}/pixmaps/%{name}.png
@@ -362,7 +351,6 @@ update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
 %{_datadir}/icons/hicolor/128x128/mimetypes/application-x-qgis-layer-settings.png
 %{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
 %{_datadir}/applications/*%{name}.desktop
-%{_datadir}/applications/qbrowser.desktop
 %{_datadir}/%{name}/images/
 %{_datadir}/%{name}/resources/
 %{_datadir}/%{name}/svg/

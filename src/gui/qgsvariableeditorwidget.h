@@ -20,6 +20,8 @@
 #include <QWidget>
 #include <QTreeWidget>
 #include <QItemDelegate>
+#include "qgis_gui.h"
+#include <memory>
 
 class QTableWidget;
 class QgsExpressionContextScope;
@@ -57,13 +59,13 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * @param context expression context
      * @see context()
      */
-    void setContext( QgsExpressionContext* context );
+    void setContext( QgsExpressionContext *context );
 
     /** Returns the current expression context for the widget. QgsVariableEditorWidget widgets
      * are created with an empty context by default.
      * @see setContext()
      */
-    QgsExpressionContext* context() const { return mContext.data(); }
+    QgsExpressionContext *context() const { return mContext.get(); }
 
     /** Sets the editable scope for the widget. Only variables from the editable scope can
      * be modified by users.
@@ -77,10 +79,10 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * @returns editable scope, or 0 if no editable scope is set
      * @see setEditableScopeIndex()
      */
-    QgsExpressionContextScope* editableScope() const;
+    QgsExpressionContextScope *editableScope() const;
 
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @param group setting group
      * @see settingGroup()
@@ -88,7 +90,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }
 
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @returns setting group name
      * @see setSettingGroup()
@@ -99,7 +101,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * returned. This method can be used to retrieve the variables edited an added by
      * users via the widget.
      */
-    QgsStringMap variablesInActiveScope() const;
+    QVariantMap variablesInActiveScope() const;
 
   public slots:
 
@@ -121,11 +123,11 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
   private:
 
-    QScopedPointer<QgsExpressionContext> mContext;
+    std::unique_ptr<QgsExpressionContext> mContext;
     int mEditableScopeIndex;
-    QgsVariableEditorTree* mTreeWidget;
-    QPushButton* mAddButton;
-    QPushButton* mRemoveButton;
+    QgsVariableEditorTree *mTreeWidget = nullptr;
+    QPushButton *mAddButton = nullptr;
+    QPushButton *mRemoveButton = nullptr;
     QString mSettingGroup;
     bool mShown;
 
@@ -161,16 +163,16 @@ class QgsVariableEditorTree : public QTreeWidget
     explicit QgsVariableEditorTree( QWidget *parent = nullptr );
 
     QTreeWidgetItem *indexToItem( const QModelIndex &index ) const { return itemFromIndex( index ); }
-    QModelIndex itemToIndex( QTreeWidgetItem* item ) const { return indexFromItem( item ); }
-    QString variableNameFromItem( QTreeWidgetItem* item ) const { return item ? item->text( 0 ) : QString(); }
-    QString variableNameFromIndex( const QModelIndex& index ) const { return variableNameFromItem( itemFromIndex( index ) ); }
-    QgsExpressionContextScope* scopeFromItem( QTreeWidgetItem* item ) const;
-    QTreeWidgetItem* itemFromVariable( QgsExpressionContextScope* scope, const QString& name ) const;
+    QModelIndex itemToIndex( QTreeWidgetItem *item ) const { return indexFromItem( item ); }
+    QString variableNameFromItem( QTreeWidgetItem *item ) const { return item ? item->text( 0 ) : QString(); }
+    QString variableNameFromIndex( const QModelIndex &index ) const { return variableNameFromItem( itemFromIndex( index ) ); }
+    QgsExpressionContextScope *scopeFromItem( QTreeWidgetItem *item ) const;
+    QTreeWidgetItem *itemFromVariable( QgsExpressionContextScope *scope, const QString &name ) const;
     void setEditableScopeIndex( int scopeIndex ) { mEditableScopeIndex = scopeIndex; }
-    QgsExpressionContextScope* editableScope();
-    void setContext( QgsExpressionContext* context ) { mContext = context; }
+    QgsExpressionContextScope *editableScope();
+    void setContext( QgsExpressionContext *context ) { mContext = context; }
     void refreshTree();
-    void removeItem( QTreeWidgetItem* item );
+    void removeItem( QTreeWidgetItem *item );
     void renameItem( QTreeWidgetItem *item, const QString &name );
     void resetTree();
     void emitChanged();
@@ -193,14 +195,14 @@ class QgsVariableEditorTree : public QTreeWidget
 
   private:
 
-    VariableEditorDelegate* mEditorDelegate;
+    VariableEditorDelegate *mEditorDelegate = nullptr;
     int mEditableScopeIndex;
-    QgsExpressionContext* mContext;
-    QMap< QPair<int, QString>, QTreeWidgetItem* > mVariableToItem;
-    QMap< int, QTreeWidgetItem* > mScopeToItem;
+    QgsExpressionContext *mContext = nullptr;
+    QMap< QPair<int, QString>, QTreeWidgetItem * > mVariableToItem;
+    QMap< int, QTreeWidgetItem * > mScopeToItem;
 
-    void refreshScopeItems( QgsExpressionContextScope* scope, int scopeIndex );
-    void refreshScopeVariables( QgsExpressionContextScope* scope, int scopeIndex );
+    void refreshScopeItems( QgsExpressionContextScope *scope, int scopeIndex );
+    void refreshScopeVariables( QgsExpressionContextScope *scope, int scopeIndex );
 };
 
 
@@ -210,8 +212,8 @@ class VariableEditorDelegate : public QItemDelegate
 
   public:
     VariableEditorDelegate( QObject *parent = nullptr, QgsVariableEditorTree *tree = nullptr )
-        : QItemDelegate( parent )
-        , mParentTree( tree )
+      : QItemDelegate( parent )
+      , mParentTree( tree )
     {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
@@ -219,12 +221,12 @@ class VariableEditorDelegate : public QItemDelegate
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
                                const QModelIndex &index ) const override;
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-    void setModelData( QWidget* widget, QAbstractItemModel* model,
-                       const QModelIndex & index ) const override;
+    void setModelData( QWidget *widget, QAbstractItemModel *model,
+                       const QModelIndex &index ) const override;
     void setEditorData( QWidget *, const QModelIndex & ) const override {}
 
   private:
-    QgsVariableEditorTree *mParentTree;
+    QgsVariableEditorTree *mParentTree = nullptr;
 };
 
 /// @endcond

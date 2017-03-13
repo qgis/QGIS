@@ -24,6 +24,7 @@ class QgsPixmapLabel;
 #include <QVariant>
 
 #include "qgsfilewidget.h"
+#include "qgis_gui.h"
 
 
 
@@ -63,10 +64,10 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * @param type determines the type of the returned null variant if the document is not defined yet
      */
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
-    void setDocumentPath( const QVariant& documentPath );
+    void setDocumentPath( const QVariant &documentPath );
 
     //! access the file widget to allow its configuration
-    QgsFileWidget* fileWidget();
+    QgsFileWidget *fileWidget();
 
     //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
@@ -75,11 +76,12 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! returns the type of content used in the document viewer
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
-    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapated accordingly
+    //! setDocumentViewerContent defines the type of content to be shown. Widget will be adapted accordingly
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 
     //! returns the height of the document viewer
     int documentViewerHeight() const;
+
     /**
      * @brief setDocumentViewerWidth set the height of the document viewer.
      * @param height the height. Use 0 for automatic best display.
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
     int documentViewerWidth() const ;
+
     /**
      * @brief setDocumentViewerWidth set the width of the document viewer.
      * @param width the width. Use 0 for automatic best display.
@@ -106,7 +109,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Configures if paths are handled absolute or relative and if relative,
      * which should be the base path.
      */
-    void setRelativeStorage( const QgsFileWidget::RelativeStorage& relativeStorage );
+    void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
 
     /**
@@ -119,19 +122,19 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      * Configures the base path which should be used if the relativeStorage property
      * is set to QgsFileWidget::RelativeDefaultPath.
      */
-    void setDefaultRoot( const QString& defaultRoot );
+    void setDefaultRoot( const QString &defaultRoot );
 
   signals:
     //! emitteed as soon as the current document changes
-    void valueChanged( const QString& );
+    void valueChanged( const QString & );
 
   private slots:
-    void loadDocument( const QString& path );
+    void loadDocument( const QString &path );
 
   private:
     void updateDocumentViewer();
 
-    QString resolvePath( const QString& path );
+    QString resolvePath( const QString &path );
 
     //! properties
     bool mFileWidgetVisible;
@@ -142,11 +145,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects
-    QgsFileWidget* mFileWidget;
-    QgsPixmapLabel* mPixmapLabel;
+    QgsFileWidget *mFileWidget = nullptr;
+    QgsPixmapLabel *mPixmapLabel = nullptr;
 #ifdef WITH_QTWEBKIT
     //! This webview is used as a container to display the picture
-    QWebView* mWebView;
+    QWebView *mWebView = nullptr;
 #endif
 
 };

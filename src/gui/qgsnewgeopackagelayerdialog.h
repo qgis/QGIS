@@ -22,6 +22,7 @@
 #include "qgscontexthelp.h"
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers */
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    /** Constructor */
+    //! Constructor
     QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewGeoPackageLayerDialog();
 
@@ -40,11 +41,11 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void on_mFieldTypeBox_currentIndexChanged( int index );
     void on_mGeometryTypeBox_currentIndexChanged( int index );
     void on_mSelectDatabaseButton_clicked();
-    void on_mDatabaseEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textEdited( const QString& text );
-    void on_mLayerIdentifierEdit_textEdited( const QString& text );
-    void fieldNameChanged( const QString& );
+    void on_mDatabaseEdit_textChanged( const QString &text );
+    void on_mTableNameEdit_textChanged( const QString &text );
+    void on_mTableNameEdit_textEdited( const QString &text );
+    void on_mLayerIdentifierEdit_textEdited( const QString &text );
+    void fieldNameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
   private:
     bool apply();
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
     bool mTableNameEdited;
     bool mLayerIdentifierEdited;

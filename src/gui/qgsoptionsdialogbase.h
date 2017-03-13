@@ -18,15 +18,77 @@
 #define QGSOPTIONSDIALOGBASE_H
 
 #include "qgisgui.h"
+#include "qgssettings.h"
+#include "qgis_gui.h"
+
+#include <functional>
 
 #include <QDialog>
 #include <QPointer>
-#include <QSettings>
+#include <QStyledItemDelegate>
+
 
 class QDialogButtonBox;
 class QListWidget;
+class QModelIndex;
+class QPalette;
+class QPainter;
 class QStackedWidget;
+class QStyleOptionViewItem;
 class QSplitter;
+
+class QgsFilterLineEdit;
+
+/** \ingroup gui
+ * \class QgsSearchHighlightOptionWidget
+ * Container for a widget to be used to search text in the option dialog
+ * If the widget type is handled, it is valid.
+ * It can perform a text search in the widget and highlight it in case of success.
+ * This uses stylesheets.
+ * @note added in 3.0
+ */
+class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
+{
+    Q_OBJECT
+  public:
+
+    /** Constructor
+     * @param widget the widget used to search text into
+     */
+    explicit QgsSearchHighlightOptionWidget( QWidget *widget = 0 );
+
+    /**
+     * Returns if it valid: if the widget type is handled and if the widget is not still available
+     */
+    bool isValid() {return mValid;}
+
+    /**
+     * search for a text pattern and highlight the widget if the text is found
+     * @return true if the text pattern is found
+     */
+    bool searchHighlight( const QString &searchText );
+
+    /**
+     *  reset the style to the original state
+     */
+    void reset();
+
+    /**
+     * return the widget
+     */
+    QWidget *widget() {return mWidget;}
+
+  private slots:
+    void widgetDestroyed();
+
+  private:
+    QWidget *mWidget = nullptr;
+    QString mStyleSheet;
+    bool mValid;
+    bool mChangedStyle;
+    std::function < QString() > mText;
+};
+
 
 /** \ingroup gui
  * \class QgsOptionsDialogBase
@@ -50,33 +112,43 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
+
     /** Constructor
-     * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+     * @param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
      * @param parent parent object (owner)
      * @param fl widget flags
-     * @param settings custom QSettings pointer
+     * @param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent = nullptr, Qt::WindowFlags fl = 0, QSettings* settings = nullptr );
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
      * @param restoreUi Whether to restore the base ui at this time.
      * @param title the window title
      */
-    void initOptionsBase( bool restoreUi = true, const QString& title = QString() );
+    void initOptionsBase( bool restoreUi = true, const QString &title = QString() );
 
-    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
-    void setSettings( QSettings* settings );
+    // set custom QgsSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QgsSettings *settings );
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.
      * @param title the window title (it does not need to be defined if previously given to initOptionsBase();
      */
-    void restoreOptionsBaseUi( const QString& title = QString() );
+    void restoreOptionsBaseUi( const QString &title = QString() );
 
     /** Determine if the options list is in icon only mode
      */
     bool iconOnly() {return mIconOnly;}
+
+  public slots:
+
+    /**
+     * searchText searches for a text in all the pages of the stacked widget and highlight the results
+     * @param text the text to search
+     * @note added in 3.0
+     */
+    void searchText( const QString &text );
 
   protected slots:
     void updateOptionsListVerticalTabs();
@@ -85,22 +157,32 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void warnAboutMissingObjects();
 
   protected:
-    void showEvent( QShowEvent* e ) override;
-    void paintEvent( QPaintEvent* e ) override;
+    void showEvent( QShowEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
     virtual void updateWindowTitle();
 
+    /**
+     * register widgets in the dialog to search for text in it
+     * it is automatically called if a line edit has "mSearchLineEdit" as object name.
+     * @note added in 3.0
+     */
+    void registerTextSearchWidgets();
+
+    QList< QPair< QgsSearchHighlightOptionWidget *, int > > mRegisteredSearchWidgets;
+
     QString mOptsKey;
     bool mInit;
-    QListWidget* mOptListWidget;
-    QStackedWidget* mOptStackedWidget;
-    QSplitter* mOptSplitter;
-    QDialogButtonBox* mOptButtonBox;
+    QListWidget *mOptListWidget = nullptr;
+    QStackedWidget *mOptStackedWidget = nullptr;
+    QSplitter *mOptSplitter = nullptr;
+    QDialogButtonBox *mOptButtonBox = nullptr;
+    QgsFilterLineEdit *mSearchLineEdit = nullptr;
     QString mDialogTitle;
     bool mIconOnly;
-    // pointer to app or custom, external QSettings
+    // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while dialog is open
-    QPointer<QSettings> mSettings;
+    QPointer<QgsSettings> mSettings;
     bool mDelSettings;
 };
 

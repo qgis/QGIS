@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -63,14 +64,14 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random stratified)')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = dataobjects.getObjectFromUri(filename)
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
-        index = layer.fieldNameIndex(field)
+        index = layer.fields().lookupField(field)
 
         features = vector.features(layer)
         featureCount = len(features)
@@ -104,7 +105,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
                     if attrs[index] == classValue:
                         classFeatures.append(i)
                     current += 1
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
                 if method == 1:
                     selValue = int(round(value * len(classFeatures), 0))
@@ -118,12 +119,12 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
                 selran.extend(selFeat)
         else:
-            selran = range(featureCount)
+            selran = list(range(featureCount))
 
         features = vector.features(layer)
         total = 100.0 / len(features)
         for (i, feat) in enumerate(features):
             if i in selran:
                 writer.addFeature(feat)
-            progress.setPercentage(int(i * total))
+            feedback.setProgress(int(i * total))
         del writer

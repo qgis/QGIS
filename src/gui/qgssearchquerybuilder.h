@@ -24,6 +24,7 @@
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgis_gui.h"
 
 class QgsField;
 class QgsVectorLayer;
@@ -38,16 +39,14 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   public:
     //! Constructor - takes pointer to vector layer as a parameter
-    QgsSearchQueryBuilder( QgsVectorLayer* layer, QWidget *parent = nullptr,
+    QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent = nullptr,
                            Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-
-    ~QgsSearchQueryBuilder();
 
     //! returns newly created search string
     QString searchString();
 
     //! change search string shown in text field
-    void setSearchString( const QString& searchString );
+    void setSearchString( const QString &searchString );
 
   public slots:
     void on_btnEqual_clicked();
@@ -107,7 +106,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     /** Get the number of records that would be returned by the current SQL
      * @return Number of records or -1 if an error was encountered
      */
-    long countRecords( const QString& sql );
+    long countRecords( const QString &sql );
 
     /*!
      * populates list box with values of selected field
@@ -118,12 +117,12 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
   private:
 
     //! Layer for which is the query builder opened
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     //! Map that holds field information, keyed by field name
     QMap<QString, int> mFieldMap;
     //! Model for fields ListView
-    QStandardItemModel *mModelFields;
+    QStandardItemModel *mModelFields = nullptr;
     //! Model for values ListView
-    QStandardItemModel *mModelValues;
+    QStandardItemModel *mModelValues = nullptr;
 };
 #endif //QGSSEARCHQUERYBUILDER_H

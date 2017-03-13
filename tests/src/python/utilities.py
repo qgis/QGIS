@@ -19,12 +19,16 @@ import glob
 import platform
 import tempfile
 
+try:
+    from urllib2 import urlopen, HTTPError, URLError
+except ImportError:
+    from urllib.request import urlopen, HTTPError, URLError
+
 from qgis.PyQt.QtCore import QDir
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsVectorFileWriter,
-    QgsMapLayerRegistry,
     QgsMapSettings,
     QgsMapRendererParallelJob,
     QgsMapRendererSequentialJob,
@@ -99,26 +103,6 @@ def unitTestDataPath(theSubdir=None):
 def svgSymbolsPath():
     return os.path.abspath(
         os.path.join(unitTestDataPath(), '..', '..', 'images', 'svg'))
-
-
-def setCanvasCrs(theEpsgId, theOtfpFlag=False):
-    """Helper to set the crs for the CANVAS before a test is run.
-
-    Args:
-
-        * theEpsgId  - Valid EPSG identifier (int)
-        * theOtfpFlag - whether on the fly projections should be enabled
-                        on the CANVAS. Default to False.
-    """
-    # Enable on-the-fly reprojection
-    CANVAS.mapRenderer().setProjectionsEnabled(theOtfpFlag)  # FIXME
-
-    # Create CRS Instance
-    myCrs = QgsCoordinateReferenceSystem()
-    myCrs.createFromId(theEpsgId, QgsCoordinateReferenceSystem.E)
-
-    # Reproject all layers to WGS84 geographic CRS
-    CANVAS.mapRenderer().setDestinationCrs(myCrs)  # FIXME
 
 
 def writeShape(theMemoryLayer, theFileName):
@@ -236,8 +220,7 @@ def mapSettingsString(ms):
 
     s = 'MapSettings...\n'
     s += '  layers(): {0}\n'.format(
-        [QgsMapLayerRegistry.instance().mapLayer(i).name()
-         for i in ms.layers()])
+        [layer.name() for layer in ms.layers()])
     s += '  backgroundColor(): rgba {0},{1},{2},{3}\n'.format(
         ms.backgroundColor().red(), ms.backgroundColor().green(),
         ms.backgroundColor().blue(), ms.backgroundColor().alpha())
@@ -255,8 +238,6 @@ def mapSettingsString(ms):
     s += '  visibleExtent():\n    {0}\n'.format(
         ms.visibleExtent().toString().replace(' : ', '\n    '))
     s += '  fullExtent():\n    {0}\n'.format(full_ext.replace(' : ', '\n    '))
-    s += '  hasCrsTransformEnabled(): {0}\n'.format(
-        ms.hasCrsTransformEnabled())
     s += '  destinationCrs(): {0}\n'.format(
         ms.destinationCrs().authid())
     s += '  flag.Antialiasing: {0}\n'.format(
@@ -313,8 +294,8 @@ def loadTestFonts():
     if FONTSLOADED is False:
         QgsFontUtils.loadStandardTestFonts(['Roman', 'Bold'])
         msg = getTestFontFamily() + ' base test font styles could not be loaded'
-        res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman')
-               and QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))
+        res = (QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Roman') and
+               QgsFontUtils.fontFamilyHasStyle(getTestFontFamily(), 'Bold'))
         assert res, msg
         FONTSLOADED = True
 
@@ -340,7 +321,7 @@ def printImportant(info):
 
     print(info)
     with open(os.path.join(tempfile.gettempdir(), 'ctest-important.log'), 'a+') as f:
-        f.write(u'{}\n'.format(info))
+        f.write('{}\n'.format(info))
 
 
 class DoxygenParser():
@@ -440,11 +421,11 @@ class DoxygenParser():
                         class_name = elem.find('compoundname').text
                         acceptable_missing = self.acceptable_missing.get(class_name, [])
 
-                        if not self.hasGroup(class_name) and not class_name in self.acceptable_missing_group:
+                        if not self.hasGroup(class_name) and class_name not in self.acceptable_missing_group:
                             self.classes_missing_group.append(class_name)
-                        if not class_name in self.acceptable_missing_brief and not has_brief_description:
+                        if class_name not in self.acceptable_missing_brief and not has_brief_description:
                             self.classes_missing_brief.append(class_name)
-                        if not class_name in self.acceptable_missing_added_note and not found_version_added:
+                        if class_name not in self.acceptable_missing_added_note and not found_version_added:
                             self.classes_missing_version_added.append(class_name)
 
                         # GEN LIST
@@ -469,7 +450,7 @@ class DoxygenParser():
 
                     elem.clear()
         except ET.ParseError as e:
-            # sometimes Doxygen generates malformed xml (eg for < and > operators)
+            # sometimes Doxygen generates malformed xml (e.g., for < and > operators)
             line_num, col = e.position
             with open(f, 'r') as xml_file:
                 for i, l in enumerate(xml_file):
@@ -477,7 +458,7 @@ class DoxygenParser():
                         line = l
                         break
             caret = '{:=>{}}'.format('^', col)
-            print('ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret))
+            print(('ParseError in {}\n{}\n{}\n{}'.format(f, e, line, caret)))
 
         self.documentable_members += documentable_members
         self.documented_members += documented_members
@@ -828,3 +809,22 @@ class DoxygenParser():
             if doc is not None and list(doc):
                 return True
         return False
+
+
+def waitServer(url, timeout=10):
+    """ Wait for a server to be online and to respond
+        HTTP errors are ignored
+        @param timeout: in seconds
+        @return: True of False
+    """
+    from time import time as now
+    end = now() + timeout
+    while True:
+        try:
+            urlopen(url, timeout=1)
+            return True
+        except (HTTPError, URLError):
+            return True
+        except Exception as e:
+            if now() > end:
+                return False

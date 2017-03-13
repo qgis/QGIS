@@ -25,38 +25,38 @@ class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::Feature
 {
     Q_OBJECT
   public:
-    QgsGlobeFeatureSource( const QgsGlobeFeatureOptions& options = osgEarth::Features::ConfigOptions() );
+    QgsGlobeFeatureSource( const QgsGlobeFeatureOptions &options = osgEarth::Features::ConfigOptions() );
 
-    osgEarth::Features::FeatureCursor* createFeatureCursor( const osgEarth::Symbology::Query& query = osgEarth::Symbology::Query() ) override;
+    osgEarth::Features::FeatureCursor *createFeatureCursor( const osgEarth::Symbology::Query &query = osgEarth::Symbology::Query() ) override;
 
     int getFeatureCount() const override;
-    osgEarth::Features::Feature* getFeature( osgEarth::Features::FeatureID fid ) override;
+    osgEarth::Features::Feature *getFeature( osgEarth::Features::FeatureID fid ) override;
     osgEarth::Features::Geometry::Type getGeometryType() const override;
 
-    QgsVectorLayer* layer() const { return mLayer; }
+    QgsVectorLayer *layer() const { return mLayer; }
 
-    const char* className() const override { return "QGISFeatureSource"; }
-    const char* libraryName() const override { return "QGIS"; }
+    const char *className() const override { return "QGISFeatureSource"; }
+    const char *libraryName() const override { return "QGIS"; }
 
-    void initialize( const osgDB::Options* dbOptions ) override;
+    void initialize( const osgDB::Options *dbOptions ) override;
 
   protected:
-    const osgEarth::Features::FeatureProfile* createFeatureProfile() override { return mProfile; }
-    const osgEarth::Features::FeatureSchema& getSchema() const override { return mSchema; }
+    const osgEarth::Features::FeatureProfile *createFeatureProfile() override { return mProfile; }
+    const osgEarth::Features::FeatureSchema &getSchema() const override { return mSchema; }
 
     ~QgsGlobeFeatureSource() {}
 
   private:
     QgsGlobeFeatureOptions mOptions;
-    QgsVectorLayer* mLayer;
-    osgEarth::Features::FeatureProfile* mProfile;
+    QgsVectorLayer *mLayer = nullptr;
+    osgEarth::Features::FeatureProfile *mProfile = nullptr;
     osgEarth::Features::FeatureSchema mSchema;
     typedef std::map<osgEarth::Features::FeatureID, osg::observer_ptr<osgEarth::Features::Feature> > FeatureMap_t;
     FeatureMap_t mFeatures;
 
   private slots:
-    void attributeValueChanged( const QgsFeatureId&featureId, int idx, const QVariant &value );
-    void geometryChanged( const QgsFeatureId&featureId, const QgsGeometry& geometry );
+    void attributeValueChanged( const QgsFeatureId &featureId, int idx, const QVariant &value );
+    void geometryChanged( const QgsFeatureId &featureId, const QgsGeometry &geometry );
 };
 
 #endif // QGSGLOBEFEATURESOURCE_H

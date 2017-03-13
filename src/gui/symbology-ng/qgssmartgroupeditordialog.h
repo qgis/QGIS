@@ -17,6 +17,7 @@
 #define QGSSMARTGROUPEDITORDIALOG_H
 
 #include "ui_qgssmartgroupconditionwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSmartGroupCondition
@@ -35,10 +36,10 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     QString parameter();
 
     //! sets the given constraint
-    void setConstraint( const QString& constraint );
+    void setConstraint( const QString &constraint );
 
     //! sets the given param
-    void setParameter( const QString& param );
+    void setParameter( const QString &param );
 
     //! sets the remove button hidden state to 'hide'
     void hideRemoveButton( bool hide );
@@ -70,8 +71,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     Q_OBJECT
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent = nullptr );
-    ~QgsSmartGroupEditorDialog();
+    QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent = nullptr );
 
     //! returns the value from mNameLineEdit
     QString smartgroupName();
@@ -85,13 +85,13 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
 
     //! sets up the GUI for the given conditionmap
     //! @note not available in python bindings
-    void setConditionMap( const QgsSmartConditionMap& );
+    void setConditionMap( const QgsSmartConditionMap & );
 
     //! sets the operator AND/OR
-    void setOperator( const QString& );
+    void setOperator( const QString & );
 
     //! sets the smart group Name
-    void setSmartgroupName( const QString& );
+    void setSmartgroupName( const QString & );
 
   public slots:
 
@@ -104,13 +104,13 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     void on_buttonBox_accepted();
 
   protected:
-    QgsStyle* mStyle;
+    QgsStyle *mStyle = nullptr;
     // layout of the mConditionsBox
-    QGridLayout *mLayout;
+    QGridLayout *mLayout = nullptr;
     // counter for the number of conditions
     int mCondCount;
     // map tracking the condition widget and the ids
-    QMap<int, QgsSmartGroupCondition*> mConditionMap;
+    QMap<int, QgsSmartGroupCondition *> mConditionMap;
 };
 
 #endif // QGSSMARTGROUPEDITORDIALOG_H

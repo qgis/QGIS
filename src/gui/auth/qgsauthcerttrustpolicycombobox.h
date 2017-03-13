@@ -19,6 +19,7 @@
 
 #include <QComboBox>
 #include "qgsauthcertutils.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
@@ -28,6 +29,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     /**
      * Construct a combo box for defining certificate trust policy
      * @param parent Parent widget
@@ -38,19 +40,18 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
       QWidget *parent = nullptr,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
       QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
-    ~QgsAuthCertTrustPolicyComboBox();
 
-    /** Get currently set trust policy */
+    //! Get currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
 
-    /** Get trust policy for a given index of combobox */
+    //! Get trust policy for a given index of combobox
     QgsAuthCertUtils::CertTrustPolicy trustPolicyForIndex( int indx );
 
   public slots:
-    /** Set current trust policy */
+    //! Set current trust policy
     void setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 
-    /** Set default trust policy */
+    //! Set default trust policy
     void setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy );
 
   private slots:

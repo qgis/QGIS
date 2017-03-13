@@ -23,11 +23,11 @@ SET (SPATIALQUERY_RCCS qgsspatialquerydialogbase.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (SPATIALQUERY_UIS_H  ${SPATIALQUERY_UIS})
+QT5_WRAP_UI (SPATIALQUERY_UIS_H  ${SPATIALQUERY_UIS})
 
-QT4_WRAP_CPP (SPATIALQUERY_MOC_SRCS  ${SPATIALQUERY_MOC_HDRS})
+QT5_WRAP_CPP (SPATIALQUERY_MOC_SRCS  ${SPATIALQUERY_MOC_HDRS})
 
-QT4_ADD_RESOURCES (SPATIALQUERY_RCC_SRCS ${SPATIALQUERY_RCCS})
+QT5_ADD_RESOURCES (SPATIALQUERY_RCC_SRCS ${SPATIALQUERY_RCCS})
 
 ADD_LIBRARY (spatialqueryplugin MODULE ${SPATIALQUERY_SRCS} ${SPATIALQUERY_MOC_SRCS} ${SPATIALQUERY_RCC_SRCS} ${SPATIALQUERY_UIS_H})
 
@@ -36,13 +36,15 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
-     ../../core
-     ../../core/geometry
-     ../../core/raster
-     ../../gui
-     ..
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
+  ../../core
+  ../../core/geometry
+  ../../core/raster
+  ../../gui
+  ..
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 
 TARGET_LINK_LIBRARIES(spatialqueryplugin

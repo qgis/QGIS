@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -55,7 +56,7 @@ class contour(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Contour')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
+        self.group, self.i18n_group = self.trAlgorithm('Raster extraction')
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,
@@ -72,11 +73,11 @@ class contour(GdalAlgorithm):
 
     def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT_VECTOR)
-        interval = unicode(self.getParameterValue(self.INTERVAL))
-        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
+        interval = str(self.getParameterValue(self.INTERVAL))
+        fieldName = str(self.getParameterValue(self.FIELD_NAME))
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
+            extra = str(extra)
 
         arguments = []
         if len(fieldName) > 0:

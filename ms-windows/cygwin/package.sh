@@ -28,7 +28,6 @@ cmake -D BUILDNAME="cygwin" \
         -D WITH_QSPATIALITE=TRUE \
         -D WITH_SERVER=TRUE \
         -D WITH_GLOBE=TRUE \
-        -D WITH_TOUCH=TRUE \
         -D WITH_ORACLE=FALSE \
 	-D CMAKE_LEGACY_CYGWIN_WIN32=0 \
 	-D PYUIC4_PROGRAM=/usr/lib/python2.7/site-packages/PyQt4/pyuic4 \

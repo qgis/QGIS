@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 
 __author__ = 'Victor Olaya'
@@ -29,23 +30,21 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import (Qgis,
-                       QgsProject,
-                       QgsVectorFileWriter,
+from qgis.core import (QgsVectorFileWriter,
                        QgsMapLayer,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
-                       QgsMapLayerRegistry,
-                       QgsCoordinateReferenceSystem)
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsSettings)
 from qgis.gui import QgsSublayersDialog
-from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import (getTempFilenameInTempFolder,
                                      getTempFilename,
+                                     removeInvalidChars,
                                      isWindows)
 
 ALL_TYPES = [-1]
@@ -56,7 +55,7 @@ TYPE_VECTOR_LINE = 1
 TYPE_VECTOR_POLYGON = 2
 TYPE_RASTER = 3
 TYPE_FILE = 4
-
+TYPE_TABLE = 5
 
 _loadedLayers = {}
 
@@ -68,22 +67,26 @@ def resetLoadedLayers():
 
 def getSupportedOutputVectorLayerExtensions():
     formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-    exts = ['shp']  # shp is the default, should be the first
-    for extension in formats.keys():
-        extension = unicode(extension)
+    exts = []
+    for extension in list(formats.keys()):
+        extension = str(extension)
         extension = extension[extension.find('*.') + 2:]
         extension = extension[:extension.find(' ')]
         if extension.lower() != 'shp':
             exts.append(extension)
+    exts.sort()
+    exts.insert(0, 'shp')  # shp is the default, should be the first
     return exts
 
 
 def getSupportedOutputRasterLayerExtensions():
-    allexts = ['tif']
-    for exts in GdalUtils.getSupportedRasters().values():
+    allexts = []
+    for exts in list(GdalUtils.getSupportedRasters().values()):
         for ext in exts:
-            if ext not in allexts:
+            if ext != 'tif' and ext not in allexts:
                 allexts.append(ext)
+    allexts.sort()
+    allexts.insert(0, 'tif')  # tif is the default, should be the first
     return allexts
 
 
@@ -167,7 +170,7 @@ def extent(layers):
     if first:
         return '0,0,0,0'
     else:
-        return unicode(xmin) + ',' + unicode(xmax) + ',' + unicode(ymin) + ',' + unicode(ymax)
+        return str(xmin) + ',' + str(xmax) + ',' + str(ymin) + ',' + str(ymax)
 
 
 def loadList(layers):
@@ -182,10 +185,10 @@ def load(fileName, name=None, crs=None, style=None):
     if fileName is None:
         return
     prjSetting = None
-    settings = QSettings()
+    settings = QgsSettings()
     if crs is not None:
-        prjSetting = settings.value('/Projections/defaultBehaviour')
-        settings.setValue('/Projections/defaultBehaviour', '')
+        prjSetting = settings.value('/Projections/defaultBehavior')
+        settings.setValue('/Projections/defaultBehavior', '')
     if name is None:
         name = os.path.split(fileName)[1]
     qgslayer = QgsVectorLayer(fileName, name, 'ogr')
@@ -200,7 +203,7 @@ def load(fileName, name=None, crs=None, style=None):
             else:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
         qgslayer.loadNamedStyle(style)
-        QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
+        QgsProject.instance().addMapLayers([qgslayer])
     else:
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
@@ -209,15 +212,14 @@ def load(fileName, name=None, crs=None, style=None):
             if style is None:
                 style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
-            QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
-            iface.legendInterface().refreshLayerLegend(qgslayer)
+            QgsProject.instance().addMapLayers([qgslayer])
         else:
             if prjSetting:
-                settings.setValue('/Projections/defaultBehaviour', prjSetting)
-            raise RuntimeError('Could not load layer: ' + unicode(fileName)
-                               + '\nCheck the processing framework log to look for errors')
+                settings.setValue('/Projections/defaultBehavior', prjSetting)
+            raise RuntimeError('Could not load layer: ' + str(fileName) +
+                               '\nCheck the processing framework log to look for errors')
     if prjSetting:
-        settings.setValue('/Projections/defaultBehaviour', prjSetting)
+        settings.setValue('/Projections/defaultBehavior', prjSetting)
 
     return qgslayer
 
@@ -266,27 +268,28 @@ def getObjectFromUri(uri, forceLoad=True):
     for table in tables:
         if normalizeLayerSource(table.source()) == normalizeLayerSource(uri):
             return table
-    if forceLoad:
-        settings = QSettings()
-        prjSetting = settings.value('/Projections/defaultBehaviour')
-        settings.setValue('/Projections/defaultBehaviour', '')
+    if forceLoad and os.path.exists(uri):
+        settings = QgsSettings()
+        prjSetting = settings.value('/Projections/defaultBehavior')
+        settings.setValue('/Projections/defaultBehavior', '')
 
         # If is not opened, we open it
+        name = os.path.basename(uri)
         for provider in ['ogr', 'postgres', 'spatialite', 'virtual']:
-            layer = QgsVectorLayer(uri, uri, provider)
+            layer = QgsVectorLayer(uri, name, provider)
             if layer.isValid():
                 if prjSetting:
-                    settings.setValue('/Projections/defaultBehaviour', prjSetting)
+                    settings.setValue('/Projections/defaultBehavior', prjSetting)
                 _loadedLayers[normalizeLayerSource(layer.source())] = layer
                 return layer
-        layer = QgsRasterLayer(uri, uri)
+        layer = QgsRasterLayer(uri, name)
         if layer.isValid():
             if prjSetting:
-                settings.setValue('/Projections/defaultBehaviour', prjSetting)
+                settings.setValue('/Projections/defaultBehavior', prjSetting)
             _loadedLayers[normalizeLayerSource(layer.source())] = layer
             return layer
         if prjSetting:
-            settings.setValue('/Projections/defaultBehaviour', prjSetting)
+            settings.setValue('/Projections/defaultBehavior', prjSetting)
     else:
         return None
 
@@ -306,11 +309,17 @@ def exportVectorLayer(layer, supported=None):
     """
 
     supported = supported or ["shp"]
-    settings = QSettings()
+    settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
 
     output = getTempFilename('shp')
-    provider = layer.dataProvider()
+    basename = removeInvalidChars(os.path.basename(layer.source()))
+    if basename:
+        if not basename.endswith("shp"):
+            basename = os.path.splitext(basename)[0] + ".shp"
+        output = getTempFilenameInTempFolder(basename)
+    else:
+        output = getTempFilename("shp")
     useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
@@ -322,12 +331,7 @@ def exportVectorLayer(layer, supported=None):
         del writer
         return output
     else:
-        isASCII = True
-        try:
-            unicode(layer.source()).decode('ascii')
-        except UnicodeEncodeError:
-            isASCII = False
-        if not os.path.splitext(layer.source())[1].lower() in supported or not isASCII:
+        if not os.path.splitext(layer.source())[1].lower() in supported:
             writer = QgsVectorFileWriter(
                 output, systemEncoding,
                 layer.fields(), layer.wkbType(),
@@ -338,7 +342,7 @@ def exportVectorLayer(layer, supported=None):
             del writer
             return output
         else:
-            return unicode(layer.source())
+            return layer.source()
 
 
 def exportRasterLayer(layer):
@@ -355,7 +359,7 @@ def exportRasterLayer(layer):
     """
 
     # TODO: Do the conversion here
-    return unicode(layer.source())
+    return str(layer.source())
 
 
 def exportTable(table):
@@ -371,27 +375,27 @@ def exportTable(table):
     file if the original one contains non-ascii characters.
     """
 
-    settings = QSettings()
+    settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
     output = getTempFilename()
     isASCII = True
     try:
-        unicode(table.source()).decode('ascii')
+        str(table.source()).decode('ascii')
     except UnicodeEncodeError:
         isASCII = False
-    isDbf = unicode(table.source()).endswith('dbf') \
-        or unicode(table.source()).endswith('shp')
+    isDbf = str(table.source()).endswith('dbf') \
+        or str(table.source()).endswith('shp')
     if not isDbf or not isASCII:
         writer = QgsVectorFileWriter(output, systemEncoding,
-                                     layer.fields(), QgsWkbTypes.NullGeometry,
+                                     table.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
             writer.addFeature(feat)
         del writer
         return output + '.dbf'
     else:
-        filename = unicode(table.source())
-        if unicode(table.source()).endswith('shp'):
+        filename = str(table.source())
+        if str(table.source()).endswith('shp'):
             return filename[:-3] + 'dbf'
         else:
             return filename

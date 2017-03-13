@@ -18,6 +18,7 @@
 
 #include <QComboBox>
 #include "qgspainteffect.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsEffectDrawModeComboBox
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
 
   public:
 
-    QgsEffectDrawModeComboBox( QWidget* parent = nullptr );
+    QgsEffectDrawModeComboBox( QWidget *parent = nullptr );
 
     /** Returns the currently selected draw mode for the combo box
      * @returns current draw mode

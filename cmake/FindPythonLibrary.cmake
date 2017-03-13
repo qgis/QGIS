@@ -31,24 +31,7 @@ if(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "${
   set(PYTHONLIBRARY_FOUND TRUE)
 else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "${PYTHON_SITE_PACKAGES_DIR}")
 
-  set(_custom_python_fw FALSE)
-  if(APPLE AND PYTHON_CUSTOM_FRAMEWORK)
-    if("${PYTHON_CUSTOM_FRAMEWORK}" MATCHES "Python\\.framework")
-      STRING(REGEX REPLACE "(.*Python\\.framework).*$" "\\1" _python_fw "${PYTHON_CUSTOM_FRAMEWORK}")
-      set(PYTHON_EXECUTABLE "${_python_fw}/Versions/Current/bin/python")
-      set(PYTHON_INCLUDE_PATH "${_python_fw}/Versions/Current/Headers")
-      set(PYTHON_LIBRARY "${_python_fw}/Versions/Current/Python")
-      if(EXISTS "${PYTHON_EXECUTABLE}" AND EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}")
-        set(_custom_python_fw TRUE)
-      endif()
-    endif("${PYTHON_CUSTOM_FRAMEWORK}" MATCHES "Python\\.framework")
-  endif(APPLE AND PYTHON_CUSTOM_FRAMEWORK)
-
-  IF (ENABLE_PYTHON3)
-    FIND_PACKAGE(PythonInterp 3)
-  ELSE (ENABLE_PYTHON3)
-    FIND_PACKAGE(PythonInterp 2.7)
-  ENDIF (ENABLE_PYTHON3)
+  FIND_PACKAGE(PythonInterp 3)
 
   if(PYTHONINTERP_FOUND)
     FIND_FILE(_find_lib_python_py FindLibPython.py PATHS ${CMAKE_MODULE_PATH})
@@ -78,22 +61,39 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
     endif(python_config)
 
     # adapted from cmake's builtin FindPythonLibs
-    if(APPLE AND NOT _custom_python_fw)
-      CMAKE_FIND_FRAMEWORKS(Python)
-      set(PYTHON_FRAMEWORK_INCLUDES)
-      if(Python_FRAMEWORKS)
-        # If a framework has been selected for the include path,
-        # make sure "-framework" is used to link it.
+    if(APPLE)
+        # If a framework has been detected in the include path, make sure
+        # framework's versioned library (not any .dylib) is used for linking
+        # NOTE: don't rely upon Python.framework/Versions/Current, since that may be 2.7
         if("${PYTHON_INCLUDE_PATH}" MATCHES "Python\\.framework")
           set(PYTHON_LIBRARY "")
           set(PYTHON_DEBUG_LIBRARY "")
+          # get clean path to just framework
+          STRING(REGEX REPLACE "^(.*/Python\\.framework).*$" "\\1" _py_fw "${PYTHON_INCLUDE_PATH}")
+          if("${_py_fw}" MATCHES "Cellar/python")
+            # Appears to be a Homebrew Python install; do specific fix ups
+            # get Homebrew prefix (may not be /usr/local)
+            STRING(REGEX REPLACE "^(.+)/Cellar.*$" "\\1" _hb_prefix "${_py_fw}")
+            # prefer the Homebrew prefix framework over only versioned Python keg
+            set(_py_fw "${_hb_prefix}/Frameworks/Python.framework")
+            # prefer the symlinked-to Homebrew site-packages over only versioned Python keg
+            set(PYTHON_SITE_PACKAGES_DIR "${_hb_prefix}/lib/python${PYTHON_SHORT_VERSION}/site-packages")
+          endif("${_py_fw}" MATCHES "Cellar/python")
+          # prefer the Headers subdirectory for includes
+          if(EXISTS "${_py_fw}/Versions/${PYTHON_SHORT_VERSION}/Headers")
+            set(PYTHON_INCLUDE_PATH "${_py_fw}/Versions/${PYTHON_SHORT_VERSION}/Headers" CACHE FILEPATH "Directory holding the python.h include file" FORCE)
+          endif(EXISTS "${_py_fw}/Versions/${PYTHON_SHORT_VERSION}/Headers")
         endif("${PYTHON_INCLUDE_PATH}" MATCHES "Python\\.framework")
         if(NOT PYTHON_LIBRARY)
-          set (PYTHON_LIBRARY "-framework Python" CACHE FILEPATH "Python Framework" FORCE)
+          # ensure the versioned framework's library is defined, instead of relying upon -F search paths
+          if(EXISTS "${_py_fw}/Versions/${PYTHON_SHORT_VERSION}/Python")
+            set(PYTHON_LIBRARY "${_py_fw}/Versions/${PYTHON_SHORT_VERSION}/Python" CACHE FILEPATH "Python framework library" FORCE)
+          endif(EXISTS "${_py_fw}/Versions/${PYTHON_SHORT_VERSION}/Python")
         endif(NOT PYTHON_LIBRARY)
-        set(PYTHONLIBRARY_FOUND TRUE)
-      endif(Python_FRAMEWORKS)
-    endif(APPLE AND NOT _custom_python_fw)
+        if(PYTHON_LIBRARY)
+          set(PYTHONLIBRARY_FOUND TRUE)
+        endif(PYTHON_LIBRARY)
+    endif(APPLE)
   endif(PYTHONINTERP_FOUND)
 
   if(PYTHONLIBRARY_FOUND)
@@ -107,6 +107,7 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
       message(STATUS "Found Python executable: ${PYTHON_EXECUTABLE}")
       message(STATUS "Found Python version: ${PYTHON_LONG_VERSION}")
       message(STATUS "Found Python library: ${PYTHON_LIBRARY}")
+      message(STATUS "Found Python site-packages: ${PYTHON_SITE_PACKAGES_DIR}")
     endif(NOT PYTHONLIBRARY_FIND_QUIETLY)
   else(PYTHONLIBRARY_FOUND)
     if(PYTHONLIBRARY_FIND_REQUIRED)

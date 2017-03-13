@@ -16,6 +16,7 @@
 #ifndef QGSOGRUTILS_H
 #define QGSOGRUTILS_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 
 #include <ogr_api.h>
@@ -40,14 +41,14 @@ class CORE_EXPORT QgsOgrUtils
      * @param encoding text encoding
      * @return valid feature if read was successful
      */
-    static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec* encoding );
+    static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding );
 
     /** Reads an OGR feature and returns a corresponding fields collection.
      * @param ogrFet OGR feature handle
      * @param encoding text encoding
      * @returns fields collection if read was successful
      */
-    static QgsFields readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding );
+    static QgsFields readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding );
 
     /** Retrieves an attribute value from an OGR feature.
      * @param ogrFet OGR feature handle
@@ -58,7 +59,7 @@ class CORE_EXPORT QgsOgrUtils
      * @returns attribute converted to a QVariant object
      * @see readOgrFeatureAttributes()
      */
-    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec* encoding, bool* ok = 0 );
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = 0 );
 
     /** Reads all attributes from an OGR feature into a QgsFeature.
      * @param ogrFet OGR feature handle
@@ -68,7 +69,7 @@ class CORE_EXPORT QgsOgrUtils
      * @returns true if attribute read was successful
      * @see getOgrFeatureAttribute()
      */
-    static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature& feature, QTextCodec* encoding );
+    static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding );
 
     /** Reads the geometry from an OGR feature into a QgsFeature.
      * @param ogrFet OGR feature handle
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsOgrUtils
      * @see readOgrFeatureAttributes()
      * @see ogrGeometryToQgsGeometry()
      */
-    static bool readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature& feature );
+    static bool readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &feature );
 
     /** Converts an OGR geometry representation to a QgsGeometry object
      * @param geom OGR geometry handle
@@ -95,7 +96,7 @@ class CORE_EXPORT QgsOgrUtils
      * @returns list of parsed features, or an empty list if no features could be parsed
      * @see stringToFields()
      */
-    static QgsFeatureList stringToFeatureList( const QString& string, const QgsFields& fields, QTextCodec* encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
 
     /** Attempts to retrieve the fields from a string representing a collection of features using OGR.
      * @param string string to parse
@@ -103,7 +104,7 @@ class CORE_EXPORT QgsOgrUtils
      * @returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * @see stringToFeatureList()
      */
-    static QgsFields stringToFields( const QString& string, QTextCodec* encoding );
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
 };
 
 #endif // QGSOGRUTILS_H

@@ -29,20 +29,20 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
 {
     Q_OBJECT
   public:
-    QgsAmsLegendFetcher( QgsAmsProvider* provider );
+    QgsAmsLegendFetcher( QgsAmsProvider *provider );
     void start() override;
     bool haveImage() const { return mLegendImage.isNull(); }
-    const QImage& getImage() const { return mLegendImage; }
-    const QString& errorTitle() const { return mErrorTitle; }
-    const QString& errorMessage() const { return mError; }
+    QImage getImage() const { return mLegendImage; }
+    const QString &errorTitle() const { return mErrorTitle; }
+    const QString &errorMessage() const { return mError; }
 
   private slots:
     void handleFinished();
-    void handleError( QString errorTitle, QString errorMsg );
+    void handleError( const QString &errorTitle, const QString &errorMsg );
 
   private:
-    QgsAmsProvider* mProvider;
-    QgsArcGisAsyncQuery* mQuery;
+    QgsAmsProvider *mProvider = nullptr;
+    QgsArcGisAsyncQuery *mQuery = nullptr;
     QByteArray mQueryReply;
     QImage mLegendImage;
     QString mErrorTitle;
@@ -54,12 +54,12 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
-    QgsAmsProvider( const QString & uri );
+    QgsAmsProvider( const QString &uri );
 
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
-    QString name() const override { return "mapserver"; }
-    QString description() const override { return "ArcGIS MapServer data provider"; }
+    QString name() const override { return QStringLiteral( "mapserver" ); }
+    QString description() const override { return QStringLiteral( "ArcGIS MapServer data provider" ); }
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
     uint subLayerCount() const override { return mSubLayers.size(); }
     QStringList subLayers() const override { return mSubLayers; }
@@ -78,20 +78,21 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QString lastError() override { return mError; }
     Qgis::DataType dataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
     Qgis::DataType sourceDataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
-    QgsRasterInterface* clone() const override;
+    QgsRasterInterface *clone() const override;
     QString metadata() override;
-    QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) override;
     bool supportsLegendGraphic() const override { return true; }
-    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 ) override;
-    QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) override;
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
+    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = 0 ) override;
+    QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
+    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
   protected:
-    void readBlock( int bandNo, const QgsRectangle & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    void readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+
+    void draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
 
   private:
     bool mValid;
-    QgsAmsLegendFetcher* mLegendFetcher;
+    QgsAmsLegendFetcher *mLegendFetcher = nullptr;
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;
     QgsCoordinateReferenceSystem mCrs;

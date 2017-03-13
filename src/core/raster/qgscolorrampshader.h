@@ -21,10 +21,15 @@ originally part of the larger QgsRasterLayer class
 #ifndef QGSCOLORRAMPSHADER_H
 #define QGSCOLORRAMPSHADER_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QVector>
+#include <memory>
 
+#include "qgscolorramp.h"
+#include "qgsrasterinterface.h"
 #include "qgsrastershaderfunction.h"
+#include "qgsrectangle.h"
 
 /** \ingroup core
  * A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
@@ -33,7 +38,40 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 {
 
   public:
-    QgsColorRampShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
+
+    //! Supported methods for color interpolation.
+    enum Type
+    {
+      Interpolated, //!< Interpolates the color between two class breaks linearly.
+      Discrete,     //!< Assigns the color of the higher class for every pixel between two class breaks.
+      Exact         //!< Assigns the color of the exact matching value in the color ramp item list
+    };
+
+    //! Classification modes used to create the color ramp shader
+    enum ClassificationMode
+    {
+      Continuous = 1, //!< Uses breaks from color palette
+      EqualInterval = 2, //!< Uses equal interval
+      Quantile = 3 //!< Uses quantile (i.e. equal pixel) count
+    };
+
+    /** Creates a new color ramp shader.
+     * @param minimumValue minimum value for the raster shader
+     * @param maximumValue maximum value for the raster shader
+     * @param type interpolation type used
+     * @param classificationMode method used to classify the color ramp shader
+     * @param colorRamp vector color ramp used to classify the color ramp shader
+     * @returns new QgsColorRampShader
+     */
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = nullptr, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+
+    /** Copy constructor
+     */
+    QgsColorRampShader( const QgsColorRampShader &other );
+
+    /** Assignment operator
+     */
+    QgsColorRampShader &operator=( const QgsColorRampShader &other );
 
     //An entry for classification based upon value.
     //Such a classification is typically used for
@@ -44,10 +82,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       //! default constructor
       ColorRampItem() : value( 0 ) {}
       //! convenience constructor
-      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() )
-          : label( lbl )
-          , value( val )
-          , color( col )
+      ColorRampItem( double val, const QColor &col, const QString &lbl = QString() )
+        : label( lbl )
+        , value( val )
+        , color( col )
       {}
 
       QString label;
@@ -55,42 +93,68 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       QColor color;
 
       // compare operator for sorting
-      bool operator<( const ColorRampItem& other ) const { return value < other.value; }
+      bool operator<( const ColorRampItem &other ) const { return value < other.value; }
     };
 
-    /** Supported methods for color interpolation. */
-    enum ColorRamp_TYPE
-    {
-      INTERPOLATED, //!< Interpolates the color between two class breaks linearly.
-      DISCRETE,     //!< Assigns the color of the higher class for every pixel between two class breaks.
-      EXACT         //!< Assigns the color of the exact matching value in the color ramp item list
-    };
+    //! \brief Get the custom colormap
+    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const { return mColorRampItemList.toList(); }
 
-    /** \brief Get the custom colormap*/
-    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList.toList();}
+    //! \brief Get the color ramp type
+    Type colorRampType() const { return mColorRampType; }
 
-    /** \brief Get the color ramp type */
-    QgsColorRampShader::ColorRamp_TYPE colorRampType() const {return mColorRampType;}
-
-    /** \brief Get the color ramp type as a string */
+    //! \brief Get the color ramp type as a string
     QString colorRampTypeAsQString();
 
-    /** \brief Set custom colormap */
-    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
+    //! \brief Set custom colormap
+    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
 
-    /** \brief Set the color ramp type*/
-    void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
+    //! \brief Set the color ramp type
+    void setColorRampType( QgsColorRampShader::Type colorRampType );
 
-    /** \brief Set the color ramp type*/
-    void setColorRampType( const QString& theType );
+    /** Get the source color ramp
+     * @note added in QGIS 3.0
+     * @see setSourceColorRamp()
+     */
+    QgsColorRamp *sourceColorRamp() const;
 
-    /** \brief Generates and new RGB value based on one input value */
-    bool shade( double, int*, int*, int*, int* ) override;
+    /** Set the source color ramp. Ownership is transferred to the renderer.
+     * @note added in QGIS 3.0
+     * @see sourceColorRamp()
+     */
+    void setSourceColorRamp( QgsColorRamp *colorramp );
 
-    /** \brief Generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, double, int*, int*, int*, int* ) override;
+    //! \brief Set the color ramp type
+    void setColorRampType( const QString &type );
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
+    /** Classify color ramp shader
+     * @param classes number of classes
+     * @param band raster band used in classification (only used in quantile mode)
+     * @param extent extent used in classification (only used in quantile mode)
+     * @param input raster input used in classification (only used in quantile mode)
+     */
+    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
+
+    /** Classify color ramp shader
+     * @param band raster band used in classification (quantile mode only)
+     * @param extent extent used in classification (quantile mode only)
+     * @param input raster input used in classification (quantile mode only)
+     */
+    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
+
+    //! \brief Generates and new RGB value based on one input value
+    bool shade( double, int *, int *, int *, int * ) override;
+
+    //! \brief Generates and new RGB value based on original RGB value
+    bool shade( double, double, double, double, int *, int *, int *, int * ) override;
+
+    //! \brief Get symbology items if provided by renderer
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
+
+    //! Sets classification mode
+    void setClassificationMode( ClassificationMode classificationMode ) { mClassificationMode = classificationMode; }
+
+    //! Returns the classification mode
+    ClassificationMode classificationMode() const { return mClassificationMode; }
 
     /** Sets whether the shader should not render values out of range.
      * @param clip set to true to clip values which are out of range.
@@ -103,7 +167,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      */
     bool clip() const { return mClip; }
 
+  protected:
+
+    //! Source color ramp
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
+
   private:
+
     /** This vector holds the information for classification based on values.
      * Each item holds a value, a label and a color. The member
      * mDiscreteClassification holds if one color is applied for all values
@@ -111,8 +181,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * interpolated for values between the item values (false)*/
     QVector<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
-    /** \brief The color ramp type */
-    QgsColorRampShader::ColorRamp_TYPE mColorRampType;
+    Type mColorRampType;
+    ClassificationMode mClassificationMode;
 
     /** Look up table to speed up finding the right color.
       * It is initialized on the first call to shade(). */
@@ -121,7 +191,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     double mLUTFactor;
     bool mLUTInitialized;
 
-    /** Do not render values out of range */
+    //! Do not render values out of range
     bool mClip;
 };
 

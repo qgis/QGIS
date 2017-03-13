@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,17 +30,13 @@ import re
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
-                       QgsExpressionContext,
-                       QgsExpressionContextUtils,
-                       QgsExpression,
-                       QgsExpressionContextScope)
-
+                       QgsSettings)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
@@ -82,14 +79,14 @@ class OutputSelectionPanel(BASE, WIDGET):
 
             if isinstance(self.output, OutputVector) \
                     and self.alg.provider.supportsNonFileBasedOutput():
-                # use memory layers for temporary files if supported
-                actionSaveToTempFile = QAction(
+                # use memory layers for temporary layers if supported
+                actionSaveToTemp = QAction(
                     self.tr('Create temporary layer'), self.btnSelect)
             else:
-                actionSaveToTempFile = QAction(
+                actionSaveToTemp = QAction(
                     self.tr('Save to a temporary file'), self.btnSelect)
-            actionSaveToTempFile.triggered.connect(self.saveToTemporaryFile)
-            popupMenu.addAction(actionSaveToTempFile)
+            actionSaveToTemp.triggered.connect(self.saveToTemporary)
+            popupMenu.addAction(actionSaveToTemp)
 
             actionSaveToFile = QAction(
                 self.tr('Save to file...'), self.btnSelect)
@@ -110,7 +107,7 @@ class OutputSelectionPanel(BASE, WIDGET):
                 actionSaveToPostGIS = QAction(
                     self.tr('Save to PostGIS table...'), self.btnSelect)
                 actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
-                settings = QSettings()
+                settings = QgsSettings()
                 settings.beginGroup('/PostgreSQL/connections/')
                 names = settings.childGroups()
                 settings.endGroup()
@@ -120,29 +117,20 @@ class OutputSelectionPanel(BASE, WIDGET):
             popupMenu.exec_(QCursor.pos())
 
     def showExpressionsBuilder(self):
-        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic', self.expressionContext())
+        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic',
+                                         self.output.expressionContext(self.alg))
         dlg.setWindowTitle(self.tr('Expression based output'))
         if dlg.exec_() == QDialog.Accepted:
             self.leText.setText(dlg.expressionText())
 
-    def expressionContext(self):
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope())
-        processingScope = QgsExpressionContextScope()
-        for param in self.alg.parameters:
-            processingScope.setVariable('%s_value' % param.name, '')
-        context.appendScope(processingScope)
-        return context
-
-    def saveToTemporaryFile(self):
+    def saveToTemporary(self):
         self.leText.setText('')
 
     def saveToPostGIS(self):
         dlg = PostgisTableSelector(self, self.output.name.lower())
         dlg.exec_()
         if dlg.connection:
-            settings = QSettings()
+            settings = QgsSettings()
             mySettings = '/PostgreSQL/connections/' + dlg.connection
             dbname = settings.value(mySettings + '/database')
             user = settings.value(mySettings + '/username')
@@ -161,9 +149,9 @@ class OutputSelectionPanel(BASE, WIDGET):
             self.leText.setText("postgis:" + uri.uri())
 
     def saveToSpatialite(self):
-        fileFilter = self.output.tr('Spatialite files(*.sqlite)', 'OutputFile')
+        fileFilter = self.output.tr('SpatiaLite files (*.sqlite)', 'OutputFile')
 
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
             path = settings.value('/Processing/LastOutputPath')
         else:
@@ -174,17 +162,17 @@ class OutputSelectionPanel(BASE, WIDGET):
             self, self.tr('Save Spatialite'), path, fileFilter, encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setConfirmOverwrite(False)
+        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
-            encoding = unicode(fileDialog.encoding())
+            encoding = str(fileDialog.encoding())
             self.output.encoding = encoding
-            fileName = unicode(files[0])
-            selectedFileFilter = unicode(fileDialog.selectedNameFilter())
+            fileName = str(files[0])
+            selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             settings.setValue('/Processing/LastOutputPath',
@@ -200,7 +188,7 @@ class OutputSelectionPanel(BASE, WIDGET):
     def selectFile(self):
         fileFilter = self.output.getFileFilter(self.alg)
 
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
             path = settings.value('/Processing/LastOutputPath')
         else:
@@ -211,17 +199,17 @@ class OutputSelectionPanel(BASE, WIDGET):
             self, self.tr('Save file'), path, fileFilter, encoding)
         fileDialog.setFileMode(QFileDialog.AnyFile)
         fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setConfirmOverwrite(True)
+        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
 
         if fileDialog.exec_() == QDialog.Accepted:
             files = fileDialog.selectedFiles()
-            encoding = unicode(fileDialog.encoding())
+            encoding = str(fileDialog.encoding())
             self.output.encoding = encoding
-            fileName = unicode(files[0])
-            selectedFileFilter = unicode(fileDialog.selectedNameFilter())
+            fileName = str(files[0])
+            selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             self.leText.setText(fileName)
@@ -236,32 +224,4 @@ class OutputSelectionPanel(BASE, WIDGET):
         self.leText.setText(dirName)
 
     def getValue(self):
-        fileName = unicode(self.leText.text())
-        context = self.expressionContext()
-        exp = QgsExpression(fileName)
-        if not exp.hasParserError():
-            result = exp.evaluate(context)
-            if not exp.hasEvalError():
-                fileName = result
-                if fileName.startswith("[") and fileName.endswith("]"):
-                    fileName = fileName[1:-1]
-        if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE, self.SAVE_TO_TEMP_LAYER]:
-            if isinstance(self.output, OutputVector) \
-                    and self.alg.provider.supportsNonFileBasedOutput():
-                # use memory layers for temporary files if supported
-                value = 'memory:'
-            else:
-                value = None
-        elif fileName.startswith('memory:'):
-            value = fileName
-        elif fileName.startswith('postgis:'):
-            value = fileName
-        elif fileName.startswith('spatialite:'):
-            value = fileName
-        elif not os.path.isabs(fileName):
-            value = ProcessingConfig.getSetting(
-                ProcessingConfig.OUTPUT_FOLDER) + os.sep + fileName
-        else:
-            value = fileName
-
-        return value
+        return self.leText.text()

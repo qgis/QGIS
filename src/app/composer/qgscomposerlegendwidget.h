@@ -34,18 +34,18 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     Q_OBJECT
 
   public:
-    explicit QgsComposerLegendWidget( QgsComposerLegend* legend );
+    explicit QgsComposerLegendWidget( QgsComposerLegend *legend );
     ~QgsComposerLegendWidget();
 
-    /** Updates the legend layers and groups*/
+    //! Updates the legend layers and groups
     void updateLegend();
 
-    QgsComposerLegend* legend() { return mLegend; }
+    QgsComposerLegend *legend() { return mLegend; }
 
   public slots:
 
-    void on_mWrapCharLineEdit_textChanged( const QString& text );
-    void on_mTitleLineEdit_textChanged( const QString& text );
+    void on_mWrapCharLineEdit_textChanged( const QString &text );
+    void on_mTitleLineEdit_textChanged( const QString &text );
     void on_mTitleAlignCombo_currentIndexChanged( int index );
     void on_mColumnCountSpinBox_valueChanged( int c );
     void on_mSplitLayerCheckBox_toggled( bool checked );
@@ -63,16 +63,17 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mGroupFontButton_clicked();
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
-    void on_mFontColorButton_colorChanged( const QColor& newFontColor );
+    void on_mFontColorButton_colorChanged( const QColor &newFontColor );
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mColumnSpaceSpinBox_valueChanged( double d );
+    void on_mLineSpacingSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
-    void composerMapChanged( QgsComposerItem* item );
+    void composerMapChanged( QgsComposerItem *item );
     void on_mCheckboxResizeContents_toggled( bool checked );
 
-    void on_mRasterBorderGroupBox_toggled( bool state );
-    void on_mRasterBorderWidthSpinBox_valueChanged( double d );
-    void on_mRasterBorderColorButton_colorChanged( const QColor& newColor );
+    void on_mRasterStrokeGroupBox_toggled( bool state );
+    void on_mRasterStrokeWidthSpinBox_valueChanged( double d );
+    void on_mRasterStrokeColorButton_colorChanged( const QColor &newColor );
 
     //item manipulation
     void on_mMoveDownToolButton_clicked();
@@ -89,15 +90,15 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
 
     void on_mFilterLegendByAtlasCheckBox_toggled( bool checked );
 
-    void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
+    void selectedChanged( const QModelIndex &current, const QModelIndex &previous );
 
     void setCurrentNodeStyleFromAction();
 
   private slots:
-    /** Sets GUI according to state of mLegend*/
+    //! Sets GUI according to state of mLegend
     void setGuiElements();
 
-    /** Update the enabling state of the filter by atlas button */
+    //! Update the enabling state of the filter by atlas button
     void updateFilterLegendByAtlasButton();
 
     void on_mItemTreeView_doubleClicked( const QModelIndex &index );
@@ -106,7 +107,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     QgsComposerLegendWidget();
     void blockAllSignals( bool b );
 
-    QgsComposerLegend* mLegend;
+    QgsComposerLegend *mLegend = nullptr;
 };
 
 
@@ -114,13 +115,13 @@ class QgsComposerLegendMenuProvider : public QgsLayerTreeViewMenuProvider
 {
 
   public:
-    QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w );
+    QgsComposerLegendMenuProvider( QgsLayerTreeView *view, QgsComposerLegendWidget *w );
 
-    virtual QMenu* createContextMenu() override;
+    virtual QMenu *createContextMenu() override;
 
   protected:
-    QgsLayerTreeView* mView;
-    QgsComposerLegendWidget* mWidget;
+    QgsLayerTreeView *mView = nullptr;
+    QgsComposerLegendWidget *mWidget = nullptr;
 };
 
 

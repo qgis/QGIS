@@ -18,11 +18,12 @@
 #ifndef QGSEXPRESSIONFIELDBUFFER_H
 #define QGSEXPRESSIONFIELDBUFFER_H
 
+#include "qgis_core.h"
 #include <QString>
 #include <QList>
 #include <QDomNode>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsexpression.h"
 
 /** \ingroup core
@@ -35,9 +36,9 @@ class CORE_EXPORT QgsExpressionFieldBuffer
   public:
     typedef struct ExpressionField
     {
-      ExpressionField( const QString& exp, const QgsField& fld )
-          : cachedExpression( exp )
-          , field( fld )
+      ExpressionField( const QString &exp, const QgsField &fld )
+        : cachedExpression( exp )
+        , field( fld )
       {}
 
       QgsExpression cachedExpression;
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      * @param exp expression to add
      * @param fld field to add
      */
-    void addExpression( const QString& exp, const QgsField& fld );
+    void addExpression( const QString &exp, const QgsField &fld );
 
     /**
      * Remove an expression from the buffer
@@ -62,6 +63,16 @@ class CORE_EXPORT QgsExpressionFieldBuffer
     void removeExpression( int index );
 
     /**
+     * Renames an expression field at a given index
+     *
+     * @param index The index of the expression to change
+     * @param name   New name for field
+     *
+     * @note added in 3.0
+     */
+    void renameExpression( int index, const QString &name );
+
+    /**
      * Changes the expression at a given index
      *
      * @param index The index of the expression to change
@@ -69,26 +80,26 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      *
      * @note added in 2.9
      */
-    void updateExpression( int index, const QString& exp );
+    void updateExpression( int index, const QString &exp );
 
     /**
      * Saves expressions to xml under the layer node
      */
-    void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 
     /**
      * Reads expressions from project file
      */
-    void readXml( const QDomNode& layer_node );
+    void readXml( const QDomNode &layer_node );
 
     /**
      * Adds fields with the expressions buffered in this object to a QgsFields object
      *
      * @param flds The fields to be updated
      */
-    void updateFields( QgsFields& flds );
+    void updateFields( QgsFields &flds );
 
-    const QList<ExpressionField>& expressions() const { return mExpressions; }
+    QList<ExpressionField> expressions() const { return mExpressions; }
 
   private:
     QList<ExpressionField> mExpressions;

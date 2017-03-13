@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -25,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTable
@@ -70,13 +71,13 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         self.processing = False
 
     def dbConnectionNames(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import layer/table as geometryless table into PostgreSQL database')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
@@ -117,9 +118,9 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         self.processing = True
-        GdalAlgorithm.processAlgorithm(self, progress)
+        GdalAlgorithm.processAlgorithm(self, feedback)
         self.processing = False
 
     def getConsoleCommands(self):
@@ -132,14 +133,14 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
-        schema = unicode(self.getParameterValue(self.SCHEMA))
-        table = unicode(self.getParameterValue(self.TABLE))
-        pk = unicode(self.getParameterValue(self.PK))
+        schema = str(self.getParameterValue(self.SCHEMA))
+        table = str(self.getParameterValue(self.TABLE))
+        pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
-        where = unicode(self.getParameterValue(self.WHERE))
+        where = str(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
-        gt = unicode(self.getParameterValue(self.GT))
+        gt = str(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
@@ -147,7 +148,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         launderstring = "-lco LAUNDER=NO"
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
         precision = self.getParameterValue(self.PRECISION)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append('-progress')

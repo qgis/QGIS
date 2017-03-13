@@ -39,6 +39,7 @@
 
 namespace pal
 {
+
   /**
    * \ingroup core
    * \class pal::PriorityQueue
@@ -48,6 +49,7 @@ namespace pal
   {
 
     public:
+
       /** \brief Create a priority queue of max size n
        * \@param n max size of the queuet
        * \@param p external vector representing the priority
@@ -55,6 +57,11 @@ namespace pal
        */
       PriorityQueue( int n, int maxId, bool min );
       ~PriorityQueue();
+
+      //! PriorityQueue cannot be copied.
+      PriorityQueue( const PriorityQueue & ) = delete;
+      //! PriorityQueue cannot be copied.
+      PriorityQueue &operator=( const PriorityQueue & ) = delete;
 
       void print();
 
@@ -79,15 +86,13 @@ namespace pal
 
       int getId( int key );
     private:
-      PriorityQueue( const PriorityQueue & );
-      PriorityQueue &operator=( const PriorityQueue & );
 
       int size;
       int maxsize;
       int maxId;
-      int *heap;
-      double *p;
-      int *pos;
+      int *heap = nullptr;
+      double *p = nullptr;
+      int *pos = nullptr;
 
       bool ( *greater )( double l, double r );
   };

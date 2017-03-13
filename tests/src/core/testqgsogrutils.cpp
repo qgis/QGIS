@@ -12,12 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
 #include <ogr_api.h>
 #include "cpl_conv.h"
@@ -28,16 +27,6 @@
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
 #include "qgspointv2.h"
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 class TestQgsOgrUtils: public QObject
 {
@@ -93,10 +82,10 @@ void TestQgsOgrUtils::cleanup()
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
 {
   // test with null geometry
-  QVERIFY( QgsOgrUtils::ogrGeometryToQgsGeometry( nullptr ).isEmpty() );
+  QVERIFY( QgsOgrUtils::ogrGeometryToQgsGeometry( nullptr ).isNull() );
 
   // get a geometry from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -107,7 +96,7 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   QVERIFY( ogrGeom );
 
   QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
-  QVERIFY( !geom.isEmpty() );
+  QVERIFY( !geom.isNull() );
   QCOMPARE( geom.geometry()->wkbType(), QgsWkbTypes::LineString );
   QCOMPARE( geom.geometry()->nCoordinates(), 71 );
 
@@ -125,7 +114,7 @@ void TestQgsOgrUtils::readOgrFeatureGeometry()
 
   //real geometry
   // get a geometry from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -155,7 +144,7 @@ void TestQgsOgrUtils::getOgrFeatureAttribute()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -163,12 +152,12 @@ void TestQgsOgrUtils::getOgrFeatureAttribute()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( "int_field", QVariant::Int ) );
-  fields.append( QgsField( "dbl_field", QVariant::Double ) );
-  fields.append( QgsField( "date_field", QVariant::Date ) );
-  fields.append( QgsField( "time_field", QVariant::Time ) );
-  fields.append( QgsField( "datetime_field", QVariant::DateTime ) );
-  fields.append( QgsField( "string_field", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
 
   // attribute index out of range
   val = QgsOgrUtils::getOgrFeatureAttribute( oFeat, fields, -1, QTextCodec::codecForName( "System" ), &ok );
@@ -222,7 +211,7 @@ void TestQgsOgrUtils::readOgrFeatureAttributes()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -230,12 +219,12 @@ void TestQgsOgrUtils::readOgrFeatureAttributes()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( "int_field", QVariant::Int ) );
-  fields.append( QgsField( "dbl_field", QVariant::Double ) );
-  fields.append( QgsField( "date_field", QVariant::Date ) );
-  fields.append( QgsField( "time_field", QVariant::Time ) );
-  fields.append( QgsField( "datetime_field", QVariant::DateTime ) );
-  fields.append( QgsField( "string_field", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
 
   QVERIFY( QgsOgrUtils::readOgrFeatureAttributes( oFeat, fields, f, QTextCodec::codecForName( "System" ) ) );
   QCOMPARE( f.attribute( "int_field" ), QVariant( 5 ) );
@@ -259,7 +248,7 @@ void TestQgsOgrUtils::readOgrFeature()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -267,12 +256,12 @@ void TestQgsOgrUtils::readOgrFeature()
   oFeat = OGR_L_GetNextFeature( ogrLayer );
   QVERIFY( oFeat );
 
-  fields.append( QgsField( "int_field", QVariant::Int ) );
-  fields.append( QgsField( "dbl_field", QVariant::Double ) );
-  fields.append( QgsField( "date_field", QVariant::Date ) );
-  fields.append( QgsField( "time_field", QVariant::Time ) );
-  fields.append( QgsField( "datetime_field", QVariant::DateTime ) );
-  fields.append( QgsField( "string_field", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "int_field" ), QVariant::Int ) );
+  fields.append( QgsField( QStringLiteral( "dbl_field" ), QVariant::Double ) );
+  fields.append( QgsField( QStringLiteral( "date_field" ), QVariant::Date ) );
+  fields.append( QgsField( QStringLiteral( "time_field" ), QVariant::Time ) );
+  fields.append( QgsField( QStringLiteral( "datetime_field" ), QVariant::DateTime ) );
+  fields.append( QgsField( QStringLiteral( "string_field" ), QVariant::String ) );
 
   f = QgsOgrUtils::readOgrFeature( oFeat, fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( f.isValid() );
@@ -299,7 +288,7 @@ void TestQgsOgrUtils::readOgrFields()
 
   //real feature
   //get a feature from line file, test
-  OGRDataSourceH hDS = OGROpen( TO8F( mTestFile ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( mTestFile.toUtf8().constData(), false, nullptr );
   QVERIFY( hDS );
   OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
   QVERIFY( ogrLayer );
@@ -329,22 +318,22 @@ void TestQgsOgrUtils::readOgrFields()
 void TestQgsOgrUtils::stringToFeatureList()
 {
   QgsFields fields;
-  fields.append( QgsField( "name", QVariant::String ) );
+  fields.append( QgsField( QStringLiteral( "name" ), QVariant::String ) );
 
   //empty string
-  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( "", fields, QTextCodec::codecForName( "System" ) );
+  QgsFeatureList features = QgsOgrUtils::stringToFeatureList( QLatin1String( "" ), fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( features.isEmpty() );
   // bad string
-  features = QgsOgrUtils::stringToFeatureList( "asdasdas", fields, QTextCodec::codecForName( "System" ) );
+  features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "asdasdas" ), fields, QTextCodec::codecForName( "System" ) );
   QVERIFY( features.isEmpty() );
 
   // geojson string with 1 feature
-  features = QgsOgrUtils::stringToFeatureList( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}", fields, QTextCodec::codecForName( "System" ) );
+  features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" ), fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 1 );
-  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isEmpty() );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  const QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -353,17 +342,17 @@ void TestQgsOgrUtils::stringToFeatureList()
   features = QgsOgrUtils::stringToFeatureList( "{ \"type\": \"FeatureCollection\",\"features\":[{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}},"
              " {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\"}}]}", fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 2 );
-  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isEmpty() );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
-  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isEmpty() );
+  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 1 ).geometry();
-  point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  point = dynamic_cast< QgsPointV2 * >( featureGeom.geometry() );
   QCOMPARE( point->x(), 110.0 );
   QCOMPARE( point->y(), 20.0 );
   QCOMPARE( features.at( 1 ).attribute( "name" ).toString(), QString( "Henry Gale Island" ) );
@@ -372,14 +361,14 @@ void TestQgsOgrUtils::stringToFeatureList()
 void TestQgsOgrUtils::stringToFields()
 {
   //empty string
-  QgsFields fields = QgsOgrUtils::stringToFields( "", QTextCodec::codecForName( "System" ) );
+  QgsFields fields = QgsOgrUtils::stringToFields( QLatin1String( "" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 0 );
   // bad string
-  fields = QgsOgrUtils::stringToFields( "asdasdas", QTextCodec::codecForName( "System" ) );
+  fields = QgsOgrUtils::stringToFields( QStringLiteral( "asdasdas" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 0 );
 
   // geojson string
-  fields = QgsOgrUtils::stringToFields( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}", QTextCodec::codecForName( "System" ) );
+  fields = QgsOgrUtils::stringToFields( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\",\"height\":5.5}}" ), QTextCodec::codecForName( "System" ) );
   QCOMPARE( fields.count(), 2 );
   QCOMPARE( fields.at( 0 ).name(), QString( "name" ) );
   QCOMPARE( fields.at( 0 ).type(), QVariant::String );
@@ -389,5 +378,5 @@ void TestQgsOgrUtils::stringToFields()
 
 
 
-QTEST_MAIN( TestQgsOgrUtils )
+QGSTEST_MAIN( TestQgsOgrUtils )
 #include "testqgsogrutils.moc"

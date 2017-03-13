@@ -13,19 +13,19 @@ class QgsCircularString: public QgsCurve
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCircularString* clone() const;
+    virtual QgsCircularString* clone() const /Factory/;
     virtual void clear();
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QString asJSON( int precision = 17 ) const;
 
+    bool isEmpty() const;
     int numPoints() const;
 
     /** Returns the point at index i within the circular string.
@@ -58,7 +58,7 @@ class QgsCircularString: public QgsCurve
      * of the curve.
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,

@@ -13,23 +13,23 @@
 #include "qgsdecorationscalebardialog.h"
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
-#include <QSettings>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, int units, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   // set the map units in the spin box
@@ -72,24 +72,24 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( "gui" );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/DecorationScaleBar/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
 }
 
 void QgsDecorationScaleBarDialog::apply()
 {
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();

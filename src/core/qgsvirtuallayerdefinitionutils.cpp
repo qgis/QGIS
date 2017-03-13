@@ -16,11 +16,12 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayerdefinitionutils.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvirtuallayerdefinition.h"
 
-QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer* layer )
+QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer *layer )
 {
   QgsVirtualLayerDefinition def;
 
@@ -38,49 +39,49 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     else
     {
       // find an uid name
-      QString uid = "uid";
-      while ( fields.fieldNameIndex( uid ) != -1 )
-        uid += "_"; // add "_" each time this name already exists
+      QString uid = QStringLiteral( "uid" );
+      while ( fields.lookupField( uid ) != -1 )
+        uid += QLatin1String( "_" ); // add "_" each time this name already exists
 
       // add a column
       columns << "t.rowid AS " + uid;
       def.setUid( uid );
     }
   }
-  Q_FOREACH ( const QgsField& f, layer->dataProvider()->fields() )
+  Q_FOREACH ( const QgsField &f, layer->dataProvider()->fields() )
   {
     columns << "t." + f.name();
   }
 
   int joinIdx = 0;
-  Q_FOREACH ( const QgsVectorJoinInfo& join, layer->vectorJoins() )
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &join, layer->vectorJoins() )
   {
-    QString joinName = QString( "j%1" ).arg( ++joinIdx );
-    QgsVectorLayer* joinedLayer = static_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
+    QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
+    QgsVectorLayer *joinedLayer = join.joinLayer();
     if ( !joinedLayer )
       continue;
-    QString prefix = join.prefix.isEmpty() ? joinedLayer->name() + "_" : join.prefix;
+    QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
 
-    leftJoins << QString( "LEFT JOIN %1 AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( join.joinLayerId, joinName, join.joinFieldName, join.targetFieldName );
+    leftJoins << QStringLiteral( "LEFT JOIN %1 AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
     if ( join.joinFieldNamesSubset() )
     {
-      Q_FOREACH ( const QString& f, *join.joinFieldNamesSubset() )
+      Q_FOREACH ( const QString &f, *join.joinFieldNamesSubset() )
       {
         columns << joinName + "." + f + " AS " + prefix + f;
       }
     }
     else
     {
-      Q_FOREACH ( const QgsField& f, joinedLayer->fields() )
+      Q_FOREACH ( const QgsField &f, joinedLayer->fields() )
       {
-        if ( f.name() == join.joinFieldName )
+        if ( f.name() == join.joinFieldName() )
           continue;
         columns << joinName + "." + f.name() + " AS " + prefix + f.name();
       }
     }
   }
 
-  QString query = "SELECT " + columns.join( ", " ) + " FROM " + layer->id() + " AS t " + leftJoins.join( " " );
+  QString query = "SELECT " + columns.join( QStringLiteral( ", " ) ) + " FROM " + layer->id() + " AS t " + leftJoins.join( QStringLiteral( " " ) );
   def.setQuery( query );
 
   return def;

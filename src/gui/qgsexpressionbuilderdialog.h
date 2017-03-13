@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgisexpressionbuilderdialog.h - A genric expression string builder dialog.
+    qgisexpressionbuilderdialog.h - A generic expression string builder dialog.
      --------------------------------------
     Date                 :  29-May-2011
     Copyright            : (C) 2011 by Nathan Woodrow
@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A generic dialog for building expression strings
@@ -28,13 +29,13 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     Q_OBJECT
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = "generic",
-                                const QgsExpressionContext& context = QgsExpressionContext() );
+    QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent = nullptr, const QString &key = "generic",
+                                const QgsExpressionContext &context = QgsExpressionContext() );
 
-    /** The builder widget that is used by the dialog */
-    QgsExpressionBuilderWidget* expressionBuilder();
+    //! The builder widget that is used by the dialog
+    QgsExpressionBuilderWidget *expressionBuilder();
 
-    void setExpressionText( const QString& text );
+    void setExpressionText( const QString &text );
 
     QString expressionText();
 
@@ -51,12 +52,13 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * @see expressionContext
      * @note added in QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context );
+    void setExpressionContext( const QgsExpressionContext &context );
 
-    /** Sets geometry calculator used in distance/area calculations. */
-    void setGeomCalculator( const QgsDistanceArea & da );
+    //! Sets geometry calculator used in distance/area calculations.
+    void setGeomCalculator( const QgsDistanceArea &da );
 
   protected:
+
     /**
      * Is called when the dialog get accepted or rejected
      * Used to save geometry

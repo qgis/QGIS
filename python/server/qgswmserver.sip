@@ -32,7 +32,7 @@ class QgsConfigParser;
 class QgsFeature;
 class QgsFeatureRenderer;
 class QgsMapLayer;
-class QgsMapRenderer;
+class QgsMapSettings;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -41,6 +41,8 @@ class QgsRenderContext;
 class QgsVectorLayer;
 class QgsSymbol;
 class QgsSymbol;
+class QgsAccessControl;
+
 class QColor;
 class QFile;
 class QFont;
@@ -57,9 +59,8 @@ class QgsWmsServer: public QgsOWSServer
 {
   public:
     /** Constructor. Does _NOT_ take ownership of
-        QgsConfigParser, QgsCapabilitiesCache and QgsMapRenderer*/
-    QgsWmsServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWmsConfigParser* cp, QgsRequestHandler* rh,
-                  QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache, const QgsAccessControl* accessControl );
+        QgsConfigParser, QgsCapabilitiesCache*/
+    QgsWmsServer( const QString& configFilePath, const QgsServerSettings& settings, QMap<QString, QString> &parameters, QgsWmsConfigParser* cp, QgsRequestHandler* rh, QgsCapabilitiesCache* capCache, const QgsAccessControl* accessControl );
     ~QgsWmsServer();
 
     void executeRequest() override;
@@ -67,7 +68,7 @@ class QgsWmsServer: public QgsOWSServer
     /** Returns an XML file with the capabilities description (as described in the WMS specs)
         @param version WMS version (1.1.1 or 1.3.0)
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    QDomDocument getCapabilities( QString version = "1.3.0", bool fullProjectInformation = false );
+    QDomDocument getCapabilities( const QString& version = "1.3.0", bool fullProjectInformation = false );
 
     QDomDocument getContext();
     /** Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership

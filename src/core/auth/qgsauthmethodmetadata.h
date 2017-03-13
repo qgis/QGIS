@@ -19,6 +19,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Holds data auth method key, description, and associated shared library file information.
 
@@ -35,13 +37,14 @@
 class CORE_EXPORT QgsAuthMethodMetadata
 {
   public:
+
     /**
      * Construct an authentication method metadata container
      * @param _key Textual key of the library plugin
      * @param _description Description of the library plugin
      * @param _library File name of library plugin
      */
-    QgsAuthMethodMetadata( const QString & _key, const QString & _description, const QString & _library );
+    QgsAuthMethodMetadata( const QString &_key, const QString &_description, const QString &_library );
 
     /** This returns the unique key associated with the method
 

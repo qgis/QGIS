@@ -18,6 +18,7 @@
 #include "qgscolorscheme.h"
 #include <QWidget>
 #include <QWidgetAction>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsColorSwatchGrid
@@ -37,9 +38,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget *parent = nullptr );
-
-    virtual ~QgsColorSwatchGrid();
+    QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent = nullptr );
 
     //Reimplemented to set fixed size on widget
     virtual QSize minimumSizeHint() const override;
@@ -96,16 +95,16 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
   protected:
 
     //reimplemented QWidget events
-    void paintEvent( QPaintEvent * event ) override;
-    void mouseMoveEvent( QMouseEvent * event ) override;
-    void mousePressEvent( QMouseEvent * event ) override;
-    void mouseReleaseEvent( QMouseEvent * event ) override;
-    void keyPressEvent( QKeyEvent* event ) override;
-    void focusInEvent( QFocusEvent* event ) override;
-    void focusOutEvent( QFocusEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void focusInEvent( QFocusEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
 
   private:
-    QgsColorScheme* mScheme;
+    QgsColorScheme *mScheme = nullptr;
     QString mContext;
     QgsNamedColorList mColors;
     QColor mBaseColor;
@@ -144,7 +143,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     /** Generates a checkboard pattern for transparent color backgrounds
      * @returns checkboard pixmap
      */
-    const QPixmap &transparentBackground();
+    QPixmap transparentBackground();
 };
 
 
@@ -167,9 +166,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = nullptr, const QString& context = QString(), QWidget *parent = nullptr );
-
-    virtual ~QgsColorSwatchGridAction();
+    QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu = nullptr, const QString &context = QString(), QWidget *parent = nullptr );
 
     /** Sets the base color for the color grid
      * @param baseColor base color to pass to scheme for color generation
@@ -226,8 +223,8 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     void colorChanged( const QColor &color );
 
   private:
-    QMenu* mMenu;
-    QgsColorSwatchGrid* mColorSwatchGrid;
+    QMenu *mMenu = nullptr;
+    QgsColorSwatchGrid *mColorSwatchGrid = nullptr;
 
     //used to suppress recursion with hover events
     bool mSuppressRecurse;

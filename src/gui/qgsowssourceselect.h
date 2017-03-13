@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QPushButton>
 #include <QNetworkRequest>
+#include "qgis_gui.h"
 
 class QgsDataProvider;
 class QButtonGroup;
@@ -49,7 +50,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     Q_OBJECT
 
   public:
-    /** Formats supported by provider */
+    //! Formats supported by provider
     struct SupportedFormat
     {
       QString format;
@@ -57,8 +58,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     };
 
     //! Constructor
-    QgsOWSSourceSelect( const QString& service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+    QgsOWSSourceSelect( const QString &service, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+
     ~QgsOWSSourceSelect();
 
   public slots:
@@ -91,10 +92,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     virtual void on_mLayersTreeWidget_itemSelectionChanged();
 
     //! Set status message to theMessage
-    void showStatusMessage( const QString &theMessage );
+    void showStatusMessage( const QString &message );
 
     //! show whatever error is exposed.
-    void showError( const QString &theTitle, const QString &theFormat, const QString &theError );
+    void showError( const QString &title, const QString &format, const QString &error );
 
     //! Stores the selected datasource whenerver it is changed
     void on_mConnectionsComboBox_activated( int );
@@ -105,12 +106,13 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   signals:
-    void addRasterLayer( const QString & rasterLayerPath,
-                         const QString & baseName,
-                         const QString & providerKey );
+    void addRasterLayer( const QString &rasterLayerPath,
+                         const QString &baseName,
+                         const QString &providerKey );
     void connectionsChanged();
 
   protected:
+
     /**
      * List of image formats (encodings) supported by provider
      * @return list of format/label pairs
@@ -188,17 +190,17 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
                                    const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( const QString& authId );
+    QString descriptionForAuthId( const QString &authId );
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
 
-    QPushButton *mAddButton;
+    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 
-    void addWmsListRow( const QDomElement& item, int row );
-    void addWmsListItem( const QDomElement& el, int row, int column );
+    void addWmsListRow( const QDomElement &item, int row );
+    void addWmsListItem( const QDomElement &el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
@@ -214,8 +216,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Returns currently selected cache load control
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 
-    QList<QTreeWidgetItem*> mCurrentSelection;
-    QTableWidgetItem* mCurrentTileset;
+    QList<QTreeWidgetItem *> mCurrentSelection;
+    QTableWidgetItem *mCurrentTileset = nullptr;
 
     //! Name for selected connection
     QString mConnName;

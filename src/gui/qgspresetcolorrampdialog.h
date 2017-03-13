@@ -20,6 +20,7 @@
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsPresetColorRampWidget
@@ -37,9 +38,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp& ramp, QWidget* parent = nullptr );
-
-    ~QgsPresetColorRampWidget();
+    QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -50,7 +49,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsPresetSchemeColorRamp& ramp );
+    void setRamp( const QgsPresetSchemeColorRamp &ramp );
 
   signals:
 
@@ -62,7 +61,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
 
     void on_mButtonAddColor_clicked();
 
-    void newColorChanged( const QColor& color );
+    void newColorChanged( const QColor &color );
     void schemeChanged();
 
   private:
@@ -87,7 +86,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp& ramp, QWidget* parent = nullptr );
+    QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent = nullptr );
 
     /** Returns a color ramp representing the current settings from the dialog.
      * @see setRamp()
@@ -98,7 +97,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsPresetSchemeColorRamp& ramp ) { mWidget->setRamp( ramp ); }
+    void setRamp( const QgsPresetSchemeColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 
   signals:
 
@@ -107,7 +106,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
 
   private:
 
-    QgsPresetColorRampWidget* mWidget;
+    QgsPresetColorRampWidget *mWidget = nullptr;
 
 };
 

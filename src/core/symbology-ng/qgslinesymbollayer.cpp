@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometrysimplifier.h"
 #include "qgsunittypes.h"
+#include "qgsproperty.h"
 
 #include <QPainter>
 #include <QDomDocument>
@@ -31,13 +32,13 @@
 
 #include <cmath>
 
-QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor& color, double width, Qt::PenStyle penStyle )
-    : mPenStyle( penStyle )
-    , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
-    , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
-    , mUseCustomDashPattern( false )
-    , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
-    , mDrawInsidePolygon( false )
+QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
+  : mPenStyle( penStyle )
+  , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
+  , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
+  , mUseCustomDashPattern( false )
+  , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
+  , mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;
@@ -81,101 +82,101 @@ QgsMapUnitScale QgsSimpleLineSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QgsSymbolLayer* QgsSimpleLineSymbolLayer::create( const QgsStringMap& props )
+QgsSymbolLayer *QgsSimpleLineSymbolLayer::create( const QgsStringMap &props )
 {
   QColor color = DEFAULT_SIMPLELINE_COLOR;
   double width = DEFAULT_SIMPLELINE_WIDTH;
   Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE;
 
-  if ( props.contains( "line_color" ) )
+  if ( props.contains( QStringLiteral( "line_color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( props["line_color"] );
+    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "line_color" )] );
   }
-  else if ( props.contains( "outline_color" ) )
+  else if ( props.contains( QStringLiteral( "outline_color" ) ) )
   {
-    color = QgsSymbolLayerUtils::decodeColor( props["outline_color"] );
+    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )] );
   }
-  else if ( props.contains( "color" ) )
+  else if ( props.contains( QStringLiteral( "color" ) ) )
   {
     //pre 2.5 projects used "color"
-    color = QgsSymbolLayerUtils::decodeColor( props["color"] );
+    color = QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "color" )] );
   }
-  if ( props.contains( "line_width" ) )
+  if ( props.contains( QStringLiteral( "line_width" ) ) )
   {
-    width = props["line_width"].toDouble();
+    width = props[QStringLiteral( "line_width" )].toDouble();
   }
-  else if ( props.contains( "outline_width" ) )
+  else if ( props.contains( QStringLiteral( "outline_width" ) ) )
   {
-    width = props["outline_width"].toDouble();
+    width = props[QStringLiteral( "outline_width" )].toDouble();
   }
-  else if ( props.contains( "width" ) )
+  else if ( props.contains( QStringLiteral( "width" ) ) )
   {
     //pre 2.5 projects used "width"
-    width = props["width"].toDouble();
+    width = props[QStringLiteral( "width" )].toDouble();
   }
-  if ( props.contains( "line_style" ) )
+  if ( props.contains( QStringLiteral( "line_style" ) ) )
   {
-    penStyle = QgsSymbolLayerUtils::decodePenStyle( props["line_style"] );
+    penStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "line_style" )] );
   }
-  else if ( props.contains( "outline_style" ) )
+  else if ( props.contains( QStringLiteral( "outline_style" ) ) )
   {
-    penStyle = QgsSymbolLayerUtils::decodePenStyle( props["outline_style"] );
+    penStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "outline_style" )] );
   }
-  else if ( props.contains( "penstyle" ) )
+  else if ( props.contains( QStringLiteral( "penstyle" ) ) )
   {
-    penStyle = QgsSymbolLayerUtils::decodePenStyle( props["penstyle"] );
+    penStyle = QgsSymbolLayerUtils::decodePenStyle( props[QStringLiteral( "penstyle" )] );
   }
 
-  QgsSimpleLineSymbolLayer* l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
-  if ( props.contains( "line_width_unit" ) )
+  QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
+  if ( props.contains( QStringLiteral( "line_width_unit" ) ) )
   {
-    l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props["line_width_unit"] ) );
+    l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "line_width_unit" )] ) );
   }
-  else if ( props.contains( "outline_width_unit" ) )
+  else if ( props.contains( QStringLiteral( "outline_width_unit" ) ) )
   {
-    l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props["outline_width_unit"] ) );
+    l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "outline_width_unit" )] ) );
   }
-  else if ( props.contains( "width_unit" ) )
+  else if ( props.contains( QStringLiteral( "width_unit" ) ) )
   {
     //pre 2.5 projects used "width_unit"
-    l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props["width_unit"] ) );
+    l->setWidthUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "width_unit" )] ) );
   }
-  if ( props.contains( "width_map_unit_scale" ) )
-    l->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props["width_map_unit_scale"] ) );
-  if ( props.contains( "offset" ) )
-    l->setOffset( props["offset"].toDouble() );
-  if ( props.contains( "offset_unit" ) )
-    l->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props["offset_unit"] ) );
-  if ( props.contains( "offset_map_unit_scale" ) )
-    l->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props["offset_map_unit_scale"] ) );
-  if ( props.contains( "joinstyle" ) )
-    l->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( props["joinstyle"] ) );
-  if ( props.contains( "capstyle" ) )
-    l->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( props["capstyle"] ) );
+  if ( props.contains( QStringLiteral( "width_map_unit_scale" ) ) )
+    l->setWidthMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "width_map_unit_scale" )] ) );
+  if ( props.contains( QStringLiteral( "offset" ) ) )
+    l->setOffset( props[QStringLiteral( "offset" )].toDouble() );
+  if ( props.contains( QStringLiteral( "offset_unit" ) ) )
+    l->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )] ) );
+  if ( props.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
+    l->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )] ) );
+  if ( props.contains( QStringLiteral( "joinstyle" ) ) )
+    l->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( props[QStringLiteral( "joinstyle" )] ) );
+  if ( props.contains( QStringLiteral( "capstyle" ) ) )
+    l->setPenCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( props[QStringLiteral( "capstyle" )] ) );
 
-  if ( props.contains( "use_custom_dash" ) )
+  if ( props.contains( QStringLiteral( "use_custom_dash" ) ) )
   {
-    l->setUseCustomDashPattern( props["use_custom_dash"].toInt() );
+    l->setUseCustomDashPattern( props[QStringLiteral( "use_custom_dash" )].toInt() );
   }
-  if ( props.contains( "customdash" ) )
+  if ( props.contains( QStringLiteral( "customdash" ) ) )
   {
-    l->setCustomDashVector( QgsSymbolLayerUtils::decodeRealVector( props["customdash"] ) );
+    l->setCustomDashVector( QgsSymbolLayerUtils::decodeRealVector( props[QStringLiteral( "customdash" )] ) );
   }
-  if ( props.contains( "customdash_unit" ) )
+  if ( props.contains( QStringLiteral( "customdash_unit" ) ) )
   {
-    l->setCustomDashPatternUnit( QgsUnitTypes::decodeRenderUnit( props["customdash_unit"] ) );
+    l->setCustomDashPatternUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "customdash_unit" )] ) );
   }
-  if ( props.contains( "customdash_map_unit_scale" ) )
+  if ( props.contains( QStringLiteral( "customdash_map_unit_scale" ) ) )
   {
-    l->setCustomDashPatternMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props["customdash_map_unit_scale"] ) );
-  }
-
-  if ( props.contains( "draw_inside_polygon" ) )
-  {
-    l->setDrawInsidePolygon( props["draw_inside_polygon"].toInt() );
+    l->setCustomDashPatternMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "customdash_map_unit_scale" )] ) );
   }
 
-  l->restoreDataDefinedProperties( props );
+  if ( props.contains( QStringLiteral( "draw_inside_polygon" ) ) )
+  {
+    l->setDrawInsidePolygon( props[QStringLiteral( "draw_inside_polygon" )].toInt() );
+  }
+
+  l->restoreOldDataDefinedProperties( props );
 
   return l;
 }
@@ -183,15 +184,15 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayer::create( const QgsStringMap& props )
 
 QString QgsSimpleLineSymbolLayer::layerType() const
 {
-  return "SimpleLine";
+  return QStringLiteral( "SimpleLine" );
 }
 
-void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
+void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   QColor penColor = mColor;
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   mPen.setColor( penColor );
-  double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
+  double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
   mPen.setWidthF( scaledWidth );
   if ( mUseCustomDashPattern && !qgsDoubleNear( scaledWidth, 0 ) )
   {
@@ -203,7 +204,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
     QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1
          && versionSplit.at( 1 ).toInt() >= 8
-         && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
+         && scaledWidth < 1.0 )
     {
       dashWidthDiv = 1.0;
     }
@@ -212,7 +213,7 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
     for ( ; it != mCustomDashVector.constEnd(); ++it )
     {
       //the dash is specified in terms of pen widths, therefore the division
-      scaledVector << QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), ( *it ), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
+      scaledVector << context.renderContext().convertToPainterUnits( ( *it ), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv;
     }
     mPen.setDashPattern( scaledVector );
   }
@@ -225,22 +226,19 @@ void QgsSimpleLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
 
   mSelPen = mPen;
   QColor selColor = context.renderContext().selectionColor();
-  if ( ! selectionIsOpaque )
+  if ( ! SELECTION_IS_OPAQUE )
     selColor.setAlphaF( context.alpha() );
   mSelPen.setColor( selColor );
-
-  //prepare expressions for data defined properties
-  prepareExpressions( context );
 }
 
-void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext& context )
+void QgsSimpleLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
   Q_UNUSED( context );
 }
 
-void QgsSimpleLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsSimpleLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  QPainter* p = context.renderContext().painter();
+  QPainter *p = context.renderContext().painter();
   if ( !p )
   {
     return;
@@ -264,7 +262,7 @@ void QgsSimpleLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QL
       }
     }
 
-    //use intersect mode, as a clip path may already exist (eg, for composer maps)
+    //use intersect mode, as a clip path may already exist (e.g., for composer maps)
     p->setClipPath( clipPath, Qt::IntersectClip );
   }
 
@@ -272,7 +270,7 @@ void QgsSimpleLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QL
   if ( rings )
   {
     mOffset = -mOffset; // invert the offset for rings!
-    Q_FOREACH ( const QPolygonF& ring, *rings )
+    Q_FOREACH ( const QPolygonF &ring, *rings )
       renderPolyline( ring, context );
     mOffset = -mOffset;
   }
@@ -285,9 +283,9 @@ void QgsSimpleLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QL
 
 }
 
-void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context )
+void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
-  QPainter* p = context.renderContext().painter();
+  QPainter *p = context.renderContext().painter();
   if ( !p )
   {
     return;
@@ -329,8 +327,8 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   }
   else
   {
-    double scaledOffset = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale );
-    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
+    double scaledOffset = context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale );
+    QList<QPolygonF> mline = ::offsetLine( points, scaledOffset, context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
     for ( int part = 0; part < mline.count(); ++part )
     {
 #if 0
@@ -347,28 +345,27 @@ void QgsSimpleLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
 QgsStringMap QgsSimpleLineSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map["line_color"] = QgsSymbolLayerUtils::encodeColor( mColor );
-  map["line_width"] = QString::number( mWidth );
-  map["line_width_unit"] = QgsUnitTypes::encodeUnit( mWidthUnit );
-  map["width_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
-  map["line_style"] = QgsSymbolLayerUtils::encodePenStyle( mPenStyle );
-  map["joinstyle"] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
-  map["capstyle"] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
-  map["offset"] = QString::number( mOffset );
-  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
-  map["offset_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
-  map["customdash"] = QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector );
-  map["customdash_unit"] = QgsUnitTypes::encodeUnit( mCustomDashPatternUnit );
-  map["customdash_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
-  map["draw_inside_polygon"] = ( mDrawInsidePolygon ? "1" : "0" );
-  saveDataDefinedProperties( map );
+  map[QStringLiteral( "line_color" )] = QgsSymbolLayerUtils::encodeColor( mColor );
+  map[QStringLiteral( "line_width" )] = QString::number( mWidth );
+  map[QStringLiteral( "line_width_unit" )] = QgsUnitTypes::encodeUnit( mWidthUnit );
+  map[QStringLiteral( "width_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mWidthMapUnitScale );
+  map[QStringLiteral( "line_style" )] = QgsSymbolLayerUtils::encodePenStyle( mPenStyle );
+  map[QStringLiteral( "joinstyle" )] = QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle );
+  map[QStringLiteral( "capstyle" )] = QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle );
+  map[QStringLiteral( "offset" )] = QString::number( mOffset );
+  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map[QStringLiteral( "use_custom_dash" )] = ( mUseCustomDashPattern ? "1" : "0" );
+  map[QStringLiteral( "customdash" )] = QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector );
+  map[QStringLiteral( "customdash_unit" )] = QgsUnitTypes::encodeUnit( mCustomDashPatternUnit );
+  map[QStringLiteral( "customdash_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
+  map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? "1" : "0" );
   return map;
 }
 
-QgsSimpleLineSymbolLayer* QgsSimpleLineSymbolLayer::clone() const
+QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
 {
-  QgsSimpleLineSymbolLayer* l = new QgsSimpleLineSymbolLayer( mColor, mWidth, mPenStyle );
+  QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( mColor, mWidth, mPenStyle );
   l->setWidthUnit( mWidthUnit );
   l->setWidthMapUnitScale( mWidthMapUnitScale );
   l->setOffsetUnit( mOffsetUnit );
@@ -386,21 +383,21 @@ QgsSimpleLineSymbolLayer* QgsSimpleLineSymbolLayer::clone() const
   return l;
 }
 
-void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
   if ( mPenStyle == Qt::NoPen )
     return;
 
-  QDomElement symbolizerElem = doc.createElement( "se:LineSymbolizer" );
-  if ( !props.value( "uom", "" ).isEmpty() )
-    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
+  if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
+    symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
   element.appendChild( symbolizerElem );
 
   // <Geometry>
-  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+  QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
 
   // <Stroke>
-  QDomElement strokeElem = doc.createElement( "se:Stroke" );
+  QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
   symbolizerElem.appendChild( strokeElem );
 
   Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
@@ -412,7 +409,7 @@ void QgsSimpleLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   // <se:PerpendicularOffset>
   if ( !qgsDoubleNear( mOffset, 0.0 ) )
   {
-    QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
+    QDomElement perpOffsetElem = doc.createElement( QStringLiteral( "se:PerpendicularOffset" ) );
     double offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
     perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( offset ) ) );
     symbolizerElem.appendChild( perpOffsetElem );
@@ -434,11 +431,11 @@ QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
   }
 }
 
-QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );
 
-  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
     return nullptr;
 
@@ -456,7 +453,7 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
     return nullptr;
 
   double offset = 0.0;
-  QDomElement perpOffsetElem = element.firstChildElement( "PerpendicularOffset" );
+  QDomElement perpOffsetElem = element.firstChildElement( QStringLiteral( "PerpendicularOffset" ) );
   if ( !perpOffsetElem.isNull() )
   {
     bool ok;
@@ -465,7 +462,7 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
-  QgsSimpleLineSymbolLayer* l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
+  QgsSimpleLineSymbolLayer *l = new QgsSimpleLineSymbolLayer( color, width, penStyle );
   l->setOffset( offset );
   l->setPenJoinStyle( penJoinStyle );
   l->setPenCapStyle( penCapStyle );
@@ -474,45 +471,42 @@ QgsSymbolLayer* QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
   return l;
 }
 
-void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen, double& offset )
+void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext &context, QPen &pen, QPen &selPen, double &offset )
 {
-  if ( !hasDataDefinedProperties() )
+  if ( !dataDefinedProperties().hasActiveProperties() )
     return; // shortcut
 
   //data defined properties
   bool hasStrokeWidthExpression = false;
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mWidth );
-    double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(),
-                         evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mWidth ).toDouble(),
-                         mWidthUnit, mWidthMapUnitScale );
+    double scaledWidth = context.renderContext().convertToPainterUnits(
+                           mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth ),
+                           mWidthUnit, mWidthMapUnitScale );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
     hasStrokeWidthExpression = true;
   }
 
   //color
-  bool ok;
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_COLOR ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_COLOR, context, QVariant(), &ok ).toString();
-    if ( ok )
-      pen.setColor( QgsSymbolLayerUtils::decodeColor( colorString ) );
+    pen.setColor( mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor ) );
   }
 
   //offset
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
     context.setOriginalValueVariable( mOffset );
-    offset = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET, context, offset ).toDouble();
+    offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), offset );
   }
 
   //dash dot vector
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_CUSTOMDASH ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCustomDash ) )
   {
-    double scaledWidth = QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), mWidth, mWidthUnit, mWidthMapUnitScale );
+    double scaledWidth = context.renderContext().convertToPainterUnits( mWidth, mWidthUnit, mWidthMapUnitScale );
     double dashWidthDiv = mPen.widthF();
 
     if ( hasStrokeWidthExpression )
@@ -525,53 +519,54 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
     QStringList versionSplit = QString( qVersion() ).split( '.' );
     if ( versionSplit.size() > 1
          && versionSplit.at( 1 ).toInt() >= 8
-         && ( scaledWidth * context.renderContext().rasterScaleFactor() ) < 1.0 )
+         && scaledWidth < 1.0 )
     {
       dashWidthDiv = 1.0;
     }
 
     QVector<qreal> dashVector;
-    QStringList dashList = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_CUSTOMDASH, context, QVariant(), &ok ).toString().split( ';' );
-    if ( ok )
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCustomDash, context.renderContext().expressionContext() );
+    if ( exprVal.isValid() )
     {
+      QStringList dashList = exprVal.toString().split( ';' );
       QStringList::const_iterator dashIt = dashList.constBegin();
       for ( ; dashIt != dashList.constEnd(); ++dashIt )
       {
-        dashVector.push_back( QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), dashIt->toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
+        dashVector.push_back( context.renderContext().convertToPainterUnits( dashIt->toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
       }
       pen.setDashPattern( dashVector );
     }
   }
 
   //line style
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_LINE_STYLE ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    QString lineStyleString = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_LINE_STYLE, context, QVariant(), &ok ).toString();
-    if ( ok )
-      pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( lineStyleString ) );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeStyle, context.renderContext().expressionContext() );
+    if ( exprVal.isValid() )
+      pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
   }
 
   //join style
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_JOINSTYLE ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyJoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    QString joinStyleString = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_JOINSTYLE, context, QVariant(), &ok ).toString();
-    if ( ok )
-      pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinStyleString ) );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyJoinStyle, context.renderContext().expressionContext() );
+    if ( exprVal.isValid() )
+      pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
   }
 
   //cap style
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_CAPSTYLE ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCapStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
-    QString capStyleString = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_CAPSTYLE, context, QVariant(), &ok ).toString();
-    if ( ok )
-      pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( capStyleString ) );
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyCapStyle, context.renderContext().expressionContext() );
+    if ( exprVal.isValid() )
+      pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() ) );
   }
 }
 
-double QgsSimpleLineSymbolLayer::estimateMaxBleed() const
+double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   if ( mDrawInsidePolygon )
   {
@@ -580,11 +575,12 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed() const
   }
   else
   {
-    return ( mWidth / 2.0 ) + mOffset;
+    return context.convertToPainterUnits( ( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
+           context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
-QVector<qreal> QgsSimpleLineSymbolLayer::dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const
+QVector<qreal> QgsSimpleLineSymbolLayer::dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const
 {
   unit = mCustomDashPatternUnit;
   return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>();
@@ -595,41 +591,39 @@ Qt::PenStyle QgsSimpleLineSymbolLayer::dxfPenStyle() const
   return mPenStyle;
 }
 
-double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const
+double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   double width = mWidth;
 
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mWidth );
-    width = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_WIDTH, context, mWidth ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth )
+            * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
   }
 
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
-QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext& context ) const
+QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
 {
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_COLOR ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
   {
-    bool ok;
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor ) );
-    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_COLOR, context, QVariant(), &ok ).toString();
-    if ( ok )
-      return ( QgsSymbolLayerUtils::decodeColor( colorString ) );
+    return mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertyStrokeColor, context.renderContext().expressionContext(), mColor );
   }
   return mColor;
 }
 
-double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const
+double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   Q_UNUSED( e );
   double offset = mOffset;
 
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
     context.setOriginalValueVariable( mOffset );
-    offset = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET, context, mOffset ).toDouble();
+    offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), mOffset );
   }
   return offset;
 }
@@ -642,10 +636,10 @@ class MyLine
 {
   public:
     MyLine( QPointF p1, QPointF p2 )
-        : mVertical( false )
-        , mIncreasing( false )
-        , mT( 0.0 )
-        , mLength( 0.0 )
+      : mVertical( false )
+      , mIncreasing( false )
+      , mT( 0.0 )
+      , mLength( 0.0 )
     {
       if ( p1 == p2 )
         return; // invalid
@@ -716,84 +710,79 @@ QgsMarkerLineSymbolLayer::QgsMarkerLineSymbolLayer( bool rotateMarker, double in
   setSubSymbol( new QgsMarkerSymbol() );
 }
 
-QgsMarkerLineSymbolLayer::~QgsMarkerLineSymbolLayer()
-{
-  delete mMarker;
-}
-
-QgsSymbolLayer* QgsMarkerLineSymbolLayer::create( const QgsStringMap& props )
+QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QgsStringMap &props )
 {
   bool rotate = DEFAULT_MARKERLINE_ROTATE;
   double interval = DEFAULT_MARKERLINE_INTERVAL;
 
 
-  if ( props.contains( "interval" ) )
-    interval = props["interval"].toDouble();
-  if ( props.contains( "rotate" ) )
-    rotate = ( props["rotate"] == "1" );
+  if ( props.contains( QStringLiteral( "interval" ) ) )
+    interval = props[QStringLiteral( "interval" )].toDouble();
+  if ( props.contains( QStringLiteral( "rotate" ) ) )
+    rotate = ( props[QStringLiteral( "rotate" )] == QLatin1String( "1" ) );
 
-  QgsMarkerLineSymbolLayer* x = new QgsMarkerLineSymbolLayer( rotate, interval );
-  if ( props.contains( "offset" ) )
+  QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( rotate, interval );
+  if ( props.contains( QStringLiteral( "offset" ) ) )
   {
-    x->setOffset( props["offset"].toDouble() );
+    x->setOffset( props[QStringLiteral( "offset" )].toDouble() );
   }
-  if ( props.contains( "offset_unit" ) )
+  if ( props.contains( QStringLiteral( "offset_unit" ) ) )
   {
-    x->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props["offset_unit"] ) );
+    x->setOffsetUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_unit" )] ) );
   }
-  if ( props.contains( "interval_unit" ) )
+  if ( props.contains( QStringLiteral( "interval_unit" ) ) )
   {
-    x->setIntervalUnit( QgsUnitTypes::decodeRenderUnit( props["interval_unit"] ) );
+    x->setIntervalUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "interval_unit" )] ) );
   }
-  if ( props.contains( "offset_along_line" ) )
+  if ( props.contains( QStringLiteral( "offset_along_line" ) ) )
   {
-    x->setOffsetAlongLine( props["offset_along_line"].toDouble() );
+    x->setOffsetAlongLine( props[QStringLiteral( "offset_along_line" )].toDouble() );
   }
-  if ( props.contains( "offset_along_line_unit" ) )
+  if ( props.contains( QStringLiteral( "offset_along_line_unit" ) ) )
   {
-    x->setOffsetAlongLineUnit( QgsUnitTypes::decodeRenderUnit( props["offset_along_line_unit"] ) );
+    x->setOffsetAlongLineUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_along_line_unit" )] ) );
   }
-  if ( props.contains(( "offset_along_line_map_unit_scale" ) ) )
+  if ( props.contains( ( "offset_along_line_map_unit_scale" ) ) )
   {
-    x->setOffsetAlongLineMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props["offset_along_line_map_unit_scale"] ) );
-  }
-
-  if ( props.contains( "offset_map_unit_scale" ) )
-  {
-    x->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props["offset_map_unit_scale"] ) );
-  }
-  if ( props.contains( "interval_map_unit_scale" ) )
-  {
-    x->setIntervalMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props["interval_map_unit_scale"] ) );
+    x->setOffsetAlongLineMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_along_line_map_unit_scale" )] ) );
   }
 
-  if ( props.contains( "placement" ) )
+  if ( props.contains( QStringLiteral( "offset_map_unit_scale" ) ) )
   {
-    if ( props["placement"] == "vertex" )
+    x->setOffsetMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_map_unit_scale" )] ) );
+  }
+  if ( props.contains( QStringLiteral( "interval_map_unit_scale" ) ) )
+  {
+    x->setIntervalMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "interval_map_unit_scale" )] ) );
+  }
+
+  if ( props.contains( QStringLiteral( "placement" ) ) )
+  {
+    if ( props[QStringLiteral( "placement" )] == QLatin1String( "vertex" ) )
       x->setPlacement( Vertex );
-    else if ( props["placement"] == "lastvertex" )
+    else if ( props[QStringLiteral( "placement" )] == QLatin1String( "lastvertex" ) )
       x->setPlacement( LastVertex );
-    else if ( props["placement"] == "firstvertex" )
+    else if ( props[QStringLiteral( "placement" )] == QLatin1String( "firstvertex" ) )
       x->setPlacement( FirstVertex );
-    else if ( props["placement"] == "centralpoint" )
+    else if ( props[QStringLiteral( "placement" )] == QLatin1String( "centralpoint" ) )
       x->setPlacement( CentralPoint );
-    else if ( props["placement"] == "curvepoint" )
+    else if ( props[QStringLiteral( "placement" )] == QLatin1String( "curvepoint" ) )
       x->setPlacement( CurvePoint );
     else
       x->setPlacement( Interval );
   }
 
-  x->restoreDataDefinedProperties( props );
+  x->restoreOldDataDefinedProperties( props );
 
   return x;
 }
 
 QString QgsMarkerLineSymbolLayer::layerType() const
 {
-  return "MarkerLine";
+  return QStringLiteral( "MarkerLine" );
 }
 
-void QgsMarkerLineSymbolLayer::setColor( const QColor& color )
+void QgsMarkerLineSymbolLayer::setColor( const QColor &color )
 {
   mMarker->setColor( color );
   mColor = color;
@@ -804,7 +793,7 @@ QColor QgsMarkerLineSymbolLayer::color() const
   return mMarker ? mMarker->color() : mColor;
 }
 
-void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   mMarker->setAlpha( context.alpha() );
 
@@ -815,51 +804,52 @@ void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext& context )
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext(), context.fields() );
-
-  //prepare expressions for data defined properties
-  prepareExpressions( context );
 }
 
-void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
   mMarker->stopRender( context.renderContext() );
 }
 
-void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   double offset = mOffset;
 
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffset ) )
   {
     context.setOriginalValueVariable( mOffset );
-    offset = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET, context, mOffset ).toDouble();
+    offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), mOffset );
   }
 
   Placement placement = mPlacement;
 
-  bool ok;
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_PLACEMENT ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyPlacement ) )
   {
-    QString placementString = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_PLACEMENT, context, QVariant(), &ok ).toString();
-    if ( ok )
+    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyPlacement, context.renderContext().expressionContext() );
+    if ( exprVal.isValid() )
     {
-      if ( placementString.compare( "vertex", Qt::CaseInsensitive ) == 0 )
+      QString placementString = exprVal.toString();
+      if ( placementString.compare( QLatin1String( "interval" ), Qt::CaseInsensitive ) == 0 )
+      {
+        placement = Interval;
+      }
+      else if ( placementString.compare( QLatin1String( "vertex" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = Vertex;
       }
-      else if ( placementString.compare( "lastvertex", Qt::CaseInsensitive ) == 0 )
+      else if ( placementString.compare( QLatin1String( "lastvertex" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = LastVertex;
       }
-      else if ( placementString.compare( "firstvertex", Qt::CaseInsensitive ) == 0 )
+      else if ( placementString.compare( QLatin1String( "firstvertex" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = FirstVertex;
       }
-      else if ( placementString.compare( "centerpoint", Qt::CaseInsensitive ) == 0 )
+      else if ( placementString.compare( QLatin1String( "centerpoint" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = CentralPoint;
       }
-      else if ( placementString.compare( "curvepoint", Qt::CaseInsensitive ) == 0 )
+      else if ( placementString.compare( QLatin1String( "curvepoint" ), Qt::CaseInsensitive ) == 0 )
       {
         placement = CurvePoint;
       }
@@ -869,6 +859,9 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
       }
     }
   }
+
+
+  context.renderContext().painter()->save();
 
   if ( qgsDoubleNear( offset, 0.0 ) )
   {
@@ -882,7 +875,7 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
   else
   {
     context.renderContext().setGeometry( nullptr ); //always use segmented geometry with offset
-    QList<QPolygonF> mline = ::offsetLine( points, QgsSymbolLayerUtils::convertToPainterUnits( context.renderContext(), offset, mOffsetUnit, mOffsetMapUnitScale ), context.feature() ? context.feature()->geometry().type() : QgsWkbTypes::LineGeometry );
+    QList<QPolygonF> mline = ::offsetLine( points, context.renderContext().convertToPainterUnits( offset, mOffsetUnit, mOffsetMapUnitScale ), context.originalGeometryType() != QgsWkbTypes::UnknownGeometry ? context.originalGeometryType() : QgsWkbTypes::LineGeometry );
 
     for ( int part = 0; part < mline.count(); ++part )
     {
@@ -896,11 +889,13 @@ void QgsMarkerLineSymbolLayer::renderPolyline( const QPolygonF& points, QgsSymbo
         renderPolylineVertex( points2, context, placement );
     }
   }
+
+  context.renderContext().painter()->restore();
 }
 
-void QgsMarkerLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  const QgsCurvePolygon* curvePolygon = dynamic_cast<const QgsCurvePolygon*>( context.renderContext().geometry() );
+  const QgsCurvePolygon *curvePolygon = dynamic_cast<const QgsCurvePolygon *>( context.renderContext().geometry() );
 
   if ( curvePolygon )
   {
@@ -922,40 +917,43 @@ void QgsMarkerLineSymbolLayer::renderPolygonOutline( const QPolygonF& points, QL
   }
 }
 
-void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF& points, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   if ( points.isEmpty() )
     return;
 
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
-  bool first = mOffsetAlongLine ? false : true; //only draw marker at first vertex when no offset along line is set
 
-  QgsRenderContext& rc = context.renderContext();
+  QgsRenderContext &rc = context.renderContext();
   double interval = mInterval;
 
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_INTERVAL ) )
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  context.renderContext().expressionContext().appendScope( scope );
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyInterval ) )
   {
     context.setOriginalValueVariable( mInterval );
-    interval = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_INTERVAL, context, mInterval ).toDouble();
+    interval = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyInterval, context.renderContext().expressionContext(), mInterval );
   }
   if ( interval <= 0 )
   {
     interval = 0.1;
   }
   double offsetAlongLine = mOffsetAlongLine;
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetAlongLine ) )
   {
     context.setOriginalValueVariable( mOffsetAlongLine );
-    offsetAlongLine = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE, context, mOffsetAlongLine ).toDouble();
+    offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
 
-  double painterUnitInterval = QgsSymbolLayerUtils::convertToPainterUnits( rc, interval, mIntervalUnit, mIntervalMapUnitScale );
-  lengthLeft = painterUnitInterval - QgsSymbolLayerUtils::convertToPainterUnits( rc, offsetAlongLine, mIntervalUnit, mIntervalMapUnitScale );
+  double painterUnitInterval = rc.convertToPainterUnits( interval, mIntervalUnit, mIntervalMapUnitScale );
+  lengthLeft = painterUnitInterval - rc.convertToPainterUnits( offsetAlongLine, mIntervalUnit, mIntervalMapUnitScale );
 
+  int pointNum = 0;
   for ( int i = 1; i < points.count(); ++i )
   {
-    const QPointF& pt = points[i];
+    const QPointF &pt = points[i];
 
     if ( lastPt == pt ) // must not be equal!
       continue;
@@ -976,12 +974,6 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF& points, 
       mMarker->setLineAngle( l.angle() * 180 / M_PI );
     }
 
-    // draw first marker
-    if ( first )
-    {
-      mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
-      first = false;
-    }
 
     // while we're not at the end of line segment, draw!
     while ( lengthLeft > painterUnitInterval )
@@ -989,12 +981,15 @@ void QgsMarkerLineSymbolLayer::renderPolylineInterval( const QPolygonF& points, 
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
       mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
       c = 1; // reset c (if wasn't 1 already)
     }
 
     lastPt = pt;
   }
+
+  delete context.renderContext().expressionContext().popScope();
 }
 
 static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
@@ -1007,43 +1002,50 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   return atan2( unitY, unitX );
 }
 
-void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement )
+void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Placement placement )
 {
   if ( points.isEmpty() )
     return;
 
-  QgsRenderContext& rc = context.renderContext();
+  QgsRenderContext &rc = context.renderContext();
 
   double origAngle = mMarker->angle();
   int i, maxCount;
   bool isRing = false;
 
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  context.renderContext().expressionContext().appendScope( scope );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, points.size(), true ) );
+
   double offsetAlongLine = mOffsetAlongLine;
-  if ( hasDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE ) )
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyOffsetAlongLine ) )
   {
     context.setOriginalValueVariable( mOffsetAlongLine );
-    offsetAlongLine = evaluateDataDefinedProperty( QgsSymbolLayer::EXPR_OFFSET_ALONG_LINE, context, mOffsetAlongLine ).toDouble();
+    offsetAlongLine = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffsetAlongLine, context.renderContext().expressionContext(), mOffsetAlongLine );
   }
   if ( !qgsDoubleNear( offsetAlongLine, 0.0 ) )
   {
     //scale offset along line
-    offsetAlongLine = QgsSymbolLayerUtils::convertToPainterUnits( rc, offsetAlongLine, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
+    offsetAlongLine = rc.convertToPainterUnits( offsetAlongLine, mOffsetAlongLineUnit, mOffsetAlongLineMapUnitScale );
   }
 
   if ( qgsDoubleNear( offsetAlongLine, 0.0 ) && context.renderContext().geometry()
        && context.renderContext().geometry()->hasCurvedSegments() && ( placement == Vertex || placement == CurvePoint ) )
   {
     QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
-    const QgsMapToPixel& mtp = context.renderContext().mapToPixel();
+    const QgsMapToPixel &mtp = context.renderContext().mapToPixel();
 
     QgsVertexId vId;
     QgsPointV2 vPoint;
     double x, y, z;
     QPointF mapPoint;
+    int pointNum = 0;
     while ( context.renderContext().geometry()->nextVertex( vId, vPoint ) )
     {
-      if (( placement == Vertex && vId.type == QgsVertexId::SegmentVertex )
-          || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
+
+      if ( ( placement == Vertex && vId.type == QgsVertexId::SegmentVertex )
+           || ( placement == CurvePoint && vId.type == QgsVertexId::CurveVertex ) )
       {
         //transform
         x = vPoint.x(), y = vPoint.y();
@@ -1063,6 +1065,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF& points, Qg
         mMarker->renderPoint( mapPoint, context.feature(), rc, -1, context.selected() );
       }
     }
+
+    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1085,6 +1089,7 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF& points, Qg
   }
   else
   {
+    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
@@ -1095,11 +1100,16 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF& points, Qg
     renderOffsetVertexAlongLine( points, i, distance, context );
     // restore original rotation
     mMarker->setAngle( origAngle );
+
+    delete context.renderContext().expressionContext().popScope();
     return;
   }
 
+  int pointNum = 0;
   for ( ; i < maxCount; ++i )
   {
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, ++pointNum, true ) );
+
     if ( isRing && placement == Vertex && i == points.count() - 1 )
     {
       continue; // don't draw the last marker - it has been drawn already
@@ -1116,12 +1126,14 @@ void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF& points, Qg
 
   // restore original rotation
   mMarker->setAngle( origAngle );
+
+  delete context.renderContext().expressionContext().popScope();
 }
 
-double QgsMarkerLineSymbolLayer::markerAngle( const QPolygonF& points, bool isRing, int vertex )
+double QgsMarkerLineSymbolLayer::markerAngle( const QPolygonF &points, bool isRing, int vertex )
 {
   double angle = 0;
-  const QPointF& pt = points[vertex];
+  const QPointF &pt = points[vertex];
 
   if ( isRing || ( vertex > 0 && vertex < points.count() - 1 ) )
   {
@@ -1166,7 +1178,7 @@ double QgsMarkerLineSymbolLayer::markerAngle( const QPolygonF& points, bool isRi
     {
       while ( vertex < points.size() - 1 )
       {
-        const QPointF& nextPt = points[vertex+1];
+        const QPointF &nextPt = points[vertex + 1];
         if ( pt != nextPt )
         {
           angle = MyLine( pt, nextPt ).angle();
@@ -1180,7 +1192,7 @@ double QgsMarkerLineSymbolLayer::markerAngle( const QPolygonF& points, bool isRi
       // use last segment's angle
       while ( vertex >= 1 ) //in case of duplicated vertices, take the next suitable one
       {
-        const QPointF& prevPt = points[vertex-1];
+        const QPointF &prevPt = points[vertex - 1];
         if ( pt != prevPt )
         {
           angle = MyLine( prevPt, pt ).angle();
@@ -1193,12 +1205,12 @@ double QgsMarkerLineSymbolLayer::markerAngle( const QPolygonF& points, bool isRi
   return angle;
 }
 
-void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context )
 {
   if ( points.isEmpty() )
     return;
 
-  QgsRenderContext& rc = context.renderContext();
+  QgsRenderContext &rc = context.renderContext();
   double origAngle = mMarker->angle();
   if ( qgsDoubleNear( distance, 0.0 ) )
   {
@@ -1223,7 +1235,7 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
 
   for ( int i = startPoint; pointIncrement > 0 ? i <= endPoint : i >= endPoint; i += pointIncrement )
   {
-    const QPointF& pt = points[i];
+    const QPointF &pt = points[i];
 
     if ( previousPoint == pt ) // must not be equal!
       continue;
@@ -1249,10 +1261,9 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
   }
 
   //didn't find point
-  return;
 }
 
-void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context )
+void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context )
 {
   if ( !points.isEmpty() )
   {
@@ -1262,8 +1273,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF& points, Q
     QPointF last = *it;
     for ( ++it; it != points.constEnd(); ++it )
     {
-      length += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                     ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      length += sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                      ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       last = *it;
     }
 
@@ -1276,8 +1287,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF& points, Q
     for ( ++it; it != points.constEnd(); ++it )
     {
       next = *it;
-      next_at += sqrt(( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                      ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      next_at += sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                       ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       if ( next_at >= length / 2 )
         break; // we have reached the center
       last = *it;
@@ -1304,39 +1315,37 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF& points, Q
 QgsStringMap QgsMarkerLineSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map["rotate"] = ( mRotateMarker ? "1" : "0" );
-  map["interval"] = QString::number( mInterval );
-  map["offset"] = QString::number( mOffset );
-  map["offset_along_line"] = QString::number( mOffsetAlongLine );
-  map["offset_along_line_unit"] = QgsUnitTypes::encodeUnit( mOffsetAlongLineUnit );
-  map["offset_along_line_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetAlongLineMapUnitScale );
-  map["offset_unit"] = QgsUnitTypes::encodeUnit( mOffsetUnit );
-  map["offset_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map["interval_unit"] = QgsUnitTypes::encodeUnit( mIntervalUnit );
-  map["interval_map_unit_scale"] = QgsSymbolLayerUtils::encodeMapUnitScale( mIntervalMapUnitScale );
+  map[QStringLiteral( "rotate" )] = ( mRotateMarker ? "1" : "0" );
+  map[QStringLiteral( "interval" )] = QString::number( mInterval );
+  map[QStringLiteral( "offset" )] = QString::number( mOffset );
+  map[QStringLiteral( "offset_along_line" )] = QString::number( mOffsetAlongLine );
+  map[QStringLiteral( "offset_along_line_unit" )] = QgsUnitTypes::encodeUnit( mOffsetAlongLineUnit );
+  map[QStringLiteral( "offset_along_line_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetAlongLineMapUnitScale );
+  map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
+  map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map[QStringLiteral( "interval_unit" )] = QgsUnitTypes::encodeUnit( mIntervalUnit );
+  map[QStringLiteral( "interval_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mIntervalMapUnitScale );
   if ( mPlacement == Vertex )
-    map["placement"] = "vertex";
+    map[QStringLiteral( "placement" )] = QStringLiteral( "vertex" );
   else if ( mPlacement == LastVertex )
-    map["placement"] = "lastvertex";
+    map[QStringLiteral( "placement" )] = QStringLiteral( "lastvertex" );
   else if ( mPlacement == FirstVertex )
-    map["placement"] = "firstvertex";
+    map[QStringLiteral( "placement" )] = QStringLiteral( "firstvertex" );
   else if ( mPlacement == CentralPoint )
-    map["placement"] = "centralpoint";
+    map[QStringLiteral( "placement" )] = QStringLiteral( "centralpoint" );
   else if ( mPlacement == CurvePoint )
-    map["placement"] = "curvepoint";
+    map[QStringLiteral( "placement" )] = QStringLiteral( "curvepoint" );
   else
-    map["placement"] = "interval";
-
-  saveDataDefinedProperties( map );
+    map[QStringLiteral( "placement" )] = QStringLiteral( "interval" );
   return map;
 }
 
-QgsSymbol* QgsMarkerLineSymbolLayer::subSymbol()
+QgsSymbol *QgsMarkerLineSymbolLayer::subSymbol()
 {
-  return mMarker;
+  return mMarker.get();
 }
 
-bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol* symbol )
+bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   if ( !symbol || symbol->type() != QgsSymbol::Marker )
   {
@@ -1344,15 +1353,14 @@ bool QgsMarkerLineSymbolLayer::setSubSymbol( QgsSymbol* symbol )
     return false;
   }
 
-  delete mMarker;
-  mMarker = static_cast<QgsMarkerSymbol*>( symbol );
+  mMarker.reset( static_cast<QgsMarkerSymbol *>( symbol ) );
   mColor = mMarker->color();
   return true;
 }
 
-QgsMarkerLineSymbolLayer* QgsMarkerLineSymbolLayer::clone() const
+QgsMarkerLineSymbolLayer *QgsMarkerLineSymbolLayer::clone() const
 {
-  QgsMarkerLineSymbolLayer* x = new QgsMarkerLineSymbolLayer( mRotateMarker, mInterval );
+  QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( mRotateMarker, mInterval );
   x->setSubSymbol( mMarker->clone() );
   x->setOffset( mOffset );
   x->setPlacement( mPlacement );
@@ -1368,33 +1376,33 @@ QgsMarkerLineSymbolLayer* QgsMarkerLineSymbolLayer::clone() const
   return x;
 }
 
-void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const
+void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const
 {
   for ( int i = 0; i < mMarker->symbolLayerCount(); i++ )
   {
-    QDomElement symbolizerElem = doc.createElement( "se:LineSymbolizer" );
-    if ( !props.value( "uom", "" ).isEmpty() )
-      symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+    QDomElement symbolizerElem = doc.createElement( QStringLiteral( "se:LineSymbolizer" ) );
+    if ( !props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ).isEmpty() )
+      symbolizerElem.setAttribute( QStringLiteral( "uom" ), props.value( QStringLiteral( "uom" ), QLatin1String( "" ) ) );
     element.appendChild( symbolizerElem );
 
     // <Geometry>
-    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+    QgsSymbolLayerUtils::createGeometryElement( doc, symbolizerElem, props.value( QStringLiteral( "geom" ), QLatin1String( "" ) ) );
 
     QString gap;
     switch ( mPlacement )
     {
       case FirstVertex:
-        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, "placement", "firstPoint" ) );
+        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "firstPoint" ) ) );
         break;
       case LastVertex:
-        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, "placement", "lastPoint" ) );
+        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "lastPoint" ) ) );
         break;
       case CentralPoint:
-        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, "placement", "centralPoint" ) );
+        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "centralPoint" ) ) );
         break;
       case Vertex:
         // no way to get line/polygon's vertices, use a VendorOption
-        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, "placement", "points" ) );
+        symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "placement" ), QStringLiteral( "points" ) ) );
         break;
       default:
         double interval = QgsSymbolLayerUtils::rescaleUom( mInterval, mIntervalUnit, props );
@@ -1406,22 +1414,22 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     {
       // markers in LineSymbolizer must be drawn following the line orientation,
       // use a VendorOption when no marker rotation
-      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, "rotateMarker", "0" ) );
+      symbolizerElem.appendChild( QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "rotateMarker" ), QStringLiteral( "0" ) ) );
     }
 
     // <Stroke>
-    QDomElement strokeElem = doc.createElement( "se:Stroke" );
+    QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
     symbolizerElem.appendChild( strokeElem );
 
     // <GraphicStroke>
-    QDomElement graphicStrokeElem = doc.createElement( "se:GraphicStroke" );
+    QDomElement graphicStrokeElem = doc.createElement( QStringLiteral( "se:GraphicStroke" ) );
     strokeElem.appendChild( graphicStrokeElem );
 
     QgsSymbolLayer *layer = mMarker->symbolLayer( i );
     QgsMarkerSymbolLayer *markerLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
     if ( !markerLayer )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QString( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
+      graphicStrokeElem.appendChild( doc.createComment( QStringLiteral( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
     }
     else
     {
@@ -1430,14 +1438,14 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
 
     if ( !gap.isEmpty() )
     {
-      QDomElement gapElem = doc.createElement( "se:Gap" );
+      QDomElement gapElem = doc.createElement( QStringLiteral( "se:Gap" ) );
       QgsSymbolLayerUtils::createExpressionElement( doc, gapElem, gap );
       graphicStrokeElem.appendChild( gapElem );
     }
 
     if ( !qgsDoubleNear( mOffset, 0.0 ) )
     {
-      QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
+      QDomElement perpOffsetElem = doc.createElement( QStringLiteral( "se:PerpendicularOffset" ) );
       double offset = QgsSymbolLayerUtils::rescaleUom( mOffset, mOffsetUnit, props );
       perpOffsetElem.appendChild( doc.createTextNode( qgsDoubleToString( offset ) ) );
       symbolizerElem.appendChild( perpOffsetElem );
@@ -1445,15 +1453,15 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
   }
 }
 
-QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
+QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );
 
-  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
     return nullptr;
 
-  QDomElement graphicStrokeElem = strokeElem.firstChildElement( "GraphicStroke" );
+  QDomElement graphicStrokeElem = strokeElem.firstChildElement( QStringLiteral( "GraphicStroke" ) );
   if ( graphicStrokeElem.isNull() )
     return nullptr;
 
@@ -1464,34 +1472,34 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   QgsStringMap vendorOptions = QgsSymbolLayerUtils::getVendorOptionList( element );
   for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
   {
-    if ( it.key() == "placement" )
+    if ( it.key() == QLatin1String( "placement" ) )
     {
-      if ( it.value() == "points" ) placement = Vertex;
-      else if ( it.value() == "firstPoint" ) placement = FirstVertex;
-      else if ( it.value() == "lastPoint" ) placement = LastVertex;
-      else if ( it.value() == "centralPoint" ) placement = CentralPoint;
+      if ( it.value() == QLatin1String( "points" ) ) placement = Vertex;
+      else if ( it.value() == QLatin1String( "firstPoint" ) ) placement = FirstVertex;
+      else if ( it.value() == QLatin1String( "lastPoint" ) ) placement = LastVertex;
+      else if ( it.value() == QLatin1String( "centralPoint" ) ) placement = CentralPoint;
     }
-    else if ( it.value() == "rotateMarker" )
+    else if ( it.value() == QLatin1String( "rotateMarker" ) )
     {
-      rotateMarker = it.value() == "0";
+      rotateMarker = it.value() == QLatin1String( "0" );
     }
   }
 
-  QgsMarkerSymbol *marker = nullptr;
+  std::unique_ptr< QgsMarkerSymbol > marker;
 
   QgsSymbolLayer *l = QgsSymbolLayerUtils::createMarkerLayerFromSld( graphicStrokeElem );
   if ( l )
   {
     QgsSymbolLayerList layers;
     layers.append( l );
-    marker = new QgsMarkerSymbol( layers );
+    marker.reset( new QgsMarkerSymbol( layers ) );
   }
 
   if ( !marker )
     return nullptr;
 
   double interval = 0.0;
-  QDomElement gapElem = graphicStrokeElem.firstChildElement( "Gap" );
+  QDomElement gapElem = graphicStrokeElem.firstChildElement( QStringLiteral( "Gap" ) );
   if ( !gapElem.isNull() )
   {
     bool ok;
@@ -1501,7 +1509,7 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
   }
 
   double offset = 0.0;
-  QDomElement perpOffsetElem = graphicStrokeElem.firstChildElement( "PerpendicularOffset" );
+  QDomElement perpOffsetElem = graphicStrokeElem.firstChildElement( QStringLiteral( "PerpendicularOffset" ) );
   if ( !perpOffsetElem.isNull() )
   {
     bool ok;
@@ -1510,10 +1518,10 @@ QgsSymbolLayer* QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
-  QgsMarkerLineSymbolLayer* x = new QgsMarkerLineSymbolLayer( rotateMarker );
+  QgsMarkerLineSymbolLayer *x = new QgsMarkerLineSymbolLayer( rotateMarker );
   x->setPlacement( placement );
   x->setInterval( interval );
-  x->setSubSymbol( marker );
+  x->setSubSymbol( marker.release() );
   x->setOffset( offset );
   return x;
 }
@@ -1523,13 +1531,13 @@ void QgsMarkerLineSymbolLayer::setWidth( double width )
   mMarker->setSize( width );
 }
 
-void QgsMarkerLineSymbolLayer::setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined )
+void QgsMarkerLineSymbolLayer::setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property )
 {
-  if ( property == QgsSymbolLayer::EXPR_WIDTH && mMarker && dataDefined )
+  if ( key == QgsSymbolLayer::PropertyWidth && mMarker && property )
   {
-    mMarker->setDataDefinedSize( *dataDefined );
+    mMarker->setDataDefinedSize( property );
   }
-  QgsLineSymbolLayer::setDataDefinedProperty( property, dataDefined );
+  QgsLineSymbolLayer::setDataDefinedProperty( key, property );
 }
 
 double QgsMarkerLineSymbolLayer::width() const
@@ -1575,17 +1583,18 @@ QgsMapUnitScale QgsMarkerLineSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
-QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes() const
+QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
 {
-  QSet<QString> attr = QgsLineSymbolLayer::usedAttributes();
+  QSet<QString> attr = QgsLineSymbolLayer::usedAttributes( context );
   if ( mMarker )
-    attr.unite( mMarker->usedAttributes() );
+    attr.unite( mMarker->usedAttributes( context ) );
   return attr;
 }
 
-double QgsMarkerLineSymbolLayer::estimateMaxBleed() const
+double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
-  return ( mMarker->size() / 2.0 ) + mOffset;
+  return context.convertToPainterUnits( ( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
+         context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 

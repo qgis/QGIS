@@ -30,6 +30,15 @@ class QgsMapToPixel
      */
     QgsMapToPixel( double mapUnitsPerPixel );
 
+    /** Returns a new QgsMapToPixel created using a specified scale and distance unit.
+     * @param scale map scale
+     * @param dpi screen DPI
+     * @param mapUnits map units
+     * @returns matching QgsMapToPixel
+     * @note added in QGIS 3.0
+     */
+    static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
+
     /**
      * Constructor
      *

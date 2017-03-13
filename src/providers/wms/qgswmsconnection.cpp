@@ -26,49 +26,49 @@
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPicture>
-#include <QSettings>
 #include <QUrl>
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSConnection::QgsWMSConnection( const QString& theConnName )
-    : mConnName( theConnName )
+QgsWMSConnection::QgsWMSConnection( const QString &connName )
+  : mConnName( connName )
 {
-  QgsDebugMsg( "theConnName = " + theConnName );
+  QgsDebugMsg( "theConnName = " + connName );
 
-  QSettings settings;
+  QgsSettings settings;
 
   QString key = "/Qgis/connections-wms/" + mConnName;
   QString credentialsKey = "/Qgis/WMS/" + mConnName;
 
   QStringList connStringParts;
 
-  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
+  mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
   QString password = settings.value( credentialsKey + "/password" ).toString();
   if ( !username.isEmpty() )
   {
-    mUri.setParam( "username", username );
-    mUri.setParam( "password", password );
+    mUri.setParam( QStringLiteral( "username" ), username );
+    mUri.setParam( QStringLiteral( "password" ), password );
   }
 
   QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
   if ( !authcfg.isEmpty() )
   {
-    mUri.setParam( "authcfg", authcfg );
+    mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
   }
 
   QString referer = settings.value( key + "/referer" ).toString();
   if ( !referer.isEmpty() )
   {
-    mUri.setParam( "referer", referer );
+    mUri.setParam( QStringLiteral( "referer" ), referer );
   }
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
@@ -80,32 +80,32 @@ QgsWMSConnection::QgsWMSConnection( const QString& theConnName )
 
   if ( ignoreGetMap )
   {
-    mUri.setParam( "IgnoreGetMapUrl", "1" );
+    mUri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
   }
 
   if ( ignoreGetFeatureInfo )
   {
-    mUri.setParam( "IgnoreGetFeatureInfoUrl", "1" );
+    mUri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
   }
 
   if ( ignoreAxisOrientation )
   {
-    mUri.setParam( "IgnoreAxisOrientation", "1" );
+    mUri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
   }
 
   if ( invertAxisOrientation )
   {
-    mUri.setParam( "InvertAxisOrientation", "1" );
+    mUri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
   }
 
   if ( smoothPixmapTransform )
   {
-    mUri.setParam( "SmoothPixmapTransform", "1" );
+    mUri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
   }
 
   if ( !dpiMode.isEmpty() )
   {
-    mUri.setParam( "dpiMode", dpiMode );
+    mUri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
   }
 
   QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
@@ -123,26 +123,26 @@ QgsDataSourceUri QgsWMSConnection::uri()
 
 QStringList QgsWMSConnection::connectionList()
 {
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-wms" );
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
   return settings.childGroups();
 }
 
 QString QgsWMSConnection::selectedConnection()
 {
-  QSettings settings;
-  return settings.value( "/Qgis/connections-wms/selected" ).toString();
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "/Qgis/connections-wms/selected" ) ).toString();
 }
 
-void QgsWMSConnection::setSelectedConnection( const QString& name )
+void QgsWMSConnection::setSelectedConnection( const QString &name )
 {
-  QSettings settings;
-  settings.setValue( "/Qgis/connections-wms/selected", name );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Qgis/connections-wms/selected" ), name );
 }
 
-void QgsWMSConnection::deleteConnection( const QString& name )
+void QgsWMSConnection::deleteConnection( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( "/Qgis/connections-wms/" + name );
   settings.remove( "/Qgis/WMS/" + name );
 }

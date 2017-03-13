@@ -21,6 +21,8 @@
 #include <QUndoCommand>
 #include <QDomDocument>
 
+#include "qgis_core.h"
+
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
@@ -30,23 +32,22 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
-    virtual ~QgsComposerItemCommand();
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent = nullptr );
 
-    /** Reverses the command*/
+    //! Reverses the command
     void undo() override;
-    /** Replays the command*/
+    //! Replays the command
     void redo() override;
 
-    /** Saves current item state as previous state*/
+    //! Saves current item state as previous state
     void savePreviousState();
-    /** Saves current item state as after state*/
+    //! Saves current item state as after state
     void saveAfterState();
 
     QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
     QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
 
-    /** Returns true if previous state and after state are valid and different*/
+    //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
     /** Returns the target item the command applies to.
@@ -55,23 +56,23 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     QgsComposerItem *item() const;
 
   protected:
-    /** Target item of the command*/
-    QgsComposerItem* mItem;
-    /** XML that saves the state before executing the command*/
+    //! Target item of the command
+    QgsComposerItem *mItem = nullptr;
+    //! XML that saves the state before executing the command
     QDomDocument mPreviousState;
-    /** XML containing the state after executing the command*/
+    //! XML containing the state after executing the command
     QDomDocument mAfterState;
 
-    /** Parameters for frame items*/
-    /** Parent multiframe*/
-    QgsComposerMultiFrame* mMultiFrame;
+    //! Parameters for frame items
+    //! Parent multiframe
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
     int mFrameNumber;
 
-    /** Flag to prevent the first redo() if the command is pushed to the undo stack*/
+    //! Flag to prevent the first redo() if the command is pushed to the undo stack
     bool mFirstRun;
 
-    void saveState( QDomDocument& stateDoc ) const;
-    void restoreState( QDomDocument& stateDoc ) const;
+    void saveState( QDomDocument &stateDoc ) const;
+    void restoreState( QDomDocument &stateDoc ) const;
 };
 
 /** \ingroup core
@@ -87,9 +88,14 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       //composer label
       ComposerLabelSetText,
       ComposerLabelSetId,
+      ComposerLabelFontColor,
       //composer map
       ComposerMapRotation,
       ComposerMapAnnotationDistance,
+      ComposerMapGridFramePenColor,
+      ComposerMapGridFrameFill1Color,
+      ComposerMapGridFrameFill2Color,
+      ComposerMapGridAnnotationFontColor,
       //composer legend
       ComposerLegendText,
       LegendColumnCount,
@@ -106,9 +112,15 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
-      LegendRasterBorderWidth,
+      LegendLineSpacing,
+      LegendRasterStrokeWidth,
+      LegendFontColor,
+      LegendRasterStrokeColor,
       //composer picture
       ComposerPictureRotation,
+      ComposerPictureFillColor,
+      ComposerPictureStrokeColor,
+      ComposerPictureNorthOffset,
       // composer scalebar
       ScaleBarLineWidth,
       ScaleBarHeight,
@@ -119,28 +131,35 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ScaleBarMapUnitsSegment,
       ScaleBarLabelBarSize,
       ScaleBarBoxContentSpace,
+      ScaleBarFontColor,
+      ScaleBarFillColor,
+      ScaleBarFill2Color,
+      ScaleBarStrokeColor,
       // composer table
       TableMaximumFeatures,
       TableMargin,
       TableGridStrokeWidth,
       //composer shape
       ShapeCornerRadius,
-      ShapeOutlineWidth,
+      ShapeStrokeWidth,
       //composer arrow
-      ArrowOutlineWidth,
+      ArrowStrokeWidth,
+      ArrowHeadFillColor,
+      ArrowHeadStrokeColor,
       ArrowHeadWidth,
       //item
-      ItemOutlineWidth,
+      ItemStrokeWidth,
+      ItemStrokeColor,
+      ItemBackgroundColor,
       ItemMove,
       ItemRotation,
       ItemTransparency,
       ItemZoomContent
     };
 
-    QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
-    ~QgsComposerMergeCommand();
+    QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command ) override;
+    bool mergeWith( const QUndoCommand *command ) override;
     int id() const override { return static_cast< int >( mContext ); }
 
   private:

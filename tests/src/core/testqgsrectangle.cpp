@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 //header for class being tested
@@ -85,7 +85,7 @@ void TestQgsRectangle::regression6194()
   QVERIFY( rect1 == rect2 );
 }
 
-QTEST_MAIN( TestQgsRectangle )
+QGSTEST_MAIN( TestQgsRectangle )
 #include "testqgsrectangle.moc"
 
 

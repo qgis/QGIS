@@ -23,13 +23,13 @@ email                : jpalmer at linz dot govt dot nz
 #include <QMouseEvent>
 
 
-QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
@@ -37,13 +37,13 @@ QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand )
   {
     mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setBorderColor( mBorderColour );
+    mRubberBand->setStrokeColor( mStrokeColor );
   }
   if ( e->button() == Qt::LeftButton )
   {
@@ -62,7 +62,7 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand )
     return;

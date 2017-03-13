@@ -17,9 +17,9 @@
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -29,7 +29,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
       continue;
     }
     QgsGeometry g = feature.geometry();
-    const QgsAbstractGeometry* geom = g.geometry();
+    const QgsAbstractGeometry *geom = g.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
@@ -42,16 +42,16 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
         }
         for ( int iVert = 0; iVert < nVerts; ++iVert )
         {
-          const QgsPointV2& p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
-          const QgsPointV2& p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          const QgsPointV2& p3 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert + 1 ) % nVerts ) );
+          const QgsPointV2 &p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
+          const QgsPointV2 &p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          const QgsPointV2 &p3 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert + 1 ) % nVerts ) );
           QgsVector v21, v23;
           try
           {
             v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normalized();
             v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normalized();
           }
-          catch ( const QgsException& )
+          catch ( const QgsException & )
           {
             // Zero length vectors
             continue;
@@ -68,7 +68,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError*>& errors
   }
 }
 
-void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -77,7 +77,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
     return;
   }
   QgsGeometry g = feature.geometry();
-  QgsAbstractGeometry* geometry = g.geometry();
+  QgsAbstractGeometry *geometry = g.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
@@ -89,16 +89,16 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
 
   // Check if error still applies
   int n = QgsGeometryCheckerUtils::polyLineSize( geometry, vidx.part, vidx.ring );
-  const QgsPointV2& p1 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + n ) % n ) );
-  const QgsPointV2& p2 = geometry->vertexAt( vidx );
-  const QgsPointV2& p3 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) );
+  const QgsPointV2 &p1 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + n ) % n ) );
+  const QgsPointV2 &p2 = geometry->vertexAt( vidx );
+  const QgsPointV2 &p3 = geometry->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) );
   QgsVector v21, v23;
   try
   {
     v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normalized();
     v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normalized();
   }
-  catch ( const QgsException& )
+  catch ( const QgsException & )
   {
     error->setObsolete();
     return;
@@ -145,7 +145,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError* error, int method, 
   }
 }
 
-const QStringList& QgsGeometryAngleCheck::getResolutionMethods() const
+QStringList QgsGeometryAngleCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "Delete node with small angle" ) << tr( "No action" );
   return methods;

@@ -23,32 +23,34 @@
 
 class QgsComposerShape;
 
-/** Input widget for QgsComposerShape*/
+//! Input widget for QgsComposerShape
 class QgsComposerShapeWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerShapeWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsComposerShapeWidget( QgsComposerShape* composerShape );
+    explicit QgsComposerShapeWidget( QgsComposerShape *composerShape );
     ~QgsComposerShapeWidget();
 
   private:
-    QgsComposerShape* mComposerShape;
+    QgsComposerShape *mComposerShape = nullptr;
 
-    /** Blocks / unblocks the signal of all GUI elements*/
+    //! Blocks / unblocks the signal of all GUI elements
     void blockAllSignals( bool block );
 
   private slots:
-    void on_mShapeComboBox_currentIndexChanged( const QString& text );
+    void on_mShapeComboBox_currentIndexChanged( const QString &text );
     void on_mCornerRadiusSpinBox_valueChanged( double val );
     void on_mShapeStyleButton_clicked();
 
-    /** Sets the GUI elements to the currentValues of mComposerShape*/
+    //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
 
     void updateShapeStyle();
 
-    /** Enables or disables the rounded radius spin box based on shape type*/
-    void toggleRadiusSpin( const QString& shapeText );
+    //! Enables or disables the rounded radius spin box based on shape type
+    void toggleRadiusSpin( const QString &shapeText );
+    void updateSymbolFromWidget();
+    void cleanUpSymbolSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERSHAPEWIDGET_H

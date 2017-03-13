@@ -22,11 +22,10 @@
 #include "qgsmessagelog.h"
 
 #include <QString>
+#include "qgis_gui.h"
 
 class QStatusBar;
-class QToolButton;
-class QShowEvent;
-class QHideEvent;
+class QCloseEvent;
 
 /** \ingroup gui
  * A generic dialog widget for displaying QGIS log messages.
@@ -36,10 +35,13 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
     Q_OBJECT
   public:
     QgsMessageLogViewer( QStatusBar *statusBar = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsMessageLogViewer();
 
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
+
+  protected:
+    void closeEvent( QCloseEvent *e ) override;
+    void reject() override;
 
   private slots:
     void closeTab( int index );

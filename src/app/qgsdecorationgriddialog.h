@@ -20,6 +20,7 @@
 
 #include "ui_qgsdecorationgriddialog.h"
 #include <QDialog>
+#include "qgis_app.h"
 
 class QgsDecorationGrid;
 class QgsLineSymbol;
@@ -33,7 +34,7 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
     Q_OBJECT
 
   public:
-    QgsDecorationGridDialog( QgsDecorationGrid& decoGrid, QWidget* parent = nullptr );
+    QgsDecorationGridDialog( QgsDecorationGrid &decoGrid, QWidget *parent = nullptr );
     ~QgsDecorationGridDialog();
 
   private slots:
@@ -52,9 +53,9 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
     void on_mAnnotationFontButton_clicked();
 
   private:
-    QgsDecorationGrid& mDeco;
-    QgsLineSymbol* mLineSymbol;
-    QgsMarkerSymbol* mMarkerSymbol;
+    QgsDecorationGrid &mDeco;
+    QgsLineSymbol *mLineSymbol = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
 
     void updateGuiElements();
     void updateDecoFromGui();

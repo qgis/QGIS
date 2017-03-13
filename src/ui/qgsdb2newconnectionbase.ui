@@ -190,6 +190,8 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtService</tabstop>
   <tabstop>txtDriver</tabstop>
   <tabstop>txtHost</tabstop>
   <tabstop>txtPort</tabstop>
@@ -199,7 +201,7 @@
   <tabstop>chkStoreUsername</tabstop>
   <tabstop>txtPassword</tabstop>
   <tabstop>chkStorePassword</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>btnConnect</tabstop>
  </tabstops>
  <resources/>
  <connections>

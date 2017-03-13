@@ -27,13 +27,13 @@
 #include <limits>
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
-    : mFeatureCache( sCacheSize )
-    , mLayer( layer )
-    , mSelectedOnly( selectedOnly )
+  : mFeatureCache( CACHE_SIZE )
+  , mLayer( layer )
+  , mSelectedOnly( selectedOnly )
 {
   if ( selectedOnly )
   {
-    mFeatureIds = layer->selectedFeaturesIds();
+    mFeatureIds = layer->selectedFeatureIds();
   }
   else
   {
@@ -47,14 +47,21 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
   QgsFeatureIterator it = layer->getFeatures( req );
   while ( it.nextFeature( feature ) )
   {
-    mIndex.insertFeature( feature );
+    if ( feature.geometry() )
+    {
+      mIndex.insertFeature( feature );
+    }
+    else
+    {
+      mFeatureIds.remove( feature.id() );
+    }
   }
 }
 
-bool QgsFeaturePool::get( QgsFeatureId id , QgsFeature& feature )
+bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
 {
   QMutexLocker lock( &mLayerMutex );
-  QgsFeature* pfeature = mFeatureCache.object( id );
+  QgsFeature *pfeature = mFeatureCache.object( id );
   if ( pfeature )
   {
     //feature was cached
@@ -76,16 +83,16 @@ bool QgsFeaturePool::get( QgsFeatureId id , QgsFeature& feature )
   return true;
 }
 
-void QgsFeaturePool::addFeature( QgsFeature& feature )
+void QgsFeaturePool::addFeature( QgsFeature &feature )
 {
   QgsFeatureList features;
   features.append( feature );
   mLayerMutex.lock();
   mLayer->dataProvider()->addFeatures( features );
-  feature.setFeatureId( features.front().id() );
+  feature.setId( features.front().id() );
   if ( mSelectedOnly )
   {
-    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeaturesIds();
+    QgsFeatureIds selectedFeatureIds = mLayer->selectedFeatureIds();
     selectedFeatureIds.insert( feature.id() );
     mLayer->selectByIds( selectedFeatureIds );
   }
@@ -95,7 +102,7 @@ void QgsFeaturePool::addFeature( QgsFeature& feature )
   mIndexMutex.unlock();
 }
 
-void QgsFeaturePool::updateFeature( QgsFeature& feature )
+void QgsFeaturePool::updateFeature( QgsFeature &feature )
 {
   QgsGeometryMap geometryMap;
   geometryMap.insert( feature.id(), QgsGeometry( feature.geometry().geometry()->clone() ) );
@@ -117,7 +124,7 @@ void QgsFeaturePool::updateFeature( QgsFeature& feature )
   mIndexMutex.unlock();
 }
 
-void QgsFeaturePool::deleteFeature( QgsFeature& feature )
+void QgsFeaturePool::deleteFeature( QgsFeature &feature )
 {
   mIndexMutex.lock();
   mIndex.deleteFeature( feature );

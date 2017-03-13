@@ -23,28 +23,28 @@
 namespace QgsGeometryCheckerUtils
 {
 
-  QgsGeometryEngine* createGeomEngine( QgsAbstractGeometry* geometry, double tolerance )
+  QgsGeometryEngine *createGeomEngine( QgsAbstractGeometry *geometry, double tolerance )
   {
     return new QgsGeos( geometry, tolerance );
   }
 
-  QgsAbstractGeometry* getGeomPart( QgsAbstractGeometry* geom, int partIdx )
+  QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx )
   {
-    if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+    if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
     {
-      return static_cast<QgsGeometryCollection*>( geom )->geometryN( partIdx );
+      return static_cast<QgsGeometryCollection *>( geom )->geometryN( partIdx );
     }
     return geom;
   }
 
-  void filter1DTypes( QgsAbstractGeometry* geom )
+  void filter1DTypes( QgsAbstractGeometry *geom )
   {
-    if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+    if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
     {
-      QgsGeometryCollection* geomCollection = static_cast<QgsGeometryCollection*>( geom );
+      QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
       for ( int nParts = geom->partCount(), iPart = nParts - 1; iPart >= 0; --iPart )
       {
-        if ( !dynamic_cast<QgsSurface*>( geomCollection->geometryN( iPart ) ) )
+        if ( !dynamic_cast<QgsSurface *>( geomCollection->geometryN( iPart ) ) )
         {
           geomCollection->removeGeometry( iPart );
         }
@@ -52,15 +52,15 @@ namespace QgsGeometryCheckerUtils
     }
   }
 
-  static inline double pointLineDist( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& q )
+  static inline double pointLineDist( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q )
   {
-    double nom = qAbs(( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
+    double nom = qAbs( ( p2.y() - p1.y() ) * q.x() - ( p2.x() - p1.x() ) * q.y() + p2.x() * p1.y() - p2.y() * p1.x() );
     double dx = p2.x() - p1.x();
     double dy = p2.y() - p1.y();
     return nom / qSqrt( dx * dx + dy * dy );
   }
 
-  double sharedEdgeLength( const QgsAbstractGeometry* geom1, const QgsAbstractGeometry* geom2, double tol )
+  double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol )
   {
     double len = 0;
 
@@ -80,7 +80,7 @@ namespace QgsGeometryCheckerUtils
           {
             d = QgsVector( p2.x() - p1.x(), p2.y() - p1.y() ).normalized();
           }
-          catch ( const QgsException& )
+          catch ( const QgsException & )
           {
             // Edge has zero length, skip
             continue;
@@ -103,7 +103,7 @@ namespace QgsGeometryCheckerUtils
                   double lambdaq2 = QgsVector( q2.x() - p1.x(), q2.y() - p1.y() ) * d;
                   if ( lambdaq1 > lambdaq2 )
                   {
-                    qSwap( lambdaq1, lambdaq2 );
+                    std::swap( lambdaq1, lambdaq2 );
                   }
                   double lambda1 = qMax( lambdaq1, lambdap1 );
                   double lambda2 = qMin( lambdaq2, lambdap2 );

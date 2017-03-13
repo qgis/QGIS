@@ -21,7 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayersqlitehelper.h"
 #include "qgslogger.h"
 
-QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
+QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {
   if ( withExtension )
   {
@@ -30,7 +30,7 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
     sqlite3_auto_extension( reinterpret_cast < void( * )() > ( qgsvlayerModuleInit ) );
   }
   int r;
-  r = sqlite3_open( path.toLocal8Bit().constData(), &db_ );
+  r = sqlite3_open( path.toUtf8().constData(), &db_ );
   if ( withExtension )
   {
     // reset the automatic extensions
@@ -39,21 +39,21 @@ QgsScopedSqlite::QgsScopedSqlite( const QString& path, bool withExtension )
 
   if ( r )
   {
-    QString err = QString( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
+    QString err = QStringLiteral( "%1 [%2]" ).arg( sqlite3_errmsg( db_ ), path );
     QgsDebugMsg( err );
-    throw std::runtime_error( err.toLocal8Bit().constData() );
+    throw std::runtime_error( err.toUtf8().constData() );
   }
   // enable extended result codes
   sqlite3_extended_result_codes( db_, 1 );
 }
 
-QgsScopedSqlite::QgsScopedSqlite( QgsScopedSqlite& other )
+QgsScopedSqlite::QgsScopedSqlite( QgsScopedSqlite &other )
 {
   db_ = other.db_;
   other.db_ = nullptr;
 }
 
-QgsScopedSqlite& QgsScopedSqlite::operator=( QgsScopedSqlite & other )
+QgsScopedSqlite &QgsScopedSqlite::operator=( QgsScopedSqlite &other )
 {
   reset( other.release() );
   return *this;
@@ -64,16 +64,16 @@ QgsScopedSqlite::~QgsScopedSqlite()
   close_();
 }
 
-sqlite3* QgsScopedSqlite::get() const { return db_; }
+sqlite3 *QgsScopedSqlite::get() const { return db_; }
 
-sqlite3* QgsScopedSqlite::release()
+sqlite3 *QgsScopedSqlite::release()
 {
-  sqlite3* pp = db_;
+  sqlite3 *pp = db_;
   db_ = nullptr;
   return pp;
 }
 
-void QgsScopedSqlite::reset( sqlite3* db )
+void QgsScopedSqlite::reset( sqlite3 *db )
 {
   close_();
   db_ = db;
@@ -87,17 +87,17 @@ void QgsScopedSqlite::close_()
 
 namespace Sqlite
 {
-  Query::Query( sqlite3* db, const QString& q )
-      : db_( db )
-      , stmt_( nullptr )
-      , nBind_( 1 )
+  Query::Query( sqlite3 *db, const QString &q )
+    : db_( db )
+    , stmt_( nullptr )
+    , nBind_( 1 )
   {
-    QByteArray ba( q.toLocal8Bit() );
+    QByteArray ba( q.toUtf8() );
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      QString err = QString( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
-      throw std::runtime_error( err.toLocal8Bit().constData() );
+      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
+      throw std::runtime_error( err.toUtf8().constData() );
     }
   }
 
@@ -108,9 +108,9 @@ namespace Sqlite
 
   int Query::step() { return sqlite3_step( stmt_ ); }
 
-  Query& Query::bind( const QString& str, int idx )
+  Query &Query::bind( const QString &str, int idx )
   {
-    QByteArray ba( str.toLocal8Bit() );
+    QByteArray ba( str.toUtf8() );
     int r = sqlite3_bind_text( stmt_, idx, ba.constData(), ba.size(), SQLITE_TRANSIENT );
     if ( r )
     {
@@ -119,19 +119,19 @@ namespace Sqlite
     return *this;
   }
 
-  Query& Query::bind( const QString& str )
+  Query &Query::bind( const QString &str )
   {
     return bind( str, nBind_++ );
   }
 
-  void Query::exec( sqlite3* db, const QString& sql )
+  void Query::exec( sqlite3 *db, const QString &sql )
   {
     char *errMsg = nullptr;
-    int r = sqlite3_exec( db, sql.toLocal8Bit().constData(), nullptr, nullptr, &errMsg );
+    int r = sqlite3_exec( db, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
     if ( r )
     {
-      QString err = QString( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
-      throw std::runtime_error( err.toLocal8Bit().constData() );
+      QString err = QStringLiteral( "Query execution error on %1: %2 - %3" ).arg( sql ).arg( r ).arg( errMsg );
+      throw std::runtime_error( err.toUtf8().constData() );
     }
   }
 
@@ -178,18 +178,18 @@ namespace Sqlite
   QString Query::columnText( int i ) const
   {
     int size = sqlite3_column_bytes( stmt_, i );
-    const char* str = reinterpret_cast< const char* >( sqlite3_column_text( stmt_, i ) );
+    const char *str = reinterpret_cast< const char * >( sqlite3_column_text( stmt_, i ) );
     return QString::fromUtf8( str, size );
   }
 
   QByteArray Query::columnBlob( int i ) const
   {
     int size = sqlite3_column_bytes( stmt_, i );
-    const char* data = reinterpret_cast< const char* >( sqlite3_column_blob( stmt_, i ) );
+    const char *data = reinterpret_cast< const char * >( sqlite3_column_blob( stmt_, i ) );
     // data is not copied. QByteArray is just here a augmented pointer
     return QByteArray::fromRawData( data, size );
   }
 
-  sqlite3_stmt* Query::stmt() { return stmt_; }
+  sqlite3_stmt *Query::stmt() { return stmt_; }
 
 }

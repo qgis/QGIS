@@ -17,18 +17,19 @@
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
 #include "qgsauthconfigselect.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QMessageBox>
 #include <QUrl>
 #include <QPushButton>
 #include <QRegExpValidator>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mBaseKey( baseKey )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+  QWidget *parent, const QString &baseKey, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mBaseKey( baseKey )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
@@ -65,7 +66,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
 
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = mBaseKey + connName;
     QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + connName;
@@ -101,11 +102,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     QString version = settings.value( key + "/version" ).toString();
     int versionIdx = 0; // AUTO
-    if ( version == "1.0.0" )
+    if ( version == QLatin1String( "1.0.0" ) )
       versionIdx = 1;
-    else if ( version == "1.1.0" )
+    else if ( version == QLatin1String( "1.1.0" ) )
       versionIdx = 2;
-    else if ( version == "2.0.0" )
+    else if ( version == QLatin1String( "2.0.0" ) )
       versionIdx = 3;
     cmbVersion->setCurrentIndex( versionIdx );
 
@@ -123,10 +124,10 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     }
   }
 
-  if ( mBaseKey != "/Qgis/connections-wms/" )
+  if ( mBaseKey != QLatin1String( "/Qgis/connections-wms/" ) )
   {
-    if ( mBaseKey != "/Qgis/connections-wcs/" &&
-         mBaseKey != "/Qgis/connections-wfs/" )
+    if ( mBaseKey != QLatin1String( "/Qgis/connections-wcs/" ) &&
+         mBaseKey != QLatin1String( "/Qgis/connections-wfs/" ) )
     {
       cbxIgnoreAxisOrientation->setVisible( false );
       cbxInvertAxisOrientation->setVisible( false );
@@ -134,12 +135,12 @@ QgsNewHttpConnection::QgsNewHttpConnection(
       mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
     }
 
-    if ( mBaseKey == "/Qgis/connections-wfs/" )
+    if ( mBaseKey == QLatin1String( "/Qgis/connections-wfs/" ) )
     {
       cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation (WFS 1.1/WFS 2.0)" ) );
     }
 
-    if ( mBaseKey == "/Qgis/connections-wcs/" )
+    if ( mBaseKey == QLatin1String( "/Qgis/connections-wcs/" ) )
     {
       cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
       cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
@@ -166,7 +167,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     mGroupBox->layout()->removeWidget( lblReferer );
   }
 
-  if ( mBaseKey != "/Qgis/connections-wfs/" )
+  if ( mBaseKey != QLatin1String( "/Qgis/connections-wfs/" ) )
   {
     cmbVersion->setVisible( false );
     mGroupBox->layout()->removeWidget( cmbVersion );
@@ -184,10 +185,6 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   on_txtName_textChanged( connName );
 }
 
-QgsNewHttpConnection::~QgsNewHttpConnection()
-{
-}
-
 void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )
 {
   Q_UNUSED( text );
@@ -202,17 +199,17 @@ void QgsNewHttpConnection::on_txtUrl_textChanged( const QString &text )
 
 void QgsNewHttpConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString key = mBaseKey + txtName->text();
   QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      settings.contains( key + "/url" ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       settings.contains( key + "/url" ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -220,7 +217,7 @@ void QgsNewHttpConnection::accept()
   if ( !txtPassword->text().isEmpty() &&
        QMessageBox::question( this,
                               tr( "Saving passwords" ),
-                              tr( "WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\nNote: giving the password is optional. It will be requested interactivly, when needed." ),
+                              trUtf8( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
@@ -242,13 +239,13 @@ void QgsNewHttpConnection::accept()
     params.insert( QString( it->first ).toUpper(), *it );
   }
 
-  if ( params["SERVICE"].second.toUpper() == "WMS" ||
-       params["SERVICE"].second.toUpper() == "WFS" ||
-       params["SERVICE"].second.toUpper() == "WCS" )
+  if ( params[QStringLiteral( "SERVICE" )].second.toUpper() == "WMS" ||
+       params[QStringLiteral( "SERVICE" )].second.toUpper() == "WFS" ||
+       params[QStringLiteral( "SERVICE" )].second.toUpper() == "WCS" )
   {
-    url.removeEncodedQueryItem( params["SERVICE"].first );
-    url.removeEncodedQueryItem( params["REQUEST"].first );
-    url.removeEncodedQueryItem( params["FORMAT"].first );
+    url.removeEncodedQueryItem( params[QStringLiteral( "SERVICE" )].first );
+    url.removeEncodedQueryItem( params[QStringLiteral( "REQUEST" )].first );
+    url.removeEncodedQueryItem( params[QStringLiteral( "FORMAT" )].first );
   }
 
   if ( url.encodedPath().isEmpty() )
@@ -258,15 +255,15 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( key + "/url", url.toString() );
 
-  if ( mBaseKey == "/Qgis/connections-wms/" ||
-       mBaseKey == "/Qgis/connections-wcs/" ||
-       mBaseKey == "/Qgis/connections-wfs/" )
+  if ( mBaseKey == QLatin1String( "/Qgis/connections-wms/" ) ||
+       mBaseKey == QLatin1String( "/Qgis/connections-wcs/" ) ||
+       mBaseKey == QLatin1String( "/Qgis/connections-wfs/" ) )
   {
     settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
     settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
   }
 
-  if ( mBaseKey == "/Qgis/connections-wms/" || mBaseKey == "/Qgis/connections-wcs/" )
+  if ( mBaseKey == QLatin1String( "/Qgis/connections-wms/" ) || mBaseKey == QLatin1String( "/Qgis/connections-wcs/" ) )
   {
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( key + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
@@ -293,26 +290,26 @@ void QgsNewHttpConnection::accept()
 
     settings.setValue( key + "/dpiMode", dpiMode );
   }
-  if ( mBaseKey == "/Qgis/connections-wms/" )
+  if ( mBaseKey == QLatin1String( "/Qgis/connections-wms/" ) )
   {
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
   }
-  if ( mBaseKey == "/Qgis/connections-wfs/" )
+  if ( mBaseKey == QLatin1String( "/Qgis/connections-wfs/" ) )
   {
-    QString version = "auto";
+    QString version = QStringLiteral( "auto" );
     switch ( cmbVersion->currentIndex() )
     {
       case 0:
-        version = "auto";
+        version = QStringLiteral( "auto" );
         break;
       case 1:
-        version = "1.0.0";
+        version = QStringLiteral( "1.0.0" );
         break;
       case 2:
-        version = "1.1.0";
+        version = QStringLiteral( "1.1.0" );
         break;
       case 3:
-        version = "2.0.0";
+        version = QStringLiteral( "2.0.0" );
         break;
     }
     settings.setValue( key + "/version", version );

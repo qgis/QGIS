@@ -16,6 +16,7 @@
 #ifndef QGSVECTORLAYERDIAGRAMPROVIDER_H
 #define QGSVECTORLAYERDIAGRAMPROVIDER_H
 
+#include "qgis_core.h"
 #include "qgslabelingengine.h"
 #include "qgslabelfeature.h"
 #include "qgsdiagramrenderer.h"
@@ -30,16 +31,16 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 {
   public:
     //! Create label feature, takes ownership of the geometry instance
-    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
-        : QgsLabelFeature( id, geometry, size ) {}
+    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
+      : QgsLabelFeature( id, geometry, size ) {}
 
     //! Store feature's attributes - used for rendering of diagrams
-    void setAttributes( const QgsAttributes& attrs ) { mAttributes = attrs; }
+    void setAttributes( const QgsAttributes &attrs ) { mAttributes = attrs; }
     //! Get feature's attributes - used for rendering of diagrams
-    const QgsAttributes& attributes() { return mAttributes; }
+    const QgsAttributes &attributes() { return mAttributes; }
 
   protected:
-    /** Stores attribute values for diagram rendering*/
+    //! Stores attribute values for diagram rendering
     QgsAttributes mAttributes;
 };
 
@@ -59,23 +60,14 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
   public:
 
     //! Convenience constructor to initialize the provider from given vector layer
-    explicit QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop = true );
-
-    //! Construct diagram provider with all the necessary configuration parameters
-    QgsVectorLayerDiagramProvider( const QgsDiagramLayerSettings* diagSettings,
-                                   const QgsDiagramRenderer* diagRenderer,
-                                   const QString& layerId,
-                                   const QgsFields& fields,
-                                   const QgsCoordinateReferenceSystem& crs,
-                                   QgsAbstractFeatureSource* source,
-                                   bool ownsSource );
+    explicit QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop = true );
 
     //! Clean up
     ~QgsVectorLayerDiagramProvider();
 
-    virtual QList<QgsLabelFeature*> labelFeatures( QgsRenderContext& context ) override;
+    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
-    virtual void drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const override;
+    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     // new virtual methods
 
@@ -85,7 +77,7 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * @param attributeNames list of attribute names to which additional required attributes shall be added
      * @return Whether the preparation was successful - if not, the provider shall not be used
      */
-    virtual bool prepare( const QgsRenderContext& context, QStringList& attributeNames );
+    virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames );
 
     /**
      * Register a feature for labeling as one or more QgsLabelFeature objects stored into mFeatures
@@ -94,25 +86,25 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
      * @param obstacleGeometry optional obstacle geometry, if a different geometry to the feature's geometry
-     * should be used as an obstacle for labels (eg, if the feature has been rendered with an offset point
+     * should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
      * symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
      * the feature's original geometry will be used as an obstacle for labels. Ownership of obstacleGeometry
      * is transferred.
      */
-    virtual void registerFeature( QgsFeature& feature, QgsRenderContext &context, QgsGeometry* obstacleGeometry = nullptr );
+    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr );
 
   protected:
     //! initialization method - called from constructors
     void init();
     //! helper method to register one diagram feautre
-    QgsLabelFeature* registerDiagram( QgsFeature& feat, QgsRenderContext& context, QgsGeometry* obstacleGeometry = nullptr );
+    QgsLabelFeature *registerDiagram( QgsFeature &feat, QgsRenderContext &context, QgsGeometry *obstacleGeometry = nullptr );
 
   protected:
 
     //! Diagram layer settings
     QgsDiagramLayerSettings mSettings;
     //! Diagram renderer instance (owned by mSettings)
-    QgsDiagramRenderer* mDiagRenderer;
+    QgsDiagramRenderer *mDiagRenderer = nullptr;
 
     // these are needed only if using own renderer loop
 
@@ -121,12 +113,12 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! Layer's CRS
     QgsCoordinateReferenceSystem mLayerCrs;
     //! Layer's feature source
-    QgsAbstractFeatureSource* mSource;
+    QgsAbstractFeatureSource *mSource = nullptr;
     //! Whether layer's feature source is owned
     bool mOwnsSource;
 
     //! List of generated label features (owned by the provider)
-    QList<QgsLabelFeature*> mFeatures;
+    QList<QgsLabelFeature *> mFeatures;
 };
 
 #endif // QGSVECTORLAYERDIAGRAMPROVIDER_H

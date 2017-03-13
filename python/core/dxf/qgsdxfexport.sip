@@ -32,6 +32,12 @@ class QgsDxfExport
     ~QgsDxfExport();
 
     /**
+     * Set map settings and assign layer name attributes
+     * @param settings map settings to apply
+     */
+    void setMapSettings( const QgsMapSettings &settings );
+
+    /**
      * Add layers to export
      * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
      * @see setLayerTitleAsName
@@ -59,18 +65,21 @@ class QgsDxfExport
      */
     double symbologyScaleDenominator() const;
 
-    /**
-     * Set map units
-     * @param u unit
-     */
-    void setMapUnits( QgsUnitTypes::DistanceUnit u );
+    QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
-     * Retrieve map units
-     * @returns unit
-     * @see setMapUnits
+     * Set destination CRS
+     * @see destinationCrs()
+     * @note added in QGIS 3.0
      */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
+    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /**
+     * Returns the destination CRS, or an invalid CRS if no reprojection will be done.
+     * @see setDestinationCrs()
+     * @note added in QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
      * Set symbology export mode
@@ -107,7 +116,7 @@ class QgsDxfExport
     void setLayerTitleAsName( bool layerTitleAsName );
 
     /**
-     * Retrieve wether layer title (where set) instead of name shall be use
+     * Retrieve whether layer title (where set) instead of name shall be use
      * @returns flag
      * @see setLayerTitleAsName
      */
@@ -287,6 +296,6 @@ class QgsDxfExport
      * @param fid id of feature
      * @param layer dxf layer of feature
      */
-    void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
+    void registerDxfLayer( const QString& layerId, QgsFeatureId fid, const QString& layer );
 
 };

@@ -33,7 +33,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 
   public:
 
-    /** Specifies the behaviour for creating new frames to fit the multiframe's content
+    /** Specifies the behavior for creating new frames to fit the multiframe's content
      */
     enum ResizeMode
     {
@@ -205,7 +205,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 
     /** Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size
-     * and general frame properties (eg frame style, background, rendering settings).
+     * and general frame properties (e.g., frame style, background, rendering settings).
      * @param pos position of top-left corner of the new frame
      * @param size size of the new frame
      * @returns new QgsComposerFrame

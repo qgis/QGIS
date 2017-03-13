@@ -29,15 +29,13 @@
 class QgsGeometryCoordinateTransform
 {
   public:
+
     /**
      * \brief Constructor for a Geometry Coordinate Transform.
      *
      */
     QgsGeometryCoordinateTransform();
 
-    /**
-     * \brief Destructor
-     */
     ~QgsGeometryCoordinateTransform();
 
     /**
@@ -45,7 +43,7 @@ class QgsGeometryCoordinateTransform
      * \param lyrTarget      target layer.
      * \param lyrReference   reference layer.
      */
-    void setCoordinateTransform( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
+    void setCoordinateTransform( QgsVectorLayer *lyrTarget, QgsVectorLayer *lyrReference );
 
     /**
      * \brief Transform the coordinates reference system of the geometry, if target have the different system of reference
@@ -53,11 +51,13 @@ class QgsGeometryCoordinateTransform
      */
     void transform( QgsGeometry *geom );
   private:
+
     /**
      * \brief Transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
      */
     void setGeomTransform( QgsGeometry *geom );
+
     /**
      * \brief None transform the coordinates reference system of the geometry (use by transform)
      * \param geom      Geometry
@@ -68,8 +68,8 @@ class QgsGeometryCoordinateTransform
     QgsCoordinateTransform mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );
 
-    QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform& rh );
-    QgsGeometryCoordinateTransform& operator=( const QgsGeometryCoordinateTransform& rh );
+    QgsGeometryCoordinateTransform( const QgsGeometryCoordinateTransform &rh );
+    QgsGeometryCoordinateTransform &operator=( const QgsGeometryCoordinateTransform &rh );
 };
 
 #endif // GEOMETRYCOORDINATETRANSFORM_H

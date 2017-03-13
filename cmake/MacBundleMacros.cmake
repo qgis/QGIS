@@ -72,7 +72,7 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
     # find current version
     # use python because pwd not working with WORKING_DIRECTORY param
     EXECUTE_PROCESS (
-        COMMAND python -c "import os.path\nprint os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\")"
+        COMMAND python -c "import os.path\nprint(os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\"))"
         OUTPUT_VARIABLE FWDIRPHYS
     )
     STRING (STRIP "${FWDIRPHYS}" FWDIRPHYS)
@@ -107,7 +107,7 @@ ENDFUNCTION (COPY_FRAMEWORK)
 
 FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
     IF (LIBFROM)
-        STRING (REGEX MATCH "\\.dylib$" ISLIB "${LIBTO}")
+        STRING (REGEX MATCH "\\.(dylib|so)$" ISLIB "${LIBTO}")
         IF (ISLIB)
             SET (LIBPOST "${LIBTO}")
             SET (LIBMID "${QGIS_LIB_SUBDIR}")
@@ -228,7 +228,7 @@ FILE (GLOB QGFWLIST RELATIVE "${QFWDIR}" "${QFWDIR}/qgis*.framework")
 STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
 # don't collect any library symlinks, limit to versioned libs
 SET (Q_LIBVER ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
-FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.dylib")
+FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.dylib" "${QLIBDIR}/qgis/server/lib*.so")
 FILE (GLOB QGPLUGLIST "${QPLUGDIR}/*.so")
 FILE (GLOB QGPYLIST "${QGISPYDIR}/qgis/*.so")
 FILE (GLOB QGAPPLIST RELATIVE "${QBINDIR}" "${QBINDIR}/q*.app")

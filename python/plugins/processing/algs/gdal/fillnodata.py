@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -53,7 +54,7 @@ class fillnodata(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Fill nodata')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -74,14 +75,14 @@ class fillnodata(GdalAlgorithm):
 
         arguments = []
         arguments.append('-md')
-        arguments.append(unicode(self.getParameterValue(self.DISTANCE)))
+        arguments.append(str(self.getParameterValue(self.DISTANCE)))
 
         if self.getParameterValue(self.ITERATIONS) != 0:
             arguments.append('-si')
-            arguments.append(unicode(self.getParameterValue(self.ITERATIONS)))
+            arguments.append(str(self.getParameterValue(self.ITERATIONS)))
 
         arguments.append('-b')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
 
         mask = self.getParameterValue(self.MASK)
         if mask is not None:

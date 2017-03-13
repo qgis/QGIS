@@ -54,17 +54,17 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
-    void setGeometry( QgsAbstractGeometry* geom );
+    void setGeometry( QgsAbstractGeometry* geom /Transfer/ );
     /** Returns a pointer to the geometry*/
     const QgsAbstractGeometry* geometry();
     /** Moves vertex to new position (in map coordinates)*/
     void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
     /** Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
-    /** Sets outline color for vertex markes*/
-    void setOutlineColor( const QColor& c );
-    /** Sets outline width*/
-    void setOutlineWidth( int width );
+    /** Sets stroke color for vertex markers*/
+    void setStrokeColor( const QColor& c );
+    /** Sets stroke width*/
+    void setStrokeWidth( int width );
     /** Sets pen style*/
     void setLineStyle( Qt::PenStyle penStyle );
     /** Sets brush style*/

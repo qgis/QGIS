@@ -16,6 +16,7 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include "qgis_core.h"
 #include <memory>
 
 #include <QDomDocument>
@@ -61,7 +62,6 @@ class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
 class QgsComposer;
 class QgsFillSymbol;
-class QgsDataDefined;
 class QgsComposerModel;
 class QgsPaperItem;
 
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     Q_OBJECT
   public:
 
-    /** \brief Plot type */
+    //! \brief Plot type
     enum PlotStyle
     {
       Preview = 0, // Use cache etc
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Postscript   // Fonts need different scaling!
     };
 
-    /** Style to draw the snapping grid*/
+    //! Style to draw the snapping grid
     enum GridStyle
     {
       Solid,
@@ -104,9 +104,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       Landscape
     };
 
-    explicit QgsComposition( const QgsMapSettings& mapSettings );
+    /**
+     * Construct a new composition linked to the specified project.
+     */
+    explicit QgsComposition( QgsProject *project );
 
-    /** Composition atlas modes*/
+    //! Composition atlas modes
     enum AtlasMode
     {
       AtlasOff,     // Composition is not being controlled by an atlas
@@ -115,6 +118,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     };
 
     ~QgsComposition();
+
+    /**
+     * The project associated with the composition. Used to get access to layers, map themes,
+     * relations and various other bits. It is never null.
+     *
+     * \note Added in QGIS 3.0
+     */
+    QgsProject *project() const;
 
     /** Changes size of paper item.
      * @param width page width in mm
@@ -180,8 +191,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see resizePageToContents()
      * @see setResizeToContentsMargins()
      */
-    void resizeToContentsMargins( double& marginTop, double& marginRight,
-                                  double& marginBottom, double& marginLeft ) const;
+    void resizeToContentsMargins( double &marginTop, double &marginRight,
+                                  double &marginBottom, double &marginLeft ) const;
 
     /** Returns the vertical space between pages in a composer view
      * @returns space between pages in mm
@@ -220,10 +231,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     bool shouldExportPage( const int page ) const;
 
-    /** Note: added in version 2.1*/
-    void setPageStyleSymbol( QgsFillSymbol* symbol );
-    /** Note: added in version 2.1*/
-    QgsFillSymbol* pageStyleSymbol() { return mPageStyleSymbol; }
+    //! Note: added in version 2.1
+    void setPageStyleSymbol( QgsFillSymbol *symbol );
+    //! Note: added in version 2.1
+    QgsFillSymbol *pageStyleSymbol() { return mPageStyleSymbol; }
 
     /** Returns the position within a page of a point in the composition
       @note Added in QGIS 2.1
@@ -238,7 +249,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Sets the status bar message for the composer window
       @note Added in QGIS 2.1
      */
-    void setStatusMessage( const QString & message );
+    void setStatusMessage( const QString &message );
 
     /** Refreshes the composition when composer related options change
      @note added in version 2.1
@@ -251,7 +262,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setGridVisible( const bool b );
     bool gridVisible() const {return mGridVisible;}
 
-    /** Hides / shows custom snap lines*/
+    //! Hides / shows custom snap lines
     void setSnapLinesVisible( const bool visible );
     bool snapLinesVisible() const {return mGuidesVisible;}
 
@@ -278,7 +289,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     bool pagesVisible() const { return mPagesVisible; }
 
-    /** Removes all snap lines*/
+    //! Removes all snap lines
     void clearSnapLines();
 
     void setSnapGridResolution( const double r );
@@ -290,8 +301,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setSnapGridOffsetY( const double offset );
     double snapGridOffsetY() const {return mSnapGridOffsetY;}
 
-    void setGridPen( const QPen& p );
-    const QPen& gridPen() const {return mGridPen;}
+    void setGridPen( const QPen &p );
+    QPen gridPen() const {return mGridPen;}
 
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
@@ -326,15 +337,15 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     bool boundingBoxesVisible() const { return mBoundingBoxesVisible; }
 
-    /** Returns pointer to undo/redo command storage*/
-    QUndoStack* undoStack() { return mUndoStack; }
+    //! Returns pointer to undo/redo command storage
+    QUndoStack *undoStack() { return mUndoStack; }
 
     /** Returns the topmost composer item at a specified position. Ignores paper items.
      * @param position point to search for item at
      * @param ignoreLocked set to true to ignore locked items
      * @returns composer item at position
      */
-    QgsComposerItem* composerItemAt( QPointF position, const bool ignoreLocked = false ) const;
+    QgsComposerItem *composerItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
     /** Returns the topmost composer item at a specified position which is below a specified item. Ignores paper items.
      * @param position point to search for item at
@@ -342,30 +353,30 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param ignoreLocked set to true to ignore locked items
      * @returns composer item at position which is below specified item
      */
-    QgsComposerItem* composerItemAt( QPointF position, const QgsComposerItem* belowItem, const bool ignoreLocked = false ) const;
+    QgsComposerItem *composerItemAt( QPointF position, const QgsComposerItem *belowItem, const bool ignoreLocked = false ) const;
 
-    /** Returns the page number (0-based) given a coordinate */
+    //! Returns the page number (0-based) given a coordinate
     int pageNumberAt( QPointF position ) const;
 
-    /** Returns on which page number (0-based) is displayed an item */
-    int itemPageNumber( const QgsComposerItem* ) const;
+    //! Returns on which page number (0-based) is displayed an item
+    int itemPageNumber( const QgsComposerItem * ) const;
 
     /** Returns list of selected composer items
      * @param includeLockedItems set to true to include locked items in list
      * @returns list of selected items
      */
-    QList<QgsComposerItem*> selectedComposerItems( const bool includeLockedItems = true );
+    QList<QgsComposerItem *> selectedComposerItems( const bool includeLockedItems = true );
 
     /** Returns pointers to all composer maps in the scene
       @note available in python bindings only with PyQt >= 4.8.4
       */
-    QList<const QgsComposerMap*> composerMapItems() const;
+    QList<const QgsComposerMap *> composerMapItems() const;
 
     /** Return composer items of a specific type
      * @param itemList list of item type to store matching items in
      * @note not available in python bindings
      */
-    template<class T> void composerItems( QList<T*>& itemList );
+    template<class T> void composerItems( QList<T *> &itemList );
 
     /** Return composer items of a specific type on a specified page
      * @param itemList list of item type to store matching items in
@@ -373,24 +384,24 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @note not available in python bindings
      * @note added in QGIS 2.5
      */
-    template<class T> void composerItemsOnPage( QList<T*>& itemList, const int pageNumber ) const;
+    template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const;
 
     /** Returns the composer map with specified id
      * @return QgsComposerMap or 0 pointer if the composer map item does not exist
      */
-    const QgsComposerMap* getComposerMapById( const int id ) const;
+    const QgsComposerMap *getComposerMapById( const int id ) const;
 
     /** Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
-     * @param theId - A QString representing the identifier of the item to retrieve.
+     * @param id - A QString representing the identifier of the item to retrieve.
      * @return QgsComposerItem pointer or 0 pointer if no such item exists.
      */
-    const QgsComposerItem* getComposerItemById( const QString& theId ) const;
+    const QgsComposerItem *getComposerItemById( const QString &id ) const;
 
     /** Returns a composer item given its unique identifier.
-     * @param theUuid A QString representing the UUID of the item to
+     * @param uuid A QString representing the UUID of the item to
      */
-    const QgsComposerItem* getComposerItemByUuid( const QString& theUuid ) const;
+    const QgsComposerItem *getComposerItemByUuid( const QString &uuid ) const;
 
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( const int dpi );
@@ -401,7 +412,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns true if the composition will generate corresponding world files when pages
      * are exported.
      * @see setGenerateWorldFile()
-     * @see worldFileMap()
+     * @see referenceMap()
      */
     bool generateWorldFile() const { return mGenerateWorldFile; }
 
@@ -409,42 +420,39 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * are exported.
      * @param enabled set to true to generate world files
      * @see generateWorldFile()
-     * @see setWorldFileMap()
+     * @see setReferenceMap()
      */
     void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
 
     /** Returns the map item which will be used to generate corresponding world files when the
-     * composition is exported, or nullptr if no corresponding map is set.
-     * @see setWorldFileMap()
+     * composition is exported. If no map was explicitly set via setReferenceMap(), the largest
+     * map in the composition will be returned (or nullptr if there are no maps in the composition).
+     * @see setReferenceMap()
      * @see generateWorldFile()
      */
-    QgsComposerMap* worldFileMap() const;
+    QgsComposerMap *referenceMap() const;
 
     /** Sets the map item which will be used to generate corresponding world files when the
      * composition is exported.
      * @param map composer map item
-     * @see worldFileMap()
+     * @see referenceMap()
      * @see setGenerateWorldFile()
      */
-    void setWorldFileMap( QgsComposerMap* map );
+    void setReferenceMap( QgsComposerMap *map );
 
-    /** Returns true if a composition should use advanced effects such as blend modes */
+    //! Returns true if a composition should use advanced effects such as blend modes
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
-    /** Used to enable or disable advanced effects such as blend modes in a composition */
+    //! Used to enable or disable advanced effects such as blend modes in a composition
     void setUseAdvancedEffects( const bool effectsEnabled );
-
-    //! Return setting of QGIS map canvas
-    //! @note added in 2.4
-    const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
     void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
 
-    /** Writes settings to xml (paper dimension)*/
-    bool writeXml( QDomElement& composerElem, QDomDocument& doc );
+    //! Writes settings to xml (paper dimension)
+    bool writeXml( QDomElement &composerElem, QDomDocument &doc );
 
-    /** Reads settings from xml file*/
-    bool readXml( const QDomElement& compositionElem, const QDomDocument& doc );
+    //! Reads settings from xml file
+    bool readXml( const QDomElement &compositionElem, const QDomDocument &doc );
 
     /** Load a template document
      * @param doc template document
@@ -454,7 +462,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * atlas properties from the template. Set to false to only add new items from the template, without
      * overwriting the existing items or composition settings.
      */
-    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = nullptr,
+    bool loadFromTemplate( const QDomDocument &doc, QMap<QString, QString> *substitutionMap = nullptr,
                            bool addUndoCommands = false, const bool clearComposition = true );
 
     /** Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
@@ -466,33 +474,33 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXml( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = nullptr,
-                          bool addUndoCommands = false, QPointF* pos = nullptr, bool pasteInPlace = false );
+    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc, QMap< QgsComposerMap *, int > *mapsToRestore = nullptr,
+                          bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false );
 
-    /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
-    void addItemToZList( QgsComposerItem* item );
-    /** Removes item from z list. Usually called from destructor of QgsComposerItem*/
-    void removeItemFromZList( QgsComposerItem* item );
+    //! Adds item to z list. Usually called from constructor of QgsComposerItem
+    void addItemToZList( QgsComposerItem *item );
+    //! Removes item from z list. Usually called from destructor of QgsComposerItem
+    void removeItemFromZList( QgsComposerItem *item );
 
     //functions to move selected items in hierarchy
     void raiseSelectedItems();
 
     //returns true if successful
-    bool raiseItem( QgsComposerItem* item );
+    bool raiseItem( QgsComposerItem *item );
     void lowerSelectedItems();
     //returns true if successful
-    bool lowerItem( QgsComposerItem* item );
+    bool lowerItem( QgsComposerItem *item );
     void moveSelectedItemsToTop();
     //returns true if successful
-    bool moveItemToTop( QgsComposerItem* item );
+    bool moveItemToTop( QgsComposerItem *item );
     void moveSelectedItemsToBottom();
     //returns true if successful
-    bool moveItemToBottom( QgsComposerItem* item );
+    bool moveItemToBottom( QgsComposerItem *item );
 
     //functions to find items by their position in the z list
     void selectNextByZOrder( const ZValueDirection direction );
-    QgsComposerItem* getComposerItemBelow( QgsComposerItem* item ) const;
-    QgsComposerItem* getComposerItemAbove( QgsComposerItem* item ) const;
+    QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
+    QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
 
     //functions to align selected items
     void alignSelectedItemsLeft();
@@ -503,9 +511,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void alignSelectedItemsBottom();
 
     //functions to lock and unlock items
-    /** Lock the selected items*/
+    //! Lock the selected items
     void lockSelectedItems();
-    /** Unlock all items*/
+    //! Unlock all items
     void unlockAllItems();
 
     /** Creates a new group from a list of composer items and adds it to the composition.
@@ -513,7 +521,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @returns QgsComposerItemGroup of grouped items, if grouping was possible
      * @note added in QGIS 2.6
      */
-    QgsComposerItemGroup* groupItems( QList<QgsComposerItem*> items );
+    QgsComposerItemGroup *groupItems( QList<QgsComposerItem *> items );
 
     /** Ungroups items by removing them from an item group and removing the group from the
      * composition.
@@ -522,83 +530,85 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * was not successful
      * @note added in QGIS 2.6
      */
-    QList<QgsComposerItem*> ungroupItems( QgsComposerItemGroup* group );
+    QList<QgsComposerItem *> ungroupItems( QgsComposerItemGroup *group );
 
     /** Rebuilds the z order list by adding any item which are present in the composition
      * but missing from the z order list.
      */
     void refreshZList();
 
-    /** Snaps a scene coordinate point to grid*/
+    //! Snaps a scene coordinate point to grid
     QPointF snapPointToGrid( QPointF scenePoint ) const;
 
-    /** Returns pointer to snap lines collection*/
-    QList< QGraphicsLineItem* >* snapLines() {return &mSnapLines;}
+    //! Returns pointer to snap lines collection
+    QList< QGraphicsLineItem * > *snapLines() {return &mSnapLines;}
 
     /** Returns pointer to selection handles
      * @note not available in python bindings
      */
-    QgsComposerMouseHandles* selectionHandles() {return mSelectionHandles;}
+    QgsComposerMouseHandles *selectionHandles() {return mSelectionHandles;}
 
-    /** Add a custom snap line (can be horizontal or vertical)*/
-    QGraphicsLineItem* addSnapLine();
-    /** Remove custom snap line (and delete the object)*/
-    void removeSnapLine( QGraphicsLineItem* line );
+    //! Add a custom snap line (can be horizontal or vertical)
+    QGraphicsLineItem *addSnapLine();
+    //! Remove custom snap line (and delete the object)
+    void removeSnapLine( QGraphicsLineItem *line );
+
     /** Get nearest snap line
      * @note not available in python bindings
      */
-    QGraphicsLineItem* nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems ) const;
+    QGraphicsLineItem *nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > &snappedItems ) const;
 
     /** Allocates new item command and saves initial state in it
      * @param item target item
      * @param commandText descriptive command text
      * @param c context for merge commands (unknown for non-mergeable commands)
      */
-    void beginCommand( QgsComposerItem* item, const QString& commandText, const QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
+    void beginCommand( QgsComposerItem *item, const QString &commandText, const QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 
-    /** Saves end state of item and pushes command to the undo history*/
+    //! Saves end state of item and pushes command to the undo history
     void endCommand();
-    /** Deletes current command*/
+    //! Deletes current command
     void cancelCommand();
 
-    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, const QgsComposerMultiFrameMergeCommand::Context c = QgsComposerMultiFrameMergeCommand::Unknown );
+    void beginMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, const QgsComposerMultiFrameMergeCommand::Context c = QgsComposerMultiFrameMergeCommand::Unknown );
     void endMultiFrameCommand();
-    /** Deletes current multi frame command*/
+    //! Deletes current multi frame command
     void cancelMultiFrameCommand();
 
-    /** Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
-    void addMultiFrame( QgsComposerMultiFrame* multiFrame );
-    /** Removes multi frame (but does not delete it)*/
-    void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
+    //! Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called
+    void addMultiFrame( QgsComposerMultiFrame *multiFrame );
+    //! Removes multi frame (but does not delete it)
+    void removeMultiFrame( QgsComposerMultiFrame *multiFrame );
+
     /** Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
       @note not available in python bindings*/
-    void addComposerArrow( QgsComposerArrow* arrow );
-    /** Adds label to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerLabel( QgsComposerLabel* label );
-    /** Adds map to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map, const bool setDefaultPreviewStyle = true );
-    /** Adds scale bar to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
-    /** Adds legend to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerLegend( QgsComposerLegend* legend );
-    /** Adds picture to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerPicture( QgsComposerPicture* picture );
-    /** Adds a composer shape to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerShape( QgsComposerShape* shape );
-    /** Adds a composer polygon and advises composer to create a widget for it (through signal)*/
-    void addComposerPolygon( QgsComposerPolygon* polygon );
-    /** Adds a composer polyline and advises composer to create a widget for it (through signal)*/
-    void addComposerPolyline( QgsComposerPolyline* polyline );
-    /** Adds composer html frame and advises composer to create a widget for it (through signal)*/
-    void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
-    /** Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
-    void addComposerTableFrame( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
+    void addComposerArrow( QgsComposerArrow *arrow );
+    //! Adds label to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerLabel( QgsComposerLabel *label );
+    //! Adds map to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerMap( QgsComposerMap *map, const bool setDefaultPreviewStyle = true );
+    //! Adds scale bar to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerScaleBar( QgsComposerScaleBar *scaleBar );
+    //! Adds legend to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerLegend( QgsComposerLegend *legend );
+    //! Adds picture to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerPicture( QgsComposerPicture *picture );
+    //! Adds a composer shape to the graphics scene and advises composer to create a widget for it (through signal)
+    void addComposerShape( QgsComposerShape *shape );
+    //! Adds a composer polygon and advises composer to create a widget for it (through signal)
+    void addComposerPolygon( QgsComposerPolygon *polygon );
+    //! Adds a composer polyline and advises composer to create a widget for it (through signal)
+    void addComposerPolyline( QgsComposerPolyline *polyline );
+    //! Adds composer html frame and advises composer to create a widget for it (through signal)
+    void addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame );
+    //! Adds composer tablev2 frame and advises composer to create a widget for it (through signal)
+    void addComposerTableFrame( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
 
-    /** Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
-    void removeComposerItem( QgsComposerItem* item, const bool createCommand = true, const bool removeGroupItems = true );
+    //! Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command
+    void removeComposerItem( QgsComposerItem *item, const bool createCommand = true, const bool removeGroupItems = true );
 
-    /** Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
-    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
+    //! Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack
+    void pushAddRemoveCommand( QgsComposerItem *item, const QString &text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
     /** If true, prevents any mouse cursor changes by the composition or by any composer items
      * Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes
@@ -606,19 +616,19 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setPreventCursorChange( const bool preventChange ) { mPreventCursorChange = preventChange; }
     bool preventCursorChange() const { return mPreventCursorChange; }
 
+#ifndef QT_NO_PRINTER
     //printing
-
-    /** Prepare the printer for printing */
-    void beginPrint( QPrinter& printer, const bool evaluateDDPageSize = false );
-    /** Prepare the printer for printing in a PDF */
-    void beginPrintAsPDF( QPrinter& printer, const QString& file );
+    //! Prepare the printer for printing
+    void beginPrint( QPrinter &printer, const bool evaluateDDPageSize = false );
+    //! Prepare the printer for printing in a PDF
+    void beginPrintAsPDF( QPrinter &printer, const QString &file );
 
     /** Print on a preconfigured printer
      * @param printer QPrinter destination
      * @param painter QPainter source
      * @param startNewPage set to true to begin the print on a new page
      */
-    void doPrint( QPrinter& printer, QPainter& painter, bool startNewPage = false );
+    void doPrint( QPrinter &printer, QPainter &painter, bool startNewPage = false );
 
     /** Convenience function that prepares the printer and prints
      * @returns true if print was successful
@@ -628,7 +638,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Convenience function that prepares the printer for printing in PDF and prints
      * @returns true if export was successful
      */
-    bool exportAsPDF( const QString& file );
+    bool exportAsPDF( const QString &file );
+#endif
 
     /** Renders a composer page to an image.
      * @param page page number, 0 based such that the first page is page 0
@@ -656,7 +667,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see printPageAsRaster()
      * @see renderRect()
      */
-    QImage renderRectAsRaster( const QRectF& rect, QSize imageSize = QSize(), int dpi = 0 );
+    QImage renderRectAsRaster( const QRectF &rect, QSize imageSize = QSize(), int dpi = 0 );
 
     /** Renders a full page to a paint device.
      * @param p destination painter
@@ -664,7 +675,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see renderRect()
      * @see printPageAsRaster()
      */
-    void renderPage( QPainter* p, int page );
+    void renderPage( QPainter *p, int page );
 
     /** Renders a portion of the composition to a paint device. This method can be used
      * to render sections of pages rather than full pages.
@@ -674,24 +685,24 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see renderPage()
      * @see renderRectAsRaster()
      */
-    void renderRect( QPainter* p, const QRectF& rect );
+    void renderRect( QPainter *p, const QRectF &rect );
 
     /** Georeferences a file (image of PDF) exported from the composition.
      * @param file filename of exported file
      * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
-     * currently defined worldFileMap().
+     * currently defined referenceMap().
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
      * exported
      * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
      * @note added in QGIS 2.16
      */
-    void georeferenceOutput( const QString& file, QgsComposerMap* referenceMap = nullptr,
-                             const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+    void georeferenceOutput( const QString &file, QgsComposerMap *referenceMap = nullptr,
+                             const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
     /** Compute world file parameters. Assumes the whole page containing the associated map item
      * will be exported.
      */
-    void computeWorldFileParameters( double& a, double& b, double& c, double& d, double& e, double& f ) const;
+    void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f ) const;
 
     /** Computes the world file parameters for a specified region of the composition.
      * @param exportRegion region of the composition which will be associated with world file
@@ -703,9 +714,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param f
      * @note added in QGIS 2.12
      */
-    void computeWorldFileParameters( const QRectF& exportRegion, double& a, double& b, double& c, double& d, double& e, double& f ) const;
+    void computeWorldFileParameters( const QRectF &exportRegion, double &a, double &b, double &c, double &d, double &e, double &f ) const;
 
-    QgsAtlasComposition& atlasComposition() { return mAtlasComposition; }
+    QgsAtlasComposition &atlasComposition() { return mAtlasComposition; }
 
     /** Returns the current atlas mode of the composition
      * @returns current atlas mode
@@ -724,29 +735,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
      * @note added in version 2.4
      */
-    QList< QgsPaperItem* > pages() { return mPages; }
-
-    /** Returns a reference to the data defined settings for one of the composition's data defined properties.
-     * @param property data defined property to return
-     * @note this method was added in version 2.5
-     */
-    QgsDataDefined* dataDefinedProperty( const QgsComposerObject::DataDefinedProperty property );
-
-    /** Sets parameters for a data defined property for the composition
-     * @param property data defined property to set
-     * @param active true if data defined property is active, false if it is disabled
-     * @param useExpression true if the expression should be used
-     * @param expression expression for data defined property
-     * @param field field name if the data defined property should take its value from a field
-     * @note this method was added in version 2.5
-     */
-    void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
+    QList< QgsPaperItem * > pages() { return mPages; }
 
     /** Returns the items model attached to the composition
      * @returns QgsComposerModel for composition
      * @note this method was added in version 2.5
      */
-    QgsComposerModel * itemsModel() { return mItemsModel; }
+    QgsComposerModel *itemsModel() { return mItemsModel; }
 
     /** Set a custom property for the composition.
      * @param key property key. If a property with the same key already exists it will be overwritten.
@@ -795,13 +790,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
      * @param ignorePages set to true to ignore page items
-     * @param margin optional marginal (in percent, eg 0.05 = 5% ) to add around items
+     * @param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
      */
     QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
   public slots:
-    /** Casts object to the proper subclass type and calls corresponding itemAdded signal*/
-    void sendItemAddedSignal( QgsComposerItem* item );
+    //! Casts object to the proper subclass type and calls corresponding itemAdded signal
+    void sendItemAddedSignal( QgsComposerItem *item );
 
     /** Updates the scene bounds of the composition
     @note added in version 2.2*/
@@ -817,13 +812,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Clears any selected items and sets an item as the current selection.
      * @param item item to set as selected
      * @note added in version 2.3*/
-    void setSelectedItem( QgsComposerItem* item );
+    void setSelectedItem( QgsComposerItem *item );
 
     /** Clears any selected items in the composition. Call this method rather than
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.
      * @note added in version 2.5*/
-    void setAllUnselected();
+    void setAllDeselected();
 
     /** Refreshes a data defined property for the composition by reevaluating the property's value
      * and redrawing the composition with this new value.
@@ -833,7 +828,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
      */
-    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr );
 
     /** Creates an expression context relating to the compositions's current state. The context includes
      * scopes for global, project, composition and atlas properties.
@@ -841,43 +836,63 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QgsExpressionContext createExpressionContext() const override;
 
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /** Returns a reference to the composition's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setDataDefinedProperties()
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+
+    /** Sets the composition's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see dataDefinedProperties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
   protected:
     void init();
 
 
   private:
-    /** Reference to map settings of QGIS main map*/
-    const QgsMapSettings& mMapSettings;
+
+    //! Pointer to associated project (not null)
+    QgsProject *mProject = nullptr;
 
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
     double mPageHeight;
-    QList< QgsPaperItem* > mPages;
+    QList< QgsPaperItem * > mPages;
     double mSpaceBetweenPages; //space in preview between pages
 
-    /** Drawing style for page*/
-    QgsFillSymbol* mPageStyleSymbol;
+    //! Drawing style for page
+    QgsFillSymbol *mPageStyleSymbol = nullptr;
     void createDefaultPageStyleSymbol();
 
-    /** List multiframe objects*/
-    QSet<QgsComposerMultiFrame*> mMultiFrames;
+    //! List multiframe objects
+    QSet<QgsComposerMultiFrame *> mMultiFrames;
 
-    /** Dpi for printout*/
+    //! Dpi for printout
     int mPrintResolution;
 
-    /** Flag if map should be printed as a raster (via QImage). False by default*/
+    //! Flag if map should be printed as a raster (via QImage). False by default
     bool mPrintAsRaster;
 
-    /** Flag if a world file should be generated on raster export */
+    //! Flag if a world file should be generated on raster export
     bool mGenerateWorldFile;
 
-    /** Item ID for composer map to use for the world file generation */
+    //! Item ID for composer map to use for the world file generation
     QString mWorldFileMapId;
 
-    /** Flag if advanced visual effects such as blend modes should be used. True by default*/
+    //! Flag if advanced visual effects such as blend modes should be used. True by default
     bool mUseAdvancedEffects;
 
-    /** Parameters for snap to grid function*/
+    //! Parameters for snap to grid function
     bool mSnapToGrid;
     bool mGridVisible;
     double mSnapGridResolution;
@@ -886,14 +901,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QPen mGridPen;
     GridStyle mGridStyle;
 
-    /** Parameters for alignment snap*/
+    //! Parameters for alignment snap
     bool mAlignmentSnap;
     bool mGuidesVisible;
     bool mSmartGuides;
     int mSnapTolerance;
 
-    /** Arbitraty snap lines (horizontal and vertical)*/
-    QList< QGraphicsLineItem* > mSnapLines;
+    //! Arbitraty snap lines (horizontal and vertical)
+    QList< QGraphicsLineItem * > mSnapLines;
 
     double mResizeToContentsMarginTop;
     double mResizeToContentsMarginRight;
@@ -902,106 +917,60 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     bool mBoundingBoxesVisible;
     bool mPagesVisible;
-    QgsComposerMouseHandles* mSelectionHandles;
+    QgsComposerMouseHandles *mSelectionHandles = nullptr;
 
-    QUndoStack* mUndoStack;
+    QUndoStack *mUndoStack = nullptr;
 
-    QgsComposerItemCommand* mActiveItemCommand;
-    QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
+    QgsComposerItemCommand *mActiveItemCommand = nullptr;
+    QgsComposerMultiFrameCommand *mActiveMultiFrameCommand = nullptr;
 
-    /** The atlas composition object. It is held by the QgsComposition */
+    //! The atlas composition object. It is held by the QgsComposition
     QgsAtlasComposition mAtlasComposition;
 
     QgsComposition::AtlasMode mAtlasMode;
 
     bool mPreventCursorChange;
 
-    QgsComposerModel * mItemsModel;
+    QgsComposerModel *mItemsModel = nullptr;
 
-    /** Map of data defined properties for the composition to string name to use when exporting composition to xml*/
-    QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
-    /** Map of current data defined properties to QgsDataDefined for the composition*/
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+    QgsPropertyCollection mDataDefinedProperties;
 
     QgsObjectCustomProperties mCustomProperties;
 
     QgsComposition(); //default constructor is forbidden
 
-    /** Reset z-values of items based on position in z list*/
+    //! Reset z-values of items based on position in z list
     void updateZValues( const bool addUndoCommands = true );
 
     /** Returns the bounding rectangle of the selected items in scene coordinates
      @return 0 in case of success*/
-    int boundingRectOfSelectedItems( QRectF& bRect );
+    int boundingRectOfSelectedItems( QRectF &bRect );
 
-    /** Loads default composer settings*/
+    //! Loads default composer settings
     void loadDefaults();
 
-    /** Loads composer settings which may change, eg grid color*/
+    //! Loads composer settings which may change, e.g., grid color
     void loadSettings();
 
-    /** Calculates the item minimum position from an xml string*/
-    QPointF minPointFromXml( const QDomElement& elem ) const;
+    //! Calculates the item minimum position from an xml string
+    QPointF minPointFromXml( const QDomElement &elem ) const;
 
-    void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
+    void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand *c );
 
     void updatePaperItems();
     void addPaperItem();
     void removePaperItems();
     void deleteAndRemoveMultiFrames();
 
-    static QString encodeStringForXml( const QString& str );
+    static QString encodeStringForXml( const QString &str );
 
     //tries to return the current QGraphicsView attached to the composition
-    QGraphicsView* graphicsView() const;
+    QGraphicsView *graphicsView() const;
 
     /** Recalculates the page size using data defined page settings
      * @param context expression context for data defined page sizes
      */
-    void refreshPageSize( const QgsExpressionContext* context = nullptr );
-
-    /** Evaluate a data defined property and return the calculated value
-     * @returns true if data defined property could be successfully evaluated
-     * @param property data defined property to evaluate
-     * @param expressionValue QVariant for storing the evaluated value
-     * @param context expression context for evaluating expressions. Must have feature and fields set
-     * to corresponding atlas feature and coverage layer fields prior to calling this method.
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
-                              const QgsExpressionContext& context,
-                              QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
-
-    /** Returns whether a data defined property has been set and is currently active.
-     * @param property data defined property to test
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    bool dataDefinedActive( const QgsComposerObject::DataDefinedProperty property,
-                            const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
-
-    /** Evaluates a data defined property and returns the calculated value.
-     * @param property data defined property to evaluate
-     * @param feature current atlas feature to evaluate property for
-     * @param fields fields from atlas layer
-     * @param context expression context for evaluating expressions (note, must have fields and feature set)
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @note this method was added in version 2.5
-     */
-    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields,
-                               const QgsExpressionContext& context,
-                               QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
-
-
-    /** Prepares the expression for a data defined property.
-     * @param dd data defined to prepare. If no data defined is set, all data defined expressions will be prepared
-     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
-     * @param context expression context for expression preparation.  Should have fields set to match the current atlas layer if required prior
-     * to calling this method.
-     * @note this method was added in version 2.5
-     */
-    void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties, const QgsExpressionContext& context ) const;
+    void refreshPageSize( const QgsExpressionContext *context = nullptr );
 
     /** Check whether any data defined page settings are active.
      * @returns true if any data defined page settings are active.
@@ -1011,13 +980,13 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Computes a GDAL style geotransform for georeferencing a composition.
      * @param referenceMap map item to use for georeferencing, or leave as nullptr to use the
-     * currently defined worldFileMap().
+     * currently defined referenceMap().
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition is
      * being exported
      * @param dpi allows overriding the default composition DPI, or leave as -1 to use composition's DPI.
      * @note added in QGIS 2.16
      */
-    double* computeGeoTransform( const QgsComposerMap* referenceMap = nullptr, const QRectF& exportRegion = QRectF(), double dpi = -1 ) const;
+    double *computeGeoTransform( const QgsComposerMap *referenceMap = nullptr, const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
 
   private slots:
@@ -1028,62 +997,61 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void paperSizeChanged();
     void nPagesChanged();
 
-    /** Is emitted when the compositions print resolution changes*/
+    //! Is emitted when the compositions print resolution changes
     void printResolutionChanged();
 
-    /** Is emitted when selected item changed. If 0, no item is selected*/
-    void selectedItemChanged( QgsComposerItem* selected );
-    /** Is emitted when new composer arrow has been added to the view*/
-    void composerArrowAdded( QgsComposerArrow* arrow );
-    /** Is emitted when new composer polygon has been added to the view*/
-    void composerPolygonAdded( QgsComposerPolygon* polygon );
-    /** Is emitted when new composer polyline has been added to the view*/
-    void composerPolylineAdded( QgsComposerPolyline* polyline );
-    /** Is emitted when a new composer html has been added to the view*/
-    void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
-    /** Is emitted when a new item group has been added to the view*/
-    void composerItemGroupAdded( QgsComposerItemGroup* group );
-    /** Is emitted when new composer label has been added to the view*/
-    void composerLabelAdded( QgsComposerLabel* label );
-    /** Is emitted when new composer map has been added to the view*/
-    void composerMapAdded( QgsComposerMap* map );
-    /** Is emitted when new composer scale bar has been added*/
-    void composerScaleBarAdded( QgsComposerScaleBar* scalebar );
-    /** Is emitted when a new composer legend has been added*/
-    void composerLegendAdded( QgsComposerLegend* legend );
-    /** Is emitted when a new composer picture has been added*/
-    void composerPictureAdded( QgsComposerPicture* picture );
-    /** Is emitted when a new composer shape has been added*/
-    void composerShapeAdded( QgsComposerShape* shape );
-    /** Is emitted when a new composer table frame has been added to the view*/
-    void composerTableFrameAdded( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
-    /** Is emitted when a composer item has been removed from the scene*/
-    void itemRemoved( QgsComposerItem* );
+    //! Is emitted when selected item changed. If 0, no item is selected
+    void selectedItemChanged( QgsComposerItem *selected );
+    //! Is emitted when new composer arrow has been added to the view
+    void composerArrowAdded( QgsComposerArrow *arrow );
+    //! Is emitted when new composer polygon has been added to the view
+    void composerPolygonAdded( QgsComposerPolygon *polygon );
+    //! Is emitted when new composer polyline has been added to the view
+    void composerPolylineAdded( QgsComposerPolyline *polyline );
+    //! Is emitted when a new composer html has been added to the view
+    void composerHtmlFrameAdded( QgsComposerHtml *html, QgsComposerFrame *frame );
+    //! Is emitted when a new item group has been added to the view
+    void composerItemGroupAdded( QgsComposerItemGroup *group );
+    //! Is emitted when new composer label has been added to the view
+    void composerLabelAdded( QgsComposerLabel *label );
+    //! Is emitted when new composer map has been added to the view
+    void composerMapAdded( QgsComposerMap *map );
+    //! Is emitted when new composer scale bar has been added
+    void composerScaleBarAdded( QgsComposerScaleBar *scalebar );
+    //! Is emitted when a new composer legend has been added
+    void composerLegendAdded( QgsComposerLegend *legend );
+    //! Is emitted when a new composer picture has been added
+    void composerPictureAdded( QgsComposerPicture *picture );
+    //! Is emitted when a new composer shape has been added
+    void composerShapeAdded( QgsComposerShape *shape );
+    //! Is emitted when a new composer table frame has been added to the view
+    void composerTableFrameAdded( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
+    //! Is emitted when a composer item has been removed from the scene
+    void itemRemoved( QgsComposerItem * );
 
-    /** Is emitted when item in the composition must be refreshed*/
+    //! Is emitted when item in the composition must be refreshed
     void refreshItemsTriggered();
 
-    /** Is emitted when the composition has an updated status bar message for the composer window*/
-    void statusMsgChanged( const QString& message );
+    //! Is emitted when the composition has an updated status bar message for the composer window
+    void statusMsgChanged( const QString &message );
 
     /** Emitted whenever the expression variables stored in the composition have been changed.
      * @note added in QGIS 3.0
      */
     void variablesChanged();
 
-    friend class QgsComposerObject; //for accessing dataDefinedEvaluate, readDataDefinedPropertyMap and writeDataDefinedPropertyMap
     friend class QgsComposerModel; //for accessing updateZValues (should not be public)
     friend class TestQgsComposition;
 };
 
-template<class T> void QgsComposition::composerItems( QList<T*>& itemList )
+template<class T> void QgsComposition::composerItems( QList<T *> &itemList )
 {
   itemList.clear();
   QList<QGraphicsItem *> graphicsItemList = items();
   QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
   for ( ; itemIt != graphicsItemList.end(); ++itemIt )
   {
-    T* item = dynamic_cast<T*>( *itemIt );
+    T *item = dynamic_cast<T *>( *itemIt );
     if ( item )
     {
       itemList.push_back( item );
@@ -1091,14 +1059,14 @@ template<class T> void QgsComposition::composerItems( QList<T*>& itemList )
   }
 }
 
-template<class T> void QgsComposition::composerItemsOnPage( QList<T*>& itemList, const int pageNumber ) const
+template<class T> void QgsComposition::composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const
 {
   itemList.clear();
   QList<QGraphicsItem *> graphicsItemList = items();
   QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
   for ( ; itemIt != graphicsItemList.end(); ++itemIt )
   {
-    T* item = dynamic_cast<T*>( *itemIt );
+    T *item = dynamic_cast<T *>( *itemIt );
     if ( item && itemPageNumber( item ) == pageNumber )
     {
       itemList.push_back( item );

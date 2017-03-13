@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERSEQUENTIALJOB_H
 #define QGSMAPRENDERERSEQUENTIALJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 class QgsMapRendererCustomPainterJob;
@@ -32,15 +33,17 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererSequentialJob( const QgsMapSettings& settings );
+    QgsMapRendererSequentialJob( const QgsMapSettings &settings );
     ~QgsMapRendererSequentialJob();
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    virtual bool usedCachedLabels() const override;
+    virtual QgsLabelingResults *takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;
@@ -49,12 +52,14 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 
     void internalFinished();
 
-  protected:
+  private:
 
-    QgsMapRendererCustomPainterJob* mInternalJob;
+    QgsMapRendererCustomPainterJob *mInternalJob = nullptr;
     QImage mImage;
-    QPainter* mPainter;
-    QgsLabelingResults* mLabelingResults;
+    QPainter *mPainter = nullptr;
+    std::unique_ptr< QgsLabelingResults > mLabelingResults;
+    bool mUsedCachedLabels = false;
+
 };
 
 

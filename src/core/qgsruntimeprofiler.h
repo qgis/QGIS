@@ -5,30 +5,26 @@
 #include <QPair>
 #include <QStack>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsRuntimeProfiler
  */
 class CORE_EXPORT QgsRuntimeProfiler
 {
   public:
+
     /**
      * Constructor to create a new runtime profiler.
      */
     QgsRuntimeProfiler();
 
     /**
-     * @brief Instance of the run time profiler. To use the main profiler
-     * use this instance.
-     * @return The instance of the run time profiler
-     */
-    static QgsRuntimeProfiler * instance();
-
-    /**
      * @brief Begin the group for the profiler. Groups will append {GroupName}/ to the
      * front of the profile tag set using start.
      * @param name The name of the group.
      */
-    void beginGroup( const QString& name );
+    void beginGroup( const QString &name );
 
     /**
      * @brief End the current active group.
@@ -40,7 +36,7 @@ class CORE_EXPORT QgsRuntimeProfiler
      * @param name The name of the profile event. Will have the name of
      * the active group appended after ending.
      */
-    void start( const QString& name );
+    void start( const QString &name );
 
     /**
      * @brief End the current profile event.
@@ -66,8 +62,6 @@ class CORE_EXPORT QgsRuntimeProfiler
     double totalTime();
 
   private:
-    static QgsRuntimeProfiler* mInstance;
-
     QString mGroupPrefix;
     QStack<QString> mGroupStack;
     QTime mProfileTime;

@@ -17,6 +17,7 @@
 #define QGSTABWIDGET_H
 
 #include <QTabWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
@@ -29,6 +30,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     Q_OBJECT
 
   public:
+
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *
@@ -41,21 +43,21 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * @note Added in QGIS 3.0
      */
-    void hideTab( QWidget* tab );
+    void hideTab( QWidget *tab );
 
     /**
      * Shows the tab with the given widget
      *
      * @note Added in QGIS 3.0
      */
-    void showTab( QWidget* tab );
+    void showTab( QWidget *tab );
 
     /**
      * Control the visibility for the tab with the given widget.
      *
      * @note Added in QGIS 3.0
      */
-    void setTabVisible( QWidget* tab, bool visible );
+    void setTabVisible( QWidget *tab, bool visible );
 
     /**
      * Returns the index of the tab with the given widget.
@@ -64,7 +66,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * @note Added in QGIS 3.0
      */
-    int realTabIndex( QWidget* widget );
+    int realTabIndex( QWidget *widget );
 
     /**
      * Is called internally whenever a new tab has been inserted.
@@ -89,28 +91,28 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
 
     struct TabInformation
     {
-      TabInformation( QWidget* wdg, const QString& lbl )
-          : sourceIndex( -1 )
-          , widget( wdg )
-          , label( lbl )
-          , visible( true )
+      TabInformation( QWidget *wdg, const QString &lbl )
+        : sourceIndex( -1 )
+        , widget( wdg )
+        , label( lbl )
+        , visible( true )
       {}
 
       TabInformation()
-          : sourceIndex( -1 )
-          , widget( nullptr )
-          , visible( true )
+        : sourceIndex( -1 )
+        , widget( nullptr )
+        , visible( true )
       {}
 
-      bool operator ==( const TabInformation& other );
+      bool operator ==( const TabInformation &other );
 
       int sourceIndex;
-      QWidget* widget;
+      QWidget *widget = nullptr;
       QString label;
       bool visible;
     };
 
-    TabInformation tabInfo( QWidget* widget );
+    TabInformation tabInfo( QWidget *widget );
 
     QList<TabInformation> mTabs;
     bool mSetTabVisibleFlag;

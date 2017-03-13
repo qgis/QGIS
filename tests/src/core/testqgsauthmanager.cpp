@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QtTest/QSignalSpy>
 #include <QObject>
 #include <QDesktopServices>
@@ -52,20 +52,20 @@ class TestQgsAuthManager: public QObject
     void cleanupTempDir();
     QList<QgsAuthMethodConfig> registerAuthConfigs();
 
-    void reportRow( const QString& msg );
-    void reportHeader( const QString& msg );
+    void reportRow( const QString &msg );
+    void reportHeader( const QString &msg );
 
     QString mPkiData;
     QString mTempDir;
-    const char* mPass;
+    const char *mPass = nullptr;
     QString mReport;
 };
 
 
 TestQgsAuthManager::TestQgsAuthManager()
-    : mPkiData( QString( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
-    , mTempDir( QDir::tempPath() + "/auth" )
-    , mPass( "pass" )
+  : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
+  , mTempDir( QDir::tempPath() + "/auth" )
+  , mPass( "pass" )
 {
 }
 
@@ -73,7 +73,7 @@ void TestQgsAuthManager::initTestCase()
 {
   cleanupTempDir();
 
-  mReport += "<h1>QgsAuthManager Tests</h1>\n";
+  mReport += QLatin1String( "<h1>QgsAuthManager Tests</h1>\n" );
 
   // make QGIS_AUTH_DB_DIR_PATH temp dir for qgis-auth.db and master password file
   QDir tmpDir = QDir::temp();
@@ -87,11 +87,11 @@ void TestQgsAuthManager::initTestCase()
             "Authentication system is DISABLED" );
 
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', "<br />\n" );
+  mySettings = mySettings.replace( '\n', QLatin1String( "<br />\n" ) );
   mReport += "<p>" + mySettings + "</p>\n";
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
-  QString db1( QFileInfo( QgsAuthManager::instance()->authenticationDbPath() ).canonicalFilePath() );
+  QString db1( QFileInfo( QgsAuthManager::instance()->authenticationDatabasePath() ).canonicalFilePath() );
   QString db2( QFileInfo( mTempDir + "/qgis-auth.db" ).canonicalFilePath() );
   QVERIFY2( db1 == db2, "Auth db temp path does not match db path of manager" );
 
@@ -163,12 +163,12 @@ void TestQgsAuthManager::init()
   mReport += "<h2>" + QString( QTest::currentTestFunction() ) + "</h2>\n";
 }
 
-void TestQgsAuthManager::reportRow( const QString& msg )
+void TestQgsAuthManager::reportRow( const QString &msg )
 {
   mReport += msg + "<br>\n";
 }
 
-void TestQgsAuthManager::reportHeader( const QString& msg )
+void TestQgsAuthManager::reportHeader( const QString &msg )
 {
   mReport += "<h3>" + msg + "</h3>\n";
 }
@@ -180,7 +180,7 @@ void TestQgsAuthManager::testMasterPassword()
   QgsAuthManager *authm = QgsAuthManager::instance();
 
   QVERIFY( authm->masterPasswordIsSet() );
-  QVERIFY( authm->masterPasswordHashInDb() );
+  QVERIFY( authm->masterPasswordHashInDatabase() );
   QVERIFY( authm->masterPasswordSame( mPass ) );
   QVERIFY( !authm->masterPasswordSame( "wrongpass" ) );
   QVERIFY( authm->setMasterPassword() );
@@ -199,7 +199,7 @@ void TestQgsAuthManager::testMasterPassword()
 
   authm->clearMasterPassword();
   QVERIFY( !authm->masterPasswordIsSet() );
-  QVERIFY( !authm->setMasterPassword( "wrongpass" , true ) );
+  QVERIFY( !authm->setMasterPassword( "wrongpass", true ) );
   QVERIFY( !authm->masterPasswordIsSet() );
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
@@ -362,12 +362,12 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
   // Basic
   QgsAuthMethodConfig b_config;
-  b_config.setName( "Basic" );
-  b_config.setMethod( "Basic" );
-  b_config.setUri( "http://example.com" );
-  b_config.setConfig( "username", "username" );
-  b_config.setConfig( "password", "password" );
-  b_config.setConfig( "realm", "Realm" );
+  b_config.setName( QStringLiteral( "Basic" ) );
+  b_config.setMethod( QStringLiteral( "Basic" ) );
+  b_config.setUri( QStringLiteral( "http://example.com" ) );
+  b_config.setConfig( QStringLiteral( "username" ), QStringLiteral( "username" ) );
+  b_config.setConfig( QStringLiteral( "password" ), QStringLiteral( "password" ) );
+  b_config.setConfig( QStringLiteral( "realm" ), QStringLiteral( "Realm" ) );
   if ( !b_config.isValid() )
   {
     return configs;
@@ -375,11 +375,11 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
   // PKI-Paths
   QgsAuthMethodConfig p_config;
-  p_config.setName( "PKI-Paths" );
-  p_config.setMethod( "PKI-Paths" );
-  p_config.setUri( "http://example.com" );
-  p_config.setConfig( "certpath", mPkiData + "/gerardus_cert.pem" );
-  p_config.setConfig( "keypath", mPkiData + "gerardus_key_w-pass.pem" );
+  p_config.setName( QStringLiteral( "PKI-Paths" ) );
+  p_config.setMethod( QStringLiteral( "PKI-Paths" ) );
+  p_config.setUri( QStringLiteral( "http://example.com" ) );
+  p_config.setConfig( QStringLiteral( "certpath" ), mPkiData + "/gerardus_cert.pem" );
+  p_config.setConfig( QStringLiteral( "keypath" ), mPkiData + "gerardus_key_w-pass.pem" );
   if ( !p_config.isValid() )
   {
     return configs;
@@ -387,11 +387,11 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
   // PKI-PKCS#12
   QgsAuthMethodConfig k_config;
-  k_config.setName( "PKI-PKCS#12" );
-  k_config.setMethod( "PKI-PKCS#12" );
-  k_config.setUri( "http://example.com" );
-  k_config.setConfig( "bundlepath", mPkiData + "/gerardus.p12" );
-  k_config.setConfig( "bundlepass", "password" );
+  k_config.setName( QStringLiteral( "PKI-PKCS#12" ) );
+  k_config.setMethod( QStringLiteral( "PKI-PKCS#12" ) );
+  k_config.setUri( QStringLiteral( "http://example.com" ) );
+  k_config.setConfig( QStringLiteral( "bundlepath" ), mPkiData + "/gerardus.p12" );
+  k_config.setConfig( QStringLiteral( "bundlepass" ), QStringLiteral( "password" ) );
   if ( !k_config.isValid() )
   {
     return configs;
@@ -402,5 +402,5 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
   return configs;
 }
 
-QTEST_MAIN( TestQgsAuthManager )
+QGSTEST_MAIN( TestQgsAuthManager )
 #include "testqgsauthmanager.moc"

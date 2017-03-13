@@ -16,6 +16,8 @@
 #ifndef QGSDATAITEMPROVIDER_H
 #define QGSDATAITEMPROVIDER_H
 
+#include "qgis_core.h"
+
 class QgsDataItem;
 
 class QString;
@@ -35,7 +37,7 @@ class QString;
 class CORE_EXPORT QgsDataItemProvider
 {
   public:
-    virtual ~QgsDataItemProvider() {}
+    virtual ~QgsDataItemProvider() = default;
 
     //! Human-readable name of the provider name
     virtual QString name() = 0;
@@ -45,7 +47,7 @@ class CORE_EXPORT QgsDataItemProvider
 
     //! Create a new instance of QgsDataItem (or null) for given path and parent item.
     //! Caller takes responsibility of deleting created items.
-    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) = 0;
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0;
 
 };
 

@@ -10,7 +10,7 @@ class QgsEditorWidgetSetup
     /**
      * Constructor
      */
-    QgsEditorWidgetSetup( const QString& type, const QgsEditorWidgetConfig& config );
+    QgsEditorWidgetSetup( const QString& type, const QVariantMap& config );
     QgsEditorWidgetSetup();
 
     /**
@@ -21,7 +21,7 @@ class QgsEditorWidgetSetup
     /**
      * @return the widget configuration to used
      */
-    QgsEditorWidgetConfig config() const;
+    QVariantMap config() const;
 
     /**
      * @return true if there is no widget configured.

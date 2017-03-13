@@ -18,8 +18,9 @@ import qgis  # NOQA
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsFeatureRequest, QgsFeature, QgsExpression
+from qgis.core import QgsVectorLayer, QgsMapSettings, QgsComposition, QgsComposerLabel, QgsProject
 from utilities import unitTestDataPath
+
 
 start_app()
 
@@ -31,14 +32,13 @@ class TestQgsComposerLabel(unittest.TestCase):
         vectorFileInfo = QFileInfo(TEST_DATA_DIR + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
-        QgsMapLayerRegistry.instance().addMapLayers([mVectorLayer])
+        QgsProject.instance().addMapLayers([mVectorLayer])
 
         # create composition with composer map
         mapSettings = QgsMapSettings()
-        mapSettings.setLayers([mVectorLayer.id()])
-        mapSettings.setCrsTransformEnabled(False)
+        mapSettings.setLayers([mVectorLayer])
 
-        mComposition = QgsComposition(mapSettings)
+        mComposition = QgsComposition(QgsProject.instance())
         mComposition.setPaperSize(297, 210)
 
         mLabel = QgsComposerLabel(mComposition)
@@ -90,6 +90,7 @@ class TestQgsComposerLabel(unittest.TestCase):
         # move the the second page and re-evaluate
         mLabel.setItemPosition(0, 320)
         assert mLabel.displayText() == "2/2"
+
 
 if __name__ == '__main__':
     unittest.main()

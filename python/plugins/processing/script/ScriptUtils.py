@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,6 +34,8 @@ from processing.script.WrongScriptException import WrongScriptException
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import mkdir, userFolder
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 
 class ScriptUtils(object):
 
@@ -40,7 +44,7 @@ class ScriptUtils(object):
 
     @staticmethod
     def defaultScriptsFolder():
-        folder = unicode(os.path.join(userFolder(), 'scripts'))
+        folder = str(os.path.join(userFolder(), 'scripts'))
         mkdir(folder)
         return os.path.abspath(folder)
 
@@ -68,7 +72,8 @@ class ScriptUtils(object):
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                     except Exception as e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               'Could not load script:' + descriptionFile + '\n'
-                                               + unicode(e))
+                        ProcessingLog.addToLog(
+                            ProcessingLog.LOG_ERROR,
+                            QCoreApplication.translate('Processing', 'Could not load script: {0}\n{1}').format(descriptionFile, str(e))
+                        )
         return algs

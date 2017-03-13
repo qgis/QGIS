@@ -1560,8 +1560,8 @@ class GMLMultiPolygonFeatureCollection(FeatureCollection):
 
 def monitorExecution(execution, sleepSecs=3, download=False, filepath=None):
     '''
-    Convenience method to monitor the status of a WPS execution till it completes (succesfully or not),
-    and write the output to file after a succesfull job completion.
+    Convenience method to monitor the status of a WPS execution till it completes (successfully or not),
+    and write the output to file after a successful job completion.
 
     execution: WPSExecution instance
     sleepSecs: number of seconds to sleep in between check status invocations

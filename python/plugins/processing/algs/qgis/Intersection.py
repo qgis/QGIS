@@ -29,11 +29,10 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -45,7 +44,7 @@ wkbTypeGroups = {
     'LineString': (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString, QgsWkbTypes.LineString25D, QgsWkbTypes.MultiLineString25D,),
     'Polygon': (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon, QgsWkbTypes.Polygon25D, QgsWkbTypes.MultiPolygon25D,),
 }
-for key, value in wkbTypeGroups.items():
+for key, value in list(wkbTypeGroups.items()):
     for const in value:
         wkbTypeGroups[const] = key
 
@@ -68,13 +67,13 @@ class Intersection(GeoAlgorithm):
                                           self.tr('Intersect layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         vlayerA = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         vlayerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT2))
 
-        geomType = vlayerA.wkbType()
+        geomType = QgsWkbTypes.multiType(vlayerA.wkbType())
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                                                                      geomType, vlayerA.crs())
@@ -83,22 +82,30 @@ class Intersection(GeoAlgorithm):
         selectionA = vector.features(vlayerA)
         total = 100.0 / len(selectionA)
         for current, inFeatA in enumerate(selectionA):
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
             geom = inFeatA.geometry()
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
-            for i in intersects:
-                request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = vlayerB.getFeatures(request).next()
+            request = QgsFeatureRequest().setFilterFids(intersects)
+
+            engine = None
+            if len(intersects) > 0:
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine.prepareGeometry()
+
+            for inFeatB in vlayerB.getFeatures(request):
                 tmpGeom = inFeatB.geometry()
-                if geom.intersects(tmpGeom):
+                if engine.intersects(tmpGeom.geometry()):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
                         int_com = geom.combine(tmpGeom)
-                        int_sym = geom.symDifference(tmpGeom)
-                        int_geom = QgsGeometry(int_com.difference(int_sym))
-                    if int_geom.isGeosEmpty() or not int_geom.isGeosValid():
+                        int_geom = QgsGeometry()
+                        if int_com:
+                            int_sym = geom.symDifference(tmpGeom)
+                            int_geom = QgsGeometry(int_com.difference(int_sym))
+                    if int_geom.isEmpty() or not int_geom.isGeosValid():
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                                self.tr('GEOS geoprocessing error: One or '
                                                        'more input features have invalid '

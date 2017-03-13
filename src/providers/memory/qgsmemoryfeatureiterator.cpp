@@ -19,13 +19,14 @@
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
+#include "qgsproject.h"
 
 
 
-QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
-    , mSelectRectGeom( nullptr )
-    , mSubsetExpression( nullptr )
+QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
+  , mSelectRectGeom( nullptr )
+  , mSubsetExpression( nullptr )
 {
   if ( !mSource->mSubsetString.isEmpty() )
   {
@@ -69,7 +70,7 @@ QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator()
 }
 
 
-bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
@@ -83,7 +84,7 @@ bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature& feature )
 }
 
 
-bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
+bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
 {
   bool hasFeature = false;
 
@@ -128,7 +129,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
 }
 
 
-bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
+bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
 {
   bool hasFeature = false;
 
@@ -209,14 +210,14 @@ bool QgsMemoryFeatureIterator::close()
 
 // -------------------------
 
-QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider* p )
-    : mFields( p->mFields )
-    , mFeatures( p->mFeatures )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
-    , mSubsetString( p->mSubsetString )
+QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
+  : mFields( p->mFields )
+  , mFeatures( p->mFeatures )
+  , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
+  , mSubsetString( p->mSubsetString )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 
@@ -225,7 +226,7 @@ QgsMemoryFeatureSource::~QgsMemoryFeatureSource()
   delete mSpatialIndex;
 }
 
-QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, false, request ) );
 }

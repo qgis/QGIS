@@ -25,16 +25,16 @@
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QDir>
 #include <QProgressDialog>
 #include <QTimer>
-#include <QSettings>
 #include <QStyle>
 
-QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI& uri )
-    : QgsWfsRequest( uri.uri() )
-    , mNumberMatched( -1 )
+QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
+  : QgsWfsRequest( uri.uri() )
+  , mNumberMatched( -1 )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( hitsReplyFinished() ) );
 }
@@ -43,7 +43,7 @@ QgsWFSFeatureHitsAsyncRequest::~QgsWFSFeatureHitsAsyncRequest()
 {
 }
 
-void QgsWFSFeatureHitsAsyncRequest::launch( const QUrl& url )
+void QgsWFSFeatureHitsAsyncRequest::launch( const QUrl &url )
 {
   sendGET( url,
            false, /* synchronous */
@@ -56,7 +56,7 @@ void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
   if ( mErrorCode == NoError )
   {
     QByteArray data = response();
-    QgsGmlStreamingParser gmlParser( "", "", QgsFields() );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
     QString errorMsg;
     if ( gmlParser.processData( data, true, errorMsg ) )
     {
@@ -71,26 +71,26 @@ void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
   emit gotHitsResponse();
 }
 
-QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString& reason )
+QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of feature count failed: %1" ).arg( reason );
 }
 
 // -------------------------
 
-QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData* shared )
-    : QgsWfsRequest( shared->mURI.uri() )
-    , mShared( shared )
-    , mStop( false )
-    , mProgressDialog( nullptr )
-    , mProgressDialogShowImmediately( false )
-    , mSupportsPaging( shared->mCaps.supportsPaging )
-    , mRemoveNSPrefix( false )
-    , mNumberMatched( -1 )
-    , mMainWindow( nullptr )
-    , mTimer( nullptr )
-    , mFeatureHitsAsyncRequest( shared->mURI )
-    , mTotalDownloadedFeatureCount( 0 )
+QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
+  : QgsWfsRequest( shared->mURI.uri() )
+  , mShared( shared )
+  , mStop( false )
+  , mProgressDialog( nullptr )
+  , mProgressDialogShowImmediately( false )
+  , mSupportsPaging( shared->mCaps.supportsPaging )
+  , mRemoveNSPrefix( false )
+  , mNumberMatched( -1 )
+  , mMainWindow( nullptr )
+  , mTimer( nullptr )
+  , mFeatureHitsAsyncRequest( shared->mURI )
+  , mTotalDownloadedFeatureCount( 0 )
 {
   // Needed because used by a signal
   qRegisterMetaType< QVector<QgsWFSFeatureGmlIdPair> >( "QVector<QgsWFSFeatureGmlIdPair>" );
@@ -119,10 +119,10 @@ void QgsWFSFeatureDownloader::setStopFlag()
   mStop = true;
 }
 
-QgsWFSProgressDialog::QgsWFSProgressDialog( const QString & labelText,
-    const QString & cancelButtonText,
-    int minimum, int maximum, QWidget * parent )
-    : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
+QgsWFSProgressDialog::QgsWFSProgressDialog( const QString &labelText,
+    const QString &cancelButtonText,
+    int minimum, int maximum, QWidget *parent )
+  : QProgressDialog( labelText, cancelButtonText, minimum, maximum, parent )
 {
   mCancel = new QPushButton( cancelButtonText, this );
   setCancelButton( mCancel );
@@ -130,7 +130,7 @@ QgsWFSProgressDialog::QgsWFSProgressDialog( const QString & labelText,
   connect( mHide, SIGNAL( clicked() ), this, SIGNAL( hide() ) );
 }
 
-void QgsWFSProgressDialog::resizeEvent( QResizeEvent * ev )
+void QgsWFSProgressDialog::resizeEvent( QResizeEvent *ev )
 {
   QProgressDialog::resizeEvent( ev );
   // Note: this relies heavily on the details of the layout done in QProgressDialogPrivate::layout()
@@ -179,18 +179,18 @@ void QgsWFSFeatureDownloader::createProgressDialog()
 
 QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
 {
-  filter = filter.replace( "<fes:ValueReference xmlns:fes=\"http://www.opengis.net/fes/2.0\">", "<fes:ValueReference>" );
+  filter = filter.replace( QLatin1String( "<fes:ValueReference xmlns:fes=\"http://www.opengis.net/fes/2.0\">" ), QLatin1String( "<fes:ValueReference>" ) );
   QString nsPrefix( QgsWFSUtils::nameSpacePrefix( mShared->mURI.typeName() ) );
   if ( mRemoveNSPrefix && !nsPrefix.isEmpty() )
-    filter = filter.replace( "<fes:ValueReference>" + nsPrefix + ":", "<fes:ValueReference>" );
+    filter = filter.replace( "<fes:ValueReference>" + nsPrefix + ":", QLatin1String( "<fes:ValueReference>" ) );
   return filter;
 }
 
 QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool forHits )
 {
   QUrl getFeatureUrl( mShared->mURI.baseURL() );
-  getFeatureUrl.addQueryItem( "REQUEST", "GetFeature" );
-  getFeatureUrl.addQueryItem( "VERSION",  mShared->mWFSVersion );
+  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
 
   QString typenames;
   if ( mShared->mLayerPropertiesList.isEmpty() )
@@ -202,17 +202,17 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     Q_FOREACH ( const QgsOgcUtils::LayerProperties layerProperties, mShared->mLayerPropertiesList )
     {
       if ( !typenames.isEmpty() )
-        typenames += ",";
+        typenames += QLatin1String( "," );
       typenames += layerProperties.mName;
     }
   }
-  if ( mShared->mWFSVersion.startsWith( "2.0" ) )
-    getFeatureUrl.addQueryItem( "TYPENAMES",  typenames );
+  if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
   else
-    getFeatureUrl.addQueryItem( "TYPENAME",  typenames );
+    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
   if ( forHits )
   {
-    getFeatureUrl.addQueryItem( "RESULTTYPE", "hits" );
+    getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
   }
   else if ( maxFeatures > 0 )
   {
@@ -224,17 +224,17 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
       // For example http://demo.opengeo.org/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ne:ne_10m_admin_0_countries&STARTINDEX=0&COUNT=253
       // doesn't include ne_10m_admin_0_countries.99, as expected since it is
       // at index 254.
-      getFeatureUrl.addQueryItem( "STARTINDEX", QString::number( startIndex ) );
+      getFeatureUrl.addQueryItem( QStringLiteral( "STARTINDEX" ), QString::number( startIndex ) );
     }
-    if ( mShared->mWFSVersion.startsWith( "2.0" ) )
-      getFeatureUrl.addQueryItem( "COUNT", QString::number( maxFeatures ) );
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+      getFeatureUrl.addQueryItem( QStringLiteral( "COUNT" ), QString::number( maxFeatures ) );
     else
-      getFeatureUrl.addQueryItem( "MAXFEATURES", QString::number( maxFeatures ) );
+      getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( maxFeatures ) );
   }
   QString srsName( mShared->srsName() );
   if ( !srsName.isEmpty() && !forHits )
   {
-    getFeatureUrl.addQueryItem( "SRSNAME", srsName );
+    getFeatureUrl.addQueryItem( QStringLiteral( "SRSNAME" ), srsName );
   }
 
   // In case we must issue a BBOX and we have a filter, we must combine
@@ -245,18 +245,18 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     double miny = mShared->mRect.yMinimum();
     double maxx = mShared->mRect.xMaximum();
     double maxy = mShared->mRect.yMaximum();
-    QString filterBbox( QString( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
+    QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
                         arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
     QgsExpression bboxExp( filterBbox );
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
     bool honourAxisOrientation = false;
-    if ( mShared->mWFSVersion.startsWith( "1.0" ) )
+    if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
     {
       gmlVersion = QgsOgcUtils::GML_2_1_2;
       filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
     }
-    else if ( mShared->mWFSVersion.startsWith( "1.1" ) )
+    else if ( mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
     {
       honourAxisOrientation = !mShared->mURI.ignoreAxisOrientation();
       gmlVersion = QgsOgcUtils::GML_3_1_0;
@@ -284,17 +284,17 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
     filterNode = filterDoc.firstChildElement().removeChild( filterNode );
 
-    QDomElement andElem = doc.createElement(( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
+    QDomElement andElem = doc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
     andElem.appendChild( bboxNode );
     andElem.appendChild( filterNode );
     doc.firstChildElement().appendChild( andElem );
 
-    getFeatureUrl.addQueryItem( "FILTER", sanitizeFilter( doc.toString() ) );
+    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }
   else if ( !mShared->mRect.isNull() )
   {
     bool invertAxis = false;
-    if ( !mShared->mWFSVersion.startsWith( "1.0" ) && !mShared->mURI.ignoreAxisOrientation() &&
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && !mShared->mURI.ignoreAxisOrientation() &&
          mShared->mSourceCRS.hasAxisInverted() )
     {
       invertAxis = true;
@@ -303,24 +303,29 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     {
       invertAxis = !invertAxis;
     }
-    QString bbox( QString(( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+    QString bbox( QString( ( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
                   .arg( qgsDoubleToString( mShared->mRect.xMinimum() ),
                         qgsDoubleToString( mShared->mRect.yMinimum() ),
                         qgsDoubleToString( mShared->mRect.xMaximum() ),
                         qgsDoubleToString( mShared->mRect.yMaximum() ) ) );
-    // Some servers like Geomedia need the srsname to be explictly appended
+    // Some servers like Geomedia need the srsname to be explicitly appended
     // otherwise they are confused and do not interpret it properly
-    bbox += "," + mShared->srsName();
-    getFeatureUrl.addQueryItem( "BBOX",  bbox );
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+    {
+      // but it is illegal in WFS 1.0 and some servers definitely not like
+      // it. See #15464
+      bbox += "," + mShared->srsName();
+    }
+    getFeatureUrl.addQueryItem( QStringLiteral( "BBOX" ),  bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( "FILTER", sanitizeFilter( mShared->mWFSFilter ) );
+    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mWFSFilter ) );
   }
 
   if ( !mShared->mSortBy.isEmpty() && !forHits )
   {
-    getFeatureUrl.addQueryItem( "SORTBY", mShared->mSortBy );
+    getFeatureUrl.addQueryItem( QStringLiteral( "SORTBY" ), mShared->mSortBy );
   }
 
   return getFeatureUrl;
@@ -372,9 +377,9 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
   if ( !mShared->mHideProgressDialog && maxFeatures != 1 && mShared->supportsHits() )
   {
-    Q_FOREACH ( QWidget* widget, qApp->topLevelWidgets() )
+    Q_FOREACH ( QWidget *widget, qApp->topLevelWidgets() )
     {
-      if ( widget->objectName() == "QgisApp" )
+      if ( widget->objectName() == QLatin1String( "QgisApp" ) )
       {
         mMainWindow = widget;
         break;
@@ -396,8 +401,8 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
   bool interrupted = false;
   bool truncatedResponse = false;
-  QSettings s;
-  const int maxRetry = s.value( "/qgis/defaultTileMaxRetry", "3" ).toInt();
+  QgsSettings s;
+  const int maxRetry = s.value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt();
   int retryIter = 0;
   int lastValidTotalDownloadedFeatureCount = 0;
   int pagingIter = 1;
@@ -406,15 +411,15 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   while ( true )
   {
     success = true;
-    QgsGmlStreamingParser* parser = mShared->createParser();
+    QgsGmlStreamingParser *parser = mShared->createParser();
 
     QUrl url( buildURL( mTotalDownloadedFeatureCount,
                         maxFeatures ? maxFeatures : mShared->mMaxFeatures, false ) );
 
     // Small hack for testing purposes
-    if ( retryIter > 0 && url.toString().contains( "fake_qgis_http_endpoint" ) )
+    if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
     {
-      url.addQueryItem( "RETRY", QString::number( retryIter ) );
+      url.addQueryItem( QStringLiteral( "RETRY" ), QString::number( retryIter ) );
     }
 
     sendGET( url,
@@ -466,14 +471,14 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         // e.g. http://ows.region-bretagne.fr/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rb:etudes&STARTINDEX=0&COUNT=1
         // Disabling paging helps in those cases
         if ( mSupportsPaging && mTotalDownloadedFeatureCount == 0 &&
-             parser->exceptionText().contains( "Cannot do natural order without a primary key" ) )
+             parser->exceptionText().contains( QLatin1String( "Cannot do natural order without a primary key" ) ) )
         {
           QgsDebugMsg( QString( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
           mSupportsPaging = false;
         }
         // GeoServer doesn't like typenames prefixed by namespace prefix, despite
         // the examples in the WFS 2.0 spec showing that
-        else if ( !mRemoveNSPrefix && parser->exceptionText().contains( "more than one feature type" ) )
+        else if ( !mRemoveNSPrefix && parser->exceptionText().contains( QLatin1String( "more than one feature type" ) ) )
         {
           QgsDebugMsg( QString( "Got exception %1. Re-trying by removing namespace prefix" ).arg( parser->exceptionText() ) );
           mRemoveNSPrefix = true;
@@ -544,8 +549,8 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         // Heuristics to try to detect MapServer WFS 1.1 that honours EPSG axis order, but returns
         // EPSG:XXXX srsName and not EPSG urns
         if ( pagingIter == 1 && featureCountForThisResponse == 0 &&
-             mShared->mWFSVersion.startsWith( "1.1" ) &&
-             parser->srsName().startsWith( "EPSG:" ) &&
+             mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) &&
+             parser->srsName().startsWith( QLatin1String( "EPSG:" ) ) &&
              !parser->layerExtent().isNull() &&
              !mShared->mURI.ignoreAxisOrientation() &&
              !mShared->mURI.invertAxisOrientation() )
@@ -565,10 +570,10 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         }
 
         QVector<QgsWFSFeatureGmlIdPair> featureList;
-        for ( int i = 0;i < featurePtrList.size();i++ )
+        for ( int i = 0; i < featurePtrList.size(); i++ )
         {
-          QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair& featPair = featurePtrList[i];
-          QgsFeature& f = *( featPair.first );
+          QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair = featurePtrList[i];
+          QgsFeature &f = *( featPair.first );
           QString gmlId( featPair.second );
           if ( gmlId.isEmpty() )
           {
@@ -600,7 +605,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
           featureList.push_back( QgsWFSFeatureGmlIdPair( f, gmlId ) );
           delete featPair.first;
-          if (( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featurePtrList.size() )
+          if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == featurePtrList.size() )
           {
             // We call it directly to avoid asynchronous signal notification, and
             // as serializeFeatures() can modify the featureList to remove features
@@ -658,7 +663,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     if ( maxFeatures == 1 )
       break;
     // Detect if we are at the last page
-    if (( mShared->mMaxFeatures > 0 && featureCountForThisResponse < mShared->mMaxFeatures ) || featureCountForThisResponse == 0 )
+    if ( ( mShared->mMaxFeatures > 0 && featureCountForThisResponse < mShared->mMaxFeatures ) || featureCountForThisResponse == 0 )
       break;
     ++ pagingIter;
     if ( disablePaging )
@@ -695,20 +700,20 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     mTimer->deleteLater();
     mTimer = nullptr;
   }
-  // explictly abort here so that mReply is destroyed within the right thread
+  // explicitly abort here so that mReply is destroyed within the right thread
   // otherwise will deadlock because deleteLayer() will not have a valid thread to post
   abort();
   mFeatureHitsAsyncRequest.abort();
 }
 
-QString QgsWFSFeatureDownloader::errorMessageWithReason( const QString& reason )
+QString QgsWFSFeatureDownloader::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of features failed: %1" ).arg( reason );
 }
 
-QgsWFSThreadedFeatureDownloader::QgsWFSThreadedFeatureDownloader( QgsWFSSharedData* shared )
-    : mShared( shared )
-    , mDownloader( nullptr )
+QgsWFSThreadedFeatureDownloader::QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared )
+  : mShared( shared )
+  , mDownloader( nullptr )
 {
 }
 
@@ -739,21 +744,21 @@ void QgsWFSThreadedFeatureDownloader::run()
 
 // -------------------------
 
-QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
+QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
     bool ownSource,
-    const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
-    , mShared( source->mShared )
-    , mDownloadFinished( false )
-    , mLoop( nullptr )
-    , mInterruptionChecker( nullptr )
-    , mCounter( 0 )
-    , mWriteTransferThreshold( 1024 * 1024 )
-    , mWriterFile( nullptr )
-    , mWriterStream( nullptr )
-    , mReaderFile( nullptr )
-    , mReaderStream( nullptr )
-    , mFetchGeometry( false )
+    const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
+  , mShared( source->mShared )
+  , mDownloadFinished( false )
+  , mLoop( nullptr )
+  , mInterruptionChecker( nullptr )
+  , mCounter( 0 )
+  , mWriteTransferThreshold( 1024 * 1024 )
+  , mWriterFile( nullptr )
+  , mWriterStream( nullptr )
+  , mReaderFile( nullptr )
+  , mReaderStream( nullptr )
+  , mFetchGeometry( false )
 {
   // Configurable for the purpose of unit tests
   QString threshold( getenv( "QGIS_WFS_ITERATOR_TRANSFER_THRESHOLD" ) );
@@ -809,7 +814,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source,
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      Q_FOREACH ( const QString& field, mRequest.filterExpression()->referencedColumns() )
+      Q_FOREACH ( const QString &field, mRequest.filterExpression()->referencedColumns() )
       {
         int idx = dataProviderFields.indexFromName( field );
         if ( idx >= 0 && !cacheSubSet.contains( idx ) )
@@ -855,7 +860,7 @@ QgsWFSFeatureIterator::~QgsWFSFeatureIterator()
   }
 }
 
-void QgsWFSFeatureIterator::connectSignals( QObject* downloader )
+void QgsWFSFeatureIterator::connectSignals( QObject *downloader )
 {
   // We want to run the slot for that signal in the same thread as the sender
   // so as to avoid the list of features to accumulate without control in
@@ -877,14 +882,14 @@ void QgsWFSFeatureIterator::endOfDownload( bool )
     mLoop->quit();
 }
 
-void QgsWFSFeatureIterator::setInterruptionChecker( QgsInterruptionChecker* interruptionChecker )
+void QgsWFSFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
 {
   mInterruptionChecker = interruptionChecker;
 }
 
 // This method will serialize the receive feature list, first into memory, and
 // if it goes above a given threshold, on disk
-void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGmlIdPair> list )
+void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list )
 {
   QgsDebugMsg( QString( "QgsWFSFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ) );
   QMutexLocker locker( &mMutex );
@@ -892,7 +897,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
   {
     mWriterStream = new QDataStream( &mWriterByteArray, QIODevice::WriteOnly );
   }
-  Q_FOREACH ( const QgsWFSFeatureGmlIdPair& pair, list )
+  Q_FOREACH ( const QgsWFSFeatureGmlIdPair &pair, list )
   {
     *mWriterStream << pair.first;
   }
@@ -901,7 +906,7 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( QVector<QgsWFSFeatureGml
     QString thisStr;
     thisStr.sprintf( "%p", this );
     ++ mCounter;
-    mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QString( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
+    mWriterFilename = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsg( QString( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ) );
     mWriterFile = new QFile( mWriterFilename );
     if ( !mWriterFile->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -938,7 +943,7 @@ void QgsWFSFeatureIterator::checkInterruption()
   }
 }
 
-bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
+bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 {
   f.setValid( false );
 
@@ -964,14 +969,14 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
       {
         QByteArray wkbGeom( QByteArray::fromHex( v.toString().toLatin1() ) );
         QgsGeometry g;
-        unsigned char* wkbClone = new unsigned char[wkbGeom.size()];
+        unsigned char *wkbClone = new unsigned char[wkbGeom.size()];
         memcpy( wkbClone, wkbGeom.data(), wkbGeom.size() );
         try
         {
           g.fromWkb( wkbClone, wkbGeom.size() );
           cachedFeature.setGeometry( g );
         }
-        catch ( const QgsWkbException& )
+        catch ( const QgsWkbException & )
         {
           QgsDebugMsg( QString( "Invalid WKB for cached feature %1" ).arg( cachedFeature.id() ) );
           delete[] wkbClone;
@@ -990,7 +995,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
     QgsGeometry constGeom = cachedFeature.geometry();
     if ( !mRequest.filterRect().isNull() &&
-         ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
+         ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
     {
       continue;
     }
@@ -1020,7 +1025,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
           mWriterFilename.clear();
         }
       }
-      // Instanciates the reader stream from memory buffer if not empty
+      // Instantiates the reader stream from memory buffer if not empty
       if ( !mReaderByteArray.isEmpty() )
       {
         mReaderStream = new QDataStream( &mReaderByteArray, QIODevice::ReadOnly );
@@ -1050,7 +1055,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
         QgsFeature feat;
         ( *mReaderStream ) >> feat;
-        // We need to re-attach fields explictly
+        // We need to re-attach fields explicitly
         feat.setFields( mShared->mFields );
 
         if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
@@ -1070,7 +1075,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
 
         QgsGeometry constGeom = feat.geometry();
         if ( !mRequest.filterRect().isNull() &&
-             ( constGeom.isEmpty() || !constGeom.intersects( mRequest.filterRect() ) ) )
+             ( constGeom.isNull() || !constGeom.intersects( mRequest.filterRect() ) ) )
         {
           continue;
         }
@@ -1156,19 +1161,14 @@ bool QgsWFSFeatureIterator::close()
 }
 
 
-void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeature& dstFeature )
+void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeature &dstFeature )
 {
   //copy the geometry
   QgsGeometry geometry = srcFeature.geometry();
-  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isEmpty() )
+  if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isNull() )
   {
-    const unsigned char *geom = geometry.asWkb();
-    int geomSize = geometry.wkbSize();
-    unsigned char* copiedGeom = new unsigned char[geomSize];
-    memcpy( copiedGeom, geom, geomSize );
-
     QgsGeometry g;
-    g.fromWkb( copiedGeom, geomSize );
+    g.fromWkb( geometry.exportToWkb() );
     dstFeature.setGeometry( g );
   }
   else
@@ -1177,7 +1177,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
   }
 
   //and the attributes
-  QgsFields& fields = mShared->mFields;
+  QgsFields &fields = mShared->mFields;
   dstFeature.initAttributes( fields.size() );
 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -1217,15 +1217,15 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature& srcFeature, QgsFeatur
 
   //id and valid
   dstFeature.setValid( true );
-  dstFeature.setFeatureId( srcFeature.id() );
+  dstFeature.setId( srcFeature.id() );
   dstFeature.setFields( fields ); // allow name-based attribute lookups
 }
 
 
 // -------------------------
 
-QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider* p )
-    : mShared( p->mShared )
+QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider *p )
+  : mShared( p->mShared )
 {
 }
 
@@ -1234,7 +1234,7 @@ QgsWFSFeatureSource::~QgsWFSFeatureSource()
 
 }
 
-QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsWFSFeatureIterator( this, false, request ) );
 }

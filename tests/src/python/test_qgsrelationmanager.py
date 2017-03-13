@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.core import (QgsVectorLayer,
                        QgsRelation,
                        QgsRelationManager,
-                       QgsMapLayerRegistry
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 
@@ -42,10 +42,10 @@ class TestQgsRelationManager(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def createRelation(self):
         rel = QgsRelation()
@@ -62,8 +62,8 @@ class TestQgsRelationManager(unittest.TestCase):
         self.assertEqual(len(relations), 0)
 
         rel = self.createRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         assert rel.isValid()
 
         manager.addRelation(rel)
@@ -73,15 +73,15 @@ class TestQgsRelationManager(unittest.TestCase):
         self.assertEqual(relations['rel1'].id(), 'rel1')
 
         rel = self.createRelation()
-        rel.setRelationId('rel2')
-        rel.setRelationName('Relation Number Two')
+        rel.setId('rel2')
+        rel.setName('Relation Number Two')
         assert rel.isValid()
 
         manager.addRelation(rel)
 
         relations = manager.relations()
         self.assertEqual(len(relations), 2)
-        ids = [r.id() for r in relations.values()]
+        ids = [r.id() for r in list(relations.values())]
         self.assertEqual(set(ids), set(['rel1', 'rel2']))
 
     def test_relationById(self):
@@ -93,13 +93,13 @@ class TestQgsRelationManager(unittest.TestCase):
 
         # add two relations
         rel = self.createRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         assert rel.isValid()
         manager.addRelation(rel)
         rel = self.createRelation()
-        rel.setRelationId('rel2')
-        rel.setRelationName('Relation Number Two')
+        rel.setId('rel2')
+        rel.setName('Relation Number Two')
         assert rel.isValid()
         manager.addRelation(rel)
 
@@ -121,18 +121,18 @@ class TestQgsRelationManager(unittest.TestCase):
 
         # add some relations
         rel = self.createRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('my relation')
+        rel.setId('rel1')
+        rel.setName('my relation')
         assert rel.isValid()
         manager.addRelation(rel)
         rel = self.createRelation()
-        rel.setRelationId('rel2')
-        rel.setRelationName('dupe name')
+        rel.setId('rel2')
+        rel.setName('dupe name')
         assert rel.isValid()
         manager.addRelation(rel)
         rel = self.createRelation()
-        rel.setRelationId('rel3')
-        rel.setRelationName('dupe name')
+        rel.setId('rel3')
+        rel.setName('dupe name')
         assert rel.isValid()
         manager.addRelation(rel)
 

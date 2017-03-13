@@ -18,6 +18,7 @@
 
 #include "qgscolorramp.h"
 #include <QWidget>
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -37,13 +38,13 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * @param parent parent widget
      * @param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget* parent = nullptr, QgsGradientColorRamp* ramp = nullptr );
+    QgsGradientStopEditor( QWidget *parent = nullptr, QgsGradientColorRamp *ramp = nullptr );
 
     /** Sets the current ramp shown in the editor.
      * @param ramp color ramp
      * @see gradientRamp()
      */
-    void setGradientRamp( const QgsGradientColorRamp& ramp );
+    void setGradientRamp( const QgsGradientColorRamp &ramp );
 
     /** Returns the current ramp created by the editor.
      * @see setGradientRamp()
@@ -62,7 +63,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     QgsGradientStop selectedStop() const;
 
     virtual QSize sizeHint() const override;
-    void paintEvent( QPaintEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   public slots:
 
@@ -73,7 +74,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * @see setColor1()
      * @see setColor2()
      */
-    void setSelectedStopColor( const QColor& color );
+    void setSelectedStopColor( const QColor &color );
 
     /** Sets the offset for the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be repositioned.
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * @see setSelectedStopColor()
      * @see setSelectedStopOffset()
      */
-    void setSelectedStopDetails( const QColor& color, double offset );
+    void setSelectedStopDetails( const QColor &color, double offset );
 
     /** Deletes the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be deleted.
@@ -101,14 +102,14 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * @see setColor2()
      * @see setSelectedStopColor()
      */
-    void setColor1( const QColor& color );
+    void setColor1( const QColor &color );
 
     /** Sets the color for the last stop.
      * @param color new stop color
      * @see setColor1()
      * @see setSelectedStopColor()
      */
-    void setColor2( const QColor& color );
+    void setColor2( const QColor &color );
 
   signals:
 
@@ -118,17 +119,17 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     /** Emitted when the current selected stop changes.
      * @param stop details about newly selected stop
      */
-    void selectedStopChanged( const QgsGradientStop& stop );
+    void selectedStopChanged( const QgsGradientStop &stop );
 
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event ) override;
     virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseDoubleClickEvent( QMouseEvent * event ) override;
-    virtual void keyPressEvent( QKeyEvent * event ) override;
+    virtual void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    virtual void keyPressEvent( QKeyEvent *event ) override;
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e ) override;
+    void dragEnterEvent( QDragEnterEvent *e ) override;
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e ) override;
@@ -138,7 +139,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     /** Generates a checkboard pattern pixmap for use as a background to transparent colors
      * @returns checkerboard pixmap
      */
-    const QPixmap& transparentBackground();
+    QPixmap transparentBackground();
 
     /** Draws a stop marker on the specified painter.
      * @param painter destination painter
@@ -146,7 +147,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * @param color color of marker
      * @param selected set to true to draw the marker in a selected state
      */
-    void drawStopMarker( QPainter& painter, QPoint topMiddle, const QColor& color, bool selected = false );
+    void drawStopMarker( QPainter &painter, QPoint topMiddle, const QColor &color, bool selected = false );
 
     //! Converts an x-coordinate in the widget's coordinate system to a relative ramp position
     double pointToRelativePosition( int x ) const;

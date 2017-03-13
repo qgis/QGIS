@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -26,7 +26,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
 #include <qgsfillsymbollayer.h>
@@ -43,11 +43,11 @@ class TestQgsCentroidFillSymbol : public QObject
 
   public:
     TestQgsCentroidFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mCentroidFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mCentroidFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -62,12 +62,12 @@ class TestQgsCentroidFillSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsCentroidFillSymbolLayer* mCentroidFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsCentroidFillSymbolLayer *mCentroidFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -91,15 +91,11 @@ void TestQgsCentroidFillSymbol::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
-
-  // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
 
   //setup gradient fill
   mCentroidFill = new QgsCentroidFillSymbolLayer();
@@ -112,8 +108,8 @@ void TestQgsCentroidFillSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Centroid Fill Symbol Tests</h1>\n";
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  mReport += QLatin1String( "<h1>Centroid Fill Symbol Tests</h1>\n" );
 
 }
 void TestQgsCentroidFillSymbol::cleanupTestCase()
@@ -127,12 +123,14 @@ void TestQgsCentroidFillSymbol::cleanupTestCase()
     myFile.close();
   }
 
+  delete mpPolysLayer;
+
   QgsApplication::exitQgis();
 }
 
 void TestQgsCentroidFillSymbol::centroidFillSymbol()
 {
-  mReport += "<h2>Line fill symbol renderer test</h2>\n";
+  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
 
   QVERIFY( imageCheck( "symbol_centroidfill" ) );
 }
@@ -149,20 +147,20 @@ void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 //
 
 
-bool TestQgsCentroidFillSymbol::imageCheck( const QString& theTestType )
+bool TestQgsCentroidFillSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "symbol_centroidfill" );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlPathPrefix( QStringLiteral( "symbol_centroidfill" ) );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-QTEST_MAIN( TestQgsCentroidFillSymbol )
+QGSTEST_MAIN( TestQgsCentroidFillSymbol )
 #include "testqgscentroidfillsymbol.moc"

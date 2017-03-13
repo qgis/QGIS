@@ -16,6 +16,7 @@
 #ifndef QGSATTRIBUTEEDITORELEMENT_H
 #define QGSATTRIBUTEEDITORELEMENT_H
 
+#include "qgis_core.h"
 #include "qgsrelation.h"
 #include "qgsoptionalexpression.h"
 
@@ -49,15 +50,15 @@ class CORE_EXPORT QgsAttributeEditorElement
      * @param name
      * @param parent
      */
-    QgsAttributeEditorElement( AttributeEditorType type, const QString& name, QgsAttributeEditorElement* parent = nullptr )
-        : mType( type )
-        , mName( name )
-        , mParent( parent )
-        , mShowLabel( true )
+    QgsAttributeEditorElement( AttributeEditorType type, const QString &name, QgsAttributeEditorElement *parent = nullptr )
+      : mType( type )
+      , mName( name )
+      , mParent( parent )
+      , mShowLabel( true )
     {}
 
-    //! Destructor
-    virtual ~QgsAttributeEditorElement() {}
+
+    virtual ~QgsAttributeEditorElement() = default;
 
     /**
      * Return the name of this element
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsAttributeEditorElement
      *
      * @note Added in QGIS 3.0
      */
-    QgsAttributeEditorElement* parent() const { return mParent; }
+    QgsAttributeEditorElement *parent() const { return mParent; }
 
     /**
      * Get the XML Dom element to save this element.
@@ -87,14 +88,14 @@ class CORE_EXPORT QgsAttributeEditorElement
      *
      * @return A DOM element to serialize this element
      */
-    QDomElement toDomElement( QDomDocument& doc ) const;
+    QDomElement toDomElement( QDomDocument &doc ) const;
 
     /**
      * Returns a clone of this element. To be implemented by subclasses.
      *
      * @note Added in QGIS 3.0
      */
-    virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const = 0;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0;
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
@@ -113,16 +114,17 @@ class CORE_EXPORT QgsAttributeEditorElement
   protected:
     AttributeEditorType mType;
     QString mName;
-    QgsAttributeEditorElement* mParent;
+    QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
 
   private:
+
     /**
      * Should be implemented by subclasses to save type specific configuration.
      *
      * @note Added in QGIS 2.18
      */
-    virtual void saveConfiguration( QDomElement& elem ) const = 0;
+    virtual void saveConfiguration( QDomElement &elem ) const = 0;
 
     /**
      * All subclasses need to overwrite this method and return a type specific identifier.
@@ -141,19 +143,20 @@ class CORE_EXPORT QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new attribute editor container
      *
      * @param name   The name to show as title
      * @param parent The parent. May be another container.
      */
-    QgsAttributeEditorContainer( const QString& name, QgsAttributeEditorElement* parent )
-        : QgsAttributeEditorElement( AeTypeContainer, name, parent )
-        , mIsGroupBox( true )
-        , mColumnCount( 1 )
+    QgsAttributeEditorContainer( const QString &name, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeContainer, name, parent )
+      , mIsGroupBox( true )
+      , mColumnCount( 1 )
     {}
 
-    //! Destructor
+
     virtual ~QgsAttributeEditorContainer();
 
     /**
@@ -161,7 +164,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * @param element The element to add as child
      */
-    virtual void addChildElement( QgsAttributeEditorElement* element );
+    virtual void addChildElement( QgsAttributeEditorElement *element );
 
     /**
      * Determines if this container is rendered as collapsible group box or tab in a tabwidget
@@ -182,7 +185,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * @return A list of elements
      */
-    QList<QgsAttributeEditorElement*> children() const { return mChildren; }
+    QList<QgsAttributeEditorElement *> children() const { return mChildren; }
 
     /**
      * Traverses the element tree to find any element of the specified type
@@ -191,7 +194,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * @return A list of elements of the type which has been searched for
      */
-    virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
+    virtual QList<QgsAttributeEditorElement *> findElements( AttributeEditorType type ) const;
 
     /**
      * Clear all children from this container.
@@ -201,7 +204,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Change the name of this container
      */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /**
      * Get the number of columns in this group
@@ -218,7 +221,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * @note Added in QGIS 3.0
      */
-    virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
 
     /**
      * The visibility expression is used in the attribute form to
@@ -236,14 +239,14 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * @note Added in QGIS 3.0
      */
-    void setVisibilityExpression( const QgsOptionalExpression& visibilityExpression );
+    void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
   private:
-    void saveConfiguration( QDomElement& elem ) const override;
+    void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
 
     bool mIsGroupBox;
-    QList<QgsAttributeEditorElement*> mChildren;
+    QList<QgsAttributeEditorElement *> mChildren;
     int mColumnCount;
     QgsOptionalExpression mVisibilityExpression;
 };
@@ -254,6 +257,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new attribute editor element which represents a field
      *
@@ -261,13 +265,10 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      * @param idx    The index of the field which should be embedded
      * @param parent The parent of this widget (used as container)
      */
-    QgsAttributeEditorField( const QString& name, int idx, QgsAttributeEditorElement *parent )
-        : QgsAttributeEditorElement( AeTypeField, name, parent )
-        , mIdx( idx )
+    QgsAttributeEditorField( const QString &name, int idx, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeField, name, parent )
+      , mIdx( idx )
     {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorField() {}
 
     /**
      * Return the index of the field
@@ -275,10 +276,10 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      */
     int idx() const { return mIdx; }
 
-    virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
 
   private:
-    void saveConfiguration( QDomElement& elem ) const override;
+    void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
     int mIdx;
 };
@@ -289,6 +290,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
   public:
+
     /**
      * Creates a new element which embeds a relation.
      *
@@ -296,9 +298,12 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relationId   The id of the relation to embed
      * @param parent       The parent (used as container)
      */
-    QgsAttributeEditorRelation( const QString& name, const QString &relationId, QgsAttributeEditorElement* parent )
-        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relationId ) {}
+    QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+      , mRelationId( relationId )
+      , mShowLinkButton( true )
+      , mShowUnlinkButton( true )
+    {}
 
     /**
      * Creates a new element which embeds a relation.
@@ -307,20 +312,20 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relation     The relation to embed
      * @param parent       The parent (used as container)
      */
-    QgsAttributeEditorRelation( const QString& name, const QgsRelation& relation, QgsAttributeEditorElement* parent )
-        : QgsAttributeEditorElement( AeTypeRelation, name, parent )
-        , mRelationId( relation.id() )
-        , mRelation( relation ) {}
-
-    //! Destructor
-    virtual ~QgsAttributeEditorRelation() {}
+    QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeRelation, name, parent )
+      , mRelationId( relation.id() )
+      , mRelation( relation )
+      , mShowLinkButton( true )
+      , mShowUnlinkButton( true )
+    {}
 
     /**
      * Get the id of the relation which shall be embedded
      *
      * @return the id
      */
-    const QgsRelation& relation() const { return mRelation; }
+    const QgsRelation &relation() const { return mRelation; }
 
     /**
      * Initializes the relation from the id
@@ -328,15 +333,46 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      * @param relManager The relation manager to use for the initialization
      * @return true if the relation was found in the relationmanager
      */
-    bool init( QgsRelationManager* relManager );
+    bool init( QgsRelationManager *relManager );
 
-    virtual QgsAttributeEditorElement* clone( QgsAttributeEditorElement* parent ) const override;
+    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
+
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showLinkButton() const;
+
+    /**
+     * Determines if the "link feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowLinkButton( bool showLinkButton );
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    bool showUnlinkButton() const;
+
+    /**
+     * Determines if the "unlink feature" button should be shown
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setShowUnlinkButton( bool showUnlinkButton );
+
 
   private:
-    void saveConfiguration( QDomElement& elem ) const override;
+    void saveConfiguration( QDomElement &elem ) const override;
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
+    bool mShowLinkButton;
+    bool mShowUnlinkButton;
 };
 
 

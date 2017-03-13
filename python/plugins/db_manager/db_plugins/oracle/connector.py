@@ -22,6 +22,8 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from qgis.PyQt.QtSql import QSqlDatabase
 
@@ -32,6 +34,8 @@ import os
 from qgis.core import Qgis, QgsApplication, NULL, QgsWkbTypes
 from . import QtSqlDB
 import sqlite3
+
+from functools import cmp_to_key
 
 
 def classFactory():
@@ -124,7 +128,7 @@ class OracleDBConnector(DBConnector):
         self._checkGeometryColumnsTable()
 
     def _connectionInfo(self):
-        return unicode(self._uri.connectionInfo(True))
+        return str(self._uri.connectionInfo(True))
 
     def _checkSpatial(self):
         """Check whether Oracle Spatial is present in catalog."""
@@ -369,8 +373,8 @@ class OracleDBConnector(DBConnector):
 
         self.populated = True
 
-        listTables = sorted(items, cmp=lambda x, y: cmp((x[2], x[1]),
-                                                        (y[2], y[1])))
+        listTables = sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
+
         if self.hasCache():
             self.updateCache(listTables, schema)
             return self.getTablesCache(schema)
@@ -392,9 +396,7 @@ class OracleDBConnector(DBConnector):
             pass
 
         if not self.allowGeometrylessTables:
-            return sorted(items,
-                          cmp=lambda x, y: cmp((x[2], x[1]),
-                                               (y[2], y[1])))
+            return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
         # get all non geographic tables and views
         schema_where = u""
@@ -421,7 +423,7 @@ class OracleDBConnector(DBConnector):
                 items.append(item)
         c.close()
 
-        return sorted(items, cmp=lambda x, y: cmp((x[2], x[1]), (y[2], y[1])))
+        return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
     def updateCache(self, tableList, schema=None):
         """Update the SQLite cache of table list for a schema."""
@@ -473,16 +475,16 @@ class OracleDBConnector(DBConnector):
 
     def singleGeomTypes(self, geomtypes, srids):
         """Intelligent wkbtype grouping (multi with non multi)"""
-        if (QgsWkbTypes.Polygon in geomtypes
-                and QgsWkbTypes.MultiPolygon in geomtypes):
+        if (QgsWkbTypes.Polygon in geomtypes and
+                QgsWkbTypes.MultiPolygon in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Polygon))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Polygon))
-        if (QgsWkbTypes.Point in geomtypes
-                and QgsWkbTypes.MultiPoint in geomtypes):
+        if (QgsWkbTypes.Point in geomtypes and
+                QgsWkbTypes.MultiPoint in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Point))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Point))
-        if (QgsWkbTypes.LineString in geomtypes
-                and QgsWkbTypes.MultiLineString in geomtypes):
+        if (QgsWkbTypes.LineString in geomtypes and
+                QgsWkbTypes.MultiLineString in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.LineString))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.LineString))
         if QgsWkbTypes.Unknown in geomtypes and len(geomtypes) > 1:
@@ -532,8 +534,8 @@ class OracleDBConnector(DBConnector):
             geomtypes = item.pop()
             item.insert(0, Table.VectorType)
             if len(geomtypes) > 0 and len(srids) > 0:
-                geomtypes = [int(l) for l in unicode(geomtypes).split(u",")]
-                srids = [int(l) for l in unicode(srids).split(u",")]
+                geomtypes = [int(l) for l in str(geomtypes).split(u",")]
+                srids = [int(l) for l in str(srids).split(u",")]
                 geomtypes, srids = self.singleGeomTypes(geomtypes, srids)
                 for j in range(len(geomtypes)):
                     buf = list(item)
@@ -643,9 +645,9 @@ class OracleDBConnector(DBConnector):
                 if not self.onlyExistingTypes:
                     geomMultiTypes.append(0)
                     multiSrids.append(multiSrids[0])
-                buf.append(u",".join([unicode(x) for x in
+                buf.append(u",".join([str(x) for x in
                                       geomMultiTypes]))
-                buf.append(u",".join([unicode(x) for x in multiSrids]))
+                buf.append(u",".join([str(x) for x in multiSrids]))
                 items.append(buf)
 
             if self.allowGeometrylessTables and buf[-6] != u"UNKNOWN":
@@ -1431,8 +1433,8 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
-                                           'PUBLIC')[3]
-                and schema == self.user):
+                                           'PUBLIC')[3] and
+                schema == self.user):
             return False
 
         where = u"WHERE TABLE_NAME = {}".format(self.quoteString(tablename))
@@ -1451,8 +1453,8 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
-                                           'PUBLIC')[2]
-                and schema == self.user):
+                                           'PUBLIC')[2] and
+                schema == self.user):
             return False
 
         where = u"WHERE TABLE_NAME = {}".format(self.quoteString(tablename))
@@ -1501,8 +1503,8 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
-                                           'PUBLIC')[1]
-                and schema == self.user):
+                                           'PUBLIC')[1] and
+                schema == self.user):
             return False
 
         # in Metadata view, geographic column is always in uppercase
@@ -1534,7 +1536,7 @@ class OracleDBConnector(DBConnector):
                {3})
             """.format(self.quoteString(tablename),
                        self.quoteString(geom_column),
-                       sqlExtent, unicode(srid))
+                       sqlExtent, str(srid))
 
         self._execute_and_commit(sql)
 

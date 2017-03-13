@@ -1,7 +1,0 @@
-Pit Remove
-pitremove
-Basic Grid Analysis tools
-ParameterRaster|-z|Elevation Grid|False
-ParameterRaster|-depmask|Depresion mask grid|True
-ParameterBoolean|-4way|Fill considering only 4 way neighbours|False
-OutputRaster|-fel|Pit Removed Elevation Grid

@@ -17,6 +17,7 @@
 #define QGSLAYERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis_gui.h"
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -51,74 +52,85 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     ~QgsLayerTreeView();
 
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
-    virtual void setModel( QAbstractItemModel* model ) override;
+    virtual void setModel( QAbstractItemModel *model ) override;
 
     //! Get access to the model casted to QgsLayerTreeModel
-    QgsLayerTreeModel* layerTreeModel() const;
+    QgsLayerTreeModel *layerTreeModel() const;
 
     //! Get access to the default actions that may be used with the tree view
-    QgsLayerTreeViewDefaultActions* defaultActions();
+    QgsLayerTreeViewDefaultActions *defaultActions();
 
     //! Set provider for context menu. Takes ownership of the instance
-    void setMenuProvider( QgsLayerTreeViewMenuProvider* menuProvider );
+    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider );
     //! Return pointer to the context menu provider. May be null
-    QgsLayerTreeViewMenuProvider* menuProvider() const { return mMenuProvider; }
+    QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
     //! Get currently selected layer. May be null
-    QgsMapLayer* currentLayer() const;
+    QgsMapLayer *currentLayer() const;
     //! Set currently selected layer. Null pointer will deselect any layer.
-    void setCurrentLayer( QgsMapLayer* layer );
+    void setCurrentLayer( QgsMapLayer *layer );
 
     //! Get current node. May be null
-    QgsLayerTreeNode* currentNode() const;
+    QgsLayerTreeNode *currentNode() const;
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
-    QgsLayerTreeGroup* currentGroupNode() const;
+    QgsLayerTreeGroup *currentGroupNode() const;
 
     /** Get current legend node. May be null if current node is not a legend node.
      * @note added in QGIS 2.14
      */
-    QgsLayerTreeModelLegendNode* currentLegendNode() const;
+    QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     //! Return list of selected nodes
     //! @arg skipInternal If true, will ignore nodes which have an ancestor in the selection
-    QList<QgsLayerTreeNode*> selectedNodes( bool skipInternal = false ) const;
+    QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
     //! Return list of selected nodes filtered to just layer nodes
-    QList<QgsLayerTreeLayer*> selectedLayerNodes() const;
+    QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 
     //! Get list of selected layers
-    QList<QgsMapLayer*> selectedLayers() const;
+    QList<QgsMapLayer *> selectedLayers() const;
 
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
-    void refreshLayerSymbology( const QString& layerId );
+    void refreshLayerSymbology( const QString &layerId );
+
+    //! Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
+    //! @note added in QGIS 2.18
+    void expandAllNodes();
+
+    //! Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
+    //! @note added in QGIS 2.18
+    void collapseAllNodes();
 
   signals:
     //! Emitted when a current layer is changed
-    void currentLayerChanged( QgsMapLayer* layer );
+    void currentLayerChanged( QgsMapLayer *layer );
 
   protected:
-    void contextMenuEvent( QContextMenuEvent* event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
-    void updateExpandedStateFromNode( QgsLayerTreeNode* node );
+    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
 
-    QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
+    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
+
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   protected slots:
 
-    void modelRowsInserted( const QModelIndex& index, int start, int end );
+    void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( const QModelIndex& index );
+    void updateExpandedStateToNode( const QModelIndex &index );
 
     void onCurrentChanged();
-    void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
+    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
     void onModelReset();
 
   protected:
     //! helper class with default actions. Lazily initialized.
-    QgsLayerTreeViewDefaultActions* mDefaultActions;
+    QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
     //! Context menu provider. Owned by the view.
-    QgsLayerTreeViewMenuProvider* mMenuProvider;
+    QgsLayerTreeViewMenuProvider *mMenuProvider = nullptr;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
 };
@@ -134,10 +146,10 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 class GUI_EXPORT QgsLayerTreeViewMenuProvider
 {
   public:
-    virtual ~QgsLayerTreeViewMenuProvider() {}
+    virtual ~QgsLayerTreeViewMenuProvider() = default;
 
     //! Return a newly created menu instance (or null pointer on error)
-    virtual QMenu* createContextMenu() = 0;
+    virtual QMenu *createContextMenu() = 0;
 };
 
 

@@ -76,8 +76,21 @@ class QgsLayerTreeNode : QObject
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode*> children();
 
-    //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode *readXml( QDomElement &element );
+    //! Return name of the node
+    //! @note added in 3.0
+    virtual QString name() const = 0;
+    //! Set name of the node. Emits nameChanged signal.
+    //! @note added in 3.0
+    virtual void setName( const QString& name ) = 0;
+
+    //! Read layer tree from XML. Returns new instance.
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+    static QgsLayerTreeNode *readXml( QDomElement &element ) /Factory/;
+    //! Read layer tree from XML. Returns new instance.
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeNode* readXml( QDomElement& element, const QgsProject* project ) /Factory/;
+
     //! Write layer tree to XML
     virtual void writeXml( QDomElement &parentElement ) = 0;
 
@@ -86,6 +99,39 @@ class QgsLayerTreeNode : QObject
 
     //! Create a copy of the node. Returns new instance
     virtual QgsLayerTreeNode *clone() const = 0 /Factory/;
+
+    //! Turn textual references to layers into map layer object from project.
+    //! This method should be called after readXml()
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project ) = 0;
+
+    //! Returns whether a node is really visible (ie checked and all its ancestors checked as well)
+    //! @note added in 3.0
+    bool isVisible() const;
+
+    //! Returns whether a node is checked (independently of its ancestors or children)
+    //! @note added in 3.0
+    bool itemVisibilityChecked() const;
+
+    //! Check or uncheck a node (independently of its ancestors or children)
+    //! @note added in 3.0
+    void setItemVisibilityChecked( bool checked );
+
+    //! Check or uncheck a node and all its children (taking into account exclusion rules)
+    //! @note added in 3.0
+    virtual void setItemVisibilityCheckedRecursive( bool checked );
+
+    //! Check or uncheck a node and all its parents
+    //! @note added in 3.0
+    void setItemVisibilityCheckedParentRecursive( bool checked );
+
+    //! Return whether this node is checked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityCheckedRecursive() const;
+
+    //! Return whether this node is unchecked and all its children.
+    //! @note added in 3.0
+    bool isItemVisibilityUncheckedRecursive() const;
 
     //! Return whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;
@@ -114,11 +160,14 @@ class QgsLayerTreeNode : QObject
     //! Emitted when one or more nodes has been removed from a node within the tree
     void removedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when check state of a node within the tree has been changed
-    void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
+    void visibilityChanged( QgsLayerTreeNode *node );
     //! Emitted when a custom property of a node within the tree has been changed or removed
     void customPropertyChanged( QgsLayerTreeNode *node, const QString& key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
     void expandedChanged( QgsLayerTreeNode *node, bool expanded );
+    //! Emitted when the name of the node is changed
+    //! @note added in 3.0
+    void nameChanged( QgsLayerTreeNode* node, QString name );
 
   protected:
 

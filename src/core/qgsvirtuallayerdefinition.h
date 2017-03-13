@@ -17,8 +17,9 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYERDEFINITION_H
 #define QGSVIRTUALLAYERDEFINITION_H
 
-#include <qgsfield.h>
-#include <qgis.h>
+#include "qgis_core.h"
+#include "qgsfields.h"
+#include "qgis.h"
 
 /** \ingroup core
  * Class to manipulate the definition of a virtual layer
@@ -29,6 +30,7 @@ email                : hugo dot mercier at oslandia dot com
 class CORE_EXPORT QgsVirtualLayerDefinition
 {
   public:
+
     /** \ingroup core
      * A SourceLayer is either a reference to a live layer in the registry
      * or all the parameters needed to load it (provider key, source, etc.)
@@ -37,16 +39,16 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     {
       public:
         //! Constructor variant to build a live layer reference
-        SourceLayer( const QString& name, const QString& ref )
-            : mName( name )
-            , mRef( ref )
+        SourceLayer( const QString &name, const QString &ref )
+          : mName( name )
+          , mRef( ref )
         {}
         //! Constructor variant to build a layer with a provider and a source
-        SourceLayer( const QString& name, const QString& source, const QString& provider, const QString& encoding )
-            : mName( name )
-            , mSource( source )
-            , mProvider( provider )
-            , mEncoding( encoding )
+        SourceLayer( const QString &name, const QString &source, const QString &provider, const QString &encoding )
+          : mName( name )
+          , mSource( source )
+          , mProvider( provider )
+          , mEncoding( encoding )
         {}
 
         //! Is it a live layer or not ?
@@ -76,7 +78,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     };
 
     //! Constructor with an optional file path
-    QgsVirtualLayerDefinition( const QString& filePath = "" );
+    QgsVirtualLayerDefinition( const QString &filePath = "" );
 
     //! Constructor to build a definition from a QUrl
     //! The path part of the URL is extracted as well as the following optional keys:
@@ -90,7 +92,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! nogeometry                              is a flag to force the layer to be a non-geometry layer
     //! query=sql                               represents the SQL query. Must be URL-encoded
     //! field=column_name:[int|real|text]       represents a field with its name and its type
-    static QgsVirtualLayerDefinition fromUrl( const QUrl& url );
+    static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 
     //! Convert the definition into a QUrl
     QUrl toUrl() const;
@@ -99,36 +101,36 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString toString() const;
 
     //! Add a live layer source layer
-    void addSource( const QString& name, const QString& ref );
+    void addSource( const QString &name, const QString &ref );
 
     //! Add a layer with a source, a provider and an encoding
-    void addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding = "" );
+    void addSource( const QString &name, const QString &source, const QString &provider, const QString &encoding = "" );
 
     //! List of source layers
     typedef QList<SourceLayer> SourceLayers;
 
     //! Get access to the source layers
-    const SourceLayers& sourceLayers() const { return mSourceLayers; }
+    const SourceLayers &sourceLayers() const { return mSourceLayers; }
 
     //! Get the SQL query
     QString query() const { return mQuery; }
     //! Set the SQL query
-    void setQuery( const QString& query ) { mQuery = query; }
+    void setQuery( const QString &query ) { mQuery = query; }
 
     //! Get the file path. May be empty
     QString filePath() const { return mFilePath; }
     //! Set the file path
-    void setFilePath( const QString& filePath ) { mFilePath = filePath; }
+    void setFilePath( const QString &filePath ) { mFilePath = filePath; }
 
     //! Get the name of the field with unique identifiers
     QString uid() const { return mUid; }
     //! Set the name of the field with unique identifiers
-    void setUid( const QString& uid ) { mUid = uid; }
+    void setUid( const QString &uid ) { mUid = uid; }
 
     //! Get the name of the geometry field. Empty if no geometry field
     QString geometryField() const { return mGeometryField; }
     //! Set the name of the geometry field
-    void setGeometryField( const QString& geometryField ) { mGeometryField = geometryField; }
+    void setGeometryField( const QString &geometryField ) { mGeometryField = geometryField; }
 
     //! Get the type of the geometry
     //! QgsWkbTypes::NoGeometry to hide any geometry
@@ -143,12 +145,12 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setGeometrySrid( long srid ) { mGeometrySrid = srid; }
 
     //! Get field definitions
-    const QgsFields& fields() const { return mFields; }
+    QgsFields fields() const { return mFields; }
     //! Set field definitions
-    void setFields( const QgsFields& fields ) { mFields = fields; }
+    void setFields( const QgsFields &fields ) { mFields = fields; }
 
     //! Convenience method to test if a given source layer is part of the definition
-    bool hasSourceLayer( const QString& name ) const;
+    bool hasSourceLayer( const QString &name ) const;
 
     //! Convenience method to test whether the definition has referenced (live) layers
     bool hasReferencedLayers() const;

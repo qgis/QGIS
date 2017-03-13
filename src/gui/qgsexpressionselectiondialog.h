@@ -16,8 +16,13 @@
 #ifndef QGSEXPRESSIONSELECTIONDIALOG_H
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
-#include <QDialog>
 #include "ui_qgsexpressionselectiondialogbase.h"
+
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+
+#include <QDialog>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This class offers a dialog to change feature selections.
@@ -30,25 +35,26 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new selection dialog.
      * @param layer     The layer on which the selection is to be performed.
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr );
+    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent = nullptr );
 
     /**
      * The builder widget that is used by the dialog
      * @return The builder widget that is used by the dialog
      */
-    QgsExpressionBuilderWidget* expressionBuilder();
+    QgsExpressionBuilderWidget *expressionBuilder();
 
     /**
      * Sets the current expression text
      * @param text the expression text to set
      */
-    void setExpressionText( const QString& text );
+    void setExpressionText( const QString &text );
 
     /**
      * Returns the current expression text
@@ -59,16 +65,31 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     /**
      *Sets geometry calculator used in distance/area calculations.
      */
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
-  public slots:
+    /** Sets the message bar to display feedback from the dialog. This is used when zooming to
+     * features to display the count of selected features.
+     * @param messageBar target message bar
+     * @note added in QGIS 3.0
+     */
+    void setMessageBar( QgsMessageBar *messageBar );
+
+    /**
+     * Sets a map canvas associated with the dialog.
+     * @note added in QGIS 3.0
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+  private slots:
     void on_mActionSelect_triggered();
     void on_mActionAddToSelection_triggered();
     void on_mActionRemoveFromSelection_triggered();
     void on_mActionSelectIntersect_triggered();
+    void on_mButtonZoomToFeatures_clicked();
     void on_mPbnClose_clicked();
 
   protected:
+
     /**
      * Implementation for closeEvent
      * Saves the window geometry
@@ -85,7 +106,9 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
 
   private:
     void saveRecent();
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 #endif

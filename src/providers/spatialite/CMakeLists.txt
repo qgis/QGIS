@@ -28,7 +28,7 @@ SET(SPATIALITE_MOC_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
+QT5_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
@@ -38,6 +38,8 @@ INCLUDE_DIRECTORIES(
   ../../core/geometry
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
@@ -52,6 +54,14 @@ TARGET_LINK_LIBRARIES(spatialiteprovider
   qgis_gui
   ${SPATIALITE_LIBRARY}
 )
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    spatialiteprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 ########################################################
 # Install

@@ -18,6 +18,7 @@
 #ifndef QGSSINGLEBANDGRAYRENDERER_H
 #define QGSSINGLEBANDGRAYRENDERER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
@@ -35,36 +36,40 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
       WhiteToBlack
     };
 
-    QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
+    QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand );
     ~QgsSingleBandGrayRenderer();
-    QgsSingleBandGrayRenderer * clone() const override;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
+    //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
+    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & ) = delete;
+    //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
+    const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & ) = delete;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsSingleBandGrayRenderer *clone() const override;
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+
+    QgsRasterBlock *block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
-    const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
-    /** Takes ownership*/
-    void setContrastEnhancement( QgsContrastEnhancement* ce );
+    const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement; }
+    //! Takes ownership
+    void setContrastEnhancement( QgsContrastEnhancement *ce );
 
-    void setGradient( Gradient theGradient ) { mGradient = theGradient; }
+    void setGradient( Gradient gradient ) { mGradient = gradient; }
     Gradient gradient() const { return mGradient; }
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
 
     QList<int> usesBands() const override;
 
   private:
     int mGrayBand;
     Gradient mGradient;
-    QgsContrastEnhancement* mContrastEnhancement;
+    QgsContrastEnhancement *mContrastEnhancement = nullptr;
 
-    QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer& );
-    const QgsSingleBandGrayRenderer& operator=( const QgsSingleBandGrayRenderer& );
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERER_H

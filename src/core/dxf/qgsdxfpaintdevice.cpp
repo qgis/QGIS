@@ -18,7 +18,7 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgsdxfpaintengine.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( nullptr )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf ): QPaintDevice(), mPaintEngine( nullptr )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }
@@ -28,7 +28,7 @@ QgsDxfPaintDevice::~QgsDxfPaintDevice()
   delete mPaintEngine;
 }
 
-QPaintEngine* QgsDxfPaintDevice::paintEngine() const
+QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 {
   return mPaintEngine;
 }
@@ -54,10 +54,8 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmPhysicalDpiX:
     case QPaintDevice::PdmPhysicalDpiY:
       return 96;
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     case QPaintDevice::PdmDevicePixelRatio:
       return 1;
-#endif
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
     case QPaintDevice::PdmDevicePixelRatioScaled:
       return 1;
@@ -90,7 +88,7 @@ QPointF QgsDxfPaintDevice::dxfCoordinates( QPointF pt ) const
   return QPointF( x, y );
 }
 
-void QgsDxfPaintDevice::setLayer( const QString& layer )
+void QgsDxfPaintDevice::setLayer( const QString &layer )
 {
   if ( mPaintEngine )
   {

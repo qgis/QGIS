@@ -81,14 +81,14 @@
 
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
-    : QDialog( parent )
-    , mSocket( nullptr )
-    , mExecErrorsDialog( false )
-    , mTimer( nullptr )
-    , mSslErrors( QList<QSslError>() )
-    , mTrustedCAs( QList<QSslCertificate>() )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mSocket( nullptr )
+  , mExecErrorsDialog( false )
+  , mTimer( nullptr )
+  , mSslErrors( QList<QSslError>() )
+  , mTrustedCAs( QList<QSslCertificate>() )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -142,10 +142,6 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   }
 }
 
-QgsAuthSslImportDialog::~QgsAuthSslImportDialog()
-{
-}
-
 void QgsAuthSslImportDialog::accept()
 {
   wdgtSslConfig->saveSslCertConfig();
@@ -154,7 +150,7 @@ void QgsAuthSslImportDialog::accept()
 
 void QgsAuthSslImportDialog::updateEnabledState()
 {
-  leServer->setStyleSheet( "" );
+  leServer->setStyleSheet( QLatin1String( "" ) );
 
   bool unconnected = !mSocket || mSocket->state() == QAbstractSocket::UnconnectedState;
 
@@ -179,7 +175,7 @@ void QgsAuthSslImportDialog::secureConnect()
     return;
   }
 
-  leServer->setStyleSheet( "" );
+  leServer->setStyleSheet( QLatin1String( "" ) );
   clearStatusCertificateConfig();
 
   if ( !mSocket )
@@ -248,11 +244,11 @@ void QgsAuthSslImportDialog::socketEncrypted()
 
   appendString( tr( "Socket ENCRYPTED" ) );
 
-  appendString( QString( "%1: %2" ).arg( tr( "Protocol" ),
-                                         QgsAuthCertUtils::getSslProtocolName( mSocket->protocol() ) ) );
+  appendString( QStringLiteral( "%1: %2" ).arg( tr( "Protocol" ),
+                QgsAuthCertUtils::getSslProtocolName( mSocket->protocol() ) ) );
 
   QSslCipher ciph = mSocket->sessionCipher();
-  QString cipher = QString( "%1: %2, %3 (%4/%5)" )
+  QString cipher = QStringLiteral( "%1: %2, %3 (%4/%5)" )
                    .arg( tr( "Session cipher" ), ciph.authenticationMethod(), ciph.name() )
                    .arg( ciph.usedBits() ).arg( ciph.supportedBits() );
   appendString( cipher );
@@ -260,7 +256,7 @@ void QgsAuthSslImportDialog::socketEncrypted()
 
 
   wdgtSslConfig->setEnabled( true );
-  QString hostport( QString( "%1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
+  QString hostport( QStringLiteral( "%1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
   wdgtSslConfig->setSslCertificate( mSocket->peerCertificate(), hostport.trimmed() );
   if ( !mSslErrors.isEmpty() )
   {
@@ -281,7 +277,7 @@ void QgsAuthSslImportDialog::socketError( QAbstractSocket::SocketError err )
   Q_UNUSED( err );
   if ( mSocket )
   {
-    appendString( QString( "%1: %2" ).arg( tr( "Socket ERROR" ), mSocket->errorString() ) );
+    appendString( QStringLiteral( "%1: %2" ).arg( tr( "Socket ERROR" ), mSocket->errorString() ) );
   }
 }
 
@@ -381,7 +377,7 @@ void QgsAuthSslImportDialog::radioFileImportToggled( bool checked )
 
 void QgsAuthSslImportDialog::on_btnCertPath_clicked()
 {
-  const QString& fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leCertPath->setText( fn );
@@ -428,7 +424,7 @@ void QgsAuthSslImportDialog::loadCertFromFile()
   }
 
   wdgtSslConfig->setEnabled( true );
-  wdgtSslConfig->setSslHost( "" );
+  wdgtSslConfig->setSslHost( QLatin1String( "" ) );
   wdgtSslConfig->setSslCertificate( cert );
   if ( !mSslErrors.isEmpty() )
   {
@@ -458,8 +454,8 @@ QPushButton *QgsAuthSslImportDialog::closeButton()
 
 QString QgsAuthSslImportDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
-  QSettings settings;
-  QString recentdir = settings.value( "UI/lastAuthImportSslOpenFileDir", QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportSslOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac
@@ -468,7 +464,7 @@ QString QgsAuthSslImportDialog::getOpenFileName( const QString &title, const QSt
 
   if ( !f.isEmpty() )
   {
-    settings.setValue( "UI/lastAuthImportSslOpenFileDir", QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( QStringLiteral( "UI/lastAuthImportSslOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }

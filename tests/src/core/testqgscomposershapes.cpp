@@ -20,11 +20,12 @@
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -34,9 +35,8 @@ class TestQgsComposerShapes : public QObject
 
   public:
     TestQgsComposerShapes()
-        : mComposition( 0 )
-        , mComposerShape( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mComposerShape( 0 )
     {}
 
   private slots:
@@ -51,9 +51,8 @@ class TestQgsComposerShapes : public QObject
     void symbol(); //test is styling shapes via symbol is working
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape* mComposerShape;
-    QgsMapSettings *mMapSettings;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerShape *mComposerShape = nullptr;
     QString mReport;
 };
 
@@ -62,22 +61,19 @@ void TestQgsComposerShapes::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create composition with two rectangles
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposition->addComposerShape( mComposerShape );
 
-  mReport = "<h1>Composer Shape Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Shape Tests</h1>\n" );
 }
 
 void TestQgsComposerShapes::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -104,8 +100,8 @@ void TestQgsComposerShapes::rectangle()
 {
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
-  QgsCompositionChecker checker( "composershapes_rectangle", mComposition );
-  checker.setControlPathPrefix( "composer_shapes" );
+  QgsCompositionChecker checker( QStringLiteral( "composershapes_rectangle" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -113,8 +109,8 @@ void TestQgsComposerShapes::triangle()
 {
   mComposerShape->setShapeType( QgsComposerShape::Triangle );
 
-  QgsCompositionChecker checker( "composershapes_triangle", mComposition );
-  checker.setControlPathPrefix( "composer_shapes" );
+  QgsCompositionChecker checker( QStringLiteral( "composershapes_triangle" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -122,8 +118,8 @@ void TestQgsComposerShapes::ellipse()
 {
   mComposerShape->setShapeType( QgsComposerShape::Ellipse );
 
-  QgsCompositionChecker checker( "composershapes_ellipse", mComposition );
-  checker.setControlPathPrefix( "composer_shapes" );
+  QgsCompositionChecker checker( QStringLiteral( "composershapes_ellipse" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
@@ -132,8 +128,8 @@ void TestQgsComposerShapes::roundedRectangle()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
   mComposerShape->setCornerRadius( 30 );
 
-  QgsCompositionChecker checker( "composershapes_roundedrect", mComposition );
-  checker.setControlPathPrefix( "composer_shapes" );
+  QgsCompositionChecker checker( QStringLiteral( "composershapes_roundedrect" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
   QVERIFY( checker.testComposition( mReport ) );
   mComposerShape->setCornerRadius( 0 );
 }
@@ -143,21 +139,21 @@ void TestQgsComposerShapes::symbol()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
   //setup simple fill
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::green );
-  simpleFill->setBorderColor( Qt::yellow );
-  simpleFill->setBorderWidth( 6 );
+  simpleFill->setStrokeColor( Qt::yellow );
+  simpleFill->setStrokeWidth( 6 );
 
   mComposerShape->setShapeStyleSymbol( fillSymbol );
   mComposerShape->setUseSymbol( true );
   delete fillSymbol;
 
-  QgsCompositionChecker checker( "composershapes_symbol", mComposition );
-  checker.setControlPathPrefix( "composer_shapes" );
+  QgsCompositionChecker checker( QStringLiteral( "composershapes_symbol" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
-QTEST_MAIN( TestQgsComposerShapes )
+QGSTEST_MAIN( TestQgsComposerShapes )
 #include "testqgscomposershapes.moc"

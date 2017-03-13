@@ -17,6 +17,7 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
+#include "qgis_gui.h"
 
 class QToolButton;
 class QLineEdit;
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   public:
     explicit QgsDateTimeEdit( QWidget *parent = nullptr );
 
-    //! determines if the widget allows setting null date/time.
+    //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
     bool allowNull() const {return mAllowNull;}
 
@@ -48,8 +49,10 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     QDateTime dateTime() const;
 
-    //! Set the current date as NULL
-    //! @note if the widget is not configured to accept NULL dates, this will have no effect
+    /**
+     * Set the current date as NULL
+     * @note if the widget is not configured to accept NULL dates, this will have no effect
+     */
     virtual void clear() override;
 
     /** Resets the widget to show no value (ie, an "unknown" state).
@@ -58,13 +61,13 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void setEmpty();
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event ) override;
+    virtual void resizeEvent( QResizeEvent *event ) override;
 
-    void mousePressEvent( QMouseEvent*event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
 
 
   private slots:
-    void changed( const QDateTime & dateTime );
+    void changed( const QDateTime &dateTime );
 
 
   private:
@@ -75,8 +78,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool mIsNull;
     bool mIsEmpty;
 
-    QLineEdit* mNullLabel;
-    QToolButton* mClearButton;
+    QLineEdit *mNullLabel = nullptr;
+    QToolButton *mClearButton = nullptr;
 
 };
 

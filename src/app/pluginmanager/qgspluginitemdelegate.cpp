@@ -24,10 +24,10 @@
 #include "qgspluginsortfilterproxymodel.h"
 
 
-QgsPluginItemDelegate::QgsPluginItemDelegate( QObject * parent ) : QStyledItemDelegate( parent ) {}
+QgsPluginItemDelegate::QgsPluginItemDelegate( QObject *parent ) : QStyledItemDelegate( parent ) {}
 
 
-QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
@@ -93,8 +93,8 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   }
 
   if ( ! index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty()
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == "upgradeable"
-       || index.data( PLUGIN_STATUS_ROLE ).toString() == "new" )
+       || index.data( PLUGIN_STATUS_ROLE ).toString() == QLatin1String( "upgradeable" )
+       || index.data( PLUGIN_STATUS_ROLE ).toString() == QLatin1String( "new" ) )
   {
     QFont font = painter->font();
     font.setBold( true );

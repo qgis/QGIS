@@ -18,8 +18,7 @@ from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsComposerShape,
                        QgsComposition,
-                       QgsMapSettings
-                       )
+                       QgsProject)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
@@ -34,10 +33,8 @@ class TestQgsComposerShapes(unittest.TestCase):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
-        self.mapSettings = QgsMapSettings()
-
         # create composition
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)
 
         self.mComposerShape = QgsComposerShape(20, 20, 150, 100, self.mComposition)
@@ -89,6 +86,7 @@ class TestQgsComposerShapes(unittest.TestCase):
 
         self.mComposerShape.setCornerRadius(0)
         assert myTestResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

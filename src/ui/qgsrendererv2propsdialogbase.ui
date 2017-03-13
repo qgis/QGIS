@@ -102,10 +102,10 @@
             <bool>false</bool>
            </property>
            <property name="collapsed" stdset="0">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="saveCollapsedState" stdset="0">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <property name="leftMargin">
@@ -135,34 +135,68 @@
               </item>
              </layout>
             </item>
-            <item row="3" column="0" colspan="4">
-             <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
-              <property name="minimumSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="lblTransparency">
               <property name="text">
-               <string>Layer transparency</string>
+               <string>Transparency</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="lblLayerBlend">
+             <widget class="QLabel" name="lblBlend">
               <property name="text">
-               <string>Layer blending mode</string>
+               <string>Blending mode</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
+            <item row="1" column="1" colspan="3">
+             <layout class="QGridLayout" name="gridLayout_1">
+              <property name="spacing">
+               <number>1</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="lblLayerBlend">
+                <property name="text">
+                 <string>Layer</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="lblFeatureBlend">
+                <property name="text">
+                 <string>Feature</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">        
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>4</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>4</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
-            <item row="4" column="0" colspan="4">
+            <item row="3" column="0" colspan="4">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
                <widget class="QCheckBox" name="checkboxEnableOrderBy">
@@ -184,15 +218,15 @@
               </item>
              </layout>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lblFeatureBlend">
-              <property name="text">
-               <string>Feature blending mode</string>
+            <item row="2" column="0" colspan="4">
+             <widget class="QgsEffectStackCompactWidget" name="mEffectWidget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
               </property>
              </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox"/>
             </item>
            </layout>
           </widget>

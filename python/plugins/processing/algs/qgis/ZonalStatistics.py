@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -73,14 +74,14 @@ class ZonalStatistics(GeoAlgorithm):
                                            self.tr('Load whole raster in memory')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         """ Based on code by Matthew Perry
             https://gist.github.com/perrygeo/5667173
         """
 
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
         columnPrefix = self.getParameterValue(self.COLUMN_PREFIX)
         useGlobalExtent = self.getParameterValue(self.GLOBAL_EXTENT)
@@ -95,9 +96,10 @@ class ZonalStatistics(GeoAlgorithm):
         rasterXSize = rasterDS.RasterXSize
         rasterYSize = rasterDS.RasterYSize
 
-        rasterBBox = QgsRectangle(geoTransform[0], geoTransform[3] - cellYSize
-                                  * rasterYSize, geoTransform[0] + cellXSize
-                                  * rasterXSize, geoTransform[3])
+        rasterBBox = QgsRectangle(geoTransform[0],
+                                  geoTransform[3] - cellYSize * rasterYSize,
+                                  geoTransform[0] + cellXSize * rasterXSize,
+                                  geoTransform[3])
 
         rasterGeom = QgsGeometry.fromRect(rasterBBox)
 
@@ -254,7 +256,7 @@ class ZonalStatistics(GeoAlgorithm):
             memVDS = None
             rasterizedDS = None
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         rasterDS = None
 

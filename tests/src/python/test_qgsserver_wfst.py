@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 Tests for WFS-T provider using QGIS Server through qgis_wrapped_server.py.
@@ -36,11 +37,11 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
+import re
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
-from time import sleep
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
     QgsFeature,
@@ -56,9 +57,9 @@ from qgis.testing import (
 )
 
 try:
-    QGIS_SERVER_WFST_DEFAULT_PORT = os.environ['QGIS_SERVER_WFST_DEFAULT_PORT']
+    QGIS_SERVER_WFST_PORT = os.environ['QGIS_SERVER_WFST_PORT']
 except:
-    QGIS_SERVER_WFST_DEFAULT_PORT = 8081
+    QGIS_SERVER_WFST_PORT = '0'  # Auto
 
 
 qgis_app = start_app()
@@ -69,7 +70,7 @@ class TestWFST(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.port = QGIS_SERVER_WFST_DEFAULT_PORT
+        cls.port = QGIS_SERVER_WFST_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
         cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'
@@ -89,21 +90,25 @@ class TestWFST(unittest.TestCase):
         # Clear all test layers
         for ln in ['test_point', 'test_polygon', 'test_linestring']:
             cls._clearLayer(ln)
-        os.environ['QGIS_SERVER_DEFAULT_PORT'] = str(cls.port)
+        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ)
-        sleep(2)
+                                      env=os.environ, stdout=subprocess.PIPE)
+        line = cls.server.stdout.readline()
+        cls.port = int(re.findall(b':(\d+)', line)[0])
+        assert cls.port != 0
+        # Wait for the server process to start
+        assert waitServer('http://127.0.0.1:%s' % cls.port), "Server is not responding!"
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         cls.server.terminate()
+        cls.server.wait()
         del cls.server
         # Clear all test layers
         for ln in ['test_point', 'test_polygon', 'test_linestring']:
-            layer = cls._getLayer(ln)
             cls._clearLayer(ln)
         rmtree(cls.temp_path)
 
@@ -152,7 +157,7 @@ class TestWFST(unittest.TestCase):
             'table': '',
             #'sql': '',
         }
-        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in parms.items()])
+        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         assert wfs_layer.isValid()
         return wfs_layer

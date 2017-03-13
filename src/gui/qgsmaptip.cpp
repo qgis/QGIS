@@ -37,20 +37,15 @@
 #include "qgsmaptip.h"
 
 QgsMapTip::QgsMapTip()
-    : mWidget( nullptr ), mWebView( nullptr )
+  : mWidget( nullptr ), mWebView( nullptr )
 {
   // init the visible flag
   mMapTipVisible = false;
 }
 
-QgsMapTip::~QgsMapTip()
-{
-
-}
-
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
-                            QgsPoint & mapPosition,
-                            QPoint & thePixelPosition,
+                            QgsPoint &mapPosition,
+                            QPoint &pixelPosition,
                             QgsMapCanvas *pMapCanvas )
 {
   // Do the search using the active layer and the preferred label field for the
@@ -61,7 +56,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   // Show the maptip on the canvas
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
-  backgroundColor, borderColor;
+          backgroundColor, strokeColor;
 
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
@@ -79,7 +74,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   mWebView->page()->settings()->setAttribute(
     QWebSettings::JavascriptEnabled, true );
 
-  QHBoxLayout* layout = new QHBoxLayout;
+  QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget( mWebView );
 
   mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -95,12 +90,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   mWidget->resize( 0, 0 );
 
   backgroundColor = mWidget->palette().base().color().name();
-  borderColor = mWidget->palette().shadow().color().name();
+  strokeColor = mWidget->palette().shadow().color().name();
   mWidget->setStyleSheet( QString(
                             ".QWidget{"
                             "border: 1px solid %1;"
                             "background-color: %2;}" ).arg(
-                            borderColor, backgroundColor ) );
+                            strokeColor, backgroundColor ) );
 
   tipText = fetchFeature( pLayer, mapPosition, pMapCanvas );
 
@@ -131,8 +126,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
               "</body>"
               "</html>" ).arg( bodyStyle, containerStyle, tipText );
 
-  mWidget->move( thePixelPosition.x(),
-                 thePixelPosition.y() );
+  mWidget->move( pixelPosition.x(),
+                 pixelPosition.y() );
 
   mWebView->setHtml( tipHtml );
   lastTipText = tipText;
@@ -149,7 +144,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   {
     // Get the content size
     QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-                              "#QgsWebViewContainer" );
+                              QStringLiteral( "#QgsWebViewContainer" ) );
     int width = container.geometry().width() + 5 + scrollbarWidth;
     int height = container.geometry().height() + 5 + scrollbarHeight;
 
@@ -191,10 +186,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
   if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
     return QString();
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope()
-  << QgsExpressionContextUtils::layerScope( vlayer );
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
   if ( mapCanvas )
     context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 

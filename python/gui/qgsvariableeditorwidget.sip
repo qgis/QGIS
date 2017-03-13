@@ -56,7 +56,7 @@ class QgsVariableEditorWidget : QWidget
     QgsExpressionContextScope* editableScope() const;
 
     /** Sets the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @param group setting group
      * @see settingGroup()
@@ -64,18 +64,13 @@ class QgsVariableEditorWidget : QWidget
     void setSettingGroup( const QString &group );
 
     /** Returns the setting group for the widget. QgsVariableEditorWidget widgets with
-     * the same setting group will synchronise their settings, eg the size
+     * the same setting group will synchronise their settings, e.g., the size
      * of columns in the tree widget.
      * @returns setting group name
      * @see setSettingGroup()
      */
     QString settingGroup() const;
-
-    /** Returns a map variables set within the editable scope. Read only variables are not
-     * returned. This method can be used to retrieve the variables edited an added by
-     * users via the widget.
-     */
-    QgsStringMap variablesInActiveScope() const;
+    QVariantMap variablesInActiveScope() const;
 
   signals:
 

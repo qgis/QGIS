@@ -21,8 +21,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTextEdit>
@@ -30,61 +30,61 @@
 #include <QMenu>
 
 
-QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
+QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::sBuiltinProfiles;
 
-static const QString PYRAMID_JPEG_YCBCR_COMPRESSION( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" );
-static const QString PYRAMID_JPEG_COMPRESSION( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG INTERLEAVE_OVERVIEW=PIXEL" );
+static const QString PYRAMID_JPEG_YCBCR_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG PHOTOMETRIC_OVERVIEW=YCBCR INTERLEAVE_OVERVIEW=PIXEL" ) );
+static const QString PYRAMID_JPEG_COMPRESSION( QStringLiteral( "JPEG_QUALITY_OVERVIEW=75 COMPRESS_OVERVIEW=JPEG INTERLEAVE_OVERVIEW=PIXEL" ) );
 
-QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, const QString& format,
-    QgsRasterFormatSaveOptionsWidget::Type type, const QString& provider )
-    : QWidget( parent )
-    , mFormat( format )
-    , mProvider( provider )
-    , mRasterLayer( nullptr )
-    , mRasterFileName( QString() )
-    , mPyramids( false )
-    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *parent, const QString &format,
+    QgsRasterFormatSaveOptionsWidget::Type type, const QString &provider )
+  : QWidget( parent )
+  , mFormat( format )
+  , mProvider( provider )
+  , mRasterLayer( nullptr )
+  , mRasterFileName( QString() )
+  , mPyramids( false )
+  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
 
 {
   setupUi( this );
 
   setType( type );
 
-  if ( mBuiltinProfiles.isEmpty() )
+  if ( sBuiltinProfiles.isEmpty() )
   {
     // key=profileKey values=format,profileName,options
-    mBuiltinProfiles[ "z_adefault" ] = ( QStringList() << "" << tr( "Default" ) << "" );
+    sBuiltinProfiles[ QStringLiteral( "z_adefault" )] = ( QStringList() << QLatin1String( "" ) << tr( "Default" ) << QLatin1String( "" ) );
 
     // these GTiff profiles are based on Tim's benchmarks at
     // http://linfiniti.com/2011/05/gdal-efficiency-of-various-compression-algorithms/
     // big: no compression | medium: reasonable size/speed tradeoff | small: smallest size
-    mBuiltinProfiles[ "z_gtiff_1big" ] =
-      ( QStringList() << "GTiff" << tr( "No compression" )
-        << "COMPRESS=NONE BIGTIFF=IF_NEEDED" );
-    mBuiltinProfiles[ "z_gtiff_2medium" ] =
-      ( QStringList() << "GTiff" << tr( "Low compression" )
-        << "COMPRESS=PACKBITS" );
-    mBuiltinProfiles[ "z_gtiff_3small" ] =
-      ( QStringList() << "GTiff" << tr( "High compression" )
-        << "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" );
-    mBuiltinProfiles[ "z_gtiff_4jpeg" ] =
-      ( QStringList() << "GTiff" << tr( "JPEG compression" )
-        << "COMPRESS=JPEG JPEG_QUALITY=75" );
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_1big" )] =
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "No compression" )
+        << QStringLiteral( "COMPRESS=NONE BIGTIFF=IF_NEEDED" ) );
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_2medium" )] =
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "Low compression" )
+        << QStringLiteral( "COMPRESS=PACKBITS" ) );
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_3small" )] =
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "High compression" )
+        << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
+    sBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
+      ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG compression" )
+        << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
     // TODO - should we offer GDAL_TIFF_OVR_BLOCKSIZE option here or in QgsRasterPyramidsOptionsWidget ?
-    mBuiltinProfiles[ "z__pyramids_gtiff_1big" ] =
-      ( QStringList() << "_pyramids" << tr( "No compression" )
-        << "COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED" );
-    mBuiltinProfiles[ "z__pyramids_gtiff_2medium" ] =
-      ( QStringList() << "_pyramids" << tr( "Low compression" )
-        << "COMPRESS_OVERVIEW=PACKBITS" );
-    mBuiltinProfiles[ "z__pyramids_gtiff_3small" ] =
-      ( QStringList() << "_pyramids" << tr( "High compression" )
-        << "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ); // how to set zlevel?
-    mBuiltinProfiles[ "z__pyramids_gtiff_4jpeg" ] =
-      ( QStringList() << "_pyramids" << tr( "JPEG compression" )
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_1big" )] =
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "No compression" )
+        << QStringLiteral( "COMPRESS_OVERVIEW=NONE BIGTIFF_OVERVIEW=IF_NEEDED" ) );
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_2medium" )] =
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "Low compression" )
+        << QStringLiteral( "COMPRESS_OVERVIEW=PACKBITS" ) );
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_3small" )] =
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "High compression" )
+        << QStringLiteral( "COMPRESS_OVERVIEW=DEFLATE PREDICTOR_OVERVIEW=2 ZLEVEL=9" ) ); // how to set zlevel?
+    sBuiltinProfiles[ QStringLiteral( "z__pyramids_gtiff_4jpeg" )] =
+      ( QStringList() << QStringLiteral( "_pyramids" ) << tr( "JPEG compression" )
         << PYRAMID_JPEG_YCBCR_COMPRESSION );
   }
 
@@ -105,18 +105,14 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
   QgsDebugMsg( "done" );
 }
 
-QgsRasterFormatSaveOptionsWidget::~QgsRasterFormatSaveOptionsWidget()
-{
-}
-
-void QgsRasterFormatSaveOptionsWidget::setFormat( const QString& format )
+void QgsRasterFormatSaveOptionsWidget::setFormat( const QString &format )
 {
   mFormat = format;
   updateControls();
   updateProfiles();
 }
 
-void QgsRasterFormatSaveOptionsWidget::setProvider( const QString& provider )
+void QgsRasterFormatSaveOptionsWidget::setProvider( const QString &provider )
 {
   mProvider = provider;
   updateControls();
@@ -125,14 +121,14 @@ void QgsRasterFormatSaveOptionsWidget::setProvider( const QString& provider )
 // show/hide widgets - we need this function if widget is used in creator
 void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget::Type type )
 {
-  QList< QWidget* > widgets = this->findChildren<QWidget *>();
-  if (( type == Table ) || ( type == LineEdit ) )
+  QList< QWidget * > widgets = this->findChildren<QWidget *>();
+  if ( ( type == Table ) || ( type == LineEdit ) )
   {
     // hide all controls, except stacked widget
-    Q_FOREACH ( QWidget* widget, widgets )
+    Q_FOREACH ( QWidget *widget, widgets )
       widget->setVisible( false );
     mOptionsStackedWidget->setVisible( true );
-    Q_FOREACH ( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    Q_FOREACH ( QWidget *widget, mOptionsStackedWidget->findChildren<QWidget *>() )
       widget->setVisible( true );
 
     // show relevant page
@@ -144,7 +140,7 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   else
   {
     // show all widgets, except profile buttons (unless Full)
-    Q_FOREACH ( QWidget* widget, widgets )
+    Q_FOREACH ( QWidget *widget, widgets )
       widget->setVisible( true );
     if ( type != Full )
       mProfileButtons->setVisible( false );
@@ -157,7 +153,7 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
 
 QString QgsRasterFormatSaveOptionsWidget::pseudoFormat() const
 {
-  return mPyramids ? "_pyramids" : mFormat;
+  return mPyramids ? QStringLiteral( "_pyramids" ) : mFormat;
 }
 
 void QgsRasterFormatSaveOptionsWidget::updateProfiles()
@@ -165,7 +161,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   // build profiles list = user + builtin(last)
   QString format = pseudoFormat();
   QStringList profileKeys = profiles();
-  QMapIterator<QString, QStringList> it( mBuiltinProfiles );
+  QMapIterator<QString, QStringList> it( sBuiltinProfiles );
   while ( it.hasNext() )
   {
     it.next();
@@ -173,27 +169,27 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
     if ( ! profileKeys.contains( profileKey ) && !it.value().isEmpty() )
     {
       // insert key if is for all formats or this format (GTiff)
-      if ( it.value()[0] == "" ||  it.value()[0] == format )
+      if ( it.value()[0] == QLatin1String( "" ) ||  it.value()[0] == format )
       {
         profileKeys.insert( 0, profileKey );
       }
     }
   }
-  qSort( profileKeys );
+  std::sort( profileKeys.begin(), profileKeys.end() );
 
   // populate mOptionsMap and mProfileComboBox
   mOptionsMap.clear();
   mProfileComboBox->blockSignals( true );
   mProfileComboBox->clear();
-  Q_FOREACH ( const QString& profileKey, profileKeys )
+  Q_FOREACH ( const QString &profileKey, profileKeys )
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );
-    if ( mBuiltinProfiles.contains( profileKey ) )
+    if ( sBuiltinProfiles.contains( profileKey ) )
     {
-      profileName = mBuiltinProfiles[ profileKey ][ 1 ];
+      profileName = sBuiltinProfiles[ profileKey ][ 1 ];
       if ( profileOptions.isEmpty() )
-        profileOptions = mBuiltinProfiles[ profileKey ][ 2 ];
+        profileOptions = sBuiltinProfiles[ profileKey ][ 2 ];
     }
     else
     {
@@ -206,7 +202,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   // update UI
   mProfileComboBox->blockSignals( false );
   // mProfileComboBox->setCurrentIndex( 0 );
-  QSettings mySettings;
+  QgsSettings mySettings;
   mProfileComboBox->setCurrentIndex( mProfileComboBox->findData( mySettings.value(
                                        mProvider + "/driverOptions/" + format.toLower() + "/defaultProfile",
                                        "z_adefault" ) ) );
@@ -255,20 +251,20 @@ void QgsRasterFormatSaveOptionsWidget::apply()
 }
 
 // typedefs for gdal provider function pointers
-typedef QString validateCreationOptionsFormat_t( const QStringList& createOptions, QString format );
+typedef QString validateCreationOptionsFormat_t( const QStringList &createOptions, QString format );
 typedef QString helpCreationOptionsFormat_t( QString format );
 
 void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {
   QString message;
 
-  if ( mProvider == "gdal" && mFormat != "" && ! mPyramids )
+  if ( mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) && ! mPyramids )
   {
     // get helpCreationOptionsFormat() function ptr for provider
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
     if ( library )
     {
-      helpCreationOptionsFormat_t * helpCreationOptionsFormat =
+      helpCreationOptionsFormat_t *helpCreationOptionsFormat =
         ( helpCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "helpCreationOptionsFormat" ) );
       if ( helpCreationOptionsFormat )
       {
@@ -280,16 +276,16 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
       }
     }
     else
-      message = QString( "cannot load provider library %1" ).arg( mProvider );
+      message = QStringLiteral( "cannot load provider library %1" ).arg( mProvider );
 
 
     if ( message.isEmpty() )
       message = tr( "Cannot get create options for driver %1" ).arg( mFormat );
   }
-  else if ( mProvider == "gdal" && mPyramids )
+  else if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
   {
     message = tr( "For details on pyramids options please see the following pages" );
-    message += "\n\nhttp://www.gdal.org/gdaladdo.html\n\nhttp://www.gdal.org/frmt_gtiff.html";
+    message += QLatin1String( "\n\nhttp://www.gdal.org/gdaladdo.html\n\nhttp://www.gdal.org/frmt_gtiff.html" );
   }
   else
     message = tr( "No help available" );
@@ -317,29 +313,29 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   QgsDebugMsg( QString( "layer: [%1] file: [%2] format: [%3]" ).arg( mRasterLayer ? mRasterLayer->id() : "none", mRasterFileName, mFormat ) );
   // if no rasterLayer is defined, but we have a raster fileName, then create a temp. rasterLayer to validate options
   // ideally we should keep it for future access, but this is trickier
-  QgsRasterLayer* rasterLayer = mRasterLayer;
+  QgsRasterLayer *rasterLayer = mRasterLayer;
   bool tmpLayer = false;
   if ( !( mRasterLayer && rasterLayer->dataProvider() ) && ! mRasterFileName.isNull() )
   {
-    // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
+    // temporarily override /Projections/defaultBehavior to avoid dialog prompt
     // this is taken from qgsbrowserdockwidget.cpp
     // TODO - integrate this into qgis core
-    QSettings settings;
-    QString defaultProjectionOption = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
-    if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
+    QgsSettings settings;
+    QString defaultProjectionOption = settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString();
+    if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
     {
-      settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
     }
     tmpLayer = true;
-    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QString( "gdal" ) );
-    // restore /Projections/defaultBehaviour
-    if ( defaultProjectionOption == "prompt" )
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QStringLiteral( "gdal" ) );
+    // restore /Projections/defaultBehavior
+    if ( defaultProjectionOption == QLatin1String( "prompt" ) )
     {
-      settings.setValue( "/Projections/defaultBehaviour", defaultProjectionOption );
+      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), defaultProjectionOption );
     }
   }
 
-  if ( mProvider == "gdal" && mPyramids )
+  if ( mProvider == QLatin1String( "gdal" ) && mPyramids )
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
@@ -351,7 +347,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
       message = tr( "cannot validate pyramid options" );
     }
   }
-  else if ( !createOptions.isEmpty() && mProvider == "gdal" && mFormat != "" )
+  else if ( !createOptions.isEmpty() && mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) )
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
@@ -361,10 +357,10 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     else
     {
       // get validateCreationOptionsFormat() function ptr for provider
-      QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( mProvider );
+      std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->providerLibrary( mProvider ) );
       if ( library )
       {
-        validateCreationOptionsFormat_t * validateCreationOptionsFormat =
+        validateCreationOptionsFormat_t *validateCreationOptionsFormat =
           ( validateCreationOptionsFormat_t * ) cast_to_fptr( library->resolve( "validateCreationOptionsFormat" ) );
         if ( validateCreationOptionsFormat )
         {
@@ -376,12 +372,12 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
         }
       }
       else
-        message = QString( "cannot load provider library %1" ).arg( mProvider );
+        message = QStringLiteral( "cannot load provider library %1" ).arg( mProvider );
     }
   }
   else if ( ! createOptions.isEmpty() )
   {
-    QMessageBox::information( this, "", tr( "Cannot validate creation options" ), QMessageBox::Close );
+    QMessageBox::information( this, QLatin1String( "" ), tr( "Cannot validate creation options" ), QMessageBox::Close );
     if ( tmpLayer )
       delete rasterLayer;
     return QString();
@@ -392,11 +388,11 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
     if ( message.isNull() )
     {
       if ( reportOK )
-        QMessageBox::information( this, "", tr( "Valid" ), QMessageBox::Close );
+        QMessageBox::information( this, QLatin1String( "" ), tr( "Valid" ), QMessageBox::Close );
     }
     else
     {
-      QMessageBox::warning( this, "", tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
+      QMessageBox::warning( this, QLatin1String( "" ), tr( "Invalid %1:\n\n%2\n\nClick on help button to get valid creation options for this format." ).arg( mPyramids ? tr( "pyramid creation option" ) : tr( "creation option" ), message ), QMessageBox::Close );
     }
   }
 
@@ -433,11 +429,11 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsLineEdit_editingFinished()
 
 void QgsRasterFormatSaveOptionsWidget::on_mProfileNewButton_clicked()
 {
-  QString profileName = QInputDialog::getText( this, "", tr( "Profile name:" ) );
+  QString profileName = QInputDialog::getText( this, QLatin1String( "" ), tr( "Profile name:" ) );
   if ( ! profileName.isEmpty() )
   {
     profileName = profileName.trimmed();
-    mOptionsMap[ profileName ] = "";
+    mOptionsMap[ profileName ] = QLatin1String( "" );
     mProfileComboBox->addItem( profileName, profileName );
     mProfileComboBox->setCurrentIndex( mProfileComboBox->count() - 1 );
   }
@@ -447,7 +443,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
 {
   int index = mProfileComboBox->currentIndex();
   QString profileKey = currentProfileKey();
-  if ( index != -1 && ! mBuiltinProfiles.contains( profileKey ) )
+  if ( index != -1 && ! sBuiltinProfiles.contains( profileKey ) )
   {
     mOptionsMap.remove( profileKey );
     mProfileComboBox->removeItem( index );
@@ -457,13 +453,13 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
 void QgsRasterFormatSaveOptionsWidget::on_mProfileResetButton_clicked()
 {
   QString profileKey = currentProfileKey();
-  if ( mBuiltinProfiles.contains( profileKey ) )
+  if ( sBuiltinProfiles.contains( profileKey ) )
   {
-    mOptionsMap[ profileKey ] = mBuiltinProfiles[ profileKey ][ 2 ];
+    mOptionsMap[ profileKey ] = sBuiltinProfiles[ profileKey ][ 2 ];
   }
   else
   {
-    mOptionsMap[ profileKey ] = "";
+    mOptionsMap[ profileKey ] = QLatin1String( "" );
   }
   mOptionsLineEdit->setText( mOptionsMap.value( currentProfileKey() ) );
   mOptionsLineEdit->setCursorPosition( 0 );
@@ -480,7 +476,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsAddButton_clicked()
   mOptionsTable->insertRow( mOptionsTable->rowCount() );
   // select the added row
   int newRow = mOptionsTable->rowCount() - 1;
-  QTableWidgetItem* item = new QTableWidgetItem();
+  QTableWidgetItem *item = new QTableWidgetItem();
   mOptionsTable->setItem( newRow, 0, item );
   mOptionsTable->setCurrentItem( item );
 }
@@ -491,7 +487,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsDeleteButton_clicked()
   {
     mOptionsTable->removeRow( mOptionsTable->currentRow() );
     // select the previous row or the next one if there is no previous row
-    QTableWidgetItem* item = mOptionsTable->item( mOptionsTable->currentRow(), 0 );
+    QTableWidgetItem *item = mOptionsTable->item( mOptionsTable->currentRow(), 0 );
     mOptionsTable->setCurrentItem( item );
     optionsTableChanged();
   }
@@ -500,7 +496,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsDeleteButton_clicked()
 
 QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) const
 {
-  if ( profileName != "" )
+  if ( profileName != QLatin1String( "" ) )
     profileName = "/profile_" + profileName;
   else
     profileName = "/profile_default" + profileName;
@@ -509,7 +505,7 @@ QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) con
 
 QString QgsRasterFormatSaveOptionsWidget::currentProfileKey() const
 {
-  return mProfileComboBox->itemData( mProfileComboBox->currentIndex() ).toString();
+  return mProfileComboBox->currentData().toString();
 }
 
 QStringList QgsRasterFormatSaveOptionsWidget::options() const
@@ -517,27 +513,27 @@ QStringList QgsRasterFormatSaveOptionsWidget::options() const
   return mOptionsMap.value( currentProfileKey() ).trimmed().split( ' ', QString::SkipEmptyParts );
 }
 
-QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString& profileName ) const
+QString QgsRasterFormatSaveOptionsWidget::createOptions( const QString &profileName ) const
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   return mySettings.value( settingsKey( profileName ), "" ).toString();
 }
 
-void QgsRasterFormatSaveOptionsWidget::deleteCreateOptions( const QString& profileName )
+void QgsRasterFormatSaveOptionsWidget::deleteCreateOptions( const QString &profileName )
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   mySettings.remove( settingsKey( profileName ) );
 }
 
 void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString myProfiles;
   QMap< QString, QString >::const_iterator i = mOptionsMap.constBegin();
   while ( i != mOptionsMap.constEnd() )
   {
     setCreateOptions( i.key(), i.value() );
-    myProfiles += i.key() + QLatin1String( " " );
+    myProfiles += i.key() + QStringLiteral( " " );
     ++i;
   }
   mySettings.setValue( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles",
@@ -546,20 +542,20 @@ void QgsRasterFormatSaveOptionsWidget::setCreateOptions()
                        currentProfileKey().trimmed() );
 }
 
-void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileName, const QString& options )
+void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString &profileName, const QString &options )
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   mySettings.setValue( settingsKey( profileName ), options.trimmed() );
 }
 
-void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString& profileName, const QStringList& list )
+void QgsRasterFormatSaveOptionsWidget::setCreateOptions( const QString &profileName, const QStringList &list )
 {
-  setCreateOptions( profileName, list.join( " " ) );
+  setCreateOptions( profileName, list.join( QStringLiteral( " " ) ) );
 }
 
 QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   return mySettings.value( mProvider + "/driverOptions/" + pseudoFormat().toLower() + "/profiles", "" ).toString().trimmed().split( ' ', QString::SkipEmptyParts );
 }
 
@@ -590,7 +586,7 @@ void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
 
 void QgsRasterFormatSaveOptionsWidget::updateControls()
 {
-  bool valid = mProvider == "gdal" && mFormat != "";
+  bool valid = mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" );
   mOptionsValidateButton->setEnabled( valid );
   mOptionsHelpButton->setEnabled( valid );
 }
@@ -603,20 +599,20 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
     if ( mouseEvent && ( mouseEvent->button() == Qt::RightButton ) )
     {
-      QMenu* menu = nullptr;
+      QMenu *menu = nullptr;
       QString text;
       if ( mOptionsStackedWidget->currentIndex() == 0 )
         text = tr( "Use simple interface" );
       else
         text = tr( "Use table interface" );
-      if ( obj->objectName() == "mOptionsLineEdit" )
+      if ( obj->objectName() == QLatin1String( "mOptionsLineEdit" ) )
       {
         menu = mOptionsLineEdit->createStandardContextMenu();
         menu->addSeparator();
       }
       else
         menu = new QMenu( this );
-      QAction* action = new QAction( text, menu );
+      QAction *action = new QAction( text, menu );
       menu->addAction( action );
       connect( action, SIGNAL( triggered() ), this, SLOT( swapOptionsUI() ) );
       menu->exec( mouseEvent->globalPos() );
@@ -628,10 +624,38 @@ bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event 
   return QObject::eventFilter( obj, event );
 }
 
-void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent * event )
+void QgsRasterFormatSaveOptionsWidget::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event );
   mOptionsTable->horizontalHeader()->resizeSection( 0, mOptionsTable->width() - 115 );
   QgsDebugMsg( "done" );
 }
 
+void QgsRasterFormatSaveOptionsWidget::setOptions( const QString &options )
+{
+  mOptionsTable->blockSignals( true );
+  mOptionsTable->clearContents();
+
+  QStringList values;
+  QStringList optionsList = options.trimmed().split( ' ', QString::SkipEmptyParts );
+  Q_FOREACH ( const QString &opt, optionsList )
+  {
+    int rowCount = mOptionsTable->rowCount();
+    mOptionsTable->insertRow( rowCount );
+
+    values = opt.split( '=' );
+    if ( values.count() == 2 )
+    {
+      QTableWidgetItem *nameItem = new QTableWidgetItem( values.at( 0 ) );
+      mOptionsTable->setItem( rowCount, 0, nameItem );
+      QTableWidgetItem *valueItem = new QTableWidgetItem( values.at( 1 ) );
+      mOptionsTable->setItem( rowCount, 0, valueItem );
+    }
+  }
+
+  mOptionsMap[ currentProfileKey()] = options.trimmed();
+  mOptionsLineEdit->setText( options.trimmed() );
+  mOptionsLineEdit->setCursorPosition( 0 );
+
+  mOptionsTable->blockSignals( false );
+}

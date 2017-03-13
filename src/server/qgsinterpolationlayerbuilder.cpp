@@ -28,7 +28,7 @@
 #include "qgsidwinterpolator.h"
 #include "qgstininterpolator.h"
 
-QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder( QgsVectorLayer* vl ): mVectorLayer( vl )
+QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder( QgsVectorLayer *vl ): mVectorLayer( vl )
 {
 
 }
@@ -38,15 +38,10 @@ QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder(): mVectorLayer( null
 
 }
 
-QgsInterpolationLayerBuilder::~QgsInterpolationLayerBuilder()
-{
-
-}
-
-QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
+QgsMapLayer *QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+    QList<QTemporaryFile *> &filesToRemove,
+    QList<QgsMapLayer *> &layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( layerName );
@@ -56,7 +51,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
     return nullptr;
   }
 
-  QDomNodeList interpolationList = elem.elementsByTagName( "Interpolation" );
+  QDomNodeList interpolationList = elem.elementsByTagName( QStringLiteral( "Interpolation" ) );
   if ( interpolationList.size() < 1 )
   {
     QgsDebugMsg( "No Interpolation element found" );
@@ -65,14 +60,14 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QDomElement interpolationElem = interpolationList.at( 0 ).toElement();
 
   //create QgsInterpolator object from XML
-  QDomNodeList tinList = interpolationElem.elementsByTagName( "TINMethod" );
-  QDomNodeList idwList = interpolationElem.elementsByTagName( "IDWMethod" );
+  QDomNodeList tinList = interpolationElem.elementsByTagName( QStringLiteral( "TINMethod" ) );
+  QDomNodeList idwList = interpolationElem.elementsByTagName( QStringLiteral( "IDWMethod" ) );
 
-  QgsInterpolator* theInterpolator = nullptr;
+  QgsInterpolator *interpolator = nullptr;
   QList<QgsInterpolator::LayerData> layerDataList;
   QgsInterpolator::LayerData currentLayerData;
   currentLayerData.vectorLayer = mVectorLayer;
-  QDomNodeList propertyNameList = interpolationElem.elementsByTagName( "PropertyName" );
+  QDomNodeList propertyNameList = interpolationElem.elementsByTagName( QStringLiteral( "PropertyName" ) );
   if ( propertyNameList.size() < 1 )
   {
     currentLayerData.zCoordInterpolation = true;
@@ -83,7 +78,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
 
     //set attribute field interpolation or z-Coordinate interpolation
     QString attributeName = propertyNameList.at( 0 ).toElement().text();
-    QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
+    QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
     if ( !provider )
     {
       return nullptr;
@@ -101,20 +96,20 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
 
   if ( !idwList.isEmpty() ) //inverse distance interpolator
   {
-    theInterpolator = new QgsIDWInterpolator( layerDataList );
+    interpolator = new QgsIDWInterpolator( layerDataList );
 
     //todo: parse <DistanceWeightingCoefficient>
   }
   else //tin is default
   {
-    theInterpolator = new QgsTINInterpolator( layerDataList );
+    interpolator = new QgsTINInterpolator( layerDataList );
     //todo: parse <InterpolationFunction>
   }
 
   //Resolution
   int nCols, nRows;
 
-  QDomNodeList resolutionNodeList = elem.elementsByTagName( "Resolution" );
+  QDomNodeList resolutionNodeList = elem.elementsByTagName( QStringLiteral( "Resolution" ) );
   if ( resolutionNodeList.size() < 1 )
   {
     //use default values...
@@ -124,27 +119,27 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   else
   {
     QDomElement resolutionElem = resolutionNodeList.at( 0 ).toElement();
-    nCols = resolutionElem.attribute( "ncols" ).toInt();
-    nRows = resolutionElem.attribute( "nrows" ).toInt();
+    nCols = resolutionElem.attribute( QStringLiteral( "ncols" ) ).toInt();
+    nRows = resolutionElem.attribute( QStringLiteral( "nrows" ) ).toInt();
     if ( nCols == 0 || nRows == 0 )
     {
       QgsDebugMsg( "Reading of resolution failed" );
-      delete theInterpolator;
+      delete interpolator;
       return nullptr;
     }
   }
 
-  QTemporaryFile* tmpFile = new QTemporaryFile();
+  QTemporaryFile *tmpFile = new QTemporaryFile();
   if ( !tmpFile->open() )
   {
     QgsDebugMsg( "Opening temporary file failed" );
     delete tmpFile;
-    delete theInterpolator;
+    delete interpolator;
     return nullptr;
   }
 
   QgsRectangle extent = mVectorLayer->extent();
-  QgsGridFileWriter gridWriter( theInterpolator, tmpFile->fileName(), extent, nCols, nRows, extent.width() / nCols, extent.height() / nRows );
+  QgsGridFileWriter gridWriter( interpolator, tmpFile->fileName(), extent, nCols, nRows, extent.width() / nCols, extent.height() / nRows );
   if ( gridWriter.writeFile( false ) != 0 )
   {
     QgsDebugMsg( "Interpolation of raster failed" );
@@ -152,7 +147,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   }
 
   filesToRemove.push_back( tmpFile ); //store raster in temporary file and remove after request
-  QgsRasterLayer* theRaster = new QgsRasterLayer( tmpFile->fileName() );
-  layersToRemove.push_back( theRaster );
-  return theRaster;
+  QgsRasterLayer *raster = new QgsRasterLayer( tmpFile->fileName() );
+  layersToRemove.push_back( raster );
+  return raster;
 }

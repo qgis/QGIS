@@ -21,6 +21,7 @@
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 
 class QgsRasterLayer;
@@ -35,26 +36,26 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     Q_OBJECT
 
   public:
+
     /**
      * A widget to hold the renderer properties for a raster layer.
      * @param layer The raster layer to style
      * @param canvas The canvas object used to calculate the max and min values from the extent.
      * @param parent Parent object
      */
-    QgsRendererRasterPropertiesWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
-    ~QgsRendererRasterPropertiesWidget();
+    QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * @param canvas map canvas
      * @note added in QGIS 2.12
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Return the active render widget. Can be null.
      */
-    QgsRasterRendererWidget* currentRenderWidget() { return mRendererWidget; }
+    QgsRasterRendererWidget *currentRenderWidget() { return mRendererWidget; }
 
   public slots:
     //! called when user changes renderer type
@@ -70,19 +71,22 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void syncToLayer( QgsRasterLayer *layer );
 
   private slots:
-    /** Slot to reset all color rendering options to default */
+    //! Slot to reset all color rendering options to default
     void on_mResetColorRenderingBtn_clicked();
 
-    /** Enable or disable saturation controls depending on choice of grayscale mode */
+    //! Enable or disable saturation controls depending on choice of grayscale mode
     void toggleSaturationControls( int grayscaleMode );
 
-    /** Enable or disable colorize controls depending on checkbox */
+    //! Enable or disable colorize controls depending on checkbox
     void toggleColorizeControls( bool colorizeEnabled );
-  private:
-    void setRendererWidget( const QString& rendererName );
 
-    QgsRasterLayer* mRasterLayer;
-    QgsRasterRendererWidget* mRendererWidget;
+    void refreshAfterStyleChanged();
+
+  private:
+    void setRendererWidget( const QString &rendererName );
+
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsRasterRendererWidget *mRendererWidget = nullptr;
 };
 
 #endif // QGSRENDERERRASTERPROPERTIESDIALOG_H

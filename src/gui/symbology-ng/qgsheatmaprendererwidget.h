@@ -17,6 +17,7 @@
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QMenu;
 class QgsHeatmapRenderer;
@@ -29,27 +30,26 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     Q_OBJECT
 
   public:
+
     /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
-     * @param renderer the mask renderer (will take ownership)
+     * @param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
-     * @param renderer the mask renderer (will take ownership)
+     * @param renderer the mask renderer (will not take ownership)
      */
-    QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    /** @returns the current feature renderer */
-    virtual QgsFeatureRenderer* renderer() override;
-
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+    virtual QgsFeatureRenderer *renderer() override;
+    virtual void setContext( const QgsSymbolWidgetContext &context ) override;
 
   private:
-    QgsHeatmapRenderer* mRenderer;
+    QgsHeatmapRenderer *mRenderer = nullptr;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -60,8 +60,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     void on_mRadiusSpinBox_valueChanged( double d );
     void on_mMaxSpinBox_valueChanged( double d );
     void on_mQualitySlider_valueChanged( int v );
-    void on_mInvertCheckBox_toggled( bool v );
-    void weightExpressionChanged( const QString& expression );
+    void weightExpressionChanged( const QString &expression );
 
 };
 

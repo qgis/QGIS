@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include <QFile>
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <qgswmscapabilities.h>
 #include <qgsapplication.h>
 
@@ -44,7 +44,7 @@ class TestQgsWmsCapabilities: public QObject
     {
       QgsWmsCapabilities capabilities;
 
-      QFile file( QString( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
+      QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
       QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
       const QByteArray content = file.readAll();
       QVERIFY( content.size() > 0 );
@@ -80,5 +80,5 @@ class TestQgsWmsCapabilities: public QObject
 
 };
 
-QTEST_MAIN( TestQgsWmsCapabilities )
+QGSTEST_MAIN( TestQgsWmsCapabilities )
 #include "testqgswmscapabilities.moc"

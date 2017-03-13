@@ -18,6 +18,7 @@
 #include <QItemSelectionModel>
 
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsFeatureModel;
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
 {
     Q_OBJECT
   public:
-    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionHandler, QObject* parent );
+    explicit QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionHandler, QObject *parent );
 
     /**
      * Enables or disables synchronisation to the {@link QgsVectorLayer}
@@ -52,6 +53,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      */
 
     virtual bool isSelected( QgsFeatureId fid );
+
     /**
      * Returns the selection status of a given QModelIndex.
      *
@@ -59,16 +61,17 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * @return The selection status
      */
-    virtual bool isSelected( const QModelIndex& index );
+    virtual bool isSelected( const QModelIndex &index );
 
   signals:
+
     /**
      * Request a repaint of a list of model indexes.
      * Views using this model should connect to and properly process this signal.
      *
      * @param indexes The model indexes which need to be repainted
      */
-    void requestRepaint( const QModelIndexList& indexes );
+    void requestRepaint( const QModelIndexList &indexes );
 
     /**
      * Request a repaint of the visible items of connected views.
@@ -77,6 +80,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     void requestRepaint();
 
   public slots:
+
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
@@ -97,19 +101,19 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      * @param selection  The QItemSelection which will be selected
      * @param command    The command to apply. Select, Deselect and ClearAndSelect are processed.
      */
-    virtual void selectFeatures( const QItemSelection &selection, const SelectionFlags& command );
+    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
 
-    virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager );
+    virtual void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
   private slots:
-    virtual void layerSelectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, bool clearAndSelect );
+    virtual void layerSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
   private:
-    QModelIndexList expandIndexToRow( const QModelIndex& index ) const;
+    QModelIndexList expandIndexToRow( const QModelIndex &index ) const;
 
   private:
-    QgsFeatureModel* mFeatureModel;
-    QgsIFeatureSelectionManager* mFeatureSelectionManager;
+    QgsFeatureModel *mFeatureModel = nullptr;
+    QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     bool mSyncEnabled;
 
     //! If sync is disabled

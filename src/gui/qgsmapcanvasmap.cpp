@@ -22,17 +22,13 @@
 
 /// @cond PRIVATE
 
-QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas )
+QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas *canvas )
+  : QgsMapCanvasItem( canvas )
 {
   setZValue( -10 );
 }
 
-QgsMapCanvasMap::~QgsMapCanvasMap()
-{
-}
-
-void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect )
+void QgsMapCanvasMap::setContent( const QImage &image, const QgsRectangle &rect )
 {
   mImage = image;
 
@@ -44,7 +40,7 @@ void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect 
   setRect( rect );
 }
 
-void QgsMapCanvasMap::paint( QPainter* painter )
+void QgsMapCanvasMap::paint( QPainter *painter )
 {
   int w = qRound( boundingRect().width() ) - 2, h = qRound( boundingRect().height() ) - 2; // setRect() makes the size +2 :-(
   if ( mImage.size() != QSize( w, h ) )

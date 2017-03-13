@@ -18,6 +18,7 @@
 #ifndef QGSRASTERNULLER_H
 #define QGSRASTERNULLER_H
 
+#include "qgis_core.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterinterface.h"
 
@@ -29,8 +30,7 @@
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 {
   public:
-    QgsRasterNuller( QgsRasterInterface* input = nullptr );
-    ~QgsRasterNuller();
+    QgsRasterNuller( QgsRasterInterface *input = nullptr );
 
     struct NoData
     {
@@ -38,19 +38,19 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
       double max;
     };
 
-    QgsRasterNuller * clone() const override;
+    QgsRasterNuller *clone() const override;
 
     int bandCount() const override;
 
     Qgis::DataType dataType( int bandNo ) const override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    void setNoData( int bandNo, const QgsRasterRangeList& noData );
+    void setNoData( int bandNo, const QgsRasterRangeList &noData );
 
-    QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo -1 ); }
+    QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo - 1 ); }
 
-    /** \brief Set output no data value. */
+    //! \brief Set output no data value.
     void setOutputNoDataValue( int bandNo, double noData );
 
   private:

@@ -18,6 +18,7 @@
 
 #include "editorwidgets/core/qgssearchwidgetwrapper.h"
 #include <QToolButton>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSearchWidgetToolButton
@@ -127,7 +128,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     QgsSearchWidgetWrapper::FilterFlags mAvailableFilterFlags;
     QgsSearchWidgetWrapper::FilterFlags mDefaultFilterFlags;
     QgsSearchWidgetWrapper::FilterFlags mFilterFlags;
-    QMenu* mMenu;
+    QMenu *mMenu = nullptr;
 
     void updateState();
 

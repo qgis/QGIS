@@ -19,6 +19,7 @@
 #define QGSMAPTOOLROTATELABEL_H
 
 #include "qgsmaptoollabel.h"
+#include "qgis_app.h"
 class QgsPointRotationItem;
 
 class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
@@ -26,33 +27,33 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
     Q_OBJECT
 
   public:
-    QgsMapToolRotateLabel( QgsMapCanvas* canvas );
+    QgsMapToolRotateLabel( QgsMapCanvas *canvas );
     ~QgsMapToolRotateLabel();
 
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
 
     static int roundTo15Degrees( double n );
-    /** Converts azimuth value to counterclockwise 0 - 360*/
+    //! Converts azimuth value to counterclockwise 0 - 360
     static double azimuthToCCW( double a );
 
-    QgsRubberBand* createRotationPreviewBox();
+    QgsRubberBand *createRotationPreviewBox();
     void setRotationPreviewBox( double rotation );
 
-    /** Rotates input point counterclockwise around centerPoint*/
-    QgsPoint rotatePointCounterClockwise( const QgsPoint& input, const QgsPoint& centerPoint, double degrees );
+    //! Rotates input point counterclockwise around centerPoint
+    QgsPoint rotatePointCounterClockwise( const QgsPoint &input, const QgsPoint &centerPoint, double degrees );
 
     double mStartRotation; //rotation value prior to start rotating
     double mCurrentRotation;
     double mCurrentMouseAzimuth;
     QgsPoint mRotationPoint;
-    QgsPointRotationItem* mRotationItem;
-    QgsRubberBand* mRotationPreviewBox;
+    QgsPointRotationItem *mRotationItem = nullptr;
+    QgsRubberBand *mRotationPreviewBox = nullptr;
 
-    /** True if ctrl was pressed during the last mouse move event*/
+    //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;
 };
 

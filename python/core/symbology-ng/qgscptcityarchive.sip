@@ -129,12 +129,6 @@ class QgsCptCityDataItem : QObject
 
     bool isValid();
 
-  public slots:
-    void emitBeginInsertItems( QgsCptCityDataItem* parent, int first, int last );
-    void emitEndInsertItems();
-    void emitBeginRemoveItems( QgsCptCityDataItem* parent, int first, int last );
-    void emitEndRemoveItems();
-
   signals:
     void beginInsertItems( QgsCptCityDataItem* parent, int first, int last );
     void endInsertItems();
@@ -321,7 +315,7 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     // Refresh item specified by path
     void refresh( const QString& path );
 
-    // Refresh item childs
+    // Refresh item children
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! return index of a path

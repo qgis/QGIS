@@ -12,16 +12,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA
 
-from qgis.gui import (QgsShortcutsManager)
-from qgis.PyQt.QtCore import QSettings, QCoreApplication
-from qgis.PyQt.QtGui import QKeySequence
+from qgis.core import QgsSettings
+from qgis.gui import QgsShortcutsManager
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QAction, QShortcut
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 
 
 class TestQgsShortcutsManager(unittest.TestCase):
@@ -32,7 +30,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
     def testInstance(self):
@@ -55,7 +53,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
     def testSettingsPath(self):
         """ test that settings path is respected """
 
-        QSettings().clear()
+        QgsSettings().clear()
 
         s1 = QgsShortcutsManager(None, '/path1/')
         s2 = QgsShortcutsManager(None, '/path2/')
@@ -82,7 +80,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
 
     def testRegisterAction(self):
         """ test registering actions """
-        QSettings().clear()
+        QgsSettings().clear()
 
         s = QgsShortcutsManager(None)
 
@@ -117,7 +115,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
 
     def testRegisterShortcut(self):
         """ test registering shortcuts """
-        QSettings().clear()
+        QgsSettings().clear()
 
         s = QgsShortcutsManager(None)
 
@@ -187,7 +185,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
     def testUnregister(self):
         """ test unregistering from manager """
 
-        QSettings().clear()
+        QgsSettings().clear()
 
         s = QgsShortcutsManager(None)
 
@@ -228,7 +226,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
     def testList(self):
         """ test listing registered objects """
 
-        QSettings().clear()
+        QgsSettings().clear()
 
         s = QgsShortcutsManager(None)
 
@@ -252,7 +250,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
     def testDefault(self):
         """ test retrieving default sequences """
 
-        QSettings().clear()
+        QgsSettings().clear()
 
         s = QgsShortcutsManager(None)
 
@@ -285,7 +283,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
     def testSetSequence(self):
         """ test setting key sequences """
 
-        QSettings().clear()
+        QgsSettings().clear()
 
         s = QgsShortcutsManager(None)
 
@@ -336,7 +334,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
         self.assertEqual(action2.shortcut().toString(), 'H')
 
         # same test, using setObjectKeySequence
-        QSettings().clear()
+        QgsSettings().clear()
         s = QgsShortcutsManager(None)
         shortcut1 = QShortcut(None)
         shortcut1.setObjectName('shortcut1')
@@ -357,7 +355,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
         self.assertEqual(action1.shortcut().toString(), 'G')
 
         # same test, using setKeySequence by name
-        QSettings().clear()
+        QgsSettings().clear()
         s = QgsShortcutsManager(None)
         shortcut1 = QShortcut(None)
         shortcut1.setObjectName('shortcut1')
@@ -380,7 +378,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
 
     def testBySequence(self):
         """ test retrieving by sequence """
-        QSettings().clear()
+        QgsSettings().clear()
 
         shortcut1 = QShortcut(None)
         shortcut1.setObjectName('shortcut1')
@@ -419,7 +417,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
 
     def testByName(self):
         """" test retrieving actions and shortcuts by name """
-        QSettings().clear()
+        QgsSettings().clear()
 
         shortcut1 = QShortcut(None)
         shortcut1.setObjectName('shortcut1')

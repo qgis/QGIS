@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSet>
 #include <QStringList>
+#include "qgis_app.h"
 
 class QAction;
 class QDomDocument;
@@ -39,19 +40,19 @@ class APP_EXPORT QgsMapThemes : public QObject
 
     /** Returns the instance QgsVisibilityPresets.
      */
-    static QgsMapThemes* instance();
+    static QgsMapThemes *instance();
 
     //! Add a new preset using the current state of project's layer tree
-    void addPreset( const QString& name );
+    void addPreset( const QString &name );
     //! Update existing preset using the current state of project's layer tree
-    void updatePreset( const QString& name );
+    void updatePreset( const QString &name );
 
     //! Return list of layer IDs that should be visible for particular preset.
     //! The order will match the layer order from the map canvas
-    QStringList orderedPresetVisibleLayers( const QString& name ) const;
+    QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
 
     //! Convenience menu that lists available presets and actions for management
-    QMenu* menu();
+    QMenu *menu();
 
   protected slots:
 
@@ -74,27 +75,27 @@ class APP_EXPORT QgsMapThemes : public QObject
     QgsMapThemes(); // singleton
 
     //! Applies current layer state to a preset record
-    void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsMapThemeCollection::PresetRecord& rec );
+    void applyStateToLayerTreeGroup( QgsLayerTreeGroup *parent, const QgsMapThemeCollection::MapThemeRecord &rec );
     //! Applies layer checked legend symbols to a preset record
-    void addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::PresetRecord& rec );
+    void addPerLayerCheckedLegendSymbols( QgsMapThemeCollection::MapThemeRecord &rec );
     //! Applies current layer styles to a preset record
-    void addPerLayerCurrentStyle( QgsMapThemeCollection::PresetRecord& rec );
+    void addPerLayerCurrentStyle( QgsMapThemeCollection::MapThemeRecord &rec );
 
     //! Returns the current state of the map canvas as a preset record
-    QgsMapThemeCollection::PresetRecord currentState();
+    QgsMapThemeCollection::MapThemeRecord currentState();
 
     //! Applies a preset for the project's collection to the canvas
-    void applyState( const QString& presetName );
+    void applyState( const QString &presetName );
 
-    static QgsMapThemes* sInstance;
+    static QgsMapThemes *sInstance;
 
-    QMenu* mMenu;
-    QMenu* mReplaceMenu;
-    QAction* mMenuSeparator;
-    QAction* mActionAddPreset;
-    QAction* mActionRemoveCurrentPreset;
-    QList<QAction*> mMenuPresetActions;
-    QList<QAction*> mMenuReplaceActions;
+    QMenu *mMenu = nullptr;
+    QMenu *mReplaceMenu = nullptr;
+    QAction *mMenuSeparator = nullptr;
+    QAction *mActionAddPreset = nullptr;
+    QAction *mActionRemoveCurrentPreset = nullptr;
+    QList<QAction *> mMenuPresetActions;
+    QList<QAction *> mMenuReplaceActions;
 };
 
 

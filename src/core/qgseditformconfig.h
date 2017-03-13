@@ -18,11 +18,11 @@
 #ifndef QGSEDITFORMCONFIG_H
 #define QGSEDITFORMCONFIG_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QDomElement>
 #include <QDomDocument>
 
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorelement.h"
 
 class QgsRelationManager;
@@ -35,7 +35,7 @@ class CORE_EXPORT QgsEditFormConfig
 {
   public:
 
-    /** The different types to layout the attribute editor. */
+    //! The different types to layout the attribute editor.
     enum EditorLayout
     {
       GeneratedLayout = 0, //!< Autogenerate a simple tabular layout for the form
@@ -46,9 +46,9 @@ class CORE_EXPORT QgsEditFormConfig
     struct GroupData
     {
       GroupData() {}
-      GroupData( const QString& name, const QList<QString>& fields )
-          : mName( name )
-          , mFields( fields )
+      GroupData( const QString &name, const QList<QString> &fields )
+        : mName( name )
+        , mFields( fields )
       {}
       QString mName;
       QList<QString> mFields;
@@ -57,10 +57,10 @@ class CORE_EXPORT QgsEditFormConfig
     struct TabData
     {
       TabData() {}
-      TabData( const QString& name, const QList<QString>& fields, const QList<GroupData>& groups )
-          : mName( name )
-          , mFields( fields )
-          , mGroups( groups )
+      TabData( const QString &name, const QList<QString> &fields, const QList<GroupData> &groups )
+        : mName( name )
+        , mFields( fields )
+        , mGroups( groups )
       {}
       QString mName;
       QList<QString> mFields;
@@ -93,25 +93,24 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * @note Added in QGIS 3.0
      */
-    QgsEditFormConfig( const QgsEditFormConfig& o );
-
-    QgsEditFormConfig& operator=( const QgsEditFormConfig& o );
-
-    bool operator==( const QgsEditFormConfig& o );
-
+    QgsEditFormConfig( const QgsEditFormConfig &o );
     ~QgsEditFormConfig();
+
+    QgsEditFormConfig &operator=( const QgsEditFormConfig &o );
+
+    bool operator==( const QgsEditFormConfig &o );
 
     /**
      * Adds a new element to the invisible root container in the layout.
      *
      * This is only useful in combination with EditorLayout::TabLayout.
      */
-    void addTab( QgsAttributeEditorElement* data );
+    void addTab( QgsAttributeEditorElement *data );
 
     /**
      * Returns a list of tabs for EditorLayout::TabLayout obtained from the invisible root container.
      */
-    QList< QgsAttributeEditorElement* > tabs() const;
+    QList< QgsAttributeEditorElement * > tabs() const;
 
     /**
      * Clears all the tabs for the attribute editor form with EditorLayout::TabLayout.
@@ -123,15 +122,15 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * @note Added in QGIS 3
      */
-    QgsAttributeEditorContainer* invisibleRootContainer();
+    QgsAttributeEditorContainer *invisibleRootContainer();
 
-    /** Get the active layout style for the attribute editor for this layer */
+    //! Get the active layout style for the attribute editor for this layer
     EditorLayout layout() const;
 
-    /** Set the active layout style for the attribute editor for this layer */
+    //! Set the active layout style for the attribute editor for this layer
     void setLayout( EditorLayout editorLayout );
 
-    /** Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout. */
+    //! Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout.
     QString uiForm() const;
 
     /**
@@ -140,86 +139,44 @@ class CORE_EXPORT QgsEditFormConfig
      * if an empty or a null string is provided, the layout style will be set to
      * EditorLayout::GeneratedLayout.
      */
-    void setUiForm( const QString& ui );
-
-
-    // Widget stuff
+    void setUiForm( const QString &ui );
 
     /**
-     * Set the editor widget type for a field
-     *
-     * QGIS ships the following widget types, additional types may be available depending
-     * on plugins.
-     *
-     * <ul>
-     * <li>CheckBox (QgsCheckboxWidgetWrapper)</li>
-     * <li>Classification (QgsClassificationWidgetWrapper)</li>
-     * <li>Color (QgsColorWidgetWrapper)</li>
-     * <li>DateTime (QgsDateTimeEditWrapper)</li>
-     * <li>Enumeration (QgsEnumerationWidgetWrapper)</li>
-     * <li>FileName (QgsFileNameWidgetWrapper)</li>
-     * <li>Hidden (QgsHiddenWidgetWrapper)</li>
-     * <li>Photo (QgsPhotoWidgetWrapper)</li>
-     * <li>Range (QgsRangeWidgetWrapper)</li>
-     * <li>RelationReference (QgsRelationReferenceWidgetWrapper)</li>
-     * <li>TextEdit (QgsTextEditWrapper)</li>
-     * <li>UniqueValues (QgsUniqueValuesWidgetWrapper)</li>
-     * <li>UuidGenerator (QgsUuidWidgetWrapper)</li>
-     * <li>ValueMap (QgsValueMapWidgetWrapper)</li>
-     * <li>ValueRelation (QgsValueRelationWidgetWrapper)</li>
-     * <li>WebView (QgsWebViewWidgetWrapper)</li>
-     * </ul>
-     *
-     * @param fieldName   The name of the field
-     * @param widgetType  Type id of the editor widget to use
-     */
-    void setWidgetType( const QString& fieldName, const QString& widgetType );
-
-    /**
-     * Get the id for the editor widget used to represent the field at the given index
-     * Don't use this directly. Prefere the use of QgsEditorWidgetRegistry::instance()->findBestType.
-     *
-     * @param fieldName  The name of the field
-     *
-     * @return The id for the editor widget or a NULL string if not applicable
-     */
-    QString widgetType( const QString& fieldName ) const;
-
-    /**
-     * Set the editor widget config for a widget.
+     * Set the editor widget config for a widget which is not for a simple field.
      *
      * Example:
      * \code{.py}
-     *   layer.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+     *   editFormConfig = layer.editFormConfig()
+     *   editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+     *   layer.setEditFormConfig(editFormConfig)
      * \endcode
      *
-     * @param fieldName  The name of the field to configure
-     * @param config      The config to set for this field
+     * @param widgetName  The name of the widget to configure
+     * @param config      The config to set for this widget
+     * @returns false if a field exists with the provided widgetName. In this case
+     *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
-     * @see setWidgetType() for a list of widgets and choose the widget to see the available options.
-     *
-     * @note not available in python bindings
+     * @see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
      */
-    void setWidgetConfig( const QString& fieldName, const QgsEditorWidgetConfig& config );
+    bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 
     /**
-     * Get the configuration for the editor widget used to represent the field with the given name
-     * Don't use this directly. Prefere the use of QgsEditorWidgetRegistry::instance()->findBestConfig.
+     * Get the configuration for the editor widget with the given name.
      *
-     * @param fieldName The name of the field.
+     * @param widgetName The name of the widget.
      *
      * @return The configuration for the editor widget or an empty config if the field does not exist
      */
-    QgsEditorWidgetConfig widgetConfig( const QString& fieldName ) const;
+    QVariantMap widgetConfig( const QString &widgetName ) const;
 
     /**
-     * Remove the configuration for the editor widget used to represent the field with the given name
+     * Remove the configuration for the editor widget with the given name
      *
-     * @param fieldName The name of the widget.
+     * @param widgetName The name of the widget.
      *
-     * @return true if successful, false if the field does not exist
+     * @return true if a configuration has been removed
      */
-    bool removeWidgetConfig( const QString& fieldName );
+    bool removeWidgetConfig( const QString &widgetName );
 
     /**
      * This returns true if the field is manually set to read only or if the field
@@ -231,47 +188,6 @@ class CORE_EXPORT QgsEditFormConfig
      * If set to false, the widget at the given index will be read-only.
      */
     void setReadOnly( int idx, bool readOnly = true );
-
-    /**
-     * Returns the constraint expression of a specific field
-     * @param idx The index of the field
-     * @return the expression
-     * @note added in QGIS 2.16
-     */
-    QString expression( int idx ) const;
-
-    /**
-     * Set the constraint expression for a specific field
-     * @param idx the field index
-     * @param str the constraint expression
-     * @note added in QGIS 2.16
-     */
-    void setExpression( int idx, const QString& str );
-
-    /**
-     * Returns the constraint expression description of a specific filed.
-     * @param idx The index of the field
-     * @return the expression description
-     * @note added in QGIS 2.16
-     */
-    QString expressionDescription( int idx ) const;
-
-    /**
-     * Set the constraint expression description for a specific field.
-     * @param idx The index of the field
-     * @param descr The description of the expression
-     * @note added in QGIS 2.16
-     */
-    void setExpressionDescription( int idx, const QString &descr );
-
-    /**
-     * Returns if the field at fieldidx should be treated as NOT NULL value
-     */
-    bool notNull( int fieldidx ) const;
-    /**
-     * Set if the field at fieldidx should be treated as NOT NULL value
-     */
-    void setNotNull( int idx, bool notnull = true );
 
     /**
      * If this returns true, the widget at the given index will receive its label on the previous line
@@ -305,7 +221,7 @@ class CORE_EXPORT QgsEditFormConfig
      * includes a module name or if it's a pure function name it will searched
      * in the python code set with @link setInitCode @endlink.
      */
-    void setInitFunction( const QString& function );
+    void setInitFunction( const QString &function );
 
     /**
      * Get python code for edit form initialization.
@@ -317,7 +233,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
-    void setInitCode( const QString& code );
+    void setInitCode( const QString &code );
 
     /**
      * Get python external file path for edit form initialization.
@@ -329,7 +245,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
-    void setInitFilePath( const QString& filePath );
+    void setInitFilePath( const QString &filePath );
 
     /** Return python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
@@ -337,12 +253,12 @@ class CORE_EXPORT QgsEditFormConfig
      */
     PythonInitCodeSource initCodeSource() const;
 
-    /** Set if python code shall be used for edit form initialization and its origin */
+    //! Set if python code shall be used for edit form initialization and its origin
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
 
-    /** Type of feature form pop-up suppression after feature creation (overrides app setting) */
+    //! Type of feature form pop-up suppression after feature creation (overrides app setting)
     FeatureFormSuppress suppress() const;
-    /** Set type of feature form pop-up suppression after feature creation (overrides app setting) */
+    //! Set type of feature form pop-up suppression after feature creation (overrides app setting)
     void setSuppress( FeatureFormSuppress s );
 
     // Serialization
@@ -351,28 +267,23 @@ class CORE_EXPORT QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode& node );
+    void readXml( const QDomNode &node );
 
     /**
      * Write XML information
      * Serialize on project save
      */
-    void writeXml( QDomNode& node ) const;
+    void writeXml( QDomNode &node ) const;
 
     /**
      * Deserialize drag and drop designer elements.
      */
-    QgsAttributeEditorElement* attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent );
+    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent );
 
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer
      */
     explicit QgsEditFormConfig();
-
-    /**
-     * Parse the XML for the config of one editor widget.
-     */
-    static QgsEditorWidgetConfig parseEditorWidgetConfig( const QDomElement& cfgElem );
 
   private:
 
@@ -380,7 +291,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Used internally to set the fields when they change.
      * This should only be called from QgsVectorLayer for synchronization reasons
      */
-    void setFields( const QgsFields& fields );
+    void setFields( const QgsFields &fields );
 
     /**
      * Will be called by friend class QgsVectorLayer

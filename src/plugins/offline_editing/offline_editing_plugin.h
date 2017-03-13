@@ -32,7 +32,7 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    explicit QgsOfflineEditingPlugin( QgisInterface* theQgisInterface );
+    explicit QgsOfflineEditingPlugin( QgisInterface *qgisInterface );
     virtual ~QgsOfflineEditingPlugin();
 
   public slots:
@@ -48,13 +48,13 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
 
   private:
     //! Pointer to the QGIS interface object
-    QgisInterface* mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction* mActionConvertProject;
-    QAction* mActionSynchronize;
+    QAction *mActionConvertProject = nullptr;
+    QAction *mActionSynchronize = nullptr;
 
-    QgsOfflineEditing* mOfflineEditing;
-    QgsOfflineEditingProgressDialog* mProgressDialog;
+    QgsOfflineEditing *mOfflineEditing = nullptr;
+    QgsOfflineEditingProgressDialog *mProgressDialog = nullptr;
 
   private slots:
     void updateActions();

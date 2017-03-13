@@ -15,12 +15,13 @@
 
 #include "qgsvaluemapwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapfieldformatter.h"
 
 #include <QSettings>
 
-QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
 {
 }
 
@@ -30,9 +31,9 @@ QVariant QgsValueMapWidgetWrapper::value() const
   QVariant v;
 
   if ( mComboBox )
-    v = mComboBox->itemData( mComboBox->currentIndex() );
+    v = mComboBox->currentData();
 
-  if ( v == QString( VALUEMAP_NULL_TEXT ) )
+  if ( v == QgsValueMapFieldFormatter::NULL_VALUE )
     v = QVariant( field().type() );
 
   return v;
@@ -46,21 +47,21 @@ void QgsValueMapWidgetWrapper::showIndeterminateState()
   }
 }
 
-QWidget* QgsValueMapWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsValueMapWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
+void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {
-    const QgsEditorWidgetConfig cfg = config();
-    QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
+    const QVariantMap map = config().value( QStringLiteral( "map" ) ).toMap();
+    QVariantMap::ConstIterator it = map.constBegin();
 
-    while ( it != cfg.constEnd() )
+    while ( it != map.constEnd() )
     {
       mComboBox->addItem( it.key(), it.value() );
       ++it;
@@ -74,11 +75,11 @@ bool QgsValueMapWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
+void QgsValueMapWidgetWrapper::setValue( const QVariant &value )
 {
   QString v;
   if ( value.isNull() )
-    v = QString( VALUEMAP_NULL_TEXT );
+    v = QgsValueMapFieldFormatter::NULL_VALUE;
   else
     v = value.toString();
 

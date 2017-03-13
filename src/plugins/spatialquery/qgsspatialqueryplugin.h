@@ -45,13 +45,14 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
      * \param iface Pointer to the QgisInterface object.
      */
-    explicit QgsSpatialQueryPlugin( QgisInterface* iface );
-    //! Destructor
+    explicit QgsSpatialQueryPlugin( QgisInterface *iface );
+
     ~QgsSpatialQueryPlugin();
 
   public slots:
@@ -62,19 +63,19 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
     //! Show the dialog box
     void run();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( const QString& theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    void setCurrentTheme( const QString &themeName );
+    QIcon getThemeIcon( const QString &themeName );
 
   private:
 
-    QgsSpatialQueryDialog  *mDialog;
+    QgsSpatialQueryDialog  *mDialog = nullptr;
     //! Pointer to the QgisInterface object
-    QgisInterface* mIface;
+    QgisInterface *mIface = nullptr;
     //! Pointer to the QAction used in the menu and on the toolbar
-    QAction* mSpatialQueryAction;
+    QAction *mSpatialQueryAction = nullptr;
 
 
-    void MsgDEBUG( QString sMSg );
+    void MsgDEBUG( const QString &sMSg );
 
 };
 #endif

@@ -19,6 +19,7 @@
 #define QGSFILTERLINEEDIT_H
 
 #include <QLineEdit>
+#include "qgis_gui.h"
 
 class QToolButton;
 
@@ -40,10 +41,11 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString defaultValue READ defaultValue WRITE setDefaultValue )
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
+    Q_PROPERTY( bool showSearchIcon READ showSearchIcon WRITE setShowSearchIcon )
 
   public:
 
-    //! Behaviour when clearing value of widget
+    //! Behavior when clearing value of widget
     enum ClearMode
     {
       ClearToNull = 0, //!< Reset value to null
@@ -54,7 +56,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param parent parent widget
      * @param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
+    QgsFilterLineEdit( QWidget *parent = nullptr, const QString &nullValue = QString::null );
 
     /** Returns true if the widget's clear button is visible.
      * @see setShowClearButton()
@@ -69,14 +71,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setShowClearButton( bool visible );
 
-    /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
+    /** Returns the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see setClearMode()
      * @note added in QGIS 3.0
      */
     ClearMode clearMode() const { return mClearMode; }
 
-    /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
+    /** Sets the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see clearMode()
      * @note added in QGIS 3.0
@@ -89,13 +91,26 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param nullValue string to show when widget's value is null
      * @see nullValue()
      */
-    void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
+    void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
 
     /** Returns the string used for representating null values in the widget.
      * @see setNullValue()
      * @see isNull()
      */
     QString nullValue() const { return mNullValue; }
+
+    /** Define if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @param visible set to false to hide the search icon
+     * @note added in QGIS 3.0
+     */
+    void setShowSearchIcon( bool visible );
+
+    /** Returns if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @note added in QGIS 3.0
+     */
+    bool showSearchIcon() const { return mSearchIconVisible; }
 
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -105,7 +120,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see clearMode()
      * @note added in QGIS 3.0
      */
-    void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
+    void setDefaultValue( const QString &defaultValue ) { mDefaultValue = defaultValue; }
 
     /** Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -123,7 +138,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * widget will be set to the current nullValue().
      * @see value()
      */
-    void setValue( const QString& value ) { setText( value.isNull() ? mNullValue : value ); }
+    void setValue( const QString &value ) { setText( value.isNull() ? mNullValue : value ); }
 
     /**
      * Returns the text of this edit with support for handling null values. If the text
@@ -163,14 +178,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      *
      * @param value The current text or null string if it matches the nullValue() property.
      */
-    void valueChanged( const QString& value );
+    void valueChanged( const QString &value );
 
   protected:
-    void mousePressEvent( QMouseEvent* e ) override;
-    void mouseMoveEvent( QMouseEvent* e ) override;
-    void focusInEvent( QFocusEvent* e ) override;
-    void paintEvent( QPaintEvent* e ) override;
-    void leaveEvent( QEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
+    void focusInEvent( QFocusEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
+    void leaveEvent( QEvent *e ) override;
 
   private slots:
     void onTextChanged( const QString &text );
@@ -178,6 +193,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
   private:
 
     bool mClearButtonVisible;
+    bool mSearchIconVisible;
 
     ClearMode mClearMode;
 
@@ -191,10 +207,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QPixmap mClearIconPixmap;
     QPixmap mClearHoverPixmap;
 
+    QSize mSearchIconSize;
+    QPixmap mSearchIconPixmap;
+
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
 
     QRect clearRect() const;
+    QRect searchRect() const;
 };
 
 /// @cond PRIVATE
@@ -210,8 +230,8 @@ class QgsSpinBoxLineEdit : public QgsFilterLineEdit
 
   public:
 
-    QgsSpinBoxLineEdit( QWidget* parent = nullptr )
-        : QgsFilterLineEdit( parent )
+    QgsSpinBoxLineEdit( QWidget *parent = nullptr )
+      : QgsFilterLineEdit( parent )
     {}
 
   public slots:

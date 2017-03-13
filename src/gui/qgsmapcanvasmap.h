@@ -33,17 +33,15 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
   public:
 
     //! constructor
-    QgsMapCanvasMap( QgsMapCanvas* canvas );
-
-    ~QgsMapCanvasMap();
+    QgsMapCanvasMap( QgsMapCanvas *canvas );
 
     //! @note added in 2.4
-    void setContent( const QImage& image, const QgsRectangle& rect );
+    void setContent( const QImage &image, const QgsRectangle &rect );
 
     //! @note added in 2.4
     QImage contentImage() const { return mImage; }
 
-    virtual void paint( QPainter * painter ) override;
+    virtual void paint( QPainter *painter ) override;
 
   private:
 

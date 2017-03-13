@@ -63,7 +63,7 @@ class QgsIFeatureSelectionManager : QObject
      * @return A list of { @link QgsFeatureId } 's
      * @see selectedFeatures()
      */
-    virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
+    virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 
   signals:
     /**

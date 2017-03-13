@@ -19,6 +19,7 @@
 #define QGSHILLSHADERENDERER_H
 
 
+#include "qgis_core.h"
 #include "qgsrasterrenderer.h"
 
 class QgsRasterBlock;
@@ -34,6 +35,7 @@ class QgsRasterInterface;
 class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
 {
   public:
+
     /**
      * @brief A renderer for generating live hillshade models.
      * @param input The input raster interface
@@ -41,9 +43,9 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * @param lightAzimuth The azimuth of the light source
      * @param lightAltitude The altitude of the light source
      */
-    QgsHillshadeRenderer( QgsRasterInterface* input, int band, double lightAzimuth, double lightAltitude );
+    QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 
-    QgsHillshadeRenderer * clone() const override;
+    QgsHillshadeRenderer *clone() const override;
 
     /**
      * @brief Factory method to create a new renderer
@@ -51,11 +53,11 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
      * @param input The raster input interface.
      * @return A new QgsHillshadeRenderer.
      */
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    QgsRasterBlock *block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QList<int> usesBands() const override;
 
@@ -123,11 +125,11 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     double mLightAzimuth;
     bool mMultiDirectional;
 
-    /** Calculates the first order derivative in x-direction according to Horn (1981)*/
-    double calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33 , double cellsize );
+    //! Calculates the first order derivative in x-direction according to Horn (1981)
+    double calcFirstDerX( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize );
 
-    /** Calculates the first order derivative in y-direction according to Horn (1981)*/
-    double calcFirstDerY( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33 , double cellsize );
+    //! Calculates the first order derivative in y-direction according to Horn (1981)
+    double calcFirstDerY( double x11, double x21, double x31, double x12, double x22, double x32, double x13, double x23, double x33, double cellsize );
 };
 
 #endif // QGSHILLSHADERENDERER_H

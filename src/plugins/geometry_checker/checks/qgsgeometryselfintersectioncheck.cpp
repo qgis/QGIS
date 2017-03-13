@@ -22,22 +22,22 @@
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
-bool QgsGeometrySelfIntersectionCheckError::isEqual( QgsGeometryCheckError* other ) const
+bool QgsGeometrySelfIntersectionCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
   return QgsGeometryCheckError::isEqual( other ) &&
          other->featureId() == featureId() &&
          other->vidx() == vidx() &&
-         static_cast<QgsGeometrySelfIntersectionCheckError*>( other )->intersection().segment1 == intersection().segment1 &&
-         static_cast<QgsGeometrySelfIntersectionCheckError*>( other )->intersection().segment2 == intersection().segment2;
+         static_cast<QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 &&
+         static_cast<QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
 }
 
-bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryCheck::Changes& changes )
+bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )
 {
   if ( !QgsGeometryCheckError::handleChanges( changes ) )
   {
     return false;
   }
-  Q_FOREACH ( const QgsGeometryCheck::Change& change, changes.value( featureId() ) )
+  Q_FOREACH ( const QgsGeometryCheck::Change &change, changes.value( featureId() ) )
   {
     if ( change.vidx.vertex == mInter.segment1 ||
          change.vidx.vertex == mInter.segment1 + 1 ||
@@ -62,9 +62,9 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QgsGeometryChec
 }
 
 
-void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -74,13 +74,13 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
       continue;
     }
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry* geom = featureGeom.geometry();
+    QgsAbstractGeometry *geom = featureGeom.geometry();
 
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        Q_FOREACH ( const QgsGeometryUtils::SelfIntersection& inter, QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, QgsGeometryCheckPrecision::tolerance() ) )
+        Q_FOREACH ( const QgsGeometryUtils::SelfIntersection &inter, QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, QgsGeometryCheckPrecision::tolerance() ) )
         {
           errors.append( new QgsGeometrySelfIntersectionCheckError( this, featureid, inter.point, QgsVertexId( iPart, iRing ), inter ) );
         }
@@ -89,7 +89,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
   }
 }
 
-void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -98,7 +98,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry* geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
@@ -108,7 +108,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
     return;
   }
 
-  const QgsGeometryUtils::SelfIntersection& inter = static_cast<QgsGeometrySelfIntersectionCheckError*>( error )->intersection();
+  const QgsGeometryUtils::SelfIntersection &inter = static_cast<QgsGeometrySelfIntersectionCheckError *>( error )->intersection();
   // Check if error still applies
   bool ringIsClosed = false;
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring, &ringIsClosed );
@@ -177,16 +177,16 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
       return;
     }
-    QgsLineString* ringGeom1 = new QgsLineString();
+    QgsLineString *ringGeom1 = new QgsLineString();
     ringGeom1->setPoints( ring1 );
-    QgsLineString* ringGeom2 = new QgsLineString();
+    QgsLineString *ringGeom2 = new QgsLineString();
     ringGeom2->setPoints( ring2 );
 
-    QgsAbstractGeometry* part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
+    QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
     // If is a polygon...
-    if ( dynamic_cast<QgsCurvePolygon*>( part ) )
+    if ( dynamic_cast<QgsCurvePolygon *>( part ) )
     {
-      QgsCurvePolygon* poly = static_cast<QgsCurvePolygon*>( part );
+      QgsCurvePolygon *poly = static_cast<QgsCurvePolygon *>( part );
       // If ring is interior ring, create separate holes
       if ( vidx.ring > 0 )
       {
@@ -205,19 +205,19 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         poly->setExteriorRing( ringGeom1 );
 
         // If original feature was a linear polygon, also create the new part as a linear polygon
-        QgsCurvePolygon* poly2 = dynamic_cast<QgsPolygonV2*>( part ) ? new QgsPolygonV2() : new QgsCurvePolygon();
+        QgsCurvePolygon *poly2 = dynamic_cast<QgsPolygonV2 *>( part ) ? new QgsPolygonV2() : new QgsCurvePolygon();
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QgsGeometryEngine* geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::tolerance() );
-        QgsGeometryEngine* geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
+        QgsGeometryEngine *geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::tolerance() );
+        QgsGeometryEngine *geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( *poly->interiorRing( i ) ) )
           {
             if ( geomEnginePoly2->contains( *poly->interiorRing( i ) ) )
             {
-              poly2->addInteriorRing( static_cast<QgsCurve*>( poly->interiorRing( i )->clone() ) );
+              poly2->addInteriorRing( static_cast<QgsCurve *>( poly->interiorRing( i )->clone() ) );
               // No point in adding ChangeAdded changes, since the entire poly2 is added anyways later on
             }
             poly->removeInteriorRing( i );
@@ -229,10 +229,10 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
 
         if ( method == ToMultiObject )
         {
-          // If is alreay a geometry collection, just add the new polygon.
-          if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+          // If is already a geometry collection, just add the new polygon.
+          if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
           {
-            static_cast<QgsGeometryCollection*>( geom )->addGeometry( poly2 );
+            static_cast<QgsGeometryCollection *>( geom )->addGeometry( poly2 );
             changes[feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
             changes[feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geom->partCount() - 1 ) ) );
             feature.setGeometry( featureGeom );
@@ -241,7 +241,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
           // Otherwise, create multipolygon
           else
           {
-            QgsMultiPolygonV2* multiPoly = new QgsMultiPolygonV2();
+            QgsMultiPolygonV2 *multiPoly = new QgsMultiPolygonV2();
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2 );
             feature.setGeometry( QgsGeometry( multiPoly ) );
@@ -261,13 +261,13 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         }
       }
     }
-    else if ( dynamic_cast<QgsCurve*>( part ) )
+    else if ( dynamic_cast<QgsCurve *>( part ) )
     {
       if ( method == ToMultiObject )
       {
-        if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+        if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
         {
-          QgsGeometryCollection* geomCollection = static_cast<QgsGeometryCollection*>( geom );
+          QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
@@ -278,7 +278,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
         }
         else
         {
-          QgsMultiCurve* geomCollection = new QgsMultiLineString();
+          QgsMultiCurve *geomCollection = new QgsMultiLineString();
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
           feature.setGeometry( QgsGeometry( geomCollection ) );
@@ -288,9 +288,9 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
       }
       else // if(method == ToSingleObjects)
       {
-        if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+        if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
         {
-          QgsGeometryCollection* geomCollection = static_cast<QgsGeometryCollection*>( geom );
+          QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1 );
           feature.setGeometry( featureGeom );
@@ -324,7 +324,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError* error, i
   }
 }
 
-const QStringList& QgsGeometrySelfIntersectionCheck::getResolutionMethods() const
+QStringList QgsGeometrySelfIntersectionCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList()
                                << tr( "Split feature into a multi-object feature" )

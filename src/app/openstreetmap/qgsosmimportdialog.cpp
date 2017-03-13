@@ -18,20 +18,20 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsosmimport.h"
 
-QgsOSMImportDialog::QgsOSMImportDialog( QWidget* parent )
-    : QDialog( parent )
-    , mImport( new QgsOSMXmlImport )
+QgsOSMImportDialog::QgsOSMImportDialog( QWidget *parent )
+  : QDialog( parent )
+  , mImport( new QgsOSMXmlImport )
 {
   setupUi( this );
 
   connect( btnBrowseXml, SIGNAL( clicked() ), this, SLOT( onBrowseXml() ) );
   connect( btnBrowseDb, SIGNAL( clicked() ), this, SLOT( onBrowseDb() ) );
-  connect( editXmlFileName, SIGNAL( textChanged( const QString& ) ), this, SLOT( xmlFileNameChanged( const QString& ) ) );
-  connect( editDbFileName, SIGNAL( textChanged( const QString& ) ), this, SLOT( dbFileNameChanged( const QString& ) ) );
+  connect( editXmlFileName, SIGNAL( textChanged( const QString & ) ), this, SLOT( xmlFileNameChanged( const QString & ) ) );
+  connect( editDbFileName, SIGNAL( textChanged( const QString & ) ), this, SLOT( dbFileNameChanged( const QString & ) ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( onClose() ) );
 
@@ -46,37 +46,37 @@ QgsOSMImportDialog::~QgsOSMImportDialog()
 
 void QgsOSMImportDialog::onBrowseXml()
 {
-  QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName( this, QString(), lastDir, tr( "OpenStreetMap files (*.osm)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( "/osm/lastDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editXmlFileName->setText( fileName );
 }
 
 void QgsOSMImportDialog::onBrowseDb()
 {
-  QSettings settings;
-  QString lastDir = settings.value( "/osm/lastDir", QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString lastDir = settings.value( QStringLiteral( "/osm/lastDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getSaveFileName( this, QString(), lastDir, tr( "SQLite databases (*.db)" ) );
   if ( fileName.isNull() )
     return;
 
-  settings.setValue( "/osm/lastDir", QFileInfo( fileName ).absolutePath() );
+  settings.setValue( QStringLiteral( "/osm/lastDir" ), QFileInfo( fileName ).absolutePath() );
   editDbFileName->setText( fileName );
 }
 
 
-void QgsOSMImportDialog::xmlFileNameChanged( const QString& fileName )
+void QgsOSMImportDialog::xmlFileNameChanged( const QString &fileName )
 {
   editDbFileName->setText( fileName + ".db" );
 }
 
-void QgsOSMImportDialog::dbFileNameChanged( const QString& fileName )
+void QgsOSMImportDialog::dbFileNameChanged( const QString &fileName )
 {
   editConnName->setText( QFileInfo( fileName ).baseName() );
 }
@@ -84,7 +84,7 @@ void QgsOSMImportDialog::dbFileNameChanged( const QString& fileName )
 void QgsOSMImportDialog::onOK()
 {
   // output file exists?
-  if ( QFileInfo( editDbFileName->text() ).exists() )
+  if ( QFileInfo::exists( editDbFileName->text() ) )
   {
     int res = QMessageBox::question( this, tr( "OpenStreetMap import" ), tr( "Output database file exists already. Overwrite?" ), QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
@@ -92,7 +92,7 @@ void QgsOSMImportDialog::onOK()
   }
 
   mImport->setInputXmlFileName( editXmlFileName->text() );
-  mImport->setOutputDbFileName( editDbFileName->text() );
+  mImport->setOutputDatabaseFileName( editDbFileName->text() );
 
   buttonBox->setEnabled( false );
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -113,8 +113,8 @@ void QgsOSMImportDialog::onOK()
   if ( groupCreateConn->isChecked() )
   {
     // create connection - this is a bit hacky, sorry for that.
-    QSettings settings;
-    settings.setValue( QString( "/SpatiaLite/connections/%1/sqlitepath" ).arg( editConnName->text() ), mImport->outputDbFileName() );
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( editConnName->text() ), mImport->outputDatabaseFileName() );
   }
 
   QMessageBox::information( this, tr( "OpenStreetMap import" ), tr( "Import has been successful." ) );

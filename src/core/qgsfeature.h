@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
+#include "qgis_core.h"
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -24,7 +25,7 @@ email                : sherman at mrcc.com
 #include <QSet>
 #include <QExplicitlySharedDataPointer>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 class QgsGeometry;
 class QgsRectangle;
@@ -56,31 +57,33 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 {
   public:
     QgsAttributes()
-        : QVector<QVariant>()
+      : QVector<QVariant>()
     {}
+
     /**
      * Create a new vector of attributes with the given size
      *
      * @param size Number of attributes
      */
     QgsAttributes( int size )
-        : QVector<QVariant>( size )
+      : QVector<QVariant>( size )
     {}
+
     /**
      * Constructs a vector with an initial size of size elements. Each element is initialized with value.
      * @param size Number of elements
      * @param v    Initial value
      */
-    QgsAttributes( int size, const QVariant& v )
-        : QVector<QVariant>( size, v )
+    QgsAttributes( int size, const QVariant &v )
+      : QVector<QVariant>( size, v )
     {}
 
     /**
      * Copies another vector of attributes
      * @param v Attributes to copy
      */
-    QgsAttributes( const QVector<QVariant>& v )
-        : QVector<QVariant>( v )
+    QgsAttributes( const QVector<QVariant> &v )
+      : QVector<QVariant>( v )
     {}
 
     /**
@@ -96,14 +99,22 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     {
       if ( size() != v.size() )
         return false;
-      const QVariant* b = constData();
-      const QVariant* i = b + size();
-      const QVariant* j = v.constData() + size();
+      const QVariant *b = constData();
+      const QVariant *i = b + size();
+      const QVariant *j = v.constData() + size();
       while ( i != b )
         if ( !( *--i == *--j && i->isNull() == j->isNull() ) )
           return false;
       return true;
     }
+
+    /**
+     * Returns a QgsAttributeMap of the attribute values. Null values are
+     * excluded from the map.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    QgsAttributeMap toMap() const;
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };
@@ -141,41 +152,33 @@ class CORE_EXPORT QgsFeature
      * @param fields feature's fields
      * @param id feature id
      */
-    QgsFeature( const QgsFields& fields, QgsFeatureId id = QgsFeatureId() );
+    QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
 
     /** Copy constructor
      */
-    QgsFeature( const QgsFeature& rhs );
+    QgsFeature( const QgsFeature &rhs );
 
     /** Assignment operator
      */
-    QgsFeature& operator=( const QgsFeature& rhs );
+    QgsFeature &operator=( const QgsFeature &rhs );
 
     /**
      * Compares two features
      */
-    bool operator==( const QgsFeature& other ) const;
+    bool operator==( const QgsFeature &other ) const;
 
     /**
      * Compares two features
      */
-    bool operator!=( const QgsFeature& other ) const;
+    bool operator!=( const QgsFeature &other ) const;
 
-
-    //! Destructor
     virtual ~QgsFeature();
 
     /** Get the feature ID for this feature.
      * @returns feature ID
-     * @see setFeatureId
+     * @see setId()
      */
     QgsFeatureId id() const;
-
-    /** Sets the feature ID for this feature.
-     * @param id feature id
-     * @see id
-     */
-    void setFeatureId( QgsFeatureId id );
 
     /** Sets the feature ID for this feature.
      * @param id feature id
@@ -188,6 +191,7 @@ class CORE_EXPORT QgsFeature
      * @returns list of feature's attributes
      * @see setAttributes
      * @note added in QGIS 2.9
+     * @note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
      */
     QgsAttributes attributes() const;
 
@@ -196,16 +200,17 @@ class CORE_EXPORT QgsFeature
      * @see setAttribute
      * @see attributes
      */
-    void setAttributes( const QgsAttributes& attrs );
+    void setAttributes( const QgsAttributes &attrs );
 
     /** Set an attribute's value by field index.
      * @param field the index of the field to set
      * @param attr the value of the attribute
      * @return false, if the field index does not exist
      * @note For Python: raises a KeyError exception instead of returning false
+     * @note Alternatively in Python: @code feature[field] = attr @endcode
      * @see setAttributes
      */
-    bool setAttribute( int field, const QVariant& attr );
+    bool setAttribute( int field, const QVariant &attr );
 
     /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * @param fieldCount Number of fields to initialize
@@ -216,6 +221,7 @@ class CORE_EXPORT QgsFeature
      * @param field the index of the field
      * @see setAttribute
      * @note For Python: raises a KeyError exception if the field is not found
+     * @note Alternatively in Python: @code del feature[field] @endcode
      */
     void deleteAttribute( int field );
 
@@ -250,7 +256,7 @@ class CORE_EXPORT QgsFeature
      * @see geometry()
      * @see clearGeometry()
      */
-    void setGeometry( const QgsGeometry& geometry );
+    void setGeometry( const QgsGeometry &geometry );
 
     /** Removes any geometry associated with the feature.
      * @see setGeometry()
@@ -267,7 +273,7 @@ class CORE_EXPORT QgsFeature
      * @note added in QGIS 2.9
      * @see fields
      */
-    void setFields( const QgsFields& fields, bool initAttributes = false );
+    void setFields( const QgsFields &fields, bool initAttributes = false );
 
     /** Returns the field map associated with the feature.
      * @see setFields
@@ -280,33 +286,37 @@ class CORE_EXPORT QgsFeature
      *  @param value The value to set
      *  @return false if attribute name could not be converted to index (C++ only)
      *  @note For Python: raises a KeyError exception instead of returning false
+     *  @note Alternatively in Python: @code feature[name] = attr @endcode
      *  @see setFields
      */
-    bool setAttribute( const QString& name, const QVariant& value );
+    bool setAttribute( const QString &name, const QVariant &value );
 
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  @param name The name of the field to delete
      *  @return false if attribute name could not be converted to index (C++ only)
      *  @note For Python: raises a KeyError exception instead of returning false
+     *  @note Alternatively in Python: @code del feature[name] @endcode
      *  @see setFields
      */
-    bool deleteAttribute( const QString& name );
+    bool deleteAttribute( const QString &name );
 
     /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  @param name The name of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
-     *  @note For Python: raises a KeyError exception if field is not found
+     *  @note For Python: raises a KeyError exception if the field is not found
+     *  @note Alternatively in Python: @code feature[name] @endcode
      *  @see setFields
      */
-    QVariant attribute( const QString& name ) const;
+    QVariant attribute( const QString &name ) const;
 
     /** Lookup attribute value from its index. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
      *  @param fieldIdx The index of the attribute to get
      *  @return The value of the attribute (C++: Invalid variant if no such index exists )
-     *  @note For Python: raises a KeyError exception if field is not found
+     *  @note For Python: raises a KeyError exception if the field is not found
+     *  @note Alternatively in Python: @code feature[fieldIdx] @endcode
      *  @see setFields
      */
     QVariant attribute( int fieldIdx ) const;
@@ -317,7 +327,7 @@ class CORE_EXPORT QgsFeature
      *  @returns -1 if field does not exist or field map is not associated.
      *  @see setFields
      */
-    int fieldNameIndex( const QString& fieldName ) const;
+    int fieldNameIndex( const QString &fieldName ) const;
 
     //! Allows direct construction of QVariants from features.
     operator QVariant() const
@@ -331,10 +341,10 @@ class CORE_EXPORT QgsFeature
 
 }; // class QgsFeature
 
-/** Writes the feature to stream out. QGIS version compatibility is not guaranteed. */
-CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeature& feature );
-/** Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed. */
-CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeature& feature );
+//! Writes the feature to stream out. QGIS version compatibility is not guaranteed.
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature );
+//! Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed.
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature );
 
 // key = feature id, value = changed attributes
 typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;
@@ -348,6 +358,8 @@ typedef QSet<QgsFeatureId> QgsFeatureIds;
 typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
+
+uint qHash( const QgsFeature &key, uint seed = 0 );
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )

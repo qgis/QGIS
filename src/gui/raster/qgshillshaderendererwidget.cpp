@@ -23,7 +23,7 @@
 #include "qgsrasterdataprovider.h"
 
 QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
-    : QgsRasterRendererWidget( layer, extent )
+  : QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 
@@ -44,7 +44,7 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
 
   if ( mRasterLayer )
   {
-    QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
     if ( !provider )
     {
       return;
@@ -68,11 +68,6 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
   connect( mMultiDirection, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
 }
 
-QgsHillshadeRendererWidget::~QgsHillshadeRendererWidget()
-{
-
-}
-
 QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
 {
   if ( !mRasterLayer )
@@ -80,14 +75,14 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
     return nullptr;
   }
 
-  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )
   {
     return nullptr;
   }
 
-  int band = mBandsCombo->itemData( mBandsCombo->currentIndex() ).toInt();
-  QgsHillshadeRenderer* renderer = new QgsHillshadeRenderer( provider, band, mLightAzimuth->value(), mLightAngle->value() );
+  int band = mBandsCombo->currentData().toInt();
+  QgsHillshadeRenderer *renderer = new QgsHillshadeRenderer( provider, band, mLightAzimuth->value(), mLightAngle->value() );
   double value = mZFactor->value();
   renderer->setZFactor( value );
   renderer->setMultiDirectional( mMultiDirection->checkState() );
@@ -96,7 +91,7 @@ QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()
 
 void QgsHillshadeRendererWidget::setFromRenderer( const QgsRasterRenderer *renderer )
 {
-  const QgsHillshadeRenderer* r = dynamic_cast<const QgsHillshadeRenderer*>( renderer );
+  const QgsHillshadeRenderer *r = dynamic_cast<const QgsHillshadeRenderer *>( renderer );
   if ( r )
   {
     mBandsCombo->setCurrentIndex( mBandsCombo->findData( r->band() ) );

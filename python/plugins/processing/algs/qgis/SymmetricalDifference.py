@@ -29,10 +29,9 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, NULL, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, NULL, QgsWkbTypes
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -59,13 +58,13 @@ class SymmetricalDifference(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT,
                                     self.tr('Symmetrical difference')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerA = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         layerB = dataobjects.getObjectFromUri(
             self.getParameterValue(self.OVERLAY))
 
-        geomType = layerA.wkbType()
+        geomType = QgsWkbTypes.multiType(layerA.wkbType())
         fields = vector.combineVectorFields(layerA, layerB)
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, geomType, layerA.crs())
@@ -83,70 +82,52 @@ class SymmetricalDifference(GeoAlgorithm):
         count = 0
 
         for featA in featuresA:
-            add = True
             geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
-            for i in intersects:
-                layerB.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+            for featB in layerB.getFeatures(request):
                 tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
-                    if not diffGeom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        add = False
-                        break
 
-            if add:
-                try:
-                    outFeat.setGeometry(diffGeom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                    continue
+            try:
+                outFeat.setGeometry(diffGeom)
+                outFeat.setAttributes(attrs)
+                writer.addFeature(outFeat)
+            except:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                continue
 
             count += 1
-            progress.setPercentage(int(count * total))
+            feedback.setProgress(int(count * total))
 
         length = len(layerA.fields())
 
         for featA in featuresB:
-            add = True
             geom = featA.geometry()
             diffGeom = QgsGeometry(geom)
             attrs = featA.attributes()
             attrs = [NULL] * length + attrs
             intersects = indexB.intersects(geom.boundingBox())
-            for i in intersects:
-                layerA.getFeatures(QgsFeatureRequest().setFilterFid(i)).nextFeature(featB)
+            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+            for featB in layerA.getFeatures(request):
                 tmpGeom = featB.geometry()
                 if diffGeom.intersects(tmpGeom):
                     diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
-                    if not diffGeom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or '
-                                                       'more input features have invalid '
-                                                       'geometry.'))
-                        add = False
-                        break
 
-            if add:
-                try:
-                    outFeat.setGeometry(diffGeom)
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-                except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                    continue
+            try:
+                outFeat.setGeometry(diffGeom)
+                outFeat.setAttributes(attrs)
+                writer.addFeature(outFeat)
+            except:
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                continue
 
             count += 1
-            progress.setPercentage(int(count * total))
+            feedback.setProgress(int(count * total))
 
         del writer

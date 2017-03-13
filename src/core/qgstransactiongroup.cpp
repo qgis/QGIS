@@ -23,18 +23,14 @@
 #include <QTimer>
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
-    : QObject( parent )
-    , mEditingStarting( false )
-    , mEditingStopping( false )
+  : QObject( parent )
+  , mEditingStarting( false )
+  , mEditingStopping( false )
 {
 
 }
 
-QgsTransactionGroup::~QgsTransactionGroup()
-{
-}
-
-bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
+bool QgsTransactionGroup::addLayer( QgsVectorLayer *layer )
 {
   if ( !QgsTransaction::supportsTransaction( layer ) )
     return false;
@@ -53,20 +49,20 @@ bool QgsTransactionGroup::addLayer( QgsVectorLayer* layer )
 
   mLayers.insert( layer );
 
-  connect( layer, SIGNAL( beforeEditingStarted() ), this, SLOT( onEditingStarted() ) );
-  connect( layer, SIGNAL( destroyed() ), this, SLOT( onLayerDeleted() ) );
+  connect( layer, &QgsVectorLayer::beforeEditingStarted, this, &QgsTransactionGroup::onEditingStarted );
+  connect( layer, &QgsVectorLayer::destroyed, this, &QgsTransactionGroup::onLayerDeleted );
 
   return true;
 }
 
-QSet<QgsVectorLayer*> QgsTransactionGroup::layers() const
+QSet<QgsVectorLayer *> QgsTransactionGroup::layers() const
 {
   return mLayers;
 }
 
 bool QgsTransactionGroup::modified() const
 {
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
   {
     if ( layer->isModified() )
       return true;
@@ -76,7 +72,7 @@ bool QgsTransactionGroup::modified() const
 
 void QgsTransactionGroup::onEditingStarted()
 {
-  if ( !mTransaction.isNull() )
+  if ( mTransaction )
     return;
 
   mTransaction.reset( QgsTransaction::create( mConnString, mProviderKey ) );
@@ -84,18 +80,18 @@ void QgsTransactionGroup::onEditingStarted()
   QString errorMsg;
   mTransaction->begin( errorMsg );
 
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
   {
     mTransaction->addLayer( layer );
     layer->startEditing();
-    connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( onCommitChanges() ) );
-    connect( layer, SIGNAL( beforeRollBack() ), this, SLOT( onRollback() ) );
+    connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }
 
 void QgsTransactionGroup::onLayerDeleted()
 {
-  mLayers.remove( static_cast<QgsVectorLayer*>( sender() ) );
+  mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
 }
 
 void QgsTransactionGroup::onCommitChanges()
@@ -105,12 +101,12 @@ void QgsTransactionGroup::onCommitChanges()
 
   mEditingStopping = true;
 
-  QgsVectorLayer* triggeringLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  QgsVectorLayer *triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
 
   QString errMsg;
   if ( mTransaction->commit( errMsg ) )
   {
-    Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+    Q_FOREACH ( QgsVectorLayer *layer, mLayers )
     {
       if ( layer != sender() )
         layer->commitChanges();
@@ -134,12 +130,12 @@ void QgsTransactionGroup::onRollback()
 
   mEditingStopping = true;
 
-  QgsVectorLayer* triggeringLayer = qobject_cast<QgsVectorLayer*>( sender() );
+  QgsVectorLayer *triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
 
   QString errMsg;
   if ( mTransaction->rollback( errMsg ) )
   {
-    Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+    Q_FOREACH ( QgsVectorLayer *layer, mLayers )
     {
       if ( layer != triggeringLayer )
         layer->rollBack();
@@ -158,10 +154,10 @@ void QgsTransactionGroup::disableTransaction()
 {
   mTransaction.reset();
 
-  Q_FOREACH ( QgsVectorLayer* layer, mLayers )
+  Q_FOREACH ( QgsVectorLayer *layer, mLayers )
   {
-    disconnect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( onCommitChanges() ) );
-    disconnect( layer, SIGNAL( beforeRollBack() ), this, SLOT( onRollback() ) );
+    disconnect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onCommitChanges );
+    disconnect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
   }
 }
 

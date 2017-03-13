@@ -20,7 +20,7 @@
 #include <cfloat>
 #include <cmath>
 
-QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition* c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
+QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
 {
 
 }
@@ -30,7 +30,7 @@ QgsResidualPlotItem::~QgsResidualPlotItem()
 
 }
 
-void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -60,7 +60,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
 
-    if (( *gcpIt )->isEnabled() )
+    if ( ( *gcpIt )->isEnabled() )
     {
       painter->setPen( enabledPen );
       painter->setBrush( enabledBrush );
@@ -71,7 +71,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
       painter->setBrush( disabledBrush );
     }
     painter->drawRect( QRectF( gcpItemMMX - 0.5, gcpItemMMY - 0.5, 1, 1 ) );
-    QgsComposerUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number(( *gcpIt )->id() ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number( ( *gcpIt )->id() ), QFont() );
 
     mmPixelRatio = maxMMToPixelRatioForGCP( *gcpIt, gcpItemMMX, gcpItemMMY );
     if ( mmPixelRatio < minMMPixelRatio )
@@ -87,7 +87,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
     QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
-    if (( *gcpIt )->isEnabled() )
+    if ( ( *gcpIt )->isEnabled() )
     {
       painter->setPen( enabledPen );
     }
@@ -135,11 +135,11 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QString( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QString( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
   }
 
   drawFrame( painter );
@@ -149,7 +149,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 }
 
-double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p, double pixelXMM, double pixelYMM )
+double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
 {
   if ( !p )
   {
@@ -210,14 +210,14 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
   }
 }
 
-bool QgsResidualPlotItem::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsResidualPlotItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );
   return false;
 }
 
-bool QgsResidualPlotItem::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsResidualPlotItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( itemElem );
   Q_UNUSED( doc );

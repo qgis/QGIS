@@ -49,6 +49,8 @@ class QgsVectorDataProvider : QgsDataProvider
       ChangeFeatures,
       /** Supports renaming attributes (fields). Added in QGIS 2.16 */
       RenameAttributes,
+      //! Supports fast truncation of the layer (removing all features). Added in QGIS 3.0
+      FastTruncate,
     };
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
 
@@ -148,6 +150,18 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 ) const;
 
+    /**
+     * Returns unique string values of an attribute which contain a specified subset string. Subset
+     * matching is done in a case-insensitive manner.
+     * @param index the index of the attribute
+     * @param substring substring to match (case insensitive)
+     * @param limit maxmum number of the values to return, or -1 to return all unique values
+     * @param feedback optional feedback object for canceling request
+     * @returns list of unique strings containing substring
+     */
+    virtual QStringList uniqueStringsMatching( int index, const QString& substring, int limit = -1,
+                                               QgsFeedback* feedback = nullptr ) const;
+
     /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
      * but subclasses can override this method to handoff calculation of aggregates to the provider.
      * @param aggregate aggregate to calculate
@@ -179,11 +193,21 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**
-     * Deletes one or more features
+     * Deletes one or more features from the provider. This requires the DeleteFeatures capability.
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
+     * @see truncate()
      */
-    virtual bool deleteFeatures( const QSet<qint64> &id );
+    virtual bool deleteFeatures( const QgsFeatureIds &id );
+
+    /**
+     * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
+     * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
+     * @returns true in case of success and false in case of failure.
+     * @note added in QGIS 3.0
+     * @see deleteFeatures()
+     */
+    virtual bool truncate();
 
     /**
      * Adds new attributes
@@ -226,9 +250,43 @@ class QgsVectorDataProvider : QgsDataProvider
                                  const QMap<qint64, QgsGeometry> &geometry_map );
 
     /**
-     * Returns the default value for field specified by @c fieldId
+     * Returns any literal default values which are present at the provider for a specified
+     * field index. Important - this should ONLY be called when creating an attribute to insert
+     * directly into the database. Do not call this method for non-feature creation or modification,
+     * e.g., when validating an attribute or to compare it against an existing value, as calling it
+     * can cause changes to the underlying data source (e.g., Postgres provider where the default value
+     * is calculated as a result of a sequence). It is recommended that you instead use the methods
+     * in QgsVectorLayerUtils such as QgsVectorLayerUtils::createFeature()
+     * so that default value handling and validation is automatically carried out.
+     * @see defaultValueClause()
      */
-    virtual QVariant defaultValue( int fieldId ) const;
+    virtual QVariant defaultValue( int fieldIndex ) const;
+
+    /**
+     * Returns any default value clauses which are present at the provider for a specified
+     * field index. These clauses are usually SQL fragments which must be evaluated by the
+     * provider, e.g., sequence values.
+     * @see defaultValue()
+     * @note added in QGIS 3.0
+     */
+    virtual QString defaultValueClause( int fieldIndex ) const;
+
+    /**
+     * Returns any constraints which are present at the provider for a specified
+     * field index.
+     * @note added in QGIS 3.0
+     * @see skipConstraintCheck()
+     */
+    QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
+
+    /**
+     * Returns true if a constraint check should be skipped for a specified field (e.g., if
+     * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
+     * passed which can help refine the skip constraint check.
+     * @note added in QGIS 3.0
+     * @see fieldConstraints()
+     */
+    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant& value = QVariant() ) const;
 
     /**
      * Changes geometries of existing features
@@ -317,7 +375,7 @@ class QgsVectorDataProvider : QgsDataProvider
     /**
      * Returns the names of the supported types
      */
-    const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
+    QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
 
     /**
      * Returns true if the provider is strict about the type of inserted features
@@ -343,12 +401,19 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     QStringList errors() const;
 
-
     /**
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() const;
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
+
+    /**
+     * Checks if the provider supports style removal
+     * Must be implemented by providers that support delete styles from db returning true
+     * @note added in QGIS 3.0
+     * @return true if delete operation is supported by the provider
+     */
+    virtual bool isDeleteStyleFromDatabaseSupported() const;
 
     static QVariant convertValue( QVariant::Type type, const QString& value );
 
@@ -371,21 +436,88 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
+    /**
+     * Discover the available relations with the given layers.
+     * @param self the layer using this data provider.
+     * @param layers the other layers.
+     * @return the list of N-1 relations from this provider.
+     * @note added in QGIS 3.0
+     */
+    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer* self, const QList<QgsVectorLayer*>& layers ) const;
+
+    /**
+     * Get some metadata that will be display in the metadata tab of the layer properties.
+     * @return The provider metadata
+     */
+    virtual QVariantMap metadata() const;
+
+    /**
+     * Get the translated metadata key.
+     * @param mdKey The metadata key
+     * @return The translated metadata value
+     */
+    virtual QString translateMetadataKey( const QString& mdKey ) const;
+
+    /**
+     * Get the translated metadata value.
+     * @param mdKey The metadata key
+     * @param value The metadata value
+     * @return The translated metadata value
+     */
+    virtual QString translateMetadataValue( const QString& mdKey, const QVariant& value ) const;
+
   signals:
-    /** Signals an error in this provider */
-    void raiseError( const QString& msg );
+    /**
+     * Signals an error in this provider
+     *
+     * @note Added const in QGIS 3.0
+     */
+    void raiseError( const QString& msg ) const;
 
   protected:
+    /**
+     * Invalidates the min/max cache. This will force the provider to recalculate the
+     * cache the next time it is requested.
+     */
     void clearMinMaxCache();
 
-    //! Populates the cache of minimum and maximum attribute values.
+    /**
+     * Populates the cache of minimum and maximum attribute values.
+     */
     void fillMinMaxCache() const;
 
-    void pushError( const QString& msg );
+    /**
+     * Push a notification about errors that happened in this providers scope.
+     * Errors should be translated strings that require the users immediate
+     * attention.
+     *
+     * For general debug information use QgsMessageLog::logMessage() instead.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void pushError( const QString& msg ) const;
 
-    /** Converts the geometry to the provider type if possible / necessary
-    @return the converted geometry or nullptr if no conversion was necessary or possible*/
+    /**
+     * Converts the geometry to the provider type if possible / necessary
+     * @return the converted geometry or nullptr if no conversion was necessary or possible
+     */
     QgsGeometry* convertToProviderType( const QgsGeometry& geom ) const /Factory/;
+
+    /**
+     * Set the list of native types supported by this provider.
+     * Usually done in the constructor.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setNativeTypes(const QList<QgsVectorDataProvider::NativeType>& nativeTypes);
+
+    /**
+     * Get this providers encoding
+     *
+     * @note Added in QGIS 3.0
+     */
+    QTextCodec* textEncoding() const;
+
 };
 
 QFlags<QgsVectorDataProvider::Capability> operator|(QgsVectorDataProvider::Capability f1, QFlags<QgsVectorDataProvider::Capability> f2);

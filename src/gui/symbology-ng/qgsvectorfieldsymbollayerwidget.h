@@ -17,6 +17,7 @@
 
 #include "qgssymbollayerwidget.h"
 #include "ui_widget_vectorfield.h"
+#include "qgis_gui.h"
 
 class QgsVectorFieldSymbolLayer;
 
@@ -27,17 +28,16 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
 {
     Q_OBJECT
   public:
-    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
-    ~QgsVectorFieldSymbolLayerWidget();
+    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
-    virtual QgsSymbolLayer* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    virtual QgsSymbolLayer *symbolLayer() override;
 
   protected:
-    QgsVectorFieldSymbolLayer* mLayer;
+    QgsVectorFieldSymbolLayer *mLayer = nullptr;
 
   private slots:
     void on_mScaleSpinBox_valueChanged( double d );

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'May 2016'
@@ -28,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
@@ -75,7 +76,7 @@ class DirectorySelectorDialog(BASE, WIDGET):
     def accept(self):
         self.selectedoptions = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             item = model.item(i)
             self.selectedoptions.append(item.text())
         QDialog.accept(self)
@@ -84,7 +85,7 @@ class DirectorySelectorDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def addDirectory(self):
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/lastDirectory'):
             path = settings.value('/Processing/lastDirectory')
         else:
@@ -118,7 +119,7 @@ class DirectorySelectorDialog(BASE, WIDGET):
     def value(self):
         folders = []
         model = self.lstLayers.model()
-        for i in xrange(model.rowCount()):
+        for i in range(model.rowCount()):
             folders.append(model.item(i).text())
 
         return ';'.join(folders)

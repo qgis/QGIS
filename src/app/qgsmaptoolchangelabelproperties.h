@@ -19,17 +19,18 @@
 #define QGSMAPTOOLCHANGELABELPROPERTIES_H
 
 #include "qgsmaptoollabel.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
 {
     Q_OBJECT
 
   public:
-    QgsMapToolChangeLabelProperties( QgsMapCanvas* canvas );
+    QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas );
     ~QgsMapToolChangeLabelProperties();
 
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
 
@@ -37,7 +38,7 @@ class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
      * @param changes attribute map of changes
      * @note added in QGIS 2.9
      */
-    void applyChanges( const QgsAttributeMap& changes );
+    void applyChanges( const QgsAttributeMap &changes );
 
   private slots:
 

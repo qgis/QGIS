@@ -24,14 +24,14 @@
 #include <QSettings>
 #include <QThread>
 
-static QString invalidStyle_( const QString& selector = "QLineEdit" )
+static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEdit" ) )
 {
-  return QString( "%1{color: rgb(200, 0, 0);}" ).arg( selector );
+  return QStringLiteral( "%1{color: rgb(200, 0, 0);}" ).arg( selector );
 }
 
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOkButton( nullptr )
+  : QDialog( parent, fl )
+  , mOkButton( nullptr )
 {
   setupUi( this );
   setInstance( this );
@@ -46,11 +46,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   leUsername->setFocus();
 }
 
-QgsCredentialDialog::~QgsCredentialDialog()
-{
-}
-
-bool QgsCredentialDialog::request( const QString& realm, QString &username, QString &password, const QString& message )
+bool QgsCredentialDialog::request( const QString &realm, QString &username, QString &password, const QString &message )
 {
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
@@ -66,7 +62,7 @@ bool QgsCredentialDialog::request( const QString& realm, QString &username, QStr
   return ok;
 }
 
-void QgsCredentialDialog::requestCredentials( const QString& realm, QString *username, QString *password, const QString& message, bool *ok )
+void QgsCredentialDialog::requestCredentials( const QString &realm, QString *username, QString *password, const QString &message, bool *ok )
 {
   Q_ASSERT( qApp->thread() == thread() && thread() == QThread::currentThread() );
   QgsDebugMsg( "Entering." );
@@ -101,7 +97,7 @@ void QgsCredentialDialog::requestCredentials( const QString& realm, QString *use
   }
 }
 
-bool QgsCredentialDialog::requestMasterPassword( QString &password , bool stored )
+bool QgsCredentialDialog::requestMasterPassword( QString &password, bool stored )
 {
   bool ok;
   if ( qApp->thread() != QThread::currentThread() )
@@ -116,7 +112,7 @@ bool QgsCredentialDialog::requestMasterPassword( QString &password , bool stored
   return ok;
 }
 
-void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, bool stored , bool *ok )
+void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, bool stored, bool *ok )
 {
   QgsDebugMsg( "Entering." );
   stackedWidget->setCurrentIndex( 1 );
@@ -169,7 +165,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
       {
         if ( stored && chkbxEraseAuthDb->isChecked() )
         {
-          QgsAuthManager::instance()->setScheduledAuthDbErase( true );
+          QgsAuthManager::instance()->setScheduledAuthDatabaseErase( true );
         }
         else
         {
@@ -222,17 +218,17 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString * password, 
 
 void QgsCredentialDialog::on_chkMasterPassShow_stateChanged( int state )
 {
-  leMasterPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-  leMasterPassVerify->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  leMasterPassVerify->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
 {
-  leMasterPass->setStyleSheet( "" );
+  leMasterPass->setStyleSheet( QLatin1String( "" ) );
   bool passok = !pass.isEmpty(); // regardless of new or comparing existing, empty password disallowed
   if ( leMasterPassVerify->isVisible() )
   {
-    leMasterPassVerify->setStyleSheet( "" );
+    leMasterPassVerify->setStyleSheet( QLatin1String( "" ) );
     passok = passok && ( leMasterPass->text() == leMasterPassVerify->text() );
   }
   mOkButton->setEnabled( passok );
@@ -248,8 +244,8 @@ void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass
 {
   if ( leMasterPassVerify->isVisible() )
   {
-    leMasterPass->setStyleSheet( "" );
-    leMasterPassVerify->setStyleSheet( "" );
+    leMasterPass->setStyleSheet( QLatin1String( "" ) );
+    leMasterPassVerify->setStyleSheet( QLatin1String( "" ) );
 
     // empty password disallowed
     bool passok = !pass.isEmpty() && ( leMasterPass->text() == leMasterPassVerify->text() );

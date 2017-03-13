@@ -111,7 +111,7 @@ class QgsComposerMap : QgsComposerItem
      */
     void zoomToExtent( const QgsRectangle& extent );
 
-    /** Sets new Extent for the current atlas preview and changes width, height (and implicitely also scale).
+    /** Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
@@ -127,6 +127,10 @@ class QgsComposerMap : QgsComposerItem
     //! @note not available in python bindings
     // QgsRectangle* currentMapExtent();
 
+    QgsCoordinateReferenceSystem crs() const;
+    QgsCoordinateReferenceSystem presetCrs() const;
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
+
     PreviewMode previewMode() const;
     void setPreviewMode( PreviewMode m );
 
@@ -136,11 +140,9 @@ class QgsComposerMap : QgsComposerItem
     void setKeepLayerSet( bool enabled );
 
     /** Getter for stored layer set that is used if mKeepLayerSet is true */
-    QStringList layerSet() const;
+    QList<QgsMapLayer*> layers() const;
     /** Setter for stored layer set that is used if mKeepLayerSet is true */
-    void setLayerSet( const QStringList& layerSet );
-    /** Stores the current layer set of the qgis mapcanvas in mLayerSet*/
-    void storeCurrentLayerSet();
+    void setLayers( const QList<QgsMapLayer*> layers );
 
     /** Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
     bool keepLayerStyles() const;
@@ -234,8 +236,8 @@ class QgsComposerMap : QgsComposerItem
     /** In case of annotations, the bounding rectangle can be larger than the map item rectangle */
     QRectF boundingRect() const;
 
-    /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameOutlineWidth( const double outlineWidth );
+    /* reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
+    virtual void setFrameStrokeWidth( const double strokeWidth );
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item
@@ -253,11 +255,8 @@ class QgsComposerMap : QgsComposerItem
 
     void updateItem();
 
-    /** Sets canvas pointer (necessary to query and draw map canvas items)*/
-    void setMapCanvas( QGraphicsView* canvas /Transfer/ );
-
-    void setDrawCanvasItems( bool b );
-    bool drawCanvasItems() const;
+    void setDrawAnnotations( bool draw );
+    bool drawAnnotations() const;
 
     /** Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;
@@ -384,13 +383,5 @@ class QgsComposerMap : QgsComposerItem
     void updateBoundingRect();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
-
-  protected slots:
-
-    /** Called when layers are added or removed from the layer registry. Updates the maps
-     * layer set and redraws the map if required.
-     * @note added in QGIS 2.9
-     */
-    void layersChanged();
 
 };

@@ -20,7 +20,7 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
-#include "qgseditorwidgetconfig.h"
+#include "qgis_gui.h"
 
 class QgsEditorConfigWidget;
 class QgsEditorWidgetWrapper;
@@ -40,14 +40,15 @@ class QgsSearchWidgetWrapper;
 class GUI_EXPORT QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor
      *
      * @param name A human readable name for this widget type
      */
-    QgsEditorWidgetFactory( const QString& name );
+    QgsEditorWidgetFactory( const QString &name );
 
-    virtual ~QgsEditorWidgetFactory();
+    virtual ~QgsEditorWidgetFactory() = default;
 
     /**
      * Override this in your implementation.
@@ -61,9 +62,9 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @return         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0;
 
-    virtual QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
+    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -82,29 +83,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @return         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0;
-
-    /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
-     *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     *
-     * @return A configuration object. This will be passed to your widget wrapper later on
-     */
-    QgsEditorWidgetConfig readEditorConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
-
-    /**
-     * Serialize your configuration and save it in a xml doc.
-     *
-     * @param config        The configuration to serialize
-     * @param configElement The element, where you can write your configuration into
-     * @param doc           The document. You can use this to create new nodes
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0;
 
     /**
      * Check if this editor widget type supports a certain field.
@@ -115,7 +94,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
-    inline bool supportsField( const QgsVectorLayer* vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
+    inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
     /**
      * Returns a list of widget types which this editor widget supports.
@@ -125,67 +104,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return A map of widget type names and weight values
      * @note not available in Python bindings
      */
-    virtual QMap<const char*, int> supportedWidgetTypes() { return QMap<const char*, int>(); }
-
-    /**
-     * Create a pretty String representation of the value.
-     *
-     * @param vl        The vector layer.
-     * @param fieldIdx  The index of the field.
-     * @param config    The editor widget config.
-     * @param cache     The editor widget cache.
-     * @param value     The value to represent.
-     *
-     * @return By default the string representation of the provided value as implied by the field definition is returned.
-     */
-    virtual QString representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
-
-    /**
-     * If the default sort order should be overwritten for this widget, you can transform the value in here.
-     *
-     * @param vl        The vector layer.
-     * @param fieldIdx  The index of the field.
-     * @param config    The editor widget config.
-     * @param cache     The editor widget cache.
-     * @param value     The value to represent.
-     *
-     * @return By default the value is returned unmodified.
-     *
-     * @note Added in 2.16
-     */
-    virtual QVariant sortValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const;
-
-    /**
-     * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
-     * values are represented.
-     * @param vl       The vector layer.
-     * @param fieldIdx The index of the field.
-     * @param config   The editor widget config.
-     * @return The alignment flag, normally Qt::AlignRight or Qt::AlignLeft
-     */
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config ) const;
-
-    /**
-     * Create a cache for a given field.
-     *
-     * @param vl        The vector layer.
-     * @param fieldIdx  The index of the field.
-     * @param config    The editor widget config.
-     *
-     * @return The default implementation returns an invalid QVariant
-     */
-    virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config );
-
-    /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
-     *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     *
-     * @return A configuration object. This will be passed to your widget wrapper later on
-     */
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
+    virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); }
 
     /**
      * This method allows disabling this editor widget type for a certain field.
@@ -196,7 +115,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *   * 0: not supported
      *   * 5: maybe support (for example, Datetime support strings depending on their content)
      *   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
-     *   * 20: specialised support
+     *   * 20: specialized support
      *
      * @param vl
      * @param fieldIdx
@@ -205,7 +124,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      *
      * @see supportsField( QgsVectorLayer* vl, fieldIdx )
      */
-    virtual unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const;
+    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 
   private:
     QString mName;

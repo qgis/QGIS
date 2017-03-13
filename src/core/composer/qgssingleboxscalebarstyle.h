@@ -17,6 +17,7 @@
 #ifndef QGSSINGLEBOXSCALEBARSTYLE_H
 #define QGSSINGLEBOXSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
 /** \ingroup core
@@ -26,7 +27,7 @@
 class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
 {
   public:
-    QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
+    QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar *bar );
     ~QgsSingleBoxScaleBarStyle();
 
     QString name() const override;
@@ -35,7 +36,7 @@ class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
      @param p painter object
      @param xOffset x offset
      */
-    void draw( QPainter* p, double xOffset = 0 ) const override;
+    void draw( QPainter *p, double xOffset = 0 ) const override;
 
   private:
     QgsSingleBoxScaleBarStyle(); //forbidden

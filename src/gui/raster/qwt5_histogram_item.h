@@ -40,7 +40,7 @@ class HistogramItem: public QwtPlotItem
     void setSpacing( int spacing );
     int spacing() const;
 
-    void setPen( const QPen& pen );
+    void setPen( const QPen &pen );
     QPen pen() const;
 
     virtual QwtDoubleRect boundingRect() const override;
@@ -72,7 +72,7 @@ class HistogramItem: public QwtPlotItem
     void init();
 
     class PrivateData;
-    PrivateData *d_data;
+    PrivateData *d_data = nullptr;
 };
 
 #include <qstring.h>

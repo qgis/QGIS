@@ -17,7 +17,7 @@
 
 QgsSpatiaLiteConnPool QgsSpatiaLiteConnPool::sInstance;
 
-QgsSpatiaLiteConnPool* QgsSpatiaLiteConnPool::instance()
+QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::instance()
 {
   return &sInstance;
 }

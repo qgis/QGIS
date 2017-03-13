@@ -22,6 +22,7 @@
 #include <QProxyStyle>
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
+#include "qgis_gui.h"
 
 /// @cond PRIVATE
 
@@ -29,11 +30,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-    QgsGraduatedSymbolRendererModel( QObject * parent = nullptr );
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    QgsGraduatedSymbolRendererModel( QObject *parent = nullptr );
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     Qt::DropActions supportedDropActions() const override;
     QVariant data( const QModelIndex &index, int role ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
@@ -43,11 +44,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    void setRenderer( QgsGraduatedSymbolRenderer* renderer );
+    void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 
     QgsRendererRange rendererRange( const QModelIndex &index );
-    void addClass( QgsSymbol* symbol );
-    void addClass( const QgsRendererRange& range );
+    void addClass( QgsSymbol *symbol );
+    void addClass( const QgsRendererRange &range );
     void deleteRows( QList<int> rows );
     void removeAllRows();
     void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
     void rowsMoved();
 
   private:
-    QgsGraduatedSymbolRenderer* mRenderer;
+    QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
 };
 
@@ -68,9 +69,9 @@ class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
     Q_OBJECT
 
   public:
-    explicit QgsGraduatedSymbolRendererViewStyle( QStyle* style = nullptr );
+    explicit QgsGraduatedSymbolRendererViewStyle( QStyle *style = nullptr );
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr ) const override;
+    void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };
 
 ///@endcond
@@ -83,30 +84,30 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     Q_OBJECT
 
   public:
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsGraduatedSymbolRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsGraduatedSymbolRendererWidget();
 
-    virtual QgsFeatureRenderer* renderer() override;
+    virtual QgsFeatureRenderer *renderer() override;
 
   public slots:
     void changeGraduatedSymbol();
-    void graduatedColumnChanged( const QString& field );
+    void graduatedColumnChanged( const QString &field );
     void classifyGraduated();
     void reapplyColorRamp();
     void reapplySizes();
-    void rangesDoubleClicked( const QModelIndex & idx );
-    void rangesClicked( const QModelIndex & idx );
-    void changeCurrentValue( QStandardItem * item );
+    void rangesDoubleClicked( const QModelIndex &idx );
+    void rangesClicked( const QModelIndex &idx );
+    void changeCurrentValue( QStandardItem *item );
 
-    /** Adds a class manually to the classification*/
+    //! Adds a class manually to the classification
     void addClass();
-    /** Removes currently selected classes */
+    //! Removes currently selected classes
     void deleteClasses();
-    /** Removes all classes from the classification*/
+    //! Removes all classes from the classification
     void deleteAllClasses();
-    /** Toggle the link between classes boundaries */
+    //! Toggle the link between classes boundaries
     void toggleBoundariesLink( bool linked );
 
     void labelFormatChanged();
@@ -120,8 +121,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void refreshRanges( bool reset = false );
 
   private slots:
-    void cleanUpSymbolSelector( QgsPanelWidget* container );
+    void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
+    void toggleMethodWidgets( int idx );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
@@ -140,20 +142,20 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void changeSelectedSymbols();
 
-    QList<QgsSymbol*> selectedSymbols() override;
-    QgsSymbol* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
+    QList<QgsSymbol *> selectedSymbols() override;
+    QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
     void refreshSymbolView() override;
 
-    void keyPressEvent( QKeyEvent* event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    QgsGraduatedSymbolRenderer* mRenderer;
+    QgsGraduatedSymbolRenderer *mRenderer = nullptr;
 
-    QgsSymbol* mGraduatedSymbol;
+    QgsSymbol *mGraduatedSymbol = nullptr;
 
     int mRowSelected;
 
-    QgsGraduatedSymbolRendererModel* mModel;
+    QgsGraduatedSymbolRendererModel *mModel = nullptr;
 
     QgsRangeList mCopyBuffer;
 

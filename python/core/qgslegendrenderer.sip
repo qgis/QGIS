@@ -33,7 +33,7 @@ class QgsLegendRenderer
     void drawLegend( QPainter* painter );
 
 
-    static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsComposerLegendStyle::Style style );
-    static QgsComposerLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
+    static void setNodeLegendStyle( QgsLayerTreeNode* node, QgsLegendStyle::Style style );
+    static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model );
 
 };

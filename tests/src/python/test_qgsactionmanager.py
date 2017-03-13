@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
@@ -22,11 +22,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsField,
                        QgsFields
                        )
-from qgis.PyQt.QtCore import QDir, QTemporaryFile
+from qgis.PyQt.QtCore import QDir, QTemporaryFile, QUuid
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
+
 import os
 import time
 import platform
@@ -45,7 +44,7 @@ class TestQgsActionManager(unittest.TestCase):
         self.manager = QgsActionManager(self.layer)
 
         # make a little script to aid in recording action outputs
-        # this is just a little python file which writes out it's arguments to a text file
+        # this is just a little python file which writes out its arguments to a text file
         self.run_script_file = os.path.join(QDir.tempPath(), 'run_action.py')
         with open(self.run_script_file, 'w') as s:
             s.write('import sys\n')
@@ -70,36 +69,29 @@ class TestQgsActionManager(unittest.TestCase):
         """ Test adding actions """
 
         # should be empty to start with
-        self.assertEqual(self.manager.size(), 0)
-        self.assertEqual(self.manager.listActions(), [])
+        self.assertEqual(self.manager.actions(), [])
 
         # add an action
-        self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
-        self.assertEqual(self.manager.size(), 1)
-        self.assertEqual(self.manager.listActions()[0].type(), QgsAction.GenericPython)
-        self.assertEqual(self.manager.listActions()[0].name(), 'test_action')
-        self.assertEqual(self.manager.listActions()[0].action(), 'i=1')
-        self.assertEqual(self.manager.at(0).name(), 'test_action')
-        self.assertEqual(self.manager[0].name(), 'test_action')
+        action1 = QgsAction(QgsAction.GenericPython, 'Test Action', 'i=1')
+        self.manager.addAction(action1)
+        self.assertEqual(len(self.manager.actions()), 1)
+        self.assertEqual(self.manager.actions()[0].type(), QgsAction.GenericPython)
+        self.assertEqual(self.manager.actions()[0].name(), 'Test Action')
+        self.assertEqual(self.manager.actions()[0].command(), 'i=1')
 
         # add another action
-        self.manager.addAction(QgsAction.Windows, 'test_action2', 'i=2')
-        self.assertEqual(self.manager.size(), 2)
-        self.assertEqual(self.manager.listActions()[1].type(), QgsAction.Windows)
-        self.assertEqual(self.manager.listActions()[1].name(), 'test_action2')
-        self.assertEqual(self.manager.listActions()[1].action(), 'i=2')
-        self.assertEqual(self.manager.at(1).name(), 'test_action2')
-        self.assertEqual(self.manager[1].name(), 'test_action2')
+        action2 = QgsAction(QgsAction.Windows, 'Test Action2', 'i=2')
+        self.manager.addAction(action2)
+        self.assertEqual(len(self.manager.actions()), 2)
+        self.assertEqual(self.manager.action(action2.id()).type(), QgsAction.Windows)
+        self.assertEqual(self.manager.action(action2.id()).name(), 'Test Action2')
+        self.assertEqual(self.manager.action(action2.id()).command(), 'i=2')
 
-        # add a predefined action
-        action = QgsAction(QgsAction.Unix, 'test_action3', 'i=3', False)
-        self.manager.addAction(action)
-        self.assertEqual(self.manager.size(), 3)
-        self.assertEqual(self.manager.listActions()[2].type(), QgsAction.Unix)
-        self.assertEqual(self.manager.listActions()[2].name(), 'test_action3')
-        self.assertEqual(self.manager.listActions()[2].action(), 'i=3')
-        self.assertEqual(self.manager.at(2).name(), 'test_action3')
-        self.assertEqual(self.manager[2].name(), 'test_action3')
+        id3 = self.manager.addAction(QgsAction.Generic, 'Test Action3', 'i=3')
+        self.assertEqual(len(self.manager.actions()), 3)
+        self.assertEqual(self.manager.action(id3).type(), QgsAction.Generic)
+        self.assertEqual(self.manager.action(id3).name(), 'Test Action3')
+        self.assertEqual(self.manager.action(id3).command(), 'i=3')
 
     def testRemoveActions(self):
         """ test removing actions """
@@ -109,75 +101,52 @@ class TestQgsActionManager(unittest.TestCase):
 
         # clear the manager and check that it's empty
         self.manager.clearActions()
-        self.assertEqual(self.manager.size(), 0)
-        self.assertEqual(self.manager.listActions(), [])
+        self.assertEqual(self.manager.actions(), [])
 
         # add some actions
-        self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
-        self.manager.addAction(QgsAction.GenericPython, 'test_action2', 'i=2')
-        self.manager.addAction(QgsAction.GenericPython, 'test_action3', 'i=3')
+        id1 = self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
+        id2 = self.manager.addAction(QgsAction.GenericPython, 'test_action2', 'i=2')
+        id3 = self.manager.addAction(QgsAction.GenericPython, 'test_action3', 'i=3')
 
-        # remove non-existant action
-        self.manager.removeAction(5)
+        # remove non-existent action
+        self.manager.removeAction(QUuid.createUuid())
 
         # remove them one by one
-        self.manager.removeAction(1)
-        self.assertEqual(self.manager.size(), 2)
-        self.assertEqual(self.manager.listActions()[0].name(), 'test_action')
-        self.assertEqual(self.manager.listActions()[1].name(), 'test_action3')
-        self.manager.removeAction(0)
-        self.assertEqual(self.manager.size(), 1)
-        self.assertEqual(self.manager.listActions()[0].name(), 'test_action3')
-        self.manager.removeAction(0)
-        self.assertEqual(self.manager.size(), 0)
-
-    def testRetrieveAction(self):
-        """ test retrieving actions """
-        self.manager.clearActions()
-
-        # test that exceptions are thrown when retrieving bad indices
-
-        with self.assertRaises(KeyError):
-            self.manager[0]
-
-        with self.assertRaises(KeyError):
-            self.manager.at(0)
-
-        self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
-
-        with self.assertRaises(KeyError):
-            self.manager[-1]
-
-        with self.assertRaises(KeyError):
-            self.manager.at(-1)
-
-        with self.assertRaises(KeyError):
-            self.manager[5]
-
-        with self.assertRaises(KeyError):
-            self.manager.at(5)
+        self.manager.removeAction(id2)
+        self.assertEqual(len(self.manager.actions()), 2)
+        self.assertEqual(self.manager.action(id1).name(), 'test_action')
+        self.assertEqual(self.manager.action(id3).name(), 'test_action3')
+        self.manager.removeAction(id1)
+        self.assertEqual(len(self.manager.actions()), 1)
+        self.assertEqual(self.manager.action(id3).name(), 'test_action3')
+        self.manager.removeAction(id3)
+        self.assertEqual(len(self.manager.actions()), 0)
 
     def testDefaultAction(self):
         """ test default action for layer"""
 
         self.manager.clearActions()
-        self.manager.addAction(QgsAction.GenericPython, 'test_action', 'i=1')
-        self.manager.addAction(QgsAction.GenericPython, 'test_action2', 'i=2')
+        action1 = QgsAction(QgsAction.GenericPython, 'test_action', '', 'i=1', False, actionScopes={'Feature'})
+        self.manager.addAction(action1)
+        action2 = QgsAction(QgsAction.GenericPython, 'test_action2', 'i=2')
+        self.manager.addAction(action2)
 
         # initially should be not set
-        self.assertEqual(self.manager.defaultAction(), -1)
+        self.assertFalse(self.manager.defaultAction('Feature').isValid())
 
         # set bad default action
-        self.manager.setDefaultAction(10)
-        self.assertEqual(self.manager.defaultAction(), -1)
+        self.manager.setDefaultAction('Feature', QUuid.createUuid())
+        self.assertFalse(self.manager.defaultAction('Feature').isValid())
 
         # set good default action
-        self.manager.setDefaultAction(1)
-        self.assertEqual(self.manager.defaultAction(), 1)
+        self.manager.setDefaultAction('Feature', action1.id())
+        self.assertTrue(self.manager.defaultAction('Feature').isValid())
+        self.assertEquals(self.manager.defaultAction('Feature').id(), action1.id())
+        self.assertNotEquals(self.manager.defaultAction('Feature').id(), action2.id())
 
         # if default action is removed, should be reset to -1
         self.manager.clearActions()
-        self.assertEqual(self.manager.defaultAction(), -1)
+        self.assertFalse(self.manager.defaultAction('Feature').isValid())
 
     def check_action_result(self, temp_file):
         with open(temp_file, 'r') as result:
@@ -192,7 +161,7 @@ class TestQgsActionManager(unittest.TestCase):
 
         # simple action
         temp_file = self.get_temp_filename()
-        self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test output'))
+        id1 = self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test output'))
 
         fields = QgsFields()
         fields.append(QgsField('my_field'))
@@ -202,28 +171,30 @@ class TestQgsActionManager(unittest.TestCase):
         f.setAttributes([5, 'val'])
 
         c = QgsExpressionContext()
-        self.manager.doAction(0, f, c)
+        self.manager.doAction(id1, f, c)
         time.sleep(0.5)
 
-        self.assertEqual(self.check_action_result(temp_file), 'test output')
+        self.assertEquals(self.check_action_result(temp_file), 'test output')
 
         # action with substitutions
         temp_file = self.get_temp_filename()
-        self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test [% $id %] output [% @layer_name %]'))
-        self.manager.doAction(1, f, c)
+        id2 = self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test [% $id %] output [% @layer_name %]'))
+        self.manager.doAction(id2, f, c)
         time.sleep(0.5)
 
-        self.assertEqual(self.check_action_result(temp_file), 'test 1 output test_layer')
+        self.assertEquals(self.check_action_result(temp_file), 'test 1 output test_layer')
 
         # test doAction using field variant
         temp_file = self.get_temp_filename()
-        self.manager.addAction(QgsAction.Unix, 'test_action', self.create_action(temp_file, 'test [% @current_field %]'))
-        self.manager.doActionFeature(2, f, 0)
+        id3 = self.manager.addAction(QgsAction.Unix, 'test_action',
+                                     self.create_action(temp_file, 'test : [% @field_index %] : [% @field_name %] : [% @field_value%]'))
+        self.manager.doActionFeature(id3, f, 0)
         time.sleep(0.5)
-        self.assertEqual(self.check_action_result(temp_file), 'test 5')
-        self.manager.doActionFeature(2, f, 1)
+        self.assertEquals(self.check_action_result(temp_file), 'test : 0 : my_field : 5')
+        self.manager.doActionFeature(id3, f, 1)
         time.sleep(0.5)
-        self.assertEqual(self.check_action_result(temp_file), 'test val')
+        self.assertEquals(self.check_action_result(temp_file), 'test : 1 : my_other_field : val')
+
 
 if __name__ == '__main__':
     unittest.main()

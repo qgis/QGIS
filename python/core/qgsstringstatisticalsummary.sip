@@ -31,6 +31,7 @@ class QgsStringStatisticalSummary
       Max, //!< Maximum string value
       MinimumLength, //!< Minimum length of string
       MaximumLength, //!< Maximum length of string
+      MeanLength, //!< Mean length of strings
       All, //! All statistics
     };
     typedef QFlags<QgsStringStatisticalSummary::Statistic> Statistics;
@@ -38,20 +39,20 @@ class QgsStringStatisticalSummary
     /** Constructor for QgsStringStatistics
      * @param stats flags for statistics to calculate
      */
-    QgsStringStatisticalSummary( const QgsStringStatisticalSummary::Statistics& stats = All );
+    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @see setStatistics
      */
     Statistics statistics() const;
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const Statistics& stats );
+    void setStatistics( Statistics stats );
 
     /** Resets the calculated values
      */
@@ -146,6 +147,12 @@ class QgsStringStatisticalSummary
     /** Returns the maximum length of strings.
      */
     int maxLength() const;
+
+    /**
+      * Returns the mean length of strings.
+      * @note added in QGIS 3.0
+      */
+    double meanLength() const;
 
     /** Returns the friendly display name for a statistic
      * @param statistic statistic to return name for

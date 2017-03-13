@@ -17,19 +17,20 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSettings>
 
-#include <qgsapplication.h>
+#include "qgssettings.h"
+#include "qgsapplication.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
+#include "qgisgui.h"
 
-QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
-    : QWidget( parent )
+QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
+  : QWidget( parent )
 {
-  QSettings settings;
-  int minimumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_min", 0.1 ).toDouble();
-  int maximumFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_max", 10 ).toDouble();
-  int defaultFactor = ( int ) 100 * settings.value( "/qgis/magnifier_factor_default", 1.0 ).toDouble();
+  QgsSettings settings;
+  int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
+  int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
+  int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   // label
   mLabel = new QLabel();
@@ -41,7 +42,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget* parent )
   mLabel->setToolTip( tr( "Magnifier" ) );
 
   mSpinBox = new QgsDoubleSpinBox();
-  mSpinBox->setSuffix( "%" );
+  mSpinBox->setSuffix( QStringLiteral( "%" ) );
   mSpinBox->setKeyboardTracking( false );
   mSpinBox->setMaximumWidth( 120 );
   mSpinBox->setDecimals( 0 );
@@ -71,10 +72,10 @@ QgsStatusBarMagnifierWidget::~QgsStatusBarMagnifierWidget()
 
 void QgsStatusBarMagnifierWidget::setDefaultFactor( double factor )
 {
-  mSpinBox->setClearValue(( int )100*factor );
+  mSpinBox->setClearValue( ( int )100 * factor );
 }
 
-void QgsStatusBarMagnifierWidget::setFont( const QFont& myFont )
+void QgsStatusBarMagnifierWidget::setFont( const QFont &myFont )
 {
   mLabel->setFont( myFont );
   mSpinBox->setFont( myFont );

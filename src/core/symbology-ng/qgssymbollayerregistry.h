@@ -16,6 +16,7 @@
 #ifndef QGSSYMBOLLAYERREGISTRY_H
 #define QGSSYMBOLLAYERREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgssymbol.h"
 
 class QgsVectorLayer;
@@ -30,24 +31,24 @@ class QgsSymbolLayerWidget;
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {
   public:
-    QgsSymbolLayerAbstractMetadata( const QString& name, const QString& visibleName, QgsSymbol::SymbolType type )
-        : mName( name )
-        , mVisibleName( visibleName )
-        , mType( type )
+    QgsSymbolLayerAbstractMetadata( const QString &name, const QString &visibleName, QgsSymbol::SymbolType type )
+      : mName( name )
+      , mVisibleName( visibleName )
+      , mType( type )
     {}
 
-    virtual ~QgsSymbolLayerAbstractMetadata() {}
+    virtual ~QgsSymbolLayerAbstractMetadata() = default;
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
     QgsSymbol::SymbolType type() const { return mType; }
 
-    /** Create a symbol layer of this type given the map of properties. */
-    virtual QgsSymbolLayer* createSymbolLayer( const QgsStringMap& map ) = 0;
-    /** Create widget for symbol layer of this type. Can return NULL if there's no GUI */
-    virtual QgsSymbolLayerWidget* createSymbolLayerWidget( const QgsVectorLayer * ) { return nullptr; }
-    /** Create a symbol layer of this type given the map of properties. */
-    virtual QgsSymbolLayer* createSymbolLayerFromSld( QDomElement & ) { return nullptr; }
+    //! Create a symbol layer of this type given the map of properties.
+    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0;
+    //! Create widget for symbol layer of this type. Can return NULL if there's no GUI
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) { return nullptr; }
+    //! Create a symbol layer of this type given the map of properties.
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) { return nullptr; }
 
 
   protected:
@@ -56,9 +57,9 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     QgsSymbol::SymbolType mType;
 };
 
-typedef QgsSymbolLayer*( *QgsSymbolLayerCreateFunc )( const QgsStringMap& );
-typedef QgsSymbolLayerWidget*( *QgsSymbolLayerWidgetFunc )( const QgsVectorLayer* );
-typedef QgsSymbolLayer*( *QgsSymbolLayerCreateFromSldFunc )( QDomElement& );
+typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QgsStringMap & );
+typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( const QgsVectorLayer * );
+typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & );
 
 /** \ingroup core
  Convenience metadata class that uses static functions to create symbol layer and its widget.
@@ -67,26 +68,26 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 {
   public:
     //! @note not available in python bindings
-    QgsSymbolLayerMetadata( const QString& name, const QString& visibleName,
+    QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
                             QgsSymbol::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
                             QgsSymbolLayerWidgetFunc pfWidget = nullptr )
-        : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
-        , mCreateFunc( pfCreate )
-        , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( nullptr )
+      : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
+      , mCreateFunc( pfCreate )
+      , mWidgetFunc( pfWidget )
+      , mCreateFromSldFunc( nullptr )
     {}
 
     //! @note not available in python bindings
-    QgsSymbolLayerMetadata( const QString& name, const QString& visibleName,
+    QgsSymbolLayerMetadata( const QString &name, const QString &visibleName,
                             QgsSymbol::SymbolType type,
                             QgsSymbolLayerCreateFunc pfCreate,
                             QgsSymbolLayerCreateFromSldFunc pfCreateFromSld,
                             QgsSymbolLayerWidgetFunc pfWidget = nullptr )
-        : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
-        , mCreateFunc( pfCreate )
-        , mWidgetFunc( pfWidget )
-        , mCreateFromSldFunc( pfCreateFromSld )
+      : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
+      , mCreateFunc( pfCreate )
+      , mWidgetFunc( pfWidget )
+      , mCreateFromSldFunc( pfCreateFromSld )
     {}
 
     //! @note not available in python bindings
@@ -99,9 +100,9 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     //! @note not available in python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; }
 
-    virtual QgsSymbolLayer* createSymbolLayer( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
-    virtual QgsSymbolLayerWidget* createSymbolLayerWidget( const QgsVectorLayer* vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
-    virtual QgsSymbolLayer* createSymbolLayerFromSld( QDomElement& elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
+    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
+    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
 
   protected:
     QgsSymbolLayerCreateFunc mCreateFunc;
@@ -111,43 +112,44 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 
 
 /** \ingroup core
- Registry of available symbol layer classes.
- Implemented as a singleton.
+ * Registry of available symbol layer classes.
+ *
+ * QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::symbolLayerRegistry().
  */
 class CORE_EXPORT QgsSymbolLayerRegistry
 {
   public:
 
-    //! return the single instance of this class (instantiate it if not exists)
-    static QgsSymbolLayerRegistry* instance();
+    QgsSymbolLayerRegistry();
+    ~QgsSymbolLayerRegistry();
+
+    //! QgsSymbolLayerRegistry cannot be copied.
+    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry &rh ) = delete;
+    //! QgsSymbolLayerRegistry cannot be copied.
+    QgsSymbolLayerRegistry &operator=( const QgsSymbolLayerRegistry &rh ) = delete;
 
     //! return metadata for specified symbol layer. Returns NULL if not found
-    QgsSymbolLayerAbstractMetadata* symbolLayerMetadata( const QString& name ) const;
+    QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.
-    bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata* metadata );
+    bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    QgsSymbolLayer* createSymbolLayer( const QString& name, const QgsStringMap& properties = QgsStringMap() ) const;
+    QgsSymbolLayer *createSymbolLayer( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
-    QgsSymbolLayer* createSymbolLayerFromSld( const QString& name, QDomElement &element ) const;
+    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
 
     //! return a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer* defaultSymbolLayer( QgsSymbol::SymbolType type );
-
-  protected:
-    QgsSymbolLayerRegistry();
-    ~QgsSymbolLayerRegistry();
-
-    QMap<QString, QgsSymbolLayerAbstractMetadata*> mMetadata;
+    static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type );
 
   private:
-    QgsSymbolLayerRegistry( const QgsSymbolLayerRegistry& rh );
-    QgsSymbolLayerRegistry& operator=( const QgsSymbolLayerRegistry& rh );
+
+    QMap<QString, QgsSymbolLayerAbstractMetadata *> mMetadata;
 };
 
 #endif

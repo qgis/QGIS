@@ -25,27 +25,21 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
-
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField
+import plotly as plt
+import plotly.graph_objs as go
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
-from processing.core.outputs import OutputTable
 from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects
-from processing.tools import raster
+from processing.tools import dataobjects, raster
 
 
 class RasterLayerHistogram(GeoAlgorithm):
 
     INPUT = 'INPUT'
-    PLOT = 'PLOT'
-    TABLE = 'TABLE'
     BINS = 'BINS'
+    PLOT = 'PLOT'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster layer histogram')
@@ -57,34 +51,22 @@ class RasterLayerHistogram(GeoAlgorithm):
                                           self.tr('Number of bins'), 2, None, 10))
 
         self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
-        self.addOutput(OutputTable(self.TABLE, self.tr('Table')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         nbins = self.getParameterValue(self.BINS)
 
-        outputplot = self.getOutputValue(self.PLOT)
-        outputtable = self.getOutputFromName(self.TABLE)
-
-        values = raster.scanraster(layer, progress)
+        output = self.getOutputValue(self.PLOT)
 
         # ALERT: this is potentially blocking if the layer is too big
-        plt.close()
+        values = raster.scanraster(layer, feedback)
+
         valueslist = []
         for v in values:
             if v is not None:
                 valueslist.append(v)
-        (n, bins, values) = plt.hist(valueslist, nbins)
 
-        fields = [QgsField('CENTER_VALUE', QVariant.Double),
-                  QgsField('NUM_ELEM', QVariant.Double)]
-        writer = outputtable.getTableWriter(fields)
-        for i in xrange(len(values)):
-            writer.addRecord([unicode(bins[i]) + '-' + unicode(bins[i + 1]), n[i]])
-
-        plotFilename = outputplot + '.png'
-        lab.savefig(plotFilename)
-        f = open(outputplot, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        data = [go.Histogram(x=valueslist,
+                             nbinsx=nbins)]
+        plt.offline.plot(data, filename=output, auto_open=False)

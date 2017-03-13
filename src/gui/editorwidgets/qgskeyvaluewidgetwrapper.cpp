@@ -17,8 +17,8 @@
 #include "qgskeyvaluewidget.h"
 #include "qgsattributeform.h"
 
-QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ):
-    QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
+QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
+  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
 {
 }
 
@@ -33,14 +33,14 @@ void QgsKeyValueWidgetWrapper::showIndeterminateState()
   mWidget->setMap( QVariantMap() );
 }
 
-QWidget* QgsKeyValueWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsKeyValueWidgetWrapper::createWidget( QWidget *parent )
 {
   if ( isInTable( parent ) )
   {
     // if to be put in a table, draw a border and set a decent size
-    QFrame* ret = new QFrame( parent );
+    QFrame *ret = new QFrame( parent );
     ret->setFrameShape( QFrame::StyledPanel );
-    QHBoxLayout* layout = new QHBoxLayout( ret );
+    QHBoxLayout *layout = new QHBoxLayout( ret );
     layout->addWidget( new QgsKeyValueWidget( ret ) );
     ret->setMinimumSize( QSize( 320, 110 ) );
     return ret;
@@ -51,12 +51,12 @@ QWidget* QgsKeyValueWidgetWrapper::createWidget( QWidget* parent )
   }
 }
 
-void QgsKeyValueWidgetWrapper::initWidget( QWidget* editor )
+void QgsKeyValueWidgetWrapper::initWidget( QWidget *editor )
 {
-  mWidget = qobject_cast<QgsKeyValueWidget*>( editor );
+  mWidget = qobject_cast<QgsKeyValueWidget *>( editor );
   if ( !mWidget )
   {
-    mWidget = editor->findChild<QgsKeyValueWidget*>();
+    mWidget = editor->findChild<QgsKeyValueWidget *>();
   }
 
   connect( mWidget, SIGNAL( valueChanged() ), this, SLOT( onValueChanged() ) );
@@ -67,12 +67,12 @@ bool QgsKeyValueWidgetWrapper::valid() const
   return true;
 }
 
-void QgsKeyValueWidgetWrapper::setValue( const QVariant& value )
+void QgsKeyValueWidgetWrapper::setValue( const QVariant &value )
 {
   mWidget->setMap( value.toMap() );
 }
 
-void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( bool /*constraintValid*/ )
+void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult /*constraintValid*/ )
 {
   // Nothing
 }

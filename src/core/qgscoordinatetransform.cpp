@@ -45,38 +45,35 @@ QgsCoordinateTransform::QgsCoordinateTransform()
   d = new QgsCoordinateTransformPrivate();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source, const QgsCoordinateReferenceSystem& destination )
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   d = new QgsCoordinateTransformPrivate( source, destination );
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform& o )
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
 {
   d = o.d;
 }
 
-QgsCoordinateTransform& QgsCoordinateTransform::operator=( const QgsCoordinateTransform & o )
+QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTransform &o )  //NOLINT
 {
   d = o.d;
   return *this;
 }
 
-QgsCoordinateTransform::~QgsCoordinateTransform()
-{
+QgsCoordinateTransform::~QgsCoordinateTransform() {} //NOLINT
 
-}
-
-void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &crs )
 {
   d.detach();
   d->mSourceCRS = crs;
-  d->initialise();
+  d->initialize();
 }
-void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem& crs )
+void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   d.detach();
   d->mDestCRS = crs;
-  d->initialise();
+  d->initialize();
 }
 
 QgsCoordinateReferenceSystem QgsCoordinateTransform::sourceCrs() const
@@ -89,14 +86,14 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
   return d->mDestCRS;
 }
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const QgsPoint &point, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
-    return thePoint;
+    return point;
 
   // transform x
-  double x = thePoint.x();
-  double y = thePoint.y();
+  double x = point.x();
+  double y = point.y();
   double z = 0.0;
   try
   {
@@ -127,15 +124,15 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
-    return theRect;
+    return rect;
   // transform x
-  double x1 = theRect.xMinimum();
-  double y1 = theRect.yMinimum();
-  double x2 = theRect.xMaximum();
-  double y2 = theRect.yMaximum();
+  double x1 = rect.xMinimum();
+  double y1 = rect.yMinimum();
+  double x2 = rect.xMaximum();
+  double y2 = rect.yMaximum();
 
   // Number of points to reproject------+
   //                                    |
@@ -155,15 +152,15 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, Tra
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsg( "Rect projection..." );
-  QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( theRect.xMinimum() ).arg( x1 ) );
-  QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( theRect.yMinimum() ).arg( y1 ) );
-  QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( theRect.xMaximum() ).arg( x2 ) );
-  QgsDebugMsg( QString( "Ymax : %1 --> %2" ).arg( theRect.yMaximum() ).arg( y2 ) );
+  QgsDebugMsg( QString( "Xmin : %1 --> %2" ).arg( rect.xMinimum() ).arg( x1 ) );
+  QgsDebugMsg( QString( "Ymin : %1 --> %2" ).arg( rect.yMinimum() ).arg( y1 ) );
+  QgsDebugMsg( QString( "Xmax : %1 --> %2" ).arg( rect.xMaximum() ).arg( x2 ) );
+  QgsDebugMsg( QString( "Ymax : %1 --> %2" ).arg( rect.yMaximum() ).arg( y2 ) );
 #endif
   return QgsRectangle( x1, y1, x2, y2 );
 }
 
-void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
+void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
     TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
@@ -184,7 +181,7 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
   }
 }
 
-void QgsCoordinateTransform::transformInPlace( float& x, float& y, double& z,
+void QgsCoordinateTransform::transformInPlace( float &x, float &y, double &z,
     TransformDirection direction ) const
 {
   double xd = static_cast< double >( x ), yd = static_cast< double >( y );
@@ -193,7 +190,7 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, double& z,
   y = yd;
 }
 
-void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
+void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
     TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
@@ -220,7 +217,7 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
   }
 }
 
-void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirection direction ) const
+void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
   {
@@ -236,7 +233,7 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
 
   for ( int i = 0; i < nVertices; ++i )
   {
-    const QPointF& pt = poly.at( i );
+    const QPointF &pt = poly.at( i );
     x[i] = pt.x();
     y[i] = pt.y();
     z[i] = 0;
@@ -255,14 +252,14 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
 
   for ( int i = 0; i < nVertices; ++i )
   {
-    QPointF& pt = poly[i];
+    QPointF &pt = poly[i];
     pt.rx() = x[i];
     pt.ry() = y[i];
   }
 }
 
 void QgsCoordinateTransform::transformInPlace(
-  QVector<double>& x, QVector<double>& y, QVector<double>& z,
+  QVector<double> &x, QVector<double> &y, QVector<double> &z,
   TransformDirection direction ) const
 {
 
@@ -290,7 +287,7 @@ void QgsCoordinateTransform::transformInPlace(
 
 
 void QgsCoordinateTransform::transformInPlace(
-  QVector<float>& x, QVector<float>& y, QVector<float>& z,
+  QVector<float> &x, QVector<float> &y, QVector<float> &z,
   TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
@@ -355,7 +352,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  double d = sqrt(( rect.width() * rect.height() ) / pow( sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  double d = sqrt( ( rect.width() * rect.height() ) / pow( sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
   int nXPoints = static_cast< int >( ceil( rect.width() / d ) ) + 1;
   int nYPoints = static_cast< int >( ceil( rect.height() / d ) ) + 1;
 
@@ -386,10 +383,10 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
     for ( int j = 0; j < nXPoints; j++ )
     {
-      x[( i*nXPoints ) + j] = pointX;
-      y[( i*nXPoints ) + j] = pointY;
+      x[( i * nXPoints ) + j] = pointX;
+      y[( i * nXPoints ) + j] = pointY;
       // and the height...
-      z[( i*nXPoints ) + j] = 0.0;
+      z[( i * nXPoints ) + j] = 0.0;
       // QgsDebugMsg(QString("BBox coord: (%1, %2)").arg(x[(i*numP) + j]).arg(y[(i*numP) + j]));
       pointX += dx;
     }
@@ -477,8 +474,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
-  if (( pj_is_latlong( d->mDestinationProjection ) && ( direction == ReverseTransform ) )
-      || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ForwardTransform ) ) )
+  if ( ( pj_is_latlong( d->mDestinationProjection ) && ( direction == ReverseTransform ) )
+       || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ForwardTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -508,11 +505,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     {
       if ( direction == ForwardTransform )
       {
-        points += QString( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
+        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
       }
       else
       {
-        points += QString( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
+        points += QStringLiteral( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
       }
     }
 
@@ -541,8 +538,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the result is lat/long, convert the results from radians back
   // to degrees
-  if (( pj_is_latlong( d->mDestinationProjection ) && ( direction == ForwardTransform ) )
-      || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ReverseTransform ) ) )
+  if ( ( pj_is_latlong( d->mDestinationProjection ) && ( direction == ForwardTransform ) )
+       || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ReverseTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -567,37 +564,37 @@ bool QgsCoordinateTransform::isShortCircuited() const
   return !d->mIsValid || d->mShortCircuit;
 }
 
-bool QgsCoordinateTransform::readXml( const QDomNode & theNode )
+bool QgsCoordinateTransform::readXml( const QDomNode &node )
 {
   d.detach();
 
   QgsDebugMsg( "Reading Coordinate Transform from xml ------------------------!" );
 
-  QDomNode mySrcNode = theNode.namedItem( "sourcesrs" );
+  QDomNode mySrcNode = node.namedItem( QStringLiteral( "sourcesrs" ) );
   d->mSourceCRS.readXml( mySrcNode );
 
-  QDomNode myDestNode = theNode.namedItem( "destinationsrs" );
+  QDomNode myDestNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
   d->mDestCRS.readXml( myDestNode );
 
-  d->mSourceDatumTransform = theNode.toElement().attribute( "sourceDatumTransform", "-1" ).toInt();
-  d->mDestinationDatumTransform = theNode.toElement().attribute( "destinationDatumTransform", "-1" ).toInt();
+  d->mSourceDatumTransform = node.toElement().attribute( QStringLiteral( "sourceDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
+  d->mDestinationDatumTransform = node.toElement().attribute( QStringLiteral( "destinationDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
 
-  return d->initialise();
+  return d->initialize();
 }
 
-bool QgsCoordinateTransform::writeXml( QDomNode & theNode, QDomDocument & theDoc ) const
+bool QgsCoordinateTransform::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
-  QDomElement myNodeElement = theNode.toElement();
-  QDomElement myTransformElement = theDoc.createElement( "coordinatetransform" );
-  myTransformElement.setAttribute( "sourceDatumTransform", QString::number( d->mSourceDatumTransform ) );
-  myTransformElement.setAttribute( "destinationDatumTransform", QString::number( d->mDestinationDatumTransform ) );
+  QDomElement myNodeElement = node.toElement();
+  QDomElement myTransformElement = doc.createElement( QStringLiteral( "coordinatetransform" ) );
+  myTransformElement.setAttribute( QStringLiteral( "sourceDatumTransform" ), QString::number( d->mSourceDatumTransform ) );
+  myTransformElement.setAttribute( QStringLiteral( "destinationDatumTransform" ), QString::number( d->mDestinationDatumTransform ) );
 
-  QDomElement mySourceElement = theDoc.createElement( "sourcesrs" );
-  d->mSourceCRS.writeXml( mySourceElement, theDoc );
+  QDomElement mySourceElement = doc.createElement( QStringLiteral( "sourcesrs" ) );
+  d->mSourceCRS.writeXml( mySourceElement, doc );
   myTransformElement.appendChild( mySourceElement );
 
-  QDomElement myDestElement = theDoc.createElement( "destinationsrs" );
-  d->mDestCRS.writeXml( myDestElement, theDoc );
+  QDomElement myDestElement = doc.createElement( QStringLiteral( "destinationsrs" ) );
+  d->mDestCRS.writeXml( myDestElement, doc );
   myTransformElement.appendChild( myDestElement );
 
   myNodeElement.appendChild( myTransformElement );
@@ -619,7 +616,7 @@ const char *finder( const char *name )
 
 
 
-QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS )
+QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
 {
   QList< QList< int > > transformations;
 
@@ -648,16 +645,16 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   }
 
   QList<int> directTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
   QList<int> reverseDirectTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
                         reverseDirectTransforms );
   QList<int> srcToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
                         srcToWgs84 );
   QList<int> destToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
+  searchDatumTransform( QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
                         destToWgs84 );
 
   //add direct datum transformations
@@ -687,17 +684,17 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   return transformations;
 }
 
-void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< int >& transforms )
+void QgsCoordinateTransform::searchDatumTransform( const QString &sql, QList< int > &transforms )
 {
-  sqlite3* db;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  sqlite3 *db = nullptr;
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );
     return;
   }
 
-  sqlite3_stmt* stmt;
+  sqlite3_stmt *stmt = nullptr;
   int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
   if ( prepareRes != SQLITE_OK )
   {
@@ -721,18 +718,18 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
   return QgsCoordinateTransformPrivate::datumTransformString( datumTransform );
 }
 
-bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
+bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
 {
-  sqlite3* db;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  sqlite3 *db = nullptr;
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );
     return false;
   }
 
-  sqlite3_stmt* stmt;
-  QString sql = QString( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
+  sqlite3_stmt *stmt = nullptr;
+  QString sql = QStringLiteral( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
   int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
   if ( prepareRes != SQLITE_OK )
   {
@@ -757,9 +754,9 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int& eps
   preferred = sqlite3_column_int( stmt, 5 ) != 0;
   deprecated = sqlite3_column_int( stmt, 6 ) != 0;
 
-  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( srcCrsId ) );
+  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( srcCrsId ) );
   srcProjection = srcCrs.description();
-  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "EPSG:%1" ).arg( destCrsId ) );
+  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
   sqlite3_finalize( stmt );
@@ -789,8 +786,8 @@ void QgsCoordinateTransform::setDestinationDatumTransform( int dt )
   d->mDestinationDatumTransform = dt;
 }
 
-void QgsCoordinateTransform::initialise()
+void QgsCoordinateTransform::initialize()
 {
   d.detach();
-  d->initialise();
+  d->initialize();
 }

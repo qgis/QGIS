@@ -21,28 +21,28 @@
 #include <QStringListModel>
 #include <QStandardItemModel>
 
-QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget* parent )
-    : QWidget( parent )
-    , mLayer( nullptr )
+QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget *parent )
+  : QWidget( parent )
+  , mLayer( nullptr )
 {
   setupUi( this );
 }
 
-void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer* layer )
+void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
 
   connect( mBtnAdd, SIGNAL( clicked( bool ) ), this, SLOT( onAddClicked() ) );
   connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( onRemoveClicked() ) );
 
-  QStandardItemModel* modelAvailable = new QStandardItemModel( this );
-  QStandardItemModel* modelUsed = new QStandardItemModel( this );
+  QStandardItemModel *modelAvailable = new QStandardItemModel( this );
+  QStandardItemModel *modelUsed = new QStandardItemModel( this );
 
   // populate available
-  Q_FOREACH ( const QString& providerId, QgsLayerTreeEmbeddedWidgetRegistry::instance()->providers() )
+  Q_FOREACH ( const QString &providerId, QgsLayerTreeEmbeddedWidgetRegistry::instance()->providers() )
   {
-    QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
-    QStandardItem* item = new QStandardItem( provider->name() );
+    QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
+    QStandardItem *item = new QStandardItem( provider->name() );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     item->setData( provider->id(), Qt::UserRole + 1 );
     modelAvailable->appendRow( item );
@@ -50,13 +50,13 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer* layer )
   mListAvailable->setModel( modelAvailable );
 
   // populate used
-  int widgetsCount = layer->customProperty( "embeddedWidgets/count", 0 ).toInt();
+  int widgetsCount = layer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
   for ( int i = 0; i < widgetsCount; ++i )
   {
-    QString providerId = layer->customProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
-    if ( QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
+    QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
+    if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
     {
-      QStandardItem* item = new QStandardItem( provider->name() );
+      QStandardItem *item = new QStandardItem( provider->name() );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       item->setData( provider->id(), Qt::UserRole + 1 );
       modelUsed->appendRow( item );
@@ -71,13 +71,13 @@ void QgsLayerTreeEmbeddedConfigWidget::onAddClicked()
     return;
 
   QString providerId = mListAvailable->model()->data( mListAvailable->currentIndex(), Qt::UserRole + 1 ).toString();
-  QgsLayerTreeEmbeddedWidgetProvider* provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
+  QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
   if ( !provider )
     return;
 
-  if ( QStandardItemModel* model = qobject_cast<QStandardItemModel*>( mListUsed->model() ) )
+  if ( QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mListUsed->model() ) )
   {
-    QStandardItem* item = new QStandardItem( provider->name() );
+    QStandardItem *item = new QStandardItem( provider->name() );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     item->setData( provider->id(), Qt::UserRole + 1 );
     model->appendRow( item );
@@ -99,18 +99,18 @@ void QgsLayerTreeEmbeddedConfigWidget::applyToLayer()
     return;
 
   // clear old properties
-  int widgetsCount = mLayer->customProperty( "embeddedWidgets/count", 0 ).toInt();
+  int widgetsCount = mLayer->customProperty( QStringLiteral( "embeddedWidgets/count" ), 0 ).toInt();
   for ( int i = 0; i < widgetsCount; ++i )
   {
-    mLayer->removeCustomProperty( QString( "embeddedWidgets/%1/id" ).arg( i ) );
+    mLayer->removeCustomProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) );
   }
 
   // setup new properties
   int newCount = mListUsed->model()->rowCount();
-  mLayer->setCustomProperty( "embeddedWidgets/count", newCount );
+  mLayer->setCustomProperty( QStringLiteral( "embeddedWidgets/count" ), newCount );
   for ( int i = 0; i < newCount; ++i )
   {
     QString providerId = mListUsed->model()->data( mListUsed->model()->index( i, 0 ), Qt::UserRole + 1 ).toString();
-    mLayer->setCustomProperty( QString( "embeddedWidgets/%1/id" ).arg( i ), providerId );
+    mLayer->setCustomProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ), providerId );
   }
 }

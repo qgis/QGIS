@@ -36,7 +36,7 @@ class QgsReaderThread : public QThread
     virtual void run() override;
 
   signals:
-    void helpRead( const QString& help );
+    void helpRead( const QString &help );
 };
 
 
@@ -47,7 +47,7 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
     QgsHelpViewer( QWidget *parent = nullptr, Qt::WindowFlags = 0 );
     ~QgsHelpViewer();
   public slots:
-    void showHelp( const QString& );
+    void showHelp( const QString & );
     void fileExit();
   protected:
     void moveEvent( QMoveEvent *event ) override;
@@ -55,6 +55,6 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
   private:
     void restorePosition();
     void saveWindowLocation();
-    QgsReaderThread *mThread;
+    QgsReaderThread *mThread = nullptr;
 };
 #endif // QGSHELPVIEWER_H

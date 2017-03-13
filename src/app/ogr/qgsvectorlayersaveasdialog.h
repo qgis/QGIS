@@ -20,9 +20,10 @@
 
 #include <ui_qgsvectorlayersaveasdialogbase.h>
 #include <QDialog>
-#include "qgscontexthelp.h"
-#include "qgsfield.h"
+#include "qgshelp.h"
+#include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 
@@ -41,20 +42,22 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
       AllOptions = ~0
     };
 
-    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
-    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
     QString encoding() const;
     QString filename() const;
+    QString layername() const;
     QStringList datasourceOptions() const;
     QStringList layerOptions() const;
     long crs() const;
     QgsAttributeList selectedAttributes() const;
-    /** Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16 */
+    //! Return selected attributes that must be exported with their displayed values instead of their raw values. Added in QGIS 2.16
     QgsAttributeList attributesAsDisplayedValues() const;
     bool addToCanvas() const;
+
     /** Returns type of symbology export.
         0: No symbology
         1: Feature symbology
@@ -63,7 +66,7 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     double scaleDenominator() const;
 
     //! setup canvas extent - for the use in extent group box
-    void setCanvasExtent( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
+    void setCanvasExtent( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
 
     bool hasFilterExtent() const;
     QgsRectangle filterExtent() const;
@@ -100,32 +103,36 @@ class APP_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
      */
     void setIncludeZ( bool checked );
 
+    //! Returns creation action
+    QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
+
   private slots:
 
     void on_mFormatComboBox_currentIndexChanged( int idx );
-    void on_leFilename_textChanged( const QString& text );
+    void on_leFilename_textChanged( const QString &text );
     void on_browseFilename_clicked();
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem& crs );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
+    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-layer-into-file" ) ); }
+    void on_mSymbologyExportComboBox_currentIndexChanged( const QString &text );
     void on_mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;
     void on_mSelectAllAttributes_clicked();
     void on_mDeselectAllAttributes_clicked();
     void on_mReplaceRawFieldValues_stateChanged( int state );
-    void on_mAttributeTable_itemChanged( QTableWidgetItem * item );
+    void on_mAttributeTable_itemChanged( QTableWidgetItem *item );
 
   private:
     void setup();
-    QList< QPair< QLabel*, QWidget* > > createControls( const QMap<QString, QgsVectorFileWriter::Option*>& options );
+    QList< QPair< QLabel *, QWidget * > > createControls( const QMap<QString, QgsVectorFileWriter::Option *> &options );
 
     long mCRS;
 
     QgsRectangle mLayerExtent;
     QgsCoordinateReferenceSystem mLayerCrs;
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
+    QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

@@ -18,6 +18,7 @@
 #define QGSGRADUATEDHISTOGRAMWIDGET_H
 
 #include "qgshistogramwidget.h"
+#include "qgis_gui.h"
 
 class QwtPlotPicker;
 class QgsGraduatedHistogramEventFilter;
@@ -40,13 +41,12 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
      * @param parent parent widget
      */
     QgsGraduatedHistogramWidget( QWidget *parent = nullptr );
-    ~QgsGraduatedHistogramWidget();
 
     /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
      * @param renderer associated QgsGraduatedSymbolRenderer
      */
-    void setRenderer( QgsGraduatedSymbolRenderer* renderer );
+    void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 
   signals:
 
@@ -67,17 +67,17 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
   private:
 
-    QgsGraduatedSymbolRenderer* mRenderer;
-    QwtPlotPicker* mHistoPicker;
-    QgsGraduatedHistogramEventFilter* mFilter;
+    QgsGraduatedSymbolRenderer *mRenderer = nullptr;
+    QwtPlotPicker *mHistoPicker = nullptr;
+    QgsGraduatedHistogramEventFilter *mFilter = nullptr;
     double mPressedValue;
 
     void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QwtPlotHistogram* createPlotHistogram( const QString& title, const QColor& color ) const;
+    QwtPlotHistogram *createPlotHistogram( const QString &title, const QColor &color ) const;
 #else
-    HistogramItem* createHistoItem( const QString& title, const QColor& color ) const;
+    HistogramItem *createHistoItem( const QString &title, const QColor &color ) const;
 #endif
 
 };
@@ -96,9 +96,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 
     QgsGraduatedHistogramEventFilter( QwtPlot *plot );
 
-    virtual ~QgsGraduatedHistogramEventFilter() {}
-
-    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+    virtual bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
@@ -107,7 +105,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 
   private:
 
-    QwtPlot* mPlot;
+    QwtPlot *mPlot = nullptr;
     double posToValue( QPointF point ) const;
 };
 ///@endcond

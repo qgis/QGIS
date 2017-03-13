@@ -25,8 +25,18 @@ __copyright__ = '(C) 2015, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsMapLayerRegistry
-from qgis.PyQt.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QPlainTextEdit, QLineEdit, QComboBox, QCheckBox
+from qgis.PyQt.QtWidgets import (QWidget,
+                                 QVBoxLayout,
+                                 QPushButton,
+                                 QLabel,
+                                 QPlainTextEdit,
+                                 QLineEdit,
+                                 QComboBox,
+                                 QCheckBox,
+                                 QSizePolicy)
+
+from qgis.gui import QgsMessageBar
+
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
@@ -41,8 +51,11 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 
         self.alg = alg
 
-        self.mainWidget = GdalParametersPanel(self, alg)
-        self.setMainWidget()
+        self.bar = QgsMessageBar()
+        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.layout().insertWidget(0, self.bar)
+
+        self.setMainWidget(GdalParametersPanel(self, alg))
 
         cornerWidget = QWidget()
         layout = QVBoxLayout()
@@ -55,9 +68,6 @@ class GdalAlgorithmDialog(AlgorithmDialog):
         self.tabWidget.setCornerWidget(cornerWidget)
 
         self.mainWidget.parametersHaveChanged()
-
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.mainWidget.layerAdded)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.mainWidget.layersWillBeRemoved)
 
 
 class GdalParametersPanel(ParametersPanel):
@@ -82,7 +92,8 @@ class GdalParametersPanel(ParametersPanel):
         self.parametersHaveChanged()
 
     def connectParameterSignals(self):
-        for w in self.widgets.values():
+        for wrapper in list(self.wrappers.values()):
+            w = wrapper.widget
             if isinstance(w, QLineEdit):
                 w.textChanged.connect(self.parametersHaveChanged)
             elif isinstance(w, QComboBox):
@@ -104,6 +115,6 @@ class GdalParametersPanel(ParametersPanel):
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            self.text.setPlainText(self.tr("Invalid value for parameter '%s'") % e.parameter.description)
+            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description))
         except:
             self.text.setPlainText("")

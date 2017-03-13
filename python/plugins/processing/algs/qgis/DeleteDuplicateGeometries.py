@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsGeometry, QgsFeatureRequest
+from qgis.core import QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -45,7 +45,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
 
@@ -60,21 +60,21 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         geoms = dict()
         for current, f in enumerate(features):
             geoms[f.id()] = f.geometry()
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         cleaned = dict(geoms)
 
-        for i, g in geoms.iteritems():
-            for j in cleaned.keys():
+        for i, g in list(geoms.items()):
+            for j in list(cleaned.keys()):
                 if i == j or i not in cleaned:
                     continue
                 if g.isGeosEqual(cleaned[j]):
                     del cleaned[j]
 
         total = 100.0 / len(cleaned)
-        request = QgsFeatureRequest().setFilterFids(cleaned.keys())
+        request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
         for current, f in enumerate(layer.getFeatures(request)):
             writer.addFeature(f)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

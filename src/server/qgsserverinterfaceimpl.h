@@ -21,10 +21,6 @@
 
 #include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
-#include "qgsgetrequesthandler.h"
-#include "qgspostrequesthandler.h"
-#include "qgssoaprequesthandler.h"
-#include "qgsmaprenderer.h"
 
 /**
  * QgsServerInterface
@@ -38,40 +34,49 @@ class QgsServerInterfaceImpl : public QgsServerInterface
 
   public:
 
-    /** Constructor */
-    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
+    //! Constructor
+    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache,
+                                     QgsServiceRegistry *srvRegistry,
+                                     QgsServerSettings *serverSettings );
 
-    /** Destructor */
+
     ~QgsServerInterfaceImpl();
 
-    void setRequestHandler( QgsRequestHandler* requestHandler ) override;
+    void setRequestHandler( QgsRequestHandler *requestHandler ) override;
     void clearRequestHandler() override;
-    QgsCapabilitiesCache* capabiblitiesCache() override { return mCapabilitiesCache; }
+    QgsCapabilitiesCache *capabilitiesCache() override { return mCapabilitiesCache; }
     //! Return the QgsRequestHandler, to be used only in server plugins
-    QgsRequestHandler*  requestHandler() override { return mRequestHandler; }
+    QgsRequestHandler  *requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
-    /** Register an access control filter */
+    //! Register an access control filter
+    //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
+
     /** Gets the helper over all the registered access control filters
      * @return the access control helper
      */
-    const QgsAccessControl* accessControls() const override { return mAccessControls; }
-    QString getEnv( const QString& name ) const override;
+    QgsAccessControl *accessControls() const override { return mAccessControls; }
+    QString getEnv( const QString &name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
-    void setConfigFilePath( const QString& configFilePath ) override;
+    void setConfigFilePath( const QString &configFilePath ) override;
     void setFilters( QgsServerFiltersMap *filters ) override;
-    void removeConfigCacheEntry( const QString& path ) override;
-    void removeProjectLayers( const QString& path ) override;
+    void removeConfigCacheEntry( const QString &path ) override;
+    void removeProjectLayers( const QString &path ) override;
+
+    QgsServiceRegistry *serviceRegistry() override;
+
+    QgsServerSettings *serverSettings() override;
 
   private:
 
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
-    QgsAccessControl* mAccessControls;
-    QgsCapabilitiesCache* mCapabilitiesCache;
-    QgsRequestHandler* mRequestHandler;
-
+    QgsAccessControl *mAccessControls = nullptr;
+    QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
+    QgsRequestHandler *mRequestHandler = nullptr;
+    QgsServiceRegistry *mServiceRegistry = nullptr;
+    QgsServerSettings *mServerSettings = nullptr;
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H

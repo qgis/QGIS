@@ -22,7 +22,8 @@
 #include <QMenu>
 
 #include "ui_qgsstylemanagerdialogbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgis_gui.h"
 
 class QgsStyle;
 
@@ -34,10 +35,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     Q_OBJECT
 
   public:
-    QgsStyleManagerDialog( QgsStyle* style, QWidget* parent = nullptr );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent = nullptr );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
-    static QString addColorRampStatic( QWidget* parent, QgsStyle* style,
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        QString RampType = QString() );
 
   public slots:
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void removeItem();
     void exportItemsSVG();
     void exportItemsPNG();
-    void exportSelectedItemsImages( const QString& dir, const QString& format, QSize size );
+    void exportSelectedItemsImages( const QString &dir, const QString &format, QSize size );
     void exportItems();
     void importItems();
 
@@ -57,35 +58,36 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! called when the dialog is going to be closed
     void onFinished();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#id2" ) ); }
 
-    void itemChanged( QStandardItem* item );
+    void itemChanged( QStandardItem *item );
 
-    void groupChanged( const QModelIndex& );
+    void groupChanged( const QModelIndex & );
     void groupRenamed( QStandardItem * );
-    void addGroup();
+    //! add a tag
+    int addTag();
+    //! add a smartgroup
+    int addSmartgroup();
+    //! remove a tag or smartgroup
     void removeGroup();
 
-    //! carryout symbol grouping using check boxes
-    void groupSymbolsAction();
+    //! carry out symbol tagging using check boxes
+    void tagSymbolsAction();
 
     //! edit the selected smart group
     void editSmartgroupAction();
 
     //! symbol changed from one group
-    void regrouped( QStandardItem* );
+    void regrouped( QStandardItem * );
 
     //! filter the symbols based on input search term
-    void filterSymbols( const QString& );
-
-    //! Listen to tag changes
-    void tagsChanged();
+    void filterSymbols( const QString & );
 
     //! Perform symbol specific tasks when selected
-    void symbolSelected( const QModelIndex& );
+    void symbolSelected( const QModelIndex & );
 
     //! Perform tasks when the selected symbols change
-    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Context menu for the groupTree
     void grouptreeContextMenu( QPoint );
@@ -94,8 +96,15 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void listitemsContextMenu( QPoint );
 
   protected slots:
-    bool addColorRamp( QAction* action );
-    void groupSelectedSymbols();
+    bool addColorRamp( QAction *action );
+    //! Add selected symbols to favorites
+    void addFavoriteSelectedSymbols();
+    //! Remove selected symbols from favorites
+    void removeFavoriteSelectedSymbols();
+    //! Tag selected symbols using menu item selection
+    void tagSelectedSymbols( bool newTag = false );
+    //! Remove all tags from selected symbols
+    void detagSelectedSymbols();
 
   protected:
 
@@ -104,16 +113,14 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     //! populate the groups
     void populateGroups();
-    //! build the groups tree
-    void buildGroupTree( QStandardItem* &parent );
     //! to set symbols checked when in editing mode
-    void setSymbolsChecked( const QStringList& );
+    void setSymbolsChecked( const QStringList & );
 
     //! populate list view with symbols of the current type with the given names
-    void populateSymbols( const QStringList& symbolNames, bool checkable = false );
+    void populateSymbols( const QStringList &symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps( const QStringList& colorRamps, bool checkable = false );
+    void populateColorRamps( const QStringList &colorRamps, bool checkable = false );
 
     int currentItemType();
     QString currentItemName();
@@ -133,16 +140,13 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void enableSymbolInputs( bool );
     //! Enables or disables the groupTree specific inputs
     void enableGroupInputs( bool );
-    //! Enables or diables the groupTree items for grouping mode
+    //! Enables or disables the groupTree items for grouping mode
     void enableItemsForGroupingMode( bool );
 
-    //! Event filter to capture tagsLineEdit out of focus
-    bool eventFilter( QObject*, QEvent* ) override;
-
     //! sets the text of the item with bold font
-    void setBold( QStandardItem* );
+    void setBold( QStandardItem * );
 
-    QgsStyle* mStyle;
+    QgsStyle *mStyle = nullptr;
 
     QString mStyleFilename;
 
@@ -155,16 +159,16 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QStringList mTagList;
 
     //! Context menu for the symbols/colorramps
-    QMenu *mGroupMenu;
+    QMenu *mGroupMenu = nullptr;
 
     //! Sub-menu of @c mGroupMenu, dynamically filled to show one entry for every group
-    QMenu *mGroupListMenu;
+    QMenu *mGroupListMenu = nullptr;
 
     //! Context menu for the group tree
-    QMenu* mGroupTreeContextMenu;
+    QMenu *mGroupTreeContextMenu = nullptr;
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
-    QMenu* mMenuBtnAddItemColorRamp;
+    QMenu *mMenuBtnAddItemColorRamp = nullptr;
 };
 
 #endif

@@ -23,20 +23,20 @@ QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer()
   delete mFillSymbol;
 }
 
-QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap& properties )
+QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap &properties )
 {
-  QString expression = properties.value( "geometryModifier" );
+  QString expression = properties.value( QStringLiteral( "geometryModifier" ) );
   if ( expression.isEmpty() )
   {
-    expression = "$geometry";
+    expression = QStringLiteral( "$geometry" );
   }
-  QgsGeometryGeneratorSymbolLayer* symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
+  QgsGeometryGeneratorSymbolLayer *symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
 
-  if ( properties.value( "SymbolType" ) == "Marker" )
+  if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Marker" ) )
   {
     symbolLayer->setSubSymbol( QgsMarkerSymbol::createSimple( properties ) );
   }
-  else if ( properties.value( "SymbolType" ) == "Line" )
+  else if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Line" ) )
   {
     symbolLayer->setSubSymbol( QgsLineSymbol::createSimple( properties ) );
   }
@@ -44,25 +44,26 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::create( const QgsStringMap& pro
   {
     symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ) );
   }
+  symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer;
 }
 
-QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString& expression )
-    : QgsSymbolLayer( QgsSymbol::Hybrid )
-    , mExpression( new QgsExpression( expression ) )
-    , mFillSymbol( nullptr )
-    , mLineSymbol( nullptr )
-    , mMarkerSymbol( nullptr )
-    , mSymbol( nullptr )
-    , mSymbolType( QgsSymbol::Marker )
+QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString &expression )
+  : QgsSymbolLayer( QgsSymbol::Hybrid )
+  , mExpression( new QgsExpression( expression ) )
+  , mFillSymbol( nullptr )
+  , mLineSymbol( nullptr )
+  , mMarkerSymbol( nullptr )
+  , mSymbol( nullptr )
+  , mSymbolType( QgsSymbol::Marker )
 {
 
 }
 
 QString QgsGeometryGeneratorSymbolLayer::layerType() const
 {
-  return "GeometryGenerator";
+  return QStringLiteral( "GeometryGenerator" );
 }
 
 void QgsGeometryGeneratorSymbolLayer::setSymbolType( QgsSymbol::SymbolType symbolType )
@@ -91,22 +92,22 @@ void QgsGeometryGeneratorSymbolLayer::setSymbolType( QgsSymbol::SymbolType symbo
   mSymbolType = symbolType;
 }
 
-void QgsGeometryGeneratorSymbolLayer::startRender( QgsSymbolRenderContext& context )
+void QgsGeometryGeneratorSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   mExpression->prepare( &context.renderContext().expressionContext() );
 
   subSymbol()->startRender( context.renderContext() );
 }
 
-void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext& context )
+void QgsGeometryGeneratorSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
   if ( mSymbol )
     mSymbol->stopRender( context.renderContext() );
 }
 
-QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::clone() const
+QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
-  QgsGeometryGeneratorSymbolLayer* clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );
+  QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );
 
   if ( mFillSymbol )
     clone->mFillSymbol = mFillSymbol->clone();
@@ -117,54 +118,56 @@ QgsSymbolLayer* QgsGeometryGeneratorSymbolLayer::clone() const
 
   clone->setSymbolType( mSymbolType );
 
+  copyDataDefinedProperties( clone );
+  copyPaintEffect( clone );
+
   return clone;
 }
 
 QgsStringMap QgsGeometryGeneratorSymbolLayer::properties() const
 {
   QgsStringMap props;
-  props.insert( "geometryModifier" , mExpression->expression() );
+  props.insert( QStringLiteral( "geometryModifier" ), mExpression->expression() );
   switch ( mSymbolType )
   {
     case QgsSymbol::Marker:
-      props.insert( "SymbolType", "Marker" );
+      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Marker" ) );
       break;
     case QgsSymbol::Line:
-      props.insert( "SymbolType", "Line" );
+      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Line" ) );
       break;
     default:
-      props.insert( "SymbolType", "Fill" );
+      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
       break;
   }
-
   return props;
 }
 
-void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext& context, QSize size )
+void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &context, QSize size )
 {
   if ( mSymbol )
     mSymbol->drawPreviewIcon( context.renderContext().painter(), size );
 }
 
-void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString& exp )
+void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
 {
   mExpression.reset( new QgsExpression( exp ) );
 }
 
-bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol* symbol )
+bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   switch ( symbol->type() )
   {
     case QgsSymbol::Marker:
-      mMarkerSymbol = static_cast<QgsMarkerSymbol*>( symbol );
+      mMarkerSymbol = static_cast<QgsMarkerSymbol *>( symbol );
       break;
 
     case QgsSymbol::Line:
-      mLineSymbol = static_cast<QgsLineSymbol*>( symbol );
+      mLineSymbol = static_cast<QgsLineSymbol *>( symbol );
       break;
 
     case QgsSymbol::Fill:
-      mFillSymbol = static_cast<QgsFillSymbol*>( symbol );
+      mFillSymbol = static_cast<QgsFillSymbol *>( symbol );
       break;
 
     default:
@@ -176,27 +179,29 @@ bool QgsGeometryGeneratorSymbolLayer::setSubSymbol( QgsSymbol* symbol )
   return true;
 }
 
-QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes() const
+QSet<QString> QgsGeometryGeneratorSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
 {
-  return mSymbol->usedAttributes() + mExpression->referencedColumns().toSet();
+  return QgsSymbolLayer::usedAttributes( context )
+         + mSymbol->usedAttributes( context )
+         + mExpression->referencedColumns();
 }
 
-bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol* symbol ) const
+bool QgsGeometryGeneratorSymbolLayer::isCompatibleWithSymbol( QgsSymbol *symbol ) const
 {
   Q_UNUSED( symbol )
   return true;
 }
-void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext& context )
+void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 {
   if ( context.feature() )
   {
-    QgsExpressionContext& expressionContext = context.renderContext().expressionContext();
+    QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
 
     QgsFeature f = expressionContext.feature();
     QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
     f.setGeometry( geom );
 
-    QgsExpressionContextScope* subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
+    QgsExpressionContextScope *subSymbolExpressionContextScope = mSymbol->symbolRenderContext()->expressionContextScope();
 
     subSymbolExpressionContextScope->setFeature( f );
 
@@ -204,7 +209,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext& context )
   }
 }
 
-void QgsGeometryGeneratorSymbolLayer::setColor( const QColor& color )
+void QgsGeometryGeneratorSymbolLayer::setColor( const QColor &color )
 {
   mSymbol->setColor( color );
 }

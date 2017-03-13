@@ -1,17 +1,21 @@
 /***************************************************************************
- *   Copyright (C) 2011 by Sergey Yakushev                                 *
- *   yakushevs <at >list.ru                                                *
- *                                                                         *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- ***************************************************************************/
+  qgsgraph.cpp
+  --------------------------------------
+  Date                 : 2011-04-01
+  Copyright            : (C) 2010 by Yakushev Sergey
+  Email                : YakushevS <at> list.ru
+****************************************************************************
+*                                                                          *
+*   This program is free software; you can redistribute it and/or modify   *
+*   it under the terms of the GNU General Public License as published by   *
+*   the Free Software Foundation; either version 2 of the License, or      *
+*   (at your option) any later version.                                    *
+*                                                                          *
+***************************************************************************/
 
 /**
  * \file qgsgraph.cpp
- * \brief implementation QgsGraph, QgsGraphVertex, QgsGraphArc
+ * \brief implementation QgsGraph, QgsGraphVertex, QgsGraphEdge
  */
 
 #include "qgsgraph.h"
@@ -20,36 +24,36 @@ QgsGraph::QgsGraph()
 {
 }
 
-int QgsGraph::addVertex( const QgsPoint& pt )
+int QgsGraph::addVertex( const QgsPoint &pt )
 {
   mGraphVertexes.append( QgsGraphVertex( pt ) );
   return mGraphVertexes.size() - 1;
 }
 
-int QgsGraph::addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties )
+int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies )
 {
-  QgsGraphArc e;
+  QgsGraphEdge e;
 
-  e.mProperties = properties;
+  e.mStrategies = strategies;
   e.mOut = outVertexIdx;
   e.mIn  = inVertexIdx;
-  mGraphArc.push_back( e );
-  int edgeIdx = mGraphArc.size() - 1;
+  mGraphEdges.push_back( e );
+  int edgeIdx = mGraphEdges.size() - 1;
 
-  mGraphVertexes[ outVertexIdx ].mOutArc.push_back( edgeIdx );
-  mGraphVertexes[ inVertexIdx ].mInArc.push_back( edgeIdx );
+  mGraphVertexes[ outVertexIdx ].mOutEdges.push_back( edgeIdx );
+  mGraphVertexes[ inVertexIdx ].mInEdges.push_back( edgeIdx );
 
-  return mGraphArc.size() - 1;
+  return mGraphEdges.size() - 1;
 }
 
-const QgsGraphVertex& QgsGraph::vertex( int idx ) const
+const QgsGraphVertex &QgsGraph::vertex( int idx ) const
 {
   return mGraphVertexes[ idx ];
 }
 
-const QgsGraphArc& QgsGraph::arc( int idx ) const
+const QgsGraphEdge &QgsGraph::edge( int idx ) const
 {
-  return mGraphArc[ idx ];
+  return mGraphEdges[ idx ];
 }
 
 int QgsGraph::vertexCount() const
@@ -57,12 +61,12 @@ int QgsGraph::vertexCount() const
   return mGraphVertexes.size();
 }
 
-int QgsGraph::arcCount() const
+int QgsGraph::edgeCount() const
 {
-  return mGraphArc.size();
+  return mGraphEdges.size();
 }
 
-int QgsGraph::findVertex( const QgsPoint& pt ) const
+int QgsGraph::findVertex( const QgsPoint &pt ) const
 {
   int i = 0;
   for ( i = 0; i < mGraphVertexes.size(); ++i )
@@ -75,47 +79,47 @@ int QgsGraph::findVertex( const QgsPoint& pt ) const
   return -1;
 }
 
-QgsGraphArc::QgsGraphArc()
-    : mOut( 0 )
-    , mIn( 0 )
+QgsGraphEdge::QgsGraphEdge()
+  : mOut( 0 )
+  , mIn( 0 )
 {
 
 }
 
-QVariant QgsGraphArc::property( int i ) const
+QVariant QgsGraphEdge::cost( int i ) const
 {
-  return mProperties[ i ];
+  return mStrategies[ i ];
 }
 
-QVector< QVariant > QgsGraphArc::properties() const
+QVector< QVariant > QgsGraphEdge::strategies() const
 {
-  return mProperties;
+  return mStrategies;
 }
 
-int QgsGraphArc::inVertex() const
+int QgsGraphEdge::inVertex() const
 {
   return mIn;
 }
 
-int QgsGraphArc::outVertex() const
+int QgsGraphEdge::outVertex() const
 {
   return mOut;
 }
 
-QgsGraphVertex::QgsGraphVertex( const QgsPoint& point )
-    : mCoordinate( point )
+QgsGraphVertex::QgsGraphVertex( const QgsPoint &point )
+  : mCoordinate( point )
 {
 
 }
 
-QgsGraphArcIdList QgsGraphVertex::outArc() const
+QgsGraphEdgeIds QgsGraphVertex::outEdges() const
 {
-  return mOutArc;
+  return mOutEdges;
 }
 
-QgsGraphArcIdList QgsGraphVertex::inArc() const
+QgsGraphEdgeIds QgsGraphVertex::inEdges() const
 {
-  return mInArc;
+  return mInEdges;
 }
 
 QgsPoint QgsGraphVertex::point() const

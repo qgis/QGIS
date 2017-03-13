@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -26,7 +28,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from qgis.core import Qgis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFields, QgsField, QgsFeature, QgsGeometry, QgsWkbTypes, QgsPointV2
 from qgis.PyQt.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -52,10 +54,10 @@ class PointsFromPolygons(GeoAlgorithm):
                                           self.tr('Vector layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
-        rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
+        rasterPath = str(self.getParameterValue(self.INPUT_RASTER))
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -71,7 +73,6 @@ class PointsFromPolygons(GeoAlgorithm):
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
-        point = QgsPoint()
 
         fid = 0
         polyId = 0
@@ -91,14 +92,19 @@ class PointsFromPolygons(GeoAlgorithm):
             (startRow, startColumn) = raster.mapToPixel(xMin, yMax, geoTransform)
             (endRow, endColumn) = raster.mapToPixel(xMax, yMin, geoTransform)
 
-            for row in xrange(startRow, endRow + 1):
-                for col in xrange(startColumn, endColumn + 1):
+            # use prepared geometries for faster intersection tests
+            engine = QgsGeometry.createGeometryEngine(geom.geometry())
+            engine.prepareGeometry()
+
+            for row in range(startRow, endRow + 1):
+                for col in range(startColumn, endColumn + 1):
                     (x, y) = raster.pixelToMap(row, col, geoTransform)
+                    point = QgsPointV2()
                     point.setX(x)
                     point.setY(y)
 
-                    if geom.contains(point):
-                        outFeature.setGeometry(QgsGeometry.fromPoint(point))
+                    if engine.contains(point):
+                        outFeature.setGeometry(QgsGeometry(point))
                         outFeature['id'] = fid
                         outFeature['poly_id'] = polyId
                         outFeature['point_id'] = pointId
@@ -111,6 +117,6 @@ class PointsFromPolygons(GeoAlgorithm):
             pointId = 0
             polyId += 1
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

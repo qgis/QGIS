@@ -125,7 +125,7 @@ int main( int argc, char **argv )
     if ( window.proj != PROJECTION_XY )
     {
       struct Key_Value *projinfo, *projunits;
-      char *wkt;
+      char *wkt = 0;
       projinfo = G_get_projinfo();
       projunits = G_get_projunits();
       wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
@@ -170,7 +170,7 @@ int main( int argc, char **argv )
     // Statistics
     if ( G_read_fp_range( rast_opt->answer, "", &range ) < 0 )
     {
-      G_fatal_error(( "Unable to read range file" ) );
+      G_fatal_error( ( "Unable to read range file" ) );
     }
     G_get_fp_range_min_max( &range, &zmin, &zmax );
     fprintf( stdout, "MIN_VALUE:%.17e\n", zmin );
@@ -209,8 +209,8 @@ int main( int argc, char **argv )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
-      DCELL *dcell;
-      CELL *cell;
+      DCELL *dcell = 0;
+      CELL *cell = 0;
       char buff[101];
       G_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
@@ -239,7 +239,7 @@ int main( int argc, char **argv )
           }
           else
           {
-            void *ptr;
+            void *ptr = 0;
             double val;
 
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
@@ -256,8 +256,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
               if ( G_get_c_raster_row( fd, cell, row ) < 0 )
               {
-                G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                              rast_opt->answer, row );
+                G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                               rast_opt->answer, row );
               }
 #else
               G_get_c_raster_row( fd, cell, row );
@@ -270,8 +270,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
               if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
               {
-                G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                              rast_opt->answer, row );
+                G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                               rast_opt->answer, row );
               }
 #else
               G_get_d_raster_row( fd, dcell, row );
@@ -304,11 +304,11 @@ int main( int argc, char **argv )
     {
       int fd;
       RASTER_MAP_TYPE rast_type;
-      DCELL *dcell;
-      CELL *cell;
+      DCELL *dcell = 0;
+      CELL *cell = 0;
       int ncols, nrows;
       int row, col;
-      void *ptr;
+      void *ptr = 0;
       double val;
       double min = DBL_MAX;
       double max = -DBL_MAX;
@@ -351,8 +351,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
           if ( G_get_c_raster_row( fd, cell, row ) < 0 )
           {
-            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                          rast_opt->answer, row );
+            G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                           rast_opt->answer, row );
           }
 #else
           G_get_c_raster_row( fd, cell, row );
@@ -363,8 +363,8 @@ int main( int argc, char **argv )
 #if GRASS_VERSION_MAJOR < 7
           if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
           {
-            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
-                          rast_opt->answer, row );
+            G_fatal_error( ( "Unable to read raster map <%s> row %d" ),
+                           rast_opt->answer, row );
           }
 #else
           G_get_d_raster_row( fd, dcell, row );

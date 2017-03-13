@@ -268,68 +268,68 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @see setFrameEnabled
-     * @see frameOutlineWidth
+     * @see frameStrokeWidth
      * @see frameJoinStyle
-     * @see frameOutlineColor
+     * @see frameStrokeColor
      */
     bool hasFrame() const;
 
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @see hasFrame
-     * @see setFrameOutlineWidth
+     * @see setFrameStrokeWidth
      * @see setFrameJoinStyle
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      */
     virtual void setFrameEnabled( const bool drawFrame );
 
-    /** Sets frame outline color
-     * @param color new color for outline frame
+    /** Sets frame stroke color
+     * @param color new color for stroke frame
      * @note introduced in 2.6
-     * @see frameOutlineColor
+     * @see frameStrokeColor
      * @see setFrameEnabled
      * @see setFrameJoinStyle
-     * @see setFrameOutlineWidth
+     * @see setFrameStrokeWidth
      */
-    virtual void setFrameOutlineColor( const QColor& color );
+    virtual void setFrameStrokeColor( const QColor& color );
 
-    /** Returns the frame's outline color. Only used if hasFrame is true.
-     * @returns frame outline color
+    /** Returns the frame's stroke color. Only used if hasFrame is true.
+     * @returns frame stroke color
      * @note introduced in 2.6
      * @see hasFrame
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      * @see frameJoinStyle
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      */
-    QColor frameOutlineColor() const;
+    QColor frameStrokeColor() const;
 
-    /** Sets frame outline width
-     * @param outlineWidth new width for outline frame
+    /** Sets frame stroke width
+     * @param strokeWidth new width for stroke frame
      * @note introduced in 2.2
-     * @see frameOutlineWidth
+     * @see frameStrokeWidth
      * @see setFrameEnabled
      * @see setFrameJoinStyle
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeColor
      */
-    virtual void setFrameOutlineWidth( const double outlineWidth );
+    virtual void setFrameStrokeWidth( const double strokeWidth );
 
-    /** Returns the frame's outline width. Only used if hasFrame is true.
-     * @returns Frame outline width
+    /** Returns the frame's stroke width. Only used if hasFrame is true.
+     * @returns Frame stroke width
      * @note introduced in 2.3
      * @see hasFrame
-     * @see setFrameOutlineWidth
+     * @see setFrameStrokeWidth
      * @see frameJoinStyle
-     * @see frameOutlineColor
+     * @see frameStrokeColor
      */
-    double frameOutlineWidth() const;
+    double frameStrokeWidth() const;
 
     /** Returns the join style used for drawing the item's frame
      * @returns Join style for outline frame
      * @note introduced in 2.3
      * @see hasFrame
      * @see setFrameJoinStyle
-     * @see frameOutlineWidth
-     * @see frameOutlineColor
+     * @see frameStrokeWidth
+     * @see frameStrokeColor
      */
     Qt::PenJoinStyle frameJoinStyle() const;
 
@@ -338,13 +338,13 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note introduced in 2.3
      * @see setFrameEnabled
      * @see frameJoinStyle
-     * @see setFrameOutlineWidth
-     * @see setFrameOutlineColor
+     * @see setFrameStrokeWidth
+     * @see setFrameStrokeColor
      */
     void setFrameJoinStyle( const Qt::PenJoinStyle style );
 
     /** Returns the estimated amount the item's frame bleeds outside the item's
-     * actual rectangle. For instance, if the item has a 2mm frame outline, then
+     * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
      * return value will be 1.0
      * @note introduced in 2.2
@@ -416,7 +416,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     void setTransparency( const int transparency );
 
-    /** Returns whether effects (eg blend modes) are enabled for the item
+    /** Returns whether effects (e.g., blend modes) are enabled for the item
      * @returns true if effects are enabled
      * @see setEffectsEnabled
      * @see transparency
@@ -424,7 +424,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     bool effectsEnabled() const;
 
-    /** Sets whether effects (eg blend modes) are enabled for the item
+    /** Sets whether effects (e.g., blend modes) are enabled for the item
      * @param effectsEnabled set to true to enable effects
      * @see effectsEnabled
      * @see setTransparency
@@ -508,14 +508,14 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     /** Sets visibility for item.
      * @param visible set to true to show item, false to hide item
      * @note QGraphicsItem::setVisible should not be called directly
-     * on a QgsComposerItem, as some item types (eg groups) need to override
+     * on a QgsComposerItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
      * @note added in version 2.5
      */
     virtual void setVisibility( const bool visible );
 
     /** Returns whether the item should be excluded from composer exports and prints
-     * @param valueType controls whether the returned value is the user specified vaule,
+     * @param valueType controls whether the returned value is the user specified value,
      * or the current evaluated value (which may be affected by data driven settings).
      * @returns true if item should be excluded
      * @note added in version 2.5
@@ -629,7 +629,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     /** Evaluates an item's bounding rect to consider data defined position and size of item
      * and reference point
-     * @param newRect target bouding rect for item
+     * @param newRect target bounding rect for item
      * @param resizeOnly set to true if the item is only being resized. If true then
      * the position of the returned rect will be adjusted to account for the item's
      * position mode

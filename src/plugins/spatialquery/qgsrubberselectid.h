@@ -30,14 +30,13 @@
 class QgsRubberSelectId
 {
   public:
+
     /**
      * Constructor for a class RubberSelectedId.
      * @param mapCanvas Pointer to the iface.mapCanvas().
      */
-    explicit QgsRubberSelectId( QgsMapCanvas* mapCanvas );
-    /**
-     * \brief Destructor
-     */
+    explicit QgsRubberSelectId( QgsMapCanvas *mapCanvas );
+
     ~QgsRubberSelectId();
 
     /**
@@ -58,7 +57,7 @@ class QgsRubberSelectId
      * \param mLayer    pointer to QgsVectorLayer
      * \param fid       integer for ID for feature
      */
-    void addFeature( QgsVectorLayer* lyr, QgsFeatureId fid );
+    void addFeature( QgsVectorLayer *lyr, QgsFeatureId fid );
 
     /**
      * \brief Show rubber band
@@ -69,11 +68,11 @@ class QgsRubberSelectId
     void setStyle();
 
     //! RubberBand
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
     int mColorRGB[3];
     int mWidth;
     QgsWkbTypes::GeometryType mGeometryType;
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     Q_DISABLE_COPY( QgsRubberSelectId )
 };

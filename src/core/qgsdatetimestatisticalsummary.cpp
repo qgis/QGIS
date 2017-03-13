@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVariantList>
-#include "limits.h"
+#include <limits>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -28,8 +28,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( const QgsDateTimeStatisticalSummary::Statistics& stats )
-    : mStatistics( stats )
+QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats )
+  : mStatistics( stats )
 {
   reset();
 }
@@ -41,20 +41,21 @@ void QgsDateTimeStatisticalSummary::reset()
   mCountMissing = 0;
   mMin = QDateTime();
   mMax = QDateTime();
+  mIsTimes = false;
 }
 
-void QgsDateTimeStatisticalSummary::calculate( const QVariantList& values )
+void QgsDateTimeStatisticalSummary::calculate( const QVariantList &values )
 {
   reset();
 
-  Q_FOREACH ( const QVariant& variant, values )
+  Q_FOREACH ( const QVariant &variant, values )
   {
     addValue( variant );
   }
   finalize();
 }
 
-void QgsDateTimeStatisticalSummary::addValue( const QVariant& value )
+void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
 {
   if ( value.type() == QVariant::DateTime )
   {
@@ -66,6 +67,18 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant& value )
     testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
                   : QDateTime() );
   }
+  else if ( value.type() == QVariant::Time )
+  {
+    mIsTimes = true;
+    QTime time = value.toTime();
+    testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time )
+                  : QDateTime() );
+  }
+  else //not a date
+  {
+    mCountMissing++;
+    mCount++;
+  }
   // QTime?
 }
 
@@ -75,7 +88,7 @@ void QgsDateTimeStatisticalSummary::finalize()
   //if statistics are implemented which require a post-calculation step
 }
 
-void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime& dateTime )
+void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime )
 {
   mCount++;
 
@@ -121,11 +134,11 @@ QVariant QgsDateTimeStatisticalSummary::statistic( QgsDateTimeStatisticalSummary
     case CountMissing:
       return mCountMissing;
     case Min:
-      return mMin;
+      return mIsTimes ? QVariant( mMin.time() ) : QVariant( mMin );
     case Max:
-      return mMax;
+      return mIsTimes ? QVariant( mMax.time() ) : QVariant( mMax );
     case Range:
-      return QVariant::fromValue( mMax - mMin );
+      return mIsTimes ? QVariant::fromValue( mMax.time() - mMin.time() ) : QVariant::fromValue( mMax - mMin );
     case All:
       return 0;
   }

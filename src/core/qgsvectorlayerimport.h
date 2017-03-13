@@ -19,6 +19,7 @@
 #ifndef QGSVECTORLAYERIMPORT_H
 #define QGSVECTORLAYERIMPORT_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 
 class QProgressDialog;
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsVectorLayerImport
       ErrInvalidProvider,
       ErrProviderUnsupportedFeature,
       ErrConnectionFailed,
-      ErrUserCancelled, /*!< User cancelled the import*/
+      ErrUserCanceled, //!< User canceled the import
     };
 
     /**
@@ -67,10 +68,10 @@ class CORE_EXPORT QgsVectorLayerImport
      * @param progress optional progress dialog to show progress of export
      * @returns NoError for a successful export, or encountered error
      */
-    static ImportError importLayer( QgsVectorLayer* layer,
-                                    const QString& uri,
-                                    const QString& providerKey,
-                                    const QgsCoordinateReferenceSystem& destCRS,
+    static ImportError importLayer( QgsVectorLayer *layer,
+                                    const QString &uri,
+                                    const QString &providerKey,
+                                    const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
                                     QString *errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
@@ -93,52 +94,53 @@ class CORE_EXPORT QgsVectorLayerImport
                           const QString &provider,
                           const QgsFields &fields,
                           QgsWkbTypes::Type geometryType,
-                          const QgsCoordinateReferenceSystem& crs,
+                          const QgsCoordinateReferenceSystem &crs,
                           bool overwrite = false,
                           const QMap<QString, QVariant> *options = nullptr,
                           QProgressDialog *progress = nullptr
                         );
 
-    /** Checks whether there were any errors */
+    //! QgsVectorLayerImport cannot be copied
+    QgsVectorLayerImport( const QgsVectorLayerImport &rh ) = delete;
+    //! QgsVectorLayerImport cannot be copied
+    QgsVectorLayerImport &operator=( const QgsVectorLayerImport &rh ) = delete;
+
+    //! Checks whether there were any errors
     ImportError hasError();
 
-    /** Retrieves error message */
+    //! Retrieves error message
     QString errorMessage();
 
     int errorCount() const { return mErrorCount; }
 
-    /** Add feature to the new created layer */
-    bool addFeature( QgsFeature& feature );
+    //! Add feature to the new created layer
+    bool addFeature( QgsFeature &feature );
 
-    /** Close the new created layer */
+    //! Close the new created layer
     ~QgsVectorLayerImport();
 
   protected:
-    /** Flush the buffer writing the features to the new layer */
+    //! Flush the buffer writing the features to the new layer
     bool flushBuffer();
 
-    /** Create index */
+    //! Create index
     bool createSpatialIndex();
 
-    /** Contains error value */
+    //! Contains error value
     ImportError mError;
     QString mErrorMessage;
 
     int mErrorCount;
 
-    QgsVectorDataProvider *mProvider;
+    QgsVectorDataProvider *mProvider = nullptr;
 
-    /** Map attribute indexes to new field indexes */
+    //! Map attribute indexes to new field indexes
     QMap<int, int> mOldToNewAttrIdx;
     int mAttributeCount;
 
     QgsFeatureList mFeatureBuffer;
-    QProgressDialog *mProgress;
+    QProgressDialog *mProgress = nullptr;
 
-  private:
-
-    QgsVectorLayerImport( const QgsVectorLayerImport& rh );
-    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh );
 };
 
 #endif

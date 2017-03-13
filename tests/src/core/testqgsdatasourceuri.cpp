@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 //header for class being tested
@@ -52,88 +52,88 @@ void TestQgsDataSourceUri::checkparser_data()
 
 
   QTest::newRow( "oci" )
-  << "host=myhost port=1234 user='myname' password='mypasswd' estimatedmetadata=true srid=1000003007 table=\"myschema\".\"mytable\" (GEOM) myparam='myvalue' sql="
-  << "mytable" // table
-  << "GEOM" // geometrycolumn
-  << "" // key
-  << true // estimatedmetadata
-  << "1000003007" // srid
-  << QgsWkbTypes::Unknown // type
-  << false // selectatid
-  << "" // service
-  << "myname" // user
-  << "mypasswd" // password
-  << "" // dbname
-  << "myhost" // host
-  << "1234" // port
-  << "" // driver
-  << QgsDataSourceUri::SslPrefer // sslmode
-  << "" // sql
-  << "myvalue" // myparam
-  ;
+      << "host=myhost port=1234 user='myname' password='mypasswd' estimatedmetadata=true srid=1000003007 table=\"myschema\".\"mytable\" (GEOM) myparam='myvalue' sql="
+      << "mytable" // table
+      << "GEOM" // geometrycolumn
+      << "" // key
+      << true // estimatedmetadata
+      << "1000003007" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "myname" // user
+      << "mypasswd" // password
+      << "" // dbname
+      << "myhost" // host
+      << "1234" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "myvalue" // myparam
+      ;
 
   QTest::newRow( "pgrast" )
-  << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable"
-  << "mytable" // table
-  << "" // geometrycolumn
-  << "" // key
-  << false // estimatedmetadata
-  << "" // srid
-  << QgsWkbTypes::Unknown // type
-  << false // selectatid
-  << "" // service
-  << "myname" // user
-  << "mypasswd" // password
-  << "mydb" // dbname
-  << "myhost" // host
-  << "5432" // port
-  << "" // driver
-  << QgsDataSourceUri::SslPrefer // sslmode
-  << "" // sql
-  << "" // myparam
-  ;
+      << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable"
+      << "mytable" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "myname" // user
+      << "mypasswd" // password
+      << "mydb" // dbname
+      << "myhost" // host
+      << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      ;
 
   QTest::newRow( "pgmlsz" )
-  << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable type=MultiLineStringZ"
-  << "mytable" // table
-  << "" // geometrycolumn
-  << "" // key
-  << false // estimatedmetadata
-  << "" // srid
-  << QgsWkbTypes::MultiLineStringZ // type
-  << false // selectatid
-  << "" // service
-  << "myname" // user
-  << "mypasswd" // password
-  << "mydb" // dbname
-  << "myhost" // host
-  << "5432" // port
-  << "" // driver
-  << QgsDataSourceUri::SslPrefer // sslmode
-  << "" // sql
-  << "" // myparam
-  ;
+      << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable type=MultiLineStringZ"
+      << "mytable" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << QgsWkbTypes::MultiLineStringZ // type
+      << false // selectatid
+      << "" // service
+      << "myname" // user
+      << "mypasswd" // password
+      << "mydb" // dbname
+      << "myhost" // host
+      << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      ;
 
   QTest::newRow( "DB2" )
-  << "host=localhost port=50000 dbname=OSTEST user='osuser' password='osuserpw' estimatedmetadata=true srid=4326 key=OBJECTID table=TEST.ZIPPOINT (GEOM) myparam='myvalue' driver='IBM DB2 ODBC DRIVER' sql="
-  << "TEST.ZIPPOINT" // table
-  << "GEOM" // geometrycolumn
-  << "OBJECTID" // key
-  << true // estimatedmetadata
-  << "4326" // srid
-  << QgsWkbTypes::Unknown // type
-  << false // selectatid
-  << "" // service
-  << "osuser" // user
-  << "osuserpw" // password
-  << "OSTEST" // dbname
-  << "localhost" // host
-  << "50000" // port
-  << "IBM DB2 ODBC DRIVER" // driver
-  << QgsDataSourceUri::SslPrefer // sslmode
-  << "" // sql
-  << "myvalue" // myparam
-  ;
+      << "host=localhost port=50000 dbname=OSTEST user='osuser' password='osuserpw' estimatedmetadata=true srid=4326 key=OBJECTID table=TEST.ZIPPOINT (GEOM) myparam='myvalue' driver='IBM DB2 ODBC DRIVER' sql="
+      << "TEST.ZIPPOINT" // table
+      << "GEOM" // geometrycolumn
+      << "OBJECTID" // key
+      << true // estimatedmetadata
+      << "4326" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "osuser" // user
+      << "osuserpw" // password
+      << "OSTEST" // dbname
+      << "localhost" // host
+      << "50000" // port
+      << "IBM DB2 ODBC DRIVER" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "myvalue" // myparam
+      ;
 }
 
 void TestQgsDataSourceUri::checkparser()
@@ -177,5 +177,5 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.param( "myparam" ), myparam );
 }
 
-QTEST_MAIN( TestQgsDataSourceUri )
+QGSTEST_MAIN( TestQgsDataSourceUri )
 #include "testqgsdatasourceuri.moc"

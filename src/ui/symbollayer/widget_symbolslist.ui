@@ -37,8 +37,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>48</width>
-       <height>48</height>
+       <width>77</width>
+       <height>70</height>
       </size>
      </property>
      <property name="textElideMode">
@@ -72,7 +72,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Symbols in group</string>
+        <string>Symbols in</string>
        </property>
       </widget>
      </item>
@@ -131,17 +131,11 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSaveSymbol">
-       <property name="maximumSize">
-        <size>
-         <width>70</width>
-         <height>16777215</height>
-        </size>
-       </property>
        <property name="toolTip">
         <string>Save symbol</string>
        </property>
        <property name="text">
-        <string>Save</string>
+        <string>Save symbol</string>
        </property>
       </widget>
      </item>
@@ -292,7 +286,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+            <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
              <property name="text">
               <string>...</string>
              </property>
@@ -335,7 +329,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+            <widget class="QgsPropertyOverrideButton" name="mRotationDDBtn">
              <property name="text">
               <string>...</string>
              </property>
@@ -385,7 +379,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+            <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
              <property name="text">
               <string>...</string>
              </property>
@@ -416,9 +410,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

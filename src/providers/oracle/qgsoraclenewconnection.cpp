@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
 
+#include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"
 
-QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mOriginalConnName( connName )
+QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
 
@@ -34,7 +34,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/Oracle/connections/" + connName;
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -81,10 +81,10 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     txtName->setText( connName );
   }
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 void QgsOracleNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = "/Oracle/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 
@@ -98,13 +98,13 @@ void QgsOracleNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -165,7 +165,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   }
 }
 
-/** End  Autoconnected SLOTS **/
+//! End  Autoconnected SLOTS *
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {

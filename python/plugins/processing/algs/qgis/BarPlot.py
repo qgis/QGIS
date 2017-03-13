@@ -25,8 +25,8 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import matplotlib.pyplot as plt
-import matplotlib.pylab as lab
+import plotly as plt
+import plotly.graph_objs as go
 import numpy as np
 
 from processing.core.parameters import ParameterTable
@@ -60,7 +60,7 @@ class BarPlot(GeoAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Bar plot')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
@@ -69,14 +69,8 @@ class BarPlot(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
 
         values = vector.values(layer, namefieldname, valuefieldname)
-        plt.close()
 
         ind = np.arange(len(values[namefieldname]))
-        width = 0.8
-        plt.bar(ind, values[valuefieldname], width, color='r')
-        plt.xticks(ind, values[namefieldname], rotation=45)
-        plotFilename = output + '.png'
-        lab.savefig(plotFilename)
-        f = open(output, 'w')
-        f.write('<html><img src="' + plotFilename + '"/></html>')
-        f.close()
+        data = [go.Bar(x=ind,
+                       y=values[valuefieldname])]
+        plt.offline.plot(data, filename=output, auto_open=False)

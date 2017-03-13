@@ -6,22 +6,6 @@ class QgsRasterRenderer : QgsRasterInterface
 %End
 
   public:
-    // Origin of min / max values
-    enum MinMaxOrigin
-    {
-      MinMaxUnknown,
-      MinMaxUser, // entered by user
-      // method
-      MinMaxMinMax,
-      MinMaxCumulativeCut,
-      MinMaxStdDev,
-      // Extent
-      MinMaxFullExtent,
-      MinMaxSubExtent,
-      // Precision
-      MinMaxEstimated,
-      MinMaxExact
-    };
 
     static const QRgb NODATA_COLOR;
 
@@ -60,14 +44,16 @@ class QgsRasterRenderer : QgsRasterInterface
     /** Copies common properties like opacity / transparency data from other renderer.
      *  Useful when cloning renderers.
      *  @note added in 2.16  */
-    void copyCommonProperties( const QgsRasterRenderer* other );
+    void copyCommonProperties( const QgsRasterRenderer* other, bool copyMinMaxOrigin = true );
 
     /** Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const;
 
-    static QString minMaxOriginName( int theOrigin );
-    static QString minMaxOriginLabel( int theOrigin );
-    static int minMaxOriginFromName( const QString& theName );
+    //! Returns const reference to origin of min/max values
+    const QgsRasterMinMaxOrigin& minMaxOrigin() const;
+
+    //! Sets origin of min/max values
+    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& origin );
 
   protected:
 

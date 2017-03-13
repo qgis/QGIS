@@ -18,13 +18,10 @@
 
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDesignerCustomWidgetCollectionInterface>
-#include <QDesignerExportWidget>
-#else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#endif
+#include "qgis_customwidgets.h"
+
 
 
 class CUSTOMWIDGETS_EXPORT QgsFileWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

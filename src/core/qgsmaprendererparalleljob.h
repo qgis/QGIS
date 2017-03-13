@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDERERPARALLELJOB_H
 #define QGSMAPRENDERERPARALLELJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 /** \ingroup core
@@ -30,31 +31,33 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererParallelJob( const QgsMapSettings& settings );
+    QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob();
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    virtual bool usedCachedLabels() const override;
+    virtual QgsLabelingResults *takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;
 
-  protected slots:
+  private slots:
     //! layers are rendered, labeling is still pending
     void renderLayersFinished();
     //! all rendering is finished, including labeling
     void renderingFinished();
 
-  protected:
+  private:
 
-    static void renderLayerStatic( LayerRenderJob& job );
-    static void renderLabelsStatic( QgsMapRendererParallelJob* self );
-
-  protected:
+    //! @note not available in Python bindings
+    static void renderLayerStatic( LayerRenderJob &job );
+    //! @note not available in Python bindings
+    static void renderLabelsStatic( QgsMapRendererParallelJob *self );
 
     QImage mFinalImage;
 
@@ -65,12 +68,13 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QFutureWatcher<void> mFutureWatcher;
 
     LayerRenderJobs mLayerJobs;
+    LabelRenderJob mLabelJob;
 
     //! New labeling engine
-    QgsLabelingEngine* mLabelingEngineV2;
-    QgsRenderContext mLabelingRenderContext;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;
+
 };
 
 

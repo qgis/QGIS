@@ -21,6 +21,8 @@
 
 #include <QNetworkReply>
 
+#include "qgis_core.h"
+
 /** \ingroup core
   \brief Multipart QNetworkReply parser.
 
@@ -54,9 +56,9 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
       * @param part part index
       * @param headerName header name
       * @return raw header */
-    QByteArray rawHeader( int part, const QByteArray & headerName ) const { return mHeaders.value( part ).value( headerName ); }
+    QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
-    /** Get headers */
+    //! Get headers
     QList< RawHeaderMap > headers() const { return mHeaders; }
 
     /** Get part part body
@@ -64,10 +66,10 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
       * @return part body */
     QByteArray body( int part ) const { return mBodies.value( part ); }
 
-    /** Get bodies */
+    //! Get bodies
     QList<QByteArray> bodies() const { return mBodies; }
 
-    /** Parsing error */
+    //! Parsing error
     QString error() const { return mError; }
 
     /** Test if reply is multipart.
@@ -75,7 +77,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     static bool isMultipart( QNetworkReply *reply );
 
   private:
-    QNetworkReply *mReply;
+    QNetworkReply *mReply = nullptr;
 
     bool mValid;
 

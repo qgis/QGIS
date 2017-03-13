@@ -20,6 +20,7 @@
 #include "ui_qgsattributeloadfrommap.h"
 
 #include <vector>
+#include "qgis_gui.h"
 
 class QDialog;
 class QLayout;
@@ -36,7 +37,6 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
 
   public:
     QgsAttributeTypeLoadDialog( QgsVectorLayer *vl );
-    ~QgsAttributeTypeLoadDialog();
 
     /**
      * Overloaded accept method which will write the feature field
@@ -64,6 +64,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     bool insertNull();
 
   private slots:
+
     /**
      * Slot which reacts to change of selected layer to fill other two comboboxes with correct data
      * @param layerIndex index of layer which was selected
@@ -95,7 +96,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
      */
     void loadDataToValueMap();
 
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     QMap<QString, QVariant> mValueMap;
 };
 

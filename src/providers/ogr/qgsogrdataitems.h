@@ -23,10 +23,9 @@ class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
-    ~QgsOgrLayerItem();
+    QgsOgrLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
 
-    bool setCrs( QgsCoordinateReferenceSystem crs ) override;
+    bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
     QString layerName() const override;
 };
@@ -36,10 +35,9 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsOgrDataCollectionItem();
+    QgsOgrDataCollectionItem( QgsDataItem *parent, QString name, QString path );
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 };
 
 #endif // QGSOGRDATAITEMS_H

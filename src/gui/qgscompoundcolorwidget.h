@@ -19,6 +19,7 @@
 #include "qgisgui.h"
 #include "qgspanelwidget.h"
 #include "ui_qgscompoundcolorwidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsCompoundColorWidget
@@ -37,8 +38,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     //! Widget layout
     enum Layout
     {
-      LayoutDefault = 0, /*!< Use the default (rectangular) layout */
-      LayoutVertical, /*!< Use a narrower, vertically stacked layout */
+      LayoutDefault = 0, //!< Use the default (rectangular) layout
+      LayoutVertical, //!< Use a narrower, vertically stacked layout
     };
 
     /** Constructor for QgsCompoundColorWidget
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * @param color initial color for dialog
      * @param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor& color = QColor(), Layout layout = LayoutDefault );
+    QgsCompoundColorWidget( QWidget *parent = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
     ~QgsCompoundColorWidget();
 
@@ -85,11 +86,11 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     /** Sets the color to show in an optional "previous color" section
      * @param color previous color
      */
-    void setPreviousColor( const QColor& color );
+    void setPreviousColor( const QColor &color );
 
   protected:
 
-    void mousePressEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
     void mouseMoveEvent( QMouseEvent *e ) override;
 

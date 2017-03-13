@@ -28,4 +28,6 @@ class QgsXmlUtils
     static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument& doc );
 
     static QDomElement writeRectangle( const QgsRectangle& rect, QDomDocument& doc );
+    static QDomElement writeVariant( const QVariant& value, QDomDocument& doc );
+    static QVariant readVariant( const QDomElement& element );
 };

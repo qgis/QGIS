@@ -24,14 +24,15 @@
 #include "qgscoloreffect.h"
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
+#include "qgscolorrampbutton.h"
 
 //
 // draw source
 //
 
 QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
   initGui();
@@ -40,10 +41,10 @@ QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
 
 void QgsDrawSourceWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "drawSource" )
+  if ( !effect || effect->type() != QLatin1String( "drawSource" ) )
     return;
 
-  mEffect = static_cast<QgsDrawSourceEffect*>( effect );
+  mEffect = static_cast<QgsDrawSourceEffect *>( effect );
   initGui();
 }
 
@@ -118,8 +119,8 @@ void QgsDrawSourceWidget::on_mTransparencySlider_valueChanged( int value )
 //
 
 QgsBlurWidget::QgsBlurWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -132,10 +133,10 @@ QgsBlurWidget::QgsBlurWidget( QWidget *parent )
 
 void QgsBlurWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "blur" )
+  if ( !effect || effect->type() != QLatin1String( "blur" ) )
     return;
 
-  mEffect = static_cast<QgsBlurEffect*>( effect );
+  mEffect = static_cast<QgsBlurEffect *>( effect );
   initGui();
 }
 
@@ -245,26 +246,27 @@ void QgsBlurWidget::on_mTransparencySlider_valueChanged( int value )
 //
 
 QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
   mShadowColorBtn->setAllowAlpha( false );
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
-  mShadowColorBtn->setContext( "symbology" );
+  mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
 
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   initGui();
 }
 
 void QgsShadowEffectWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || ( effect->type() != "dropShadow" && effect->type() != "innerShadow" ) )
+  if ( !effect || ( effect->type() != QLatin1String( "dropShadow" ) && effect->type() != QLatin1String( "innerShadow" ) ) )
     return;
 
-  mEffect = static_cast<QgsShadowEffect*>( effect );
+  mEffect = static_cast<QgsShadowEffect *>( effect );
   initGui();
 }
 
@@ -410,34 +412,32 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 //
 
 QgsGlowWidget::QgsGlowWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
   mColorBtn->setAllowAlpha( false );
   mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
-  mColorBtn->setContext( "symbology" );
+  mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
-  mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
+  mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  mRampComboBox->populate( QgsStyle::defaultStyle() );
-  mRampComboBox->setShowGradientOnly( true );
-  connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
-  connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
-  connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );
-
-  connect( radioSingleColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
+  btnColorRamp->setShowGradientOnly( true );
 
   initGui();
+
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGlowWidget::applyColorRamp );
+  connect( radioSingleColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
 }
 
 void QgsGlowWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || ( effect->type() != "outerGlow" && effect->type() != "innerGlow" ) )
+  if ( !effect || ( effect->type() != QLatin1String( "outerGlow" ) && effect->type() != QLatin1String( "innerGlow" ) ) )
     return;
 
-  mEffect = static_cast<QgsGlowEffect*>( effect );
+  mEffect = static_cast<QgsGlowEffect *>( effect );
   initGui();
 }
 
@@ -461,14 +461,13 @@ void QgsGlowWidget::initGui()
 
   if ( mEffect->ramp() )
   {
-    mRampComboBox->setSourceColorRamp( mEffect->ramp() );
+    btnColorRamp->setColorRamp( mEffect->ramp() );
   }
 
   radioSingleColor->setChecked( mEffect->colorType() == QgsGlowEffect::SingleColor );
   mColorBtn->setEnabled( mEffect->colorType() == QgsGlowEffect::SingleColor );
   radioColorRamp->setChecked( mEffect->colorType() == QgsGlowEffect::ColorRamp );
-  mRampComboBox->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
-  mButtonEditRamp->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
+  btnColorRamp->setEnabled( mEffect->colorType() == QgsGlowEffect::ColorRamp );
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
 
   blockSignals( false );
@@ -483,7 +482,7 @@ void QgsGlowWidget::blockSignals( const bool block )
   mTranspSlider->blockSignals( block );
   mColorBtn->blockSignals( block );
   mBlendCmbBx->blockSignals( block );
-  mRampComboBox->blockSignals( block );
+  btnColorRamp->blockSignals( block );
   radioSingleColor->blockSignals( block );
   radioColorRamp->blockSignals( block );
   mDrawModeComboBox->blockSignals( block );
@@ -503,7 +502,7 @@ void QgsGlowWidget::colorModeChanged()
   else
   {
     mEffect->setColorType( QgsGlowEffect::ColorRamp );
-    mEffect->setRamp( mRampComboBox->currentColorRamp() );
+    mEffect->setRamp( btnColorRamp->colorRamp() );
   }
   emit changed();
 }
@@ -594,7 +593,7 @@ void QgsGlowWidget::applyColorRamp()
     return;
   }
 
-  QgsColorRamp* ramp = mRampComboBox->currentColorRamp();
+  QgsColorRamp *ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
@@ -607,12 +606,13 @@ void QgsGlowWidget::applyColorRamp()
 //
 
 QgsTransformWidget::QgsTransformWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
-  mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits );
+  mTranslateUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
+                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
   mSpinShearX->setClearValue( 0 );
@@ -626,10 +626,10 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
 
 void QgsTransformWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "transform" )
+  if ( !effect || effect->type() != QLatin1String( "transform" ) )
     return;
 
-  mEffect = static_cast<QgsTransformEffect*>( effect );
+  mEffect = static_cast<QgsTransformEffect *>( effect );
   initGui();
 }
 
@@ -784,8 +784,8 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 //
 
 QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
-    : QgsPaintEffectWidget( parent )
-    , mEffect( nullptr )
+  : QgsPaintEffectWidget( parent )
+  , mEffect( nullptr )
 {
   setupUi( this );
 
@@ -804,10 +804,10 @@ QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
 
 void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
 {
-  if ( !effect || effect->type() != "color" )
+  if ( !effect || effect->type() != QLatin1String( "color" ) )
     return;
 
-  mEffect = static_cast<QgsColorEffect*>( effect );
+  mEffect = static_cast<QgsColorEffect *>( effect );
   initGui();
 }
 
@@ -822,11 +822,11 @@ void QgsColorEffectWidget::initGui()
 
   mSliderBrightness->setValue( mEffect->brightness() );
   mSliderContrast->setValue( mEffect->contrast() );
-  mSliderSaturation->setValue(( mEffect->saturation() - 1.0 ) * 100.0 );
+  mSliderSaturation->setValue( ( mEffect->saturation() - 1.0 ) * 100.0 );
   mColorizeCheck->setChecked( mEffect->colorizeOn() );
   mSliderColorizeStrength->setValue( mEffect->colorizeStrength() );
   mColorizeColorButton->setColor( mEffect->colorizeColor() );
-  int grayscaleIdx = mGrayscaleCombo->findData( QVariant(( int ) mEffect->grayscaleMode() ) );
+  int grayscaleIdx = mGrayscaleCombo->findData( QVariant( ( int ) mEffect->grayscaleMode() ) );
   mGrayscaleCombo->setCurrentIndex( grayscaleIdx == -1 ? 0 : grayscaleIdx );
   mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
   mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
@@ -961,6 +961,6 @@ void QgsColorEffectWidget::on_mGrayscaleCombo_currentIndexChanged( int index )
   if ( !mEffect )
     return;
 
-  mEffect->setGrayscaleMode(( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->itemData( mGrayscaleCombo->currentIndex() ).toInt() );
+  mEffect->setGrayscaleMode( ( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->currentData().toInt() );
   emit changed();
 }

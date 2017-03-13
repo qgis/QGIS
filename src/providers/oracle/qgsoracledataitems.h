@@ -36,14 +36,14 @@ class QgsOracleRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleRootItem( QgsDataItem* parent, QString name, QString path );
+    QgsOracleRootItem( QgsDataItem *parent, QString name, QString path );
     ~QgsOracleRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren();
 
-    virtual QWidget * paramWidget();
+    virtual QWidget *paramWidget();
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction *> actions();
 
     static QMainWindow *sMainWindow;
 
@@ -56,15 +56,15 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleConnectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsOracleConnectionItem( QgsDataItem *parent, QString name, QString path );
     ~QgsOracleConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren();
     virtual bool equal( const QgsDataItem *other );
-    virtual QList<QAction*> actions();
+    virtual QList<QAction *> actions();
 
     virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action );
 
     void refresh();
 
@@ -84,7 +84,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
   private:
     void stop();
     QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
-    QgsOracleColumnTypeThread *mColumnTypeThread;
+    QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
     void setAllAsPopulated();
 };
 
@@ -92,10 +92,10 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOracleOwnerItem( QgsDataItem* parent, QString name, QString path );
+    QgsOracleOwnerItem( QgsDataItem *parent, QString name, QString path );
     ~QgsOracleOwnerItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren();
 
     void addLayer( QgsOracleLayerProperty layerProperty );
 };
@@ -105,12 +105,12 @@ class QgsOracleLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsOracleLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsOracleLayerProperty layerProperties );
+    QgsOracleLayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsOracleLayerProperty layerProperties );
     ~QgsOracleLayerItem();
 
     QString createUri();
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction *> actions();
 
   public slots:
     void deleteLayer();

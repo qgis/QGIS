@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,7 +36,7 @@ from qgis.core import QgsMessageLog
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class ProcessingLog:
+class ProcessingLog(object):
 
     LOG_ERROR = 'ERROR'
     LOG_INFO = 'INFO'
@@ -47,10 +49,9 @@ class ProcessingLog:
     def logFilename():
         logFilename = userFolder() + os.sep + 'processing.log'
         if not os.path.isfile(logFilename):
-            logfile = codecs.open(logFilename, 'w', encoding='utf-8')
-            logfile.write('Started logging at ' +
-                          datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT) + '\n')
-            logfile.close()
+            with codecs.open(logFilename, 'w', encoding='utf-8') as logfile:
+                logfile.write('Started logging at ' +
+                              datetime.datetime.now().strftime(ProcessingLog.DATE_FORMAT) + '\n')
 
         return logFilename
 
@@ -65,10 +66,9 @@ class ProcessingLog:
                 line = msgtype + '|' + datetime.datetime.now().strftime(
                     ProcessingLog.DATE_FORMAT) + '|' \
                     + msg + '\n'
-                logfile = codecs.open(ProcessingLog.logFilename(), 'a',
-                                      encoding='utf-8')
-                logfile.write(line)
-                logfile.close()
+                with codecs.open(ProcessingLog.logFilename(), 'a',
+                                 encoding='utf-8') as logfile:
+                    logfile.write(line)
                 algname = msg[len('Processing.runalg("'):]
                 algname = algname[:algname.index('"')]
                 if algname not in ProcessingLog.recentAlgs:
@@ -133,7 +133,7 @@ class ProcessingLog:
     def saveLog(fileName):
         entries = ProcessingLog.getLogEntries()
         with codecs.open(fileName, 'w', encoding='utf-8') as f:
-            for k, v in entries.iteritems():
+            for k, v in list(entries.items()):
                 for entry in v:
                     f.write('%s|%s|%s\n' % (k, entry.date, entry.text))
 
@@ -144,7 +144,7 @@ class ProcessingLog:
         return QCoreApplication.translate(context, string)
 
 
-class LogEntry:
+class LogEntry(object):
 
     def __init__(self, date, text):
         self.date = date

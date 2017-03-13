@@ -24,20 +24,20 @@
 
 QString QgsOSMDownload::defaultServiceUrl()
 {
-  return "http://overpass-api.de/api/interpreter";
+  return QStringLiteral( "http://overpass-api.de/api/interpreter" );
 }
 
 
-QString QgsOSMDownload::queryFromRect( const QgsRectangle& rect )
+QString QgsOSMDownload::queryFromRect( const QgsRectangle &rect )
 {
-  return QString( "(node(%1,%2,%3,%4);<;);out;" ).arg( rect.yMinimum() ).arg( rect.xMinimum() )
+  return QStringLiteral( "(node(%1,%2,%3,%4);<;);out;" ).arg( rect.yMinimum() ).arg( rect.xMinimum() )
          .arg( rect.yMaximum() ).arg( rect.xMaximum() );
 }
 
 
 QgsOSMDownload::QgsOSMDownload()
-    : mServiceUrl( defaultServiceUrl() )
-    , mReply( nullptr )
+  : mServiceUrl( defaultServiceUrl() )
+  , mReply( nullptr )
 {
 }
 
@@ -74,10 +74,10 @@ bool QgsOSMDownload::start()
     return false;
   }
 
-  QgsNetworkAccessManager* nwam = QgsNetworkAccessManager::instance();
+  QgsNetworkAccessManager *nwam = QgsNetworkAccessManager::instance();
 
   QUrl url( mServiceUrl );
-  url.addQueryItem( "data", mQuery );
+  url.addQueryItem( QStringLiteral( "data" ), mQuery );
 
   QNetworkRequest request( url );
   request.setRawHeader( "User-Agent", "QGIS" );

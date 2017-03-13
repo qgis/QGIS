@@ -18,16 +18,12 @@
 #include "qgsattributeform.h"
 #include "qgsfeature.h"
 
-QgsAttributeFormInterface::QgsAttributeFormInterface( QgsAttributeForm* form )
-    : mForm( form )
+QgsAttributeFormInterface::QgsAttributeFormInterface( QgsAttributeForm *form )
+  : mForm( form )
 {
 }
 
-QgsAttributeFormInterface::~QgsAttributeFormInterface()
-{
-}
-
-bool QgsAttributeFormInterface::acceptChanges( const QgsFeature& feature )
+bool QgsAttributeFormInterface::acceptChanges( const QgsFeature &feature )
 {
   Q_UNUSED( feature )
   return true;
@@ -42,12 +38,12 @@ void QgsAttributeFormInterface::featureChanged()
 
 }
 
-QgsAttributeForm* QgsAttributeFormInterface::form()
+QgsAttributeForm *QgsAttributeFormInterface::form()
 {
   return mForm;
 }
 
-const QgsFeature& QgsAttributeFormInterface::feature()
+const QgsFeature &QgsAttributeFormInterface::feature()
 {
   return mForm->feature();
 }

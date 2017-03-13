@@ -15,14 +15,15 @@
 
 #include "qgstolerance.h"
 #include "qgsmapsettings.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QPoint>
 #include <cmath>
 
 
 // return ratio [mu/lu] between map units and layer units
 // this is of course only an approximation
-double _ratioMU2LU( const QgsMapSettings& mapSettings, QgsMapLayer* layer )
+double _ratioMU2LU( const QgsMapSettings &mapSettings, QgsMapLayer *layer )
 {
   double distMU = mapSettings.mapUnitsPerPixel();
   QgsPoint ptMapCenterMU = mapSettings.visibleExtent().center();
@@ -34,7 +35,7 @@ double _ratioMU2LU( const QgsMapSettings& mapSettings, QgsMapLayer* layer )
   return ratio;
 }
 
-double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
+double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units )
 {
   // converts to map units
   if ( units == ProjectUnits )
@@ -49,7 +50,7 @@ double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer* lay
 }
 
 
-double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
+double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings &mapSettings, QgsTolerance::UnitType units )
 {
   // converts to layer units
   if ( units == LayerUnits )
@@ -68,11 +69,11 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
   }
 }
 
-double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
+double QgsTolerance::vertexSearchRadius( const QgsMapSettings &mapSettings )
 {
-  QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+  QgsSettings settings;
+  double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
+  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() );
   if ( units == LayerUnits )
     units = ProjectUnits;
   return toleranceInProjectUnits( tolerance, nullptr, mapSettings, units );
@@ -80,29 +81,23 @@ double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
 
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+  QgsSettings settings;
+  double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble();
+  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() );
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
-double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings& mapSettings )
+double QgsTolerance::defaultTolerance( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  QSettings settings;
-  double tolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
-  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", ProjectUnits ).toInt() );
+  QgsSettings settings;
+  double tolerance = settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble();
+  UnitType units = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), ProjectUnits ).toInt() );
   return toleranceInMapUnits( tolerance, layer, mapSettings, units );
 }
 
 
-double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSettings& mapSettings )
+double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSettings &mapSettings )
 {
-  if ( ! mapSettings.hasCrsTransformEnabled() )
-  {
-    // if the on-the-fly projections are not enabled, layer units pre pixel are the same as map units per pixel
-    return mapSettings.mapUnitsPerPixel();
-  }
-
   // the layer is projected. Find out how many pixels are in one map unit - either horizontal and vertical direction
   // this check might not work correctly in some cases
   // (on a large area the pixels projected around "0,0" can have different properties from the actual point)
@@ -123,7 +118,7 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, const QgsMapSet
 }
 
 
-QgsPoint QgsTolerance::toLayerCoordinates( QgsMapLayer* layer, const QgsMapSettings& mapSettings, QPoint point )
+QgsPoint QgsTolerance::toLayerCoordinates( QgsMapLayer *layer, const QgsMapSettings &mapSettings, QPoint point )
 {
   QgsPoint pt = mapSettings.mapToPixel().toMapCoordinates( point );
   return mapSettings.mapToLayerCoordinates( layer, pt );

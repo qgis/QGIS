@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
@@ -52,15 +53,17 @@ class Ogr2OgrBuffer(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Buffer vectors')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.GEOMETRY,
                                           self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
                                           'geometry', optional=False))
-        self.addParameter(ParameterString(self.DISTANCE,
-                                          self.tr('Buffer distance'), '1000', optional=False))
+        self.addParameter(ParameterNumber(self.DISTANCE,
+                                          self.tr('Buffer distance'),
+                                          0.0, 99999999.999999, 1000.0,
+                                          optional=False))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
                                            self.tr('Dissolve all results'), False))
         self.addParameter(ParameterTableField(self.FIELD,
@@ -93,7 +96,6 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
         arguments.append('-dialect')
         arguments.append('sqlite')
         arguments.append('-sql')
@@ -111,7 +113,7 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         if field is not None and multi:
             arguments.append('-explodecollections')
 
-        if len(options) > 0:
+        if options is not None and len(options) > 0:
             arguments.append(options)
 
         commands = []
@@ -124,4 +126,4 @@ class Ogr2OgrBuffer(GdalAlgorithm):
         return commands
 
     def commandName(self):
-        return "ogr2ogr"
+        return 'ogr2ogr'

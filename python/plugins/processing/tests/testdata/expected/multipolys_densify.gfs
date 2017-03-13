@@ -2,6 +2,7 @@
   <GMLFeatureClass>
     <Name>multipolys_densify</Name>
     <ElementPath>multipolys_densify</ElementPath>
+    <!--MULTIPOLYGON-->
     <GeometryType>6</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>

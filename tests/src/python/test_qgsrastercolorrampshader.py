@@ -33,5 +33,6 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
         self.assertFalse(shader.shade(float('NaN'))[0])
         self.assertFalse(shader.shade(float("inf"))[0])
 
+
 if __name__ == '__main__':
     unittest.main()

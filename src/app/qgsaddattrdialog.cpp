@@ -23,8 +23,8 @@
 #include <QMessageBox>
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mIsShapeFile( vlayer && vlayer->providerType() == "ogr" && vlayer->storageType() == "ESRI Shapefile" )
+  : QDialog( parent, fl )
+  , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
 {
   setupUi( this );
 
@@ -91,7 +91,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
 
 void QgsAddAttrDialog::accept()
 {
-  if ( mIsShapeFile && mNameEdit->text().toLower() == "shape" )
+  if ( mIsShapeFile && mNameEdit->text().toLower() == QLatin1String( "shape" ) )
   {
     QMessageBox::warning( this, tr( "Warning" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
@@ -112,16 +112,16 @@ QgsField QgsAddAttrDialog::field() const
   QgsDebugMsg( QString( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
                .arg( mTypeBox->currentIndex() )
                .arg( mNameEdit->text() )
-               .arg( mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toInt() )
-               .arg( mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole + 1 ).toString() )
+               .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )
+               .arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() )
                .arg( mLength->value() )
                .arg( mPrec->value() )
                .arg( mCommentEdit->text() ) );
 
   return QgsField(
            mNameEdit->text(),
-           ( QVariant::Type ) mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toInt(),
-           mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole + 1 ).toString(),
+           ( QVariant::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
+           mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
            mLength->value(),
            mPrec->value(),
            mCommentEdit->text() );

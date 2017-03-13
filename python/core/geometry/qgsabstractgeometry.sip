@@ -85,7 +85,7 @@ class QgsAbstractGeometry
 
     /** Clones the geometry by performing a deep copy
      */
-    virtual QgsAbstractGeometry* clone() const = 0;
+    virtual QgsAbstractGeometry* clone() const = 0 /Factory/;
 
     /** Clears the geometry, ie reset it to a null geometry
      */
@@ -140,9 +140,10 @@ class QgsAbstractGeometry
     //import
 
     /** Sets the geometry from a WKB string.
+     * After successful read the wkb argument will be at the position where the reading has stopped.
      * @see fromWkt
      */
-    virtual bool fromWkb( QgsConstWkbPtr wkb ) = 0;
+    virtual bool fromWkb( QgsConstWkbPtr& wkb ) = 0;
 
     /** Sets the geometry from a WKT string.
      * @see fromWkb
@@ -151,20 +152,14 @@ class QgsAbstractGeometry
 
     //export
 
-    /** Returns the size of the WKB representation of the geometry.
-     * @see asWkb
-     */
-    virtual int wkbSize() const = 0;
-
     /** Returns a WKB representation of the geometry.
-     * @param binarySize will be set to the size of the returned WKB string
-     * @see wkbSize
      * @see asWkt
      * @see asGML2
      * @see asGML3
      * @see asJSON
+     * @note added in 3.0
      */
-    virtual unsigned char* asWkb( int& binarySize ) const = 0;
+    virtual QByteArray asWkb() const = 0;
 
     /** Returns a WKT representation of the geometry.
      * @param precision number of decimal places for coordinates
@@ -248,7 +243,7 @@ class QgsAbstractGeometry
 
     /** Returns the number of nodes contained in the geometry
      */
-    int nCoordinates() const;
+    virtual int nCoordinates() const;
 
     /** Returns the point corresponding to a specified vertex id
      */
@@ -316,7 +311,7 @@ class QgsAbstractGeometry
 
     /** Returns true if the geometry is empty
      */
-    bool isEmpty() const;
+    virtual bool isEmpty() const;
 
     /** Returns true if the geometry contains curved segments
      */
@@ -403,7 +398,7 @@ class QgsAbstractGeometry
      */
     virtual QgsRectangle calculateBoundingBox() const;
 
-    /** Clears any cached parameters associated with the geometry, eg bounding boxes
+    /** Clears any cached parameters associated with the geometry, e.g., bounding boxes
      */
     virtual void clearCache() const;
 };

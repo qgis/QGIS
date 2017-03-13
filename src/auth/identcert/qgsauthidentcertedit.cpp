@@ -24,8 +24,8 @@
 
 
 QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
   populateIdentityComboBox();
@@ -49,7 +49,7 @@ bool QgsAuthIdentCertEdit::validateConfig()
 QgsStringMap QgsAuthIdentCertEdit::configMap() const
 {
   QgsStringMap config;
-  config.insert( "certid", cmbIdentityCert->itemData( cmbIdentityCert->currentIndex() ).toString() );
+  config.insert( QStringLiteral( "certid" ), cmbIdentityCert->currentData().toString() );
 
   return config;
 }
@@ -59,7 +59,7 @@ void QgsAuthIdentCertEdit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  int indx = cmbIdentityCert->findData( configmap.value( "certid" ) );
+  int indx = cmbIdentityCert->findData( configmap.value( QStringLiteral( "certid" ) ) );
   cmbIdentityCert->setCurrentIndex( indx == -1 ? 0 : indx );
 
   validateConfig();
@@ -84,18 +84,18 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
   {
     cmbIdentityCert->setIconSize( QSize( 26, 22 ) );
     QgsStringMap idents;
-    Q_FOREACH ( const QSslCertificate& cert, certs )
+    Q_FOREACH ( const QSslCertificate &cert, certs )
     {
       QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
       if ( org.isEmpty() )
         org = tr( "Organization not defined" );
-      idents.insert( QString( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ), org ),
+      idents.insert( QStringLiteral( "%1 (%2)" ).arg( QgsAuthCertUtils::resolvedCertName( cert ), org ),
                      QgsAuthCertUtils::shaHexForCert( cert ) );
     }
     QgsStringMap::const_iterator it = idents.constBegin();
     for ( ; it != idents.constEnd(); ++it )
     {
-      cmbIdentityCert->addItem( QgsApplication::getThemeIcon( "/mIconCertificate.svg" ),
+      cmbIdentityCert->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ),
                                 it.key(), it.value() );
     }
   }

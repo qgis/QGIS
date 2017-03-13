@@ -27,7 +27,7 @@ class QgsWmsConfigParser
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const = 0;
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, const QString& serviceUrl, bool fullProjectSettings = false ) const = 0;
 
     /** Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
     virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const = 0;
@@ -42,10 +42,10 @@ class QgsWmsConfigParser
     virtual QDomDocument getStyles( QStringList& layerList ) const = 0;
 
     /** Returns the xml fragment of layers styles description*/
-    virtual QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const = 0;
+    virtual QDomDocument describeLayer( QStringList& layerList, const QString& wfsHrefString, const QString& wcsHrefString ) const = 0;
 
     /** Returns if output are MM or PIXEL*/
-    virtual QgsMapRenderer::OutputUnits outputUnits() const = 0;
+    virtual QgsUnitTypes::RenderUnit outputUnits() const = 0;
 
     /** Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file*/
     virtual QStringList identifyDisabledLayers() const = 0;
@@ -71,10 +71,8 @@ class QgsWmsConfigParser
     /** Draw text annotation items from the QGIS projectfile*/
     virtual void drawOverlays( QPainter* p, int dpi, int width, int height ) const = 0;
 
-    /** Load PAL engine settings from the QGIS projectfile*/
-    virtual void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const = 0;
-
-    virtual QString serviceUrl() const = 0;
+    /** Load PAL engine settings  into global project instance*/
+    virtual void loadLabelSettings() const = 0;
 
     virtual QStringList wfsLayerNames() const = 0;
 
@@ -88,11 +86,9 @@ class QgsWmsConfigParser
     virtual double legendIconLabelSpace() const = 0;
     virtual double legendSymbolWidth() const = 0;
     virtual double legendSymbolHeight() const = 0;
-    virtual const QFont& legendLayerFont() const = 0;
-    virtual const QFont& legendItemFont() const = 0;
+    virtual QFont legendLayerFont() const = 0;
+    virtual QFont legendItemFont() const = 0;
 
-    virtual double maxWidth() const = 0;
-    virtual double maxHeight() const = 0;
     virtual double imageQuality() const = 0;
 
     // WMS GetFeatureInfo precision (decimal places)
@@ -101,13 +97,10 @@ class QgsWmsConfigParser
     //printing
 
     /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
-
-   /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
-    QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
+    QgsComposition* createPrintComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const;
 
     /** Creates a composition from the project file (probably delegated to the fallback parser)*/
-    //virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/ ) const = 0;
+    //virtual QgsComposition* initComposition( const QString& composerTemplate, const QgsMapSettings& mapSettings, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
 
     /** Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
@@ -115,13 +108,15 @@ class QgsWmsConfigParser
     virtual void setScaleDenominator( double denom ) = 0;
     virtual void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) = 0;
 
-    virtual QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const = 0;
+    // virtual QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const = 0;
 
     virtual int nLayers() const = 0;
 
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
     virtual bool useLayerIds() const = 0;
+
+    virtual bool allowRequestDefinedDatasources() const;
 
   private:
 

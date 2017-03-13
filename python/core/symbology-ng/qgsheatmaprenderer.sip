@@ -18,7 +18,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
     //! @note symbol2 in python bindings
     virtual QgsSymbolList symbols( QgsRenderContext& context );
     virtual QString dump() const;
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
     static QgsFeatureRenderer* create( QDomElement& element ) /Factory/;
     virtual QDomElement save( QDomDocument& doc );
     static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer ) /Factory/;
@@ -39,20 +39,6 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
      * @see colorRamp
      */
     void setColorRamp( QgsColorRamp* ramp /Transfer/ );
-
-    /** Returns whether the ramp is inverted
-     * @returns true if color ramp is inverted
-     * @see setInvertRamp
-     * @see colorRamp
-     */
-    bool invertRamp() const;
-
-    /** Sets whether the ramp is inverted
-     * @param invert set to true to invert color ramp
-     * @see invertRamp
-     * @see setColorRamp
-     */
-    void setInvertRamp( const bool invert );
 
     /** Returns the radius for the heatmap
      * @returns heatmap radius

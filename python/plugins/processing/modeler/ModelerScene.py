@@ -30,7 +30,7 @@ from qgis.PyQt.QtCore import QPointF, Qt
 from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
-from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
+from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput, CompoundValue
 
 
 class ModelerScene(QGraphicsScene):
@@ -43,16 +43,16 @@ class ModelerScene(QGraphicsScene):
         self.setItemIndexMethod(QGraphicsScene.NoIndex)
 
     def getParameterPositions(self):
-        return {key: item.pos() for key, item in self.paramItems.iteritems()}
+        return {key: item.pos() for key, item in list(self.paramItems.items())}
 
     def getAlgorithmPositions(self):
-        return {key: item.pos() for key, item in self.algItems.iteritems()}
+        return {key: item.pos() for key, item in list(self.algItems.items())}
 
     def getOutputPositions(self):
         pos = {}
-        for algName, outputs in self.outputItems.iteritems():
+        for algName, outputs in list(self.outputItems.items()):
             outputPos = {}
-            for (key, value) in outputs.iteritems():
+            for (key, value) in list(outputs.items()):
                 if value is not None:
                     outputPos[key] = value.pos()
                 else:
@@ -65,6 +65,9 @@ class ModelerScene(QGraphicsScene):
         if isinstance(value, list):
             for v in value:
                 items.extend(self.getItemsFromParamValue(v))
+        elif isinstance(value, CompoundValue):
+            for v in value.values:
+                items.extend(self.getItemsFromParamValue(v))
         elif isinstance(value, ValueFromInput):
             items.append((self.paramItems[value.name], 0))
         elif isinstance(value, ValueFromOutput):
@@ -75,11 +78,11 @@ class ModelerScene(QGraphicsScene):
             items.append((self.algItems[value.alg], i))
         return items
 
-    def paintModel(self, model):
+    def paintModel(self, model, controls=True):
         self.model = model
         # Inputs
-        for inp in model.inputs.values():
-            item = ModelerGraphicItem(inp, model)
+        for inp in list(model.inputs.values()):
+            item = ModelerGraphicItem(inp, model, controls)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -87,8 +90,8 @@ class ModelerScene(QGraphicsScene):
             self.paramItems[inp.param.name] = item
 
         # We add the algs
-        for alg in model.algs.values():
-            item = ModelerGraphicItem(alg, model)
+        for alg in list(model.algs.values()):
+            item = ModelerGraphicItem(alg, model, controls)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -96,7 +99,7 @@ class ModelerScene(QGraphicsScene):
             self.algItems[alg.name] = item
 
         # And then the arrows
-        for alg in model.algs.values():
+        for alg in list(model.algs.values()):
             idx = 0
             for parameter in alg.algorithm.parameters:
                 if not parameter.hidden:
@@ -121,21 +124,21 @@ class ModelerScene(QGraphicsScene):
                 self.addItem(arrow)
 
         # And finally the outputs
-        for alg in model.algs.values():
+        for alg in list(model.algs.values()):
             outputs = alg.outputs
             outputItems = {}
             idx = 0
             for key in outputs:
                 out = outputs[key]
                 if out is not None:
-                    item = ModelerGraphicItem(out, model)
+                    item = ModelerGraphicItem(out, model, controls)
                     item.setFlag(QGraphicsItem.ItemIsMovable, True)
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
                     pos = alg.outputs[key].pos
                     if pos is None:
-                        pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0)
-                               + self.algItems[alg.name].getLinkPointForOutput(idx))
+                        pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
+                               self.algItems[alg.name].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.name], idx, item,

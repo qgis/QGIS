@@ -36,11 +36,11 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
     QWidget *parent,
     const QString &digest,
     const QString &hostport )
-    : QDialog( parent )
-    , mSslConfiguration( reply->sslConfiguration() )
-    , mSslErrors( sslErrors )
-    , mDigest( digest )
-    , mHostPort( hostport )
+  : QDialog( parent )
+  , mSslConfiguration( reply->sslConfiguration() )
+  , mSslErrors( sslErrors )
+  , mDigest( digest )
+  , mHostPort( hostport )
 {
   if ( mDigest.isEmpty() )
   {
@@ -48,7 +48,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   }
   if ( mHostPort.isEmpty() )
   {
-    mHostPort = QString( "%1:%2" )
+    mHostPort = QStringLiteral( "%1:%2" )
                 .arg( reply->url().host() )
                 .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
                 .trimmed();
@@ -59,7 +59,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
   lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-  lblErrorsText->setStyleSheet( "QLabel{ font-weight: bold; }" );
+  lblErrorsText->setStyleSheet( QStringLiteral( "QLabel{ font-weight: bold; }" ) );
   leUrl->setText( reply->request().url().toString() );
 
   ignoreButton()->setDefault( false );
@@ -69,7 +69,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   {
     saveButton()->setEnabled( false );
 
-    saveButton()->setText( QString( "%1 && %2" ).arg( saveButton()->text(),
+    saveButton()->setText( QStringLiteral( "%1 && %2" ).arg( saveButton()->text(),
                            ignoreButton()->text() ) );
 
     grpbxSslConfig->setChecked( false );
@@ -91,10 +91,6 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   }
 
   populateErrorsList();
-}
-
-QgsAuthSslErrorsDialog::~QgsAuthSslErrorsDialog()
-{
 }
 
 void QgsAuthSslErrorsDialog::loadUnloadCertificate( bool load )
@@ -169,7 +165,7 @@ void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton *button )
   {
     case QDialogButtonBox::Ignore:
       QgsAuthManager::instance()->updateIgnoredSslErrorsCache(
-        QString( "%1:%2" ).arg( mDigest, mHostPort ),
+        QStringLiteral( "%1:%2" ).arg( mDigest, mHostPort ),
         mSslErrors );
       accept();
       break;
@@ -191,11 +187,11 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
   errs.reserve( mSslErrors.size() );
   Q_FOREACH ( const QSslError &err, mSslErrors )
   {
-    errs <<  QString( "* %1: %2" )
-    .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
-          err.errorString() );
+    errs <<  QStringLiteral( "* %1: %2" )
+         .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
+               err.errorString() );
   }
-  teSslErrors->setPlainText( errs.join( "\n" ) );
+  teSslErrors->setPlainText( errs.join( QStringLiteral( "\n" ) ) );
 }
 
 QPushButton *QgsAuthSslErrorsDialog::ignoreButton()

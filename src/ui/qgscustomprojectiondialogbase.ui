@@ -31,6 +31,9 @@
    </item>
    <item row="0" column="0">
     <widget class="QScrollArea" name="scrollArea">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -152,7 +155,7 @@
                 </property>
                 <property name="icon">
                  <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
+                  <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
                 </property>
                </widget>
               </item>
@@ -314,17 +317,17 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>leNameList</tabstop>
   <tabstop>pbnAdd</tabstop>
   <tabstop>pbnRemove</tabstop>
   <tabstop>pbnCopyCRS</tabstop>
   <tabstop>leName</tabstop>
   <tabstop>teParameters</tabstop>
+  <tabstop>groupBox_2</tabstop>
   <tabstop>northWGS84</tabstop>
   <tabstop>eastWGS84</tabstop>
   <tabstop>pbnCalculate</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

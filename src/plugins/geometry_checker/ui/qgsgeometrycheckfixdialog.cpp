@@ -18,8 +18,11 @@
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
+#include "qgssettings.h"
+
 #include "../qgsgeometrychecker.h"
 #include "../checks/qgsgeometrycheck.h"
+
 #include <QButtonGroup>
 #include <QDialogButtonBox>
 #include <QGroupBox>
@@ -27,20 +30,19 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QSettings>
 #include <QGridLayout>
 
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
     const QList<QgsGeometryCheckError *> &errors,
-    QgisInterface* iface, QWidget *parent )
-    : QDialog( parent )
-    , mChecker( checker )
-    , mErrors( errors )
-    , mIface( iface )
+    QgisInterface *iface, QWidget *parent )
+  : QDialog( parent )
+  , mChecker( checker )
+  , mErrors( errors )
+  , mIface( iface )
 {
   setWindowTitle( tr( "Fix errors" ) );
 
-  QGridLayout* layout = new QGridLayout();
+  QGridLayout *layout = new QGridLayout();
   layout->setContentsMargins( 4, 4, 4, 4 );
   setLayout( layout );
 
@@ -87,10 +89,10 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mFixBtn->setVisible( true );
   mFixBtn->setFocus();
   mSkipBtn->setVisible( true );
-  mStatusLabel->setText( "" );
+  mStatusLabel->setText( QLatin1String( "" ) );
   mResolutionsBox->setEnabled( true );
 
-  QgsGeometryCheckError* error = mErrors.at( 0 );
+  QgsGeometryCheckError *error = mErrors.at( 0 );
   emit currentErrorChanged( error );
 
   mResolutionsBox->setTitle( tr( "Select how to fix error \"%1\":" ).arg( error->description() ) );
@@ -104,10 +106,10 @@ void QgsGeometryCheckerFixDialog::setupNextError()
   mResolutionsBox->layout()->setContentsMargins( 0, 0, 0, 4 );
 
   int id = 0;
-  int checkedid = QSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-  Q_FOREACH ( const QString& method, error->check()->getResolutionMethods() )
+  int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
+  Q_FOREACH ( const QString &method, error->check()->getResolutionMethods() )
   {
-    QRadioButton* radio = new QRadioButton( method );
+    QRadioButton *radio = new QRadioButton( method );
     radio->setChecked( checkedid == id );
     mResolutionsBox->layout()->addWidget( radio );
     mRadioGroup->addButton( radio, id++ );
@@ -123,7 +125,7 @@ void QgsGeometryCheckerFixDialog::fixError()
 
   setCursor( Qt::WaitCursor );
 
-  QgsGeometryCheckError* error = mErrors.at( 0 );
+  QgsGeometryCheckError *error = mErrors.at( 0 );
   mChecker->fixError( error, mRadioGroup->checkedId() );
   mChecker->getLayer()->triggerRepaint();
 

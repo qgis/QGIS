@@ -7,9 +7,9 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
   public:
     QgsSimpleFillSymbolLayer( const QColor& color = DEFAULT_SIMPLEFILL_COLOR,
                                 Qt::BrushStyle style = DEFAULT_SIMPLEFILL_STYLE,
-                                const QColor& borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
-                                Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
-                                double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
+                                const QColor& strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
+                                Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
+                                double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
                               );
 
@@ -39,15 +39,12 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     Qt::BrushStyle brushStyle() const;
     void setBrushStyle( Qt::BrushStyle style );
 
-    QColor borderColor() const;
-    void setBorderColor( const QColor& borderColor );
-
-    /** Get outline color.
+    /** Get stroke color.
      * @note added in 2.1 */
-    QColor outlineColor() const;
-    /** Set outline color.
+    QColor strokeColor() const;
+    /** Set stroke color.
      * @note added in 2.1 */
-    void setOutlineColor( const QColor& color );
+    void setStrokeColor( const QColor& color );
 
     /** Get fill color.
      * @note added in 2.1 */
@@ -56,11 +53,11 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
      * @note added in 2.1 */
     void setFillColor( const QColor& color );
 
-    Qt::PenStyle borderStyle() const;
-    void setBorderStyle( Qt::PenStyle borderStyle );
+    Qt::PenStyle strokeStyle() const;
+    void setStrokeStyle( Qt::PenStyle strokeStyle );
 
-    double borderWidth() const;
-    void setBorderWidth( double borderWidth );
+    double strokeWidth() const;
+    void setStrokeWidth( double strokeWidth );
 
     Qt::PenJoinStyle penJoinStyle() const;
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -68,19 +65,19 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     void setOffset( QPointF offset );
     QPointF offset();
 
-    /** Sets the units for the width of the fill's border.
+    /** Sets the units for the width of the fill's stroke.
      * @param unit width units
-     * @see borderWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setBorderWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the width of the fill's border.
-     * @see setBorderWidthUnit()
+    /** Returns the units for the width of the fill's stroke.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit borderWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setBorderWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& borderWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
     /** Sets the units for the fill's offset.
      * @param unit offset units
@@ -102,7 +99,7 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
     QColor dxfColor( QgsSymbolRenderContext& context ) const;
@@ -172,9 +169,9 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
     virtual QgsGradientFillSymbolLayer* clone() const /Factory/;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
-    /** Type of gradient, eg linear or radial*/
+    /** Type of gradient, e.g., linear or radial*/
     GradientType gradientType() const;
     void setGradientType( GradientType gradientType );
 
@@ -270,7 +267,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
     virtual QgsShapeburstFillSymbolLayer* clone() const /Factory/;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     /** Sets the blur radius, which controls the amount of blurring applied to the fill.
      * @param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
@@ -456,19 +453,19 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
     virtual QgsSymbol* subSymbol();
     virtual bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
 
-    /** Sets the units for the symbol's outline width.
+    /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the symbol's outline width.
-     * @see setOutlineWidthUnit()
+    /** Returns the units for the symbol's stroke width.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const;
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& strokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -476,17 +473,21 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const;
     virtual QColor dxfColor( QgsSymbolRenderContext& context ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
   protected:
 
     virtual void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+
+  private:
+
+    QgsImageFillSymbolLayer( const QgsImageFillSymbolLayer& other );
 };
 
 /** \ingroup core
@@ -519,7 +520,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
     void stopRender( QgsSymbolRenderContext& context );
     QgsStringMap properties() const;
     virtual QgsRasterFillSymbolLayer* clone() const;
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     virtual QgsSymbol* subSymbol();
@@ -695,10 +696,10 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 
     void setSvgFillColor( const QColor& c );
     QColor svgFillColor() const;
-    void setSvgOutlineColor( const QColor& c );
-    QColor svgOutlineColor() const;
-    void setSvgOutlineWidth( double w );
-    double svgOutlineWidth() const;
+    void setSvgStrokeColor( const QColor& c );
+    QColor svgStrokeColor() const;
+    void setSvgStrokeWidth( double w );
+    double svgStrokeWidth() const;
 
     /** Sets the units for the width of the SVG images in the pattern.
      * @param unit width units
@@ -714,19 +715,19 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     void setPatternWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& patternWidthMapUnitScale() const;
 
-    /** Sets the units for the outline width.
+    /** Sets the units for the stroke width.
      * @param unit width units
-     * @see svgOutlineWidthUnit()
+     * @see svgStrokeWidthUnit()
     */
-    void setSvgOutlineWidthUnit( QgsUnitTypes::RenderUnit unit );
+    void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the units for the outline width.
-     * @see setSvgOutlineWidthUnit()
+    /** Returns the units for the stroke width.
+     * @see setSvgStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit svgOutlineWidthUnit() const;
+    QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
 
-    void setSvgOutlineWidthMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& svgOutlineWidthMapUnitScale() const;
+    void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale& scale);
+    const QgsMapUnitScale& svgStrokeWidthMapUnitScale() const;
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit );
     QgsUnitTypes::RenderUnit outputUnit() const;
@@ -762,7 +763,7 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 
@@ -842,7 +843,11 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbol* symbol /Transfer/ );
     QgsSymbol* subSymbol();
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
+
+  private:
+
+    QgsLinePatternFillSymbolLayer( const QgsLinePatternFillSymbolLayer& other );
 
 };
 
@@ -870,7 +875,7 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     //getters and setters
     double distanceX() const;
@@ -938,13 +943,17 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     void setColor( const QColor& c );
     virtual QColor color() const;
 
   protected:
     void applyDataDefinedSettings( QgsSymbolRenderContext& context );
+
+  private:
+
+    QgsPointPatternFillSymbolLayer( const QgsPointPatternFillSymbolLayer& other );
 };
 
 class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
@@ -990,7 +999,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     void setMapUnitScale(const QgsMapUnitScale &scale);
     QgsMapUnitScale mapUnitScale() const;
 
-    virtual QSet<QString> usedAttributes() const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     void setPointOnSurface( bool pointOnSurface );
     bool pointOnSurface() const;
@@ -1001,4 +1010,8 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     /** Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
      * @note added in 2.16 */
     bool pointOnAllParts() const;
+
+  private:
+
+    QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer& other );
 };

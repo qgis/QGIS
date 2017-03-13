@@ -24,8 +24,8 @@
 #include <QPen>
 #include <QPainter>
 
-QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
-    : QgsComposerItem( c )
+QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition *c )
+  : QgsComposerItem( c )
 {
   setZValue( 90 );
   show();
@@ -34,7 +34,7 @@ QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
 QgsComposerItemGroup::~QgsComposerItemGroup()
 {
   //loop through group members and remove them from the scene
-  Q_FOREACH ( QgsComposerItem* item, mItems )
+  Q_FOREACH ( QgsComposerItem *item, mItems )
   {
     if ( !item || item->isRemoved() )
       continue;
@@ -46,7 +46,7 @@ QgsComposerItemGroup::~QgsComposerItemGroup()
   }
 }
 
-void QgsComposerItemGroup::addItem( QgsComposerItem* item )
+void QgsComposerItemGroup::addItem( QgsComposerItem *item )
 {
   if ( !item )
   {
@@ -101,7 +101,7 @@ void QgsComposerItemGroup::addItem( QgsComposerItem* item )
 
 void QgsComposerItemGroup::removeItems()
 {
-  Q_FOREACH ( QgsComposerItem* item, mItems )
+  Q_FOREACH ( QgsComposerItem *item, mItems )
   {
     item->setIsGroupMember( false );
     item->setSelected( true );
@@ -111,10 +111,10 @@ void QgsComposerItemGroup::removeItems()
 
 void QgsComposerItemGroup::itemDestroyed()
 {
-  mItems.remove( static_cast<QgsComposerItem*>( sender() ) );
+  mItems.remove( static_cast<QgsComposerItem *>( sender() ) );
 }
 
-void QgsComposerItemGroup::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
+void QgsComposerItemGroup::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );
@@ -125,14 +125,14 @@ void QgsComposerItemGroup::paint( QPainter * painter, const QStyleOptionGraphics
   }
 }
 
-void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
+void QgsComposerItemGroup::setSceneRect( const QRectF &rectangle )
 {
   //resize all items in this group
   //first calculate new group rectangle in current group coordsys
   QPointF newOrigin = mapFromScene( rectangle.topLeft() );
   QRectF newRect = QRectF( newOrigin.x(), newOrigin.y(), rectangle.width(), rectangle.height() );
 
-  Q_FOREACH ( QgsComposerItem* item, mItems )
+  Q_FOREACH ( QgsComposerItem *item, mItems )
   {
     //each item needs to be scaled relatively to the final size of the group
     QRectF itemRect = mapRectFromItem( item, item->rect() );
@@ -148,7 +148,7 @@ void QgsComposerItemGroup::setSceneRect( const QRectF& rectangle )
 void QgsComposerItemGroup::setVisibility( const bool visible )
 {
   //also set visibility for all items within the group
-  Q_FOREACH ( QgsComposerItem* item, mItems )
+  Q_FOREACH ( QgsComposerItem *item, mItems )
   {
     item->setVisibility( visible );
   }
@@ -156,7 +156,7 @@ void QgsComposerItemGroup::setVisibility( const bool visible )
   QgsComposerItem::setVisibility( visible );
 }
 
-void QgsComposerItemGroup::drawFrame( QPainter* p )
+void QgsComposerItemGroup::drawFrame( QPainter *p )
 {
   if ( !mComposition )
   {
@@ -174,15 +174,15 @@ void QgsComposerItemGroup::drawFrame( QPainter* p )
   }
 }
 
-bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerItemGroup::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
-  QDomElement group = doc.createElement( "ComposerItemGroup" );
+  QDomElement group = doc.createElement( QStringLiteral( "ComposerItemGroup" ) );
 
-  QSet<QgsComposerItem*>::const_iterator itemIt = mItems.begin();
+  QSet<QgsComposerItem *>::const_iterator itemIt = mItems.begin();
   for ( ; itemIt != mItems.end(); ++itemIt )
   {
-    QDomElement item = doc.createElement( "ComposerItemGroupElement" );
-    item.setAttribute( "uuid", ( *itemIt )->uuid() );
+    QDomElement item = doc.createElement( QStringLiteral( "ComposerItemGroupElement" ) );
+    item.setAttribute( QStringLiteral( "uuid" ), ( *itemIt )->uuid() );
     group.appendChild( item );
   }
 
@@ -191,10 +191,10 @@ bool QgsComposerItemGroup::writeXml( QDomElement& elem, QDomDocument & doc ) con
   return _writeXml( group, doc );
 }
 
-bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItemGroup::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
@@ -203,14 +203,14 @@ bool QgsComposerItemGroup::readXml( const QDomElement& itemElem, const QDomDocum
 
   QList<QGraphicsItem *> items = mComposition->items();
 
-  QDomNodeList elementNodes = itemElem.elementsByTagName( "ComposerItemGroupElement" );
+  QDomNodeList elementNodes = itemElem.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
   for ( int i = 0; i < elementNodes.count(); ++i )
   {
     QDomNode elementNode = elementNodes.at( i );
     if ( !elementNode.isElement() )
       continue;
 
-    QString uuid = elementNode.toElement().attribute( "uuid" );
+    QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
 
     for ( QList<QGraphicsItem *>::iterator it = items.begin(); it != items.end(); ++it )
     {

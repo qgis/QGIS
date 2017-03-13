@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsdockwidget.h"
 #include <QApplication>
@@ -55,9 +55,9 @@ void TestQgsDockWidget::cleanup()
 
 void TestQgsDockWidget::testSignals()
 {
-  QWidget* w = new QWidget();
+  QWidget *w = new QWidget();
   QApplication::setActiveWindow( w ); //required for focus events
-  QgsDockWidget* d = new QgsDockWidget( w );
+  QgsDockWidget *d = new QgsDockWidget( w );
 
   QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
   QSignalSpy spyClosed( d, SIGNAL( closed() ) );
@@ -87,7 +87,7 @@ void TestQgsDockWidget::testSignals()
 
 void TestQgsDockWidget::testUserVisible()
 {
-  QgsDockWidget* w = new QgsDockWidget();
+  QgsDockWidget *w = new QgsDockWidget();
   QVERIFY( !w->isUserVisible() );
 
   w->show();
@@ -100,10 +100,10 @@ void TestQgsDockWidget::testUserVisible()
 
 void TestQgsDockWidget::testSetUserVisible()
 {
-  QMainWindow* w = new QMainWindow();
+  QMainWindow *w = new QMainWindow();
   QApplication::setActiveWindow( w ); //required for focus events
-  QgsDockWidget* d1 = new QgsDockWidget( w );
-  QgsDockWidget* d2 = new QgsDockWidget( w );
+  QgsDockWidget *d1 = new QgsDockWidget( w );
+  QgsDockWidget *d2 = new QgsDockWidget( w );
   w->addDockWidget( Qt::RightDockWidgetArea, d1 );
   w->addDockWidget( Qt::RightDockWidgetArea, d2 );
   w->tabifyDockWidget( d1, d2 );
@@ -176,5 +176,5 @@ void TestQgsDockWidget::testSetUserVisible()
 
 }
 
-QTEST_MAIN( TestQgsDockWidget )
+QGSTEST_MAIN( TestQgsDockWidget )
 #include "testqgsdockwidget.moc"

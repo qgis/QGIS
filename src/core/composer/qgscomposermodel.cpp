@@ -29,18 +29,14 @@
 #include <QMessageBox>
 #include <QIcon>
 
-QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mComposition( composition )
+QgsComposerModel::QgsComposerModel( QgsComposition *composition, QObject *parent )
+  : QAbstractItemModel( parent )
+  , mComposition( composition )
 {
 
 }
 
-QgsComposerModel::~QgsComposerModel()
-{
-}
-
-QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) const
+QgsComposerItem *QgsComposerModel::itemFromIndex( const QModelIndex &index ) const
 {
   //try to return the QgsComposerItem corresponding to a QModelIndex
   if ( !index.isValid() )
@@ -48,7 +44,7 @@ QgsComposerItem* QgsComposerModel::itemFromIndex( const QModelIndex &index ) con
     return nullptr;
   }
 
-  QgsComposerItem * item = static_cast<QgsComposerItem*>( index.internalPointer() );
+  QgsComposerItem *item = static_cast<QgsComposerItem *>( index.internalPointer() );
   return item;
 }
 
@@ -80,9 +76,9 @@ void QgsComposerModel::refreshItemsInScene()
   QList<QgsComposerItem *>::const_iterator itemIt = mItemZList.constBegin();
   for ( ; itemIt != mItemZList.constEnd(); ++itemIt )
   {
-    if ((( *itemIt )->type() != QgsComposerItem::ComposerPaper ) && !( *itemIt )->isRemoved() )
+    if ( ( ( *itemIt )->type() != QgsComposerItem::ComposerPaper ) && !( *itemIt )->isRemoved() )
     {
-      mItemsInScene.push_back(( *itemIt ) );
+      mItemsInScene.push_back( ( *itemIt ) );
     }
   }
 }
@@ -102,7 +98,7 @@ int QgsComposerModel::rowCount( const QModelIndex &parent ) const
     return mItemsInScene.size();
   }
 
-  QGraphicsItem * parentItem = itemFromIndex( parent );
+  QGraphicsItem *parentItem = itemFromIndex( parent );
 
   if ( !parentItem )
   {
@@ -192,7 +188,7 @@ QVariant QgsComposerModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole )
+bool QgsComposerModel::setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole )
 {
   Q_UNUSED( role );
 
@@ -228,13 +224,6 @@ bool QgsComposerModel::setData( const QModelIndex & index, const QVariant & valu
 
 QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  static QIcon lockIcon;
-  if ( lockIcon.isNull() )
-    lockIcon = QgsApplication::getThemeIcon( "/locked.svg" );
-  static QIcon showIcon;
-  if ( showIcon.isNull() )
-    showIcon = QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" );
-
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -250,11 +239,11 @@ QVariant QgsComposerModel::headerData( int section, Qt::Orientation orientation,
     {
       if ( section == Visibility )
       {
-        return qVariantFromValue( showIcon );
+        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
       }
       else if ( section == LockStatus )
       {
-        return qVariantFromValue( lockIcon );
+        return qVariantFromValue( QgsApplication::getThemeIcon( QStringLiteral( "/locked.svg" ) ) );
       }
 
       return QVariant();
@@ -277,11 +266,11 @@ Qt::DropActions QgsComposerModel::supportedDropActions() const
 QStringList QgsComposerModel::mimeTypes() const
 {
   QStringList types;
-  types << "application/x-vnd.qgis.qgis.composeritemid";
+  types << QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" );
   return types;
 }
 
-QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData *QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
 {
   QMimeData *mimeData = new QMimeData();
   QByteArray encodedData;
@@ -302,11 +291,11 @@ QMimeData* QgsComposerModel::mimeData( const QModelIndexList &indexes ) const
     }
   }
 
-  mimeData->setData( "application/x-vnd.qgis.qgis.composeritemid", encodedData );
+  mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ), encodedData );
   return mimeData;
 }
 
-bool zOrderDescending( QgsComposerItem* item1, QgsComposerItem* item2 )
+bool zOrderDescending( QgsComposerItem *item1, QgsComposerItem *item2 )
 {
   return item1->zValue() > item2->zValue();
 }
@@ -324,7 +313,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
     return true;
   }
 
-  if ( !data->hasFormat( "application/x-vnd.qgis.qgis.composeritemid" ) )
+  if ( !data->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) ) )
   {
     return false;
   }
@@ -336,19 +325,19 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
 
   int beginRow = row != -1 ? row : rowCount( QModelIndex() );
 
-  QByteArray encodedData = data->data( "application/x-vnd.qgis.qgis.composeritemid" );
+  QByteArray encodedData = data->data( QStringLiteral( "application/x-vnd.qgis.qgis.composeritemid" ) );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
-  QList<QgsComposerItem*> droppedItems;
+  QList<QgsComposerItem *> droppedItems;
   int rows = 0;
 
   while ( !stream.atEnd() )
   {
     QString text;
     stream >> text;
-    const QgsComposerItem* item = mComposition->getComposerItemByUuid( text );
+    const QgsComposerItem *item = mComposition->getComposerItemByUuid( text );
     if ( item )
     {
-      droppedItems << const_cast<QgsComposerItem*>( item );
+      droppedItems << const_cast<QgsComposerItem *>( item );
       ++rows;
     }
   }
@@ -362,13 +351,13 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
   //move dropped items
 
   //first sort them by z-order
-  qSort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
+  std::sort( droppedItems.begin(), droppedItems.end(), zOrderDescending );
 
   //calculate position in z order list to drop items at
   int destPos = 0;
   if ( beginRow < rowCount() )
   {
-    QgsComposerItem* itemBefore = mItemsInScene.at( beginRow );
+    QgsComposerItem *itemBefore = mItemsInScene.at( beginRow );
     destPos = mItemZList.indexOf( itemBefore );
   }
   else
@@ -379,7 +368,7 @@ bool QgsComposerModel::dropMimeData( const QMimeData *data,
 
   //calculate position to insert moved rows to
   int insertPos = destPos;
-  QList<QgsComposerItem*>::iterator itemIt = droppedItems.begin();
+  QList<QgsComposerItem *>::iterator itemIt = droppedItems.begin();
   for ( ; itemIt != droppedItems.end(); ++itemIt )
   {
     int listPos = mItemZList.indexOf( *itemIt );
@@ -449,15 +438,15 @@ int QgsComposerModel::zOrderListSize() const
 
 void QgsComposerModel::rebuildZList()
 {
-  QList<QgsComposerItem*> sortedList;
+  QList<QgsComposerItem *> sortedList;
   //rebuild the item z order list based on the current zValues of items in the scene
 
   //get items in descending zValue order
-  QList<QGraphicsItem*> itemList = mComposition->items( Qt::DescendingOrder );
-  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
+  QList<QGraphicsItem *> itemList = mComposition->items( Qt::DescendingOrder );
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
-    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+    QgsComposerItem *composerItem = dynamic_cast<QgsComposerItem *>( *itemIt );
     if ( composerItem )
     {
       if ( composerItem->type() != QgsComposerItem::ComposerPaper )
@@ -476,9 +465,9 @@ void QgsComposerModel::rebuildSceneItemList()
   //step through the z list and rebuild the items in scene list,
   //emitting signals as required
   int row = 0;
-  Q_FOREACH ( QgsComposerItem* item, mItemZList )
+  Q_FOREACH ( QgsComposerItem *item, mItemZList )
   {
-    if (( item->type() == QgsComposerItem::ComposerPaper ) || item->isRemoved() )
+    if ( ( item->type() == QgsComposerItem::ComposerPaper ) || item->isRemoved() )
     {
       //item not in scene, skip it
       continue;
@@ -518,7 +507,7 @@ void QgsComposerModel::addItemAtTop( QgsComposerItem *item )
   endInsertRows();
 }
 
-void QgsComposerModel::removeItem( QgsComposerItem * item )
+void QgsComposerModel::removeItem( QgsComposerItem *item )
 {
   if ( !item )
   {
@@ -537,7 +526,7 @@ void QgsComposerModel::removeItem( QgsComposerItem * item )
   QModelIndex itemIndex = indexForItem( item );
   if ( !itemIndex.isValid() )
   {
-    //removing an item not in the scene (eg, deleted item)
+    //removing an item not in the scene (e.g., deleted item)
     //we need to remove it from the list, but don't need to call
     //beginRemoveRows or endRemoveRows since the item was not used by the model
     mItemZList.removeAt( pos );
@@ -692,7 +681,7 @@ bool QgsComposerModel::reorderItemUp( QgsComposerItem *item )
   }
 
   //move item in z list
-  QMutableListIterator<QgsComposerItem*> it( mItemZList );
+  QMutableListIterator<QgsComposerItem *> it( mItemZList );
   if ( ! it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
@@ -742,7 +731,7 @@ bool QgsComposerModel::reorderItemDown( QgsComposerItem *item )
   }
 
   //move item in z list
-  QMutableListIterator<QgsComposerItem*> it( mItemZList );
+  QMutableListIterator<QgsComposerItem *> it( mItemZList );
   if ( ! it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
@@ -792,7 +781,7 @@ bool QgsComposerModel::reorderItemToTop( QgsComposerItem *item )
   }
 
   //move item in z list
-  QMutableListIterator<QgsComposerItem*> it( mItemZList );
+  QMutableListIterator<QgsComposerItem *> it( mItemZList );
   if ( it.findNext( item ) )
   {
     it.remove();
@@ -828,7 +817,7 @@ bool QgsComposerModel::reorderItemToBottom( QgsComposerItem *item )
   }
 
   //move item in z list
-  QMutableListIterator<QgsComposerItem*> it( mItemZList );
+  QMutableListIterator<QgsComposerItem *> it( mItemZList );
   if ( it.findNext( item ) )
   {
     it.remove();
@@ -850,10 +839,10 @@ bool QgsComposerModel::reorderItemToBottom( QgsComposerItem *item )
   return true;
 }
 
-QgsComposerItem* QgsComposerModel::getComposerItemAbove( QgsComposerItem* item ) const
+QgsComposerItem *QgsComposerModel::getComposerItemAbove( QgsComposerItem *item ) const
 {
   //search item z list for selected item
-  QListIterator<QgsComposerItem*> it( mItemZList );
+  QListIterator<QgsComposerItem *> it( mItemZList );
   it.toBack();
   if ( it.findPrevious( item ) )
   {
@@ -871,10 +860,10 @@ QgsComposerItem* QgsComposerModel::getComposerItemAbove( QgsComposerItem* item )
   return nullptr;
 }
 
-QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item ) const
+QgsComposerItem *QgsComposerModel::getComposerItemBelow( QgsComposerItem *item ) const
 {
   //search item z list for selected item
-  QListIterator<QgsComposerItem*> it( mItemZList );
+  QListIterator<QgsComposerItem *> it( mItemZList );
   if ( it.findNext( item ) )
   {
     //return next item (list is sorted from lowest->highest items)
@@ -890,13 +879,13 @@ QgsComposerItem* QgsComposerModel::getComposerItemBelow( QgsComposerItem* item )
   return nullptr;
 }
 
-QList<QgsComposerItem *>* QgsComposerModel::zOrderList()
+QList<QgsComposerItem *> *QgsComposerModel::zOrderList()
 {
   return &mItemZList;
 }
 
 
-Qt::ItemFlags QgsComposerModel::flags( const QModelIndex & index ) const
+Qt::ItemFlags QgsComposerModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
@@ -951,9 +940,9 @@ void QgsComposerModel::setSelected( const QModelIndex &index )
 //
 
 QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition *composition, QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mComposition( composition )
-    , mItemTypeFilter( QgsComposerItem::ComposerItem )
+  : QSortFilterProxyModel( parent )
+  , mComposition( composition )
+  , mItemTypeFilter( QgsComposerItem::ComposerItem )
 {
   if ( mComposition )
     setSourceModel( mComposition->itemsModel() );
@@ -967,8 +956,8 @@ QgsComposerProxyModel::QgsComposerProxyModel( QgsComposition *composition, QObje
 bool QgsComposerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   //sort by item id
-  const QgsComposerItem* item1 = itemFromSourceIndex( left );
-  const QgsComposerItem* item2 = itemFromSourceIndex( right );
+  const QgsComposerItem *item1 = itemFromSourceIndex( left );
+  const QgsComposerItem *item2 = itemFromSourceIndex( right );
   if ( !item1 )
     return false;
 
@@ -978,7 +967,7 @@ bool QgsComposerProxyModel::lessThan( const QModelIndex &left, const QModelIndex
   return QString::localeAwareCompare( item1->displayName(), item2->displayName() ) < 0;
 }
 
-QgsComposerItem* QgsComposerProxyModel::itemFromSourceIndex( const QModelIndex &sourceIndex ) const
+QgsComposerItem *QgsComposerProxyModel::itemFromSourceIndex( const QModelIndex &sourceIndex ) const
 {
   if ( !mComposition )
     return nullptr;
@@ -994,7 +983,7 @@ void QgsComposerProxyModel::setFilterType( QgsComposerItem::ItemType itemType )
   invalidate();
 }
 
-void QgsComposerProxyModel::setExceptedItemList( const QList< QgsComposerItem*>& exceptList )
+void QgsComposerProxyModel::setExceptedItemList( const QList< QgsComposerItem *> &exceptList )
 {
   if ( mExceptedList == exceptList )
     return;
@@ -1007,7 +996,7 @@ bool QgsComposerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
 {
   //get QgsComposerItem corresponding to row
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsComposerItem* item = itemFromSourceIndex( index );
+  QgsComposerItem *item = itemFromSourceIndex( index );
 
   if ( !item )
     return false;

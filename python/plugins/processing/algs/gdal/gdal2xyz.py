@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -44,7 +45,7 @@ class gdal2xyz(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('gdal2xyz')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
+        self.group, self.i18n_group = self.trAlgorithm('Raster conversion')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.BAND,
@@ -55,7 +56,7 @@ class gdal2xyz(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-band')
-        arguments.append(unicode(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.getParameterValue(self.BAND)))
 
         arguments.append('-csv')
         arguments.append(self.getParameterValue(self.INPUT))

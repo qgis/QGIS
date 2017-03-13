@@ -14,7 +14,7 @@ class QgsFilterLineEdit : QLineEdit
 %End
   public:
 
-    //! Behaviour when clearing value of widget
+    //! Behavior when clearing value of widget
     enum ClearMode
     {
       ClearToNull, //!< Reset value to null
@@ -40,14 +40,14 @@ class QgsFilterLineEdit : QLineEdit
      */
     void setShowClearButton( bool visible );
 
-    /** Returns the clear mode for the widget. The clear mode defines the behaviour of the
+    /** Returns the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see setClearMode()
      * @note added in QGIS 3.0
      */
     ClearMode clearMode() const;
 
-    /** Sets the clear mode for the widget. The clear mode defines the behaviour of the
+    /** Sets the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * @see clearMode()
      * @note added in QGIS 3.0
@@ -67,6 +67,19 @@ class QgsFilterLineEdit : QLineEdit
      * @see isNull()
      */
     QString nullValue() const;
+
+    /** Define if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @param visible set to false to hide the search icon
+     * @note added in QGIS 3.0
+     */
+    void setShowSearchIcon( bool visible );
+
+    /** Returns if a search icon shall be shown on the left of the image
+     * when no text is entered
+     * @note added in QGIS 3.0
+     */
+    bool showSearchIcon() const;
 
     /** Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()

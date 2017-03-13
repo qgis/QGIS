@@ -17,6 +17,7 @@
 
 #define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
 
+#include "qgis_core.h"
 #include "qgsmarkersymbollayer.h"
 #include <QPainterPath>
 
@@ -28,24 +29,23 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 {
   public:
     QgsEllipseSymbolLayer();
-    ~QgsEllipseSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *createFromSld( QDomElement &element );
 
-    void renderPoint( QPointF point, QgsSymbolRenderContext& context ) override;
+    void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     QString layerType() const override;
-    void startRender( QgsSymbolRenderContext& context ) override;
-    void stopRender( QgsSymbolRenderContext& context ) override;
-    QgsEllipseSymbolLayer* clone() const override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    QgsEllipseSymbolLayer *clone() const override;
     QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
-    void writeSldMarker( QDomDocument& doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
     bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const override;
 
-    void setSymbolName( const QString& name ) { mSymbolName = name; }
+    void setSymbolName( const QString &name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
 
     void setSymbolWidth( double w ) { mSymbolWidth = w; }
@@ -54,24 +54,25 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setSymbolHeight( double h ) { mSymbolHeight = h; }
     double symbolHeight() const { return mSymbolHeight; }
 
-    Qt::PenStyle outlineStyle() const { return mOutlineStyle; }
-    void setOutlineStyle( Qt::PenStyle outlineStyle ) { mOutlineStyle = outlineStyle; }
+    Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
+    void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
-    /** Get outline join style.
+    /** Get stroke join style.
      * @note added in 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
-    /** Set outline join style.
+
+    /** Set stroke join style.
      * @note added in 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
-    void setOutlineWidth( double w ) { mOutlineWidth = w; }
-    double outlineWidth() const { return mOutlineWidth; }
+    void setStrokeWidth( double w ) { mStrokeWidth = w; }
+    double strokeWidth() const { return mStrokeWidth; }
 
-    void setFillColor( const QColor& c ) override { setColor( c ); }
+    void setFillColor( const QColor &c ) override { setColor( c ); }
     QColor fillColor() const override { return color(); }
 
-    void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
-    QColor outlineColor() const override { return mOutlineColor; }
+    void setStrokeColor( const QColor &c ) override { mStrokeColor = c; }
+    QColor strokeColor() const override { return mStrokeColor; }
 
     /** Sets the units for the symbol's width.
      * @param unit symbol units
@@ -86,8 +87,8 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     */
     QgsUnitTypes::RenderUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
-    void setSymbolWidthMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
+    void setSymbolWidthMapUnitScale( const QgsMapUnitScale &scale ) { mSymbolWidthMapUnitScale = scale; }
+    const QgsMapUnitScale &symbolWidthMapUnitScale() const { return mSymbolWidthMapUnitScale; }
 
     /** Sets the units for the symbol's height.
      * @param unit symbol units
@@ -102,30 +103,30 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     */
     QgsUnitTypes::RenderUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
 
-    void setSymbolHeightMapUnitScale( const QgsMapUnitScale& scale ) { mSymbolHeightMapUnitScale = scale; }
-    const QgsMapUnitScale& symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
+    void setSymbolHeightMapUnitScale( const QgsMapUnitScale &scale ) { mSymbolHeightMapUnitScale = scale; }
+    const QgsMapUnitScale &symbolHeightMapUnitScale() const { return mSymbolHeightMapUnitScale; }
 
-    /** Sets the units for the symbol's outline width.
+    /** Sets the units for the symbol's stroke width.
      * @param unit symbol units
-     * @see outlineWidthUnit()
+     * @see strokeWidthUnit()
     */
-    void setOutlineWidthUnit( QgsUnitTypes::RenderUnit unit ) { mOutlineWidthUnit = unit; }
+    void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
-    /** Returns the units for the symbol's outline width.
-     * @see setOutlineWidthUnit()
+    /** Returns the units for the symbol's stroke width.
+     * @see setStrokeWidthUnit()
     */
-    QgsUnitTypes::RenderUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
-    void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
-    const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
+    void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
+    const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    QRectF bounds( QPointF point, QgsSymbolRenderContext& context ) override;
+    QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   private:
     QString mSymbolName;
@@ -135,12 +136,12 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     double mSymbolHeight;
     QgsUnitTypes::RenderUnit mSymbolHeightUnit;
     QgsMapUnitScale mSymbolHeightMapUnitScale;
-    QColor mOutlineColor;
-    Qt::PenStyle mOutlineStyle;
+    QColor mStrokeColor;
+    Qt::PenStyle mStrokeStyle;
     Qt::PenJoinStyle mPenJoinStyle;
-    double mOutlineWidth;
-    QgsUnitTypes::RenderUnit mOutlineWidthUnit;
-    QgsMapUnitScale mOutlineWidthMapUnitScale;
+    double mStrokeWidth;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    QgsMapUnitScale mStrokeWidthMapUnitScale;
 
     QPainterPath mPainterPath;
 
@@ -154,9 +155,9 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
       @param scaledHeight optional height
       @param f optional feature to render (0 if no data defined rendering)
      */
-    void preparePath( const QString& symbolName, QgsSymbolRenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr, const QgsFeature* f = nullptr );
-    QSizeF calculateSize( QgsSymbolRenderContext& context, double* scaledWidth = nullptr, double* scaledHeight = nullptr );
-    void calculateOffsetAndRotation( QgsSymbolRenderContext& context, double scaledWidth, double scaledHeight, bool& hasDataDefinedRotation, QPointF& offset, double& angle ) const;
+    void preparePath( const QString &symbolName, QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr, const QgsFeature *f = nullptr );
+    QSizeF calculateSize( QgsSymbolRenderContext &context, double *scaledWidth = nullptr, double *scaledHeight = nullptr );
+    void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2_H

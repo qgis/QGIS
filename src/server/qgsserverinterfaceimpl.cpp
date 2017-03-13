@@ -21,25 +21,31 @@
 #include "qgsconfigcache.h"
 #include "qgsmslayercache.h"
 
-/** Constructor */
-QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache )
-    : mCapabilitiesCache( capCache )
+//! Constructor
+QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, QgsServiceRegistry *srvRegistry, QgsServerSettings *settings )
+  : mCapabilitiesCache( capCache )
+  , mServiceRegistry( srvRegistry )
+  , mServerSettings( settings )
 {
   mRequestHandler = nullptr;
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
+#else
+  mAccessControls = nullptr;
+#endif
 }
 
-
-QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
+QString QgsServerInterfaceImpl::getEnv( const QString &name ) const
 {
   return getenv( name.toLocal8Bit() );
 }
 
 
-/** Destructor */
 QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   delete mAccessControls;
+#endif
 }
 
 
@@ -48,12 +54,12 @@ void QgsServerInterfaceImpl::clearRequestHandler()
   mRequestHandler = nullptr;
 }
 
-void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
+void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler *requestHandler )
 {
   mRequestHandler = requestHandler;
 }
 
-void QgsServerInterfaceImpl::setConfigFilePath( const QString& configFilePath )
+void QgsServerInterfaceImpl::setConfigFilePath( const QString &configFilePath )
 {
   mConfigFilePath = configFilePath;
 }
@@ -63,19 +69,24 @@ void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priori
   mFilters.insert( priority, filter );
 }
 
-void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
+void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap *filters )
 {
   mFilters = *filters;
 }
 
-/** Register a new access control filter */
-void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter* accessControl, int priority )
+//! Register a new access control filter
+void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter *accessControl, int priority )
 {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls->registerAccessControl( accessControl, priority );
+#else
+  Q_UNUSED( accessControl );
+  Q_UNUSED( priority );
+#endif
 }
 
 
-void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString& path )
+void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString &path )
 {
   if ( mCapabilitiesCache )
   {
@@ -84,10 +95,17 @@ void QgsServerInterfaceImpl::removeConfigCacheEntry( const QString& path )
   QgsConfigCache::instance()->removeEntry( path );
 }
 
-void QgsServerInterfaceImpl::removeProjectLayers( const QString& path )
+void QgsServerInterfaceImpl::removeProjectLayers( const QString &path )
 {
   QgsMSLayerCache::instance()->removeProjectLayers( path );
 }
 
+QgsServiceRegistry *QgsServerInterfaceImpl::serviceRegistry()
+{
+  return mServiceRegistry;
+}
 
-
+QgsServerSettings *QgsServerInterfaceImpl::serverSettings()
+{
+  return mServerSettings;
+}

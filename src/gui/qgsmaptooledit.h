@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsmaptool.h"
+#include "qgis_gui.h"
 
 class QgsRubberBand;
 class QgsGeometryRubberBand;
@@ -32,12 +33,24 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     Q_OBJECT
 
   public:
-    QgsMapToolEdit( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolEdit();
+    QgsMapToolEdit( QgsMapCanvas *canvas );
 
     virtual Flags flags() const override { return QgsMapTool::EditTool; }
 
+    /**
+     * Return default Z value
+     * Use for set Z coordinate to new vertex for 2.5d geometries
+     */
+    double defaultZValue() const;
+
   protected:
+
+    //! Returns stroke color for rubber bands (from global settings)
+    static QColor digitizingStrokeColor();
+    //! Returns stroke width for rubber bands (from global settings)
+    static int digitizingStrokeWidth();
+    //! Returns fill color for rubber bands (from global settings)
+    static QColor digitizingFillColor();
 
     /** Creates a rubber band with the color/line width from
      *   the QGIS settings. The caller takes ownership of the
@@ -45,22 +58,22 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      *   @param geometryType
      *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
      */
-    QgsRubberBand* createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false );
+    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false );
 
-    QgsGeometryRubberBand* createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
 
-    /** Returns the current vector layer of the map canvas or 0*/
-    QgsVectorLayer* currentVectorLayer();
+    //! Returns the current vector layer of the map canvas or 0
+    QgsVectorLayer *currentVectorLayer();
 
     /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * @param geom list of points (in layer coordinate system)
      * @return 0 in case of success
      */
-    int addTopologicalPoints( const QList<QgsPoint>& geom );
+    int addTopologicalPoints( const QList<QgsPoint> &geom );
 
-    /** Display a timed message bar noting the active layer is not vector. */
+    //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();
-    /** Display a timed message bar noting the active vector layer is not editable. */
+    //! Display a timed message bar noting the active vector layer is not editable.
     void notifyNotEditableLayer();
 };
 

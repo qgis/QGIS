@@ -24,17 +24,15 @@
 // -------------------------- //
 // Condition Widget functions //
 // -------------------------- //
-QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget* parent ) : QWidget( parent )
+QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget *parent ) : QWidget( parent )
 {
   setupUi( this );
 
   mConditionId = id;
 
   mCondCombo->addItem( tr( "has the tag" ), QVariant( "tag" ) );
-  mCondCombo->addItem( tr( "is a member of group" ), QVariant( "group" ) );
   mCondCombo->addItem( tr( "has a part of name matching" ), QVariant( "name" ) );
   mCondCombo->addItem( tr( "does NOT have the tag" ), QVariant( "!tag" ) );
-  mCondCombo->addItem( tr( "is NOT a member of group" ), QVariant( "!group" ) );
   mCondCombo->addItem( tr( "has NO part of name matching" ), QVariant( "!name" ) );
 
   mRemoveBtn->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
@@ -49,7 +47,7 @@ void QgsSmartGroupCondition::destruct()
 
 QString QgsSmartGroupCondition::constraint()
 {
-  return mCondCombo->itemData( mCondCombo->currentIndex() ).toString();
+  return mCondCombo->currentData().toString();
 }
 
 QString QgsSmartGroupCondition::parameter()
@@ -57,12 +55,12 @@ QString QgsSmartGroupCondition::parameter()
   return mCondLineEdit->text();
 }
 
-void QgsSmartGroupCondition::setConstraint( const QString& constraint )
+void QgsSmartGroupCondition::setConstraint( const QString &constraint )
 {
   mCondCombo->setCurrentIndex( mCondCombo->findData( QVariant( constraint ) ) );
 }
 
-void QgsSmartGroupCondition::setParameter( const QString& param )
+void QgsSmartGroupCondition::setParameter( const QString &param )
 {
   mCondLineEdit->setText( param );
 }
@@ -76,9 +74,9 @@ void QgsSmartGroupCondition::hideRemoveButton( bool hide )
 // ------------------------ //
 // Editor Dialog Functions  //
 // ------------------------ //
-QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent )
-    : QDialog( parent )
-    , mStyle( style )
+QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent )
+  : QDialog( parent )
+  , mStyle( style )
 {
   setupUi( this );
 
@@ -91,10 +89,6 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* 
   addCondition();
 
   connect( mAddConditionBtn, SIGNAL( clicked() ), this, SLOT( addCondition() ) );
-}
-
-QgsSmartGroupEditorDialog::~QgsSmartGroupEditorDialog()
-{
 }
 
 QString QgsSmartGroupEditorDialog::smartgroupName()
@@ -129,7 +123,7 @@ void QgsSmartGroupEditorDialog::removeCondition( int id )
   // hide the remove button of the last condition when 2nd last is removed
   if ( mConditionMap.count() == 2 )
   {
-    Q_FOREACH ( QgsSmartGroupCondition* condition, mConditionMap )
+    Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
     {
       condition->hideRemoveButton( true );
     }
@@ -143,7 +137,7 @@ QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
 {
   QgsSmartConditionMap conditions;
 
-  Q_FOREACH ( QgsSmartGroupCondition* condition, mConditionMap )
+  Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
   {
     conditions.insert( condition->constraint(), condition->parameter() );
   }
@@ -153,13 +147,13 @@ QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
 
 QString QgsSmartGroupEditorDialog::conditionOperator()
 {
-  return mAndOrCombo->itemData( mAndOrCombo->currentIndex() ).toString();
+  return mAndOrCombo->currentData().toString();
 }
 
-void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map )
+void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map )
 {
   QStringList constraints;
-  constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name";
+  constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
 
   // clear any defaults
   Q_FOREACH ( int id, mConditionMap.keys() )
@@ -188,12 +182,12 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map
   }
 }
 
-void QgsSmartGroupEditorDialog::setOperator( const QString& op )
+void QgsSmartGroupEditorDialog::setOperator( const QString &op )
 {
   mAndOrCombo->setCurrentIndex( mAndOrCombo->findData( QVariant( op ) ) );
 }
 
-void QgsSmartGroupEditorDialog::setSmartgroupName( const QString& name )
+void QgsSmartGroupEditorDialog::setSmartgroupName( const QString &name )
 {
   mNameLineEdit->setText( name );
 }

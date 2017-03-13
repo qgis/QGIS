@@ -37,19 +37,19 @@ class TestQgsOptional(unittest.TestCase):
 
         opt = QgsOptionalExpression(QgsExpression('true'))
         self.assertTrue(opt.enabled())
-        self.assertEquals(opt.data().expression(), 'true')
+        self.assertEqual(opt.data().expression(), 'true')
         opt.setEnabled(False)
         self.assertFalse(opt.enabled())
         # boolean operator not yet working in python
         # self.assertFalse(opt)
-        self.assertEquals(opt.data().expression(), 'true')
+        self.assertEqual(opt.data().expression(), 'true')
         opt.setEnabled(True)
         self.assertTrue(opt.enabled())
         # self.assertTrue(opt)
-        self.assertEquals(opt.data().expression(), 'true')
+        self.assertEqual(opt.data().expression(), 'true')
         opt.setData(QgsExpression('xyz'))
         self.assertTrue(opt.enabled())
-        self.assertEquals(opt.data().expression(), 'xyz')
+        self.assertEqual(opt.data().expression(), 'xyz')
 
         opt = QgsOptionalExpression(QgsExpression('true'), False)
         self.assertFalse(opt.enabled())

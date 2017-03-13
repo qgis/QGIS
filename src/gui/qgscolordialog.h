@@ -19,6 +19,7 @@
 
 #include <QColorDialog>
 #include "ui_qgscolordialog.h"
+#include "qgis_gui.h"
 
 class QColor;
 
@@ -42,9 +43,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * @param color initial color for dialog
      */
     QgsColorDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
-                    const QColor& color = QColor() );
-
-    ~QgsColorDialog();
+                    const QColor &color = QColor() );
 
     /** Returns the current color for the dialog
      * @returns dialog color
@@ -54,7 +53,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     /** Sets the title for the color dialog
      * @param title title for dialog box
      */
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /** Sets whether alpha modification (transparency) is permitted
      * for the color dialog. Defaults to true.
@@ -72,9 +71,9 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * @return Selected color on accepted() or initialColor on rejected().
      * @see getColor
      */
-    static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
-                                QWidget* parent = nullptr,
-                                const QString& title = QString(),
+    static QColor getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot,
+                                QWidget *parent = nullptr,
+                                const QString &title = QString(),
                                 const bool allowAlpha = true );
 
     /** Return a color selection from a color dialog.
@@ -104,13 +103,13 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 
   protected:
 
-    void closeEvent( QCloseEvent* e ) override;
+    void closeEvent( QCloseEvent *e ) override;
 
   private slots:
 
     void on_mButtonBox_accepted();
     void on_mButtonBox_rejected();
-    void on_mButtonBox_clicked( QAbstractButton * button );
+    void on_mButtonBox_clicked( QAbstractButton *button );
     void discardColor();
 
   private:

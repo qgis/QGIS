@@ -16,7 +16,7 @@
 #include "qgstilecache.h"
 
 #include "qgsnetworkaccessmanager.h"
-
+#include "qgsapplication.h"
 #include <QAbstractNetworkCache>
 #include <QImage>
 
@@ -24,23 +24,23 @@ QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;
 
 
-void QgsTileCache::insertTile( const QUrl& url, const QImage& image )
+void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 {
   QMutexLocker locker( &sTileCacheMutex );
   sTileCache.insert( url, new QImage( image ) );
 }
 
-bool QgsTileCache::tile( const QUrl& url, QImage& image )
+bool QgsTileCache::tile( const QUrl &url, QImage &image )
 {
   QMutexLocker locker( &sTileCacheMutex );
-  if ( QImage* i = sTileCache.object( url ) )
+  if ( QImage *i = sTileCache.object( url ) )
   {
     image = *i;
     return true;
   }
   else if ( QgsNetworkAccessManager::instance()->cache()->metaData( url ).isValid() )
   {
-    if ( QIODevice* data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
+    if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
     {
       QByteArray imageData = data->readAll();
       delete data;

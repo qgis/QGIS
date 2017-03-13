@@ -9,57 +9,52 @@ class QgsSymbolLayer
   switch (sipCpp->type())
   {
     case QgsSymbol::Marker:
-      if (dynamic_cast<QgsEllipseSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsEllipseSymbolLayer;
-      else if (dynamic_cast<QgsFontMarkerSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsFontMarkerSymbolLayer;
-      else if (dynamic_cast<QgsSimpleMarkerSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleMarkerSymbolLayer;
-      else if (dynamic_cast<QgsFilledMarkerSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsFilledMarkerSymbolLayer;
-      else if (dynamic_cast<QgsSvgMarkerSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsSvgMarkerSymbolLayer;
-      else if (dynamic_cast<QgsVectorFieldSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsVectorFieldSymbolLayer;
+      if ( sipCpp->layerType() == "EllipseMarker" )
+        sipType = sipType_QgsEllipseSymbolLayer;
+      else if ( sipCpp->layerType() == "FontMarker" )
+        sipType = sipType_QgsFontMarkerSymbolLayer;
+      else if ( sipCpp->layerType() == "SimpleMarker" )
+        sipType = sipType_QgsSimpleMarkerSymbolLayer;
+      else if ( sipCpp->layerType() == "FilledMarker" )
+        sipType = sipType_QgsFilledMarkerSymbolLayer;
+      else if ( sipCpp->layerType() == "SvgMarker" )
+        sipType = sipType_QgsSvgMarkerSymbolLayer;
+      else if ( sipCpp->layerType() == "VectorField" )
+        sipType = sipType_QgsVectorFieldSymbolLayer;
       else
-	sipType = sipType_QgsMarkerSymbolLayer;
+        sipType = sipType_QgsMarkerSymbolLayer;
       break;
 
     case QgsSymbol::Line:
-      if (dynamic_cast<QgsMarkerLineSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsMarkerLineSymbolLayer;
-      else if (dynamic_cast<QgsSimpleLineSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleLineSymbolLayer;
-      else if (dynamic_cast<QgsArrowSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsArrowSymbolLayer;
+      if ( sipCpp->layerType() == "MarkerLine" )
+        sipType = sipType_QgsMarkerLineSymbolLayer;
+      else if ( sipCpp->layerType() == "SimpleLine" )
+        sipType = sipType_QgsSimpleLineSymbolLayer;
+      else if ( sipCpp->layerType() == "ArrowLine" )
+        sipType = sipType_QgsArrowSymbolLayer;
       else
-	sipType = sipType_QgsLineSymbolLayer;
+        sipType = sipType_QgsLineSymbolLayer;
       break;
 
     case QgsSymbol::Fill:
-      if (dynamic_cast<QgsSimpleFillSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsSimpleFillSymbolLayer;
-      else if (dynamic_cast<QgsImageFillSymbolLayer*>(sipCpp) != NULL)
-      {
-	if (dynamic_cast<QgsLinePatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsLinePatternFillSymbolLayer;
-	else if (dynamic_cast<QgsPointPatternFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsPointPatternFillSymbolLayer;
-	else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsSVGFillSymbolLayer;
-	else if (dynamic_cast<QgsRasterFillSymbolLayer*>(sipCpp) != NULL)
-	  sipType = sipType_QgsRasterFillSymbolLayer;
-	else
-	  sipType = sipType_QgsImageFillSymbolLayer;
-      }
-      else if (dynamic_cast<QgsCentroidFillSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsCentroidFillSymbolLayer;
-      else if (dynamic_cast<QgsGradientFillSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsGradientFillSymbolLayer;
-      else if (dynamic_cast<QgsShapeburstFillSymbolLayer*>(sipCpp) != NULL)
-	sipType = sipType_QgsShapeburstFillSymbolLayer;
+      if ( sipCpp->layerType() == "SimpleFill" )
+        sipType = sipType_QgsSimpleFillSymbolLayer;
+      else if ( sipCpp->layerType() == "LinePatternFill" )
+        sipType = sipType_QgsLinePatternFillSymbolLayer;
+      else if ( sipCpp->layerType() == "PointPatternFill" )
+        sipType = sipType_QgsPointPatternFillSymbolLayer;
+      else if ( sipCpp->layerType() == "SVGFill" )
+        sipType = sipType_QgsSVGFillSymbolLayer;
+      else if ( sipCpp->layerType() == "RasterFill" )
+        sipType = sipType_QgsRasterFillSymbolLayer;
+      else if ( sipCpp->layerType() == "CentroidFill" )
+        sipType = sipType_QgsCentroidFillSymbolLayer;
+      else if ( sipCpp->layerType() == "GradientFill" )
+        sipType = sipType_QgsGradientFillSymbolLayer;
+      else if ( sipCpp->layerType() == "ShapeburstFill" )
+        sipType = sipType_QgsShapeburstFillSymbolLayer;
       else
-	sipType = sipType_QgsFillSymbolLayer;
+        sipType = sipType_QgsFillSymbolLayer;
       break;
 
     case QgsSymbol::Hybrid:
@@ -70,7 +65,86 @@ class QgsSymbolLayer
 
   public:
 
+    /**
+     * Data definable properties.
+     * @note added in QGIS 3.0
+     */
+    enum Property
+    {
+      PropertySize, //!< Symbol size
+      PropertyAngle, //!< Symbol angle
+      PropertyName, //!< Name, eg shape name for simple markers
+      PropertyFillColor, //!< Fill color
+      PropertyStrokeColor, //!< Stroke color
+      PropertyStrokeWidth, //!< Stroke width
+      PropertyStrokeStyle, //!< Stroke style (eg solid, dashed)
+      PropertyOffset, //!< Symbol offset
+      PropertyCharacter, //!< Character, eg for font marker symbol layers
+      PropertyWidth, //!< Symbol width
+      PropertyHeight, //!< Symbol height
+      PropertyFillStyle, //!< Fill style (eg solid, dots)
+      PropertyJoinStyle, //!< Line join style
+      PropertySecondaryColor, //!< Secondary color (eg for gradient fills)
+      PropertyLineAngle, //!< Line angle
+      PropertyLineDistance, //!< Distance between lines
+      PropertyGradientType, //!< Gradient fill type
+      PropertyCoordinateMode, //!< Gradient coordinate mode
+      PropertyGradientSpread, //!< Gradient spread mode
+      PropertyGradientReference1X, //!< Gradient reference point 1 x
+      PropertyGradientReference1Y, //!< Gradient reference point 1 y
+      PropertyGradientReference2X, //!< Gradient reference point 2 x
+      PropertyGradientReference2Y, //!< Gradient reference point 2 y
+      PropertyGradientReference1IsCentroid, //!< Gradient reference point 1 is centroid
+      PropertyGradientReference2IsCentroid, //!< Gradient reference point 2 is centroid
+      PropertyBlurRadius, //!< Shapeburst blur radius
+      PropertyShapeburstUseWholeShape, //!< Shapeburst use whole shape
+      PropertyShapeburstMaxDistance, //!< Shapeburst fill from edge distance
+      PropertyShapeburstIgnoreRings, //!< Shapeburst ignore rings
+      PropertyFile, //!< Filename, eg for svg files
+      PropertyDistanceX, //!< Horizontal distance between points
+      PropertyDistanceY, //!< Vertical distance between points
+      PropertyDisplacementX, //!< Horizontal displacement
+      PropertyDisplacementY, //!< Vertical displacement
+      PropertyAlpha, //!< Alpha (opacity)
+      PropertyCustomDash, //!< Custom dash pattern
+      PropertyCapStyle, //!< Line cap style
+      PropertyPlacement, //!< Line marker placement
+      PropertyInterval, //!< Line marker interval
+      PropertyOffsetAlongLine, //!< Offset along line
+      PropertyHorizontalAnchor, //!< Horizontal anchor point
+      PropertyVerticalAnchor, //!< Vertical anchor point
+      PropertyLayerEnabled, //!< Whether symbol layer is enabled
+      PropertyArrowWidth, //!< Arrow tail width
+      PropertyArrowStartWidth, //!< Arrow tail start width
+      PropertyArrowHeadLength, //!< Arrow head length
+      PropertyArrowHeadThickness, //!< Arrow head thickness
+      PropertyArrowHeadType, //!< Arrow head type
+      PropertyArrowType, //!< Arrow type
+    };
+
+    /**
+     * Returns the symbol layer property definitions.
+     * @note added in QGIS 3.0
+     */
+    static const QgsPropertiesDefinition& propertyDefinitions();
+
     virtual ~QgsSymbolLayer();
+
+    /**
+     * Returns true if symbol layer is enabled and will be drawn.
+     * @note added in QGIS 3.0
+     * @see setEnabled()
+     */
+    bool enabled() const;
+
+    /**
+     * Sets whether symbol layer is enabled and should be drawn. Disabled
+     * layers are not drawn, but remain part of the symbol and can be re-enabled
+     * when desired.
+     * @note added in QGIS 3.0
+     * @see enabled()
+     */
+    void setEnabled( bool enabled );
 
     /**
      * The fill color.
@@ -81,13 +155,13 @@ class QgsSymbolLayer
      */
     virtual void setColor( const QColor& color );
 
-    /** Set outline color. Supported by marker and fill layers.
+    /** Set stroke color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual void setOutlineColor( const QColor& color );
+    virtual void setStrokeColor( const QColor& color );
 
-    /** Get outline color. Supported by marker and fill layers.
+    /** Get stroke color. Supported by marker and fill layers.
      * @note added in 2.1 */
-    virtual QColor outlineColor() const;
+    virtual QColor strokeColor() const;
 
     /** Set fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
@@ -137,13 +211,13 @@ class QgsSymbolLayer
     bool isLocked() const;
 
     /** Returns the estimated maximum distance which the layer style will bleed outside
-      the drawn shape. Eg, polygons drawn with an outline will draw half the width
-      of the outline outside of the polygon. This amount is estimated, since it may
+      the drawn shape. For example, polygons drawn with an stroke will draw half the width
+      of the stroke outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
-    virtual double estimateMaxBleed() const;
+    virtual double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     /** Sets the units to use for sizes and widths within the symbol layer. Individual
-     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
      * @param unit output units
@@ -152,7 +226,7 @@ class QgsSymbolLayer
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
     /** Returns the units to use for sizes and widths within the symbol layer. Individual
-     * symbol layer subclasses will interpret this in different ways, eg a marker symbol
+     * symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
      * layer may use it to specify the units for the marker size, while a line symbol
      * layer may use it to specify the units for the line width.
      * @returns output unit, or QgsUnitTypes::RenderUnknownUnit if the symbol layer contains mixed units
@@ -170,17 +244,7 @@ class QgsSymbolLayer
     /** Returns the set of attributes referenced by the layer. This includes attributes
      * required by any data defined properties associated with the layer.
      */
-    virtual QSet<QString> usedAttributes() const;
-
-    /** Returns the data defined property corresponding to the specified property key
-     * @param property property key
-     * @returns matching data defined property if it exists
-     * @note added in QGIS 2.9
-     * @see setDataDefinedProperty
-     * @see hasDataDefinedProperty
-     * @see evaluateDataDefinedProperty
-     */
-    virtual QgsDataDefined* getDataDefinedProperty( const QString& property ) const;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     /** Sets a data defined property for the layer.
      * @param property unique property key. Any existing data defined with the same key will be deleted and overridden.
@@ -189,55 +253,7 @@ class QgsSymbolLayer
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
      */
-    virtual void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
-
-    /** Removes a data defined property from the layer.
-     * @param property unique property key. If an associated QgsDataDefined object exists,
-     * it will be deleted and removed from the layer.
-     * @note added in QGIS 2.9
-     * @see setDataDefinedProperty
-     * @see removeDataDefinedProperties
-     */
-    virtual void removeDataDefinedProperty( const QString& property );
-
-    /** Removes all data defined properties from the layer and deletes associated
-     * objects.
-     * @see removeDataDefinedProperty
-     * @note added in QGIS 2.9
-     */
-    virtual void removeDataDefinedProperties();
-
-    /** Checks whether the layer has any associated data defined properties.
-     * @returns true if layer has data defined properties
-     * @see hasDataDefinedProperty
-     */
-    virtual bool hasDataDefinedProperties() const;
-
-    /** Checks whether the layer has a matching data defined property and if
-     * that property is currently actived.
-     * @param property property key
-     * @returns true if data defined property exists and is active
-     * @see hasDataDefinedProperties
-     * @see evaluateDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.9
-     */
-    virtual bool hasDataDefinedProperty( const QString& property ) const;
-
-    /** Evaluates the matching data defined property and returns the calculated
-     * value. Prior to evaluation the data defined property must be prepared
-     * by calling @link prepareExpressions @endlink.
-     * @param property property key
-     * @param context symbol render context
-     * @param defaultVal default value to return if evaluation was not successful
-     * @param ok if specified, will be set to true if evaluation was successful
-     * @returns calculated value for data defined property, or default value
-     * if property does not exist or is deactived.
-     * @see hasDataDefinedProperty
-     * @see getDataDefinedProperty
-     * @note added in QGIS 2.12
-     */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolRenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
+    virtual void setDataDefinedProperty( Property key, const QgsProperty& property );
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
@@ -266,9 +282,6 @@ class QgsSymbolLayer
      */
     void setPaintEffect( QgsPaintEffect* effect /Transfer/);
 
-  protected:
-    QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
-
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
      * @param context symbol render context
@@ -276,18 +289,35 @@ class QgsSymbolLayer
      */
     virtual void prepareExpressions( const QgsSymbolRenderContext& context );
 
-    /** Saves all data defined properties to a string map.
-     * @param stringMap destination string map
-     * @see restoreDataDefinedProperties
+
+    /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
      */
-    void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
+    QgsPropertyCollection& dataDefinedProperties();
+
+    /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
+     * @note added in QGIS 3.0
+     * @see setProperties()
+     */
+    //const QgsPropertyCollection& dataDefinedProperties() const { return mProperties; }
+
+    /** Sets the symbol layer's property collection, used for data defined overrides.
+     * @param collection property collection. Existing properties will be replaced.
+     * @note added in QGIS 3.0
+     * @see properties()
+     */
+    void setDataDefinedProperties( const QgsPropertyCollection& collection );
+
+  protected:
+    QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked = false );
 
     /** Restores all data defined properties from string map.
      * @param stringMap source string map
      * @note added in QGIS 2.9
      * @see saveDataDefinedProperties
      */
-    void restoreDataDefinedProperties( const QgsStringMap& stringMap );
+    void restoreOldDataDefinedProperties( const QgsStringMap& stringMap );
 
     /** Copies all data defined properties of this layer to another symbol layer.
      * @param destLayer destination layer
@@ -568,7 +598,7 @@ class QgsLineSymbolLayer : QgsSymbolLayer
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) = 0;
 
-    virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    virtual void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     virtual void setWidth( double width );
     virtual double width() const;

@@ -16,15 +16,15 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 
 #include "qgsopenrasterdialog.h"
 
 QgsOpenRasterDialog::QgsOpenRasterDialog( QWidget *parent ) :
-    QDialog( parent )
+  QDialog( parent )
 {
   setupUi( this );
 
@@ -57,7 +57,7 @@ void QgsOpenRasterDialog::changeEvent( QEvent *e )
 // --------------------------- private slots ------------------------------- //
 void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( "/Plugin-GeoReferencer/rasterdirectory" ).toString();
   if ( dir.isEmpty() )
     dir = ".";
@@ -91,23 +91,23 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
   leModifiedRasterFileName->setText( modifiedFileName );
 
   // What DOING this code?
-  QgsProject* prj = QgsProject::instance();
-  QString projBehaviour = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
+  QgsProject *prj = QgsProject::instance();
+  QString projBehavior = settings.value( "/Projections/defaultBehavior", "prompt" ).toString();
   QString projectCRS = prj->readEntry( "SpatialRefSys", "/ProjectCRSProj4String" );
   int projectCrsId = prj->readNumEntry( "SpatialRefSys", "/ProjectCrsId" );
 
-  settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+  settings.setValue( "/Projections/defaultBehavior", "useProject" );
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", GEOPROJ4 );
   prj->writeEntry( "SpatialRefSys", "/ProjectCrsId", int( GEOCRS_ID ) );
 
-  settings.setValue( "/Projections/defaultBehaviour", projBehaviour );
+  settings.setValue( "/Projections/defaultBehavior", projBehavior );
   prj->writeEntry( "SpatialRefSys", "/ProjectCRSProj4String", projectCRS );
   prj->writeEntry( "SpatialRefSys", "/ProjectCrsId", projectCrsId );
 }
 
 void QgsOpenRasterDialog::on_tbnSelectModifiedRaster_clicked()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString dir = settings.value( "/Plugin-GeoReferencer/rasterdirectory" ).toString();
   if ( dir.isEmpty() )
     dir = ".";

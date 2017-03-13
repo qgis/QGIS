@@ -27,9 +27,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF
+from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF, QSize
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
 from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsEllipseSymbolLayer,
@@ -54,8 +54,22 @@ from qgis.core import (QgsCentroidFillSymbolLayer,
                        QgsRasterFillSymbolLayer,
                        QgsShapeburstFillSymbolLayer,
                        QgsArrowSymbolLayer,
-                       QgsSymbol,
-                       QgsUnitTypes
+                       QgsUnitTypes,
+                       QgsFillSymbol,
+                       QgsLineSymbol,
+                       QgsMarkerSymbol,
+                       QgsSymbolLayerUtils,
+                       QgsMapSettings,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsRenderContext,
+                       QgsRenderChecker,
+                       QgsRectangle,
+                       QgsVectorLayer,
+                       QgsProject,
+                       QgsMultiRenderChecker,
+                       QgsSingleSymbolRenderer,
+                       QgsProperty
                        )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -63,6 +77,8 @@ from utilities import unitTestDataPath
 # Convenience instances in case you may need them
 # not used in this test
 start_app()
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsSymbolLayer(unittest.TestCase):
@@ -78,6 +94,14 @@ class TestQgsSymbolLayer(unittest.TestCase):
      - QgsVectorFieldSymbolLayer where createFromSld implementation
          returns NULL
      """
+
+    def setUp(self):
+        self.report = "<h1>Python QgsSymbolLayer Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def testBinding(self):
         """Test python bindings existence."""
@@ -270,6 +294,269 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
         assert mExpectedType == mType, mMessage
 
+    def testGettersSetters(self):
+        """ test base class getters/setters """
+        layer = QgsSimpleFillSymbolLayer()
+
+        layer.setEnabled(False)
+        self.assertFalse(layer.enabled())
+        layer.setEnabled(True)
+        self.assertTrue(layer.enabled())
+
+        layer.setLocked(False)
+        self.assertFalse(layer.isLocked())
+        layer.setLocked(True)
+        self.assertTrue(layer.isLocked())
+
+        layer.setRenderingPass(5)
+        self.assertEqual(layer.renderingPass(), 5)
+
+    def testSaveRestore(self):
+        """ Test saving and restoring base symbol layer properties to xml"""
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setEnabled(False)
+        layer.setLocked(True)
+        layer.setRenderingPass(5)
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        doc = QDomDocument("testdoc")
+        elem = QgsSymbolLayerUtils.saveSymbol('test', symbol, doc)
+
+        restored_symbol = QgsSymbolLayerUtils.loadSymbol(elem)
+        restored_layer = restored_symbol.symbolLayer(0)
+        self.assertFalse(restored_layer.enabled())
+        self.assertTrue(restored_layer.isLocked())
+        self.assertEqual(restored_layer.renderingPass(), 5)
+
+    def testClone(self):
+        """ test that base symbol layer properties are cloned with layer """
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setEnabled(False)
+        layer.setLocked(True)
+        layer.setRenderingPass(5)
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        cloned_symbol = symbol.clone()
+        cloned_layer = cloned_symbol.symbolLayer(0)
+        self.assertFalse(cloned_layer.enabled())
+        self.assertTrue(cloned_layer.isLocked())
+        self.assertEqual(cloned_layer.renderingPass(), 5)
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'symbollayer_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("symbol_layer")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
+
+    def testRenderFillLayerDisabled(self):
+        """ test that rendering a fill symbol with disabled layer works"""
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setEnabled(False)
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = geom.geometry().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+
+    def testRenderFillLayerDataDefined(self):
+        """ test that rendering a fill symbol with data defined enabled layer works"""
+
+        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
+        QgsProject.instance().addMapLayer(polys_layer)
+
+        layer = QgsSimpleFillSymbolLayer()
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
+        layer.setStrokeStyle(Qt.NoPen)
+        layer.setColor(QColor(100, 150, 150))
+
+        symbol = QgsFillSymbol()
+        symbol.changeSymbolLayer(0, layer)
+        polys_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([polys_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_filllayer_ddenabled')
+        self.assertTrue(renderchecker.runTest('filllayer_ddenabled'))
+        QgsProject.instance().removeMapLayer(polys_layer)
+
+    def testRenderLineLayerDisabled(self):
+        """ test that rendering a line symbol with disabled layer works"""
+        layer = QgsSimpleLineSymbolLayer()
+        layer.setEnabled(False)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('LineString (0 0,3 4,4 3)')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = geom.geometry().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+
+    def testRenderLineLayerDataDefined(self):
+        """ test that rendering a line symbol with data defined enabled layer works"""
+
+        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
+        QgsProject.instance().addMapLayer(lines_layer)
+
+        layer = QgsSimpleLineSymbolLayer()
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Highway'"))
+        layer.setColor(QColor(100, 150, 150))
+        layer.setWidth(5)
+
+        symbol = QgsLineSymbol()
+        symbol.changeSymbolLayer(0, layer)
+        lines_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([lines_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_linelayer_ddenabled')
+        self.assertTrue(renderchecker.runTest('linelayer_ddenabled'))
+        QgsProject.instance().removeMapLayer(lines_layer)
+
+    def testRenderMarkerLayerDisabled(self):
+        """ test that rendering a marker symbol with disabled layer works"""
+        layer = QgsSimpleMarkerSymbolLayer()
+        layer.setEnabled(False)
+
+        symbol = QgsMarkerSymbol()
+        symbol.changeSymbolLayer(0, layer)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+        painter = QPainter()
+        ms = QgsMapSettings()
+
+        geom = QgsGeometry.fromWkt('Point (1 2)')
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        extent = QgsRectangle(0, 0, 4, 4)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        painter.begin(image)
+        image.fill(QColor(255, 255, 255))
+
+        symbol.startRender(context)
+        symbol.renderFeature(f, context)
+        symbol.stopRender(context)
+        painter.end()
+
+        self.assertTrue(self.imageCheck('symbol_layer', 'symbollayer_disabled', image))
+
+    def testRenderMarkerLayerDataDefined(self):
+        """ test that rendering a marker symbol with data defined enabled layer works"""
+
+        points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
+        points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
+        QgsProject.instance().addMapLayer(points_layer)
+
+        layer = QgsSimpleMarkerSymbolLayer()
+        layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
+        layer.setColor(QColor(100, 150, 150))
+        layer.setSize(5)
+        layer.setStrokeStyle(Qt.NoPen)
+
+        symbol = QgsMarkerSymbol()
+        symbol.changeSymbolLayer(0, layer)
+        points_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+        ms = QgsMapSettings()
+        ms.setOutputSize(QSize(400, 400))
+        ms.setOutputDpi(96)
+        ms.setExtent(QgsRectangle(-133, 22, -70, 52))
+        ms.setLayers([points_layer])
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(ms)
+        renderchecker.setControlPathPrefix('symbol_layer')
+        renderchecker.setControlName('expected_markerlayer_ddenabled')
+        self.assertTrue(renderchecker.runTest('markerlayer_ddenabled'))
+        QgsProject.instance().removeMapLayer(points_layer)
+
     def testQgsSimpleFillSymbolLayer(self):
         """Create a new style from a .sld file and match test.
         """
@@ -294,18 +581,18 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#ffaa7f'
-        mValue = mSymbolLayer.borderColor().name()
+        mExpectedValue = '#ffaa7f'
+        mValue = mSymbolLayer.strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = Qt.DotLine
-        mValue = mSymbolLayer.borderStyle()
+        mValue = mSymbolLayer.strokeStyle()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
         mExpectedValue = 0.26
-        mValue = mSymbolLayer.borderWidth()
+        mValue = mSymbolLayer.strokeWidth()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -416,13 +703,13 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#55aaff'
+        mExpectedValue = '#55aaff'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#00ff00'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
+        mExpectedValue = '#00ff00'
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -454,7 +741,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#ff55ff'
+        mExpectedValue = '#ff55ff'
         mValue = mSymbolLayer.color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
@@ -510,13 +797,13 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#ffaa00'
+        mExpectedValue = '#ffaa00'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#ff007f'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
+        mExpectedValue = '#ff007f'
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -604,12 +891,12 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#000000'
-        mValue = mSymbolLayer.subSymbol().symbolLayer(0).borderColor().name()
+        mExpectedValue = '#000000'
+        mValue = mSymbolLayer.subSymbol().symbolLayer(0).strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#ff0000'
+        mExpectedValue = '#ff0000'
         mValue = mSymbolLayer.subSymbol().symbolLayer(0).color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
@@ -642,7 +929,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#aa007f'
+        mExpectedValue = '#aa007f'
         mValue = mSymbolLayer.color().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
@@ -692,18 +979,18 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'circle'
+        mExpectedValue = 'circle'
         mValue = mSymbolLayer.symbolName()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#ffff7f'
+        mExpectedValue = '#ffff7f'
         mValue = mSymbolLayer.fillColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'#aaaaff'
-        mValue = mSymbolLayer.outlineColor().name()
+        mExpectedValue = '#aaaaff'
+        mValue = mSymbolLayer.strokeColor().name()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -737,12 +1024,12 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'Arial'
+        mExpectedValue = 'Arial'
         mValue = mSymbolLayer.fontFamily()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u"M"
+        mExpectedValue = "M"
         mValue = mSymbolLayer.character()
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
@@ -776,9 +1063,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
-        mExpectedValue = u'skull.svg'
+        mExpectedValue = 'skull.svg'
         mValue = os.path.basename(mSymbolLayer.path())
-        print("VALUE", mSymbolLayer.path())
+        print(("VALUE", mSymbolLayer.path()))
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
@@ -819,6 +1106,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mSymbolLayer.subSymbol().setColor(QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -44,7 +44,7 @@
    <item row="2" column="1">
     <widget class="QPushButton" name="mHideAllButton">
      <property name="text">
-      <string>Unselect all</string>
+      <string>Deselect all</string>
      </property>
     </widget>
    </item>
@@ -63,6 +63,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mFieldsList</tabstop>
+  <tabstop>mShowAllButton</tabstop>
+  <tabstop>mHideAllButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

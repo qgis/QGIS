@@ -80,7 +80,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
          * Return the attributes used to evaluate the expression of this rule
          * @return A set of attribute names
          */
-        QSet<QString> usedAttributes() const;
+        QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
         /**
          * Returns true if this rule or one of its chilren needs the geometry to be applied.
@@ -195,7 +195,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
         //! clone this rule, return new instance
         QgsRuleBasedRenderer::Rule* clone() const /Factory/;
 
-        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
+        void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props );
         static QgsRuleBasedRenderer::Rule* createFromSld( QDomElement& element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 
         QDomElement save( QDomDocument& doc, QgsSymbolMap& symbolMap );
@@ -340,7 +340,7 @@ class QgsRuleBasedRenderer : QgsFeatureRenderer
 
     virtual QString filter( const QgsFields& fields = QgsFields() );
 
-    virtual QList<QString> usedAttributes();
+    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
     virtual bool filterNeedsGeometry() const;
 

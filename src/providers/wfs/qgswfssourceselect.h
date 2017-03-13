@@ -26,7 +26,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 
-class QgsGenericProjectionSelector;
+class QgsProjectionSelectionDialog;
 class QgsWfsCapabilities;
 class QgsSQLComposerDialog;
 
@@ -47,37 +47,38 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   public:
 
-    QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
     ~QgsWFSSourceSelect();
 
   signals:
-    void addWfsLayer( const QString& uri, const QString& layerName );
+    void addWfsLayer( const QString &uri, const QString &layerName );
     void connectionsChanged();
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
-    QgsGenericProjectionSelector* mProjectionSelector;
+    QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
+
     /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
-    QgsWfsCapabilities* mCapabilities;
+    QgsWfsCapabilities *mCapabilities = nullptr;
     QString mUri;            // data source URI
-    QgsWFSItemDelegate* mItemDelegate;
-    QStandardItemModel* mModel;
-    QSortFilterProxyModel* mModelProxy;
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QgsWFSItemDelegate *mItemDelegate = nullptr;
+    QStandardItemModel *mModel = nullptr;
+    QSortFilterProxyModel *mModelProxy = nullptr;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
-    QgsSQLComposerDialog* mSQLComposerDialog;
+    QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else
     @return the authority id of the crs or an empty string in case of error*/
-    QString getPreferredCrs( const QSet<QString>& crsSet ) const;
+    QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
   private slots:
     void addEntryToServerList();
@@ -85,17 +86,17 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void deleteEntryOfServerList();
     void connectToServer();
     void addLayer();
-    void buildQuery( const QModelIndex& index );
+    void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();
     void on_cmbConnections_activated( int index );
     void capabilitiesReplyFinished();
     void on_btnSave_clicked();
     void on_btnLoad_clicked();
-    void treeWidgetItemDoubleClicked( const QModelIndex & index );
-    void treeWidgetCurrentRowChanged( const QModelIndex & current, const QModelIndex & previous );
+    void treeWidgetItemDoubleClicked( const QModelIndex &index );
+    void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void buildQueryButtonClicked();
-    void filterChanged( const QString& text );
+    void filterChanged( const QString &text );
     void updateSql();
 
     void populateConnectionList();

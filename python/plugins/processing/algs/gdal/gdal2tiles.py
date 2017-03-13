@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
@@ -60,11 +61,11 @@ class gdal2tiles(GdalAlgorithm):
     WEBVIEWERS = ['all', 'google', 'openlayers', 'leaflet', 'none']
 
     def commandLineName(self):
-        return "gdalogr:gdal2tiles"
+        return "gdal:gdal2tiles"
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('gdal2tiles')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
 
         # Required parameters
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
@@ -73,10 +74,10 @@ class gdal2tiles(GdalAlgorithm):
         params = []
         params.append(ParameterSelection(self.PROFILE,
                                          self.tr('Tile cutting profile'),
-                                         self.PROFILES, 0, False, True))
+                                         self.PROFILES, 0, False, optional=True))
         params.append(ParameterSelection(self.RESAMPLING,
                                          self.tr('Resampling method'),
-                                         self.RESAMPLINGS, 0, False, True))
+                                         self.RESAMPLINGS, 0, False, optional=True))
         params.append(ParameterCrs(self.S_SRS,
                                    self.tr('The spatial reference system used for the source input data'),
                                    None, True))
@@ -100,7 +101,7 @@ class gdal2tiles(GdalAlgorithm):
                                       None, False, True))
         params.append(ParameterSelection(self.WEBVIEWER,
                                          self.tr('Web viewer to generate'),
-                                         self.WEBVIEWERS, 0, False, True))
+                                         self.WEBVIEWERS, 0, False, optional=True))
         params.append(ParameterString(self.TITLE,
                                       self.tr('Title of the map'),
                                       None, False, True))
@@ -133,21 +134,21 @@ class gdal2tiles(GdalAlgorithm):
             arguments.append('-r')
             arguments.append(self.RESAMPLINGS[self.getParameterValue(self.RESAMPLING)])
 
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
+        ssrs = str(self.getParameterValue(self.S_SRS))
         if len(ssrs) > 0:
             arguments.append('-s')
             arguments.append(ssrs)
 
         if self.getParameterValue(self.ZOOM):
             arguments.append('-z')
-            arguments.append(unicode(self.getParameterValue(self.ZOOM)))
+            arguments.append(str(self.getParameterValue(self.ZOOM)))
 
         if self.getParameterValue(self.RESUME):
             arguments.append('-e')
 
         if self.getParameterValue(self.NODATA):
             arguments.append('-a')
-            arguments.append(unicode(self.getParameterValue(self.NODATA)))
+            arguments.append(str(self.getParameterValue(self.NODATA)))
 
         # KML arguments
         if self.getParameterValue(self.FORCEKML):
@@ -158,7 +159,7 @@ class gdal2tiles(GdalAlgorithm):
 
         if self.getParameterValue(self.URL):
             arguments.append('-u')
-            arguments.append(unicode(self.getParameterValue(self.URL)))
+            arguments.append(str(self.getParameterValue(self.URL)))
 
         # Web viewer arguments
         if self.getParameterValue(self.WEBVIEWER):
@@ -167,7 +168,7 @@ class gdal2tiles(GdalAlgorithm):
 
         parameters = {self.TITLE: '-t', self.COPYRIGHT: '-c',
                       self.GOOGLEKEY: '-g', self.BINGKEY: '-b'}
-        for arg, parameter in parameters.iteritems():
+        for arg, parameter in list(parameters.items()):
             if self.getParameterValue(arg):
                 arguments.append(parameter)
                 arguments.append(self.getParameterValue(arg))

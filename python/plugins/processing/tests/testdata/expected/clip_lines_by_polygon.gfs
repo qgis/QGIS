@@ -2,6 +2,8 @@
   <GMLFeatureClass>
     <Name>clip_lines_by_polygon</Name>
     <ElementPath>clip_lines_by_polygon</ElementPath>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>2</FeatureCount>

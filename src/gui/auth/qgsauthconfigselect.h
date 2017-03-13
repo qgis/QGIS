@@ -21,6 +21,7 @@
 
 #include "ui_qgsauthconfigselect.h"
 #include "qgsauthconfig.h"
+#include "qgis_gui.h"
 
 
 /** \ingroup gui
@@ -31,6 +32,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Create a dialog for setting an associated authentication config, either
      * from existing configs, or creating/removing them from auth database
@@ -38,29 +40,28 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
      * @param dataprovider The key of the calling layer provider, if applicable
      */
     explicit QgsAuthConfigSelect( QWidget *parent = nullptr, const QString &dataprovider = QString() );
-    ~QgsAuthConfigSelect();
 
-    /** Set the authentication config id for the resource */
-    void setConfigId( const QString& authcfg );
+    //! Set the authentication config id for the resource
+    void setConfigId( const QString &authcfg );
 
-    /** Get the authentication config id for the resource */
+    //! Get the authentication config id for the resource
     const QString configId() const { return mAuthCfg; }
 
-    /** Set key of layer provider, if applicable */
+    //! Set key of layer provider, if applicable
     void setDataProviderKey( const QString &key );
 
   signals:
-    /** Emitted when authentication config is changed or missing */
-    void selectedConfigIdChanged( const QString& authcfg );
+    //! Emitted when authentication config is changed or missing
+    void selectedConfigIdChanged( const QString &authcfg );
 
-    /** Emitted when authentication config is removed */
-    void selectedConfigIdRemoved( const QString& authcfg );
+    //! Emitted when authentication config is removed
+    void selectedConfigIdRemoved( const QString &authcfg );
 
   public slots:
-    /** Show a small message bar with a close button */
+    //! Show a small message bar with a close button
     void showMessage( const QString &msg );
 
-    /** Clear and hide small message bar */
+    //! Clear and hide small message bar
     void clearMessage();
 
   private slots:
@@ -87,8 +88,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     QgsAuthMethodConfigsMap mConfigs;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 
@@ -106,6 +107,7 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     Q_OBJECT
 
   public:
+
     /**
      * Construct wrapper dialog for select widget to edit an authcfg in a data source URI
      * @param parent Parent widget
@@ -115,15 +117,14 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     explicit QgsAuthConfigUriEdit( QWidget *parent = nullptr,
                                    const QString &datauri = QString(),
                                    const QString &dataprovider = QString() );
-    ~QgsAuthConfigUriEdit();
 
-    /** Set the data source URI to parse */
+    //! Set the data source URI to parse
     void setDataSourceUri( const QString &datauri );
 
-    /** The returned, possibly edited data source URI */
+    //! The returned, possibly edited data source URI
     QString dataSourceUri();
 
-    /** Whether a string contains an authcfg ID */
+    //! Whether a string contains an authcfg ID
     static bool hasConfigId( const QString &txt );
 
   private slots:
@@ -151,8 +152,8 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
     QString mDataUriOrig;
 
     bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHCONFIGSELECT_H

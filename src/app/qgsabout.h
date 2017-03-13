@@ -19,6 +19,7 @@
 
 #include "ui_qgsabout.h"
 #include "qgsoptionsdialogbase.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
 {
@@ -26,8 +27,8 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
   public:
     QgsAbout( QWidget *parent );
     ~QgsAbout();
-    void setVersion( const QString& v );
-    static QString fileSystemSafe( const QString& string );
+    void setVersion( const QString &v );
+    static QString fileSystemSafe( const QString &string );
 
   private:
     void setWhatsNew();

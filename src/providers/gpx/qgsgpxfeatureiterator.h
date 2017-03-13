@@ -26,15 +26,15 @@ class QgsGPXProvider;
 class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsGPXFeatureSource( const QgsGPXProvider* p );
+    explicit QgsGPXFeatureSource( const QgsGPXProvider *p );
     ~QgsGPXFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QString mFileName;
     QgsGPXProvider::DataType mFeatureType;
-    QgsGPSData* data;
+    QgsGPSData *data = nullptr;
     QVector<int> indexToAttr;
     QgsFields mFields;
 
@@ -45,34 +45,30 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>
 {
   public:
-    QgsGPXFeatureIterator( QgsGPXFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsGPXFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
 
-    bool readFid( QgsFeature& feature );
+    bool readFid( QgsFeature &feature );
 
-    bool readWaypoint( const QgsWaypoint& wpt, QgsFeature& feature );
-    bool readRoute( const QgsRoute& rte, QgsFeature& feature );
-    bool readTrack( const QgsTrack& trk, QgsFeature& feature );
+    bool readWaypoint( const QgsWaypoint &wpt, QgsFeature &feature );
+    bool readRoute( const QgsRoute &rte, QgsFeature &feature );
+    bool readTrack( const QgsTrack &trk, QgsFeature &feature );
 
-    QgsGeometry* readWaypointGeometry( const QgsWaypoint& wpt );
-    QgsGeometry* readRouteGeometry( const QgsRoute& rte );
-    QgsGeometry* readTrackGeometry( const QgsTrack& trk );
+    QgsGeometry *readWaypointGeometry( const QgsWaypoint &wpt );
+    QgsGeometry *readRouteGeometry( const QgsRoute &rte );
+    QgsGeometry *readTrackGeometry( const QgsTrack &trk );
 
-    void readAttributes( QgsFeature& feature, const QgsWaypoint& wpt );
-    void readAttributes( QgsFeature& feature, const QgsRoute& rte );
-    void readAttributes( QgsFeature& feature, const QgsTrack& trk );
+    void readAttributes( QgsFeature &feature, const QgsWaypoint &wpt );
+    void readAttributes( QgsFeature &feature, const QgsRoute &rte );
+    void readAttributes( QgsFeature &feature, const QgsTrack &trk );
 
   protected:
 

@@ -25,7 +25,7 @@ class QgsRelationManager : QObject
      *
      * @return A QMap where the key is the relation id, the value the relation object.
      */
-    const QMap<QString, QgsRelation>& relations() const;
+    QMap<QString, QgsRelation> relations() const;
 
     /**
      * Add a relation.
@@ -89,6 +89,16 @@ class QgsRelationManager : QObject
      * @return A list of relations where the specified layer is the referenced part.
      */
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
+
+    /**
+     * Discover all the relations available from the current layers.
+     *
+     * @param existingRelations the existing relations to filter them out
+     * @param layers the current layers
+     * @return the list of discovered relations
+     * @note added in QGIS 3.0
+     */
+    static QList<QgsRelation> discoverRelations( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers );
 
   signals:
     /** This signal is emitted when the relations were loaded after reading a project */

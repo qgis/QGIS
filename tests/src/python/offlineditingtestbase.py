@@ -18,9 +18,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from builtins import str
+
 from builtins import object
+
 __author__ = 'Alessandro Pasotti'
 __date__ = '2016-06-30'
 __copyright__ = 'Copyright 2016, The QGIS Project'
@@ -28,7 +28,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from time import sleep
-import os
 
 from qgis.core import (
     QgsFeature,
@@ -36,7 +35,7 @@ from qgis.core import (
     QgsPoint,
     QgsFeatureRequest,
     QgsExpression,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsOfflineEditing,
 )
 
@@ -76,7 +75,7 @@ class OfflineTestBase(object):
         layer.addFeatures(features)
         assert layer.commitChanges()
         # Add the online layer
-        self.registry = QgsMapLayerRegistry.instance()
+        self.registry = QgsProject.instance()
         self.registry.removeAllMapLayers()
         assert self.registry.addMapLayer(self._getOnlineLayer('test_point')) is not None
 
@@ -152,7 +151,7 @@ class OfflineTestBase(object):
         # Edit feature 2
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2'")
         self.assertTrue(offline_layer.startEditing())
-        self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fieldNameIndex('name'), 'name 2 edited'))
+        self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fields().lookupField('name'), 'name 2 edited'))
         self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPoint(QgsPoint(33.0, 60.0))))
         self.assertTrue(offline_layer.commitChanges())
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2 edited'")
@@ -182,11 +181,11 @@ class OfflineTestBase(object):
         # Edit feature 2
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2 edited'")
         self.assertTrue(offline_layer.startEditing())
-        self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fieldNameIndex('name'), 'name 2'))
+        self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fields().lookupField('name'), 'name 2'))
         self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPoint(TEST_FEATURES[1][2])))
         # Edit feat 4
         feat4 = self._getFeatureByAttribute(offline_layer, 'name', "'name 4'")
-        self.assertTrue(offline_layer.changeAttributeValue(feat4.id(), offline_layer.fieldNameIndex('name'), 'name 4 edited'))
+        self.assertTrue(offline_layer.changeAttributeValue(feat4.id(), offline_layer.fields().lookupField('name'), 'name 4 edited'))
         self.assertTrue(offline_layer.commitChanges())
         # Sync
         ol.synchronize()

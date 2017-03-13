@@ -20,6 +20,7 @@ class QgsProjectVersion
     int minorVersion();
     int subVersion();
     QString text();
+    bool isNull() const;
 
     /** Boolean equal operator
      */

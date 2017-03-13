@@ -26,7 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import QgsApplication
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.core.alglist import algList
@@ -41,10 +43,12 @@ class CreateNewModelAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         dlg = ModelerDialog()
-        dlg.exec_()
-        if dlg.update:
-            algList.reloadProvider('model')
+        dlg.update_model.connect(self.updateModel)
+        dlg.show()
+
+    def updateModel(self):
+        algList.reloadProvider('model')

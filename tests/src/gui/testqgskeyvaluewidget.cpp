@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgskeyvaluewidgetfactory.h>
 #include <qgskeyvaluewidget.h>
@@ -40,17 +40,17 @@ class TestQgsKeyValueWidget : public QObject
 
     void testUpdate()
     {
-      const QgsKeyValueWidgetFactory factory( "testKeyValue" );
-      QgsEditorWidgetWrapper* wrapper = factory.create( nullptr, 0, nullptr, nullptr );
+      const QgsKeyValueWidgetFactory factory( QStringLiteral( "testKeyValue" ) );
+      QgsEditorWidgetWrapper *wrapper = factory.create( nullptr, 0, nullptr, nullptr );
       QVERIFY( wrapper );
-      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant& ) ) );
+      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsKeyValueWidget* widget = qobject_cast< QgsKeyValueWidget* >( wrapper->widget() );
+      QgsKeyValueWidget *widget = qobject_cast< QgsKeyValueWidget * >( wrapper->widget() );
       QVERIFY( widget );
 
       QVariantMap initial;
-      initial["1"] = "one";
-      initial["2"] = "two";
+      initial[QStringLiteral( "1" )] = "one";
+      initial[QStringLiteral( "2" )] = "two";
       wrapper->setValue( initial );
 
       const QVariant value = wrapper->value();
@@ -58,12 +58,12 @@ class TestQgsKeyValueWidget : public QObject
       QCOMPARE( value.toMap(), initial );
       QCOMPARE( spy.count(), 0 );
 
-      QAbstractItemModel* model = widget->tableView->model();
+      QAbstractItemModel *model = widget->tableView->model();
       model->setData( model->index( 0, 1 ), "hello" );
       QCOMPARE( spy.count(), 1 );
 
       QVariantMap expected = initial;
-      expected["1"] = "hello";
+      expected[QStringLiteral( "1" )] = "hello";
       QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
       QCOMPARE( int( eventValue.type() ), int( QVariant::Map ) );
       QCOMPARE( eventValue.toMap(), expected );
@@ -72,5 +72,5 @@ class TestQgsKeyValueWidget : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsKeyValueWidget )
+QGSTEST_MAIN( TestQgsKeyValueWidget )
 #include "testqgskeyvaluewidget.moc"

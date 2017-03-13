@@ -31,61 +31,63 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     Q_OBJECT
 
   public:
-    explicit QgsComposerPictureWidget( QgsComposerPicture* picture );
+    explicit QgsComposerPictureWidget( QgsComposerPicture *picture );
     ~QgsComposerPictureWidget();
 
-    /** Add the icons of the standard directories to the preview*/
+    //! Add the icons of the standard directories to the preview
     void addStandardDirectoriesToPreview();
 
   public slots:
     void on_mPictureBrowseButton_clicked();
     void on_mPictureLineEdit_editingFinished();
     void on_mPictureRotationSpinBox_valueChanged( double d );
-    void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
+    void on_mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void on_mAddDirectoryButton_clicked();
     void on_mRemoveDirectoryButton_clicked();
     void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
-    void composerMapChanged( QgsComposerItem* item );
+    void composerMapChanged( QgsComposerItem *item );
     void on_mResizeModeComboBox_currentIndexChanged( int index );
     void on_mAnchorPointComboBox_currentIndexChanged( int index );
 
   protected:
-    void resizeEvent( QResizeEvent * event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   protected slots:
-    /** Initializes data defined buttons to current atlas coverage layer*/
+    //! Initializes data defined buttons to current atlas coverage layer
     void populateDataDefinedButtons();
 
   private slots:
-    /** Sets the GUI elements to the values of mPicture*/
+    //! Sets the GUI elements to the values of mPicture
     void setGuiElementValues();
 
-    /** Sets the picture rotation GUI control value*/
+    //! Sets the picture rotation GUI control value
     void setPicRotationSpinValue( double r );
 
     /** Load SVG and pixel-based image previews
      * @param collapsed Whether the parent group box is collapsed */
     void loadPicturePreviews( bool collapsed );
 
-    void on_mFillColorButton_colorChanged( const QColor& color );
-    void on_mOutlineColorButton_colorChanged( const QColor& color );
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mFillColorButton_colorChanged( const QColor &color );
+    void on_mStrokeColorButton_colorChanged( const QColor &color );
+    void on_mStrokeWidthSpinBox_valueChanged( double d );
+    void on_mPictureRotationOffsetSpinBox_valueChanged( double d );
+    void on_mNorthTypeComboBox_currentIndexChanged( int index );
 
   private:
-    QgsComposerPicture* mPicture;
-    /** Whether the picture selection previews have been loaded */
+    QgsComposerPicture *mPicture = nullptr;
+    //! Whether the picture selection previews have been loaded
     bool mPreviewsLoaded;
 
-    /** Add the icons of a directory to the preview. Returns 0 in case of success*/
-    int addDirectoryToPreview( const QString& path );
+    //! Add the icons of a directory to the preview. Returns 0 in case of success
+    int addDirectoryToPreview( const QString &path );
 
-    /** Tests if a file is valid svg*/
-    bool testSvgFile( const QString& filename ) const;
-    /** Tests if a file is a valid pixel format*/
-    bool testImageFile( const QString& filename ) const;
+    //! Tests if a file is valid svg
+    bool testSvgFile( const QString &filename ) const;
+    //! Tests if a file is a valid pixel format
+    bool testImageFile( const QString &filename ) const;
 
     //! Renders an svg file to a QIcon, correctly handling any SVG parameters present in the file
-    QIcon svgToIcon( const QString& filePath ) const;
+    QIcon svgToIcon( const QString &filePath ) const;
 
     void updateSvgParamGui( bool resetValues = true );
 };

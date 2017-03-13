@@ -16,9 +16,11 @@
 #ifndef QGSATLASCOMPOSITION_H
 #define QGSATLASCOMPOSITION_H
 
+#include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qgsexpression.h"
 
 #include <memory>
 #include <QString>
@@ -29,7 +31,6 @@
 class QgsComposerMap;
 class QgsComposition;
 class QgsVectorLayer;
-class QgsExpression;
 class QgsExpressionContext;
 
 /** \ingroup core
@@ -44,8 +45,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 {
     Q_OBJECT
   public:
-    QgsAtlasComposition( QgsComposition* composition );
-    ~QgsAtlasComposition();
+    QgsAtlasComposition( QgsComposition *composition );
 
     /** Returns whether the atlas generation is enabled
      * @returns true if atlas is enabled
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see filenamePatternErrorString
      * @note This method has no effect when exporting to PDF if singleFile() is true
      */
-    bool setFilenamePattern( const QString& pattern );
+    bool setFilenamePattern( const QString &pattern );
 
     /** Returns an error string from parsing the filename expression.
      * @returns filename pattern parser error
@@ -101,13 +101,13 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @returns atlas coverage layer
      * @see setCoverageLayer
      */
-    QgsVectorLayer* coverageLayer() const { return mCoverageLayer; }
+    QgsVectorLayer *coverageLayer() const { return mCoverageLayer; }
 
     /** Sets the coverage layer to use for the atlas features
      * @param layer vector coverage layer
      * @see coverageLayer
      */
-    void setCoverageLayer( QgsVectorLayer* layer );
+    void setCoverageLayer( QgsVectorLayer *layer );
 
     /** Returns the expression used for calculating the page name.
      * @returns expression string, or field name from coverage layer
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see pageNameExpression
      * @note added in QGIS 2.12
      */
-    void setPageNameExpression( const QString& pageNameExpression ) { mPageNameExpression = pageNameExpression; }
+    void setPageNameExpression( const QString &pageNameExpression ) { mPageNameExpression = pageNameExpression; }
 
     /** Returns the calculated name for a specified atlas page number.
      * @param pageNumber number of page, where 0 = first page
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void setFilterFeatures( bool doFilter ) { mFilterFeatures = doFilter; }
 
     QString featureFilter() const { return mFeatureFilter; }
-    void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
+    void setFeatureFilter( const QString &expression ) { mFeatureFilter = expression; }
 
     /** Returns an error string from parsing the feature filter expression.
      * @returns filename pattern parser error
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QString featureFilterErrorString() const { return mFilterParserError; }
 
     QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
-    void setSortKeyAttributeName( const QString& fieldName ) { mSortKeyAttributeName = fieldName; }
+    void setSortKeyAttributeName( const QString &fieldName ) { mSortKeyAttributeName = fieldName; }
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see setPredefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    const QVector<qreal>& predefinedScales() const { return mPredefinedScales; }
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
 
     /** Sets the list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -184,15 +184,15 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see predefinedScales
      * @see QgsComposerMap::atlasScalingMode
      */
-    void setPredefinedScales( const QVector<qreal>& scales );
+    void setPredefinedScales( const QVector<qreal> &scales );
 
     /** Begins the rendering. Returns true if successful, false if no matching atlas
       features found.*/
     bool beginRender();
-    /** Ends the rendering. Restores original extent */
+    //! Ends the rendering. Restores original extent
     void endRender();
 
-    /** Returns the number of features in the coverage layer */
+    //! Returns the number of features in the coverage layer
     int numFeatures() const;
 
     /** Prepare the atlas map for the given feature. Sets the extent and context variables
@@ -207,10 +207,10 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     bool prepareForFeature( const QgsFeature *feat );
 
-    /** Returns the current filename. Must be called after prepareForFeature() */
+    //! Returns the current filename. Must be called after prepareForFeature()
     QString currentFilename() const;
 
-    void writeXml( QDomElement& elem, QDomDocument& doc ) const;
+    void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
     /** Reads general atlas settings from xml
      * @param elem a QDomElement holding the atlas properties.
@@ -218,18 +218,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see readXMLMapSettings
      * @note This method should be called before restoring composer item properties
      */
-    void readXml( const QDomElement& elem, const QDomDocument& doc );
+    void readXml( const QDomElement &elem, const QDomDocument &doc );
 
-    /** Reads old (pre 2.2) map related atlas settings from xml
-     * @param elem a QDomElement holding the atlas map properties.
-     * @param doc QDomDocument for the source xml.
-     * @see readXMLMapSettings
-     * @note This method should be called after restoring composer item properties
-     * @note added in version 2.5
-     */
-    void readXmlMapSettings( const QDomElement& elem, const QDomDocument& doc );
-
-    QgsComposition* composition() { return mComposition; }
+    QgsComposition *composition() { return mComposition; }
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
      * number of matching features. Must be called after prepareForFeature()
@@ -251,11 +242,11 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
-    /** Recalculates the bounds of an atlas driven map */
-    void prepareMap( QgsComposerMap* map );
+    //! Recalculates the bounds of an atlas driven map
+    void prepareMap( QgsComposerMap *map );
 
-    /** Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS) */
-    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem& projectedTo = QgsCoordinateReferenceSystem() ) const;
+    //! Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS)
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &projectedTo = QgsCoordinateReferenceSystem() ) const;
 
   public slots:
 
@@ -270,26 +261,26 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void firstFeature();
 
   signals:
-    /** Emitted when one of the parameters changes */
+    //! Emitted when one of the parameters changes
     void parameterChanged();
 
-    /** Emitted when atlas is enabled or disabled */
+    //! Emitted when atlas is enabled or disabled
     void toggled( bool );
 
-    /** Is emitted when the atlas has an updated status bar message for the composer window*/
-    void statusMsgChanged( const QString& message );
+    //! Is emitted when the atlas has an updated status bar message for the composer window
+    void statusMsgChanged( const QString &message );
 
-    /** Is emitted when the coverage layer for an atlas changes*/
-    void coverageLayerChanged( QgsVectorLayer* layer );
+    //! Is emitted when the coverage layer for an atlas changes
+    void coverageLayerChanged( QgsVectorLayer *layer );
 
-    /** Is emitted when atlas rendering has begun*/
+    //! Is emitted when atlas rendering has begun
     void renderBegun();
 
-    /** Is emitted when atlas rendering has ended*/
+    //! Is emitted when atlas rendering has ended
     void renderEnded();
 
-    /** Is emitted when the current atlas feature changes*/
-    void featureChanged( QgsFeature* feature );
+    //! Is emitted when the current atlas feature changes
+    void featureChanged( QgsFeature *feature );
 
     /** Is emitted when the number of features for the atlas changes.
      * @note added in QGIS 2.12
@@ -297,6 +288,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void numberFeaturesChanged( int numFeatures );
 
   private:
+
     /** Updates the filename expression.
      * @returns true if expression was successfully parsed, false if expression is invalid
      */
@@ -307,12 +299,12 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
 
-    QgsComposition* mComposition;
+    QgsComposition *mComposition = nullptr;
 
     bool mEnabled;
     bool mHideCoverage;
     QString mFilenamePattern;
-    QgsVectorLayer* mCoverageLayer;
+    QgsVectorLayer *mCoverageLayer = nullptr;
     bool mSingleFile;
 
     QString mCurrentFilename;
@@ -328,7 +320,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     typedef QMap< QgsFeatureId, QVariant > SorterKeys;
 
   private slots:
-    void removeLayers( const QStringList& layers );
+    void removeLayers( const QStringList &layers );
 
   private:
     // value of field that is used for ordering of features
@@ -348,7 +340,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsFeature mCurrentFeature;
 
-    QScopedPointer<QgsExpression> mFilenameExpr;
+    std::unique_ptr<QgsExpression> mFilenameExpr;
 
     // bounding box of the current feature transformed into map crs
     QgsRectangle mTransformedFeatureBounds;

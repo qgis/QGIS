@@ -17,32 +17,32 @@
 #include "qgsoptionalexpression.h"
 
 QgsOptionalExpression::QgsOptionalExpression()
-    : QgsOptional<QgsExpression>()
+  : QgsOptional<QgsExpression>()
 {
 
 }
 
-QgsOptionalExpression::QgsOptionalExpression( const QgsExpression& expression )
-    : QgsOptional<QgsExpression>( expression )
+QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression )
+  : QgsOptional<QgsExpression>( expression )
 {
 
 }
 
-QgsOptionalExpression::QgsOptionalExpression( const QgsExpression& expression, bool enabled )
-    : QgsOptional<QgsExpression>( expression, enabled )
+QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression, bool enabled )
+  : QgsOptional<QgsExpression>( expression, enabled )
 {
 
 }
 
-void QgsOptionalExpression::writeXml( QDomElement& element )
+void QgsOptionalExpression::writeXml( QDomElement &element )
 {
   QDomText exp = element.ownerDocument().createTextNode( data().expression() );
-  element.setAttribute( "enabled", enabled() );
+  element.setAttribute( QStringLiteral( "enabled" ), enabled() );
   element.appendChild( exp );
 }
 
-void QgsOptionalExpression::readXml( const QDomElement& element )
+void QgsOptionalExpression::readXml( const QDomElement &element )
 {
-  setEnabled( element.attribute( "enabled" ).toInt() );
+  setEnabled( element.attribute( QStringLiteral( "enabled" ) ).toInt() );
   setData( element.text() );
 }

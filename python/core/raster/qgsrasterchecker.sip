@@ -21,12 +21,12 @@ class QgsRasterChecker
     QString report();
     /**
      * Test using renderer to generate the image to be compared.
-     * @param theVerifiedKey verified provider key
-     * @param theVerifiedUri URI of the raster to be verified
-     * @param theExpectedKey expected provider key
-     * @param theExpectedUri URI of the expected (control) raster
+     * @param verifiedKey verified provider key
+     * @param verifiedUri URI of the raster to be verified
+     * @param expectedKey expected provider key
+     * @param expectedUri URI of the expected (control) raster
      */
-    bool runTest( const QString& theVerifiedKey, QString theVerifiedUri,
-                  const QString& theExpectedKey, QString theExpectedUri );
+    bool runTest( const QString& verifiedKey, QString verifiedUri,
+                  const QString& expectedKey, QString expectedUri );
 };
 

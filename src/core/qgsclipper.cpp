@@ -38,7 +38,7 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-QPolygonF QgsClipper::clippedLine( const QgsCurve& curve, const QgsRectangle& clipExtent )
+QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent )
 {
   const int nPoints = curve.numPoints();
 
@@ -93,7 +93,7 @@ QPolygonF QgsClipper::clippedLine( const QgsCurve& curve, const QgsRectangle& cl
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,
-                                        const QgsRectangle& clipRect, QPolygonF& pts )
+                                        const QgsRectangle &clipRect, QPolygonF &pts )
 {
   //test the different edge combinations...
   if ( qgsDoubleNear( x0, clipRect.xMinimum() ) )

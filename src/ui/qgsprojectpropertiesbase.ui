@@ -42,9 +42,21 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
         <number>0</number>
        </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLineEdit" name="mSearchLineEdit"/>
+       </item>
        <item>
         <widget class="QListWidget" name="mOptionsListWidget">
          <property name="minimumSize">
@@ -197,7 +209,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -209,11 +230,20 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -229,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>779</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -451,7 +481,7 @@
                    <widget class="QLabel" name="textLabel1_8">
                     <property name="text">
                      <string>Ellipsoid
-(for distance calculations)</string>
+(for distance and area calculations)</string>
                     </property>
                    </widget>
                   </item>
@@ -694,7 +724,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_02">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -710,8 +749,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>779</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -724,14 +763,14 @@
                <item>
                 <widget class="QGroupBox" name="cbxProjectionEnabled">
                  <property name="title">
-                  <string>Enable 'on the fly' CRS transformation (OTF)</string>
+                  <string>Project Coordinate Reference System (CRS)</string>
                  </property>
                  <property name="checkable">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
-                   <widget class="QgsProjectionSelector" name="projectionSelector" native="true"/>
+                   <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -744,7 +783,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_03">
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -760,8 +808,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>779</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -821,7 +869,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_04">
           <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -837,8 +894,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>779</height>
+                <width>685</width>
+                <height>778</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -887,7 +944,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/color.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/color.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -903,7 +960,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/style-polygon.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconPolygonLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -930,7 +987,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/style-line.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconLineLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -982,7 +1039,7 @@
                      <string/>
                     </property>
                     <property name="pixmap">
-                     <pixmap resource="../../images/images.qrc">:/images/themes/default/styleicons/style-point.png</pixmap>
+                     <pixmap resource="../../images/images.qrc">:/images/themes/default/mIconPointLayer.svg</pixmap>
                     </property>
                    </widget>
                   </item>
@@ -1178,7 +1235,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
+                      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
                     </property>
                    </widget>
                   </item>
@@ -1279,7 +1336,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_05">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1294,9 +1360,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-961</y>
-                <width>674</width>
-                <height>2470</height>
+                <y>0</y>
+                <width>671</width>
+                <height>2451</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1845,7 +1911,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="11" column="0" colspan="2">
+                  <item row="12" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_10">
                     <item>
                      <widget class="QLabel" name="mWMSImageQualityLabel">
@@ -1879,7 +1945,7 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="10" column="0" colspan="2">
+                  <item row="11" column="0" colspan="2">
                    <layout class="QGridLayout" name="gridLayout_3">
                     <item row="1" column="1">
                      <widget class="QLabel" name="mMaxWidthLabel">
@@ -1926,7 +1992,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="8" column="0" colspan="2">
+                  <item row="9" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="grpWMSPrecision">
                     <item>
                      <widget class="QLabel" name="label_5">
@@ -1950,7 +2016,7 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="9" column="0" colspan="2">
+                  <item row="10" column="0" colspan="2">
                    <layout class="QHBoxLayout" name="horizontalLayout_2">
                     <item>
                      <widget class="QLabel" name="mWMSUrlLabel">
@@ -1996,7 +2062,7 @@
                      <item row="4" column="0" colspan="2">
                       <widget class="QGroupBox" name="mWMSInspireScenario2">
                        <property name="title">
-                        <string>Scenario 2 - INSPIRE related fields using embedded service metadata:</string>
+                        <string>Scenario 2 - INSPIRE related fields using embedded service metadata</string>
                        </property>
                        <property name="checkable">
                         <bool>true</bool>
@@ -2096,10 +2162,17 @@
                     </layout>
                    </widget>
                   </item>
-                  <item row="7" column="0">
+                  <item row="8" column="0">
                    <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
                     <property name="text">
                      <string>Segmentize feature info geometry</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QCheckBox" name="mAllowRequestDefinedDataSourcesBox">
+                    <property name="text">
+                     <string>Allow defining datasources in server requests</string>
                     </property>
                    </widget>
                   </item>
@@ -2162,7 +2235,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnWFSLayersUnselectAll">
+                   <widget class="QPushButton" name="pbnWFSLayersDeselectAll">
                     <property name="text">
                      <string>Deselect all</string>
                     </property>
@@ -2228,7 +2301,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnWCSLayersUnselectAll">
+                   <widget class="QPushButton" name="pbnWCSLayersDeselectAll">
                     <property name="text">
                      <string>Deselect all</string>
                     </property>
@@ -2343,7 +2416,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_06">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -2359,8 +2441,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>694</width>
-                <height>779</height>
+                <width>165</width>
+                <height>57</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2396,7 +2478,16 @@
          </widget>
          <widget class="QWidget" name="mTabRelations">
           <layout class="QGridLayout" name="gridLayout_16">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
           </layout>
@@ -2466,7 +2557,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -2486,15 +2586,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2516,41 +2616,45 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsProjectionSelector</class>
+   <class>QgsProjectionSelectionTreeWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselector.h</header>
+   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
+  <tabstop>titleBox</tabstop>
   <tabstop>mProjectFileLineEdit</tabstop>
   <tabstop>titleEdit</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
   <tabstop>mMapTileRenderingCheckBox</tabstop>
+  <tabstop>btnGrpMeasureEllipsoid</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
   <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mAreaUnitsCombo</tabstop>
+  <tabstop>mCoordinateDisplayGroup</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
   <tabstop>spinBoxDP</tabstop>
   <tabstop>grpProjectScales</tabstop>
-  <tabstop>lstScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
   <tabstop>pbnRemoveScale</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
+  <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>groupBox</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
   <tabstop>cboStyleLine</tabstop>
@@ -2559,10 +2663,12 @@
   <tabstop>pbtnStyleFill</tabstop>
   <tabstop>cboStyleColorRamp</tabstop>
   <tabstop>pbtnStyleColorRamp</tabstop>
+  <tabstop>groupBox_2</tabstop>
   <tabstop>mTransparencySlider</tabstop>
   <tabstop>mTransparencySpinBox</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>pbtnStyleManager</tabstop>
+  <tabstop>groupBox_7</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
@@ -2571,17 +2677,19 @@
   <tabstop>mButtonExportColors</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>grpOWSServiceCapabilities</tabstop>
+  <tabstop>mWMSName</tabstop>
   <tabstop>mWMSTitle</tabstop>
   <tabstop>mWMSContactOrganization</tabstop>
   <tabstop>mWMSOnlineResourceLineEdit</tabstop>
   <tabstop>mWMSContactPerson</tabstop>
+  <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSContactMail</tabstop>
   <tabstop>mWMSContactPhone</tabstop>
-  <tabstop>mWMSContactPositionCb</tabstop>
   <tabstop>mWMSAbstract</tabstop>
   <tabstop>mWMSFeesCb</tabstop>
   <tabstop>mWMSAccessConstraintsCb</tabstop>
   <tabstop>mWMSKeywordList</tabstop>
+  <tabstop>grpWMSCapabilities</tabstop>
   <tabstop>grpWMSExt</tabstop>
   <tabstop>mWMSExtMinX</tabstop>
   <tabstop>mWMSExtMinY</tabstop>
@@ -2601,34 +2709,38 @@
   <tabstop>mLayerRestrictionsListWidget</tabstop>
   <tabstop>mAddLayerRestrictionButton</tabstop>
   <tabstop>mRemoveLayerRestrictionButton</tabstop>
+  <tabstop>mWMSInspire</tabstop>
+  <tabstop>mWMSInspireLanguage</tabstop>
+  <tabstop>mWMSInspireScenario1</tabstop>
+  <tabstop>mWMSInspireMetadataUrl</tabstop>
+  <tabstop>mWMSInspireMetadataUrlType</tabstop>
+  <tabstop>mWMSInspireScenario2</tabstop>
+  <tabstop>mWMSInspireTemporalReference</tabstop>
+  <tabstop>mWMSInspireMetadataDate</tabstop>
   <tabstop>mWmsUseLayerIDs</tabstop>
   <tabstop>mAddWktGeometryCheckBox</tabstop>
+  <tabstop>mAllowRequestDefinedDataSourcesBox</tabstop>
+  <tabstop>mSegmentizeFeatureInfoGeometryCheckBox</tabstop>
   <tabstop>mWMSPrecisionSpinBox</tabstop>
   <tabstop>mWMSUrlLineEdit</tabstop>
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
+  <tabstop>grpWFSCapabilities</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>
-  <tabstop>pbnWFSLayersUnselectAll</tabstop>
+  <tabstop>pbnWFSLayersDeselectAll</tabstop>
   <tabstop>mWFSUrlLineEdit</tabstop>
+  <tabstop>grpWCSCapabilities</tabstop>
   <tabstop>twWCSLayers</tabstop>
   <tabstop>pbnWCSLayersSelectAll</tabstop>
-  <tabstop>pbnWCSLayersUnselectAll</tabstop>
+  <tabstop>pbnWCSLayersDeselectAll</tabstop>
   <tabstop>mWCSUrlLineEdit</tabstop>
-  <tabstop>grpPythonMacros</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>mWMSName</tabstop>
-  <tabstop>mWMSInspire</tabstop>
-  <tabstop>mWMSInspireLanguage</tabstop>
-  <tabstop>mWMSInspireScenario2</tabstop>
-  <tabstop>mWMSInspireTemporalReference</tabstop>
-  <tabstop>mWMSInspireMetadataDate</tabstop>
-  <tabstop>mWMSInspireScenario1</tabstop>
-  <tabstop>mWMSInspireMetadataUrl</tabstop>
-  <tabstop>mWMSInspireMetadataUrlType</tabstop>
+  <tabstop>mOWSCheckerGroupBox</tabstop>
   <tabstop>pbnLaunchOWSChecker</tabstop>
   <tabstop>teOWSChecker</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>grpPythonMacros</tabstop>
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
  </tabstops>

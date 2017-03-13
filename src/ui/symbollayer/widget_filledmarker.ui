@@ -64,7 +64,7 @@
     </layout>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -94,7 +94,7 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mAngleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -173,7 +173,7 @@
     </layout>
    </item>
    <item row="3" column="2">
-    <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -206,7 +206,7 @@
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -232,7 +232,7 @@
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mVerticalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -282,7 +282,7 @@
     </widget>
    </item>
    <item row="6" column="2">
-    <widget class="QgsDataDefinedButton" name="mNameDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mNameDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -292,9 +292,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

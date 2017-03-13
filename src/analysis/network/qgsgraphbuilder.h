@@ -12,51 +12,51 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef QGSGRAPHBUILDERH
-#define QGSGRAPHBUILDERH
 
-#include "qgsgraphbuilderintr.h"
+#ifndef QGSGRAPHBUILDER_H
+#define QGSGRAPHBUILDER_H
 
-//QT4 includes
+#include "qgsgraphbuilderinterface.h"
 
-//QGIS includes
 #include <qgsspatialindex.h>
+#include "qgis_analysis.h"
 
-//forward declarations
 class QgsDistanceArea;
 class QgsCoordinateTransform;
 class QgsGraph;
 
 /**
-* \ingroup networkanalysis
+* \ingroup analysis
 * \class QgsGraphBuilder
-* \brief This class making the QgsGraph object
+* \brief This class used for making the QgsGraph object
 */
 
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 {
   public:
+
     /**
-     * default constructor
+     * Default constructor
      */
-    QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
+    QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 
     ~QgsGraphBuilder();
 
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    virtual void addVertex( int id, const QgsPoint& pt ) override;
+    virtual void addVertex( int id, const QgsPoint &pt ) override;
 
-    virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& prop ) override;
+    virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &prop ) override;
 
     /**
-     * return QgsGraph result;
+     * Returns generated QgsGraph
      */
-    QgsGraph* graph();
+    QgsGraph *graph();
 
   private:
 
-    QgsGraph *mGraph;
+    QgsGraph *mGraph = nullptr;
 };
-#endif //QGSGRAPHBUILDERH
+
+#endif // QGSGRAPHBUILDER_H

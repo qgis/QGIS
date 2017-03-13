@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -28,7 +29,7 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsWkbTypes,
+from qgis.core import (QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsWkbTypes,
                        QgsDistanceArea, QgsFeatureRequest, QgsFeature,
                        QgsPoint)
 
@@ -59,7 +60,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.VECTOR))
         pointCount = float(self.getParameterValue(self.POINT_NUMBER))
@@ -87,7 +88,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
         while nIterations < maxIterations and nPoints < pointCount:
             # pick random feature
             fid = random.randint(0, featureCount - 1)
-            f = layer.getFeatures(request.setFilterFid(fid)).next()
+            f = next(layer.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
             fGeom = f.geometry()
 
             if fGeom.isMultipart():
@@ -126,7 +127,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
                     index.insertFeature(f)
                     points[nPoints] = pnt
                     nPoints += 1
-                    progress.setPercentage(int(nPoints * total))
+                    feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:

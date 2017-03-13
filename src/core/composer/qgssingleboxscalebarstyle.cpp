@@ -20,7 +20,7 @@
 #include <QList>
 #include <QPainter>
 
-QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
+QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar *bar ): QgsScaleBarStyle( bar )
 {
 
 }
@@ -35,7 +35,7 @@ QgsSingleBoxScaleBarStyle::~QgsSingleBoxScaleBarStyle()
   //nothing to do...
 }
 
-void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
+void QgsSingleBoxScaleBarStyle::draw( QPainter *p, double xOffset ) const
 {
   if ( !mScaleBar )
   {
@@ -78,6 +78,6 @@ void QgsSingleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
 
 QString QgsSingleBoxScaleBarStyle::name() const
 {
-  return "Single Box";
+  return QStringLiteral( "Single Box" );
 }
 

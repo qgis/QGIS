@@ -41,16 +41,16 @@ extern "C"
 #endif
 }
 
-QgsGrassVectorLayer::QgsGrassVectorLayer( QObject * parent )
-    : QObject( parent )
-    , mNumber( 0 )
+QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
+  : QObject( parent )
+  , mNumber( 0 )
 {
 }
 
-QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject * parent )
-    : QObject( parent )
-    , mGrassObject( grassObject )
-    , mNumber( number )
+QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( grassObject )
+  , mNumber( number )
 {
   if ( fieldInfo )
   {
@@ -60,10 +60,6 @@ QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int
     mTable = fieldInfo->table;
     mKey = fieldInfo->key;
   }
-}
-
-QgsGrassVectorLayer::~QgsGrassVectorLayer()
-{
 }
 
 int QgsGrassVectorLayer::typeCount( int type ) const
@@ -143,7 +139,7 @@ QgsFields QgsGrassVectorLayer::fields()
       db_init_string( &tableName );
       db_set_string( &tableName, mTable.toUtf8().data() );
 
-      dbTable *table;
+      dbTable *table = nullptr;
       if ( db_describe_table( driver, &tableName, &table ) != DB_OK )
       {
         mError = QObject::tr( "Cannot describe table %1" ).arg( mTable );
@@ -163,19 +159,19 @@ QgsFields QgsGrassVectorLayer::fields()
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
-              type = "int";
+              type = QStringLiteral( "int" );
               qtype = QVariant::Int;
               break;
             case DB_C_TYPE_DOUBLE:
-              type = "double";
+              type = QStringLiteral( "double" );
               qtype = QVariant::Double;
               break;
             case DB_C_TYPE_STRING:
-              type = "string";
+              type = QStringLiteral( "string" );
               qtype = QVariant::String;
               break;
             case DB_C_TYPE_DATETIME:
-              type = "datetime";
+              type = QStringLiteral( "datetime" );
               qtype = QVariant::String;
               break;
           }
@@ -192,18 +188,18 @@ QgsFields QgsGrassVectorLayer::fields()
 
 
 /*********************** QgsGrassVector ***********************/
-QgsGrassVector::QgsGrassVector( const QString& gisdbase, const QString& location, const QString& mapset,
-                                const QString& name, QObject *parent )
-    : QObject( parent )
-    , mGrassObject( gisdbase, location, mapset, name )
-    , mNodeCount( 0 )
+QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
+                                const QString &name, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( gisdbase, location, mapset, name )
+  , mNodeCount( 0 )
 {
 }
 
-QgsGrassVector::QgsGrassVector( const QgsGrassObject& grassObject, QObject *parent )
-    : QObject( parent )
-    , mGrassObject( grassObject )
-    , mNodeCount( 0 )
+QgsGrassVector::QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent )
+  : QObject( parent )
+  , mGrassObject( grassObject )
+  , mNodeCount( 0 )
 {
 }
 
@@ -241,7 +237,7 @@ bool QgsGrassVector::openHead()
     map = QgsGrass::vectNewMapStruct();
     level = Vect_open_old_head( map, ( char * ) mGrassObject.name().toUtf8().data(), ( char * ) mGrassObject.mapset().toUtf8().data() );
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     QgsDebugMsg( QString( "Cannot open GRASS vectvectorTypesor: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );
@@ -328,7 +324,7 @@ bool QgsGrassVector::openHead()
     QgsGrass::vectDestroyMapStruct( map );
     QgsGrass::unlock();
   }
-  G_CATCH( QgsGrass::Exception &e )
+  G_CATCH( QgsGrass::Exception & e )
   {
     QgsDebugMsg( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
     QgsGrass::vectDestroyMapStruct( map );

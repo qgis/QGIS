@@ -21,6 +21,7 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import range
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
@@ -68,6 +69,9 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.btnAddSpatialIndex.clicked.connect(self.createSpatialIndex)
         self.btnDeleteIndex.clicked.connect(self.deleteIndex)
 
+        self.refresh()
+
+    def refresh(self):
         self.populateViews()
         self.checkSupports()
 
@@ -76,9 +80,8 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.btnEditColumn.setEnabled(allowEditColumns)
         self.btnDeleteColumn.setEnabled(allowEditColumns)
 
-        allowSpatial = self.db.connector.hasSpatialSupport()
-        self.btnAddGeometryColumn.setEnabled(allowSpatial)
-        self.btnAddSpatialIndex.setEnabled(allowSpatial)
+        self.btnAddGeometryColumn.setEnabled(self.db.connector.canAddGeometryColumn((self.table.schemaName(), self.table.name)))
+        self.btnAddSpatialIndex.setEnabled(self.db.connector.canAddSpatialIndex((self.table.schemaName(), self.table.name)))
 
     def populateViews(self):
         self.populateFields()
@@ -118,7 +121,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             # add column to table
             self.table.addField(fld)
-            self.populateViews()
+            self.refresh()
         except BaseError as e:
             DlgDbError.showError(e, self)
             return
@@ -130,7 +133,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         dlg = DlgAddGeometryColumn(self, self.table)
         if not dlg.exec_():
             return
-        self.populateViews()
+        self.refresh()
 
     def editColumn(self):
         """ open dialog to change column info and alter table appropriately """
@@ -152,7 +155,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.aboutToChangeTable.emit()
         try:
             fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String())
-            self.populateViews()
+            self.refresh()
         except BaseError as e:
             DlgDbError.showError(e, self)
             return
@@ -168,7 +171,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewFields.model()
         fld = m.getObject(index)
 
-        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete column '%s'?") % fld.name,
+        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("Really delete column '{0}'?").format(fld.name),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -177,7 +180,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.aboutToChangeTable.emit()
         try:
             fld.delete()
-            self.populateViews()
+            self.refresh()
         except BaseError as e:
             DlgDbError.showError(e, self)
             return
@@ -210,7 +213,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         dlg = DlgCreateConstraint(self, self.table)
         if not dlg.exec_():
             return
-        self.populateViews()
+        self.refresh()
 
     def deleteConstraint(self):
         """ delete a constraint """
@@ -223,7 +226,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         constr = m.getObject(index)
 
         res = QMessageBox.question(self, self.tr("Are you sure"),
-                                   self.tr("really delete constraint '%s'?") % constr.name,
+                                   self.tr("Really delete constraint '{0}'?").format(constr.name),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -232,7 +235,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.aboutToChangeTable.emit()
         try:
             constr.delete()
-            self.populateViews()
+            self.refresh()
         except BaseError as e:
             DlgDbError.showError(e, self)
             return
@@ -244,7 +247,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         sel = self.viewConstraints.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
             return -1
         return indexes[0].row()
 
@@ -273,7 +276,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         dlg = DlgCreateIndex(self, self.table)
         if not dlg.exec_():
             return
-        self.populateViews()
+        self.refresh()
 
     def createSpatialIndex(self):
         """ create spatial index for the geometry column """
@@ -282,7 +285,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             return
 
         res = QMessageBox.question(self, self.tr("Create?"),
-                                   self.tr("Create spatial index for field %s?") % self.table.geomColumn,
+                                   self.tr("Create spatial index for field {0}?").format(self.table.geomColumn),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -293,7 +296,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
         try:
             self.table.createSpatialIndex()
-            self.populateViews()
+            self.refresh()
         except BaseError as e:
             DlgDbError.showError(e, self)
             return
@@ -318,7 +321,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewIndexes.model()
         idx = m.getObject(index)
 
-        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete index '%s'?") % idx.name,
+        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("Really delete index '{0}'?").format(idx.name),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -327,7 +330,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.aboutToChangeTable.emit()
         try:
             idx.delete()
-            self.populateViews()
+            self.refresh()
         except BaseError as e:
             DlgDbError.showError(e, self)
             return

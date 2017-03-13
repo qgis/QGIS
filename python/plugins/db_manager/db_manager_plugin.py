@@ -19,18 +19,18 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import object
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsMapLayerRegistry, QgsMapLayer, QgsDataSourceUri
-import re
+from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri
 
 from . import resources_rc  # NOQA
 
 
-class DBManagerPlugin:
+class DBManagerPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface
@@ -55,10 +55,10 @@ class DBManagerPlugin:
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
-        self.iface.legendInterface().addLegendLayerAction(self.layerAction, "", "dbManagerUpdateSqlLayer", QgsMapLayer.VectorLayer, False)
-        for l in QgsMapLayerRegistry.instance().mapLayers().values():
+        self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
+        for l in list(QgsProject.instance().mapLayers().values()):
             self.onLayerWasAdded(l)
-        QgsMapLayerRegistry.instance().layerWasAdded.connect(self.onLayerWasAdded)
+        QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)
 
     def unload(self):
         # Remove the plugin menu item and icon
@@ -71,8 +71,8 @@ class DBManagerPlugin:
         else:
             self.iface.removeToolBarIcon(self.action)
 
-        self.iface.legendInterface().removeLegendLayerAction(self.layerAction)
-        QgsMapLayerRegistry.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
+        self.iface.removeCustomActionForLayerType(self.layerAction)
+        QgsProject.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
 
         if self.dlg is not None:
             self.dlg.close()
@@ -80,8 +80,9 @@ class DBManagerPlugin:
     def onLayerWasAdded(self, aMapLayer):
         if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
             uri = QgsDataSourceUri(aMapLayer.source())
-            if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
-                self.iface.legendInterface().addLegendLayerActionForLayer(self.layerAction, aMapLayer)
+            table = uri.table()
+            if table.startswith('(') and table.endswith(')'):
+                self.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')
@@ -89,10 +90,10 @@ class DBManagerPlugin:
         # url.queryItemValue('geometry')
 
     def onUpdateSqlLayer(self):
-        l = self.iface.legendInterface().currentLayer()
+        l = self.iface.activeLayer()
         if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            uri = QgsDataSourceUri(l.source())
-            if re.search('^\(SELECT .+ FROM .+\)$', uri.table(), re.S):
+            table = QgsDataSourceUri(l.source()).table()
+            if table.startswith('(') and table.endswith(')'):
                 self.run()
                 self.dlg.runSqlLayerWindow(l)
         # virtual has QUrl source

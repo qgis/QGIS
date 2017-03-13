@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -26,7 +27,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
+from qgis.core import QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -74,14 +75,13 @@ class HubDistancePoints(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layerPoints = dataobjects.getObjectFromUri(
             self.getParameterValue(self.POINTS))
         layerHubs = dataobjects.getObjectFromUri(
             self.getParameterValue(self.HUBS))
         fieldName = self.getParameterValue(self.FIELD)
 
-        addLines = self.getParameterValue(self.GEOMETRY)
         units = self.UNITS[self.getParameterValue(self.UNIT)]
 
         if layerPoints.source() == layerHubs.source():
@@ -98,7 +98,7 @@ class HubDistancePoints(GeoAlgorithm):
         index = vector.spatialindex(layerHubs)
 
         distance = QgsDistanceArea()
-        distance.setSourceCrs(layerPoints.crs().srsid())
+        distance.setSourceCrs(layerPoints.crs())
         distance.setEllipsoidalMode(True)
 
         # Scan source points, find nearest hub, and write to output file
@@ -108,7 +108,7 @@ class HubDistancePoints(GeoAlgorithm):
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
-            ft = layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0])).next()
+            ft = next(layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], layerHubs.fields())))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
 
@@ -133,6 +133,6 @@ class HubDistancePoints(GeoAlgorithm):
             feat.setGeometry(QgsGeometry.fromPoint(src))
 
             writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

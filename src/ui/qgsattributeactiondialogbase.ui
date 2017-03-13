@@ -64,7 +64,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
+          <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
         </property>
        </widget>
       </item>
@@ -124,7 +124,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionArrowUp.png</normaloff>:/images/themes/default/mActionArrowUp.png</iconset>
+          <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
         </property>
        </widget>
       </item>
@@ -175,7 +175,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Show In Attribute Table</string>
+          <string>Action Scopes</string>
          </property>
         </column>
        </widget>
@@ -255,11 +255,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mAttributeActionTable</tabstop>
+  <tabstop>groupBoxActionList</tabstop>
   <tabstop>mMoveUpButton</tabstop>
   <tabstop>mMoveDownButton</tabstop>
   <tabstop>mRemoveButton</tabstop>
+  <tabstop>mAddButton</tabstop>
   <tabstop>mAddDefaultActionsButton</tabstop>
+  <tabstop>mShowInAttributeTable</tabstop>
+  <tabstop>mAttributeTableWidgetType</tabstop>
+  <tabstop>mAttributeActionTable</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

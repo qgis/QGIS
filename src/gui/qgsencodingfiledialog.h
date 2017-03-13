@@ -17,6 +17,7 @@
 #define QGSENCODINGFILEDIALOG_H
 
 #include <QFileDialog>
+#include "qgis_gui.h"
 class QComboBox;
 class QPushButton;
 
@@ -27,15 +28,14 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT
   public:
-    QgsEncodingFileDialog( QWidget * parent = nullptr,
-                           const QString & caption = QString(), const QString & directory = QString(),
-                           const QString & filter = QString(), const QString & encoding = QString() );
-    ~QgsEncodingFileDialog();
-    /** Returns a string describing the chosen encoding*/
+    QgsEncodingFileDialog( QWidget *parent = nullptr,
+                           const QString &caption = QString(), const QString &directory = QString(),
+                           const QString &filter = QString(), const QString &encoding = QString() );
+    //! Returns a string describing the chosen encoding
     QString encoding() const;
-    /** Adds a 'Cancel All' button for the user to click */
+    //! Adds a 'Cancel All' button for the user to click
     void addCancelAll();
-    /** Returns true if the user clicked 'Cancel All' */
+    //! Returns true if the user clicked 'Cancel All'
     bool cancelAll();
 
   public slots:
@@ -44,11 +44,11 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
     void pbnCancelAll_clicked();
 
   private:
-    /** Box to choose the encoding type*/
-    QComboBox* mEncodingComboBox;
+    //! Box to choose the encoding type
+    QComboBox *mEncodingComboBox = nullptr;
 
     /* The button to click */
-    QPushButton *mCancelAllButton;
+    QPushButton *mCancelAllButton = nullptr;
 
     /* Set if user clicked 'Cancel All' */
     bool mCancelAll;

@@ -13,7 +13,7 @@ class QgsGeometryValidator : QThread
     void stop();
 
     /** Validate geometry and produce a list of geometry errors */
-    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
+    static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors /Out/ );
 
   signals:
     void errorFound( const QgsGeometry::Error& );

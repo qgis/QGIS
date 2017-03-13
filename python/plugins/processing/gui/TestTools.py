@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -36,7 +37,7 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
-from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit
+from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
 from processing.core.Processing import Processing
 from processing.core.outputs import (
@@ -55,7 +56,8 @@ from processing.core.parameters import (
     ParameterFile,
     ParameterString,
     ParameterNumber,
-    ParameterBoolean
+    ParameterBoolean,
+    ParameterTable
 )
 
 
@@ -115,9 +117,9 @@ def parseParameters(command):
         # Handle special values:
         if result == 'None':
             result = None
-        elif result.lower() == unicode(True).lower():
+        elif result.lower() == str(True).lower():
             result = True
-        elif result.lower() == unicode(False).lower():
+        elif result.lower() == str(False).lower():
             result = False
 
         yield result
@@ -166,6 +168,16 @@ def createTest(text):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'raster',
+                'name': filepath
+            }
+            if not schema:
+                p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
+
+            params[param.name] = p
+        elif isinstance(param, ParameterTable):
+            schema, filepath = extractSchemaPath(token)
+            p = {
+                'type': 'table',
                 'name': filepath
             }
             if not schema:
@@ -229,8 +241,17 @@ def createTest(text):
         token = tokens[i - alg.getVisibleOutputsCount()]
 
         if isinstance(out, (OutputNumber, OutputString)):
-            results[out.name] = unicode(out)
+            results[out.name] = str(out)
         elif isinstance(out, OutputRaster):
+            if token is None:
+                QMessageBox.warning(None,
+                                    tr('Error'),
+                                    tr('Seems some outputs are temporary '
+                                       'files. To create test you need to '
+                                       'redirect all algorithm outputs to '
+                                       'files'))
+                return
+
             dataset = gdal.Open(token, GA_ReadOnly)
             dataArray = nan_to_num(dataset.ReadAsArray(0))
             strhash = hashlib.sha224(dataArray.data).hexdigest()

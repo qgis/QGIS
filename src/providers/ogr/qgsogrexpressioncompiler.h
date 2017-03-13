@@ -24,19 +24,21 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource* source );
+    explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource *source );
 
-    virtual Result compile( const QgsExpression* exp ) override;
+    virtual Result compile( const QgsExpression *exp ) override;
 
   protected:
 
-    virtual Result compileNode( const QgsExpression::Node* node, QString& str ) override;
-    virtual QString quotedIdentifier( const QString& identifier ) override;
-    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+    virtual Result compileNode( const QgsExpression::Node *node, QString &str ) override;
+    virtual QString quotedIdentifier( const QString &identifier ) override;
+    virtual QString quotedValue( const QVariant &value, bool &ok ) override;
+    virtual QString castToReal( const QString &value ) const override;
+    virtual QString castToInt( const QString &value ) const override;
 
   private:
 
-    QgsOgrFeatureSource* mSource;
+    QgsOgrFeatureSource *mSource = nullptr;
 };
 
 #endif // QGSOGREXPRESSIONCOMPILER_H

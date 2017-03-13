@@ -17,8 +17,8 @@
 #define QGSEDITORCONFIGWIDGET_H
 
 #include <QWidget>
+#include "qgis_gui.h"
 
-#include "qgseditorwidgetconfig.h"
 
 class QgsVectorLayer;
 
@@ -34,6 +34,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Create a new configuration widget
      *
@@ -41,21 +42,21 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      * @param fieldIdx The index of the field on the layer for which this dialog will be created
      * @param parent   A parent widget
      */
-    explicit QgsEditorConfigWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
     /**
      * @brief Create a configuration from the current GUI state
      *
      * @return A widget configuration
      */
-    virtual QgsEditorWidgetConfig config() = 0;
+    virtual QVariantMap config() = 0;
 
     /**
      * @brief Update the configuration widget to represent the given configuration.
      *
      * @param config The configuration which should be represented by this widget
      */
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) = 0;
+    virtual void setConfig( const QVariantMap &config ) = 0;
 
     /**
      * Returns the field for which this configuration widget applies
@@ -69,12 +70,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
      *
      * @return The layer
      */
-    QgsVectorLayer* layer();
-
-    /**
-     * Destructor
-     */
-    virtual ~QgsEditorConfigWidget() {}
+    QgsVectorLayer *layer();
 
   signals:
 
@@ -84,7 +80,7 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget
     void changed();
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     int mField;
 };
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -59,7 +60,7 @@ class RandomExtract(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (random)')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
@@ -80,7 +81,7 @@ class RandomExtract(GeoAlgorithm):
                             "different value and try again."))
             value = int(round(value / 100.0000, 4) * featureCount)
 
-        selran = random.sample(xrange(featureCount), value)
+        selran = random.sample(list(range(featureCount)), value)
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layer.fields().toList(), layer.wkbType(), layer.crs())
@@ -89,5 +90,5 @@ class RandomExtract(GeoAlgorithm):
         for i, feat in enumerate(features):
             if i in selran:
                 writer.addFeature(feat)
-            progress.setPercentage(int(i * total))
+            feedback.setProgress(int(i * total))
         del writer

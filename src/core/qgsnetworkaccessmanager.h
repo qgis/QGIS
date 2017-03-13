@@ -24,6 +24,8 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
+#include "qgis_core.h"
+
 /**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -48,12 +50,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   public:
     //! returns a pointer to the single instance
     // and creates that instance on the first call.
-    static QgsNetworkAccessManager* instance();
+    static QgsNetworkAccessManager *instance();
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
-
-    //! destructor
-    ~QgsNetworkAccessManager();
 
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory );
@@ -68,16 +67,16 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
     //! Get name for QNetworkRequest::CacheLoadControl
-    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl );
+    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
     //! Get QNetworkRequest::CacheLoadControl from name
-    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
@@ -97,12 +96,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
-    QList<QNetworkProxyFactory*> mProxyFactories;
+    QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
     bool mInitialized;
-    static QgsNetworkAccessManager *smMainNAM;
+    static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H

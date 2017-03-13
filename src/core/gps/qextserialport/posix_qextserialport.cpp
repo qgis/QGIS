@@ -1,7 +1,7 @@
 
 
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 #include "qextserialport.h"
 #include <QMutexLocker>
 #include <QDebug>

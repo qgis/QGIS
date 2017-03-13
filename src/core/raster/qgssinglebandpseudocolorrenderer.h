@@ -18,7 +18,11 @@
 #ifndef QGSSINGLEBANDPSEUDOCOLORRENDERER_H
 #define QGSSINGLEBANDPSEUDOCOLORRENDERER_H
 
+#include "qgis_core.h"
+#include "qgscolorramp.h"
+#include "qgscolorrampshader.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrectangle.h"
 
 class QDomElement;
 class QgsRasterShader;
@@ -28,25 +32,46 @@ class QgsRasterShader;
   */
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
+
   public:
-    /** Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
+
+    //! Note: takes ownership of QgsRasterShader
+    QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader = nullptr );
     ~QgsSingleBandPseudoColorRenderer();
-    QgsSingleBandPseudoColorRenderer * clone() const override;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
+    //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & ) = delete;
+    //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
+    const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & ) = delete;
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsSingleBandPseudoColorRenderer *clone() const override;
 
-    /** Takes ownership of the shader*/
-    void setShader( QgsRasterShader* shader );
-    QgsRasterShader* shader() { return mShader; }
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+
+    //! Takes ownership of the shader
+    void setShader( QgsRasterShader *shader );
+
+    //! Returns the raster shader
+    QgsRasterShader *shader() { return mShader; }
+
     //! @note available in python as constShader
-    const QgsRasterShader* shader() const { return mShader; }
+    const QgsRasterShader *shader() const { return mShader; }
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
+    /** Creates a color ramp shader
+     * @param colorRamp vector color ramp
+     * @param colorRampType type of color ramp shader
+     * @param classificationMode classification mode
+     * @param classes number of classes
+     * @param clip clip out of range values
+     * @param extent extent used in classification (only used in quantile mode)
+     */
+    void createShader( QgsColorRamp *colorRamp = nullptr, QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated, QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous, int classes = 0, bool clip = false, const QgsRectangle &extent = QgsRectangle() );
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
+
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
 
     QList<int> usesBands() const override;
 
@@ -63,13 +88,12 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     double classificationMin() const { return mClassificationMin; }
     double classificationMax() const { return mClassificationMax; }
-    void setClassificationMin( double min ) { mClassificationMin = min; }
-    void setClassificationMax( double max ) { mClassificationMax = max; }
-    int classificationMinMaxOrigin() const { return mClassificationMinMaxOrigin; }
-    void setClassificationMinMaxOrigin( int origin ) { mClassificationMinMaxOrigin = origin; }
+    void setClassificationMin( double min );
+    void setClassificationMax( double max );
 
   private:
-    QgsRasterShader* mShader;
+
+    QgsRasterShader *mShader = nullptr;
     int mBand;
 
     // Minimum and maximum values used for automatic classification, these
@@ -77,10 +101,6 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     double mClassificationMin;
     double mClassificationMax;
 
-    int mClassificationMinMaxOrigin;
-
-    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
-    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

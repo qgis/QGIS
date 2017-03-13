@@ -30,7 +30,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterExpression
 from processing.tools import dataobjects
 
 
@@ -52,31 +52,30 @@ class SelectByExpression(GeoAlgorithm):
 
         self.addParameter(ParameterVector(self.LAYERNAME,
                                           self.tr('Input Layer')))
-        self.addParameter(ParameterString(self.EXPRESSION,
-                                          self.tr("Expression")))
+        self.addParameter(ParameterExpression(self.EXPRESSION,
+                                              self.tr("Expression"), parent_layer=self.LAYERNAME))
         self.addParameter(ParameterSelection(self.METHOD,
                                              self.tr('Modify current selection by'), self.methods, 0))
         self.addOutput(OutputVector(self.RESULT, self.tr('Selected (expression)'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.LAYERNAME)
         layer = dataobjects.getObjectFromUri(filename)
-        oldSelection = set(layer.selectedFeaturesIds())
         method = self.getParameterValue(self.METHOD)
 
         if method == 0:
-            behaviour = QgsVectorLayer.SetSelection
+            behavior = QgsVectorLayer.SetSelection
         elif method == 1:
-            behaviour = QgsVectorLayer.AddToSelection
+            behavior = QgsVectorLayer.AddToSelection
         elif method == 2:
             behavior = QgsVectorLayer.RemoveFromSelection
         elif method == 3:
-            behaviour = QgsVectorLayer.IntersectSelection
+            behavior = QgsVectorLayer.IntersectSelection
 
         expression = self.getParameterValue(self.EXPRESSION)
         qExp = QgsExpression(expression)
         if qExp.hasParserError():
             raise GeoAlgorithmExecutionException(qExp.parserErrorString())
 
-        layer.selectByExpression(expression, behaviour)
+        layer.selectByExpression(expression, behavior)
         self.setOutputValue(self.RESULT, filename)

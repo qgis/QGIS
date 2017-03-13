@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERSHAPE_H
 #define QGSCOMPOSERSHAPE_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
@@ -38,44 +39,45 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
       Triangle
     };
 
-    QgsComposerShape( QgsComposition* composition );
-    QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
+    QgsComposerShape( QgsComposition *composition );
+    QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition );
     ~QgsComposerShape();
 
-    /** Return correct graphics item type. */
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerShape; }
 
-    /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //setters and getters
     QgsComposerShape::Shape shapeType() const { return mShape; }
     void setShapeType( QgsComposerShape::Shape s );
 
-    /** Sets radius for rounded rectangle corners. Added in v2.1 */
+    //! Sets radius for rounded rectangle corners. Added in v2.1
     void setCornerRadius( double radius );
-    /** Returns the radius for rounded rectangle corners*/
+    //! Returns the radius for rounded rectangle corners
     double cornerRadius() const { return mCornerRadius; }
 
     /** Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
      * enable drawing with a symbol.
      * Note: added in version 2.1*/
-    void setShapeStyleSymbol( QgsFillSymbol* symbol );
+    void setShapeStyleSymbol( QgsFillSymbol *symbol );
+
     /** Returns the QgsFillSymbol used to draw the shape.
      * Note: added in version 2.1*/
-    QgsFillSymbol* shapeStyleSymbol() { return mShapeStyleSymbol; }
+    QgsFillSymbol *shapeStyleSymbol() { return mShapeStyleSymbol; }
 
     /** Controls whether the shape should be drawn using a QgsFillSymbol.
      * Note: Added in v2.1 */
@@ -88,52 +90,54 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /** Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
      * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
      */
-    void setSceneRect( const QRectF& rectangle ) override;
+    void setSceneRect( const QRectF &rectangle ) override;
 
     //Overridden to return shape type
     virtual QString displayName() const override;
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
-    virtual void drawFrame( QPainter* p ) override;
+    virtual void drawFrame( QPainter *p ) override;
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
-    virtual void drawBackground( QPainter* p ) override;
+    virtual void drawBackground( QPainter *p ) override;
+
     /** Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
      * rather than the item's pen */
     virtual double estimatedFrameBleed() const override;
 
   public slots:
+
     /** Should be called after the shape's symbol is changed. Redraws the shape and recalculates
      * its selection bounds.
      * Note: added in version 2.1*/
     void refreshSymbol();
 
   private:
-    /** Ellipse, rectangle or triangle*/
+    //! Ellipse, rectangle or triangle
     Shape mShape;
 
     double mCornerRadius;
 
     bool mUseSymbol;
 
-    QgsFillSymbol* mShapeStyleSymbol;
+    QgsFillSymbol *mShapeStyleSymbol = nullptr;
     double mMaxSymbolBleed;
-    /** Current bounding rectangle of shape*/
+    //! Current bounding rectangle of shape
     QRectF mCurrentRectangle;
 
     /* draws the custom shape */
-    void drawShape( QPainter* p );
+    void drawShape( QPainter *p );
 
     /* draws the custom shape using symbol v2*/
-    void drawShapeUsingSymbol( QPainter* p );
+    void drawShapeUsingSymbol( QPainter *p );
 
     /* creates the default shape symbol */
     void createDefaultShapeStyleSymbol();
 
-    /** Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+    //! Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
+    QPointF pointOnLineWithDistance( const QPointF &startPoint, const QPointF &directionPoint, double distance ) const;
 
-    /** Updates the bounding rect of this item*/
+    //! Updates the bounding rect of this item
     void updateBoundingRect();
 };
 

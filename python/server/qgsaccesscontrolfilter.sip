@@ -18,15 +18,16 @@
  ***************************************************************************/
 
 /**
+ * \ingroup server
  * \class QgsAccessControlFilter
- * \brief Class defining access control interface for QGIS Server.
+ * \brief Class defining access control interface for QGIS Server plugins.
  *
  * Security can define any (or none) of the following method:
- *  * layerFilterExpression()
- *  * layerFilterSubsetString()
- *  * layerPermissions()
- *  * authorizedLayerAttributes()
- *  * allowToEdit()
+ *  * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
+ *  * layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
+ *  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
+ *  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+ *  * allowToEdit() - (all WFS-T requests)
  *  * cacheKey()
  */
 
@@ -39,7 +40,7 @@ class QgsAccessControlFilter
   public:
     /** Constructor
      * QgsServerInterface passed to plugins constructors
-     * and must be passed to QgsAccessControlPlugin instances.
+     * and must be passed to QgsAccessControlFilter instances.
      */
     QgsAccessControlFilter( const QgsServerInterface* serverInterface );
     /** Destructor */
@@ -56,18 +57,42 @@ class QgsAccessControlFilter
 
     /** Return the QgsServerInterface instance*/
     const QgsServerInterface* serverInterface() const;
-    /** Return an additional expression filter */
+
+    /** Return an additional expression filter
+     * @param layer the layer to control
+     * @return the filter expression
+     */
     virtual QString layerFilterExpression( const QgsVectorLayer* layer ) const;
-    /** Return an additional the subset string (typically SQL) filter.
-        Faster than the layerFilterExpression but not supported on all the type of layer */
+
+    /** Return an additional subset string (typically SQL) filter
+     * @param layer the layer to control
+     * @return the subset string
+     */
     virtual QString layerFilterSubsetString( const QgsVectorLayer* layer ) const;
-    /** Return the layer permissions */
+
+    /** Return the layer permissions
+     * @param layer the layer to control
+     * @return the permission to use on the layer
+     */
     virtual LayerPermissions layerPermissions( const QgsMapLayer* layer ) const;
-    /** Return the authorized layer attributes */
+
+    /** Return the authorized layer attributes
+     * @param layer the layer to control
+     * @param attributes the current list of visible attribute
+     * @return the new list of visible attributes
+     */
     virtual QStringList authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
-    /** Are we authorize to modify the following geometry */
+
+    /** Are we authorized to modify the following geometry
+     * @param layer the layer to control
+     * @param feature the concerned feature
+     * @return true if we are allowed to edit
+     */
     virtual bool allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const;
-    /** Cache key to used to create the capabilities cache, "" for no cache, shouldn't any contains "-", default to "" */
+
+    /** Cache key to used to create the capabilities cache
+     * @return the cache key, "" for no cache
+     */
     virtual QString cacheKey() const;
 };
 

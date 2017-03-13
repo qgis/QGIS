@@ -26,11 +26,11 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
 {
     Q_OBJECT
   public:
-    QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode = CaptureLine );
+    QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolCircularStringRadius();
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) override;
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
     virtual void deactivate() override;
 
   private slots:
@@ -39,12 +39,12 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
   private:
     QgsPointV2 mTemporaryEndPoint;
     double mRadius;
-    QDoubleSpinBox* mRadiusSpinBox;
+    QDoubleSpinBox *mRadiusSpinBox = nullptr;
 
     //! recalculate the rubberband
     void recalculateRubberBand();
     //! recalculate the temporary rubberband using the given mouse position
-    void recalculateTempRubberBand( const QgsPoint& mousePosition );
+    void recalculateTempRubberBand( const QgsPoint &mousePosition );
     //! (re-)create the spin box to enter the radius
     void createRadiusSpinBox();
     //! delete the spin box to enter the radius, if it exists

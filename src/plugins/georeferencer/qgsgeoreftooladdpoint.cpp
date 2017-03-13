@@ -17,13 +17,13 @@
 
 #include "qgsgeoreftooladdpoint.h"
 
-QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas* canvas )
-    : QgsMapToolEmitPoint( canvas )
+QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas *canvas )
+  : QgsMapToolEmitPoint( canvas )
 {
 }
 
 // Mouse press event for overriding
-void QgsGeorefToolAddPoint::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsGeorefToolAddPoint::canvasPressEvent( QgsMapMouseEvent *e )
 {
   // Only add point on Qt:LeftButton
   if ( Qt::LeftButton == e->button() )

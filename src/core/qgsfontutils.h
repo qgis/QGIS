@@ -20,23 +20,26 @@
 #include <QString>
 #include <QDomElement>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * \class QgsFontUtils
  */
 class CORE_EXPORT QgsFontUtils
 {
   public:
+
     /** Check whether exact font is on system
      * @param f The font to test for match
      */
-    static bool fontMatchOnSystem( const QFont& f );
+    static bool fontMatchOnSystem( const QFont &f );
 
     /** Check whether font family is on system in a quick manner, which does not compare [foundry]
      * @param family The family to test
      * @returns Whether family was found on system
      * @note This is good for use in loops of large lists, e.g. registering many features for labeling
      */
-    static bool fontFamilyOnSystem( const QString& family );
+    static bool fontFamilyOnSystem( const QString &family );
 
     /** Check whether font family on system has specific style
      * @param family The family to test
@@ -44,7 +47,7 @@ class CORE_EXPORT QgsFontUtils
      * @returns Whether family has style
      * @note Added in QGIS 2.1
      */
-    static bool fontFamilyHasStyle( const QString& family, const QString& style );
+    static bool fontFamilyHasStyle( const QString &family, const QString &style );
 
     /** Check whether font family is on system
      * @param family The family to test
@@ -52,7 +55,7 @@ class CORE_EXPORT QgsFontUtils
      * @param match Whether the family [foundry] returned by system is a match
      * @returns Whether family was found on system
      */
-    static bool fontFamilyMatchOnSystem( const QString& family, QString* chosen = nullptr, bool* match = nullptr );
+    static bool fontFamilyMatchOnSystem( const QString &family, QString *chosen = nullptr, bool *match = nullptr );
 
     /** Updates font with named style and retain all font properties
      * @param f The font to update
@@ -61,7 +64,7 @@ class CORE_EXPORT QgsFontUtils
      * @returns Whether the font was updated (also returns true if the requested style matches font's current style)
      * @note This is a more featured replacement for a Qt 4.8+ function: void QFont::setStyleName ( const QString & styleName )
      */
-    static bool updateFontViaStyle( QFont& f, const QString& fontstyle, bool fallback = false );
+    static bool updateFontViaStyle( QFont &f, const QString &fontstyle, bool fallback = false );
 
     /** Get standard test font family
      * @note Added in QGIS 2.1
@@ -74,7 +77,7 @@ class CORE_EXPORT QgsFontUtils
      * @note Done by default on debug app/server startup to ensure fonts available for unit tests (Roman and Bold)
      * @note Added in QGIS 2.1
      */
-    static bool loadStandardTestFonts( const QStringList& loadstyles );
+    static bool loadStandardTestFonts( const QStringList &loadstyles );
 
     /** Get standard test font with specific style
      * @param style Style to load, e.g. Roman, Oblique, Bold, Bold Oblique
@@ -82,7 +85,7 @@ class CORE_EXPORT QgsFontUtils
      * @returns QFont
      * @note Added in QGIS 2.1
      */
-    static QFont getStandardTestFont( const QString& style = "Roman", int pointsize = 12 );
+    static QFont getStandardTestFont( const QString &style = "Roman", int pointsize = 12 );
 
     /** Returns a DOM element containing the properties of the font.
      * @param font font
@@ -92,7 +95,7 @@ class CORE_EXPORT QgsFontUtils
      * @note added in QGIS 2.10
      * @see setFromXmlElement
      */
-    static QDomElement toXmlElement( const QFont& font, QDomDocument &document, const QString &elementName );
+    static QDomElement toXmlElement( const QFont &font, QDomDocument &document, const QString &elementName );
 
     /** Sets the properties of a font to match the properties stored in an XML element. Calling
      * this will overwrite the current properties of the font.
@@ -103,7 +106,7 @@ class CORE_EXPORT QgsFontUtils
      * @see toXmlElement
      * @see setFromXmlChildNode
      */
-    static bool setFromXmlElement( QFont& font, const QDomElement& element );
+    static bool setFromXmlElement( QFont &font, const QDomElement &element );
 
     /** Sets the properties of a font to match the properties stored in an XML child node. Calling
      * this will overwrite the current properties of the font.
@@ -115,7 +118,7 @@ class CORE_EXPORT QgsFontUtils
      * @see setFromXmlElement
      * @see toXmlElement
      */
-    static bool setFromXmlChildNode( QFont& font, const QDomElement& element, const QString& childNode );
+    static bool setFromXmlChildNode( QFont &font, const QDomElement &element, const QString &childNode );
 
     /** Returns the localized named style of a font, if such a translation is available.
      * @param namedStyle a named style, i.e. "Bold", "Italic", etc
@@ -123,7 +126,7 @@ class CORE_EXPORT QgsFontUtils
      * @note added in QGIS 2.12
      * @see untranslateNamedStyle
      */
-    static QString translateNamedStyle( const QString& namedStyle );
+    static QString translateNamedStyle( const QString &namedStyle );
 
     /** Returns the english named style of a font, if possible.
      * @param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
@@ -131,18 +134,18 @@ class CORE_EXPORT QgsFontUtils
      * @note added in QGIS 2.12
      * @see translateNamedStyle
      */
-    static QString untranslateNamedStyle( const QString& namedStyle );
+    static QString untranslateNamedStyle( const QString &namedStyle );
 
     /** Returns a CSS string representing the specified font as closely as possible.
      * @param font QFont to convert
      * @param pointToPixelMultiplier scaling factor to apply to convert point sizes to pixel font sizes.
      * The CSS returned by this function will always use pixels for font sizes, so this parameter
-     * should be set to a suitable value to convert point sizes to pixels (eg taking into account
-     * desination DPI)
-     * @returns partial CSS string, eg "font-family: Comic Sans; font-size: 12px;"
+     * should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
+     * destination DPI)
+     * @returns partial CSS string, e.g., "font-family: Comic Sans; font-size: 12px;"
      * @note added in QGIS 2.16
      */
-    static QString asCSS( const QFont& font, double pointToPixelMultiplier = 1.0 );
+    static QString asCSS( const QFont &font, double pointToPixelMultiplier = 1.0 );
 };
 
 #endif // QGSFONTUTILS_H

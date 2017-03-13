@@ -21,22 +21,22 @@
 class QgsGeometryTypeCheckError : public QgsGeometryCheckError
 {
   public:
-    QgsGeometryTypeCheckError( const QgsGeometryCheck* check,
+    QgsGeometryTypeCheckError( const QgsGeometryCheck *check,
                                QgsFeatureId featureId,
-                               const QgsPointV2& errorLocation,
+                               const QgsPointV2 &errorLocation,
                                QgsWkbTypes::Type flatType )
-        : QgsGeometryCheckError( check, featureId, errorLocation )
+      : QgsGeometryCheckError( check, featureId, errorLocation )
     {
       mTypeName = QgsWkbTypes::displayString( flatType );
     }
 
-    bool isEqual( QgsGeometryCheckError* other ) const override
+    bool isEqual( QgsGeometryCheckError *other ) const override
     {
       return QgsGeometryCheckError::isEqual( other ) &&
-             mTypeName == static_cast<QgsGeometryTypeCheckError*>( other )->mTypeName;
+             mTypeName == static_cast<QgsGeometryTypeCheckError *>( other )->mTypeName;
     }
 
-    virtual QString description() const override { return QString( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
+    virtual QString description() const override { return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
 
   private:
     QString mTypeName;
@@ -47,15 +47,15 @@ class QgsGeometryTypeCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryTypeCheck( QgsFeaturePool* featurePool, int allowedTypes )
-        : QgsGeometryCheck( FeatureCheck, featurePool )
-        , mAllowedTypes( allowedTypes )
+    QgsGeometryTypeCheck( QgsFeaturePool *featurePool, int allowedTypes )
+      : QgsGeometryCheck( FeatureCheck, featurePool )
+      , mAllowedTypes( allowedTypes )
     {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
-    const QStringList& getResolutionMethods() const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
+    QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Geometry type" ); }
-    QString errorName() const override { return "QgsGeometryTypeCheck"; }
+    QString errorName() const override { return QStringLiteral( "QgsGeometryTypeCheck" ); }
   private:
     enum ResolutionMethod { Convert, Delete, NoChange };
     int mAllowedTypes;

@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField, QgsWkbTypes
+from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -53,6 +53,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
+        self.tags = self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.calc_methods = [self.tr('Layer CRS'),
@@ -66,7 +67,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)
@@ -74,6 +75,8 @@ class ExportGeometryInfo(GeoAlgorithm):
         geometryType = layer.geometryType()
         fields = layer.fields()
 
+        export_z = False
+        export_m = False
         if geometryType == QgsWkbTypes.PolygonGeometry:
             areaName = vector.createUniqueFieldName('area', fields)
             fields.append(QgsField(areaName, QVariant.Double))
@@ -87,6 +90,14 @@ class ExportGeometryInfo(GeoAlgorithm):
             fields.append(QgsField(xName, QVariant.Double))
             yName = vector.createUniqueFieldName('ycoord', fields)
             fields.append(QgsField(yName, QVariant.Double))
+            if QgsWkbTypes.hasZ(layer.wkbType()):
+                export_z = True
+                zName = vector.createUniqueFieldName('zcoord', fields)
+                fields.append(QgsField(zName, QVariant.Double))
+            if QgsWkbTypes.hasM(layer.wkbType()):
+                export_m = True
+                zName = vector.createUniqueFieldName('mvalue', fields)
+                fields.append(QgsField(zName, QVariant.Double))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields.toList(), layer.wkbType(), layer.crs())
@@ -110,7 +121,6 @@ class ExportGeometryInfo(GeoAlgorithm):
             coordTransform = QgsCoordinateTransform(layCRS, mapCRS)
 
         outFeat = QgsFeature()
-        inGeom = QgsGeometry()
 
         outFeat.initAttributes(len(fields))
         outFeat.setFields(fields)
@@ -130,9 +140,16 @@ class ExportGeometryInfo(GeoAlgorithm):
             attrs.append(attr1)
             if attr2 is not None:
                 attrs.append(attr2)
+
+            # add point z/m
+            if export_z:
+                attrs.append(inGeom.geometry().z())
+            if export_m:
+                attrs.append(inGeom.geometry().m())
+
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

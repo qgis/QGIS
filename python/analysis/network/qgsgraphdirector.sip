@@ -1,11 +1,12 @@
 %ModuleHeaderCode
-#include <qgslinevectorlayerdirector.h>
+#include <qgsvectorlayerdirector.h>
 %End
 
 /**
- * \ingroup networkanalysis
+ * \ingroup analysis
  * \class QgsGraphDirector
- * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
+ * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector
+ * are implemented using "builder" design patter.
  */
 class QgsGraphDirector : QObject
 {
@@ -14,8 +15,8 @@ class QgsGraphDirector : QObject
 %End
 
 %ConvertToSubClassCode
-  if ( dynamic_cast< QgsLineVectorLayerDirector* > ( sipCpp ) != NULL )
-    sipType = sipType_QgsLineVectorLayerDirector;
+  if ( dynamic_cast< QgsVectorLayerDirector* > ( sipCpp ) != NULL )
+    sipType = sipType_QgsVectorLayerDirector;
   else
     sipType = NULL;
 %End
@@ -30,25 +31,21 @@ class QgsGraphDirector : QObject
     virtual ~QgsGraphDirector();
 
     /**
-     * Make a graph using RgGraphBuilder
+     * Make a graph using QgsGraphBuilder
      *
-     * @param builder   The graph builder
-     *
-     * @param additionalPoints  Vector of points that must be tied to the graph
-     *
-     * @param tiedPoints  Vector of tied points
-     *
-     * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
+     * @param builder the graph builder
+     * @param additionalPoints list of points that should be snapped to the graph
+     * @param snappedPoints list of snapped points
+     * @note if snappedPoints[i] == QgsPoint(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPoint > &additionalPoints,
-                            QVector< QgsPoint> &tiedPoints /Out/ );
+                            QVector< QgsPoint > &snappedPoints /Out/ ) const;
 
-    void addProperter( QgsArcProperter* prop /Transfer/ );
+    //! Add optimization strategy
+    void addStrategy( QgsNetworkStrategy* prop /Transfer/);
 
-    /**
-     * return Director name
-     */
+    //! Returns director name
     virtual QString name() const = 0;
 };
 

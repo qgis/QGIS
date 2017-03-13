@@ -23,21 +23,21 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>CRS</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="1" column="2">
        <widget class="QLineEdit" name="leFilename">
         <property name="enabled">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="3">
        <widget class="QPushButton" name="browseFilename">
         <property name="enabled">
          <bool>false</bool>
@@ -57,23 +57,40 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
+      <item row="0" column="2" colspan="2">
        <widget class="QComboBox" name="mFormatComboBox"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Save as</string>
+         <string>File name</string>
         </property>
         <property name="buddy">
          <cstring>leFilename</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="3" column="2" colspan="2">
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Layer name</string>
+        </property>
+        <property name="buddy">
+         <cstring>leFilename</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="2">
+       <widget class="QLineEdit" name="leLayername">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -90,8 +107,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>550</width>
-        <height>953</height>
+        <width>557</width>
+        <height>922</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -116,6 +133,16 @@
         <widget class="QCheckBox" name="mSelectedOnly">
          <property name="text">
           <string>Save only selected features</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mAddToCanvas">
+         <property name="text">
+          <string>Add saved file to map</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -182,16 +209,6 @@
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="mAddToCanvas">
-         <property name="text">
-          <string>Add saved file to map</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item>
@@ -270,7 +287,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsExtentGroupBox" name="mExtentGroupBox"/>
+        <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
+         <property name="title">
+          <string>Extent</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mDatasourceOptionsGroupBox">
@@ -394,6 +415,19 @@
          <zorder>mOgrLayerOptions</zorder>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -434,22 +468,23 @@
   <tabstop>mFormatComboBox</tabstop>
   <tabstop>leFilename</tabstop>
   <tabstop>browseFilename</tabstop>
+  <tabstop>leLayername</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>
   <tabstop>mSelectedOnly</tabstop>
-  <tabstop>mAttributesSelection</tabstop>
-  <tabstop>mAttributeTable</tabstop>
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
-  <tabstop>mAddToCanvas</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
+  <tabstop>mGeometryGroupBox</tabstop>
   <tabstop>mGeometryTypeComboBox</tabstop>
   <tabstop>mForceMultiCheckBox</tabstop>
   <tabstop>mIncludeZCheckBox</tabstop>
-  <tabstop>mOgrDatasourceOptions</tabstop>
-  <tabstop>mOgrLayerOptions</tabstop>
+  <tabstop>mExtentGroupBox</tabstop>
+  <tabstop>mDatasourceOptionsGroupBox</tabstop>
+  <tabstop>mLayerOptionsGroupBox</tabstop>
+  <tabstop>mOgrOptionsGroupBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

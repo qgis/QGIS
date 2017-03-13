@@ -318,7 +318,7 @@ TerminalDisplay::TerminalDisplay(QWidget *parent)
 ,_preserveLineBreaks(false)
 ,_columnSelectionMode(false)
 ,_scrollbarLocation(NoScrollBar)
-,_wordCharacters(":@-./_~")
+,_wordCharacters(QStringLiteral(":@-./_~"))
 ,_bellMode(SystemBeepBell)
 ,_blinking(false)
 ,_hasBlinker(false)
@@ -1148,18 +1148,18 @@ void TerminalDisplay::showResizeNotification()
      }
      if (!_resizeWidget)
      {
-        _resizeWidget = new QLabel("Size: XXX x XXX", this);
-        _resizeWidget->setMinimumWidth(_resizeWidget->fontMetrics().width("Size: XXX x XXX"));
+        _resizeWidget = new QLabel(QStringLiteral("Size: XXX x XXX"), this);
+        _resizeWidget->setMinimumWidth(_resizeWidget->fontMetrics().width(QStringLiteral("Size: XXX x XXX")));
         _resizeWidget->setMinimumHeight(_resizeWidget->sizeHint().height());
         _resizeWidget->setAlignment(Qt::AlignCenter);
 
-        _resizeWidget->setStyleSheet("background-color:palette(window);border-style:solid;border-width:1px;border-color:palette(dark)");
+        _resizeWidget->setStyleSheet(QStringLiteral("background-color:palette(window);border-style:solid;border-width:1px;border-color:palette(dark)"));
 
         _resizeTimer = new QTimer(this);
         _resizeTimer->setSingleShot(true);
         connect(_resizeTimer, SIGNAL(timeout()), _resizeWidget, SLOT(hide()));
      }
-     QString sizeStr = QString("Size: %1 x %2").arg(_columns).arg(_lines);
+     QString sizeStr = QStringLiteral("Size: %1 x %2").arg(_columns).arg(_lines);
      _resizeWidget->setText(sizeStr);
      _resizeWidget->move((width()-_resizeWidget->width())/2,
                          (height()-_resizeWidget->height())/2+20);
@@ -1799,7 +1799,7 @@ void TerminalDisplay::mousePressEvent(QMouseEvent* ev)
 
       Filter::HotSpot *spot = _filterChain->hotSpotAt(charLine, charColumn);
       if (spot && spot->type() == Filter::HotSpot::Link)
-          spot->activate("open-action");
+          spot->activate(QStringLiteral("open-action"));
     }
   }
   else if ( ev->button() == Qt::MidButton )
@@ -2945,7 +2945,7 @@ QSize TerminalDisplay::sizeHint() const
 
 void TerminalDisplay::dragEnterEvent(QDragEnterEvent* event)
 {
-  if (event->mimeData()->hasFormat("text/plain"))
+  if (event->mimeData()->hasFormat(QStringLiteral("text/plain")))
       event->acceptProposedAction();
   if (event->mimeData()->urls().count())
       event->acceptProposedAction();

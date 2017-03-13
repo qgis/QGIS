@@ -16,12 +16,14 @@
 #ifndef QGSGRASSUNDOCOMMAND_H
 #define QGSGRASSUNDOCOMMAND_H
 
+#include "qgis_grass_lib.h"
+
 class QgsGrassProvider;
 
 class GRASS_LIB_EXPORT QgsGrassUndoCommand
 {
   public:
-    virtual ~QgsGrassUndoCommand() {}
+    virtual ~QgsGrassUndoCommand() = default;
     virtual void undo() {}
 };
 
@@ -30,11 +32,10 @@ class GRASS_LIB_EXPORT QgsGrassUndoCommand
 class GRASS_LIB_EXPORT QgsGrassUndoCommandChangeAttribute : public QgsGrassUndoCommand
 {
   public:
-    QgsGrassUndoCommandChangeAttribute( QgsGrassProvider * provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord );
-    ~QgsGrassUndoCommandChangeAttribute() {}
+    QgsGrassUndoCommandChangeAttribute( QgsGrassProvider *provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord );
     void undo() override;
   private:
-    QgsGrassProvider *mProvider;
+    QgsGrassProvider *mProvider = nullptr;
     int mFid;
     int mLid;
     int mField;

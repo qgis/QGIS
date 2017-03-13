@@ -69,7 +69,7 @@ class QgsWidgetWrapper : QObject
      *
      * @param config The config for this wrapper
      */
-    void setConfig( const QgsEditorWidgetConfig& config );
+    void setConfig( const QVariantMap& config );
 
     /**
      * Set the context in which this widget is shown
@@ -93,7 +93,7 @@ class QgsWidgetWrapper : QObject
      *
      * @return The configuration
      */
-    QgsEditorWidgetConfig config() const;
+    QVariantMap config() const;
 
     /**
      * Returns information about the context in which this widget is shown
@@ -122,7 +122,7 @@ class QgsWidgetWrapper : QObject
      * Return true if the widget has been properly initialized.
      * This acts as hint for the calling party if this wrapper can be used
      * after initializing it.
-     * If it cannot be used this is a hint tothe caller that he may try to find
+     * If it cannot be used this is a hint to the caller that he may try to find
      * another suitable widget type instead.
      *
      * @return Validity status of this widget.

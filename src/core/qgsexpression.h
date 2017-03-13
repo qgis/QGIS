@@ -16,6 +16,7 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
+#include "qgis_core.h"
 #include <QMetaType>
 #include <QStringList>
 #include <QVariant>
@@ -23,6 +24,7 @@
 #include <QDomDocument>
 #include <QCoreApplication>
 #include <QSet>
+#include <functional>
 
 #include "qgis.h"
 #include "qgsunittypes.h"
@@ -109,27 +111,28 @@ class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
+
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
      * {@link prepare()} should always be called before every
      * loop in which this expression is used.
      */
-    QgsExpression( const QString& expr );
+    QgsExpression( const QString &expr );
 
     /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
      */
-    QgsExpression( const QgsExpression& other );
+    QgsExpression( const QgsExpression &other );
 
     /**
      * Create a copy of this expression. This is preferred
      * over recreating an expression from a string since
      * it does not need to be re-parsed.
      */
-    QgsExpression& operator=( const QgsExpression& other );
+    QgsExpression &operator=( const QgsExpression &other );
 
     /**
      * Create an empty expression.
@@ -146,7 +149,7 @@ class CORE_EXPORT QgsExpression
      *
      * @note Added in QGIS 3.0
      */
-    bool operator==( const QgsExpression& other ) const;
+    bool operator==( const QgsExpression &other ) const;
 
     /**
      * Checks if this expression is valid.
@@ -164,7 +167,7 @@ class CORE_EXPORT QgsExpression
     class Node;
 
     //! Returns root node of the expression. Root node is null is parsing has failed
-    const Node* rootNode() const;
+    const Node *rootNode() const;
 
     /** Get the expression ready for evaluation - find out column indexes.
      * @param context context for preparing expression
@@ -179,9 +182,25 @@ class CORE_EXPORT QgsExpression
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
-     * TODO QGIS3: Return QSet<QString>
+     * @see referencedAttributeIndexes()
      */
-    QStringList referencedColumns() const;
+    QSet<QString> referencedColumns() const;
+
+    /**
+     * Return a list of all variables which are used in this expression.
+     * If the list contains a NULL QString, there is a variable name used
+     * which is determined at runtime.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<QString> referencedVariables() const;
+
+    /**
+     * Return a list of field name indexes obtained from the provided fields.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 
     //! Returns true if the expression uses feature geometry for some computation
     bool needsGeometry() const;
@@ -199,19 +218,19 @@ class CORE_EXPORT QgsExpression
      * @note prepare() should be called before calling this method.
      * @note added in QGIS 2.12
      */
-    QVariant evaluate( const QgsExpressionContext* context );
+    QVariant evaluate( const QgsExpressionContext *context );
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const;
     //! Returns evaluation error
     QString evalErrorString() const;
     //! Set evaluation error (used internally by evaluation functions)
-    void setEvalErrorString( const QString& str );
+    void setEvalErrorString( const QString &str );
 
     /** Checks whether an expression consists only of a single field reference
      * @note added in 2.9
      */
-    bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
+    bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef *>( rootNode() ) ;}
 
     /** Tests whether a string is a valid expression.
      * @param text string to test
@@ -220,14 +239,14 @@ class CORE_EXPORT QgsExpression
      * @returns true if string is a valid expression
      * @note added in QGIS 2.12
      */
-    static bool checkExpression( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
+    static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage );
 
     /**
      * Set the expression string, will reset the whole internal structure.
      *
      * @note Added in QGIS 3.0
      */
-    void setExpression( const QString& expression );
+    void setExpression( const QString &expression );
 
     //! Return the original, unmodified expression string.
     //! If there was none supplied because it was constructed by sole
@@ -236,7 +255,7 @@ class CORE_EXPORT QgsExpression
 
     //! Return an expression string, constructed from the internal
     //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferrable to use
+    //! formatting or comments. In general it is preferable to use
     //! expression() instead.
     QString dump() const;
 
@@ -256,9 +275,9 @@ class CORE_EXPORT QgsExpression
      * cartesian calculations.
      * @see geomCalculator()
      */
-    void setGeomCalculator( const QgsDistanceArea* calc );
+    void setGeomCalculator( const QgsDistanceArea *calc );
 
-    /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /** Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
@@ -266,7 +285,7 @@ class CORE_EXPORT QgsExpression
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
-    /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /** Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
@@ -274,7 +293,7 @@ class CORE_EXPORT QgsExpression
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
-    /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /** Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setAreaUnits()
@@ -282,7 +301,7 @@ class CORE_EXPORT QgsExpression
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
-    /** Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /** Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see areaUnits()
@@ -294,14 +313,14 @@ class CORE_EXPORT QgsExpression
      * in the string with the result of its evaluation with the specified context
      *
      * Additional substitutions can be passed through the substitutionMap parameter
-     * @param action
-     * @param context expression context
-     * @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+     * @param action The source string in which placeholders should be replaced.
+     * @param context Expression context
+     * @param distanceArea Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
      * and area conversion
      * @note added in QGIS 2.12
      */
-    static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
-                                          const QgsDistanceArea* distanceArea = nullptr );
+    static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
+                                          const QgsDistanceArea *distanceArea = nullptr );
 
     /** Attempts to evaluate a text string as an expression to a resultant double
      * value.
@@ -312,7 +331,7 @@ class CORE_EXPORT QgsExpression
      * @note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
      */
-    static double evaluateToDouble( const QString& text, const double fallbackValue );
+    static double evaluateToDouble( const QString &text, const double fallbackValue );
 
     /**
      * @brief list of unary operators
@@ -335,12 +354,12 @@ class CORE_EXPORT QgsExpression
       boAnd,
 
       // comparison
-      boEQ,  // =
-      boNE,  // <>
-      boLE,  // <=
-      boGE,  // >=
-      boLT,  // <
-      boGT,  // >
+      boEQ,  //!< =
+      boNE,  //!< <>
+      boLE,  //!< <=
+      boGE,  //!< >=
+      boLT,  //!< <
+      boGT,  //!< >
       boRegexp,
       boLike,
       boNotLike,
@@ -376,10 +395,10 @@ class CORE_EXPORT QgsExpression
     };
 
     //! @note not available in Python bindings
-    static const char* BinaryOperatorText[];
+    static const char *BINARY_OPERATOR_TEXT[];
 
     //! @note not available in Python bindings
-    static const char* UnaryOperatorText[];
+    static const char *UNARY_OPERATOR_TEXT[];
 
     /** \ingroup core
       * Represents a single parameter passed to a function.
@@ -394,12 +413,12 @@ class CORE_EXPORT QgsExpression
          * @param optional set to true if parameter should be optional
          * @param defaultValue default value to use for optional parameters
          */
-        Parameter( const QString& name,
+        Parameter( const QString &name,
                    bool optional = false,
-                   const QVariant& defaultValue = QVariant() )
-            : mName( name )
-            , mOptional( optional )
-            , mDefaultValue( defaultValue )
+                   const QVariant &defaultValue = QVariant() )
+          : mName( name )
+          , mOptional( optional )
+          , mDefaultValue( defaultValue )
         {}
 
         //! Returns the name of the parameter.
@@ -411,7 +430,7 @@ class CORE_EXPORT QgsExpression
         //! Returns the default value for the parameter.
         QVariant defaultValue() const { return mDefaultValue; }
 
-        bool operator==( const Parameter& other ) const
+        bool operator==( const Parameter &other ) const
         {
           return ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 );
         }
@@ -427,7 +446,9 @@ class CORE_EXPORT QgsExpression
 
     /** Function definition for evaluation against an expression context, using a list of values as parameters to the function.
      */
-    typedef QVariant( *FcnEval )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
+    typedef QVariant( *FcnEval )( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent );
+
+    class NodeFunction;
 
     /** \ingroup core
       * A abstract base class for defining QgsExpression functions.
@@ -437,67 +458,99 @@ class CORE_EXPORT QgsExpression
       public:
 
         //! Constructor for function which uses unnamed parameters
-        Function( const QString& fnname,
+        Function( const QString &fnname,
                   int params,
-                  const QString& group,
-                  const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  const QString &group,
+                  const QString &helpText = QString(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
-            : mName( fnname )
-            , mParams( params )
-            , mUsesGeometry( usesGeometry )
-            , mGroup( group )
-            , mHelpText( helpText )
-            , mReferencedColumns( referencedColumns )
-            , mLazyEval( lazyEval )
-            , mHandlesNull( handlesNull )
-            , mIsContextual( isContextual )
+          : mName( fnname )
+          , mParams( params )
+          , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
+          , mHelpText( helpText )
+          , mLazyEval( lazyEval )
+          , mHandlesNull( handlesNull )
+          , mIsContextual( isContextual )
+        {
+        }
+
+        /** Constructor for function which uses unnamed parameters and group list
+         * @note added in QGIS 3.0
+         */
+        Function( const QString &fnname,
+                  int params,
+                  const QStringList &groups,
+                  const QString &helpText = QString(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+          : mName( fnname )
+          , mParams( params )
+          , mGroups( groups )
+          , mHelpText( helpText )
+          , mLazyEval( lazyEval )
+          , mHandlesNull( handlesNull )
+          , mIsContextual( isContextual )
         {
         }
 
         /** Constructor for function which uses named parameter list.
          * @note added in QGIS 2.16
          */
-        Function( const QString& fnname,
-                  const ParameterList& params,
-                  const QString& group,
-                  const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+        Function( const QString &fnname,
+                  const ParameterList &params,
+                  const QString &group,
+                  const QString &helpText = QString(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false )
-            : mName( fnname )
-            , mParams( 0 )
-            , mParameterList( params )
-            , mUsesGeometry( usesGeometry )
-            , mGroup( group )
-            , mHelpText( helpText )
-            , mReferencedColumns( referencedColumns )
-            , mLazyEval( lazyEval )
-            , mHandlesNull( handlesNull )
-            , mIsContextual( isContextual )
+          : mName( fnname )
+          , mParams( 0 )
+          , mParameterList( params )
+          , mGroups( group.isEmpty() ? QStringList() : QStringList() << group )
+          , mHelpText( helpText )
+          , mLazyEval( lazyEval )
+          , mHandlesNull( handlesNull )
+          , mIsContextual( isContextual )
         {}
 
-        virtual ~Function() {}
+        /** Constructor for function which uses named parameter list and group list.
+         * @note added in QGIS 3.0
+         */
+        Function( const QString &fnname,
+                  const ParameterList &params,
+                  const QStringList &groups,
+                  const QString &helpText = QString(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false )
+          : mName( fnname )
+          , mParams( 0 )
+          , mParameterList( params )
+          , mGroups( groups )
+          , mHelpText( helpText )
+          , mLazyEval( lazyEval )
+          , mHandlesNull( handlesNull )
+          , mIsContextual( isContextual )
+        {}
 
-        /** The name of the function. */
+        virtual ~Function() = default;
+
+        //! The name of the function.
         QString name() const { return mName; }
 
-        /** The number of parameters this function takes. */
+        //! The number of parameters this function takes.
         int params() const { return mParameterList.isEmpty() ? mParams : mParameterList.count(); }
 
-        /** The mininum number of parameters this function takes. */
+        //! The minimum number of parameters this function takes.
         int minParams() const
         {
           if ( mParameterList.isEmpty() )
             return mParams;
 
           int min = 0;
-          Q_FOREACH ( const Parameter& param, mParameterList )
+          Q_FOREACH ( const Parameter &param, mParameterList )
           {
             if ( !param.optional() )
               min++;
@@ -508,13 +561,13 @@ class CORE_EXPORT QgsExpression
         /** Returns the list of named parameters for the function, if set.
          * @note added in QGIS 2.16
         */
-        const ParameterList& parameters() const { return mParameterList; }
+        const ParameterList &parameters() const { return mParameterList; }
 
-        /** Does this function use a geometry object. */
-        bool usesGeometry() const { return mUsesGeometry; }
+        //! Does this function use a geometry object.
+        virtual bool usesGeometry( const NodeFunction *node ) const;
 
         /** Returns a list of possible aliases for the function. These include
-         * other permissible names for the function, eg deprecated names.
+         * other permissible names for the function, e.g., deprecated names.
          * @return list of known aliases
          * @note added in QGIS 2.9
          */
@@ -525,17 +578,39 @@ class CORE_EXPORT QgsExpression
          * Functions are non lazy default and will be given the node return value when called **/
         bool lazyEval() const { return mLazyEval; }
 
-        virtual QStringList referencedColumns() const { return mReferencedColumns; }
+        /**
+         * Returns a set of field names which are required for this function.
+         * May contain QgsFeatureRequest::AllAttributes to signal that all
+         * attributes are required.
+         * If in doubt this will return more fields than strictly required.
+         *
+         * @note Added in QGIS 3.0
+         */
+        virtual QSet<QString> referencedColumns( const NodeFunction *node ) const;
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
          */
         bool isContextual() const { return mIsContextual; }
 
-        /** The group the function belongs to. */
-        QString group() const { return mGroup; }
+        /** Returns true if the function is deprecated and should not be presented as a valid option
+         * to users in expression builders.
+         * @note added in QGIS 3.0
+         */
+        virtual bool isDeprecated() const { return mGroups.isEmpty() ? false : mGroups.contains( QStringLiteral( "deprecated" ) ); }
 
-        /** The help text for the function. */
+        /** Returns the first group which the function belongs to.
+         * @note consider using groups() instead, as some functions naturally belong in multiple groups
+        */
+        QString group() const { return mGroups.isEmpty() ? QString() : mGroups.at( 0 ); }
+
+        /** Returns a list of the groups the function belongs to.
+         * @note added in QGIS 3.0
+         * @see group()
+        */
+        QStringList groups() const { return mGroups; }
+
+        //! The help text for the function.
         const QString helpText() const { return mHelpText.isEmpty() ? QgsExpression::helpText( mName ) : mHelpText; }
 
         /** Returns result of evaluating the function.
@@ -544,15 +619,9 @@ class CORE_EXPORT QgsExpression
          * @param parent parent expression
          * @returns result of function
          */
-        virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) = 0;
+        virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
 
-        bool operator==( const Function& other ) const
-        {
-          if ( QString::compare( mName, other.mName, Qt::CaseInsensitive ) == 0 )
-            return true;
-
-          return false;
-        }
+        bool operator==( const Function &other ) const;
 
         virtual bool handlesNull() const { return mHandlesNull; }
 
@@ -560,10 +629,8 @@ class CORE_EXPORT QgsExpression
         QString mName;
         int mParams;
         ParameterList mParameterList;
-        bool mUsesGeometry;
-        QString mGroup;
+        QStringList mGroups;
         QString mHelpText;
-        QStringList mReferencedColumns;
         bool mLazyEval;
         bool mHandlesNull;
         bool mIsContextual; //if true function is only available through an expression context
@@ -579,39 +646,83 @@ class CORE_EXPORT QgsExpression
 
         /** Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values.
          */
-        StaticFunction( const QString& fnname,
+        StaticFunction( const QString &fnname,
                         int params,
                         FcnEval fcn,
-                        const QString& group,
-                        const QString& helpText = QString(),
+                        const QString &group,
+                        const QString &helpText = QString(),
                         bool usesGeometry = false,
-                        const QStringList& referencedColumns = QStringList(),
+                        const QSet<QString> &referencedColumns = QSet<QString>(),
                         bool lazyEval = false,
-                        const QStringList& aliases = QStringList(),
+                        const QStringList &aliases = QStringList(),
                         bool handlesNull = false )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
-            , mFnc( fcn )
-            , mAliases( aliases )
+          : Function( fnname, params, group, helpText, lazyEval, handlesNull )
+          , mFnc( fcn )
+          , mAliases( aliases )
+          , mUsesGeometry( usesGeometry )
+          , mReferencedColumns( referencedColumns )
         {}
 
         /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
          */
-        StaticFunction( const QString& fnname,
-                        const ParameterList& params,
+        StaticFunction( const QString &fnname,
+                        const ParameterList &params,
                         FcnEval fcn,
-                        const QString& group,
-                        const QString& helpText = QString(),
+                        const QString &group,
+                        const QString &helpText = QString(),
                         bool usesGeometry = false,
-                        const QStringList& referencedColumns = QStringList(),
+                        const QSet<QString> &referencedColumns = QSet<QString>(),
                         bool lazyEval = false,
-                        const QStringList& aliases = QStringList(),
+                        const QStringList &aliases = QStringList(),
                         bool handlesNull = false )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
-            , mFnc( fcn )
-            , mAliases( aliases )
+          : Function( fnname, params, group, helpText, lazyEval, handlesNull )
+          , mFnc( fcn )
+          , mAliases( aliases )
+          , mUsesGeometry( usesGeometry )
+          , mReferencedColumns( referencedColumns )
         {}
 
-        virtual ~StaticFunction() {}
+        /**
+         * Static function for evaluation against a QgsExpressionContext, using a named list of parameter values.
+         *
+         * Lambda functions can be provided that will be called to determine if a geometry is used an which
+         * columns are referenced.
+         * This is only required if this cannot be determined by calling each parameter node's usesGeometry() or
+         * referencedColumns() method. For example, an aggregate expression requires the geometry and all columns
+         * if the parent variable is used.
+         * If a nullptr is passed as a node to these functions, they should stay on the safe side and return if they
+         * could potentially require a geometry or columns.
+         */
+        StaticFunction( const QString &fnname,
+                        const ParameterList &params,
+                        FcnEval fcn,
+                        const QString &group,
+                        const QString &helpText,
+                        std::function < bool ( const NodeFunction *node ) > usesGeometry,
+                        std::function < QSet<QString>( const NodeFunction *node ) > referencedColumns,
+                        bool lazyEval = false,
+                        const QStringList &aliases = QStringList(),
+                        bool handlesNull = false );
+
+        /** Static function for evaluation against a QgsExpressionContext, using a named list of parameter values and list
+         * of groups.
+         */
+        StaticFunction( const QString &fnname,
+                        const ParameterList &params,
+                        FcnEval fcn,
+                        const QStringList &groups,
+                        const QString &helpText = QString(),
+                        bool usesGeometry = false,
+                        const QSet<QString> &referencedColumns = QSet<QString>(),
+                        bool lazyEval = false,
+                        const QStringList &aliases = QStringList(),
+                        bool handlesNull = false )
+          : Function( fnname, params, groups, helpText, lazyEval, handlesNull )
+          , mFnc( fcn )
+          , mAliases( aliases )
+          , mUsesGeometry( usesGeometry )
+          , mReferencedColumns( referencedColumns )
+        {}
 
         /** Returns result of evaluating the function.
          * @param values list of values passed to the function
@@ -619,25 +730,33 @@ class CORE_EXPORT QgsExpression
          * @param parent parent expression
          * @returns result of function
          */
-        virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) override
+        virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override
         {
           return mFnc ? mFnc( values, context, parent ) : QVariant();
         }
 
         virtual QStringList aliases() const override { return mAliases; }
 
+        virtual bool usesGeometry( const QgsExpression::NodeFunction *node ) const override;
+
+        virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction *node ) const override;
+
       private:
         FcnEval mFnc;
         QStringList mAliases;
+        bool mUsesGeometry;
+        std::function < bool( const NodeFunction *node ) > mUsesGeometryFunc;
+        std::function < QSet<QString>( const NodeFunction *node ) > mReferencedColumnsFunc;
+        QSet<QString> mReferencedColumns;
     };
 
     //! @note not available in Python bindings
-    static QList<Function*> gmFunctions;
-    static const QList<Function*>& Functions();
+    static QList<Function *> sFunctions;
+    static const QList<Function *> &Functions();
 
     //! @note not available in Python bindings
-    static QStringList gmBuiltinFunctions;
-    static const QStringList& BuiltinFunctions();
+    static QStringList sBuiltinFunctions;
+    static const QStringList &BuiltinFunctions();
 
     /** Registers a function to the expression engine. This is required to allow expressions to utilise the function.
      * @param function function to register
@@ -645,17 +764,17 @@ class CORE_EXPORT QgsExpression
      * @returns true on successful registration
      * @see unregisterFunction
      */
-    static bool registerFunction( Function* function, bool transferOwnership = false );
+    static bool registerFunction( Function *function, bool transferOwnership = false );
 
     /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
      * @param name function name
      * @see registerFunction
      */
-    static bool unregisterFunction( const QString& name );
+    static bool unregisterFunction( const QString &name );
 
     //! List of functions owned by the expression engine
     //! @note not available in Python bindings
-    static QList<Function*> gmOwnedFunctions;
+    static QList<Function *> sOwnedFunctions;
 
     /** Deletes all registered functions whose ownership have been transferred to the expression engine.
      * @note added in QGIS 2.12
@@ -663,10 +782,10 @@ class CORE_EXPORT QgsExpression
     static void cleanRegisteredFunctions();
 
     //! tells whether the identifier is a name of existing function
-    static bool isFunctionName( const QString& name );
+    static bool isFunctionName( const QString &name );
 
     //! return index of the function in Functions array
-    static int functionIndex( const QString& name );
+    static int functionIndex( const QString &name );
 
     /** Returns the number of functions defined in the parser
      *  @return The number of function defined in the parser.
@@ -692,7 +811,7 @@ class CORE_EXPORT QgsExpression
      * @see quotedString()
      * @see quotedColumnRef()
      */
-    static QString quotedValue( const QVariant& value );
+    static QString quotedValue( const QVariant &value );
 
     /** Returns a string representation of a literal value, including appropriate
      * quotations where required.
@@ -702,11 +821,9 @@ class CORE_EXPORT QgsExpression
      * @see quotedString()
      * @see quotedColumnRef()
      */
-    static QString quotedValue( const QVariant& value, QVariant::Type type );
+    static QString quotedValue( const QVariant &value, QVariant::Type type );
 
     //////
-
-    class Visitor; // visitor interface is defined below
 
     enum NodeType
     {
@@ -724,7 +841,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Node
     {
       public:
-        virtual ~Node() {}
+        virtual ~Node() = default;
 
         /**
          * Abstract virtual that returns the type of this node.
@@ -738,14 +855,14 @@ class CORE_EXPORT QgsExpression
          * Errors are reported to the parent
          * @note added in QGIS 2.12
          */
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) = 0;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
         /**
          * Abstract virtual preparation method
          * Errors are reported to the parent
          * @note added in QGIS 2.12
          */
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) = 0;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) = 0;
 
         /**
          * Abstract virtual dump method
@@ -762,7 +879,7 @@ class CORE_EXPORT QgsExpression
          *
          * @return a deep copy of this node.
          */
-        virtual Node* clone() const = 0;
+        virtual Node *clone() const = 0;
 
         /**
          * Abstract virtual method which returns a list of columns required to
@@ -774,7 +891,12 @@ class CORE_EXPORT QgsExpression
          *
          * @return A list of columns required to evaluate this expression
          */
-        virtual QStringList referencedColumns() const = 0;
+        virtual QSet<QString> referencedColumns() const = 0;
+
+        /**
+         * Return a list of all variables which are used in this expression.
+         */
+        virtual QSet<QString> referencedVariables() const = 0;
 
         /**
          * Abstract virtual method which returns if the geometry is required to evaluate
@@ -785,23 +907,6 @@ class CORE_EXPORT QgsExpression
          * @return true if a geometry is required to evaluate this expression
          */
         virtual bool needsGeometry() const = 0;
-
-        /**
-         * Support the visitor pattern.
-         *
-         * For any implementation this should look like
-         *
-         * C++:
-         *
-         *     v.visit( *this );
-         *
-         * Python:
-         *
-         *     v.visit( self)
-         *
-         * @param v A visitor that visits this node.
-         */
-        virtual void accept( Visitor& v ) const = 0;
     };
 
     //! Named node
@@ -815,16 +920,16 @@ class CORE_EXPORT QgsExpression
          * @param name node name
          * @param node node
          */
-        NamedNode( const QString& name, Node* node )
-            : name( name )
-            , node( node )
+        NamedNode( const QString &name, Node *node )
+          : name( name )
+          , node( node )
         {}
 
         //! Node name
         QString name;
 
         //! Node
-        Node* node;
+        Node *node = nullptr;
     };
 
     /** \ingroup core
@@ -834,13 +939,13 @@ class CORE_EXPORT QgsExpression
       public:
         NodeList() : mHasNamedNodes( false ) {}
         virtual ~NodeList() { qDeleteAll( mList ); }
-        /** Takes ownership of the provided node */
-        void append( Node* node ) { mList.append( node ); mNameList.append( QString() ); }
+        //! Takes ownership of the provided node
+        void append( Node *node ) { mList.append( node ); mNameList.append( QString() ); }
 
         /** Adds a named node. Takes ownership of the provided node.
          * @note added in QGIS 2.16
         */
-        void append( NamedNode* node ) { mList.append( node->node ); mNameList.append( node->name.toLower() ); mHasNamedNodes = true; }
+        void append( NamedNode *node );
 
         /** Returns the number of nodes in the list.
          */
@@ -850,19 +955,29 @@ class CORE_EXPORT QgsExpression
         //! @note added in QGIS 2.16
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
-        QList<Node*> list() { return mList; }
+        /**
+         * Get a list of all the nodes.
+         */
+        QList<Node *> list() { return mList; }
+
+        /**
+         * Get the node at position i in the list.
+         *
+         * @note Added in QGIS 3.0
+         */
+        Node *at( int i ) { return mList.at( i ); }
 
         //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
         //! @note added in QGIS 2.16
         QStringList names() const { return mNameList; }
 
-        /** Creates a deep copy of this list. Ownership is transferred to the caller */
-        NodeList* clone() const;
+        //! Creates a deep copy of this list. Ownership is transferred to the caller
+        NodeList *clone() const;
 
         virtual QString dump() const;
 
       protected:
-        QList<Node*> mList;
+        QList<Node *> mList;
         QStringList mNameList;
 
       private:
@@ -875,28 +990,28 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
-        NodeUnaryOperator( UnaryOperator op, Node* operand )
-            : mOp( op )
-            , mOperand( operand )
+        NodeUnaryOperator( UnaryOperator op, Node *operand )
+          : mOp( op )
+          , mOperand( operand )
         {}
         ~NodeUnaryOperator() { delete mOperand; }
 
         UnaryOperator op() const { return mOp; }
-        Node* operand() const { return mOperand; }
+        Node *operand() const { return mOperand; }
 
         virtual NodeType nodeType() const override { return ntUnaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return mOperand->referencedColumns(); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return mOperand->needsGeometry(); }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual Node *clone() const override;
 
       protected:
         UnaryOperator mOp;
-        Node* mOperand;
+        Node *mOperand = nullptr;
     };
 
     /** \ingroup core
@@ -904,44 +1019,44 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
-        NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight )
-            : mOp( op )
-            , mOpLeft( opLeft )
-            , mOpRight( opRight )
+        NodeBinaryOperator( BinaryOperator op, Node *opLeft, Node *opRight )
+          : mOp( op )
+          , mOpLeft( opLeft )
+          , mOpRight( opRight )
         {}
         ~NodeBinaryOperator() { delete mOpLeft; delete mOpRight; }
 
         BinaryOperator op() const { return mOp; }
-        Node* opLeft() const { return mOpLeft; }
-        Node* opRight() const { return mOpRight; }
+        Node *opLeft() const { return mOpLeft; }
+        Node *opRight() const { return mOpRight; }
 
         virtual NodeType nodeType() const override { return ntBinaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
-        virtual bool needsGeometry() const override { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
+        virtual bool needsGeometry() const override;
+        virtual Node *clone() const override;
 
         int precedence() const;
         bool leftAssociative() const;
 
-      protected:
+      private:
         bool compare( double diff );
-        int computeInt( int x, int y );
+        qlonglong computeInt( qlonglong x, qlonglong y );
         double computeDouble( double x, double y );
 
         /** Computes the result date time calculation from a start datetime and an interval
          * @param d start datetime
          * @param i interval to add or subtract (depending on mOp)
          */
-        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval* i );
+        QDateTime computeDateTimeFromInterval( const QDateTime &d, QgsInterval *i );
 
         BinaryOperator mOp;
-        Node* mOpLeft;
-        Node* mOpRight;
+        Node *mOpLeft = nullptr;
+        Node *mOpRight = nullptr;
     };
 
     /** \ingroup core
@@ -949,30 +1064,30 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeInOperator : public Node
     {
       public:
-        NodeInOperator( Node* node, NodeList* list, bool notin = false )
-            : mNode( node )
-            , mList( list )
-            , mNotIn( notin )
+        NodeInOperator( Node *node, NodeList *list, bool notin = false )
+          : mNode( node )
+          , mList( list )
+          , mNotIn( notin )
         {}
         virtual ~NodeInOperator() { delete mNode; delete mList; }
 
-        Node* node() const { return mNode; }
+        Node *node() const { return mNode; }
         bool isNotIn() const { return mNotIn; }
-        NodeList* list() const { return mList; }
+        NodeList *list() const { return mList; }
 
         virtual NodeType nodeType() const override { return ntInOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); Q_FOREACH ( const Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const override { bool needs = false; Q_FOREACH ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
+        virtual bool needsGeometry() const override;
+        virtual Node *clone() const override;
 
       protected:
-        Node* mNode;
-        NodeList* mList;
+        Node *mNode = nullptr;
+        NodeList *mList = nullptr;
         bool mNotIn;
     };
 
@@ -981,137 +1096,29 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeFunction : public Node
     {
       public:
-        NodeFunction( int fnIndex, NodeList* args ) : mFnIndex( fnIndex )
-        {
-          const ParameterList& functionParams = Functions()[mFnIndex]->parameters();
-          if ( !args || functionParams.isEmpty() )
-          {
-            // no parameters, or function does not support them
-            mArgs = args;
-          }
-          else
-          {
-            mArgs = new NodeList();
-
-            int idx = 0;
-            //first loop through unnamed arguments
-            while ( idx < args->names().size() && args->names().at( idx ).isEmpty() )
-            {
-              mArgs->append( args->list().at( idx )->clone() );
-              idx++;
-            }
-
-            //next copy named parameters in order expected by function
-            for ( ; idx < functionParams.count(); ++idx )
-            {
-              int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
-              if ( nodeIdx < 0 )
-              {
-                //parameter not found - insert default value for parameter
-                mArgs->append( new NodeLiteral( functionParams.at( idx ).defaultValue() ) );
-              }
-              else
-              {
-                mArgs->append( args->list().at( nodeIdx )->clone() );
-              }
-            }
-
-            delete args;
-          }
-        }
+        NodeFunction( int fnIndex, NodeList *args );
 
         virtual ~NodeFunction() { delete mArgs; }
 
         int fnIndex() const { return mFnIndex; }
-        NodeList* args() const { return mArgs; }
+        NodeList *args() const { return mArgs; }
 
         virtual NodeType nodeType() const override { return ntFunction; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override;
-        virtual bool needsGeometry() const override { bool needs = Functions()[mFnIndex]->usesGeometry(); if ( mArgs ) { Q_FOREACH ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
+        virtual bool needsGeometry() const override;
+        virtual Node *clone() const override;
 
         //! Tests whether the provided argument list is valid for the matching function
-        static bool validateParams( int fnIndex, NodeList* args, QString& error )
-        {
-          if ( !args || !args->hasNamedNodes() )
-            return true;
+        static bool validateParams( int fnIndex, NodeList *args, QString &error );
 
-          const ParameterList& functionParams = Functions()[fnIndex]->parameters();
-          if ( functionParams.isEmpty() )
-          {
-            error = QString( "%1 does not supported named parameters" ).arg( Functions()[fnIndex]->name() );
-            return false;
-          }
-          else
-          {
-            QSet< int > providedArgs;
-            QSet< int > handledArgs;
-            int idx = 0;
-            //first loop through unnamed arguments
-            while ( args->names().at( idx ).isEmpty() )
-            {
-              providedArgs << idx;
-              handledArgs << idx;
-              idx++;
-            }
-
-            //next check named parameters
-            for ( ; idx < functionParams.count(); ++idx )
-            {
-              int nodeIdx = args->names().indexOf( functionParams.at( idx ).name().toLower() );
-              if ( nodeIdx < 0 )
-              {
-                if ( !functionParams.at( idx ).optional() )
-                {
-                  error = QString( "No value specified for parameter '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
-                  return false;
-                }
-              }
-              else
-              {
-                if ( providedArgs.contains( idx ) )
-                {
-                  error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( idx ).name(), Functions()[fnIndex]->name() );
-                  return false;
-                }
-              }
-              providedArgs << idx;
-              handledArgs << nodeIdx;
-            }
-
-            //last check for bad names
-            idx = 0;
-            Q_FOREACH ( const QString& name, args->names() )
-            {
-              if ( !name.isEmpty() && !functionParams.contains( name ) )
-              {
-                error = QString( "Invalid parameter name '%1' for %2" ).arg( name, Functions()[fnIndex]->name() );
-                return false;
-              }
-              if ( !name.isEmpty() && !handledArgs.contains( idx ) )
-              {
-                int functionIdx = functionParams.indexOf( name );
-                if ( providedArgs.contains( functionIdx ) )
-                {
-                  error = QString( "Duplicate parameter specified for '%1' for %2" ).arg( functionParams.at( functionIdx ).name(), Functions()[fnIndex]->name() );
-                  return false;
-                }
-              }
-              idx++;
-            }
-
-          }
-          return true;
-        }
-
-      protected:
+      private:
         int mFnIndex;
-        NodeList* mArgs;
+        NodeList *mArgs = nullptr;
 
     };
 
@@ -1120,22 +1127,22 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
-        NodeLiteral( const QVariant& value )
-            : mValue( value )
+        NodeLiteral( const QVariant &value )
+          : mValue( value )
         {}
 
-        /** The value of the literal. */
+        //! The value of the literal.
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return QStringList(); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual Node *clone() const override;
 
       protected:
         QVariant mValue;
@@ -1146,24 +1153,24 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
-        NodeColumnRef( const QString& name )
-            : mName( name )
-            , mIndex( -1 )
+        NodeColumnRef( const QString &name )
+          : mName( name )
+          , mIndex( -1 )
         {}
 
-        /** The name of the column. */
+        //! The name of the column.
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override { return QStringList( mName ); }
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override { return false; }
 
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual Node *clone() const override;
 
       protected:
         QString mName;
@@ -1175,72 +1182,53 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT WhenThen
     {
       public:
-        WhenThen( Node* whenExp, Node* thenExp )
-            : mWhenExp( whenExp )
-            , mThenExp( thenExp )
+        WhenThen( Node *whenExp, Node *thenExp )
+          : mWhenExp( whenExp )
+          , mThenExp( thenExp )
         {}
         ~WhenThen() { delete mWhenExp; delete mThenExp; }
 
-        // protected:
-        Node* mWhenExp;
-        Node* mThenExp;
+        //! WhenThen nodes cannot be copied.
+        WhenThen( const WhenThen &rh ) = delete;
+        //! WhenThen nodes cannot be copied.
+        WhenThen &operator=( const WhenThen &rh ) = delete;
 
-      private:
-        WhenThen( const WhenThen& rh );
-        WhenThen& operator=( const WhenThen& rh );
+        // protected:
+        Node *mWhenExp = nullptr;
+        Node *mThenExp = nullptr;
+
     };
-    typedef QList<WhenThen*> WhenThenList;
+    typedef QList<WhenThen *> WhenThenList;
 
     /** \ingroup core
      */
     class CORE_EXPORT NodeCondition : public Node
     {
       public:
-        NodeCondition( WhenThenList* conditions, Node* elseExp = nullptr )
-            : mConditions( *conditions )
-            , mElseExp( elseExp )
+        NodeCondition( WhenThenList *conditions, Node *elseExp = nullptr )
+          : mConditions( *conditions )
+          , mElseExp( elseExp )
         { delete conditions; }
-        NodeCondition( const WhenThenList& conditions, Node* elseExp = nullptr )
-            : mConditions( conditions )
-            , mElseExp( elseExp )
+        NodeCondition( const WhenThenList &conditions, Node *elseExp = nullptr )
+          : mConditions( conditions )
+          , mElseExp( elseExp )
         {}
         ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual NodeType nodeType() const override { return ntCondition; }
-        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression *parent, const QgsExpressionContext *context ) override;
+        virtual bool prepare( QgsExpression *parent, const QgsExpressionContext *context ) override;
         virtual QString dump() const override;
 
-        virtual QStringList referencedColumns() const override;
+        virtual QSet<QString> referencedColumns() const override;
+        virtual QSet<QString> referencedVariables() const override;
         virtual bool needsGeometry() const override;
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
-        virtual Node* clone() const override;
+        virtual Node *clone() const override;
 
       protected:
         WhenThenList mConditions;
-        Node* mElseExp;
+        Node *mElseExp = nullptr;
     };
-
-    //////
-
-    /** \ingroup core
-     * Support for visitor pattern - algorithms dealing with the expressions
-        may be implemented without modifying the Node classes */
-    class CORE_EXPORT Visitor
-    {
-      public:
-        virtual ~Visitor() {}
-        virtual void visit( const NodeUnaryOperator& n ) = 0;
-        virtual void visit( const NodeBinaryOperator& n ) = 0;
-        virtual void visit( const NodeInOperator& n ) = 0;
-        virtual void visit( const NodeFunction& n ) = 0;
-        virtual void visit( const NodeLiteral& n ) = 0;
-        virtual void visit( const NodeColumnRef& n ) = 0;
-        virtual void visit( const NodeCondition& n ) = 0;
-    };
-
-    /** Entry function for the visitor pattern */
-    void acceptVisitor( Visitor& v ) const;
 
     /** Returns the help text for a specified function.
      * @param name function name
@@ -1255,37 +1243,34 @@ class CORE_EXPORT QgsExpression
      * @see helpText()
      * @note added in QGIS 2.12
      */
-    static QString variableHelpText( const QString& variableName, bool showValue = true, const QVariant& value = QVariant() );
+    static QString variableHelpText( const QString &variableName, bool showValue = true, const QVariant &value = QVariant() );
 
     /** Returns the translated name for a function group.
      * @param group untranslated group name
      */
-    static QString group( const QString& group );
+    static QString group( const QString &group );
 
     /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
-     * length, and presents text representations of non numeric/text types (eg geometries and features).
+     * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * @param value expression result to format
      * @returns formatted string, may contain HTML formatting characters
      * @note added in QGIS 2.14
      */
-    static QString formatPreviewString( const QVariant& value );
+    static QString formatPreviewString( const QVariant &value );
 
   protected:
     void initGeomCalculator();
 
-    static QMap<QString, QVariant> gmSpecialColumns;
-    static QMap<QString, QString> gmSpecialColumnGroups;
-
     struct HelpArg
     {
-      HelpArg( const QString& arg, const QString& desc, bool descOnly = false, bool syntaxOnly = false,
-               bool optional = false, const QString& defaultVal = QString() )
-          : mArg( arg )
-          , mDescription( desc )
-          , mDescOnly( descOnly )
-          , mSyntaxOnly( syntaxOnly )
-          , mOptional( optional )
-          , mDefaultVal( defaultVal )
+      HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
+               bool optional = false, const QString &defaultVal = QString() )
+        : mArg( arg )
+        , mDescription( desc )
+        , mDescOnly( descOnly )
+        , mSyntaxOnly( syntaxOnly )
+        , mOptional( optional )
+        , mDefaultVal( defaultVal )
       {}
 
       QString mArg;
@@ -1298,10 +1283,10 @@ class CORE_EXPORT QgsExpression
 
     struct HelpExample
     {
-      HelpExample( const QString& expression, const QString& returns, const QString& note = QString::null )
-          : mExpression( expression )
-          , mReturns( returns )
-          , mNote( note )
+      HelpExample( const QString &expression, const QString &returns, const QString &note = QString::null )
+        : mExpression( expression )
+        , mReturns( returns )
+        , mNote( note )
       {}
 
       QString mExpression;
@@ -1311,17 +1296,17 @@ class CORE_EXPORT QgsExpression
 
     struct HelpVariant
     {
-      HelpVariant( const QString& name, const QString& description,
-                   const QList<HelpArg>& arguments = QList<HelpArg>(),
+      HelpVariant( const QString &name, const QString &description,
+                   const QList<HelpArg> &arguments = QList<HelpArg>(),
                    bool variableLenArguments = false,
-                   const QList<HelpExample>& examples = QList<HelpExample>(),
-                   const QString& notes = QString::null )
-          : mName( name )
-          , mDescription( description )
-          , mArguments( arguments )
-          , mVariableLenArguments( variableLenArguments )
-          , mExamples( examples )
-          , mNotes( notes )
+                   const QList<HelpExample> &examples = QList<HelpExample>(),
+                   const QString &notes = QString::null )
+        : mName( name )
+        , mDescription( description )
+        , mArguments( arguments )
+        , mVariableLenArguments( variableLenArguments )
+        , mExamples( examples )
+        , mNotes( notes )
       {}
 
       QString mName;
@@ -1336,11 +1321,11 @@ class CORE_EXPORT QgsExpression
     {
       Help() {}
 
-      Help( const QString& name, const QString& type, const QString& description, const QList<HelpVariant>& variants )
-          : mName( name )
-          , mType( type )
-          , mDescription( description )
-          , mVariants( variants )
+      Help( const QString &name, const QString &type, const QString &description, const QList<HelpVariant> &variants )
+        : mName( name )
+        , mType( type )
+        , mDescription( description )
+        , mVariants( variants )
       {}
 
       QString mName;
@@ -1357,11 +1342,11 @@ class CORE_EXPORT QgsExpression
      */
     void detach();
 
-    QgsExpressionPrivate* d;
+    QgsExpressionPrivate *d = nullptr;
 
-    static QHash<QString, Help> gFunctionHelpTexts;
-    static QHash<QString, QString> gVariableHelpTexts;
-    static QHash<QString, QString> gGroups;
+    static QHash<QString, Help> sFunctionHelpTexts;
+    static QHash<QString, QString> sVariableHelpTexts;
+    static QHash<QString, QString> sGroups;
 
     //! @note not available in Python bindings
     static void initFunctionHelp();
@@ -1371,6 +1356,8 @@ class CORE_EXPORT QgsExpression
     friend class QgsOgcUtils;
 };
 
-Q_DECLARE_METATYPE( QgsExpression::Node* )
+
+
+Q_DECLARE_METATYPE( QgsExpression::Node * )
 
 #endif // QGSEXPRESSION_H

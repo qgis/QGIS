@@ -23,7 +23,6 @@
 //
 #include "qgisinterface.h"
 #include "qgsapplication.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmessagebar.h"
 
 //
@@ -44,8 +43,8 @@ static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
 static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
-static const QString icon_ = ":/icons/spatialquery.png";
+static const QgisPlugin::PluginType type_ = QgisPlugin::UI;
+static const QString icon_ = QStringLiteral( ":/icons/spatialquery.png" );
 
 /**
 * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -53,11 +52,11 @@ static const QString icon_ = ":/icons/spatialquery.png";
 * @param qgis Pointer to the QGIS main window
 * @parma mIface Pointer to the QGIS interface object
 */
-QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, category_, version_, type_ )
-    , mDialog( nullptr )
-    , mIface( iface )
-    , mSpatialQueryAction( nullptr )
+QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface *iface )
+  : QgisPlugin( name_, description_, category_, version_, type_ )
+  , mDialog( nullptr )
+  , mIface( iface )
+  , mSpatialQueryAction( nullptr )
 {
 }
 
@@ -74,12 +73,12 @@ void QgsSpatialQueryPlugin::initGui()
 
   // Create the action for tool
   mSpatialQueryAction = new QAction( QIcon(), tr( "&Spatial Query" ), this );
-  mSpatialQueryAction->setObjectName( "mSpatialQueryAction" );
+  mSpatialQueryAction->setObjectName( QStringLiteral( "mSpatialQueryAction" ) );
 
   // Connect the action to the spatialQuery slot
   connect( mSpatialQueryAction, SIGNAL( triggered() ), this, SLOT( run() ) );
 
-  setCurrentTheme( "" );
+  setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed
   connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
@@ -133,29 +132,29 @@ void QgsSpatialQueryPlugin::run()
 }
 
 //! Set icons to the current theme
-void QgsSpatialQueryPlugin::setCurrentTheme( const QString& )
+void QgsSpatialQueryPlugin::setCurrentTheme( const QString & )
 {
   if ( mSpatialQueryAction )
-    mSpatialQueryAction->setIcon( getThemeIcon( "/spatialquery.png" ) );
+    mSpatialQueryAction->setIcon( getThemeIcon( QStringLiteral( "/spatialquery.png" ) ) );
 }
 
-QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &theName )
+QIcon QgsSpatialQueryPlugin::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::activeThemePath() + "/plugins" + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + name );
   }
   else
   {
-    return QIcon( ":/icons" + theName );
+    return QIcon( ":/icons" + name );
   }
 }
 
-void QgsSpatialQueryPlugin::MsgDEBUG( QString sMSg )
+void QgsSpatialQueryPlugin::MsgDEBUG( const QString &sMSg )
 {
   QMessageBox::warning( nullptr, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
 }
@@ -167,7 +166,7 @@ void QgsSpatialQueryPlugin::MsgDEBUG( QString sMSg )
 * of the plugin class
 */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin* classFactory( QgisInterface* iface )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *iface )
 {
   return new QgsSpatialQueryPlugin( iface );
 }
@@ -209,7 +208,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin* theSpatialQueryPluginPointer )
+QGISEXTERN void unload( QgisPlugin *spatialQueryPluginPointer )
 {
-  delete theSpatialQueryPluginPointer;
+  delete spatialQueryPluginPointer;
 }

@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,32 +34,37 @@ import platform
 
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QSettings
-from qgis.core import QgsApplication, QgsVectorFileWriter
+from qgis.core import (QgsApplication,
+                       QgsVectorFileWriter,
+                       QgsProcessingFeedback,
+                       QgsSettings)
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
+from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal
+    from osgeo import gdal  # NOQA
     gdalAvailable = True
 except:
     gdalAvailable = False
 
 
-class GdalUtils:
+class GdalUtils(object):
+
+    GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None
 
     @staticmethod
-    def runGdal(commands, progress=None):
-        if progress is None:
-            progress = SilentProgress()
+    def runGdal(commands, feedback=None):
+        if feedback is None:
+            feedback = QgsProcessingFeedback()
         envval = os.getenv('PATH')
         # We need to give some extra hints to get things picked up on OS X
         isDarwin = False
         try:
             isDarwin = platform.system() == 'Darwin'
-        except IOError: # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
+        except IOError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
             pass
         if isDarwin and os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
             # Looks like there's a bundled gdal. Let's use it.
@@ -64,34 +72,35 @@ class GdalUtils:
             os.environ['DYLD_LIBRARY_PATH'] = os.path.join(QgsApplication.prefixPath(), "lib")
         else:
             # Other platforms should use default gdal finder codepath
-            settings = QSettings()
+            settings = QgsSettings()
             path = settings.value('/GdalTools/gdalPath', '')
             if not path.lower() in envval.lower().split(os.pathsep):
                 envval += '{}{}'.format(os.pathsep, path)
                 os.putenv('PATH', envval)
 
-        fused_command = ' '.join([unicode(c) for c in commands])
-        progress.setInfo('GDAL command:')
-        progress.setCommand(fused_command)
-        progress.setInfo('GDAL command output:')
+        fused_command = ' '.join([str(c) for c in commands])
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, fused_command)
+        feedback.pushInfo('GDAL command:')
+        feedback.pushCommandInfo(fused_command)
+        feedback.pushInfo('GDAL command output:')
         success = False
         retry_count = 0
-        while success == False:
+        while not success:
             loglines = []
             loglines.append('GDAL execution console output')
             try:
-                proc = subprocess.Popen(
+                with subprocess.Popen(
                     fused_command,
                     shell=True,
                     stdout=subprocess.PIPE,
-                    stdin=open(os.devnull),
+                    stdin=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT,
                     universal_newlines=True,
-                ).stdout
-                for line in proc:
-                    progress.setConsoleInfo(line)
-                    loglines.append(line)
-                success = True
+                ) as proc:
+                    for line in proc.stdout:
+                        feedback.pushConsoleInfo(line)
+                        loglines.append(line)
+                    success = True
             except IOError as e:
                 if retry_count < 5:
                     retry_count += 1
@@ -124,11 +133,11 @@ class GdalUtils:
                 continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
-            #===================================================================
+            # ===================================================================
             # if gdal.DCAP_CREATE not in metadata \
             #         or metadata[gdal.DCAP_CREATE] != 'YES':
             #     continue
-            #===================================================================
+            # ===================================================================
             if gdal.DMD_EXTENSION in metadata:
                 extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:
@@ -139,7 +148,7 @@ class GdalUtils:
     @staticmethod
     def getSupportedRasterExtensions():
         allexts = ['tif']
-        for exts in GdalUtils.getSupportedRasters().values():
+        for exts in list(GdalUtils.getSupportedRasters().values()):
             for ext in exts:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)
@@ -152,7 +161,7 @@ class GdalUtils:
             return 'ESRI Shapefile'
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        for k, v in formats.iteritems():
+        for k, v in list(formats.items()):
             if ext in k:
                 return v
         return 'ESRI Shapefile'
@@ -161,7 +170,7 @@ class GdalUtils:
     def getFormatShortNameFromFilename(filename):
         ext = filename[filename.rfind('.') + 1:]
         supported = GdalUtils.getSupportedRasters()
-        for name in supported.keys():
+        for name in list(supported.keys()):
             exts = supported[name]
             if ext in exts:
                 return name
@@ -182,3 +191,25 @@ class GdalUtils:
     @staticmethod
     def version():
         return int(gdal.VersionInfo('VERSION_NUM'))
+
+    @staticmethod
+    def readableVersion():
+        return gdal.VersionInfo('RELEASE_NAME')
+
+    @staticmethod
+    def gdalHelpPath():
+        helpPath = ProcessingConfig.getSetting(GdalUtils.GDAL_HELP_PATH)
+
+        if helpPath is None:
+            if isWindows():
+                pass
+            elif isMac():
+                pass
+            else:
+                searchPaths = ['/usr/share/doc/libgdal-doc/gdal']
+                for path in searchPaths:
+                    if os.path.exists(path):
+                        helpPath = os.path.abspath(path)
+                        break
+
+        return helpPath if helpPath is not None else 'http://www.gdal.org/'

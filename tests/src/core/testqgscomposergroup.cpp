@@ -22,10 +22,11 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 #include <QObject>
 #include <QtTest/QSignalSpy>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsComposerGroup : public QObject
 {
@@ -33,11 +34,11 @@ class TestQgsComposerGroup : public QObject
 
   public:
     TestQgsComposerGroup()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
-        , mItem1( 0 )
-        , mItem2( 0 )
-        , mGroup( 0 )
+      : mComposition( 0 )
+      , mMapSettings( 0 )
+      , mItem1( 0 )
+      , mItem2( 0 )
+      , mGroup( 0 )
     {}
 
   private slots:
@@ -52,25 +53,25 @@ class TestQgsComposerGroup : public QObject
 
   private:
 
-    void dumpUndoStack( const QUndoStack&, QString prefix = "" ) const;
+    void dumpUndoStack( const QUndoStack &, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
 
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
-    QgsComposerLabel* mItem1;
-    QgsComposerLabel* mItem2;
-    QgsComposerItemGroup* mGroup;
+    QgsComposition *mComposition = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsComposerLabel *mItem1 = nullptr;
+    QgsComposerLabel *mItem2 = nullptr;
+    QgsComposerItemGroup *mGroup = nullptr;
     QString mReport;
 };
 
 // private
-void TestQgsComposerGroup::dumpUndoStack( const QUndoStack& us, QString prefix ) const
+void TestQgsComposerGroup::dumpUndoStack( const QUndoStack &us, QString prefix ) const
 {
-  if ( ! prefix.isEmpty() ) prefix += ": ";
+  if ( ! prefix.isEmpty() ) prefix += QLatin1String( ": " );
   for ( int i = 0; i < us.count(); ++i )
   {
     QgsDebugMsg( QString( "%4US %1: %2%3" )
-                 .arg( i ). arg( i >= us.index() ? "-" : "" )
-                 .arg( us.text( i ) ) .arg( prefix ) );
+                 .arg( i ). arg( i >= us.index() ? "-" : "",
+                                 us.text( i ), prefix ) );
   }
 }
 
@@ -80,7 +81,7 @@ void TestQgsComposerGroup::initTestCase()
   QgsApplication::initQgis();
 
   mMapSettings = new QgsMapSettings();
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   //create some items
@@ -91,7 +92,7 @@ void TestQgsComposerGroup::initTestCase()
 
   mGroup = 0;
 
-  mReport = "<h1>Composer Grouped Item Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Grouped Item Tests</h1>\n" );
 }
 
 void TestQgsComposerGroup::cleanupTestCase()
@@ -123,7 +124,7 @@ void TestQgsComposerGroup::cleanup()
 void TestQgsComposerGroup::createGroup()
 {
   //group items
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   items << mItem1 << mItem2;
   mGroup = mComposition->groupItems( items );
 
@@ -144,7 +145,7 @@ void TestQgsComposerGroup::ungroup()
   mComposition->ungroupItems( 0 ); //no item
 
   //ungroup mGroup
-  QList<QgsComposerItem*> ungroupedItems;
+  QList<QgsComposerItem *> ungroupedItems;
   ungroupedItems = mComposition->ungroupItems( mGroup );
 
   QCOMPARE( ungroupedItems.size(), 2 );
@@ -155,7 +156,7 @@ void TestQgsComposerGroup::ungroup()
   QVERIFY( !mItem2->isGroupMember() );
 
   //should also be no groups left in the composition
-  QList<QgsComposerItemGroup*> groups;
+  QList<QgsComposerItemGroup *> groups;
   mComposition->composerItems( groups );
   QCOMPARE( groups.size(), 0 );
 }
@@ -163,10 +164,10 @@ void TestQgsComposerGroup::ungroup()
 void TestQgsComposerGroup::deleteGroup()
 {
   //group items
-  QList<QgsComposerItem*> groupItems;
+  QList<QgsComposerItem *> groupItems;
   groupItems << mItem1 << mItem2;
   mGroup = mComposition->groupItems( groupItems );
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   mComposition->composerItems( items );
   //expect initially 4 items, as paper counts as an item
   QCOMPARE( items.size(), 4 );
@@ -194,15 +195,15 @@ void TestQgsComposerGroup::undoRedo()
   int itemsRemoved = 0;
 
   qRegisterMetaType<QgsComposerPolygon *>();
-  QSignalSpy spyPolygonAdded( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon* ) ) );
+  QSignalSpy spyPolygonAdded( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon * ) ) );
   QCOMPARE( spyPolygonAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItemGroup *>();
-  QSignalSpy spyGroupAdded( mComposition, SIGNAL( composerItemGroupAdded( QgsComposerItemGroup* ) ) );
+  QSignalSpy spyGroupAdded( mComposition, SIGNAL( composerItemGroupAdded( QgsComposerItemGroup * ) ) );
   QCOMPARE( spyGroupAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItem *>();
-  QSignalSpy spyItemRemoved( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QSignalSpy spyItemRemoved( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ) );
   QCOMPARE( spyItemRemoved.count(), 0 );
 
   //test for crash when undo/redoing with groups
@@ -211,7 +212,7 @@ void TestQgsComposerGroup::undoRedo()
   QgsDebugMsg( QString( "clearing" ) );
   us->clear();
   QgsDebugMsg( QString( "clearing completed" ) );
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   mComposition->composerItems( items );
   QCOMPARE( items.size(), 1 ); // paper only
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
@@ -250,7 +251,7 @@ void TestQgsComposerGroup::undoRedo()
 
   //move group
   QgsDebugMsg( QString( "moving group" ) );
-  mGroup->beginCommand( "move group" );
+  mGroup->beginCommand( QStringLiteral( "move group" ) );
   mGroup->move( 10.0, 20.0 );
   mGroup->endCommand();
   QCOMPARE( spyPolygonAdded.count(), polygonsAdded );
@@ -432,5 +433,5 @@ void TestQgsComposerGroup::undoRedo()
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
 }
 
-QTEST_MAIN( TestQgsComposerGroup )
+QGSTEST_MAIN( TestQgsComposerGroup )
 #include "testqgscomposergroup.moc"

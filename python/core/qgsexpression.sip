@@ -45,13 +45,26 @@ class QgsExpression
 
     /**
      * Get list of columns referenced by the expression.
-     * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
+     *
+     * @note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      *
-     * TODO QGIS3: Return QSet<QString>
+     * @see referencedAttributeIndexes()
      */
-    QStringList referencedColumns() const;
+    QSet<QString> referencedColumns() const;
+
+    /**
+     * Return a list of all variables which are used in this expression.
+     */
+    QSet<QString> referencedVariables() const;
+
+    /**
+     * Return a list of field name indexes obtained from the provided fields.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QSet<int> referencedAttributeIndexes( const QgsFields& fields ) const;
 
     //! Returns true if the expression uses feature geometry for some computation
     bool needsGeometry() const;
@@ -106,7 +119,7 @@ class QgsExpression
 
     //! Return an expression string, constructed from the internal
     //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferrable to use
+    //! formatting or comments. In general it is preferable to use
     //! expression() instead.
     QString dump() const;
 
@@ -127,21 +140,21 @@ class QgsExpression
      */
     void setGeomCalculator( const QgsDistanceArea* calc );
 
-    /** Returns the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /** Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setDistanceUnits()
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
-    /** Sets the desired distance units for calculations involving geomCalculator(), eg "$length" and "$perimeter".
+    /** Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * @note distances are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see distanceUnits()
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
-    /** Returns the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /** Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see setAreaUnits()
@@ -149,7 +162,7 @@ class QgsExpression
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
-    /** Sets the desired areal units for calculations involving geomCalculator(), eg "$area".
+    /** Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * @note areas are only converted when a geomCalculator() has been set
      * @note added in QGIS 2.14
      * @see areaUnits()
@@ -293,8 +306,17 @@ class QgsExpression
                   int params,
                   const QString& group,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false );
+
+        /** Constructor for function which uses unnamed parameters and group list
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  int params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -306,8 +328,17 @@ class QgsExpression
                   const QgsExpression::ParameterList& params,
                   const QString& group,
                   const QString& helpText = QString(),
-                  bool usesGeometry = false,
-                  const QStringList& referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false,
+                  bool isContextual = false );
+
+        /** Constructor for function which uses named parameter list and group list.
+         * @note added in QGIS 3.0
+         */
+        Function( const QString& fnname,
+                  const QgsExpression::ParameterList& params,
+                  const QStringList& groups,
+                  const QString& helpText = QString(),
                   bool lazyEval = false,
                   bool handlesNull = false,
                   bool isContextual = false );
@@ -319,7 +350,7 @@ class QgsExpression
         /** The number of parameters this function takes. */
         int params() const;
 
-        /** The mininum number of parameters this function takes. */
+        /** The minimum number of parameters this function takes. */
         int minParams() const;
 
         /** Returns the list of named parameters for the function, if set.
@@ -327,11 +358,11 @@ class QgsExpression
         */
         const QgsExpression::ParameterList& parameters() const;
 
-        /** Does this function use a geometry object. */
-        bool usesGeometry() const;
+        //! Does this function use a geometry object.
+        virtual bool usesGeometry( const QgsExpression::NodeFunction* node ) const;
 
         /** Returns a list of possible aliases for the function. These include
-         * other permissible names for the function, eg deprecated names.
+         * other permissible names for the function, e.g., deprecated names.
          * @return list of known aliases
          * @note added in QGIS 2.9
          */
@@ -343,15 +374,38 @@ class QgsExpression
          */
         bool lazyEval() const;
 
-        virtual QStringList referencedColumns() const;
+        /**
+         * Returns a set of field names which are required for this function.
+         * May contain QgsFeatureRequest::AllAttributes to signal that all
+         * attributes are required.
+         * If in doubt this will return more fields than strictly required.
+         *
+         * @note Added in QGIS 3.0
+         */
+        virtual QSet<QString> referencedColumns( const QgsExpression::NodeFunction* node ) const;
 
         /** Returns whether the function is only available if provided by a QgsExpressionContext object.
          * @note added in QGIS 2.12
          */
         bool isContextual() const;
 
-        /** The group the function belongs to. */
+        /** Returns true if the function is deprecated and should not be presented as a valid option
+         * to users in expression builders.
+         * @note added in QGIS 3.0
+         */
+        virtual bool isDeprecated() const;
+
+        /** Returns the first group which the function belongs to.
+         * @note consider using groups() instead, as some functions naturally belong in multiple groups
+        */
         QString group() const;
+
+        /** Returns a list of the groups the function belongs to.
+         * @note added in QGIS 3.0
+         * @see group()
+        */
+        QStringList groups() const;
+
         /** The help text for the function. */
         const QString helpText() const;
 
@@ -510,7 +564,12 @@ class QgsExpression
          *
          * @return A list of columns required to evaluate this expression
          */
-        virtual QStringList referencedColumns() const = 0;
+        virtual QSet<QString> referencedColumns() const = 0;
+
+        /**
+         * Return a list of all variables which are used in this expression.
+         */
+        virtual QSet<QString> referencedVariables() const = 0;
 
         /**
          * Abstract virtual method which returns if the geometry is required to evaluate
@@ -521,23 +580,6 @@ class QgsExpression
          * @return true if a geometry is required to evaluate this expression
          */
         virtual bool needsGeometry() const = 0;
-
-        /**
-         * Support the visitor pattern.
-         *
-         * For any implementation this should look like
-         *
-         * C++:
-         *
-         *     v.visit( *this );
-         *
-         * Python:
-         *
-         *     v.visit( self)
-         *
-         * @param v A visitor that visits this node.
-         */
-        virtual void accept( QgsExpression::Visitor& v ) const = 0;
     };
 
     //! Named node
@@ -580,7 +622,17 @@ class QgsExpression
         //! @note added in QGIS 2.16
         bool hasNamedNodes() const;
 
-        const QList<QgsExpression::Node*>& list();
+        /**
+         * Get a list of all the nodes.
+         */
+        QList<QgsExpression::Node*> list();
+
+        /**
+         * Get the node at position i in the list.
+         *
+         * @note Added in QGIS 3.0
+         */
+        QgsExpression::Node* at( int i );
 
         //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
         //! @note added in QGIS 2.16
@@ -606,9 +658,9 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
     };
 
@@ -627,24 +679,13 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
 
         int precedence() const;
         bool leftAssociative() const;
-
-      protected:
-        bool compare( double diff );
-        int computeInt( int x, int y );
-        double computeDouble( double x, double y );
-
-        /** Computes the result date time calculation from a start datetime and an interval
-         * @param d start datetime
-         * @param i interval to add or subtract (depending on mOp)
-         */
-        QDateTime computeDateTimeFromInterval( const QDateTime& d, QgsInterval *i );
     };
 
     class NodeInOperator : QgsExpression::Node
@@ -662,9 +703,9 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
     };
 
@@ -683,9 +724,9 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
 
         //! Tests whether the provided argument list is valid for the matching function
@@ -706,9 +747,9 @@ class QgsExpression
         virtual QString dump() const;
         virtual QgsExpression::Node* clone() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class NodeColumnRef : QgsExpression::Node
@@ -724,10 +765,10 @@ class QgsExpression
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
 
-        virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
     };
 
@@ -757,32 +798,11 @@ class QgsExpression
         virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
-        virtual QStringList referencedColumns() const;
+        virtual QSet<QString> referencedColumns() const;
+        virtual QSet<QString> referencedVariables() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v ) const;
         virtual QgsExpression::Node* clone() const;
     };
-
-    //////
-
-    /** Support for visitor pattern - algorithms dealing with the expressions
-        may be implemented without modifying the Node classes */
-    class Visitor
-    {
-      public:
-        virtual ~Visitor();
-        virtual void visit( const QgsExpression::NodeUnaryOperator& n ) = 0;
-        virtual void visit( const QgsExpression::NodeBinaryOperator& n ) = 0;
-        virtual void visit( const QgsExpression::NodeInOperator& n ) = 0;
-        virtual void visit( const QgsExpression::NodeFunction& n ) = 0;
-        virtual void visit( const QgsExpression::NodeLiteral& n ) = 0;
-        virtual void visit( const QgsExpression::NodeColumnRef& n ) = 0;
-        virtual void visit( const QgsExpression::NodeCondition& n ) = 0;
-    };
-
-    /** Entry function for the visitor pattern */
-    void acceptVisitor( QgsExpression::Visitor& v ) const;
-
     /** Returns the help text for a specified function.
      * @param name function name
      * @see variableHelpText()
@@ -804,7 +824,7 @@ class QgsExpression
     static QString group( const QString& group );
 
     /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
-     * length, and presents text representations of non numeric/text types (eg geometries and features).
+     * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * @param value expression result to format
      * @returns formatted string, may contain HTML formatting characters
      * @note added in QGIS 2.14

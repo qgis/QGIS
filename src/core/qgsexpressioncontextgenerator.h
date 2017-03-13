@@ -25,17 +25,18 @@
  * You need to implement this interface in a class and register this class with
  * QgsFieldExpressionWidget::registerExpressionGenerator().
  *
- * This is used for example in QgsDataDefinedButton or QgsFieldExpressionWidget
- * classes which will ask for a new QgsExpressionContext everytime the expression
+ * This is used for example in QgsPropertyOverrideButton or QgsFieldExpressionWidget
+ * classes which will ask for a new QgsExpressionContext every time the expression
  * editor is opened. This way they are able to provide an up-to-date expression
  * editor even when the environment changes.
  *
  * @note added in QGIS 3.0
  */
 
-class QgsExpressionContextGenerator
+class CORE_EXPORT QgsExpressionContextGenerator
 {
   public:
+
     /**
      * This method needs to be reimplemented in all classes which implement this interface
      * and return an expression context.
@@ -44,7 +45,7 @@ class QgsExpressionContextGenerator
      */
     virtual QgsExpressionContext createExpressionContext() const = 0;
 
-    virtual ~QgsExpressionContextGenerator() {}
+    virtual ~QgsExpressionContextGenerator() = default;
 };
 
 #endif // QGSEXPRESSIONCONTEXTGENERATOR_H

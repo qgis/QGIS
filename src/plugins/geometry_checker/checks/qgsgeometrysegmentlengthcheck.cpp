@@ -19,9 +19,9 @@
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -31,7 +31,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError*>
       continue;
     }
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry* geom = featureGeom.geometry();
+    QgsAbstractGeometry *geom = featureGeom.geometry();
 
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
@@ -57,7 +57,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError*>
   }
 }
 
-void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &/*changes*/ ) const
+void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &/*changes*/ ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -67,7 +67,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError* error, int 
   }
 
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry* geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists
@@ -99,7 +99,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError* error, int 
   }
 }
 
-const QStringList& QgsGeometrySegmentLengthCheck::getResolutionMethods() const
+QStringList QgsGeometrySegmentLengthCheck::getResolutionMethods() const
 {
   static QStringList methods = QStringList() << tr( "No action" );
   return methods;

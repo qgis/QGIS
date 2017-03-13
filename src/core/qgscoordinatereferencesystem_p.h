@@ -43,38 +43,42 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateReferenceSystemPrivate()
-        : mSrsId( 0 )
-        , mIsGeographic( false )
-        , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
-        , mSRID( 0 )
-        , mIsValid( 0 )
-        , mCRS( OSRNewSpatialReference( nullptr ) )
-        , mAxisInvertedDirty( false )
-        , mAxisInverted( false )
+      : mSrsId( 0 )
+      , mIsGeographic( false )
+      , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
+      , mSRID( 0 )
+      , mIsValid( 0 )
+      , mCRS( OSRNewSpatialReference( nullptr ) )
+      , mAxisInvertedDirty( false )
+      , mAxisInverted( false )
     {
     }
 
-    QgsCoordinateReferenceSystemPrivate( const QgsCoordinateReferenceSystemPrivate& other )
-        : QSharedData( other )
-        , mSrsId( other.mSrsId )
-        , mDescription( other.mDescription )
-        , mProjectionAcronym( other.mProjectionAcronym )
-        , mEllipsoidAcronym( other.mEllipsoidAcronym )
-        , mIsGeographic( other.mIsGeographic )
-        , mMapUnits( other.mMapUnits )
-        , mSRID( other.mSRID )
-        , mAuthId( other.mAuthId )
-        , mIsValid( other.mIsValid )
-        , mCRS( OSRNewSpatialReference( nullptr ) )
-        , mValidationHint( other.mValidationHint )
-        , mWkt( other.mWkt )
-        , mProj4( other.mProj4 )
-        , mAxisInvertedDirty( other.mAxisInvertedDirty )
-        , mAxisInverted( other.mAxisInverted )
+    QgsCoordinateReferenceSystemPrivate( const QgsCoordinateReferenceSystemPrivate &other )
+      : QSharedData( other )
+      , mSrsId( other.mSrsId )
+      , mDescription( other.mDescription )
+      , mProjectionAcronym( other.mProjectionAcronym )
+      , mEllipsoidAcronym( other.mEllipsoidAcronym )
+      , mIsGeographic( other.mIsGeographic )
+      , mMapUnits( other.mMapUnits )
+      , mSRID( other.mSRID )
+      , mAuthId( other.mAuthId )
+      , mIsValid( other.mIsValid )
+      , mCRS( nullptr )
+      , mValidationHint( other.mValidationHint )
+      , mWkt( other.mWkt )
+      , mProj4( other.mProj4 )
+      , mAxisInvertedDirty( other.mAxisInvertedDirty )
+      , mAxisInverted( other.mAxisInverted )
     {
       if ( mIsValid )
       {
         mCRS = OSRClone( other.mCRS );
+      }
+      else
+      {
+        mCRS = OSRNewSpatialReference( nullptr );
       }
     }
 
@@ -116,7 +120,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable QString mWkt;
     mutable QString mProj4;
 
-    //! True if presence of an inverted axis needs to be recaculated
+    //! True if presence of an inverted axis needs to be recalculated
     mutable bool mAxisInvertedDirty;
 
     //! Whether this is a coordinate system has inverted axis

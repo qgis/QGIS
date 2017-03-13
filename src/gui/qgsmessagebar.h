@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QColor>
 #include <QList>
+#include "qgis_gui.h"
 
 class QWidget;
 class QGridLayout;
@@ -53,7 +54,6 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     };
 
     QgsMessageBar( QWidget *parent = nullptr );
-    ~QgsMessageBar();
 
     /**
      * Display a message item on the bar after hiding the currently visible one
@@ -80,11 +80,11 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     bool popWidget( QgsMessageBarItem *item );
 
     //! make out a widget containing a message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( const QString &text, QWidget *parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( const QString &title, const QString &text, QWidget *parent = nullptr );
     //! make out a widget containing title and message to be displayed on the bar
-    static QgsMessageBarItem* createMessage( QWidget *widget, QWidget *parent = nullptr );
+    static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr );
 
     //! convenience method for pushing a message to the bar
     void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString::null, text, level, duration ); }
@@ -101,6 +101,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void widgetRemoved( QgsMessageBarItem *item );
 
   public slots:
+
     /** Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
      *  @return true if the widget was removed, false otherwise
@@ -118,7 +119,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushSuccess( const QString& title, const QString& message );
+    void pushSuccess( const QString &title, const QString &message );
 
     /**
      * Pushes a information message with default timeout to the message bar
@@ -126,7 +127,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushInfo( const QString& title, const QString& message );
+    void pushInfo( const QString &title, const QString &message );
 
     /**
      * Pushes a warning with default timeout to the message bar
@@ -134,7 +135,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushWarning( const QString& title, const QString& message );
+    void pushWarning( const QString &title, const QString &message );
 
     /**
      * Pushes a critical warning with default timeout to the message bar
@@ -142,23 +143,23 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * @param message The message to be displayed
      * @note added in 2.8
      */
-    void pushCritical( const QString& title, const QString& message );
+    void pushCritical( const QString &title, const QString &message );
 
   protected:
-    void mousePressEvent( QMouseEvent * e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
 
   private:
     void popItem( QgsMessageBarItem *item );
     void showItem( QgsMessageBarItem *item );
-    QgsMessageBarItem *mCurrentItem;
+    QgsMessageBarItem *mCurrentItem = nullptr;
     QList<QgsMessageBarItem *> mItems;
-    QMenu *mCloseMenu;
-    QToolButton *mCloseBtn;
-    QGridLayout *mLayout;
-    QLabel *mItemCount;
-    QAction *mActionCloseAll;
-    QTimer *mCountdownTimer;
-    QProgressBar *mCountProgress;
+    QMenu *mCloseMenu = nullptr;
+    QToolButton *mCloseBtn = nullptr;
+    QGridLayout *mLayout = nullptr;
+    QLabel *mItemCount = nullptr;
+    QAction *mActionCloseAll = nullptr;
+    QTimer *mCountdownTimer = nullptr;
+    QProgressBar *mCountProgress = nullptr;
     QString mCountStyleSheet;
 
   private slots:

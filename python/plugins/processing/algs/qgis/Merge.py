@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFields, QgsVectorLayer
+from qgis.core import QgsFields
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -57,15 +57,14 @@ class Merge(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         inLayers = self.getParameterValue(self.LAYERS)
-        paths = inLayers.split(';')
 
         layers = []
         fields = QgsFields()
         totalFeatureCount = 0
-        for x in xrange(len(paths)):
-            layer = QgsVectorLayer(paths[x], unicode(x), 'ogr')
+        for layerSource in inLayers.split(';'):
+            layer = dataobjects.getObjectFromUri(layerSource)
 
             if (len(layers) > 0):
                 if (layer.wkbType() != layers[0].wkbType()):
@@ -119,6 +118,6 @@ class Merge(GeoAlgorithm):
                 feature.setAttributes(dattributes)
                 writer.addFeature(feature)
                 featureCount += 1
-                progress.setPercentage(int(featureCount * total))
+                feedback.setProgress(int(featureCount * total))
 
         del writer

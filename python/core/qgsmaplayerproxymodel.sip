@@ -41,7 +41,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
      * @param filters are Filter flags
      * @note added in 2.3
      */
-    QgsMapLayerProxyModel* setFilters( const Filters& filters );
+    QgsMapLayerProxyModel* setFilters( Filters filters );
     const Filters& filters() const;
 
     //! offer the possibility to except some layers to be listed
@@ -53,6 +53,20 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
     void setExceptedLayerIds( const QStringList& ids );
     //! Get the list of maplayer ids which are excluded from the list
     QStringList exceptedLayerIds() const;
+
+    /**
+     * Sets a list of data providers which should be excluded from the model.
+     * @note added in QGIS 3.0
+     * @see excludedProviders()
+     */
+    void setExcludedProviders( const QStringList& providers );
+
+    /**
+     * Returns the list of data providers which are excluded from the model.
+     * @see setExcludedProviders()
+     * @note added in QGIS 3.0
+     */
+    QStringList excludedProviders() const;
 
     // QSortFilterProxyModel interface
   public:

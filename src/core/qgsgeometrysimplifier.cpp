@@ -19,18 +19,12 @@
 #include "qgsrectangle.h"
 #include "qgsgeometry.h"
 
-QgsAbstractGeometrySimplifier::~QgsAbstractGeometrySimplifier()
-{
-}
-
-//! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
-bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol )
 {
   return ( envelope.xMaximum() - envelope.xMinimum() ) < mapToPixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < mapToPixelTol;
 }
 
-//! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
-bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol )
 {
   QgsRectangle r;
   r.setMinimal();
@@ -43,18 +37,12 @@ bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QV
 }
 
 /***************************************************************************/
-/**
- * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
- */
+
 QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double tolerance ) : mTolerance( tolerance )
 {
 }
-QgsTopologyPreservingSimplifier::~QgsTopologyPreservingSimplifier()
-{
-}
 
-//! Returns a simplified version the specified geometry
-QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry& geometry ) const
+QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry &geometry ) const
 {
   return geometry.simplify( mTolerance );
 }

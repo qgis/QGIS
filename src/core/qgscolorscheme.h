@@ -23,6 +23,8 @@
 #include <QPair>
 #include <QObject>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * List of colors paired with a friendly display name identifying the color
  * \note Added in version 2.5
@@ -42,19 +44,22 @@ class CORE_EXPORT QgsColorScheme
 {
   public:
 
-    /** Flags for controlling behaviour of color scheme
+    /** Flags for controlling behavior of color scheme
      */
     enum SchemeFlag
     {
-      ShowInColorDialog = 0x01, /*!< show scheme in color picker dialog */
-      ShowInColorButtonMenu = 0x02, /*!< show scheme in color button drop down menu */
-      ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu /*!< show scheme in all contexts */
+      ShowInColorDialog = 0x01, //!< Show scheme in color picker dialog
+      ShowInColorButtonMenu = 0x02, //!< Show scheme in color button drop down menu
+      ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu //!< Show scheme in all contexts
     };
     Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
 
-    QgsColorScheme();
+    /**
+     * Constructor for QgsColorScheme.
+     */
+    QgsColorScheme() = default;
 
-    virtual ~QgsColorScheme();
+    virtual ~QgsColorScheme() = default;
 
     /** Gets the name for the color scheme
      * @returns color scheme name
@@ -68,7 +73,7 @@ class CORE_EXPORT QgsColorScheme
 
     /** Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
-     * @param context string specifiying an optional context for the returned
+     * @param context string specifying an optional context for the returned
      * colors. For instance, a "recent colors" scheme may filter returned colors
      * by context so that colors used only in a "composer" context are returned.
      * @param baseColor base color for the scheme's colors. Some color schemes
@@ -97,7 +102,7 @@ class CORE_EXPORT QgsColorScheme
     /** Clones a color scheme
      * @returns copy of color scheme
      */
-    virtual QgsColorScheme* clone() const = 0;
+    virtual QgsColorScheme *clone() const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
@@ -112,8 +117,6 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
   public:
 
     QgsGplColorScheme();
-
-    virtual ~QgsGplColorScheme();
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
@@ -144,11 +147,9 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
      */
     QgsUserColorScheme( const QString &filename );
 
-    virtual ~QgsUserColorScheme();
-
     virtual QString schemeName() const override;
 
-    virtual QgsUserColorScheme* clone() const override;
+    virtual QgsUserColorScheme *clone() const override;
 
     virtual bool isEditable() const override { return true; }
 
@@ -191,8 +192,6 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     QgsRecentColorScheme();
 
-    virtual ~QgsRecentColorScheme();
-
     virtual QString schemeName() const override { return QObject::tr( "Recent colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
@@ -200,14 +199,14 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
 
-    QgsRecentColorScheme* clone() const override;
+    QgsRecentColorScheme *clone() const override;
 
     /** Adds a color to the list of recent colors.
      * @param color color to add
      * @note added in QGIS 2.14
      * @see lastUsedColor()
      */
-    static void addRecentColor( const QColor& color );
+    static void addRecentColor( const QColor &color );
 
     /** Returns the most recently used color.
      * @note added in QGIS 3.0
@@ -227,8 +226,6 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     QgsCustomColorScheme();
 
-    virtual ~QgsCustomColorScheme();
-
     virtual QString schemeName() const override { return QObject::tr( "Standard colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
@@ -240,7 +237,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsCustomColorScheme* clone() const override;
+    QgsCustomColorScheme *clone() const override;
 };
 
 /** \ingroup core
@@ -254,8 +251,6 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     QgsProjectColorScheme();
 
-    virtual ~QgsProjectColorScheme();
-
     virtual QString schemeName() const override { return QObject::tr( "Project colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
@@ -267,7 +262,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsProjectColorScheme* clone() const override;
+    QgsProjectColorScheme *clone() const override;
 };
 
 #endif

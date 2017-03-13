@@ -16,7 +16,7 @@
 #     which is typically a shared library, should be linked to. The built
 #     module will also be install into Python's site-packages directory.
 #
-# The behaviour of the ADD_SIP_PYTHON_MODULE macro can be controlled by a
+# The behavior of the ADD_SIP_PYTHON_MODULE macro can be controlled by a
 # number of variables:
 #
 # SIP_INCLUDES - List of directories which SIP will scan through when looking
@@ -92,13 +92,11 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP CPP_FILES)
     ENDIF(MSVC)
   ENDIF(PEDANTIC)
 
-  SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_abs_module_sip})
-  SET(SUPPRESS_SIP_WARNINGS FALSE CACHE BOOL "Hide SIP warnings")
-  MARK_AS_ADVANCED(SUPPRESS_SIP_WARNINGS)
-  IF(SUPPRESS_SIP_WARNINGS)
-    SET(SIPCMD ${SIPCMD} 2> /dev/null || true)
-  ENDIF(SUPPRESS_SIP_WARNINGS)
+  IF(MSVC)
+    ADD_DEFINITIONS( /bigobj )
+  ENDIF(MSVC)
 
+  SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_abs_module_sip})
   ADD_CUSTOM_COMMAND(
     OUTPUT ${_sip_output_files}
     COMMAND ${CMAKE_COMMAND} -E echo ${message}

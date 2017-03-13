@@ -26,8 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from qgis.PyQt.QtCore import QSettings
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterCrs
@@ -86,17 +84,15 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.__init__(self)
         self.processing = False
 
-    def dbConnectionNames(self):
-        settings = QSettings()
-        settings.beginGroup('/PostgreSQL/connections/')
-        return settings.childGroups()
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (available connections)')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
-        self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE,
-                                             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
+        self.addParameter(ParameterString(
+            self.DATABASE,
+            self.tr('Database (connection name)'),
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}}))
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
@@ -104,16 +100,29 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.GTYPE,
                                              self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterCrs(self.A_SRS,
-                                       self.tr('Assign an output CRS'), '', optional=True))
+                                       self.tr('Assign an output CRS'), '', optional=False))
         self.addParameter(ParameterCrs(self.T_SRS,
                                        self.tr('Reproject to this CRS on output '), '', optional=True))
         self.addParameter(ParameterCrs(self.S_SRS,
                                        self.tr('Override source CRS'), '', optional=True))
-        self.addParameter(ParameterString(self.SCHEMA,
-                                          self.tr('Schema name'), 'public', optional=True))
-        self.addParameter(ParameterString(self.TABLE,
-                                          self.tr('Table name, leave blank to use input name'),
-                                          '', optional=True))
+        self.addParameter(ParameterString(
+            self.SCHEMA,
+            self.tr('Schema name'),
+            'public',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
+                    'connection_param': self.DATABASE}}))
+        self.addParameter(ParameterString(
+            self.TABLE,
+            self.tr('Table name, leave blank to use input name'),
+            '',
+            optional=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
+                    'schema_param': self.SCHEMA}}))
         self.addParameter(ParameterString(self.PK,
                                           self.tr('Primary key (new field)'), 'id', optional=True))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
@@ -161,13 +170,13 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         self.processing = True
-        GdalAlgorithm.processAlgorithm(self, progress)
+        GdalAlgorithm.processAlgorithm(self, feedback)
         self.processing = False
 
     def getConsoleCommands(self):
-        connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
+        connection = self.getParameterValue(self.DATABASE)
         uri = uri_from_name(connection)
         if self.processing:
             # to get credentials input when needed
@@ -176,41 +185,35 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
-        tsrs = unicode(self.getParameterValue(self.T_SRS))
-        asrs = unicode(self.getParameterValue(self.A_SRS))
-        schema = unicode(self.getParameterValue(self.SCHEMA))
-        table = unicode(self.getParameterValue(self.TABLE))
-        pk = unicode(self.getParameterValue(self.PK))
-        pkstring = "-lco FID=" + pk
+        ssrs = self.getParameterValue(self.S_SRS)
+        tsrs = self.getParameterValue(self.T_SRS)
+        asrs = self.getParameterValue(self.A_SRS)
+        schema = self.getParameterValue(self.SCHEMA)
+        table = self.getParameterValue(self.TABLE)
+        pk = self.getParameterValue(self.PK)
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
-        geocolumn = unicode(self.getParameterValue(self.GEOCOLUMN))
-        geocolumnstring = "-lco GEOMETRY_NAME=" + geocolumn
+        geocolumn = self.getParameterValue(self.GEOCOLUMN)
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
-        dimstring = "-lco DIM=" + dim
-        simplify = unicode(self.getParameterValue(self.SIMPLIFY))
-        segmentize = unicode(self.getParameterValue(self.SEGMENTIZE))
+        simplify = self.getParameterValue(self.SIMPLIFY)
+        segmentize = self.getParameterValue(self.SEGMENTIZE)
         spat = self.getParameterValue(self.SPAT)
         clip = self.getParameterValue(self.CLIP)
-        where = unicode(self.getParameterValue(self.WHERE))
-        wherestring = '-where "' + where + '"'
-        gt = unicode(self.getParameterValue(self.GT))
+        where = self.getParameterValue(self.WHERE)
+        gt = self.getParameterValue(self.GT)
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
         launder = self.getParameterValue(self.LAUNDER)
-        launderstring = "-lco LAUNDER=NO"
         index = self.getParameterValue(self.INDEX)
-        indexstring = "-lco SPATIAL_INDEX=OFF"
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
         promotetomulti = self.getParameterValue(self.PROMOTETOMULTI)
         precision = self.getParameterValue(self.PRECISION)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = self.getParameterValue(self.OPTIONS)
 
         arguments = []
         arguments.append('-progress')
         arguments.append('--config PG_USE_COPY YES')
-        if len(shapeEncoding) > 0:
+        if shapeEncoding:
             arguments.append('--config')
             arguments.append('SHAPE_ENCODING')
             arguments.append('"' + shapeEncoding + '"')
@@ -221,13 +224,13 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             arguments.append(token)
         arguments.append('active_schema={}'.format(schema or 'public'))
         arguments.append('"')
-        arguments.append(dimstring)
+        arguments.append("-lco DIM=" + dim)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))
         if index:
-            arguments.append(indexstring)
+            arguments.append("-lco SPATIAL_INDEX=OFF")
         if launder:
-            arguments.append(launderstring)
+            arguments.append("-lco LAUNDER=NO")
         if append:
             arguments.append('-append')
         if addfields:
@@ -237,28 +240,28 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if len(self.GEOMTYPE[self.getParameterValue(self.GTYPE)]) > 0:
             arguments.append('-nlt')
             arguments.append(self.GEOMTYPE[self.getParameterValue(self.GTYPE)])
-        if len(geocolumn) > 0:
-            arguments.append(geocolumnstring)
-        if len(pk) > 0:
-            arguments.append(pkstring)
+        if geocolumn:
+            arguments.append("-lco GEOMETRY_NAME=" + geocolumn)
+        if pk:
+            arguments.append("-lco FID=" + pk)
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
-        if len(table) == 0:
+        if not table:
             table = ogrLayerName(inLayer).lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')
         arguments.append(table)
-        if len(ssrs) > 0:
+        if ssrs:
             arguments.append('-s_srs')
             arguments.append(ssrs)
-        if len(tsrs) > 0:
+        if tsrs:
             arguments.append('-t_srs')
             arguments.append(tsrs)
-        if len(asrs) > 0:
+        if asrs:
             arguments.append('-a_srs')
             arguments.append(asrs)
-        if len(spat) > 0:
+        if spat:
             regionCoords = spat.split(',')
             arguments.append('-spat')
             arguments.append(regionCoords[0])
@@ -270,21 +273,21 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         if skipfailures:
             arguments.append('-skipfailures')
         if where:
-            arguments.append(wherestring)
-        if len(simplify) > 0:
+            arguments.append('-where "' + where + '"')
+        if simplify:
             arguments.append('-simplify')
             arguments.append(simplify)
-        if len(segmentize) > 0:
+        if segmentize:
             arguments.append('-segmentize')
             arguments.append(segmentize)
-        if len(gt) > 0:
+        if gt:
             arguments.append('-gt')
             arguments.append(gt)
         if promotetomulti:
             arguments.append('-nlt PROMOTE_TO_MULTI')
         if precision is False:
             arguments.append('-lco PRECISION=NO')
-        if len(options) > 0:
+        if options:
             arguments.append(options)
 
         commands = []

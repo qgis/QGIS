@@ -18,6 +18,7 @@
 #include "qgsfeature.h"
 #include <QMap>
 #include <QString>
+#include "qgis_analysis.h"
 
 class QgsDistanceArea;
 class QgsGeometry;
@@ -38,27 +39,27 @@ class ANALYSIS_EXPORT QgsTransectSample
       StrataUnits //units are the same as stratum layer
     };
 
-    QgsTransectSample( QgsVectorLayer* strataLayer, const QString& strataIdAttribute, const QString& minDistanceAttribute, const QString& nPointsAttribute,
-                       DistanceUnits minDistUnits, QgsVectorLayer* baselineLayer, bool shareBaseline,
-                       const QString& baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength = 0.0,
+    QgsTransectSample( QgsVectorLayer *strataLayer, const QString &strataIdAttribute, const QString &minDistanceAttribute, const QString &nPointsAttribute,
+                       DistanceUnits minDistUnits, QgsVectorLayer *baselineLayer, bool shareBaseline,
+                       const QString &baselineStrataId, const QString &outputPointLayer, const QString &outputLineLayer, const QString &usedBaselineLayer, double minTransectLength = 0.0,
                        double baselineBufferDistance = -1.0, double baselineSimplificationTolerance = -1.0 );
 
-    int createSample( QProgressDialog* pd );
+    int createSample( QProgressDialog *pd );
 
   private:
     QgsTransectSample(); //default constructor forbidden
 
-    QgsGeometry findBaselineGeometry( const QVariant& strataId );
+    QgsGeometry findBaselineGeometry( const QVariant &strataId );
 
-    /** Returns true if another transect is within the specified minimum distance*/
-    static bool otherTransectWithinDistance( const QgsGeometry& geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex, const QMap<QgsFeatureId, QgsGeometry>& lineFeatureMap, QgsDistanceArea& da );
+    //! Returns true if another transect is within the specified minimum distance
+    static bool otherTransectWithinDistance( const QgsGeometry &geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex &sIndex, const QMap<QgsFeatureId, QgsGeometry> &lineFeatureMap, QgsDistanceArea &da );
 
-    QgsVectorLayer* mStrataLayer;
+    QgsVectorLayer *mStrataLayer = nullptr;
     QString mStrataIdAttribute;
     QString mMinDistanceAttribute;
     QString mNPointsAttribute;
 
-    QgsVectorLayer* mBaselineLayer;
+    QgsVectorLayer *mBaselineLayer = nullptr;
     bool mShareBaseline;
     QString mBaselineStrataId;
 
@@ -70,9 +71,9 @@ class ANALYSIS_EXPORT QgsTransectSample
 
     double mMinTransectLength;
 
-    /** If value is negative, the buffer distance ist set to the same value as the minimum distance*/
+    //! If value is negative, the buffer distance ist set to the same value as the minimum distance
     double mBaselineBufferDistance;
-    /** If value is negative, no simplification is done to the baseline prior to create the buffer*/
+    //! If value is negative, no simplification is done to the baseline prior to create the buffer
     double mBaselineSimplificationTolerance;
 
     /** Finds the closest points between two line segments
@@ -82,17 +83,18 @@ class ANALYSIS_EXPORT QgsTransectSample
         @param pt1 out: closest point on first geometry
         @param pt2 out: closest point on secont geometry
         @return true in case of success*/
-    static bool closestSegmentPoints( const QgsGeometry& g1, const QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 );
-    /** Returns a copy of the multiline element closest to a point (caller takes ownership)*/
-    static QgsGeometry closestMultilineElement( const QgsPoint& pt, const QgsGeometry& multiLine );
+    static bool closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPoint &pt1, QgsPoint &pt2 );
+    //! Returns a copy of the multiline element closest to a point (caller takes ownership)
+    static QgsGeometry closestMultilineElement( const QgsPoint &pt, const QgsGeometry &multiLine );
+
     /** Returns clipped buffer line. Iteratively applies reduced tolerances if the result is not a single line
         @param stratumGeom stratum polygon
         @param clippedBaseline base line geometry clipped to the stratum
         @param tolerance buffer distance (in layer units)
         @return clipped buffer line or 0 in case of error*/
-    QgsGeometry* clipBufferLine( const QgsGeometry& stratumGeom, QgsGeometry* clippedBaseline, double tolerance );
+    QgsGeometry *clipBufferLine( const QgsGeometry &stratumGeom, QgsGeometry *clippedBaseline, double tolerance );
 
-    /** Returns distance to buffer the baseline (takes care of units and buffer settings*/
+    //! Returns distance to buffer the baseline (takes care of units and buffer settings
     double bufferDistance( double minDistanceFromAttribute ) const;
 };
 

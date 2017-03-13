@@ -18,6 +18,8 @@
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
+#include "qgssettings.h"
+
 #include <QPainter>
 #include <QColorDialog>
 #include <QMimeData>
@@ -31,8 +33,8 @@
 #endif
 
 QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
-    : QTreeView( parent )
-    , mScheme( scheme )
+  : QTreeView( parent )
+  , mScheme( scheme )
 {
   mModel = new QgsColorSchemeModel( scheme, context, baseColor, this );
 #ifdef ENABLE_MODELTEST
@@ -51,11 +53,6 @@ QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme,
   setDragDropMode( QTreeView::DragDrop );
   setDropIndicatorShown( true );
   setDefaultDropAction( Qt::CopyAction );
-}
-
-QgsColorSchemeList::~QgsColorSchemeList()
-{
-
 }
 
 void QgsColorSchemeList::setScheme( QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
@@ -86,7 +83,7 @@ void QgsColorSchemeList::removeSelection()
   QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
 
   //remove rows in descending order
-  qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
+  std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
   Q_FOREACH ( int row, rowsToRemove )
   {
     mModel->removeRow( row );
@@ -112,7 +109,7 @@ void QgsColorSchemeList::pasteColors()
   QgsNamedColorList::const_iterator colorIt = pastedColors.constBegin();
   for ( ; colorIt != pastedColors.constEnd(); ++colorIt )
   {
-    mModel->addColor(( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName(( *colorIt ).first ) );
+    mModel->addColor( ( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName( ( *colorIt ).first ) );
   }
 }
 
@@ -133,15 +130,15 @@ void QgsColorSchemeList::copyColors()
   }
 
   //copy colors
-  QMimeData* mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
+  QMimeData *mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorsToCopy );
   QApplication::clipboard()->setMimeData( mimeData );
 }
 
 void QgsColorSchemeList::showImportColorsDialog()
 {
-  QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, "GPL (*.gpl);;All files (*.*)" );
+  QgsSettings s;
+  QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
   if ( filePath.isEmpty() )
   {
@@ -156,7 +153,7 @@ void QgsColorSchemeList::showImportColorsDialog()
     return;
   }
 
-  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastGplPaletteDir" ), fileInfo.absolutePath() );
   QFile file( filePath );
   bool importOk = importColorsFromGpl( file );
   if ( !importOk )
@@ -168,9 +165,9 @@ void QgsColorSchemeList::showImportColorsDialog()
 
 void QgsColorSchemeList::showExportColorsDialog()
 {
-  QSettings s;
-  QString lastDir = s.value( "/UI/lastGplPaletteDir", QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, "GPL (*.gpl)" );
+  QgsSettings s;
+  QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Palette file" ), lastDir, QStringLiteral( "GPL (*.gpl)" ) );
   activateWindow();
   if ( fileName.isEmpty() )
   {
@@ -178,13 +175,13 @@ void QgsColorSchemeList::showExportColorsDialog()
   }
 
   // ensure filename contains extension
-  if ( !fileName.endsWith( ".gpl", Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( QLatin1String( ".gpl" ), Qt::CaseInsensitive ) )
   {
-    fileName += ".gpl";
+    fileName += QLatin1String( ".gpl" );
   }
 
   QFileInfo fileInfo( fileName );
-  s.setValue( "/UI/lastGplPaletteDir", fileInfo.absolutePath() );
+  s.setValue( QStringLiteral( "/UI/lastGplPaletteDir" ), fileInfo.absolutePath() );
 
   QFile file( fileName );
   bool exportOk = exportColorsToGpl( file );
@@ -198,7 +195,7 @@ void QgsColorSchemeList::showExportColorsDialog()
 void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
 {
   //listen out for delete/backspace presses and remove selected colors
-  if (( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
+  if ( ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete ) )
   {
     QList<int> rows;
     Q_FOREACH ( const QModelIndex &index, selectedIndexes() )
@@ -209,7 +206,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
     QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
 
     //remove rows in descending order
-    qSort( rowsToRemove.begin(), rowsToRemove.end(), qGreater<int>() );
+    std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
     Q_FOREACH ( int row, rowsToRemove )
     {
       mModel->removeRow( row );
@@ -232,8 +229,8 @@ void QgsColorSchemeList::mousePressEvent( QMouseEvent *event )
 
 void QgsColorSchemeList::mouseReleaseEvent( QMouseEvent *event )
 {
-  if (( event->button() == Qt::LeftButton ) &&
-      ( event->pos() - mDragStartPosition ).manhattanLength() <= QApplication::startDragDistance() )
+  if ( ( event->button() == Qt::LeftButton ) &&
+       ( event->pos() - mDragStartPosition ).manhattanLength() <= QApplication::startDragDistance() )
   {
     //just a click, not a drag
 
@@ -270,7 +267,7 @@ bool QgsColorSchemeList::importColorsFromGpl( QFile &file )
   QgsNamedColorList::const_iterator colorIt = importedColors.constBegin();
   for ( ; colorIt != importedColors.constEnd(); ++colorIt )
   {
-    mModel->addColor(( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName(( *colorIt ).first ) );
+    mModel->addColor( ( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName( ( *colorIt ).first ) );
   }
 
   return true;
@@ -291,7 +288,7 @@ bool QgsColorSchemeList::isDirty() const
   return mModel->isDirty();
 }
 
-QgsColorScheme*QgsColorSchemeList::scheme()
+QgsColorScheme *QgsColorSchemeList::scheme()
 {
   return mScheme;
 }
@@ -301,21 +298,16 @@ QgsColorScheme*QgsColorSchemeList::scheme()
 //
 
 QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context, const QColor &baseColor, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mScheme( scheme )
-    , mContext( context )
-    , mBaseColor( baseColor )
-    , mIsDirty( false )
+  : QAbstractItemModel( parent )
+  , mScheme( scheme )
+  , mContext( context )
+  , mBaseColor( baseColor )
+  , mIsDirty( false )
 {
   if ( scheme )
   {
     mColors = scheme->fetchColors( context, baseColor );
   }
-}
-
-QgsColorSchemeModel::~QgsColorSchemeModel()
-{
-
 }
 
 QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &parent ) const
@@ -498,27 +490,27 @@ QStringList QgsColorSchemeModel::mimeTypes() const
   }
 
   QStringList types;
-  types << "text/xml";
-  types << "text/plain";
-  types << "application/x-color";
-  types << "application/x-colorobject-list";
+  types << QStringLiteral( "text/xml" );
+  types << QStringLiteral( "text/plain" );
+  types << QStringLiteral( "application/x-color" );
+  types << QStringLiteral( "application/x-colorobject-list" );
   return types;
 }
 
-QMimeData* QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
+QMimeData *QgsColorSchemeModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsNamedColorList colorList;
 
   QModelIndexList::const_iterator indexIt = indexes.constBegin();
   for ( ; indexIt != indexes.constEnd(); ++indexIt )
   {
-    if (( *indexIt ).column() > 0 )
+    if ( ( *indexIt ).column() > 0 )
       continue;
 
     colorList << qMakePair( mColors[( *indexIt ).row()].first, mColors[( *indexIt ).row()].second );
   }
 
-  QMimeData* mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorList );
+  QMimeData *mimeData = QgsSymbolLayerUtils::colorListToMimeData( colorList );
   return mimeData;
 }
 
@@ -555,7 +547,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
   for ( ; colorIt != droppedColors.constEnd(); ++colorIt )
   {
     //dest color
-    QPair< QColor, QString > color = qMakePair(( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName(( *colorIt ).first ) );
+    QPair< QColor, QString > color = qMakePair( ( *colorIt ).first, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName( ( *colorIt ).first ) );
     //if color already exists, remove it
     int existingIndex = mColors.indexOf( color );
     if ( existingIndex >= 0 )
@@ -578,9 +570,9 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
   for ( ; colorIt != droppedColors.constEnd(); ++colorIt )
   {
     QModelIndex colorIdx = index( beginRow, 0, QModelIndex() );
-    setData( colorIdx, QVariant(( *colorIt ).first ) );
+    setData( colorIdx, QVariant( ( *colorIt ).first ) );
     QModelIndex labelIdx = index( beginRow, 1, QModelIndex() );
-    setData( labelIdx, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName(( *colorIt ).first ) );
+    setData( labelIdx, !( *colorIt ).second.isEmpty() ? ( *colorIt ).second : QgsSymbolLayerUtils::colorToName( ( *colorIt ).first ) );
     beginRow++;
   }
   mIsDirty = true;
@@ -627,7 +619,7 @@ bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex &par
   return true;
 }
 
-bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& parent )
+bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
 
@@ -682,8 +674,8 @@ void QgsColorSchemeModel::addColor( const QColor &color, const QString &label, b
 // QgsColorSwatchDelegate
 //
 QgsColorSwatchDelegate::QgsColorSwatchDelegate( QWidget *parent )
-    : QAbstractItemDelegate( parent )
-    , mParent( parent )
+  : QAbstractItemDelegate( parent )
+  , mParent( parent )
 {
 
 }
@@ -734,14 +726,14 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   painter->restore();
 }
 
-const QPixmap& QgsColorSwatchDelegate::transparentBackground() const
+QPixmap QgsColorSwatchDelegate::transparentBackground() const
 {
-  static QPixmap transpBkgrd;
+  static QPixmap sTranspBkgrd;
 
-  if ( transpBkgrd.isNull() )
-    transpBkgrd = QgsApplication::getThemePixmap( "/transp-background_8x8.png" );
+  if ( sTranspBkgrd.isNull() )
+    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
 
-  return transpBkgrd;
+  return sTranspBkgrd;
 }
 
 QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -764,11 +756,10 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
 
     QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
 
-#if QT_VERSION >= 0x050000
-    QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget* >( parent() ) );
+    QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
     if ( panel && panel->dockMode() )
     {
-      QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
+      QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
       colorWidget->setPanelTitle( tr( "Select color" ) );
       colorWidget->setAllowAlpha( true );
       colorWidget->setProperty( "index", index );
@@ -776,7 +767,6 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
       panel->openPanel( colorWidget );
       return true;
     }
-#endif
 
     QColor newColor = QgsColorDialog::getColor( color, mParent, tr( "Select color" ), true );
     if ( !newColor.isValid() )
@@ -792,11 +782,9 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
 
 void QgsColorSwatchDelegate::colorChanged()
 {
-#if QT_VERSION >= 0x050000
-  if ( QgsCompoundColorWidget* colorWidget = qobject_cast< QgsCompoundColorWidget* >( sender() ) )
+  if ( QgsCompoundColorWidget *colorWidget = qobject_cast< QgsCompoundColorWidget * >( sender() ) )
   {
     QModelIndex index = colorWidget->property( "index" ).toModelIndex();
-    const_cast< QAbstractItemModel* >( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );
+    const_cast< QAbstractItemModel * >( index.model() )->setData( index, colorWidget->color(), Qt::EditRole );
   }
-#endif
 }

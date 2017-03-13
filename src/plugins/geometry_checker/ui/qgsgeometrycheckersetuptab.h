@@ -31,18 +31,18 @@ class QgsGeometryCheckerSetupTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerSetupTab( QgisInterface * iface, QWidget* parent = nullptr );
+    QgsGeometryCheckerSetupTab( QgisInterface *iface, QWidget *parent = nullptr );
     ~QgsGeometryCheckerSetupTab();
 
   signals:
-    void checkerStarted( QgsGeometryChecker* checker, QgsFeaturePool* featurePool );
+    void checkerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool );
     void checkerFinished( bool );
 
   private:
-    QgisInterface* mIface;
+    QgisInterface *mIface = nullptr;
     Ui::QgsGeometryCheckerSetupTab ui;
-    QPushButton* mRunButton;
-    QPushButton* mAbortButton;
+    QPushButton *mRunButton = nullptr;
+    QPushButton *mAbortButton = nullptr;
     QMutex m_errorListMutex;
     QString mOutputDriverName;
 

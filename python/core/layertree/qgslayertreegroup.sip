@@ -46,6 +46,9 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! Remove all child nodes. The nodes will be deleted.
     void removeAllChildren();
 
+    //! Find layer node representing the map layer. Searches recursively the whole sub-tree.
+    //! @note added in 3.0
+    QgsLayerTreeLayer* findLayer( QgsMapLayer* layer ) const;
     //! Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
     QgsLayerTreeLayer* findLayer( const QString& layerId );
     //! Find all layer nodes. Searches recursively the whole sub-tree.
@@ -55,11 +58,18 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! Find group node with specified name. Searches recursively the whole sub-tree.
     QgsLayerTreeGroup* findGroup( const QString& name );
 
-    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error)
+    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
     static QgsLayerTreeGroup* readXml( QDomElement& element ) /Factory/;
+    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+    //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
+    //! @note added in 3.0
+    static QgsLayerTreeGroup* readXml( QDomElement& element, const QgsProject* project ) /Factory/;
+
     //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
     virtual void writeXml( QDomElement& parentElement );
     //! Read children from XML and append them to the group.
+    //! Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
     void readChildrenFromXml( QDomElement& element );
 
     //! Return text representation of the tree. For debugging purposes only.
@@ -68,10 +78,9 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     //! Return a clone of the group. The children are cloned too.
     virtual QgsLayerTreeGroup* clone() const /Factory/;
 
-    //! Return the check state of the group node
-    Qt::CheckState isVisible() const;
-    //! Set check state of the group node - will also update children
-    void setVisible( Qt::CheckState state );
+    //! Calls resolveReferences() on child tree nodes
+    //! @note added in 3.0
+    virtual void resolveReferences( const QgsProject* project );
 
     //! Return whether the group is mutually exclusive (only one child can be checked at a time)
     //! @note added in 2.12
@@ -83,14 +92,10 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
   protected slots:
-    void layerDestroyed();
     void nodeVisibilityChanged( QgsLayerTreeNode* node );
 
   protected:
-    //! Set check state of this group from its children
-    void updateVisibilityFromChildren();
-    //! Set check state of children (when this group's check state changes) - if not mutually exclusive
-    void updateChildVisibility();
+
     //! Set check state of children - if mutually exclusive
     void updateChildVisibilityMutuallyExclusive();
 

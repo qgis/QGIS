@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsalignraster.h"
 #include "qgsapplication.h"
@@ -26,9 +26,9 @@
 
 
 
-static QString _tempFile( const QString& name )
+static QString _tempFile( const QString &name )
 {
-  return QString( "%1/aligntest-%2.tif" ).arg( QDir::tempPath(), name );
+  return QStringLiteral( "%1/aligntest-%2.tif" ).arg( QDir::tempPath(), name );
 }
 
 
@@ -43,7 +43,7 @@ class TestAlignRaster : public QObject
     {
       GDALAllRegister();
 
-      SRC_FILE = QString( TEST_DATA_DIR ) + "/float1-16.tif";
+      SRC_FILE = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
 
       QgsApplication::init(); // needed for CRS database
     }
@@ -59,7 +59,7 @@ class TestAlignRaster : public QObject
 
     void testClip()
     {
-      QString tmpFile( _tempFile( "clip" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "clip" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -80,7 +80,7 @@ class TestAlignRaster : public QObject
 
     void testClipOutside()
     {
-      QString tmpFile( _tempFile( "clip-outside" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "clip-outside" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -94,7 +94,7 @@ class TestAlignRaster : public QObject
 
     void testChangeGridOffsetNN()
     {
-      QString tmpFile( _tempFile( "change-grid-offset-nn" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "change-grid-offset-nn" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -118,7 +118,7 @@ class TestAlignRaster : public QObject
 
     void testChangeGridOffsetBilinear()
     {
-      QString tmpFile( _tempFile( "change-grid-offset-bilinear" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "change-grid-offset-bilinear" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -141,7 +141,7 @@ class TestAlignRaster : public QObject
 
     void testSmallerCellSize()
     {
-      QString tmpFile( _tempFile( "smaller-cell-size" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "smaller-cell-size" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -164,7 +164,7 @@ class TestAlignRaster : public QObject
 
     void testBiggerCellSize()
     {
-      QString tmpFile( _tempFile( "bigger-cell-size" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "bigger-cell-size" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -185,7 +185,7 @@ class TestAlignRaster : public QObject
 
     void testRescaleBiggerCellSize()
     {
-      QString tmpFile( _tempFile( "rescale-bigger-cell-size" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "rescale-bigger-cell-size" ) ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -206,12 +206,12 @@ class TestAlignRaster : public QObject
 
     void testReprojectToOtherCRS()
     {
-      QString tmpFile( _tempFile( "reproject-utm-47n" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "reproject-utm-47n" ) ) );
 
       // reproject from WGS84 to UTM zone 47N
       // (the true UTM zone for this raster is 48N, but here it is
       // more obvious the different shape of the resulting raster)
-      QgsCoordinateReferenceSystem destCRS( "EPSG:32647" );
+      QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:32647" ) );
       QVERIFY( destCRS.isValid() );
 
       QgsAlignRaster align;
@@ -237,10 +237,10 @@ class TestAlignRaster : public QObject
 
     void testInvalidReprojection()
     {
-      QString tmpFile( _tempFile( "reproject-invalid" ) );
+      QString tmpFile( _tempFile( QStringLiteral( "reproject-invalid" ) ) );
 
       // reprojection to British National Grid with raster in Jakarta area clearly cannot work
-      QgsCoordinateReferenceSystem destCRS( "EPSG:27700" );
+      QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:27700" ) );
       QVERIFY( destCRS.isValid() );
 
       QgsAlignRaster align;
@@ -268,6 +268,6 @@ class TestAlignRaster : public QObject
 
 };
 
-QTEST_MAIN( TestAlignRaster )
+QGSTEST_MAIN( TestAlignRaster )
 
 #include "testqgsalignraster.moc"

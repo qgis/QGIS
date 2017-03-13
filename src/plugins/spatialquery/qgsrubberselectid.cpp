@@ -21,7 +21,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeature.h"
 
-QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas )
+QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas *mapCanvas )
 {
   mGeometryType = QgsWkbTypes::LineGeometry;
   mMapCanvas = mapCanvas;
@@ -54,7 +54,7 @@ void QgsRubberSelectId::setStyle( int colorRed, int colorGreen, int colorBlue, i
   setStyle();
 } // void QgsRubberSelectId::setColor(int colorRed, int colorGreen, int colorBlue, float alfa, width)
 
-void QgsRubberSelectId::addFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
+void QgsRubberSelectId::addFeature( QgsVectorLayer *lyr, QgsFeatureId fid )
 {
   if ( mGeometryType != lyr->geometryType() )
   {

@@ -17,21 +17,11 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QTextCodec>
 #include <QUuid>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
-QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fields, QTextCodec* encoding )
+QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;
   if ( !ogrFet )
@@ -40,7 +30,7 @@ QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fie
     return feature;
   }
 
-  feature.setFeatureId( OGR_F_GetFID( ogrFet ) );
+  feature.setId( OGR_F_GetFID( ogrFet ) );
   feature.setValid( true );
 
   if ( !readOgrFeatureGeometry( ogrFet, feature ) )
@@ -56,7 +46,7 @@ QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fie
   return feature;
 }
 
-QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
+QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
 {
   QgsFields fields;
 
@@ -80,15 +70,12 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
       case OFTInteger:
         varType = QVariant::Int;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case OFTInteger64:
         varType = QVariant::LongLong;
         break;
-#endif
       case OFTReal:
         varType = QVariant::Double;
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
       case OFTDate:
         varType = QVariant::Date;
         break;
@@ -99,7 +86,6 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
         varType = QVariant::DateTime;
         break;
       case OFTString:
-#endif
       default:
         varType = QVariant::String; // other unsupported, leave it as a string
     }
@@ -108,7 +94,7 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
   return fields;
 }
 
-QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields& fields, int attIndex, QTextCodec* encoding , bool* ok )
+QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok )
 {
   if ( !ogrFet || attIndex < 0 || attIndex >= fields.count() )
   {
@@ -148,11 +134,9 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
       case QVariant::Int:
         value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attIndex ) );
         break;
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
       case QVariant::LongLong:
         value = QVariant( OGR_F_GetFieldAsInteger64( ogrFet, attIndex ) );
         break;
-#endif
       case QVariant::Double:
         value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attIndex ) );
         break;
@@ -185,7 +169,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   return value;
 }
 
-bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields& fields, QgsFeature& feature, QTextCodec* encoding )
+bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding )
 {
   // read all attributes
   feature.initAttributes( fields.count() );
@@ -206,7 +190,7 @@ bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields&
   return true;
 }
 
-bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature& feature )
+bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &feature )
 {
   if ( !ogrFet )
     return false;
@@ -235,23 +219,23 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   return g;
 }
 
-QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const QgsFields& fields, QTextCodec* encoding )
+QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeatureList features;
   if ( string.isEmpty() )
     return features;
 
-  QString randomFileName = QString( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
+  QString randomFileName = QStringLiteral( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
 
   // create memory file system object from string buffer
   QByteArray ba = string.toUtf8();
-  VSIFCloseL( VSIFileFromMemBuffer( TO8( randomFileName ), reinterpret_cast< GByte* >( ba.data() ),
+  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte * >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
-  OGRDataSourceH hDS = OGROpen( TO8( randomFileName ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
   if ( !hDS )
   {
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return features;
   }
 
@@ -259,12 +243,12 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   if ( !ogrLayer )
   {
     OGR_DS_Destroy( hDS );
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return features;
   }
 
   OGRFeatureH oFeat;
-  while (( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
+  while ( ( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     QgsFeature feat = readOgrFeature( oFeat, fields, encoding );
     if ( feat.isValid() )
@@ -274,28 +258,28 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   }
 
   OGR_DS_Destroy( hDS );
-  VSIUnlink( "/vsimem/clipboard.dat" );
+  VSIUnlink( randomFileName.toUtf8().constData() );
 
   return features;
 }
 
-QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encoding )
+QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encoding )
 {
   QgsFields fields;
   if ( string.isEmpty() )
     return fields;
 
-  QString randomFileName = QString( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
+  QString randomFileName = QStringLiteral( "/vsimem/%1" ).arg( QUuid::createUuid().toString() );
 
   // create memory file system object from buffer
   QByteArray ba = string.toUtf8();
-  VSIFCloseL( VSIFileFromMemBuffer( TO8( randomFileName ), reinterpret_cast< GByte* >( ba.data() ),
+  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte * >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
-  OGRDataSourceH hDS = OGROpen( TO8( randomFileName ), false, nullptr );
+  OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
   if ( !hDS )
   {
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return fields;
   }
 
@@ -303,19 +287,19 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
   if ( !ogrLayer )
   {
     OGR_DS_Destroy( hDS );
-    VSIUnlink( TO8( randomFileName ) );
+    VSIUnlink( randomFileName.toUtf8().constData() );
     return fields;
   }
 
   OGRFeatureH oFeat;
   //read in the first feature only
-  if (( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
+  if ( ( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     fields = readOgrFields( oFeat, encoding );
     OGR_F_Destroy( oFeat );
   }
 
   OGR_DS_Destroy( hDS );
-  VSIUnlink( TO8( randomFileName ) );
+  VSIUnlink( randomFileName.toUtf8().constData() );
   return fields;
 }

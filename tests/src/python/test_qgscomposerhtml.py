@@ -17,12 +17,12 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtCore import QUrl, qDebug
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
                        QgsComposerMultiFrame,
-                       QgsMapSettings
+                       QgsMapSettings,
+                       QgsProject
                        )
 
 from qgscompositionchecker import QgsCompositionChecker
@@ -42,7 +42,7 @@ class TestQgsComposerHtml(unittest.TestCase):
         """Run before each test."""
         self.iface = get_iface()
         self.mapSettings = QgsMapSettings()
-        self.mComposition = QgsComposition(self.mapSettings)
+        self.mComposition = QgsComposition(QgsProject.instance())
         self.mComposition.setPaperSize(297, 210)  # A4 landscape
 
     def tearDown(self):
@@ -135,6 +135,7 @@ class TestQgsComposerHtml(unittest.TestCase):
         composerHtml = None
 
         assert myTestResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

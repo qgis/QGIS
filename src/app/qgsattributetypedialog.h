@@ -21,6 +21,8 @@
 
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
+#include "qgsvectordataprovider.h"
+#include "qgis_app.h"
 
 class QDialog;
 
@@ -42,11 +44,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     const QString editorWidgetText();
 
-    void setWidgetType( const QString& type );
+    void setEditorWidgetType( const QString &type );
 
-    const QgsEditorWidgetConfig editorWidgetConfig();
+    const QVariantMap editorWidgetConfig();
 
-    void setWidgetConfig( const QgsEditorWidgetConfig& config );
+    void setEditorWidgetConfig( const QVariantMap &config );
 
     /**
      * Setter for checkbox to label on top
@@ -70,6 +72,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     bool fieldEditable() const;
 
     /**
+     * Sets any provider side constraints which may affect this field's behavior.
+     */
+    void setProviderConstraints( QgsFieldConstraints::Constraints constraints );
+
+    /**
      * Setter for checkbox for not null
      */
     void setNotNull( bool notNull );
@@ -78,6 +85,36 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Getter for checkbox for not null
      */
     bool notNull() const;
+
+    /**
+     * Sets whether the not null constraint is enforced.
+     */
+    void setNotNullEnforced( bool enforced );
+
+    /**
+     * Returns whether the not null constraint should be enforced.
+     */
+    bool notNullEnforced() const;
+
+    /**
+     * Setter for unique constraint checkbox
+     */
+    void setUnique( bool unique );
+
+    /**
+     * Getter for unique constraint checkbox state
+     */
+    bool unique() const;
+
+    /**
+     * Sets whether the not null constraint is enforced.
+     */
+    void setUniqueEnforced( bool enforced );
+
+    /**
+     * Returns whether the not null constraint should be enforced.
+     */
+    bool uniqueEnforced() const;
 
     /**
      * Setter for constraint expression description
@@ -106,6 +143,16 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void setConstraintExpression( const QString &str );
 
     /**
+     * Sets whether the expression constraint is enforced.
+     */
+    void setConstraintExpressionEnforced( bool enforced );
+
+    /**
+     * Returns whether the expression constraint should be enforced.
+     */
+    bool constraintExpressionEnforced() const;
+
+    /**
      * Returns the expression used for the field's default value, or
      * an empty string if no default value expression is set.
      */
@@ -114,9 +161,10 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     /**
      * Sets the expression used for the field's default value
      */
-    void setDefaultValueExpression( const QString& expression );
+    void setDefaultValueExpression( const QString &expression );
 
   private slots:
+
     /**
      * Slot to handle change of index in combobox to select correct page
      * @param index index of value in combobox
@@ -126,13 +174,13 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void defaultExpressionChanged();
 
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     int mFieldIdx;
 
-    QgsEditorWidgetConfig mWidgetConfig;
+    QVariantMap mWidgetConfig;
 
     //! Cached configuration dialog (lazy loaded)
-    QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;
+    QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
 
     QgsFeature mPreviewFeature;
 };

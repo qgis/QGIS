@@ -31,13 +31,14 @@ from qgis.PyQt.QtCore import QSize
 
 from qgis.core import (
     QgsVectorLayer,
-    QgsMapLayerRegistry,
+    QgsProject,
     QgsRectangle,
     QgsMultiRenderChecker,
     QgsSingleSymbolRenderer,
     QgsFillSymbol,
     QgsRenderContext,
-    QgsDataDefined
+    QgsProperty,
+    QgsSymbolLayer
 )
 
 from qgis.testing import unittest, start_app
@@ -53,10 +54,10 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsMapLayerRegistry.instance().addMapLayer(self.layer)
+        QgsProject.instance().addMapLayer(self.layer)
 
         self.iface = get_iface()
-        rendered_layers = [self.layer.id()]
+        rendered_layers = [self.layer]
         self.mapsettings = self.iface.mapCanvas().mapSettings()
         self.mapsettings.setOutputSize(QSize(400, 400))
         self.mapsettings.setOutputDpi(96)
@@ -64,14 +65,14 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def testPartNum(self):
         # Create rulebased style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
 
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty('color', QgsDataDefined('color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )'))
+        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )'))
         self.layer.setRenderer(renderer)
 
         # Setup rendering check
@@ -87,7 +88,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
 
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty('color', QgsDataDefined('color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )'))
+        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )'))
         self.layer.setRenderer(renderer)
 
         # Setup rendering check
@@ -103,7 +104,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         sym1 = QgsFillSymbol.createSimple({'color': '#ff0000'})
 
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty('color', QgsDataDefined('set_color_part( @symbol_color, \'value\', "Value" * 4)'))
+        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('set_color_part( @symbol_color, \'value\', "Value" * 4)'))
         self.layer.setRenderer(renderer)
 
         # Setup rendering check
@@ -113,6 +114,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         result = renderchecker.runTest('symbol_color_variable', 50)
 
         self.assertTrue(result)
+
 
 if __name__ == '__main__':
     unittest.main()

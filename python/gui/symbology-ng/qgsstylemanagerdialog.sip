@@ -34,11 +34,15 @@ class QgsStyleManagerDialog : QDialog
 
     void groupChanged( const QModelIndex& );
     void groupRenamed( QStandardItem * );
-    void addGroup();
+    //! add a tag
+    int addTag();
+    //! add a smartgroup
+    int addSmartgroup();
+    //! remove a tag or smartgroup
     void removeGroup();
 
-    //! carryout symbol grouping using check boxes
-    void groupSymbolsAction();
+    //! carry out symbol tagging using check boxes
+    void tagSymbolsAction();
 
     //! edit the selected smart group
     void editSmartgroupAction();
@@ -48,9 +52,6 @@ class QgsStyleManagerDialog : QDialog
 
     //! filter the symbols based on input search term
     void filterSymbols( const QString& );
-
-    //! Listen to tag changes
-    void tagsChanged();
 
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex& );
@@ -66,7 +67,14 @@ class QgsStyleManagerDialog : QDialog
 
   protected slots:
     bool addColorRamp( QAction* action );
-    void groupSelectedSymbols();
+    //! Add selected symbols to favorites
+    void addFavoriteSelectedSymbols();
+    //! Remove selected symbols from favorites
+    void removeFavoriteSelectedSymbols();
+    //! Tag selected symbols using menu item selection
+    void tagSelectedSymbols( bool newTag = false );
+    //! Remove all tags from selected symbols
+    void detagSelectedSymbols();
 
   protected:
 
@@ -75,8 +83,6 @@ class QgsStyleManagerDialog : QDialog
 
     //! populate the groups
     void populateGroups();
-    //! build the groups tree
-    void buildGroupTree( QStandardItem* &parent );
     //! to set symbols checked when in editing mode
     void setSymbolsChecked( const QStringList& );
 
@@ -104,11 +110,8 @@ class QgsStyleManagerDialog : QDialog
     void enableSymbolInputs( bool );
     //! Enables or disables the groupTree specific inputs
     void enableGroupInputs( bool );
-    //! Enables or diables the groupTree items for grouping mode
+    //! Enables or disables the groupTree items for grouping mode
     void enableItemsForGroupingMode( bool );
-
-    //! Event filter to capture tagsLineEdit out of focus
-    bool eventFilter( QObject*, QEvent* );
 
     //! sets the text of the item with bold font
     void setBold( QStandardItem* );

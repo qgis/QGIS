@@ -25,8 +25,8 @@
 #include "qgscompassplugingui.h"
 #include "compass.h"
 
-QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WindowFlags fl )
-    : QWidget( parent, fl )
+QgsCompassPluginGui::QgsCompassPluginGui( QWidget *parent, Qt::WindowFlags fl )
+  : QWidget( parent, fl )
 {
   setupUi( this );
 
@@ -37,7 +37,7 @@ QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WindowFlags fl )
     this->mWarningLabel->setText( "<font color='red'>No compass detected</font>" );
   }
 
-  QObject::connect( compass, SIGNAL( azimuthChanged( const QVariant&, const QVariant& ) ), this, SLOT( handleAzimuth( const QVariant&, const QVariant& ) ) );
+  QObject::connect( compass, SIGNAL( azimuthChanged( const QVariant &, const QVariant & ) ), this, SLOT( handleAzimuth( const QVariant &, const QVariant & ) ) );
 }
 
 QgsCompassPluginGui::~QgsCompassPluginGui()
@@ -79,7 +79,7 @@ void QgsCompassPluginGui::handleAzimuth( const QVariant &azimuth, const QVariant
 }
 
 //Copied from QgsDecorationNorthArrowDialog adapted to be portable
-void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileNameQString, int theRotationInt )
+void QgsCompassPluginGui::rotatePixmap( QLabel *pixmapLabel, QString myFileNameQString, int rotationInt )
 {
   QPixmap myQPixmap;
   if ( myQPixmap.load( myFileNameQString ) )
@@ -98,19 +98,19 @@ void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileName
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
 
     //rotate the canvas
-    myQPainter.rotate( theRotationInt );
+    myQPainter.rotate( rotationInt );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * theRotationInt;
-    int xShift = static_cast<int>((
-                                    ( centerXDouble * cos( myRadiansDouble ) ) +
-                                    ( centerYDouble * sin( myRadiansDouble ) )
-                                  ) - centerXDouble );
-    int yShift = static_cast<int>((
-                                    ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                    ( centerYDouble * cos( myRadiansDouble ) )
-                                  ) - centerYDouble );
+    double myRadiansDouble = ( PI / 180 ) * rotationInt;
+    int xShift = static_cast<int>( (
+                                     ( centerXDouble * cos( myRadiansDouble ) ) +
+                                     ( centerYDouble * sin( myRadiansDouble ) )
+                                   ) - centerXDouble );
+    int yShift = static_cast<int>( (
+                                     ( -centerXDouble * sin( myRadiansDouble ) ) +
+                                     ( centerYDouble * cos( myRadiansDouble ) )
+                                   ) - centerYDouble );
 
     //draw the pixmap in the proper position
     myQPainter.drawPixmap( xShift, yShift, myQPixmap );

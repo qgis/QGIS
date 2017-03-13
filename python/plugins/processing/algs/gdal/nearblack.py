@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -51,7 +52,7 @@ class nearblack(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Near black')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.NEAR,
@@ -64,12 +65,12 @@ class nearblack(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-o')
-        output = unicode(self.getOutputValue(self.OUTPUT))
+        output = str(self.getOutputValue(self.OUTPUT))
         arguments.append(output)
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
         arguments.append('-near')
-        arguments.append(unicode(self.getParameterValue(self.NEAR)))
+        arguments.append(str(self.getParameterValue(self.NEAR)))
         if self.getParameterValue(self.WHITE):
             arguments.append('-white')
         arguments.append(self.getParameterValue(self.INPUT))

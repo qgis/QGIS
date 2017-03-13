@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
@@ -30,10 +31,11 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsStatisticalSummary
+from qgis.core import (QgsStatisticalSummary,
+                       QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
@@ -66,15 +68,21 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     NULLVALUES = 'NULLVALUES'
     IQR = 'IQR'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use BasicStatistics instead
+        self.showInToolbox = False
+
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
+        self.tags = self.tr('stats,statistics,number,table,layer')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input vector layer')))
+        self.addParameter(ParameterTable(self.INPUT_LAYER,
+                                         self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
                                               self.tr('Field to calculate statistics on'),
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
@@ -99,43 +107,23 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.addOutput(OutputNumber(self.NULLVALUES, self.tr('NULL (missed) values')))
         self.addOutput(OutputNumber(self.IQR, self.tr('Interquartile Range (IQR)')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
 
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
-        cvValue = 0
-        minValue = 0
-        maxValue = 0
-        sumValue = 0
-        meanValue = 0
-        medianValue = 0
-        stdDevValue = 0
-        minority = 0
-        majority = 0
-        firstQuartile = 0
-        thirdQuartile = 0
-        nullValues = 0
-        iqr = 0
-
-        values = []
-
-        features = vector.features(layer)
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([fieldName], layer.fields())
+        stat = QgsStatisticalSummary()
+        features = vector.features(layer, request)
         count = len(features)
         total = 100.0 / float(count)
         for current, ft in enumerate(features):
-            value = ft[fieldName]
-            if value or value == 0:
-                values.append(float(value))
-            else:
-                nullValues += 1
+            stat.addVariant(ft[fieldName])
+            feedback.setProgress(int(current * total))
 
-            progress.setPercentage(int(current * total))
-
-        stat = QgsStatisticalSummary()
-        stat.calculate(values)
+        stat.finalize()
 
         count = stat.count()
         uniqueValue = stat.variety()
@@ -146,13 +134,13 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         meanValue = stat.mean()
         medianValue = stat.median()
         stdDevValue = stat.stDev()
-        if meanValue != 0.00:
-            cvValue = stdDevValue / meanValue
+        cvValue = stdDevValue / meanValue if meanValue != 0 else 0
         minority = stat.minority()
         majority = stat.majority()
         firstQuartile = stat.firstQuartile()
         thirdQuartile = stat.thirdQuartile()
         iqr = stat.interQuartileRange()
+        nullValues = stat.countMissing()
 
         data = []
         data.append(self.tr('Analyzed layer: {}').format(layer.name()))
@@ -193,11 +181,10 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.setOutputValue(self.IQR, iqr)
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>\n')
-        f.write('<meta http-equiv="Content-Type" content="text/html; \
-                charset=utf-8" /></head><body>\n')
-        for s in algData:
-            f.write('<p>' + unicode(s) + '</p>\n')
-        f.write('</body></html>\n')
-        f.close()
+        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+            f.write('<html><head>\n')
+            f.write('<meta http-equiv="Content-Type" content="text/html; \
+                    charset=utf-8" /></head><body>\n')
+            for s in algData:
+                f.write('<p>' + str(s) + '</p>\n')
+            f.write('</body></html>\n')

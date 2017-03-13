@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgsdoublespinbox.h>
 
@@ -53,7 +53,7 @@ void TestQgsDoubleSpinBox::cleanup()
 
 void TestQgsDoubleSpinBox::clear()
 {
-  QgsDoubleSpinBox* spinBox = new QgsDoubleSpinBox();
+  QgsDoubleSpinBox *spinBox = new QgsDoubleSpinBox();
   spinBox->setMaximum( 10.0 );
   spinBox->setMinimum( 1.0 );
   spinBox->setValue( 5.0 );
@@ -74,7 +74,7 @@ void TestQgsDoubleSpinBox::clear()
 
 void TestQgsDoubleSpinBox::expression()
 {
-  QgsDoubleSpinBox* spinBox = new QgsDoubleSpinBox();
+  QgsDoubleSpinBox *spinBox = new QgsDoubleSpinBox();
   spinBox->setMinimum( -10.0 );
   spinBox->setMaximum( 10.0 );
   spinBox->setValue( 1.0 );
@@ -95,7 +95,7 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "5/" ) ), 4.0 ); //invalid expression should reset to previous value
 
   //suffix tests
-  spinBox->setSuffix( QString( "mm" ) );
+  spinBox->setSuffix( QStringLiteral( "mm" ) );
   spinBox->setExpressionsEnabled( false );
   QCOMPARE( spinBox->valueFromText( QString( "5mm" ) ), 5.0 );
   QCOMPARE( spinBox->valueFromText( QString( "5+2mm" ) ), -10.0 );
@@ -112,7 +112,7 @@ void TestQgsDoubleSpinBox::expression()
 
   //prefix tests
   spinBox->setSuffix( QString() );
-  spinBox->setPrefix( QString( "mm" ) );
+  spinBox->setPrefix( QStringLiteral( "mm" ) );
   spinBox->setExpressionsEnabled( false );
   QCOMPARE( spinBox->valueFromText( QString( "mm5" ) ), 5.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm5+2" ) ), -10.0 );
@@ -128,8 +128,8 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "mm5/" ) ), 4.0 ); //invalid expression should reset to previous value
 
   //both suffix and prefix
-  spinBox->setSuffix( QString( "ll" ) );
-  spinBox->setPrefix( QString( "mm" ) );
+  spinBox->setSuffix( QStringLiteral( "ll" ) );
+  spinBox->setPrefix( QStringLiteral( "mm" ) );
   spinBox->setExpressionsEnabled( true );
   QCOMPARE( spinBox->valueFromText( QString( "mm 5 ll" ) ), 5.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm 5+2 ll" ) ), 7.0 );
@@ -144,5 +144,5 @@ void TestQgsDoubleSpinBox::expression()
   delete spinBox;
 }
 
-QTEST_MAIN( TestQgsDoubleSpinBox )
+QGSTEST_MAIN( TestQgsDoubleSpinBox )
 #include "testqgsdoublespinbox.moc"

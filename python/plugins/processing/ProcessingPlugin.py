@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,6 +31,7 @@ import inspect
 import os
 import sys
 
+from qgis.core import QgsApplication
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
@@ -38,20 +40,20 @@ from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
-from processing.gui.ResultsDialog import ResultsDialog
+from processing.gui.ResultsDock import ResultsDock
 from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.alglist import algList
-
+from processing.core.ProcessingResults import resultsList
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 
-class ProcessingPlugin:
+class ProcessingPlugin(object):
 
     def __init__(self, iface):
         self.iface = iface
@@ -63,6 +65,12 @@ class ProcessingPlugin:
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
 
+        self.resultsDock = ResultsDock()
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
+        self.resultsDock.hide()
+
+        resultsList.resultAdded.connect(self.resultsDock.fillTree)
+
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName('processing')
         self.menu.setTitle(self.tr('Pro&cessing'))
@@ -70,13 +78,13 @@ class ProcessingPlugin:
         self.toolboxAction = self.toolbox.toggleViewAction()
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
-            QIcon(os.path.join(cmd_folder, 'images', 'alg.png')))
+            QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
         self.toolboxAction.setText(self.tr('&Toolbox'))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'model.png')),
+            QgsApplication.getThemeIcon("/processingModel.svg"),
             self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
@@ -84,26 +92,18 @@ class ProcessingPlugin:
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'history.gif')),
+            QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
             self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
 
-        self.configAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'config.png')),
-            self.tr('&Options...'), self.iface.mainWindow())
-        self.configAction.setObjectName('configAction')
-        self.configAction.triggered.connect(self.openConfig)
-        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
-        self.menu.addAction(self.configAction)
-
-        self.resultsAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'results.png')),
-            self.tr('&Results Viewer...'), self.iface.mainWindow())
+        self.resultsAction = self.resultsDock.toggleViewAction()
         self.resultsAction.setObjectName('resultsAction')
-        self.resultsAction.triggered.connect(self.openResults)
+        self.resultsAction.setIcon(
+            QgsApplication.getThemeIcon("/processingResult.svg"))
+        self.resultsAction.setText(self.tr('&Results Viewer'))
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
 
@@ -112,7 +112,7 @@ class ProcessingPlugin:
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.commanderAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'commander.png')),
+            QIcon(os.path.join(cmd_folder, 'images', 'commander.svg')),
             self.tr('&Commander'), self.iface.mainWindow())
         self.commanderAction.setObjectName('commanderAction')
         self.commanderAction.triggered.connect(self.openCommander)
@@ -120,12 +120,28 @@ class ProcessingPlugin:
         self.iface.registerMainWindowAction(self.commanderAction,
                                             self.tr('Ctrl+Alt+D'))
 
+        self.menu.addSeparator()
+
+        self.configAction = QAction(
+            QIcon(QgsApplication.getThemeIcon('mActionOptions.svg')),
+            self.tr('&Options...'), self.iface.mainWindow())
+        self.configAction.setObjectName('configAction')
+        self.configAction.setMenuRole(QAction.NoRole)
+
+        self.configAction.triggered.connect(self.openConfig)
+        self.iface.registerMainWindowAction(self.configAction, 'Ctrl+Alt+C')
+        self.menu.addAction(self.configAction)
+
         initializeMenus()
         createMenus()
 
     def unload(self):
         self.toolbox.setVisible(False)
         self.iface.removeDockWidget(self.toolbox)
+
+        self.resultsDock.setVisible(False)
+        self.iface.removeDockWidget(self.resultsDock)
+
         self.menu.deleteLater()
 
         # delete temporary output files
@@ -158,14 +174,17 @@ class ProcessingPlugin:
 
     def openModeler(self):
         dlg = ModelerDialog()
-        dlg.exec_()
-        if dlg.update:
-            algList.reloadProvider('model')
+        dlg.update_model.connect(self.updateModel)
+        dlg.show()
+
+    def updateModel(self):
+        algList.reloadProvider('model')
 
     def openResults(self):
-        dlg = ResultsDialog()
-        dlg.show()
-        dlg.exec_()
+        if self.resultsDock.isVisible():
+            self.resultsDock.hide()
+        else:
+            self.resultsDock.show()
 
     def openHistory(self):
         dlg = HistoryDialog()

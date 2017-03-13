@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="6" column="2">
-    <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mVerticalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -108,14 +108,14 @@
     </layout>
    </item>
    <item row="4" column="0">
-    <widget class="QLabel" name="mBorderWidthLabel">
+    <widget class="QLabel" name="mStrokeWidthLabel">
      <property name="text">
-      <string>Outline width</string>
+      <string>Stroke width</string>
      </property>
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QLabel" name="mBorderColorLabel">
+    <widget class="QLabel" name="mStrokeColorLabel">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -123,7 +123,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Outline</string>
+      <string>Stroke</string>
      </property>
     </widget>
    </item>
@@ -170,6 +170,12 @@
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>250</height>
+          </size>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -213,14 +219,14 @@
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="5" column="2">
-    <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mOffsetDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -240,14 +246,14 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mAngleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="2" column="2">
-    <widget class="QgsDataDefinedButton" name="mFillColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -397,7 +403,7 @@
     </layout>
    </item>
    <item row="7" column="2">
-    <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -406,7 +412,7 @@
    <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
-      <widget class="QgsColorButton" name="mChangeBorderColorButton">
+      <widget class="QgsColorButton" name="mChangeStrokeColorButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -442,7 +448,7 @@
    <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QgsDoubleSpinBox" name="mBorderWidthSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mStrokeWidthSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -450,7 +456,7 @@
         </sizepolicy>
        </property>
        <property name="specialValueText">
-        <string>No outline</string>
+        <string>No stroke</string>
        </property>
        <property name="decimals">
         <number>6</number>
@@ -470,7 +476,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mBorderWidthUnitWidget" native="true">
+      <widget class="QgsUnitSelectionWidget" name="mStrokeWidthUnitWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -482,14 +488,14 @@
     </layout>
    </item>
    <item row="3" column="2">
-    <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mSizeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -510,7 +516,7 @@
     </layout>
    </item>
    <item row="9" column="2">
-    <widget class="QgsDataDefinedButton" name="mFilenameDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mFilenameDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -520,9 +526,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -546,8 +552,8 @@
   <tabstop>spinSize</tabstop>
   <tabstop>spinAngle</tabstop>
   <tabstop>mChangeColorButton</tabstop>
-  <tabstop>mChangeBorderColorButton</tabstop>
-  <tabstop>mBorderWidthSpinBox</tabstop>
+  <tabstop>mChangeStrokeColorButton</tabstop>
+  <tabstop>mStrokeWidthSpinBox</tabstop>
   <tabstop>mHorizontalAnchorComboBox</tabstop>
   <tabstop>mVerticalAnchorComboBox</tabstop>
   <tabstop>viewGroups</tabstop>

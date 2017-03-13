@@ -55,13 +55,8 @@ def load_user_expressions(path):
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
 expressionspath = os.path.join(userpythonhome, "expressions")
-startuppy = os.path.join(userpythonhome, "startup.py")
 
 sys.path.append(userpythonhome)
-
-# exec startup script
-if os.path.exists(startuppy):
-    exec(compile(open(startuppy).read(), startuppy, 'exec'), locals(), globals())
 
 if not os.path.exists(expressionspath):
     os.makedirs(expressionspath)

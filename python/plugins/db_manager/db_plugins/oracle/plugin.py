@@ -22,15 +22,17 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
-from qgis.core import QgsVectorLayer, NULL
+from qgis.core import QgsVectorLayer, NULL, QgsSettings
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
@@ -78,13 +80,13 @@ class OracleDBPlugin(DBPlugin):
 
     def connect(self, parent=None):
         conn_name = self.connectionName()
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/{0}/{1}".format(
                             self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(
-                self.tr('There is no defined database connection "{}".'.format(
+                self.tr('There is no defined database connection "{0}".'.format(
                     conn_name)))
 
         from qgis.core import QgsDataSourceUri
@@ -97,15 +99,15 @@ class OracleDBPlugin(DBPlugin):
 
         useEstimatedMetadata = settings.value(
             "estimatedMetadata", False, type=bool)
-        uri.setParam('userTablesOnly', unicode(
+        uri.setParam('userTablesOnly', str(
             settings.value("userTablesOnly", False, type=bool)))
-        uri.setParam('geometryColumnsOnly', unicode(
+        uri.setParam('geometryColumnsOnly', str(
             settings.value("geometryColumnsOnly", False, type=bool)))
-        uri.setParam('allowGeometrylessTables', unicode(
+        uri.setParam('allowGeometrylessTables', str(
             settings.value("allowGeometrylessTables", False, type=bool)))
-        uri.setParam('onlyExistingTypes', unicode(
+        uri.setParam('onlyExistingTypes', str(
             settings.value("onlyExistingTypes", False, type=bool)))
-        uri.setParam('includeGeoAttributes', unicode(
+        uri.setParam('includeGeoAttributes', str(
             settings.value("includeGeoAttributes", False, type=bool)))
 
         settings.endGroup()
@@ -118,7 +120,7 @@ class OracleDBPlugin(DBPlugin):
         try:
             return self.connectToUri(uri)
         except ConnectionError as e:
-            err = unicode(e)
+            err = str(e)
 
         # ask for valid credentials
         max_attempts = 3
@@ -136,7 +138,7 @@ class OracleDBPlugin(DBPlugin):
             except ConnectionError as e:
                 if i == max_attempts - 1:  # failed the last attempt
                     raise e
-                err = unicode(e)
+                err = str(e)
                 continue
 
             QgsCredentials.instance().put(
@@ -210,7 +212,7 @@ class ORDatabase(Database):
                 u"({})".format(sql), geomCol)
             uri.setWkbType(wkbType)
             if srid:
-                uri.setSrid(unicode(srid))
+                uri.setSrid(str(srid))
             vlayer = QgsVectorLayer(uri.uri(False), layerName, provider)
 
         return vlayer
@@ -317,7 +319,7 @@ class ORTable(Table):
             return None
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("rows/"):
             if action == "rows/recount":
@@ -398,18 +400,18 @@ class ORTable(Table):
             for idx in indexes:
                 if idx.isUnique and len(idx.columns) == 1:
                     fld = idx.fields()[idx.columns[0]]
-                    if (fld.dataType == u"NUMBER"
-                            and not fld.modifier
-                            and fld.notNull
-                            and fld not in ret):
+                    if (fld.dataType == u"NUMBER" and
+                            not fld.modifier and
+                            fld.notNull and
+                            fld not in ret):
                         ret.append(fld)
 
         # and finally append the other suitable fields
         for fld in self.fields():
-            if (fld.dataType == u"NUMBER"
-                    and not fld.modifier
-                    and fld.notNull
-                    and fld not in ret):
+            if (fld.dataType == u"NUMBER" and
+                    not fld.modifier and
+                    fld.notNull and
+                    fld not in ret):
                 ret.append(fld)
 
         if onlyOne:
@@ -429,7 +431,7 @@ class ORTable(Table):
         # Handle geographic table
         if geomCol:
             uri.setWkbType(self.wkbType)
-            uri.setSrid(unicode(self.srid))
+            uri.setSrid(str(self.srid))
 
         return uri
 
@@ -509,15 +511,15 @@ class ORTableField(TableField):
 
         # find out whether fields are part of primary key
         for con in self.table().constraints():
-            if (con.type == ORTableConstraint.TypePrimaryKey
-                    and self.name == con.column):
+            if (con.type == ORTableConstraint.TypePrimaryKey and
+                    self.name == con.column):
                 self.primaryKey = True
                 break
 
     def type2String(self):
-        if (u"TIMESTAMP" in self.dataType
-            or self.dataType in [u"DATE", u"SDO_GEOMETRY",
-                                 u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
+        if (u"TIMESTAMP" in self.dataType or
+            self.dataType in [u"DATE", u"SDO_GEOMETRY",
+                              u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
             return u"{}".format(self.dataType)
         if self.charMaxLen in [None, -1]:
             return u"{}".format(self.dataType)
@@ -556,7 +558,7 @@ class ORTableField(TableField):
 class ORTableConstraint(TableConstraint):
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, \
-        TypeUnique, TypeUnknown = range(5)
+        TypeUnique, TypeUnknown = list(range(5))
 
     types = {"c": TypeCheck, "r": TypeForeignKey,
              "p": TypePrimaryKey, "u": TypeUnique}

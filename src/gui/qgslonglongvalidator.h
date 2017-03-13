@@ -23,6 +23,7 @@
 #include <limits>
 #include <QValidator>
 #include <QLocale>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsLongLongValidator
@@ -33,21 +34,21 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
 
   public:
     explicit QgsLongLongValidator( QObject *parent )
-        : QValidator( parent )
-        , b( std::numeric_limits<qint64>::min() )
-        , t( std::numeric_limits<qint64>::max() )
+      : QValidator( parent )
+      , b( std::numeric_limits<qint64>::min() )
+      , t( std::numeric_limits<qint64>::max() )
     {}
 
     QgsLongLongValidator( qint64 bottom, qint64 top, QObject *parent )
-        : QValidator( parent )
-        , b( bottom )
-        , t( top )
+      : QValidator( parent )
+      , b( bottom )
+      , t( top )
     {}
 
     ~QgsLongLongValidator()
     {}
 
-    QValidator::State validate( QString &input, int& ) const override
+    QValidator::State validate( QString &input, int & ) const override
     {
       if ( input.isEmpty() )
         return Intermediate;
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       if ( t < 0 && input.startsWith( '+' ) )
         return Invalid;
 
-      if ( input == "-" || input == "+" )
+      if ( input == QLatin1String( "-" ) || input == QLatin1String( "+" ) )
         return Intermediate;
 
 

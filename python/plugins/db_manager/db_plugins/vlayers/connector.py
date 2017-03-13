@@ -19,18 +19,19 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 from __future__ import print_function
+from builtins import object
 
 from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 
 from ..connector import DBConnector
 from ..plugin import Table
 
-from qgis.core import Qgis, QgsDataSourceUri, QgsVirtualLayerDefinition, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
+from qgis.core import QgsDataSourceUri, QgsVirtualLayerDefinition, QgsProject, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
 
 import sqlite3
 
 
-class sqlite3_connection:
+class sqlite3_connection(object):
 
     def __init__(self, sqlite_file):
         self.conn = sqlite3.connect(sqlite_file)
@@ -47,7 +48,7 @@ def getQueryGeometryName(sqlite_file):
     with sqlite3_connection(sqlite_file) as conn:
         c = conn.cursor()
         for r in c.execute("SELECT url FROM _meta"):
-            d = QgsVirtualLayerDefinition.fromUrl(QUrl.fromEncoded(r[0]))
+            d = QgsVirtualLayerDefinition.fromUrl(QUrl(r[0]))
             if d.hasDefinedGeometry():
                 return d.geometryField()
         return None
@@ -60,7 +61,7 @@ def classFactory():
 # Tables in DB Manager are identified by their display names
 # This global registry maps a display name with a layer id
 # It is filled when getVectorTables is called
-class VLayerRegistry:
+class VLayerRegistry(object):
     _instance = None
 
     @classmethod
@@ -97,7 +98,7 @@ class VLayerRegistry:
         lid = self.layers.get(l)
         if lid is None:
             return lid
-        return QgsMapLayerRegistry.instance().mapLayer(lid)
+        return QgsProject.instance().mapLayer(lid)
 
 
 class VLayerConnector(DBConnector):
@@ -107,7 +108,7 @@ class VLayerConnector(DBConnector):
 
     def _execute(self, cursor, sql):
         # This is only used to get list of fields
-        class DummyCursor:
+        class DummyCursor(object):
 
             def __init__(self, sql):
                 self.sql = sql
@@ -126,8 +127,10 @@ class VLayerConnector(DBConnector):
         tmp = tf.fileName()
         tf.close()
 
-        q = QUrl.toPercentEncoding(c.sql)
-        p = QgsVectorLayer("%s?query=%s" % (QUrl.fromLocalFile(tmp).toString(), q), "vv", "virtual")
+        df = QgsVirtualLayerDefinition()
+        df.setFilePath(tmp)
+        df.setQuery(c.sql)
+        p = QgsVectorLayer(df.toString(), "vv", "virtual")
         if not p.isValid():
             return []
         f = [f.name() for f in p.fields()]
@@ -189,7 +192,7 @@ class VLayerConnector(DBConnector):
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
         lst = []
-        for _, l in list(QgsMapLayerRegistry.instance().mapLayers().items()):
+        for _, l in list(QgsProject.instance().mapLayers().items()):
             if l.type() == QgsMapLayer.VectorLayer:
 
                 lname = l.name()
@@ -276,7 +279,7 @@ class VLayerConnector(DBConnector):
     def getTableExtent(self, table, geom):
         is_id, t = table
         if is_id:
-            l = QgsMapLayerRegistry.instance().mapLayer(t)
+            l = QgsProject.instance().mapLayer(t)
         else:
             l = VLayerRegistry.instance().getLayer(t)
         e = l.extent()

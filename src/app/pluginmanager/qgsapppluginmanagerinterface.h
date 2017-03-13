@@ -32,28 +32,27 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
   public:
 
     //! Constructor
-    explicit QgsAppPluginManagerInterface( QgsPluginManager * pluginManager );
+    explicit QgsAppPluginManagerInterface( QgsPluginManager *pluginManager );
 
-    //! Destructor
     ~QgsAppPluginManagerInterface();
 
     //! remove python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata() override;
 
     //! add a single plugin to the metadata registry
-    void addPluginMetadata( const QMap<QString, QString>& metadata ) override;
+    void addPluginMetadata( const QMap<QString, QString> &metadata ) override;
 
     //! refresh plugin list model (and metadata browser content if necessary)
     void reloadModel() override;
 
     //! return given plugin metadata
-    const QMap<QString, QString> * pluginMetadata( const QString& key ) const override;
+    const QMap<QString, QString> *pluginMetadata( const QString &key ) const override;
 
     //! clear the repository listWidget
     void clearRepositoryList() override;
 
     //! add repository to the repository listWidget
-    void addToRepositoryList( const QMap<QString, QString>& repository ) override;
+    void addToRepositoryList( const QMap<QString, QString> &repository ) override;
 
     //! show the Plugin Manager window and optionally open tab tabIndex
     void showPluginManager( int tabIndex = -1 ) override;
@@ -64,7 +63,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
   private:
 
     //! Pointer to QgsPluginManager object
-    QgsPluginManager *mPluginManager;
+    QgsPluginManager *mPluginManager = nullptr;
 };
 
 #endif //QGSPLUGINMANAGERAPPIFACE_H

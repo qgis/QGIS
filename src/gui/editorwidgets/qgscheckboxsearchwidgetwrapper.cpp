@@ -15,17 +15,17 @@
 
 #include "qgscheckboxsearchwidgetwrapper.h"
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
 #include <QCheckBox>
 
-QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mCheckBox( nullptr )
-    , mLayer( nullptr )
+QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mCheckBox( nullptr )
+  , mLayer( nullptr )
 {
 }
 
@@ -44,7 +44,7 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
   QVariant v;
 
   if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( "CheckedState" ) : config( "UncheckedState" );
+    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ) ) : config( QStringLiteral( "UncheckedState" ) );
 
   return v;
 }
@@ -129,9 +129,9 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( QString exp )
 {
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  QString str = QString( "%1 = '%3'" )
+  QString str = QStringLiteral( "%1 = '%3'" )
                 .arg( QgsExpression::quotedColumnRef( fieldName ),
-                      exp.replace( '\'', "''" )
+                      exp.replace( '\'', QLatin1String( "''" ) )
                     );
   mExpression = str;
 }
@@ -148,16 +148,16 @@ void QgsCheckboxSearchWidgetWrapper::stateChanged( int )
   }
 }
 
-QWidget* QgsCheckboxSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsCheckboxSearchWidgetWrapper::createWidget( QWidget *parent )
 {
-  QCheckBox* c = new QCheckBox( parent );
+  QCheckBox *c = new QCheckBox( parent );
   c->setChecked( Qt::PartiallyChecked );
   return c;
 }
 
-void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mCheckBox = qobject_cast<QCheckBox*>( editor );
+  mCheckBox = qobject_cast<QCheckBox *>( editor );
 
   if ( mCheckBox )
   {

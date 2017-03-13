@@ -19,6 +19,7 @@
 
 #include "Point3D.h"
 #include <QVector>
+#include "qgis_analysis.h"
 
 class Vector3D;
 
@@ -28,51 +29,51 @@ class Vector3D;
 class ANALYSIS_EXPORT ParametricLine
 {
   protected:
-    /** Degree of the parametric Line*/
+    //! Degree of the parametric Line
     int mDegree;
-    /** Pointer to the parent object. If there isn't one, mParent is 0*/
-    ParametricLine* mParent;
-    /** MControlPoly stores the points of the control polygon*/
-    QVector<Point3D*>* mControlPoly;
+    //! Pointer to the parent object. If there isn't one, mParent is 0
+    ParametricLine *mParent = nullptr;
+    //! MControlPoly stores the points of the control polygon
+    QVector<Point3D *> *mControlPoly;
   public:
-    /** Default constructor*/
+    //! Default constructor
     ParametricLine();
+
     /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
-    ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /** Destructor*/
+    ParametricLine( ParametricLine *par, QVector<Point3D *> *controlpoly );
     virtual ~ParametricLine();
-    virtual void add( ParametricLine* pl ) = 0;
-    virtual void calcFirstDer( float t, Vector3D* v ) = 0;
-    virtual void calcSecDer( float t, Vector3D* v ) = 0;
+    virtual void add( ParametricLine *pl ) = 0;
+    virtual void calcFirstDer( float t, Vector3D *v ) = 0;
+    virtual void calcSecDer( float t, Vector3D *v ) = 0;
     //virtual Point3D calcPoint(float t);
-    virtual void calcPoint( float t, Point3D* ) = 0;
+    virtual void calcPoint( float t, Point3D * ) = 0;
     virtual void changeDirection() = 0;
     //virtual void draw(QPainter* p);
-    virtual const Point3D* getControlPoint( int number ) const = 0;
-    virtual const QVector<Point3D*>* getControlPoly() const = 0;
+    virtual const Point3D *getControlPoint( int number ) const = 0;
+    virtual const QVector<Point3D *> *getControlPoly() const = 0;
     virtual int getDegree() const = 0;
-    virtual ParametricLine* getParent() const = 0;
+    virtual ParametricLine *getParent() const = 0;
     //virtual bool intersects(ParametricLine* pal);
     virtual void remove( int i ) = 0;
-    virtual void setControlPoly( QVector<Point3D*>* cp ) = 0;
-    virtual void setParent( ParametricLine* paral ) = 0;
+    virtual void setControlPoly( QVector<Point3D *> *cp ) = 0;
+    virtual void setParent( ParametricLine *paral ) = 0;
 };
 
 //-----------------------------------------constructors and destructor----------------------
 
 inline ParametricLine::ParametricLine()
-    : mDegree( 0 )
-    , mParent( nullptr )
-    , mControlPoly( nullptr )
+  : mDegree( 0 )
+  , mParent( nullptr )
+  , mControlPoly( nullptr )
 {
 
 }
 
-inline ParametricLine::ParametricLine( ParametricLine* par, QVector<Point3D*>* controlpoly )
-    : mDegree( 0 )
-    , mParent( par )
-    , mControlPoly( controlpoly )
+inline ParametricLine::ParametricLine( ParametricLine *par, QVector<Point3D *> *controlpoly )
+  : mDegree( 0 )
+  , mParent( par )
+  , mControlPoly( controlpoly )
 {
 
 }

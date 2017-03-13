@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -41,31 +42,19 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
+
     ~QgsProjectProperties();
-
-    /** Gets the currently select map units
-     */
-    QgsUnitTypes::DistanceUnit mapUnits() const;
-
-    /*!
-     * Set the map units
-     */
-    void setMapUnits( QgsUnitTypes::DistanceUnit );
 
     /*!
        Every project has a title
      */
     QString title() const;
-    void title( QString const & title );
+    void title( QString const &title );
 
-    /** Accessor for projection */
+    //! Accessor for projection
     QString projectionWkt();
-
-    /** Indicates that the projection switch is on */
-    bool isProjected();
 
   public slots:
     /*!
@@ -86,14 +75,14 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * used in scale combobox instead of global ones */
     void on_pbnRemoveScale_clicked();
 
-    /** Let the user load scales from file */
+    //! Let the user load scales from file
     void on_pbnImportScales_clicked();
 
-    /** Let the user load scales from file */
+    //! Let the user load scales from file
     void on_pbnExportScales_clicked();
 
-    /** A scale in the list of project scales changed */
-    void scaleItemChanged( QListWidgetItem* changedScaleItem );
+    //! A scale in the list of project scales changed
+    void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
     /*!
      * Slots for WMS project settings
@@ -113,13 +102,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slots to select/deselect all the WFS layers
      */
     void on_pbnWFSLayersSelectAll_clicked();
-    void on_pbnWFSLayersUnselectAll_clicked();
+    void on_pbnWFSLayersDeselectAll_clicked();
 
     /*!
      * Slots to select/deselect all the WCS layers
      */
     void on_pbnWCSLayersSelectAll_clicked();
-    void on_pbnWCSLayersUnselectAll_clicked();
+    void on_pbnWCSLayersDeselectAll_clicked();
 
     /*!
      * Slots to launch OWS test
@@ -140,9 +129,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     /*!
      * Slot to show the context help for this dialog
      */
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
-    void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
 
     /*!
      * Slot to link WFS checkboxes
@@ -172,7 +159,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
-    //! Signal used to inform listeners that project scale list may have chnaged
+    //! Signal used to inform listeners that project scale list may have changed
     void scalesChanged( const QStringList &scales = QStringList() );
 
     //! let listening canvases know to refresh
@@ -183,18 +170,18 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Formats for displaying coordinates
     enum CoordinateFormat
     {
-      DecimalDegrees, /*!< Decimal degrees */
-      DegreesMinutes, /*!< Degrees, decimal minutes */
-      DegreesMinutesSeconds, /*!< Degrees, minutes, seconds */
-      MapUnits, /*! Show coordinates in map units */
+      DecimalDegrees, //!< Decimal degrees
+      DegreesMinutes, //!< Degrees, decimal minutes
+      DegreesMinutesSeconds, //!< Degrees, minutes, seconds
+      MapUnits, //! Show coordinates in map units
     };
 
-    QgsRelationManagerDialog *mRelationManagerDlg;
-    QgsMapCanvas* mMapCanvas;
-    QgsStyle* mStyle;
+    QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsStyle *mStyle = nullptr;
 
     void populateStyles();
-    void editSymbol( QComboBox* cbo );
+    void editSymbol( QComboBox *cbo );
 
     /*!
      * Function to save non-base dialog states
@@ -211,9 +198,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void resetPythonMacros();
 
-    long mProjectSrsId;
-    long mLayerSrsId;
-
     // List for all ellispods, also None and Custom
     struct EllipsoidDefs
     {
@@ -226,18 +210,18 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     int mEllipsoidIndex;
 
     //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup* treeGroup, QStringList& owsNames, QStringList& encodingMessages );
+    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
 
     //! Create a new scale item and add it to the list of scales
-    QListWidgetItem* addScaleToScaleList( const QString &newScale );
+    QListWidgetItem *addScaleToScaleList( const QString &newScale );
 
     //! Add a scale item to the list of scales
-    void addScaleToScaleList( QListWidgetItem* newItem );
+    void addScaleToScaleList( QListWidgetItem *newItem );
 
-    static const char * GEO_NONE_DESC;
+    static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
 };

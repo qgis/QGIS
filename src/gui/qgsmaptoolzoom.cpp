@@ -27,15 +27,15 @@
 #include "qgslogger.h"
 
 
-QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut )
-    : QgsMapTool( canvas )
-    , mZoomOut( zoomOut )
-    , mDragging( false )
-    , mRubberBand( nullptr )
+QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
+  : QgsMapTool( canvas )
+  , mZoomOut( zoomOut )
+  , mDragging( false )
+  , mRubberBand( nullptr )
 {
   mToolName = tr( "Zoom" );
   // set the cursor
-  QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoomOut ? zoom_out : zoom_in ) );
+  QPixmap myZoomQPixmap = QPixmap( ( const char ** )( zoomOut ? zoom_out : zoom_in ) );
   mCursor = QCursor( myZoomQPixmap, 7, 7 );
 }
 
@@ -45,7 +45,7 @@ QgsMapToolZoom::~QgsMapToolZoom()
 }
 
 
-void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -69,7 +69,7 @@ void QgsMapToolZoom::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolZoom::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolZoom::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -78,10 +78,14 @@ void QgsMapToolZoom::canvasPressEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
+
+  bool zoomOut = mZoomOut;
+  if ( e->modifiers() & Qt::AltModifier )
+    zoomOut = !zoomOut;
 
   // We are not really dragging in this case. This is sometimes caused by
   // a pen based computer reporting a press, move, and release, all the
@@ -107,24 +111,24 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent* e )
     mZoomRect = mZoomRect.normalized();
 
     // set center and zoom
-    const QSize& zoomRectSize = mZoomRect.size();
-    const QgsMapSettings& mapSettings = mCanvas->mapSettings();
-    const QSize& canvasSize = mapSettings.outputSize();
+    const QSize &zoomRectSize = mZoomRect.size();
+    const QgsMapSettings &mapSettings = mCanvas->mapSettings();
+    const QSize &canvasSize = mapSettings.outputSize();
     double sfx = ( double )zoomRectSize.width() / canvasSize.width();
     double sfy = ( double )zoomRectSize.height() / canvasSize.height();
     double sf = qMax( sfx, sfy );
 
-    const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
+    const QgsMapToPixel *m2p = mCanvas->getCoordinateTransform();
     QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
+    mCanvas->zoomByFactor( zoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
   }
   else // not dragging
   {
     // change to zoom in/out by the default multiple
-    mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
+    mCanvas->zoomWithCenter( e->x(), e->y(), !zoomOut );
   }
 }
 

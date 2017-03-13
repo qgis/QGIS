@@ -5,14 +5,15 @@
  *
  * @note added in 2.6
  */
-class QgsLegendModelV2 : QgsLayerTreeModel
+class QgsLegendModel : QgsLayerTreeModel
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>
 %End
 
   public:
-    QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
+    //! Construct the model based on the given layer tree
+    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
 
     QVariant data( const QModelIndex& index,  int role ) const;
 
@@ -27,7 +28,7 @@ class QgsComposerLegend : QgsComposerItem
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>
-#include <qgscomposerlegendstyle.h>
+#include <qgslegendstyle.h>
 %End
 
   public:
@@ -61,7 +62,7 @@ class QgsComposerLegend : QgsComposerItem
     bool resizeToContents() const;
 
     //! @note added in 2.6
-    QgsLegendModelV2* model();
+    QgsLegendModel* model();
 
     //! @note added in 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -107,18 +108,30 @@ class QgsComposerLegend : QgsComposerItem
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 
     /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s );
+    QgsLegendStyle & rstyle( QgsLegendStyle::Style s );
     /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const;
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle& style );
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle& style );
 
-    QFont styleFont( QgsComposerLegendStyle::Style s ) const;
+    QFont styleFont( QgsLegendStyle::Style s ) const;
     /** Set style font */
-    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+    void setStyleFont( QgsLegendStyle::Style s, const QFont& f );
 
     /** Set style margin*/
-    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
-    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
+
+    /** Returns the spacing in-between lines in mm
+     * @note added in 3.0
+     * @see setLineSpacing
+     */
+    double lineSpacing() const;
+    /** Sets the spacing in-between multiple lines
+     * @param spacing Double value to use as spacing in between multiple lines
+     * @note added in 3.0
+     * @see lineSpacing
+     */
+    void setLineSpacing( double spacing );
 
     double boxSpace() const;
     void setBoxSpace( double s );
@@ -153,60 +166,60 @@ class QgsComposerLegend : QgsComposerItem
     int equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
-    /** Returns whether a border will be drawn around raster symbol items.
-     * @see setDrawRasterBorder()
-     * @see rasterBorderColor()
-     * @see rasterBorderWidth()
+    /** Returns whether a stroke will be drawn around raster symbol items.
+     * @see setDrawRasterStroke()
+     * @see rasterStrokeColor()
+     * @see rasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    bool drawRasterBorder() const;
+    bool drawRasterStroke() const;
 
-    /** Sets whether a border will be drawn around raster symbol items.
+    /** Sets whether a stroke will be drawn around raster symbol items.
      * @param enabled set to true to draw borders
-     * @see drawRasterBorder()
-     * @see setRasterBorderColor()
-     * @see setRasterBorderWidth()
+     * @see drawRasterStroke()
+     * @see setRasterStrokeColor()
+     * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setDrawRasterBorder( bool enabled );
+    void setDrawRasterStroke( bool enabled );
 
-    /** Returns the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderColor()
-     * @see drawRasterBorder()
-     * @see rasterBorderWidth()
+    /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @see setRasterStrokeColor()
+     * @see drawRasterStroke()
+     * @see rasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    QColor rasterBorderColor() const;
+    QColor rasterStrokeColor() const;
 
-    /** Sets the border color for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param color border color
-     * @see rasterBorderColor()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderWidth()
+    /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @param color stroke color
+     * @see rasterStrokeColor()
+     * @see setDrawRasterStroke()
+     * @see setRasterStrokeWidth()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderColor( const QColor& color );
+    void setRasterStrokeColor( const QColor& color );
 
-    /** Returns the border width (in millimeters) for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @see setRasterBorderWidth()
-     * @see drawRasterBorder()
-     * @see rasterBorderColor()
+    /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @see setRasterStrokeWidth()
+     * @see drawRasterStroke()
+     * @see rasterStrokeColor()
      * @note added in QGIS 2.12
      */
-    double rasterBorderWidth() const;
+    double rasterStrokeWidth() const;
 
-    /** Sets the border width for the border drawn around raster symbol items. The border is
-     * only drawn if drawRasterBorder() is true.
-     * @param width border width in millimeters
-     * @see rasterBorderWidth()
-     * @see setDrawRasterBorder()
-     * @see setRasterBorderColor()
+    /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * @param width stroke width in millimeters
+     * @see rasterStrokeWidth()
+     * @see setDrawRasterStroke()
+     * @see setRasterStrokeColor()
      * @note added in QGIS 2.12
      */
-    void setRasterBorderWidth( double width );
+    void setRasterStrokeWidth( double width );
 
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const;
@@ -229,9 +242,13 @@ class QgsComposerLegend : QgsComposerItem
     //Overridden to show legend title
     virtual QString displayName() const;
 
+    const QgsLegendSettings& legendSettings() const;
+
   public slots:
     /** Data changed*/
     void synchronizeWithModel();
     /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr );
+
 };

@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsactionmanager.sip
 
- These classes store and control the managment and execution of actions
+ These classes store and control the management and execution of actions
  associated with a particular Qgis layer. Actions are defined to be
  external programs that are run with user-specified inputs that can
  depend on the contents of layer attributes.
@@ -44,7 +44,7 @@ class QgsActionManager
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, bool capture = false );
+    QUuid addAction(QgsAction::ActionType type, const QString& name, const QString& command, bool capture = false );
 
     /** Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
@@ -52,92 +52,73 @@ class QgsActionManager
      * any stdout from the process will be captured and displayed in a
      * dialog box.
      */
-    void addAction( QgsAction::ActionType type, const QString& name, const QString& action, const QString& icon, bool capture = false );
+    QUuid addAction(QgsAction::ActionType type, const QString& name, const QString& command, const QString& icon, bool capture = false );
 
     /**
      * Add a new action to this list.
      */
     void addAction( const QgsAction& action );
 
-    //! Remove an action at given index
-    void removeAction( int index );
+    /**
+     * Remove an action by its id.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void removeAction( const QUuid& actionId );
 
     /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
-    void doAction( int index,
-                   const QgsFeature &feat,
-                   int defaultValueIndex = 0 ) /PyName=doActionFeature/;
+    void doAction(const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
 
     /** Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
-     * @param index action index
+     * @param actionId action id
      * @param feature feature to run action for
-     * @param context expression context to evalute expressions under
+     * @param context expression context to evaluate expressions under
      */
-    void doAction( int index,
-                   const QgsFeature& feature,
-                   const QgsExpressionContext& context );
+    void doAction( const QUuid& actionId, const QgsFeature& feature, const QgsExpressionContext& context );
 
     //! Removes all actions
     void clearActions();
 
-    //! List all actions
-    QList<QgsAction> listActions() const;
+    /**
+     * Return a list of actions that are available in the given action scope.
+     * If no action scope is provided, all actions will be returned.
+     */
+    QList<QgsAction> actions( const QString& actionScope = QString() ) const;
 
     //! Return the layer
     QgsVectorLayer* layer() const;
 
     //! Writes the actions out in XML format
-    bool writeXml( QDomNode& layer_node, QDomDocument& doc ) const;
+    bool writeXml( QDomNode& layer_node ) const;
 
     //! Reads the actions in in XML format
     bool readXml( const QDomNode& layer_node );
 
-    int size() const;
     /**
-     * Get the action at the specified index.
+     * Get an action by its id.
+     *
+     * @note Added in QGIS 3.0
      */
-    QgsAction at( int idx ) const /Factory/;
-%MethodCode
-  if ( a0 < 0 || a0 >= sipCpp->size() )
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
-  else
-  {
-    sipRes = new QgsAction( sipCpp->at( a0 ) );
-  }
-%End
+    QgsAction action( const QUuid& id );
 
     /**
-     * Get the action at the specified index.
+     * Each scope can have a default action. This will be saved in the project
+     * file.
+     *
+     * @note Added in QGIS 3.0
      */
-    QgsAction operator[]( int idx ) const;
-%MethodCode
-  if ( a0 < 0 || a0 >= sipCpp->size() )
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
-  else
-  {
-    sipRes = new QgsAction( sipCpp->at( a0 ) );
-  }
-%End
+    void setDefaultAction( const QString& actionScope, const QUuid& actionId );
 
     /**
-     * Returns the index of the default action, or -1 if no default action is available.
-     * @see setDefaultAction()
+     * Each scope can have a default action. This will be saved in the project
+     * file.
+     *
+     * @note Added in QGIS 3.0
      */
-    int defaultAction() const;
+    QgsAction defaultAction( const QString& actionScope );
 
-    /**
-     * Set the index of the default action.
-     * @param actionNumber index of action which should be made the default for the layer
-     * @see defaultAction()
-     */
-    void setDefaultAction( int actionNumber );
 };

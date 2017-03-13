@@ -1,10 +1,9 @@
-#!/bin/bash
 ###########################################################################
 #    script.sh
 #    ---------------------
-#    Date                 : August 2015
-#    Copyright            : (C) 2015 by Nyall Dawson
-#    Email                : nyall dot dawson at gmail dot com
+#    Date                 : March 2016
+#    Copyright            : (C) 2016 by Matthias Kuhn
+#    Email                : matthias at opengis dot ch
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -14,6 +13,25 @@
 #                                                                         #
 ###########################################################################
 
+export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
+export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
+export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
+export CTEST_PARALLEL_LEVEL=1
+export CCACHE_TEMPDIR=/tmp
+ccache -M 2G
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-${DIR}/qt${QT_VERSION}/script.sh
+
+# Set OTB application path (installed in before_install.sh script)
+export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
+export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+
+# xvfb-run ctest -V -E "qgis_openstreetmaptest|qgis_wcsprovidertest" -S ./qgis-test-travis.ctest --output-on-failure
+if [ "$CACHE_WARMING" = true ] ; then
+  echo "WARNING: CACHE WARMING IS ACTIVE. SET CACHE_WARMING=false TO GET MEANINGFUL RESULTS."
+  xvfb-run ctest -V -R NOTESTS -S ./qgis-test-travis.ctest --output-on-failure
+  false
+else
+  python ${TRAVIS_BUILD_DIR}/ci/travis/scripts/ctest2travis.py \
+	  xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ./qgis-test-travis.ctest --output-on-failure
+fi

@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
-from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -36,7 +35,7 @@ from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector, system
+from processing.tools import dataobjects, vector
 
 from .ui.FieldsCalculatorDialog import FieldsCalculatorDialog
 
@@ -78,7 +77,7 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
@@ -88,11 +87,6 @@ class FieldsCalculator(GeoAlgorithm):
         formula = self.getParameterValue(self.FORMULA)
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
-
-        if output.value == '':
-            ext = output.getDefaultFileExtension(self)
-            output.value = system.getTempFilenameInTempFolder(
-                output.name + '.' + ext)
 
         fields = layer.fields()
         if newField:
@@ -104,23 +98,19 @@ class FieldsCalculator(GeoAlgorithm):
         exp = QgsExpression(formula)
 
         da = QgsDistanceArea()
-        da.setSourceCrs(layer.crs().srsid())
-        da.setEllipsoidalMode(
-            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
+        da.setSourceCrs(layer.crs())
+        da.setEllipsoidalMode(True)
         da.setEllipsoid(QgsProject.instance().readEntry(
             'Measure', '/Ellipsoid', GEO_NONE)[0])
         exp.setGeomCalculator(da)
         exp.setDistanceUnits(QgsProject.instance().distanceUnits())
         exp.setAreaUnits(QgsProject.instance().areaUnits())
 
-        exp_context = QgsExpressionContext()
-        exp_context.appendScope(QgsExpressionContextUtils.globalScope())
-        exp_context.appendScope(QgsExpressionContextUtils.projectScope())
-        exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+        exp_context = QgsExpressionContext(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
 
         if not exp.prepare(exp_context):
             raise GeoAlgorithmExecutionException(
-                self.tr('Evaluation error: %s' % exp.evalErrorString()))
+                self.tr('Evaluation error: {0}').format(exp.evalErrorString()))
 
         outFeature = QgsFeature()
         outFeature.initAttributes(len(fields))
@@ -149,13 +139,13 @@ class FieldsCalculator(GeoAlgorithm):
                 outFeature[fieldName] = value
                 writer.addFeature(outFeature)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
         del writer
 
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
                 self.tr('An error occurred while evaluating the calculation '
-                        'string:\n%s' % error))
+                        'string:\n{0}').format(error))
 
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)

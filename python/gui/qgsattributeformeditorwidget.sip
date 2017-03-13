@@ -1,6 +1,6 @@
 /** \ingroup gui
  * \class QgsAttributeFormEditorWidget
- * A widget consisting of both an editor widget and additional widgets for controlling the behaviour
+ * A widget consisting of both an editor widget and additional widgets for controlling the behavior
  * of the editor widget depending on a number of possible modes. For instance, if the parent attribute
  * form is in the multi edit mode, this widget will show both the editor widget and a tool button for
  * controlling the multi edit results.
@@ -38,11 +38,11 @@ class QgsAttributeFormEditorWidget : QWidget
      * @param context editor context (not available in python bindings)
      */
     void createSearchWidgetWrappers( const QString& widgetId, int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
+                                    const QVariantMap& config,
                                     const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
-     * reflect the updated mode. Eg, showing multi edit tool buttons if the mode is set to MultiEditMode.
+     * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
      * @param mode widget mode
      * @see mode()
      */

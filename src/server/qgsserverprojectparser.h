@@ -20,12 +20,13 @@
 
 #include "qgsconfig.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaprenderer.h"
+#include "qgsdatumtransformstore.h"
 
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
 #include <QString>
+#include "qgis_server.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
@@ -37,36 +38,35 @@ class SERVER_EXPORT QgsServerProjectParser
 {
   public:
 
-    QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
-    ~QgsServerProjectParser();
+    QgsServerProjectParser( QDomDocument *xmlDoc, const QString &filePath );
 
     QString projectPath() const { return mProjectPath; }
 
-    const QDomDocument* xmlDocument() const { return mXMLDoc; }
+    const QDomDocument *xmlDocument() const { return mXMLDoc; }
 
-    /** Returns project layers by id*/
-    void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
+    //! Returns project layers by id
+    void projectLayerMap( QMap<QString, QgsMapLayer *> &layerMap ) const;
 
-    /** Converts a (possibly relative) path to absolute*/
-    QString convertToAbsolutePath( const QString& file ) const;
+    //! Converts a (possibly relative) path to absolute
+    QString convertToAbsolutePath( const QString &file ) const;
 
     /** Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
-    QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
+    QgsMapLayer *createLayerFromElement( const QDomElement &elem, bool useCache = true ) const;
 
-    QgsMapLayer* mapLayerFromLayerId( const QString& lId, bool useCache = true ) const;
+    QgsMapLayer *mapLayerFromLayerId( const QString &lId, bool useCache = true ) const;
 
-    /** Returns the layer id under a <legendlayer> tag in the QGIS projectfile*/
-    QString layerIdFromLegendLayer( const QDomElement& legendLayer ) const;
+    //! Returns the layer id under a <legendlayer> tag in the QGIS projectfile
+    QString layerIdFromLegendLayer( const QDomElement &legendLayer ) const;
 
-    /** @param considerMapExtent Take user-defined map extent instead of data-calculated extent if present in project file*/
-    void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc, bool considerMapExtent = false ) const;
+    //! @param considerMapExtent Take user-defined map extent instead of data-calculated extent if present in project file
+    void combineExtentAndCrsOfGroupChildren( QDomElement &groupElement, QDomDocument &doc, bool considerMapExtent = false ) const;
 
-    void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer ) const;
+    void addLayerProjectSettings( QDomElement &layerElem, QDomDocument &doc, QgsMapLayer *currentLayer ) const;
 
-    QgsRectangle layerBoundingBoxInProjectCrs( const QDomElement& layerElem, const QDomDocument &doc ) const;
+    QgsRectangle layerBoundingBoxInProjectCrs( const QDomElement &layerElem, const QDomDocument &doc ) const;
 
-    bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
+    bool crsSetForLayer( const QDomElement &layerElement, QSet<QString> &crsSet ) const;
 
     QgsCoordinateReferenceSystem projectCrs() const;
 
@@ -74,9 +74,9 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    const QList<QDomElement>& projectLayerElements() const { return mProjectLayerElements; }
+    QList<QDomElement> projectLayerElements() const { return mProjectLayerElements; }
 
-    const QList<QDomElement>& legendGroupElements() const { return mLegendGroupElements; }
+    QList<QDomElement> legendGroupElements() const { return mLegendGroupElements; }
 
     QString projectTitle() const;
 
@@ -84,13 +84,13 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QDomElement propertiesElem() const;
 
-    const QSet<QString>& restrictedLayers() const { return mRestrictedLayers; }
+    QSet<QString> restrictedLayers() const { return mRestrictedLayers; }
     bool useLayerIds() const { return mUseLayerIDs; }
 
-    const QHash< QString, QDomElement >& projectLayerElementsByName() const { return mProjectLayerElementsByName; }
-    const QHash< QString, QDomElement >& projectLayerElementsById() const { return mProjectLayerElementsById; }
+    QHash< QString, QDomElement > projectLayerElementsByName() const { return mProjectLayerElementsByName; }
+    QHash< QString, QDomElement > projectLayerElementsById() const { return mProjectLayerElementsById; }
 
-    void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
+    void layerFromLegendLayer( const QDomElement &legendLayerElem, QMap< int, QgsMapLayer *> &layers, bool useCache = true ) const;
 
     QStringList wfsLayerNames() const;
     QStringList wcsLayerNames() const;
@@ -99,32 +99,29 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QList<QDomElement> publishedComposerElements() const;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+    QList< QPair< QString, QgsDatumTransformStore::Entry > > layerCoordinateTransforms() const;
 
     /** Returns the text of the <layername> element for a layer element
     @return name or a null string in case of error*/
-    QString layerName( const QDomElement& layerElem ) const;
-
-    QString serviceUrl() const;
-    QString wfsServiceUrl() const;
-    QString wcsServiceUrl() const;
+    QString layerName( const QDomElement &layerElem ) const;
 
     QStringList wfsLayers() const;
     QStringList wcsLayers() const;
 
-    void addJoinLayersForElement( const QDomElement& layerElem ) const;
+    //! Add layers for vector joins
+    void addJoinLayersForElement( const QDomElement &layerElem ) const;
 
     void addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const;
-    /** Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'*/
-    void addGetFeatureLayers( const QDomElement& layerElem ) const;
+    //! Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributeField, value)'
+    void addGetFeatureLayers( const QDomElement &layerElem ) const;
 
     /** Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
-    QString layerId( const QDomElement& layerElem ) const;
+    QString layerId( const QDomElement &layerElem ) const;
 
     /** Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
-    QString layerShortName( const QDomElement& layerElem ) const;
+    QString layerShortName( const QDomElement &layerElem ) const;
 
     QgsRectangle projectExtent() const;
 
@@ -132,38 +129,38 @@ class SERVER_EXPORT QgsServerProjectParser
 
     bool updateLegendDrawingOrder() const;
 
-    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 = false ) const;
+    void serviceCapabilities( QDomElement &parentElement, QDomDocument &doc, const QString &service, bool sia2045 = false ) const;
 
     QStringList customLayerOrder() const { return mCustomLayerOrder; }
 
   private:
 
-    /** Content of project file*/
-    QDomDocument* mXMLDoc;
+    //! Content of project file
+    QDomDocument *mXMLDoc = nullptr;
 
-    /** Absolute project file path (including file name)*/
+    //! Absolute project file path (including file name)
     QString mProjectPath;
 
-    /** List of project layer (ordered same as in the project file)*/
+    //! List of project layer (ordered same as in the project file)
     QList<QDomElement> mProjectLayerElements;
 
-    /** Project layer elements, accessible by layer id*/
+    //! Project layer elements, accessible by layer id
     QHash< QString, QDomElement > mProjectLayerElementsById;
 
-    /** Project layer elements, accessible by layer name*/
+    //! Project layer elements, accessible by layer name
     QHash< QString, QDomElement > mProjectLayerElementsByName;
 
-    /** List of all legend group elements*/
+    //! List of all legend group elements
     QList<QDomElement> mLegendGroupElements;
 
-    /** Names of layers and groups which should not be published*/
+    //! Names of layers and groups which should not be published
     QSet<QString> mRestrictedLayers;
 
     bool mUseLayerIDs;
 
     QgsServerProjectParser(); //forbidden
 
-    /** Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
+    //! Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)
     QSet<QString> findRestrictedLayers() const;
 
     QStringList mCustomLayerOrder;
@@ -171,10 +168,10 @@ class SERVER_EXPORT QgsServerProjectParser
     bool findUseLayerIds() const;
 
     QList<QDomElement> findLegendGroupElements() const;
-    QList<QDomElement> setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup* layerTreeGroup, const QDomElement& legendElement ) const;
+    QList<QDomElement> setLegendGroupElementsWithLayerTree( QgsLayerTreeGroup *layerTreeGroup, const QDomElement &legendElement ) const;
 
-    /** Adds sublayers of an embedded group to layer set*/
-    static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
+    //! Adds sublayers of an embedded group to layer set
+    static void sublayersOfEmbeddedGroup( const QString &projectFilePath, const QString &groupName, QSet<QString> &layerSet );
 };
 
 #endif // QGSSERVERPROJECTPARSER_H

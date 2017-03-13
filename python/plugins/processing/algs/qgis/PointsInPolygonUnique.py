@@ -56,7 +56,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                                           self.tr('Count field name'), 'NUMPOINTS'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Unique count'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
@@ -65,7 +65,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         fields = polyLayer.fields()
         fields.append(QgsField(fieldName, QVariant.Int))
 
-        classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
+        classFieldIndex = pointLayer.fields().lookupField(classFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                                                          polyLayer.fields(), fieldName)
 
@@ -90,7 +90,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
             classes = set()
             points = spatialIndex.intersects(geom.boundingBox())
             if len(points) > 0:
-                request = QgsFeatureRequest().setFilterFids(points)
+                request = QgsFeatureRequest().setFilterFids(points).setSubsetOfAttributes([classFieldIndex])
                 fit = pointLayer.getFeatures(request)
                 ftPoint = QgsFeature()
                 while fit.nextFeature(ftPoint):
@@ -108,6 +108,6 @@ class PointsInPolygonUnique(GeoAlgorithm):
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

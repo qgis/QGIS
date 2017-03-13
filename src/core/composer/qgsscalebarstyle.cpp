@@ -20,7 +20,7 @@
 #include <QFontMetricsF>
 #include <QPainter>
 
-QgsScaleBarStyle::QgsScaleBarStyle( const QgsComposerScaleBar* bar ):  mScaleBar( bar )
+QgsScaleBarStyle::QgsScaleBarStyle( const QgsComposerScaleBar *bar ):  mScaleBar( bar )
 {
 
 }
@@ -30,12 +30,7 @@ QgsScaleBarStyle::QgsScaleBarStyle(): mScaleBar( nullptr )
 
 }
 
-QgsScaleBarStyle::~QgsScaleBarStyle()
-{
-
-}
-
-void QgsScaleBarStyle::drawLabels( QPainter* p ) const
+void QgsScaleBarStyle::drawLabels( QPainter *p ) const
 {
   if ( !p || !mScaleBar )
   {

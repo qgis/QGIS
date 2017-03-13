@@ -15,9 +15,10 @@
 #ifndef QGSFEATURESTORE_H
 #define QGSFEATURESTORE_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QList>
 #include <QMetaType>
@@ -33,33 +34,33 @@ class CORE_EXPORT QgsFeatureStore
     QgsFeatureStore();
 
     //! Constructor
-    QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs );
+    QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
 
-    /** Get fields list */
-    QgsFields& fields() { return mFields; }
+    //! Get fields list
+    QgsFields &fields() { return mFields; }
 
-    /** Set fields. Resets feature's fields to pointer to new internal fields. */
-    void setFields( const QgsFields & fields );
+    //! Set fields. Resets feature's fields to pointer to new internal fields.
+    void setFields( const QgsFields &fields );
 
-    /** Get crs */
+    //! Get crs
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
-    /** Set crs */
-    void setCrs( const QgsCoordinateReferenceSystem& crs ) { mCrs = crs; }
+    //! Set crs
+    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     /** Add feature. Feature's fields will be set to pointer to the store fields.
      * @param feature
      * @note added in 2.1
      */
-    void addFeature( const QgsFeature& feature );
+    void addFeature( const QgsFeature &feature );
 
-    /** Get features list reference */
-    QgsFeatureList& features() { return mFeatures; }
+    //! Get features list reference
+    QgsFeatureList &features() { return mFeatures; }
 
-    /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> &theParams ) { mParams = theParams; }
+    //! Set map of optional parameters
+    void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
-    /** Get map of optional parameters */
+    //! Get map of optional parameters
     QMap<QString, QVariant> params() const { return mParams; }
 
   private:

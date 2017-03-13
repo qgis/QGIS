@@ -20,11 +20,11 @@
 #include "qgsmapcanvas.h"
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
-    , mShowCurrentScaleButton( false )
+  : QWidget( parent )
+  , mCanvas( nullptr )
+  , mShowCurrentScaleButton( false )
 {
-  QHBoxLayout* layout = new QHBoxLayout( this );
+  QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 2 );
 
@@ -33,17 +33,12 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
 
   mCurrentScaleButton = new QToolButton( this );
   mCurrentScaleButton->setToolTip( tr( "Set to current canvas scale" ) );
-  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( "/mActionMapIdentification.svg" ) );
+  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
   layout->addWidget( mCurrentScaleButton );
   mCurrentScaleButton->hide();
 
   connect( mScaleComboBox, SIGNAL( scaleChanged( double ) ), this, SIGNAL( scaleChanged( double ) ) );
   connect( mCurrentScaleButton, SIGNAL( clicked() ), this, SLOT( setScaleFromCanvas() ) );
-}
-
-
-QgsScaleWidget::~QgsScaleWidget()
-{
 }
 
 void QgsScaleWidget::setShowCurrentScaleButton( bool showCurrentScaleButton )
@@ -52,7 +47,7 @@ void QgsScaleWidget::setShowCurrentScaleButton( bool showCurrentScaleButton )
   mCurrentScaleButton->setVisible( mShowCurrentScaleButton && mCanvas );
 }
 
-void QgsScaleWidget::setMapCanvas( QgsMapCanvas* canvas )
+void QgsScaleWidget::setMapCanvas( QgsMapCanvas *canvas )
 {
   mCanvas = canvas;
   mCurrentScaleButton->setVisible( mShowCurrentScaleButton && mCanvas );
@@ -66,5 +61,7 @@ void QgsScaleWidget::setScaleFromCanvas()
   setScale( 1 / mCanvas->scale() );
 }
 
-
-
+void QgsScaleWidget::setScale( double scale )
+{
+  return mScaleComboBox->setScale( scale );
+}

@@ -49,7 +49,11 @@ class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
       TableMaximumFeatures,
       TableMargin,
       TableGridStrokeWidth,
-      TableCellStyle
+      TableCellStyle,
+      TableHeaderFontColor,
+      TableContentFontColor,
+      TableGridColor,
+      TableBackgroundColor,
     };
 
     QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );

@@ -34,14 +34,14 @@
 #include "qgsvectorlayerselectionmanager.h"
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
-    : QListView( parent )
-    , mModel( nullptr )
-    , mCurrentEditSelectionModel( nullptr )
-    , mFeatureSelectionModel( nullptr )
-    , mFeatureSelectionManager( nullptr )
-    , mItemDelegate( nullptr )
-    , mEditSelectionDrag( false )
-    , mRowAnchor( 0 )
+  : QListView( parent )
+  , mModel( nullptr )
+  , mCurrentEditSelectionModel( nullptr )
+  , mFeatureSelectionModel( nullptr )
+  , mFeatureSelectionManager( nullptr )
+  , mItemDelegate( nullptr )
+  , mEditSelectionDrag( false )
+  , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
@@ -51,7 +51,7 @@ QgsVectorLayerCache *QgsFeatureListView::layerCache()
   return mModel->layerCache();
 }
 
-void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
+void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
 {
   QListView::setModel( featureListModel );
   mModel = featureListModel;
@@ -85,7 +85,7 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   connect( mModel->layerCache()->layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( repaintRequested() ) );
 }
 
-bool QgsFeatureListView::setDisplayExpression( const QString& expression )
+bool QgsFeatureListView::setDisplayExpression( const QString &expression )
 {
   if ( mModel->setDisplayExpression( expression ) )
   {
@@ -111,7 +111,7 @@ QString QgsFeatureListView::parserErrorString()
 QgsFeatureIds QgsFeatureListView::currentEditSelection()
 {
   QgsFeatureIds selection;
-  Q_FOREACH ( const QModelIndex& idx, mCurrentEditSelectionModel->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &idx, mCurrentEditSelectionModel->selectedIndexes() )
   {
     selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
   }
@@ -150,7 +150,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void QgsFeatureListView::editSelectionChanged( const QItemSelection& deselected, const QItemSelection& selected )
+void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected )
 {
   if ( isVisible() && updatesEnabled() )
   {
@@ -197,7 +197,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
     mCurrentEditSelectionModel->select( selection, QItemSelectionModel::ClearAndSelect );
 }
 
-void QgsFeatureListView::setEditSelection( const QModelIndex& index, const QItemSelectionModel::SelectionFlags& command )
+void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command )
 {
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
@@ -206,9 +206,9 @@ void QgsFeatureListView::setEditSelection( const QModelIndex& index, const QItem
     mCurrentEditSelectionModel->select( index, command );
 }
 
-void QgsFeatureListView::repaintRequested( const QModelIndexList& indexes )
+void QgsFeatureListView::repaintRequested( const QModelIndexList &indexes )
 {
-  Q_FOREACH ( const QModelIndex& index, indexes )
+  Q_FOREACH ( const QModelIndex &index, indexes )
   {
     update( index );
   }
@@ -317,12 +317,12 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu* menu = new QgsActionMenu( mModel->layerCache()->layer(), &feature, this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "AttributeTableRow" ), this );
     menu->exec( event->globalPos() );
   }
 }
 
-void QgsFeatureListView::selectRow( const QModelIndex& index, bool anchor )
+void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 {
   QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
   int row = index.row();
@@ -348,7 +348,7 @@ void QgsFeatureListView::selectRow( const QModelIndex& index, bool anchor )
   mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
 }
 
-void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager* featureSelectionManager )
+void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
   delete mFeatureSelectionManager;
 

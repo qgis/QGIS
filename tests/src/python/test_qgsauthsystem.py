@@ -49,7 +49,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
         cls.mpass = 'pass'  # master password
 
-        db1 = QFileInfo(cls.authm.authenticationDbPath()).canonicalFilePath()
+        db1 = QFileInfo(cls.authm.authenticationDatabasePath()).canonicalFilePath()
         db2 = QFileInfo(AUTHDBDIR + '/qgis-auth.db').canonicalFilePath()
         msg = 'Auth db temp path does not match db path of manager'
         assert db1 == db2, msg
@@ -60,8 +60,8 @@ class TestQgsAuthManager(unittest.TestCase):
             format(testid[1], testid[2])
         qDebug(testheader)
 
-        if (not self.authm.masterPasswordIsSet()
-                or not self.authm.masterPasswordHashInDb()):
+        if (not self.authm.masterPasswordIsSet() or
+                not self.authm.masterPasswordHashInDatabase()):
             self.set_master_password()
 
     def widget_dialog(self, widget):
@@ -90,7 +90,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertTrue(self.authm.masterPasswordIsSet(), msg)
 
         msg = 'Master password hash is not in database'
-        self.assertTrue(self.authm.masterPasswordHashInDb(), msg)
+        self.assertTrue(self.authm.masterPasswordHashInDatabase(), msg)
 
         msg = 'Master password not verified against hash in database'
         self.assertTrue(self.authm.verifyMasterPassword(), msg)
@@ -135,7 +135,7 @@ class TestQgsAuthManager(unittest.TestCase):
         full_chain = 'chains_subissuer-issuer-root_issuer2-root2.pem'
         full_chain_path = os.path.join(PKIDATA, full_chain)
 
-        # load CA file authorites for later comaprison
+        # load CA file authorities for later comaprison
         # noinspection PyTypeChecker
         # ca_certs = QSslCertificate.fromPath(full_chain_path)
         ca_certs = QgsAuthCertUtils.certsFromFile(full_chain_path)
@@ -382,7 +382,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertIsNotNone(self.authm.uniqueConfigId(), msg)
 
         uids = []
-        for _ in xrange(50):
+        for _ in range(50):
             # time.sleep(0.01)  # or else the salt is not random enough
             uids.append(self.authm.uniqueConfigId())
         msg = 'Generated 50 config ids are not unique:\n{0}\n{1}'.format(
@@ -527,7 +527,7 @@ class TestQgsAuthManager(unittest.TestCase):
         # qDebug('Backup db path: {0}'.format(backup))
         msg = 'Could not retrieve backup path for reset master password op'
         self.assertIsNotNone(backup)
-        self.assertTrue(backup != self.authm.authenticationDbPath(), msg)
+        self.assertTrue(backup != self.authm.authenticationDatabasePath(), msg)
 
         msg = 'Could not verify reset master password'
         self.assertTrue(self.authm.setMasterPassword('newpass', True), msg)
@@ -539,7 +539,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertTrue(len(self.authm.configIds()) == 0, msg)
 
         msg = 'Auth db does not exist'
-        self.assertTrue(os.path.exists(self.authm.authenticationDbPath()), msg)
+        self.assertTrue(os.path.exists(self.authm.authenticationDatabasePath()), msg)
 
         QTest.qSleep(1000)  # necessary for new backup to have different name
 
@@ -552,11 +552,11 @@ class TestQgsAuthManager(unittest.TestCase):
         # qDebug('Erase db backup db path: {0}'.format(backup))
         msg = 'Could not retrieve backup path for erase db op'
         self.assertIsNotNone(backup)
-        self.assertTrue(backup != self.authm.authenticationDbPath(), msg)
+        self.assertTrue(backup != self.authm.authenticationDatabasePath(), msg)
 
         msg = 'Master password not erased from auth db'
-        self.assertTrue(not self.authm.masterPasswordIsSet()
-                        and not self.authm.masterPasswordHashInDb(), msg)
+        self.assertTrue(not self.authm.masterPasswordIsSet() and
+                        not self.authm.masterPasswordHashInDatabase(), msg)
 
         self.set_master_password()
 

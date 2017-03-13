@@ -35,6 +35,8 @@
 #include <QLinkedList>
 #include <geos_c.h>
 
+#include "qgis_core.h"
+
 namespace pal
 {
 
@@ -73,7 +75,7 @@ namespace pal
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
-      PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
+      PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /** Tests whether point set contains a specified point.
        * @param x x-coordinate of point
@@ -92,7 +94,7 @@ namespace pal
        */
       bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
-      CHullBox * compute_chull_bbox();
+      CHullBox *compute_chull_bbox();
 
       /** Split a concave shape into several convex shapes.
        */
@@ -122,8 +124,8 @@ namespace pal
         max[1] = ymax;
       }
 
-      /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
-      PointSet* getHoleOf() { return holeOf; }
+      //! Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset.
+      PointSet *getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
 
@@ -138,7 +140,7 @@ namespace pal
 
       /** Returns the point set's GEOS geometry.
       */
-      const GEOSGeometry* geos() const;
+      const GEOSGeometry *geos() const;
 
       /** Returns length of line geometry.
        */
@@ -149,16 +151,16 @@ namespace pal
       mutable bool mOwnsGeom;
 
       int nbPoints;
-      double *x;
+      double *x = nullptr;
       double *y;   // points order is counterclockwise
 
-      int *cHull;
+      int *cHull = nullptr;
       int cHullSize;
 
       int type;
 
-      PointSet* holeOf;
-      PointSet* parent;
+      PointSet *holeOf = nullptr;
+      PointSet *parent = nullptr;
 
       PointSet( double x, double y );
 
@@ -166,7 +168,7 @@ namespace pal
 
       void deleteCoords();
       void createGeosGeom() const;
-      const GEOSPreparedGeometry* preparedGeom() const;
+      const GEOSPreparedGeometry *preparedGeom() const;
       void invalidateGeos();
 
       double xmin;
@@ -176,7 +178,7 @@ namespace pal
 
     private:
 
-      mutable const GEOSPreparedGeometry* mPreparedGeom;
+      mutable const GEOSPreparedGeometry *mPreparedGeom;
 
   };
 

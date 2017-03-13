@@ -120,9 +120,9 @@ class QgsComposerLabel : QgsComposerItem
      */
     virtual void setFrameEnabled( const bool drawFrame );
 
-    /** Reimplemented to call prepareGeometryChange after changing outline width
+    /** Reimplemented to call prepareGeometryChange after changing stroke width
      */
-    virtual void setFrameOutlineWidth( const double outlineWidth );
+    virtual void setFrameStrokeWidth( const double strokeWidth );
 
   public slots:
     void refreshExpressionContext();

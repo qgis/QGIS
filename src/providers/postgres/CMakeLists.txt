@@ -35,12 +35,14 @@ SET(PG_HDRS
 ########################################################
 # Build
 
-QT4_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
+QT5_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/auth
   ../../core/geometry
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
@@ -70,6 +72,13 @@ TARGET_LINK_LIBRARIES (postgresprovider
   qgis_gui
 )
 
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    postgresprovider PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 ########################################################
 # Install

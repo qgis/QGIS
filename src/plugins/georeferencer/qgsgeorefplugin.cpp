@@ -29,7 +29,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter (prefix with 'the')
+ *   variableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -63,8 +63,8 @@ static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Georeferencing rasters using GDAL" );
 static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.png" );
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -78,11 +78,11 @@ static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
-    , mActionRunGeoref( nullptr )
-    , mPluginGui( nullptr )
+QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
+  , mActionRunGeoref( nullptr )
+  , mPluginGui( nullptr )
 {
 }
 
@@ -99,12 +99,12 @@ void QgsGeorefPlugin::initGui()
 
   // Create the action for tool
   mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer..." ), this );
-  mActionRunGeoref->setObjectName( "mActionRunGeoref" );
+  mActionRunGeoref->setObjectName( QStringLiteral( "mActionRunGeoref" ) );
 
   // Connect the action to the run
   connect( mActionRunGeoref, SIGNAL( triggered() ), this, SLOT( run() ) );
 
-  setCurrentTheme( "" );
+  setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
@@ -136,25 +136,25 @@ void QgsGeorefPlugin::unload()
 }
 
 //! Set icons to the current theme
-void QgsGeorefPlugin::setCurrentTheme( const QString& )
+void QgsGeorefPlugin::setCurrentTheme( const QString & )
 {
   if ( mActionRunGeoref )
-    mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );
+    mActionRunGeoref->setIcon( getThemeIcon( QStringLiteral( "/mGeorefRun.png" ) ) );
 }
 
-QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
+QIcon QgsGeorefPlugin::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::activeThemePath() + "/plugins" + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + "/plugins" + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + theName );
+    return QIcon( QgsApplication::defaultThemePath() + "/plugins" + name );
   }
   else
   {
-    return QIcon( ":/icons/default" + theName );
+    return QIcon( ":/icons/default" + name );
   }
 }
 
@@ -182,9 +182,9 @@ QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new QgsGeorefPlugin( theQgisInterfacePointer );
+  return new QgsGeorefPlugin( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -223,7 +223,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

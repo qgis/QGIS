@@ -12,14 +12,13 @@ class QgsCurvePolygon: public QgsSurface
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCurvePolygon* clone() const;
+    virtual QgsCurvePolygon* clone() const /Factory/;
     void clear();
 
-    virtual bool fromWkb( QgsConstWkbPtr wkb );
+    virtual bool fromWkb( QgsConstWkbPtr& wkb );
     virtual bool fromWkt( const QString& wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    QByteArray asWkb() const;
     QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
@@ -28,7 +27,7 @@ class QgsCurvePolygon: public QgsSurface
     //surface interface
     virtual double area() const;
     virtual double perimeter() const;
-    QgsPolygonV2* surfaceToPolygon() const;
+    QgsPolygonV2* surfaceToPolygon() const /Factory/;
     virtual QgsAbstractGeometry* boundary() const /Factory/;
 
 
@@ -55,8 +54,23 @@ class QgsCurvePolygon: public QgsSurface
     void setInteriorRings( const QList<QgsCurve*>& rings );
     /** Adds an interior ring to the geometry (takes ownership)*/
     virtual void addInteriorRing( QgsCurve* ring /Transfer/ );
-    /** Removes ring. Exterior ring is 0, first interior ring 1, ...*/
-    bool removeInteriorRing( int nr );
+
+    /**
+     * Removes an interior ring from the polygon. The first interior ring has index 0.
+     * The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
+     * the function will return true.  It is not possible to remove the exterior ring using this method.
+     * @see removeInteriorRings()
+     */
+    bool removeInteriorRing( int ringIndex );
+
+    /**
+     * Removes the interior rings from the polygon. If the minimumAllowedArea
+     * parameter is specified then only rings smaller than this minimum
+     * area will be removed.
+     * @note added in QGIS 3.0
+     * @see removeInteriorRing()
+     */
+    void removeInteriorRings( double minimumAllowedArea = -1 );
 
     virtual void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
@@ -68,6 +82,8 @@ class QgsCurvePolygon: public QgsSurface
     virtual bool deleteVertex( QgsVertexId position );
 
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
+    virtual int nCoordinates() const;
+    bool isEmpty() const;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
 

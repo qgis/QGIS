@@ -19,6 +19,7 @@ email                : jpalmer at linz dot govt dot nz
 
 #include "qgsmaptool.h"
 #include "qgspoint.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -28,27 +29,27 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectRadius( QgsMapCanvas* canvas );
+    QgsMapToolSelectRadius( QgsMapCanvas *canvas );
 
     virtual ~QgsMapToolSelectRadius();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
 
     //! sets the rubber band to a circle approximated using 40 segments.
     // The radius center point is defined in the canvasPressEvent event.
-    void setRadiusRubberBand( QgsPoint & radiusEdge );
+    void setRadiusRubberBand( QgsPoint &radiusEdge );
 
     //! used for storing all of the maps point for the polygon
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
     //! Center point for the radius
     QgsPoint mRadiusCenter;
@@ -57,7 +58,7 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
     QColor mFillColor;
 
-    QColor mBorderColour;
+    QColor mStrokeColor;
 };
 
 #endif

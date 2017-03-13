@@ -35,7 +35,7 @@ class QgsGCPListWidget : public QTableView
     explicit QgsGCPListWidget( QWidget *parent = nullptr );
 
     void setGCPList( QgsGCPList *theGCPList );
-    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
+    void setGeorefTransform( QgsGeorefTransform *georefTransform );
     QgsGCPList *gcpList() { return mGCPList; }
     void updateGCPList();
     void closeEditors();
@@ -63,12 +63,12 @@ class QgsGCPListWidget : public QTableView
     void createItemContextMenu();
     void adjustTableContent();
 
-    QgsGCPList               *mGCPList;
-    QgsGCPListModel          *mGCPListModel;
+    QgsGCPList               *mGCPList = nullptr;
+    QgsGCPListModel          *mGCPListModel = nullptr;
 
-    QgsNonEditableDelegate   *mNonEditableDelegate;
-    QgsDmsAndDdDelegate      *mDmsAndDdDelegate;
-    QgsCoordDelegate         *mCoordDelegate;
+    QgsNonEditableDelegate   *mNonEditableDelegate = nullptr;
+    QgsDmsAndDdDelegate      *mDmsAndDdDelegate = nullptr;
+    QgsCoordDelegate         *mCoordDelegate = nullptr;
 
     int mPrevRow;
     int mPrevColumn;

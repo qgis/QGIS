@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'April 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
@@ -29,12 +28,15 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
+from qgis.core import QgsProcessingFeedback
 from processing.gui.MessageDialog import MessageDialog
 
 
-class MessageBarProgress:
+class MessageBarProgress(QgsProcessingFeedback):
 
     def __init__(self, algname=None):
+        QgsProcessingFeedback.__init__(self)
+
         self.msg = []
         self.progressMessageBar = \
             iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))
@@ -45,26 +47,11 @@ class MessageBarProgress:
         iface.messageBar().pushWidget(self.progressMessageBar,
                                       iface.messageBar().INFO)
 
-    def error(self, msg):
+    def reportError(self, msg):
         self.msg.append(msg)
 
-    def setText(self, text):
-        pass
-
-    def setPercentage(self, i):
+    def setProgress(self, i):
         self.progress.setValue(i)
-
-    def setInfo(self, _):
-        pass
-
-    def setCommand(self, _):
-        pass
-
-    def setDebugInfo(self, _):
-        pass
-
-    def setConsoleInfo(self, _):
-        pass
 
     def close(self):
         if self.msg:

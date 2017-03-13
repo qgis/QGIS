@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -79,7 +80,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (new connection)')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,
@@ -87,21 +88,21 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.GTYPE,
                                              self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterCrs(self.A_SRS,
-                                       self.tr('Assign an output CRS'), '', optional=True))
+                                       self.tr('Assign an output CRS'), '', optional=False))
         self.addParameter(ParameterCrs(self.T_SRS,
                                        self.tr('Reproject to this CRS on output '), '', optional=True))
         self.addParameter(ParameterCrs(self.S_SRS,
                                        self.tr('Override source CRS'), '', optional=True))
         self.addParameter(ParameterString(self.HOST,
-                                          self.tr('Host'), 'localhost', optional=False))
+                                          self.tr('Host'), 'localhost', optional=True))
         self.addParameter(ParameterString(self.PORT,
-                                          self.tr('Port'), '5432', optional=False))
+                                          self.tr('Port'), '5432', optional=True))
         self.addParameter(ParameterString(self.USER,
-                                          self.tr('Username'), '', optional=False))
+                                          self.tr('Username'), '', optional=True))
         self.addParameter(ParameterString(self.DBNAME,
-                                          self.tr('Database name'), '', optional=False))
+                                          self.tr('Database name'), '', optional=True))
         self.addParameter(ParameterString(self.PASSWORD,
-                                          self.tr('Password'), '', optional=False))
+                                          self.tr('Password'), '', optional=True))
         self.addParameter(ParameterString(self.SCHEMA,
                                           self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
@@ -153,34 +154,51 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
+    def getConnectionString(self):
+        host = self.getParameterValue(self.HOST)
+        port = self.getParameterValue(self.PORT)
+        user = self.getParameterValue(self.USER)
+        dbname = self.getParameterValue(self.DBNAME)
+        password = self.getParameterValue(self.PASSWORD)
+        schema = self.getParameterValue(self.SCHEMA)
+        arguments = []
+        if host:
+            arguments.append('host=' + host)
+        if port:
+            arguments.append('port=' + str(port))
+        if dbname:
+            arguments.append('dbname=' + dbname)
+        if password:
+            arguments.append('password=' + password)
+        if schema:
+            arguments.append('active_schema=' + schema)
+        if user:
+            arguments.append('user=' + user)
+        return GdalUtils.escapeAndJoin(arguments)
+
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = ogrConnectionString(inLayer)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
-        ssrs = unicode(self.getParameterValue(self.S_SRS))
-        tsrs = unicode(self.getParameterValue(self.T_SRS))
-        asrs = unicode(self.getParameterValue(self.A_SRS))
-        host = unicode(self.getParameterValue(self.HOST))
-        port = unicode(self.getParameterValue(self.PORT))
-        user = unicode(self.getParameterValue(self.USER))
-        dbname = unicode(self.getParameterValue(self.DBNAME))
-        password = unicode(self.getParameterValue(self.PASSWORD))
-        schema = unicode(self.getParameterValue(self.SCHEMA))
-        table = unicode(self.getParameterValue(self.TABLE))
-        pk = unicode(self.getParameterValue(self.PK))
+        ssrs = str(self.getParameterValue(self.S_SRS))
+        tsrs = str(self.getParameterValue(self.T_SRS))
+        asrs = str(self.getParameterValue(self.A_SRS))
+        table = str(self.getParameterValue(self.TABLE))
+        schema = str(self.getParameterValue(self.SCHEMA))
+        pk = str(self.getParameterValue(self.PK))
         pkstring = "-lco FID=" + pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
-        geocolumn = unicode(self.getParameterValue(self.GEOCOLUMN))
+        geocolumn = str(self.getParameterValue(self.GEOCOLUMN))
         geocolumnstring = "-lco GEOMETRY_NAME=" + geocolumn
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
         dimstring = "-lco DIM=" + dim
-        simplify = unicode(self.getParameterValue(self.SIMPLIFY))
-        segmentize = unicode(self.getParameterValue(self.SEGMENTIZE))
+        simplify = str(self.getParameterValue(self.SIMPLIFY))
+        segmentize = str(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
         clip = self.getParameterValue(self.CLIP)
-        where = unicode(self.getParameterValue(self.WHERE))
+        where = str(self.getParameterValue(self.WHERE))
         wherestring = '-where "' + where + '"'
-        gt = unicode(self.getParameterValue(self.GT))
+        gt = str(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
@@ -191,7 +209,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
         promotetomulti = self.getParameterValue(self.PROMOTETOMULTI)
         precision = self.getParameterValue(self.PRECISION)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append('-progress')
@@ -202,17 +220,9 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
             arguments.append('"' + shapeEncoding + '"')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=' + host)
-        arguments.append('port=' + port)
-        if len(dbname) > 0:
-            arguments.append('dbname=' + dbname)
-        if len(password) > 0:
-            arguments.append('password=' + password)
-        if len(schema) > 0:
-            arguments.append('active_schema=' + schema)
-        else:
-            arguments.append('active_schema=public')
-        arguments.append('user=' + user + '"')
+        arguments.append('PG:"')
+        arguments.append(self.getConnectionString())
+        arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(ogrLayerName(inLayer))

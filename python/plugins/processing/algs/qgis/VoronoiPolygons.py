@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,7 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -63,7 +64,7 @@ class VoronoiPolygons(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
         buf = self.getParameterValue(self.BUFFER)
@@ -92,7 +93,7 @@ class VoronoiPolygons(GeoAlgorithm):
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
@@ -107,11 +108,15 @@ class VoronoiPolygons(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
+        if len(c.polygons) == 0:
+            raise GeoAlgorithmExecutionException(
+                self.tr('There were no polygons created.'))
+
         total = 100.0 / len(c.polygons)
 
-        for (site, edges) in c.polygons.iteritems():
+        for (site, edges) in list(c.polygons.items()):
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
-            inFeat = layer.getFeatures(request).next()
+            inFeat = next(layer.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
             geom = QgsGeometry.fromMultiPoint(lines)
@@ -121,7 +126,7 @@ class VoronoiPolygons(GeoAlgorithm):
             writer.addFeature(outFeat)
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer
 
@@ -196,8 +201,8 @@ class VoronoiPolygons(GeoAlgorithm):
                         ytemp = 0 - exX
                 else:
                     xtemp = width + exX
-                    ytemp = (c.lines[edge[0]][2] - (width + exX)
-                             * c.lines[edge[0]][0]) / c.lines[edge[0]][1]
+                    ytemp = (c.lines[edge[0]][2] - (width + exX) *
+                             c.lines[edge[0]][0]) / c.lines[edge[0]][1]
                 [x1, y1, x2, y2] = clip_line(
                     c.vertices[edge[1]][0],
                     c.vertices[edge[1]][1],
@@ -231,10 +236,10 @@ class VoronoiPolygons(GeoAlgorithm):
                     exY,
                 )
             if x1 or x2 or y1 or y2:
-                lines.append(QgsPoint(x1 + extent.xMinimum(), y1
-                                      + extent.yMinimum()))
-                lines.append(QgsPoint(x2 + extent.xMinimum(), y2
-                                      + extent.yMinimum()))
+                lines.append(QgsPoint(x1 + extent.xMinimum(),
+                                      y1 + extent.yMinimum()))
+                lines.append(QgsPoint(x2 + extent.xMinimum(),
+                                      y2 + extent.yMinimum()))
                 if 0 - exX in (x1, x2):
                     hasXMin = True
                 if 0 - exY in (y1, y2):
@@ -245,15 +250,15 @@ class VoronoiPolygons(GeoAlgorithm):
                     hasXMax = True
         if hasXMin:
             if hasYMax:
-                lines.append(QgsPoint(extent.xMinimum() - exX, height
-                                      + extent.yMinimum() + exY))
+                lines.append(QgsPoint(extent.xMinimum() - exX,
+                                      height + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(extent.xMinimum() - exX,
                                       extent.yMinimum() - exY))
         if hasXMax:
             if hasYMax:
-                lines.append(QgsPoint(width + extent.xMinimum() + exX, height
-                                      + extent.yMinimum() + exY))
+                lines.append(QgsPoint(width + extent.xMinimum() + exX,
+                                      height + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX,
                                       extent.yMinimum() - exY))

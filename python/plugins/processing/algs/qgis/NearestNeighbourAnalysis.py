@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import next
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -74,7 +76,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
                                     self.tr('Number of points')))
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
@@ -93,12 +95,12 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]
-            request = QgsFeatureRequest().setFilterFid(neighbourID)
-            neighbour = layer.getFeatures(request).next()
+            request = QgsFeatureRequest().setFilterFid(neighbourID).setSubsetOfAttributes([])
+            neighbour = next(layer.getFeatures(request))
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),
                                             feat.geometry().asPoint())
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         do = float(sumDist) / count
         de = float(0.5 / math.sqrt(count / A))
@@ -107,11 +109,11 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         zscore = float((do - de) / SE)
 
         data = []
-        data.append('Observed mean distance: ' + unicode(do))
-        data.append('Expected mean distance: ' + unicode(de))
-        data.append('Nearest neighbour index: ' + unicode(d))
-        data.append('Number of points: ' + unicode(count))
-        data.append('Z-Score: ' + unicode(zscore))
+        data.append('Observed mean distance: ' + str(do))
+        data.append('Expected mean distance: ' + str(de))
+        data.append('Nearest neighbour index: ' + str(d))
+        data.append('Number of points: ' + str(count))
+        data.append('Z-Score: ' + str(zscore))
 
         self.createHTML(output, data)
 
@@ -122,11 +124,10 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.setOutputValue(self.Z_SCORE, float(data[4].split(': ')[1]))
 
     def createHTML(self, outputFile, algData):
-        f = codecs.open(outputFile, 'w', encoding='utf-8')
-        f.write('<html><head>')
-        f.write('<meta http-equiv="Content-Type" content="text/html; \
-                charset=utf-8" /></head><body>')
-        for s in algData:
-            f.write('<p>' + unicode(s) + '</p>')
-        f.write('</body></html>')
-        f.close()
+        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+            f.write('<html><head>')
+            f.write('<meta http-equiv="Content-Type" content="text/html; \
+                    charset=utf-8" /></head><body>')
+            for s in algData:
+                f.write('<p>' + str(s) + '</p>')
+            f.write('</body></html>')

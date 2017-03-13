@@ -26,15 +26,15 @@ class QgsOSMImportDialog : public QDialog, private Ui::QgsOSMImportDialog
 {
     Q_OBJECT
   public:
-    explicit QgsOSMImportDialog( QWidget* parent = nullptr );
+    explicit QgsOSMImportDialog( QWidget *parent = nullptr );
     ~QgsOSMImportDialog();
 
   private slots:
     void onBrowseXml();
     void onBrowseDb();
 
-    void xmlFileNameChanged( const QString& fileName );
-    void dbFileNameChanged( const QString& fileName );
+    void xmlFileNameChanged( const QString &fileName );
+    void dbFileNameChanged( const QString &fileName );
 
     void onOK();
     void onClose();
@@ -42,7 +42,7 @@ class QgsOSMImportDialog : public QDialog, private Ui::QgsOSMImportDialog
     void onProgress( int percent );
 
   private:
-    QgsOSMXmlImport* mImport;
+    QgsOSMXmlImport *mImport = nullptr;
 };
 
 #endif // QGSOSMIMPORTDIALOG_H

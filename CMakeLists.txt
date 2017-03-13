@@ -96,7 +96,7 @@ SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be
 IF (WITH_BINDINGS)
   # By default bindings will be installed only to QGIS directory
   # Someone might want to install it to python site-packages directory
-  # as otherwise user has to use PYTHONPATH environemnt variable to add
+  # as otherwise user has to use PYTHONPATH environment variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
   SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
@@ -105,10 +105,7 @@ IF (WITH_BINDINGS)
   SET (WITH_QSCIAPI TRUE CACHE BOOL "Whether to generate PyQGIS QScintilla2 API file. (For devs) run 'make qsci-pap-src' in between QGIS build and install to regenerate .pap file in source tree for console auto-completion.")
   # keep casual users from updating their source tree via WITH_QSCIAPI
   MARK_AS_ADVANCED (WITH_QSCIAPI)
-  # path to custom Python framework on Mac
-  IF (APPLE)
-    SET (PYTHON_CUSTOM_FRAMEWORK "" CACHE PATH "Path to custom Python.framework on Mac. (should not have to specify other Python options)")
-  ENDIF (APPLE)
+  ADD_DEFINITIONS(-DWITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 #BUILD WITH QtMobility by default on android only. Other platform can force it
@@ -118,6 +115,8 @@ ELSE (ANDROID)
     SET (DEFAULT_WITH_QTMOBILITY FALSE)
 ENDIF (ANDROID)
 SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
+
+SET (WITH_GEOREFERENCER TRUE CACHE BOOL "Determines whether GeoReferencer plugin should be built")
 
 SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
 IF (WITH_GLOBE)
@@ -246,77 +245,38 @@ ELSE (WITH_QTWEBKIT)
   MESSAGE(STATUS "Qt WebKit support DISABLED.")
 ENDIF(WITH_QTWEBKIT)
 #############################################################
-# search for Qt4
-SET(QT_MIN_VERSION 4.8.0)
-SET (ENABLE_QT5 FALSE CACHE BOOL "If enabled will try to find Qt5 before looking for Qt4")
-IF (ENABLE_QT5)
-  FIND_PACKAGE(Qt5Core QUIET)
-  FIND_PACKAGE(Qt5Gui REQUIRED)
-  FIND_PACKAGE(Qt5Widgets REQUIRED)
-  FIND_PACKAGE(Qt5Network REQUIRED)
-  FIND_PACKAGE(Qt5Xml REQUIRED)
-  FIND_PACKAGE(Qt5Svg REQUIRED)
-  FIND_PACKAGE(Qt5Concurrent REQUIRED)
-  FIND_PACKAGE(Qt5PrintSupport REQUIRED)
-  FIND_PACKAGE(Qt5Positioning)
-  IF (WITH_QTWEBKIT)
-    FIND_PACKAGE(Qt5WebKit REQUIRED)
-    FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
-  ENDIF(WITH_QTWEBKIT)
-  FIND_PACKAGE(Qt5Test REQUIRED)
-  FIND_PACKAGE(Qt5UiTools REQUIRED)
-  FIND_PACKAGE(Qt5Script REQUIRED)
-  FIND_PACKAGE(Qt5Sql REQUIRED)
-  SET(QT5_BUILD TRUE)
-  INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
-  MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
-ELSE()
-  FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
-  SET(QT_USE_QTXML 1)
-  SET(QT_USE_QTNETWORK 1)
-  SET(QT_USE_QTSVG 1)
-  SET(QT_USE_QTSQL 1)
-  IF (WITH_QTWEBKIT)
-    SET(QT_USE_QTWEBKIT 1)
-  ENDIF(WITH_QTWEBKIT)
-  IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR (WITH_QTWEBKIT AND NOT QT_QTWEBKIT_FOUND) OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
-    MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
-  ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR (WITH_QTWEBKIT AND NOT QT_QTWEBKIT_FOUND) OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
+# search for Qt5
+SET(QT_MIN_VERSION 5.2.0)
+FIND_PACKAGE(Qt5Core QUIET)
+FIND_PACKAGE(Qt5Gui REQUIRED)
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5Network REQUIRED)
+FIND_PACKAGE(Qt5Xml REQUIRED)
+FIND_PACKAGE(Qt5Svg REQUIRED)
+FIND_PACKAGE(Qt5Concurrent REQUIRED)
+FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+FIND_PACKAGE(Qt5Positioning)
+IF (WITH_QTWEBKIT)
+  FIND_PACKAGE(Qt5WebKit REQUIRED)
+  FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+ENDIF(WITH_QTWEBKIT)
+FIND_PACKAGE(Qt5Test REQUIRED)
+FIND_PACKAGE(Qt5UiTools REQUIRED)
+FIND_PACKAGE(Qt5Script REQUIRED)
+FIND_PACKAGE(Qt5Sql REQUIRED)
+INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
+MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 
-  INCLUDE( ${QT_USE_FILE} )
-
-  MESSAGE(STATUS "Found Qt version: ${QTVERSION}")
-ENDIF()
+IF(WITH_QTWEBKIT)
+  SET(OPTIONAL_QTWEBKIT ${QT_QTWEBKIT_LIBRARY})
+ENDIF(WITH_QTWEBKIT)
 
 IF (WITH_QTMOBILITY)
-    FIND_PACKAGE(QtMobility 1.1.0)
+  FIND_PACKAGE(QtMobility 1.1.0)
 ENDIF (WITH_QTMOBILITY)
-
-IF (ANDROID)
-  SET (DEFAULT_WITH_TOUCH TRUE)
-ELSE (ANDROID)
-  SET (DEFAULT_WITH_TOUCH FALSE)
-ENDIF (ANDROID)
-
-#Add a touch mode if Qt has Qt Gestures
-SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
-
-IF (WITH_TOUCH)
-  # following variable is used in qgsconfig.h
-  SET (HAVE_TOUCH TRUE)
-  MESSAGE (STATUS "Touch support enabled")
-ELSE (WITH_TOUCH)
-  MESSAGE (STATUS "Touch support disabled")
-ENDIF (WITH_TOUCH)
 
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
-
-# search for QJSON and decide whether to enable ArcGIS providers
-FIND_PACKAGE (QJSON)
-IF (QJSON_FOUND AND NOT ENABLE_QT5)
-  SET (WITH_ARCGIS TRUE)
-ENDIF (QJSON_FOUND AND NOT ENABLE_QT5)
 
 # Master password hash and authentication encryption
 FIND_PACKAGE(QCA REQUIRED)
@@ -360,10 +320,10 @@ ENDIF (SUPPRESS_QT_WARNINGS)
 ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
 
 FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
-    NAMES lrelease
-    PATHS ${QT_BINARY_DIR}
-    NO_DEFAULT_PATH
-    )
+  NAMES lrelease
+  PATHS ${QT_BINARY_DIR}
+  NO_DEFAULT_PATH
+)
 
 #############################################################
 # enable use of c++11 features where available
@@ -372,32 +332,7 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 #   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
 #   https://gist.github.com/yamaya/2924292
 
-IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-  IF (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
-    SET(USE_CXX_11 TRUE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  ENDIF()
-ELSEIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  IF ((NOT APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.2")
-       OR (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.1"))
-    SET(USE_CXX_11 TRUE)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing")
-  ENDIF()
-ELSEIF (MSVC AND MSVC_VERSION GREATER 1600)
-  SET(USE_CXX_11 TRUE)
-ELSE()
-  SET(USE_CXX_11 FALSE)
-ENDIF()
-
-#allow override keyword if available
-IF(NOT USE_CXX_11)
-  ADD_DEFINITIONS("-Doverride=")
-  ADD_DEFINITIONS("-Dnoexcept=")
-  ADD_DEFINITIONS("-Dnullptr=0")
-ELSE()
-  ADD_DEFINITIONS("-DHAS_MOVE_SEMANTICS")
-ENDIF()
+SET(CMAKE_CXX_STANDARD 11)
 
 #############################################################
 # enable warnings
@@ -500,11 +435,13 @@ IF (WIN32)
   SET (DEFAULT_PLUGIN_SUBDIR  plugins)
   SET (DEFAULT_INCLUDE_SUBDIR include)
 
+  SET (DEFAULT_SERVER_MODULE_SUBDIR server)
+
   IF (MSVC)
     SET (DEFAULT_BIN_SUBDIR bin)
     SET (DEFAULT_CGIBIN_SUBDIR bin)
     # put all the build products into a single directory
-    # under build (doesnt affect install target) to make for
+    # under build (doesn't affect install target) to make for
     # easier debugging.
 
     # Turn on defines for non standard maths stuff
@@ -573,6 +510,10 @@ ELSE (WIN32)
     SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
+
+    # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
+    SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
+
     # path for framework references when running from build directory
     # changed later to reference in-app resources upon install
     SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
@@ -596,14 +537,16 @@ ELSE (WIN32)
     SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
     SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
     SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
+
+    SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
   ENDIF (APPLE)
 
 ENDIF (WIN32)
 
 IF (ANDROID)
-    SET (DEFAULT_PLUGIN_SUBDIR  lib)
-    SET (DEFAULT_DATA_SUBDIR    files/share)
-    string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
+  SET (DEFAULT_PLUGIN_SUBDIR  lib)
+  SET (DEFAULT_DATA_SUBDIR    files/share)
+  string(REPLACE "<CMAKE_SHARED_LIBRARY_SONAME_CXX_FLAG><TARGET_SONAME>" "" CMAKE_CXX_CREATE_SHARED_MODULE "${CMAKE_CXX_CREATE_SHARED_MODULE}")
 ENDIF (ANDROID)
 
 #assume we have escaped compiler directives
@@ -616,35 +559,19 @@ IF(COMMAND cmake_policy)
   IF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
     cmake_policy(SET CMP0063 NEW)
   ENDIF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
+  IF(MSVC)
+    cmake_policy(SET CMP0020 NEW)
+  ENDIF(MSVC)
 ENDIF(COMMAND cmake_policy)
 
-IF (WIN32)
-  SET(DLLIMPORT "__declspec(dllimport)")
-  SET(DLLEXPORT "__declspec(dllexport)")
-ELSE (WIN32)
-  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    SET(DLLEXPORT "__attribute__ ((visibility (\\\"default\\\")))")
-  ELSE()
-    SET(DLLEXPORT "")
-  ENDIF()
-
-  IF(PEDANTIC AND NOT APPLE)
-    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
-    SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
-  ENDIF(PEDANTIC AND NOT APPLE)
-
-ENDIF(WIN32)
-
-ADD_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DPYTHON_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
+IF (PEDANTIC AND NOT WIN32 AND NOT APPLE)
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
+ENDIF(PEDANTIC AND NOT WIN32 AND NOT APPLE)
 
 SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
+INCLUDE(GenerateExportHeader)
 
 #############################################################
 # user-changeable settings which can be used to customize
@@ -659,6 +586,8 @@ SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory wh
 SET (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
 SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
 
+SET (QGIS_SERVER_MODULE_SUBDIR  ${DEFAULT_SERVER_MODULE_SUBDIR}  CACHE STRING "Subdirectory where server modules will be installed")
+
 # mark *_SUBDIR variables as advanced as this is not something
 # that an average user would use
 MARK_AS_ADVANCED (QGIS_BIN_SUBDIR QGIS_CGIBIN_SUBDIR QGIS_LIB_SUBDIR QGIS_LIBEXEC_SUBDIR QGIS_DATA_SUBDIR QGIS_PLUGIN_SUBDIR QGIS_INCLUDE_SUBDIR)
@@ -671,6 +600,8 @@ SET (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
 SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
 SET (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
 SET (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
+
+SET (QGIS_SERVER_MODULE_DIR ${QGIS_SERVER_MODULE_SUBDIR})
 
 # set the default locations where the targets (executables, libraries) will land when compiled
 # this is to allow running qgis from the source tree without having to actually do a "make install"
@@ -690,7 +621,7 @@ IF (UNIX AND NOT APPLE)
   SET (QGIS_MANUAL_DIR  ${CMAKE_INSTALL_PREFIX}/${QGIS_MANUAL_SUBDIR})
 ENDIF (UNIX AND NOT APPLE)
 
-SET (DISABLE_DEPRECATED ${ENABLE_QT5} CACHE BOOL "If set to true, it will disable deprecated functionality to prepare for the next generation of QGIS")
+SET (DISABLE_DEPRECATED FALSE CACHE BOOL "If set to true, it will disable deprecated functionality to prepare for the next generation of QGIS")
 IF (DISABLE_DEPRECATED)
   ADD_DEFINITIONS(-DQGIS_DISABLE_DEPRECATED)
 ENDIF (DISABLE_DEPRECATED)
@@ -699,12 +630,7 @@ ENDIF (DISABLE_DEPRECATED)
 #############################################################
 # Python build dependency
 
-SET (ENABLE_PYTHON3 ${ENABLE_QT5} CACHE BOOL "If enabled will try to find Python 3 before looking for Python 2")
-IF(ENABLE_PYTHON3)
-  SET(PYTHON_VER 3 CACHE STRING "Python version")
-ELSE(ENABLE_PYTHON3)
-  SET(PYTHON_VER 2.7 CACHE STRING "Python version")
-ENDIF(ENABLE_PYTHON3)
+SET(PYTHON_VER 3 CACHE STRING "Python version")
 
 FIND_PACKAGE(PythonInterp ${PYTHON_VER} REQUIRED)
 
@@ -715,17 +641,10 @@ IF (WITH_BINDINGS)
 
   FIND_PACKAGE(PythonLibrary REQUIRED)
 
-  # python support: check for interpreter, sip, pyqt4
-  IF(ENABLE_QT5)
-    FIND_PACKAGE(PyQt5 REQUIRED)
-    SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
-    SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
-  ELSE(ENABLE_QT5)
-    FIND_PACKAGE(PyQt4 REQUIRED)
-    # setup SIP variables
-    SET(PYQT_SIP_FLAGS ${PYQT4_SIP_FLAGS})
-    SET(PYQT_SIP_DIR ${PYQT4_SIP_DIR})
-  ENDIF(ENABLE_QT5)
+  # python support: check for interpreter, sip, pyqt5
+  FIND_PACKAGE(PyQt5 REQUIRED)
+  SET(PYQT_SIP_FLAGS ${PYQT5_SIP_FLAGS})
+  SET(PYQT_SIP_DIR ${PYQT5_SIP_DIR})
   SEPARATE_ARGUMENTS(PYQT_SIP_FLAGS) # convert space separated values to a list
 
   FIND_PACKAGE(SIP REQUIRED)
@@ -742,11 +661,7 @@ IF (WITH_BINDINGS)
   ENDIF (NOT BINDINGS_GLOBAL_INSTALL)
 
   IF (WITH_CUSTOM_WIDGETS)
-    IF(ENABLE_QT5)
-      SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
-    ELSE(ENABLE_QT5)
-      SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT4_MOD_DIR}/uic/widget-plugins/)
-    ENDIF(ENABLE_QT5)
+    SET(PYUIC_WIDGET_PLUGIN_DIRECTORY ${PYQT5_MOD_DIR}/uic/widget-plugins/)
   ENDIF (WITH_CUSTOM_WIDGETS)
 
 ENDIF (WITH_BINDINGS)
@@ -761,6 +676,20 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 # Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
 # that may be in the same install prefix
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
+
+####################################################
+# clang-tidy
+FIND_PROGRAM(
+  CLANG_TIDY_EXE
+  NAMES "clang-tidy"
+  DOC "Path to clang-tidy executable"
+  )
+IF(NOT CLANG_TIDY_EXE)
+  MESSAGE(STATUS "clang-tidy not found.")
+ELSE(NOT CLANG_TIDY_EXE)
+  MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+  SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
+ENDIF(NOT CLANG_TIDY_EXE)
 
 #############################################################
 # create qgsversion.h
@@ -853,7 +782,7 @@ ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
-  INSTALL (FILES qgis.1 qbrowser.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
+  INSTALL (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
 ENDIF (UNIX AND NOT APPLE)
 
 INSTALL(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})

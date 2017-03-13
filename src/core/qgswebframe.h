@@ -16,6 +16,8 @@
 #ifndef QGSWEBFRAME_H
 #define QGSWEBFRAME_H
 
+#include "qgis_core.h"
+
 #ifdef WITH_QTWEBKIT
 #include <QWebFrame>
 #else
@@ -35,8 +37,8 @@ class CORE_EXPORT QWebFrame : public QObject
     Q_OBJECT
 
   public:
-    QWebFrame( QObject* parent = 0 )
-        : QObject( parent )
+    QWebFrame( QObject *parent = 0 )
+      : QObject( parent )
     {
 
     }
@@ -52,7 +54,7 @@ class CORE_EXPORT QWebFrame : public QObject
       Q_UNUSED( scrollbarpolicy );
     }
 
-    void setHtml( const QString& html, const QUrl& url = QUrl() )
+    void setHtml( const QString &html, const QUrl &url = QUrl() )
     {
       Q_UNUSED( html );
       Q_UNUSED( url );
@@ -63,12 +65,12 @@ class CORE_EXPORT QWebFrame : public QObject
       return QSize();
     }
 
-    void render( QPainter*, const QRegion = QRegion() )
+    void render( QPainter *, const QRegion = QRegion() )
     {
 
     }
 
-    void addToJavaScriptWindowObject( const QString&, QObject* )
+    void addToJavaScriptWindowObject( const QString &, QObject * )
     {
 
     }

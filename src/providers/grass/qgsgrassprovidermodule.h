@@ -26,7 +26,7 @@ class QProgressBar;
 class QgsGrassImportItem;
 
 /* Qt does not allow inheritance from multiple QObjects, that is why we have QgsGrassItemActions
- * to keep common actions. QgsGrassItemActions must be childern of data items, so that when a data item
+ * to keep common actions. QgsGrassItemActions must be children of data items, so that when a data item
  * is moved to to another thread, it moves also QgsGrassItemActions and signals work.
  * That is why each data item class keeps QgsGrassItemActions, instead of putting them to QgsGrassObjectItemBase,
  * because it would be ugly and dangerous to be parent of member's member. */
@@ -34,9 +34,9 @@ class QgsGrassItemActions : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassItemActions( QgsGrassObject grassObject, bool valid, QObject *parent );
+    QgsGrassItemActions( const QgsGrassObject &grassObject, bool valid, QObject *parent );
 
-    QList<QAction*> actions();
+    QList<QAction *> actions();
 
   public slots:
     void newMapset();
@@ -52,7 +52,7 @@ class QgsGrassItemActions : public QObject
   private:
     // returns name of new vector map or empty string
     QString newVectorMap();
-    void newLayer( QString type );
+    void newLayer( const QString &type );
     QgsGrassObject mGrassObject;
     // Grass object is valid
     bool mValid;
@@ -62,7 +62,7 @@ class QgsGrassObjectItemBase
 {
   public:
     // actionsParent so that actions are moved to thread with item
-    explicit QgsGrassObjectItemBase( QgsGrassObject grassObject );
+    explicit QgsGrassObjectItemBase( const QgsGrassObject &grassObject );
 
     bool equal( const QgsDataItem *other );
 
@@ -73,60 +73,60 @@ class QgsGrassObjectItemBase
 class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
 {
   public:
-    QgsGrassLocationItem( QgsDataItem* parent, QString dirPath, QString path );
+    QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
 
     QIcon icon() override { return QgsDataItem::icon(); }
 
-    QVector<QgsDataItem*> createChildren() override;
-    virtual QList<QAction*> actions() override { return mActions->actions(); }
+    QVector<QgsDataItem *> createChildren() override;
+    virtual QList<QAction *> actions() override { return mActions->actions(); }
 
   private:
-    QgsGrassItemActions *mActions;
+    QgsGrassItemActions *mActions = nullptr;
 };
 
 class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
-    QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
+    QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QString path );
 
     virtual void setState( State state ) override;
 
     QIcon icon() override;
 
-    QVector<QgsDataItem*> createChildren() override;
-    virtual QList<QAction*> actions() override { return mActions->actions(); }
+    QVector<QgsDataItem *> createChildren() override;
+    virtual QList<QAction *> actions() override { return mActions->actions(); }
     virtual bool acceptDrop() override;
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
   public slots:
-    void onImportFinished( QgsGrassImport* import );
+    void onImportFinished( QgsGrassImport *import );
     void onDirectoryChanged();
     virtual void childrenCreated() override;
 
   private:
-    bool objectInImports( QgsGrassObject grassObject );
-    QgsGrassItemActions *mActions;
+    bool objectInImports( const QgsGrassObject &grassObject );
+    QgsGrassItemActions *mActions = nullptr;
     //void showImportError(const QString& error);
-    QFileSystemWatcher *mMapsetFileSystemWatcher;
+    QFileSystemWatcher *mMapsetFileSystemWatcher = nullptr;
     bool mRefreshLater;
     // running imports
-    static QList<QgsGrassImport*> mImports;
+    static QList<QgsGrassImport *> sImports;
 };
 
 class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
-    QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject grassObject,
+    QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject grassObject,
                         QString name, QString path, QString uri,
                         LayerType layerType, QString providerKey );
 
-    virtual QList<QAction*> actions() override { return mActions->actions(); }
+    virtual QList<QAction *> actions() override { return mActions->actions(); }
     virtual bool equal( const QgsDataItem *other ) override;
 
   protected:
-    QgsGrassItemActions *mActions;
+    QgsGrassItemActions *mActions = nullptr;
 
 };
 
@@ -136,10 +136,10 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     Q_OBJECT
   public:
     // labelName - name to be displayed in tree if it should be different from grassObject.name() (e.g. invalid vector)
-    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path, QString labelName = QString::null, bool valid = true );
+    QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject grassObject, QString path, QString labelName = QString::null, bool valid = true );
     ~QgsGrassVectorItem();
 
-    virtual QList<QAction*> actions() override { return mActions->actions(); }
+    virtual QList<QAction *> actions() override { return mActions->actions(); }
     virtual bool equal( const QgsDataItem *other ) override;
 
   public slots:
@@ -147,15 +147,15 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
 
   private:
     bool mValid;
-    QgsGrassItemActions *mActions;
-    QFileSystemWatcher *mWatcher;
+    QgsGrassItemActions *mActions = nullptr;
+    QFileSystemWatcher *mWatcher = nullptr;
 };
 
 class QgsGrassVectorLayerItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject vector, QString layerName,
+    QgsGrassVectorLayerItem( QgsDataItem *parent, QgsGrassObject vector, QString layerName,
                              QString path, QString uri, LayerType layerType, bool singleLayer );
 
     QString layerName() const override;
@@ -170,7 +170,7 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject grassObject,
+    QgsGrassRasterItem( QgsDataItem *parent, QgsGrassObject grassObject,
                         QString path, QString uri, bool isExternal );
 
     virtual QIcon icon() override;
@@ -186,7 +186,7 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
-    QgsGrassGroupItem( QgsDataItem* parent, QgsGrassObject grassObject,
+    QgsGrassGroupItem( QgsDataItem *parent, QgsGrassObject grassObject,
                        QString path, QString uril );
 
     virtual QIcon icon() override;
@@ -197,16 +197,16 @@ class QgsGrassImportItemWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsGrassImportItemWidget( QWidget* parent = 0 );
+    explicit QgsGrassImportItemWidget( QWidget *parent = 0 );
 
-    void setHtml( const QString & html );
+    void setHtml( const QString &html );
 
   public slots:
     void onProgressChanged( const QString &recentHtml, const QString &allHtml, int min, int max, int value );
 
   private:
-    QTextEdit *mTextEdit;
-    QProgressBar *mProgressBar;
+    QTextEdit *mTextEdit = nullptr;
+    QProgressBar *mProgressBar = nullptr;
 };
 
 // item representing a layer being imported
@@ -214,12 +214,12 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
-    QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import );
+    QgsGrassImportItem( QgsDataItem *parent, const QString &name, const QString &path, QgsGrassImport *import );
     ~QgsGrassImportItem();
     //virtual void setState( State state ) override {
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
-    virtual QList<QAction*> actions() override;
+    virtual QList<QAction *> actions() override;
     virtual QIcon icon() override;
     virtual QWidget *paramWidget() override;
 
@@ -229,12 +229,12 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 
   protected:
     // override refresh to keep Populating state
-    virtual void refresh( QVector<QgsDataItem*> children ) override { Q_UNUSED( children ); }
+    virtual void refresh( const QVector<QgsDataItem *> &children ) override { Q_UNUSED( children ); }
     //bool mDeleteAction;
-    QgsGrassImport* mImport;
+    QgsGrassImport *mImport = nullptr;
 
   private:
-    static QgsAnimatedIcon *mImportIcon;
+    static QgsAnimatedIcon *sImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

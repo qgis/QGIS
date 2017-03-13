@@ -24,6 +24,7 @@
 #include <QDialog>
 #include <QMenuBar>
 #include <QGridLayout>
+#include "qgis_gui.h"
 
 class QgsDistanceArea;
 class QgsHighlight;
@@ -48,7 +49,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 
@@ -81,7 +82,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     /**
      * Toggles the form mode.
-     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
+     * @param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
     void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }
@@ -91,7 +92,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
+    void setEditCommandMessage( const QString &message ) { mAttributeForm->setEditCommandMessage( message ); }
 
     /**
      * Intercept window activate/deactive events to show/hide the highlighted feature.
@@ -106,21 +107,20 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void accept() override;
     void reject() override;
 
-    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
-    //! closed.
-    void show( bool autoDelete = true );
+    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form
+    void show();
 
   private:
-    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, bool showDialogButtons );
+    void init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
-    QgsHighlight *mHighlight;
+    QgsHighlight *mHighlight = nullptr;
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
-    QgsAttributeForm* mAttributeForm;
-    QgsFeature *mOwnedFeature;
+    QgsAttributeForm *mAttributeForm = nullptr;
+    QgsFeature *mOwnedFeature = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
 

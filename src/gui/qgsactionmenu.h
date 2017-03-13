@@ -20,6 +20,8 @@
 #include <QSignalMapper>
 
 #include "qgsfeature.h"
+#include "qgsaction.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapLayerAction;
@@ -42,41 +44,16 @@ class GUI_EXPORT QgsActionMenu : public QMenu
       AttributeAction //!< Custom actions (manually defined in layer properties)
     };
 
-    struct ActionData
+    struct GUI_EXPORT ActionData
     {
-      ActionData()
-          : actionType( Invalid )
-          , actionId( 0 )
-          , featureId( 0 )
-          , mapLayer( nullptr )
-      {}
-
-      ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-          : actionType( AttributeAction )
-          , actionId( actionId )
-          , featureId( featureId )
-          , mapLayer( mapLayer )
-      {}
-
-      ActionData( QgsMapLayerAction* action, QgsFeatureId featureId, QgsMapLayer* mapLayer )
-          : actionType( MapLayerAction )
-          , actionId( action )
-          , featureId( featureId )
-          , mapLayer( mapLayer )
-      {}
+      ActionData();
+      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
       ActionType actionType;
-
-      union aid
-      {
-        aid( int i ) : id( i ) {}
-        aid( QgsMapLayerAction* a ) : action( a ) {}
-        int id;
-        QgsMapLayerAction* action;
-      } actionId;
-
+      QVariant actionData;
       QgsFeatureId featureId;
-      QgsMapLayer* mapLayer;
+      QgsMapLayer *mapLayer = nullptr;
     };
 
     /**
@@ -86,8 +63,9 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param feature  The feature that this action will be run upon. Make sure that this feature is available
      *                 for the lifetime of this object.
      * @param parent   The usual QWidget parent.
+     * @param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature *feature, QWidget *parent = nullptr );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent = nullptr );
 
     /**
      * Constructs a new QgsActionMenu
@@ -95,13 +73,9 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param layer    The layer that this action will be run upon.
      * @param fid      The feature id of the feature for which this action will be run.
      * @param parent   The usual QWidget parent.
+     * @param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, QWidget *parent = nullptr );
-
-    /**
-     * Destructor
-     */
-    ~QgsActionMenu();
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent = nullptr );
 
     /**
      * Change the feature on which actions are performed
@@ -109,25 +83,26 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * @param feature  A feature. Will not take ownership. It's the callers responsibility to keep the feature
      *                 as long as the menu is displayed and the action is running.
      */
-    void setFeature( QgsFeature* feature );
+    void setFeature( const QgsFeature &feature );
+
+  signals:
+    void reinit();
 
   private slots:
     void triggerAction();
     void reloadActions();
 
-  signals:
-    void reinit();
-
   private:
     void init();
-    const QgsFeature* feature();
+    QgsFeature feature();
 
-    QgsVectorLayer* mLayer;
-    QgsActionManager* mActions;
-    const QgsFeature* mFeature;
+    QgsVectorLayer *mLayer = nullptr;
+    QList<QgsAction> mActions;
+    QgsFeature mFeature;
     QgsFeatureId mFeatureId;
-    bool mOwnsFeature;
+    QString mActionScope;
 };
+
 
 Q_DECLARE_METATYPE( QgsActionMenu::ActionData )
 

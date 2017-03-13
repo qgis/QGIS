@@ -23,10 +23,11 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include <QStringList>
 #include <QVector>
+#include <QRegularExpression>
 
-QList<QgsLineString*> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry* geom )
+QList<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {
-  QList< QgsLineString* > linestrings;
+  QList< QgsLineString * > linestrings;
   if ( !geom )
     return linestrings;
 
@@ -34,37 +35,38 @@ QList<QgsLineString*> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeo
   geometries << geom;
   while ( ! geometries.isEmpty() )
   {
-    const QgsAbstractGeometry* g = geometries.takeFirst();
-    if ( const QgsCurve* curve = dynamic_cast< const QgsCurve* >( g ) )
+    const QgsAbstractGeometry *g = geometries.takeFirst();
+    if ( const QgsCurve *curve = dynamic_cast< const QgsCurve * >( g ) )
     {
-      linestrings << static_cast< QgsLineString* >( curve->segmentize() );
+      linestrings << static_cast< QgsLineString * >( curve->segmentize() );
     }
-    else if ( const QgsGeometryCollection* collection = dynamic_cast< const QgsGeometryCollection* >( g ) )
+    else if ( const QgsGeometryCollection *collection = dynamic_cast< const QgsGeometryCollection * >( g ) )
     {
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
         geometries.append( collection->geometryN( i ) );
       }
     }
-    else if ( const QgsCurvePolygon* curvePolygon = dynamic_cast< const QgsCurvePolygon* >( g ) )
+    else if ( const QgsCurvePolygon *curvePolygon = dynamic_cast< const QgsCurvePolygon * >( g ) )
     {
       if ( curvePolygon->exteriorRing() )
-        linestrings << static_cast< QgsLineString* >( curvePolygon->exteriorRing()->segmentize() );
+        linestrings << static_cast< QgsLineString * >( curvePolygon->exteriorRing()->segmentize() );
 
       for ( int i = 0; i < curvePolygon->numInteriorRings(); ++i )
       {
-        linestrings << static_cast< QgsLineString* >( curvePolygon->interiorRing( i )->segmentize() );
+        linestrings << static_cast< QgsLineString * >( curvePolygon->interiorRing( i )->segmentize() );
       }
     }
   }
   return linestrings;
 }
 
-QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometry& geom, const QgsPointV2& pt, QgsVertexId& id )
+QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const QgsPointV2 &pt, QgsVertexId &id )
 {
   double minDist = std::numeric_limits<double>::max();
   double currentDist = 0;
   QgsPointV2 minDistPoint;
+  id = QgsVertexId(); // set as invalid
 
   QgsVertexId vertexId;
   QgsPointV2 vertex;
@@ -90,7 +92,7 @@ QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometry& geom, con
   return minDistPoint;
 }
 
-double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, const QgsVertexId &id )
+double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id )
 {
   double currentDist = 0;
   QgsVertexId vertexId;
@@ -119,7 +121,7 @@ double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, cons
   return -1;
 }
 
-bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry& geometry, double distance, QgsVertexId& previousVertex, QgsVertexId& nextVertex )
+bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry &geometry, double distance, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
 {
   double currentDist = 0;
   previousVertex = QgsVertexId();
@@ -164,7 +166,7 @@ bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry& geometry, 
   return false;
 }
 
-void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometry& geom, QgsVertexId atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex )
+void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex, QgsVertexId &afterVertex )
 {
   bool polygonType = ( geom.dimension()  == 2 );
 
@@ -240,37 +242,38 @@ void QgsGeometryUtils::adjacentVertices( const QgsAbstractGeometry& geom, QgsVer
   }
 }
 
-double QgsGeometryUtils::sqrDistance2D( const QgsPointV2& pt1, const QgsPointV2& pt2 )
+double QgsGeometryUtils::sqrDistance2D( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
 {
   return ( pt1.x() - pt2.x() ) * ( pt1.x() - pt2.x() ) + ( pt1.y() - pt2.y() ) * ( pt1.y() - pt2.y() );
 }
 
-double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double& minDistX, double& minDistY, double epsilon )
+double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon )
 {
-  //normal vector
-  double nx = y2 - y1;
-  double ny = -( x2 - x1 );
+  minDistX = x1;
+  minDistY = y1;
 
-  double t;
-  t = ( ptX * ny - ptY * nx - x1 * ny + y1 * nx ) / (( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
+  double dx = x2 - x1;
+  double dy = y2 - y1;
 
-  if ( t < 0.0 )
+  if ( !qgsDoubleNear( dx, 0.0 ) || !qgsDoubleNear( dy, 0.0 ) )
   {
-    minDistX = x1;
-    minDistY = y1;
-  }
-  else if ( t > 1.0 )
-  {
-    minDistX = x2;
-    minDistY = y2;
-  }
-  else
-  {
-    minDistX = x1 + t * ( x2 - x1 );
-    minDistY = y1 + t * ( y2 - y1 );
+    double t = ( ( ptX - x1 ) * dx + ( ptY - y1 ) * dy ) / ( dx * dx + dy * dy );
+    if ( t > 1 )
+    {
+      minDistX = x2;
+      minDistY = y2;
+    }
+    else if ( t > 0 )
+    {
+      minDistX += dx * t ;
+      minDistY += dy * t ;
+    }
   }
 
-  double dist = ( minDistX - ptX ) * ( minDistX - ptX ) + ( minDistY - ptY ) * ( minDistY - ptY );
+  dx = ptX - minDistX;
+  dy = ptY - minDistY;
+
+  double dist = dx * dx + dy * dy;
 
   //prevent rounding errors if the point is directly on the segment
   if ( qgsDoubleNear( dist, 0.0, epsilon ) )
@@ -283,7 +286,7 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   return dist;
 }
 
-bool QgsGeometryUtils::lineIntersection( const QgsPointV2& p1, QgsVector v, const QgsPointV2& q1, QgsVector w, QgsPointV2& inter )
+bool QgsGeometryUtils::lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter )
 {
   double d = v.y() * w.x() - v.x() * w.y();
 
@@ -357,7 +360,7 @@ QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections
       s.segment2 = k;
       if ( s.segment1 > s.segment2 )
       {
-        qSwap( s.segment1, s.segment2 );
+        std::swap( s.segment1, s.segment2 );
       }
       s.point = inter;
       intersections.append( s );
@@ -372,10 +375,10 @@ double QgsGeometryUtils::leftOfLine( double x, double y, double x1, double y1, d
   double f2 = y2 - y1;
   double f3 = y - y1;
   double f4 = x2 - x1;
-  return f1*f2 - f3*f4;
+  return f1 * f2 - f3 * f4;
 }
 
-QgsPointV2 QgsGeometryUtils::pointOnLineWithDistance( const QgsPointV2& startPoint, const QgsPointV2& directionPoint, double distance )
+QgsPointV2 QgsGeometryUtils::pointOnLineWithDistance( const QgsPointV2 &startPoint, const QgsPointV2 &directionPoint, double distance )
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
@@ -404,7 +407,7 @@ double QgsGeometryUtils::ccwAngle( double dy, double dx )
   return angle;
 }
 
-void QgsGeometryUtils::circleCenterRadius( const QgsPointV2& pt1, const QgsPointV2& pt2, const QgsPointV2& pt3, double& radius, double& centerX, double& centerY )
+void QgsGeometryUtils::circleCenterRadius( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QgsPointV2 &pt3, double &radius, double &centerX, double &centerY )
 {
   double dx21, dy21, dx31, dy31, h21, h31, d;
 
@@ -446,25 +449,11 @@ bool QgsGeometryUtils::circleClockwise( double angle1, double angle2, double ang
 {
   if ( angle3 >= angle1 )
   {
-    if ( angle2 > angle1 && angle2 < angle3 )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return !( angle2 > angle1 && angle2 < angle3 );
   }
   else
   {
-    if ( angle2 > angle1 || angle2 < angle3 )
-    {
-      return false;
-    }
-    else
-    {
-      return true;
-    }
+    return !( angle2 > angle1 || angle2 < angle3 );
   }
 }
 
@@ -522,7 +511,7 @@ double QgsGeometryUtils::sweepAngle( double centerX, double centerY, double x1, 
   {
     if ( p2Angle > p1Angle && p2Angle < p3Angle )
     {
-      return( p3Angle - p1Angle );
+      return ( p3Angle - p1Angle );
     }
     else
     {
@@ -533,18 +522,18 @@ double QgsGeometryUtils::sweepAngle( double centerX, double centerY, double x1, 
   {
     if ( p2Angle < p1Angle && p2Angle > p3Angle )
     {
-      return( -( p1Angle - p3Angle ) );
+      return ( -( p1Angle - p3Angle ) );
     }
     else
     {
-      return( p3Angle + ( 360 - p1Angle ) );
+      return ( p3Angle + ( 360 - p1Angle ) );
     }
   }
 }
 
-bool QgsGeometryUtils::segmentMidPoint( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& result, double radius, const QgsPointV2& mousePos )
+bool QgsGeometryUtils::segmentMidPoint( const QgsPointV2 &p1, const QgsPointV2 &p2, QgsPointV2 &result, double radius, const QgsPointV2 &mousePos )
 {
-  QgsPointV2 midPoint(( p1.x() + p2.x() ) / 2.0, ( p1.y() + p2.y() ) / 2.0 );
+  QgsPointV2 midPoint( ( p1.x() + p2.x() ) / 2.0, ( p1.y() + p2.y() ) / 2.0 );
   double midDist = sqrt( sqrDistance2D( p1, midPoint ) );
   if ( radius < midDist )
   {
@@ -585,8 +574,8 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPointV2& p1, const QgsPointV2& 
   return true;
 }
 
-double QgsGeometryUtils::circleTangentDirection( const QgsPointV2& tangentPoint, const QgsPointV2& cp1,
-    const QgsPointV2& cp2, const QgsPointV2& cp3 )
+double QgsGeometryUtils::circleTangentDirection( const QgsPointV2 &tangentPoint, const QgsPointV2 &cp1,
+    const QgsPointV2 &cp2, const QgsPointV2 &cp3 )
 {
   //calculate circle midpoint
   double mX, mY, radius;
@@ -614,9 +603,10 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  Q_FOREACH ( const QString& pointCoordinates, coordList )
+  QRegularExpression rx( "\\s" );
+  Q_FOREACH ( const QString &pointCoordinates, coordList )
   {
-    QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
+    QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
     if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
     {
       // 3 dimensional coordinates, but not specifically marked as such. We allow this
@@ -632,9 +622,9 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
     }
   }
 
-  Q_FOREACH ( const QString& pointCoordinates, coordList )
+  Q_FOREACH ( const QString &pointCoordinates, coordList )
   {
-    QStringList coordinates = pointCoordinates.split( ' ', QString::SkipEmptyParts );
+    QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
       continue;
 
@@ -643,11 +633,11 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
     double y = coordinates[idx++].toDouble();
 
     double z = 0;
-    if (( is3D || foundZ ) && coordinates.length() > idx )
+    if ( ( is3D || foundZ ) && coordinates.length() > idx )
       z = coordinates[idx++].toDouble();
 
     double m = 0;
-    if (( isMeasure || foundM ) && coordinates.length() > idx )
+    if ( ( isMeasure || foundM ) && coordinates.length() > idx )
       m = coordinates[idx++].toDouble();
 
     QgsWkbTypes::Type t = QgsWkbTypes::Point;
@@ -672,10 +662,10 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   return points;
 }
 
-void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence &points, bool is3D, bool isMeasure )
+void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
-  Q_FOREACH ( const QgsPointV2& point, points )
+  Q_FOREACH ( const QgsPointV2 &point, points )
   {
     wkb << point.x() << point.y();
     if ( is3D )
@@ -691,8 +681,8 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr& wkb, const QgsPointSequence &poin
 
 QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure )
 {
-  QString wkt = "(";
-  Q_FOREACH ( const QgsPointV2& p, points )
+  QString wkt = QStringLiteral( "(" );
+  Q_FOREACH ( const QgsPointV2 &p, points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
     wkt += ' ' + qgsDoubleToString( p.y(), precision );
@@ -700,21 +690,21 @@ QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int preci
       wkt += ' ' + qgsDoubleToString( p.z(), precision );
     if ( isMeasure )
       wkt += ' ' + qgsDoubleToString( p.m(), precision );
-    wkt += ", ";
+    wkt += QLatin1String( ", " );
   }
-  if ( wkt.endsWith( ", " ) )
+  if ( wkt.endsWith( QLatin1String( ", " ) ) )
     wkt.chop( 2 ); // Remove last ", "
   wkt += ')';
   return wkt;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument& doc, int precision, const QString &ns )
+QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns )
 {
-  QDomElement elemCoordinates = doc.createElementNS( ns, "coordinates" );
+  QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   QString strCoordinates;
 
-  Q_FOREACH ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2 &p, points )
     strCoordinates += qgsDoubleToString( p.x(), precision ) + ',' + qgsDoubleToString( p.y(), precision ) + ' ';
 
   if ( strCoordinates.endsWith( ' ' ) )
@@ -724,13 +714,13 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   return elemCoordinates;
 }
 
-QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument& doc, int precision, const QString &ns, bool is3D )
+QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D )
 {
-  QDomElement elemPosList = doc.createElementNS( ns, "posList" );
-  elemPosList.setAttribute( "srsDimension", is3D ? 3 : 2 );
+  QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "posList" ) );
+  elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
 
   QString strCoordinates;
-  Q_FOREACH ( const QgsPointV2& p, points )
+  Q_FOREACH ( const QgsPointV2 &p, points )
   {
     strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
     if ( is3D )
@@ -745,12 +735,12 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
 
 QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int precision )
 {
-  QString json = "[ ";
-  Q_FOREACH ( const QgsPointV2& p, points )
+  QString json = QStringLiteral( "[ " );
+  Q_FOREACH ( const QgsPointV2 &p, points )
   {
     json += '[' + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }
-  if ( json.endsWith( ", " ) )
+  if ( json.endsWith( QLatin1String( ", " ) ) )
   {
     json.chop( 2 ); // Remove last ", "
   }
@@ -776,19 +766,21 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
 
-  QRegExp cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
-  QString contents = cooRegEx.indexIn( wkt ) >= 0 ? cooRegEx.cap( 1 ) : QString();
+  QRegularExpression cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
+  cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
+  QRegularExpressionMatch match = cooRegEx.match( wkt );
+  QString contents = match.hasMatch() ? match.captured( 1 ) : QString();
   return qMakePair( wkbType, contents );
 }
 
-QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QString& defaultType )
+QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QString &defaultType )
 {
   int level = 0;
   QString block;
   QStringList blocks;
   for ( int i = 0, n = wkt.length(); i < n; ++i )
   {
-    if ( wkt[i].isSpace() && level == 0 )
+    if ( ( wkt[i].isSpace() || wkt[i] == '\n' || wkt[i] == '\t' ) && level == 0 )
       continue;
 
     if ( wkt[i] == ',' && level == 0 )
@@ -815,6 +807,31 @@ QStringList QgsGeometryUtils::wktGetChildBlocks( const QString &wkt, const QStri
     blocks.append( block );
   }
   return blocks;
+}
+
+QgsPointV2 QgsGeometryUtils::midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+{
+  QgsWkbTypes::Type pType( QgsWkbTypes::Point );
+
+
+  double x = ( pt1.x() + pt2.x() ) / 2.0;
+  double y = ( pt1.y() + pt2.y() ) / 2.0;
+  double z = 0.0;
+  double m = 0.0;
+
+  if ( pt1.is3D() || pt2.is3D() )
+  {
+    pType = QgsWkbTypes::addZ( pType );
+    z = ( pt1.z() + pt2.z() ) / 2.0;
+  }
+
+  if ( pt1.isMeasure() || pt2.isMeasure() )
+  {
+    pType = QgsWkbTypes::addM( pType );
+    m = ( pt1.m() + pt2.m() ) / 2.0;
+  }
+
+  return QgsPointV2( pType, x, y, z, m );
 }
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )

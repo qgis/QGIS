@@ -18,6 +18,7 @@
 #ifndef QGSQTLOCATIONCONNECTION_H
 #define QGSQTLOCATIONCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsgpsconnection.h"
 
 #include <QtCore/QPointer>
@@ -47,10 +48,10 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     ~QgsQtLocationConnection();
 
   protected slots:
-    /** Needed to make QtLocation detected*/
+    //! Needed to make QtLocation detected
     void broadcastConnectionAvailable();
 
-    /** Parse available data source content*/
+    //! Parse available data source content
     void parseData();
 
     /** Called when the position updated.
@@ -61,12 +62,12 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     /** Called when the number of satellites in view is updated.
       * @note not available in python bindings on android
       */
-    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
+    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
 
     /** Called when the number of satellites in use is updated.
       * @note not available in python bindings on android
       */
-    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
+    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites );
 
   private:
     void startGPS();

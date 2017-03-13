@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/editorwidgets/core
@@ -19,7 +20,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/python
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/test
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/app
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -27,6 +32,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 #############################################################

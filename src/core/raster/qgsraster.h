@@ -18,6 +18,7 @@
 #ifndef QGSRASTER_H
 #define QGSRASTER_H
 
+#include "qgis_core.h"
 #include <QString>
 
 #include "qgis.h"
@@ -32,22 +33,39 @@ class CORE_EXPORT QgsRaster
     enum ColorInterpretation
     {
       UndefinedColorInterpretation = 0,
+
       /** Greyscale */                                      GrayIndex = 1,
+
       /** Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
+
       /** Red band of RGBA image */                         RedBand = 3,
+
       /** Green band of RGBA image */                       GreenBand = 4,
+
       /** Blue band of RGBA image */                        BlueBand = 5,
+
       /** Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
+
       /** Hue band of HLS image */                          HueBand = 7,
+
       /** Saturation band of HLS image */                   SaturationBand = 8,
+
       /** Lightness band of HLS image */                    LightnessBand = 9,
+
       /** Cyan band of CMYK image */                        CyanBand = 10,
+
       /** Magenta band of CMYK image */                     MagentaBand = 11,
+
       /** Yellow band of CMYK image */                      YellowBand = 12,
+
       /** Black band of CMLY image */                       BlackBand = 13,
+
       /** Y Luminance */                                    YCbCr_YBand = 14,
+
       /** Cb Chroma */                                      YCbCr_CbBand = 15,
+
       /** Cr Chroma */                                      YCbCr_CrBand = 16,
+
       /** Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17
     };
 
@@ -82,16 +100,7 @@ class CORE_EXPORT QgsRaster
       PyramidsErdas = 2
     };
 
-    /** \brief Contrast enhancement limits */
-    enum ContrastEnhancementLimits
-    {
-      ContrastEnhancementNone,
-      ContrastEnhancementMinMax,
-      ContrastEnhancementStdDev,
-      ContrastEnhancementCumulativeCut
-    };
-
-    /** \brief This enumerator describes the different kinds of drawing we can do */
+    //! \brief This enumerator describes the different kinds of drawing we can do
     enum DrawingStyle
     {
       UndefinedDrawingStyle,
@@ -106,9 +115,6 @@ class CORE_EXPORT QgsRaster
       MultiBandColor,                 // a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
       SingleBandColorDataStyle        // ARGB values rendered directly
     };
-
-    static QString contrastEnhancementLimitsAsString( QgsRaster::ContrastEnhancementLimits theLimits );
-    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( const QString& theLimits );
 
     /** Check if the specified value is representable in the given data type.
      * Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.

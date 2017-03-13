@@ -22,17 +22,17 @@
 
 #ifdef Q_OS_MACX
 QgsSponsors::QgsSponsors( QWidget *parent )
-    : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+  : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
-QgsSponsors::QgsSponsors( QWidget *parent )
-    : QDialog( parent )  // Normal dialog in non Mac-OS
+QgsSponsors::QgsSponsors( QWidget * parent )
+  : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
   init();
   QString intro = tr( "<p>We work really hard to make this nice software for you. "
                       "See all the cool features it has? Get a warm fuzzy feeling when you use it? "
-                      "QGIS is a labour of love by a dedicated team of developers. We want you to copy "
+                      "QGIS is a labor of love by a dedicated team of developers. We want you to copy "
                       "&amp; share it and put it in the hands of as many people as possible. If QGIS "
                       "is saving you money or you like our work and have the financial ability to "
                       "help, please consider sponsoring the development of QGIS. We use money from "
@@ -45,11 +45,11 @@ QgsSponsors::QgsSponsors( QWidget *parent )
                       "financially - a great big 'thank you' to you all!</p>" );
   txtSponsors->setText( intro );
   // read the SPONSORS file and populate the text widget
-  QFile sponsorsFile( QgsApplication::pkgDataPath() + QLatin1String( "/doc/release-sponsors.html" ) );
+  QFile sponsorsFile( QgsApplication::pkgDataPath() + QStringLiteral( "/doc/release-sponsors.html" ) );
   if ( sponsorsFile.open( QIODevice::ReadOnly ) )
   {
-    QString path = "images/";
-    QString newPath = QgsApplication::pkgDataPath() + QLatin1String( "/doc/images/" );
+    QString path = QStringLiteral( "images/" );
+    QString newPath = QgsApplication::pkgDataPath() + QStringLiteral( "/doc/images/" );
     QTextStream sponsorsStream( &sponsorsFile );
     // Always use UTF-8
     sponsorsStream.setCodec( "UTF-8" );

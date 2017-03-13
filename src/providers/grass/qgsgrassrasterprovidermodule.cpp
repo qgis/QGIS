@@ -18,19 +18,19 @@
 
 #include "qgsgrassrasterprovider.h"
 
-QGISEXTERN QgsGrassRasterProvider * classFactory( const QString *uri )
+QGISEXTERN QgsGrassRasterProvider *classFactory( const QString *uri )
 {
   return new QgsGrassRasterProvider( *uri );
 }
 
 QGISEXTERN QString providerKey()
 {
-  return QString( "grassraster" );
+  return QStringLiteral( "grassraster" );
 }
 
 QGISEXTERN QString description()
 {
-  return QString( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
+  return QStringLiteral( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
 }
 
 QGISEXTERN bool isProvider()

@@ -19,6 +19,7 @@
 #define QGSSCALECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * A combobox which lets the user select map scale from predefined list
@@ -28,13 +29,12 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    QgsScaleComboBox( QWidget* parent = nullptr );
-    virtual ~QgsScaleComboBox();
+    QgsScaleComboBox( QWidget *parent = nullptr );
 
     //! Function to read the selected scale as text
     QString scaleString();
     //! Function to set the selected scale from text
-    bool setScaleString( const QString& scaleTxt );
+    bool setScaleString( const QString &scaleTxt );
     //! Function to read the selected scale as double
     double scale() const;
     //! Function to set the selected scale from double
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     // be expected.
     static QString toString( double scale );
     //! Helper function to convert a scale string to double
-    static double toDouble( const QString& scaleString, bool *ok = nullptr );
+    static double toDouble( const QString &scaleString, bool *ok = nullptr );
 
   signals:
     //! Signal is emitted when *user* has finished editing/selecting a new scale.
@@ -55,7 +55,13 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() );
-    //! Function to set the min scale
+
+    /**
+     * Set the minimum allowed scale.
+     * Anything scale lower than the minimum scale will automatically
+     * be converted to the minimum scale.
+     * Except for 0 which is always allowed.
+     */
     void setMinScale( double scale );
 
   protected:

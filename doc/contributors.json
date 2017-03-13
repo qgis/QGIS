@@ -207,7 +207,7 @@
       "properties": {
         "Name": "Marco Hugentobler",
         "Committer": "Yes",
-        "First Commit Message": "Changes in the display behaviour of qgsmapcanvas (updating the screen, avoid flickering when paning).",
+        "First Commit Message": "Changes in the display behavior of qgsmapcanvas (updating the screen, avoid flickering when paning).",
         "First Commit Date": "15-06-2003",
         "GIT Nickname": "mhugent"
       },
@@ -425,6 +425,8 @@
       "properties": {
         "Name": "Germán Carrillo",
         "Committer": "No",
+        "First Commit Message": "Applied patch to fix legend cursor. Provided by gcarrillo",
+        "First Commit Date": "10-06-2009",
         "GIT Nickname": "gacarrillor"
       },
       "geometry": {

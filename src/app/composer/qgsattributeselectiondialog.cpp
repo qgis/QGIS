@@ -21,6 +21,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsdoublespinbox.h"
+#include "qgssettings.h"
+
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -28,19 +30,18 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QSettings>
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
 
 
 // QgsComposerColumnAlignmentDelegate
 
-QgsComposerColumnAlignmentDelegate::QgsComposerColumnAlignmentDelegate( QObject* parent ) : QItemDelegate( parent )
+QgsComposerColumnAlignmentDelegate::QgsComposerColumnAlignmentDelegate( QObject *parent ) : QItemDelegate( parent )
 {
 
 }
 
-QWidget* QgsComposerColumnAlignmentDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QWidget *QgsComposerColumnAlignmentDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
@@ -64,23 +65,23 @@ QWidget* QgsComposerColumnAlignmentDelegate::createEditor( QWidget* parent, cons
   return comboBox;
 }
 
-void QgsComposerColumnAlignmentDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+void QgsComposerColumnAlignmentDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag )index.model()->data( index, Qt::EditRole ).toInt();
 
   //set the value for the combobox
-  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  QComboBox *comboBox = static_cast<QComboBox *>( editor );
   comboBox->setCurrentIndex( comboBox->findData( alignment ) );
 }
 
-void QgsComposerColumnAlignmentDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+void QgsComposerColumnAlignmentDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QComboBox *comboBox = static_cast<QComboBox*>( editor );
-  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag ) comboBox->itemData( comboBox->currentIndex() ).toInt();
+  QComboBox *comboBox = static_cast<QComboBox *>( editor );
+  Qt::AlignmentFlag alignment = ( Qt::AlignmentFlag ) comboBox->currentData().toInt();
   model->setData( index, alignment, Qt::EditRole );
 }
 
-void QgsComposerColumnAlignmentDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void QgsComposerColumnAlignmentDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index );
   editor->setGeometry( option.rect );
@@ -89,10 +90,10 @@ void QgsComposerColumnAlignmentDelegate::updateEditorGeometry( QWidget* editor, 
 
 // QgsComposerColumnSourceDelegate
 
-QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject* parent, const QgsComposerObject* composerObject )
-    : QItemDelegate( parent )
-    , mVectorLayer( vlayer )
-    , mComposerObject( composerObject )
+QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer *vlayer, QObject *parent, const QgsComposerObject *composerObject )
+  : QItemDelegate( parent )
+  , mVectorLayer( vlayer )
+  , mComposerObject( composerObject )
 {
 
 }
@@ -105,12 +106,12 @@ QgsExpressionContext QgsComposerColumnSourceDelegate::createExpressionContext() 
   }
 
   QgsExpressionContext expContext = mComposerObject->createExpressionContext();
-  expContext.lastScope()->setVariable( "row_number", 1 );
-  expContext.setHighlightedVariables( QStringList() << "row_number" );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
+  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
   return expContext;
 }
 
-QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QWidget *QgsComposerColumnSourceDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
@@ -124,24 +125,24 @@ QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const Q
   return fieldExpression;
 }
 
-void QgsComposerColumnSourceDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+void QgsComposerColumnSourceDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QString field = index.model()->data( index, Qt::EditRole ).toString();
 
   //set the value for the field combobox
-  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget*>( editor );
+  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
   fieldExpression->setField( field );
 }
 
-void QgsComposerColumnSourceDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+void QgsComposerColumnSourceDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget*>( editor );
+  QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
   QString field = fieldExpression->currentField();
 
   model->setData( index, field, Qt::EditRole );
 }
 
-void QgsComposerColumnSourceDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void QgsComposerColumnSourceDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index );
   editor->setGeometry( option.rect );
@@ -149,19 +150,19 @@ void QgsComposerColumnSourceDelegate::updateEditorGeometry( QWidget* editor, con
 
 void QgsComposerColumnSourceDelegate::commitAndCloseEditor()
 {
-  QgsFieldExpressionWidget *fieldExpression = qobject_cast<QgsFieldExpressionWidget*>( sender() );
+  QgsFieldExpressionWidget *fieldExpression = qobject_cast<QgsFieldExpressionWidget *>( sender() );
   emit commitData( fieldExpression );
 }
 
 
 // QgsComposerColumnSortOrderDelegate
 
-QgsComposerColumnSortOrderDelegate::QgsComposerColumnSortOrderDelegate( QObject* parent ) : QItemDelegate( parent )
+QgsComposerColumnSortOrderDelegate::QgsComposerColumnSortOrderDelegate( QObject *parent ) : QItemDelegate( parent )
 {
 
 }
 
-QWidget* QgsComposerColumnSortOrderDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QWidget *QgsComposerColumnSortOrderDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
@@ -173,12 +174,12 @@ QWidget* QgsComposerColumnSortOrderDelegate::createEditor( QWidget* parent, cons
   return comboBox;
 }
 
-void QgsComposerColumnSortOrderDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+void QgsComposerColumnSortOrderDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   Qt::SortOrder order = ( Qt::SortOrder )index.model()->data( index, Qt::EditRole ).toInt();
 
   //set the value for the combobox
-  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  QComboBox *comboBox = static_cast<QComboBox *>( editor );
   switch ( order )
   {
     case Qt::DescendingOrder:
@@ -191,9 +192,9 @@ void QgsComposerColumnSortOrderDelegate::setEditorData( QWidget* editor, const Q
   }
 }
 
-void QgsComposerColumnSortOrderDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+void QgsComposerColumnSortOrderDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  QComboBox *comboBox = static_cast<QComboBox *>( editor );
   int value = comboBox->currentIndex();
   Qt::SortOrder order;
   switch ( value )
@@ -210,7 +211,7 @@ void QgsComposerColumnSortOrderDelegate::setModelData( QWidget* editor, QAbstrac
   model->setData( index, order, Qt::EditRole );
 }
 
-void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index );
   editor->setGeometry( option.rect );
@@ -222,7 +223,7 @@ void QgsComposerColumnSortOrderDelegate::updateEditorGeometry( QWidget* editor, 
 //
 
 QgsComposerColumnWidthDelegate::QgsComposerColumnWidthDelegate( QObject *parent )
-    : QItemDelegate( parent )
+  : QItemDelegate( parent )
 {
 
 }
@@ -245,13 +246,13 @@ void QgsComposerColumnWidthDelegate::setEditorData( QWidget *editor, const QMode
 {
   int value = index.model()->data( index, Qt::EditRole ).toInt();
 
-  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox*>( editor );
+  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox *>( editor );
   spinBox->setValue( value );
 }
 
 void QgsComposerColumnWidthDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox*>( editor );
+  QgsDoubleSpinBox *spinBox = static_cast<QgsDoubleSpinBox *>( editor );
   spinBox->interpretText();
   int value = spinBox->value();
 
@@ -267,23 +268,23 @@ void QgsComposerColumnWidthDelegate::updateEditorGeometry( QWidget *editor, cons
 
 // QgsAttributeSelectionDialog
 
-QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer,
-    QWidget* parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mComposerTable( table )
-    , mVectorLayer( vLayer )
-    , mColumnModel( nullptr )
-    , mSortedProxyModel( nullptr )
-    , mAvailableSortProxyModel( nullptr )
-    , mColumnAlignmentDelegate( nullptr )
-    , mColumnSourceDelegate( nullptr )
-    , mColumnSortOrderDelegate( nullptr )
-    , mColumnWidthDelegate( nullptr )
+QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTableV2 *table, QgsVectorLayer *vLayer,
+    QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mComposerTable( table )
+  , mVectorLayer( vLayer )
+  , mColumnModel( nullptr )
+  , mSortedProxyModel( nullptr )
+  , mAvailableSortProxyModel( nullptr )
+  , mColumnAlignmentDelegate( nullptr )
+  , mColumnSourceDelegate( nullptr )
+  , mColumnSortOrderDelegate( nullptr )
+  , mColumnWidthDelegate( nullptr )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/AttributeSelectionDialog/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
 
   if ( mComposerTable )
   {
@@ -321,8 +322,8 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/AttributeSelectionDialog/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()
@@ -374,7 +375,7 @@ void QgsAttributeSelectionDialog::on_mResetColumnsPushButton_clicked()
 void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
 {
   //add column to sort order widget
-  QgsComposerTableColumn* column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
+  QgsComposerTableColumn *column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
   if ( ! column )
   {
     return;
@@ -398,7 +399,7 @@ void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
   int rowToRemove = selectedIndex.row();
 
   //find corresponding column
-  QgsComposerTableColumn * column = nullptr;
+  QgsComposerTableColumn *column = nullptr;
   column = mSortedProxyModel->columnFromIndex( selectedIndex );
 
   if ( !column )
@@ -422,7 +423,7 @@ void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
   }
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
 
-  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+  QgsComposerTableColumn *column = mSortedProxyModel->columnFromIndex( selectedIndex );
 
   if ( !column )
   {
@@ -442,7 +443,7 @@ void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
 
   QModelIndex selectedIndex = sortSelection.indexes().at( 0 );
 
-  QgsComposerTableColumn * column = mSortedProxyModel->columnFromIndex( selectedIndex );
+  QgsComposerTableColumn *column = mSortedProxyModel->columnFromIndex( selectedIndex );
 
   if ( !column )
   {

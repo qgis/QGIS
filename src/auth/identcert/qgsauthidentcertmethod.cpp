@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QFile>
 #include <QUuid>
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
 #include <QtCrypto>
 #include <QSslConfiguration>
 #include <QSslError>
@@ -30,29 +30,29 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
-static const QString AUTH_METHOD_KEY = "Identity-Cert";
-static const QString AUTH_METHOD_DESCRIPTION = "Identity certificate authentication";
+static const QString AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
+static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
 
-QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::mPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
 
 QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
-    : QgsAuthMethod()
+  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList()
-                    << "ows"
-                    << "wfs"  // convert to lowercase
-                    << "wcs"
-                    << "wms"
-                    << "postgres" );
+                    << QStringLiteral( "ows" )
+                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wcs" )
+                    << QStringLiteral( "wms" )
+                    << QStringLiteral( "postgres" ) );
 }
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
 {
-  qDeleteAll( mPkiConfigBundleCache );
-  mPkiConfigBundleCache.clear();
+  qDeleteAll( sPkiConfigBundleCache );
+  sPkiConfigBundleCache.clear();
 }
 
 QString QgsAuthIdentCertMethod::key() const
@@ -84,7 +84,7 @@ bool QgsAuthIdentCertMethod::updateNetworkRequest( QNetworkRequest &request, con
 
   QgsDebugMsg( QString( "Update request SSL config: HTTPS connection for authcfg: %1" ).arg( authcfg ) );
 
-  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
     QgsDebugMsg( QString( "Update request SSL config FAILED for authcfg: %1: PKI bundle invalid" ).arg( authcfg ) );
@@ -111,7 +111,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
 
   QgsDebugMsg( QString( "Update URI items for authcfg: %1" ).arg( authcfg ) );
 
-  QgsPkiConfigBundle * pkibundle = getPkiConfigBundle( authcfg );
+  QgsPkiConfigBundle *pkibundle = getPkiConfigBundle( authcfg );
   if ( !pkibundle || !pkibundle->isValid() )
   {
     QgsDebugMsg( "Update URI items FAILED: PKI bundle invalid" );
@@ -119,7 +119,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   }
   QgsDebugMsg( "Update URI items: PKI bundle valid" );
 
-  QString pkiTempFileBase = "tmppki_%1.pem";
+  QString pkiTempFileBase = QStringLiteral( "tmppki_%1.pem" );
 
   // save client cert to temp file
   QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
@@ -206,13 +206,13 @@ void QgsAuthIdentCertMethod::clearCachedConfig( const QString &authcfg )
 
 void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  if ( mconfig.hasConfig( "oldconfigstyle" ) )
+  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
     QgsDebugMsg( "Updating old style auth method config" );
 
-    QStringList conflist = mconfig.config( "oldconfigstyle" ).split( "|||" );
-    mconfig.setConfig( "certid", conflist.at( 0 ) );
-    mconfig.removeConfig( "oldconfigstyle" );
+    QStringList conflist = mconfig.config( QStringLiteral( "oldconfigstyle" ) ).split( QStringLiteral( "|||" ) );
+    mconfig.setConfig( QStringLiteral( "certid" ), conflist.at( 0 ) );
+    mconfig.removeConfig( QStringLiteral( "oldconfigstyle" ) );
   }
 
   // TODO: add updates as method version() increases due to config storage changes
@@ -220,12 +220,12 @@ void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &authcfg )
 {
-  QgsPkiConfigBundle * bundle = nullptr;
+  QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
-  if ( mPkiConfigBundleCache.contains( authcfg ) )
+  if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    bundle = mPkiConfigBundleCache.value( authcfg );
+    bundle = sPkiConfigBundleCache.value( authcfg );
     if ( bundle )
     {
       QgsDebugMsg( QString( "Retrieved PKI bundle for authcfg %1" ).arg( authcfg ) );
@@ -243,7 +243,7 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
   }
 
   // get identity from database
-  QPair<QSslCertificate, QSslKey> cibundle( QgsAuthManager::instance()->getCertIdentityBundle( mconfig.config( "certid" ) ) );
+  QPair<QSslCertificate, QSslKey> cibundle( QgsAuthManager::instance()->getCertIdentityBundle( mconfig.config( QStringLiteral( "certid" ) ) ) );
 
   // init client cert
   // Note: if this is not valid, no sense continuing
@@ -273,14 +273,14 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
 void QgsAuthIdentCertMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
-  mPkiConfigBundleCache.insert( authcfg, pkibundle );
+  sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
 {
-  if ( mPkiConfigBundleCache.contains( authcfg ) )
+  if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    QgsPkiConfigBundle * pkibundle = mPkiConfigBundleCache.take( authcfg );
+    QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
     pkibundle = nullptr;
     QgsDebugMsg( QString( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );

@@ -79,7 +79,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    GlobePlugin( QgisInterface* theQgisInterface );
+    GlobePlugin( QgisInterface *qgisInterface );
     ~GlobePlugin();
 
     //! init the gui
@@ -93,7 +93,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void enableFeatureIdentification( bool status );
 
     //! set the globe coordinates of a user right-click on the globe
-    void setSelectedCoordinates( const osg::Vec3d& coords );
+    void setSelectedCoordinates( const osg::Vec3d &coords );
     //! get a coordinates vector
     osg::Vec3d getSelectedCoordinates();
     //! emits signal with current mouse coordinates
@@ -106,11 +106,11 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     double getSelectedElevation() { return mSelectedElevation; }
 
     //! Get the OSG viewer
-    osgViewer::Viewer* osgViewer() { return mOsgViewer; }
+    osgViewer::Viewer *osgViewer() { return mOsgViewer; }
     //! Get OSG map node
-    osgEarth::MapNode* mapNode() { return mMapNode; }
+    osgEarth::MapNode *mapNode() { return mMapNode; }
 
-    QgisInterface* qgisIface() const { return mQGisIface; }
+    QgisInterface *qgisIface() const { return mQGisIface; }
 
   public slots:
     void run();
@@ -119,12 +119,12 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void syncExtent();
 
   private:
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
 
-    QAction* mActionToggleGlobe;
-    osgEarth::QtGui::ViewerWidget* mViewerWidget;
-    QgsGlobeWidget* mDockWidget;
-    QgsGlobePluginDialog* mSettingsDialog;
+    QAction *mActionToggleGlobe = nullptr;
+    osgEarth::QtGui::ViewerWidget *mViewerWidget = nullptr;
+    QgsGlobeWidget *mDockWidget = nullptr;
+    QgsGlobePluginDialog *mSettingsDialog = nullptr;
     QString mBaseLayerUrl;
     QList<QgsGlobePluginDialog::LayerDataSource> mImagerySources;
     QList<QgsGlobePluginDialog::LayerDataSource> mElevationSources;
@@ -141,7 +141,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osg::ref_ptr<osgEarth::Util::VerticalScale> mVerticalScale;
 
     //! Creates additional pages in the layer properties for adjusting 3D properties
-    QgsGlobeLayerPropertiesFactory* mLayerPropertiesFactory;
+    QgsGlobeLayerPropertiesFactory *mLayerPropertiesFactory = nullptr;
     osg::ref_ptr<QgsGlobeFrustumHighlightCallback> mFrustumHighlightCallback;
     osg::ref_ptr<QgsGlobeFeatureIdentifyCallback> mFeatureQueryToolIdentifyCb;
     // TODO: How to port highlight to 2.7.0?
@@ -152,9 +152,9 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osg::ref_ptr<osgEarth::Util::Controls::LabelControl> mStatsLabel;
 
     void setupProxy();
-    void addControl( osgEarth::Util::Controls::Control* control, int x, int y, int w, int h, osgEarth::Util::Controls::ControlEventHandler* handler );
-    void addImageControl( const std::string &imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler* handler = 0 );
-    void addModelLayer( QgsVectorLayer* mapLayer , QgsGlobeVectorLayerConfig *layerConfig );
+    void addControl( osgEarth::Util::Controls::Control *control, int x, int y, int w, int h, osgEarth::Util::Controls::ControlEventHandler *handler );
+    void addImageControl( const std::string &imgPath, int x, int y, osgEarth::Util::Controls::ControlEventHandler *handler = 0 );
+    void addModelLayer( QgsVectorLayer *mapLayer, QgsGlobeVectorLayerConfig *layerConfig );
     void setupControls();
     void applyProjectSettings();
     QgsRectangle getQGISLayerExtent() const;
@@ -164,16 +164,16 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     void reset();
     void projectRead();
     void applySettings();
-    void layerChanged( QgsMapLayer* mapLayer = 0 );
+    void layerChanged( QgsMapLayer *mapLayer = 0 );
     void rebuildQGISLayer();
     void refreshQGISMapLayer( const QgsRectangle &dirtyRect );
     void updateTileStats( int queued, int tot );
 
   signals:
     //! emits current mouse position
-    void xyCoordinates( const QgsPoint & p );
+    void xyCoordinates( const QgsPoint &p );
     //! emits position of right click on globe
-    void newCoordinatesSelected( const QgsPoint & p );
+    void newCoordinatesSelected( const QgsPoint &p );
 };
 
 #endif // QGS_GLOBE_PLUGIN_H

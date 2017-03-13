@@ -20,6 +20,8 @@
 
 #include <QString>
 
+#include "qgis_core.h"
+
 class QgsPoint;
 class QgsCoordinateReferenceSystem;
 
@@ -45,9 +47,9 @@ class CORE_EXPORT QgsCoordinateUtils
      * @param mapCrs CRS of map
      * @returns optimal number of decimal places for coordinates
      */
-    static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem& mapCrs );
+    static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 
-    static QString formatCoordinateForProject( const QgsPoint& point, const QgsCoordinateReferenceSystem& destCrs, int precision );
+    static QString formatCoordinateForProject( const QgsPoint &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
 };
 

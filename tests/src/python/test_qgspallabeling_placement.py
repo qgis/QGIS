@@ -23,7 +23,10 @@ import sys
 
 from qgis.PyQt.QtCore import QThreadPool, qDebug
 
-from qgis.core import QgsPalLayerSettings, QgsSingleSymbolRenderer, QgsMarkerSymbol
+from qgis.core import (QgsPalLayerSettings,
+                       QgsSingleSymbolRenderer,
+                       QgsMarkerSymbol,
+                       QgsProperty)
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -232,10 +235,10 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2
-        self.lyr.setDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder, True, True, "'T,B'", None)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
         self.checkTest()
         self.removeMapLayer(self.layer)
-        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_dd_ordered_placement1(self):
@@ -245,23 +248,23 @@ class TestPointPlacement(TestPlacementBase):
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
         self.lyr.placement = QgsPalLayerSettings.OrderedPositionsAroundPoint
         self.lyr.dist = 2
-        self.lyr.setDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder, True, True, "'T,B'", None)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty.fromExpression("'T,B'"))
         self.checkTest()
         self.removeMapLayer(obstacleLayer)
         self.removeMapLayer(self.layer)
-        self.lyr.removeDataDefinedProperty(QgsPalLayerSettings.PredefinedPositionOrder)
+        self.lyr.dataDefinedProperties().setProperty(QgsPalLayerSettings.PredefinedPositionOrder, QgsProperty())
         self.layer = None
 
     def test_point_ordered_symbol_bound_offset(self):
         # Test ordered placements for point using symbol bounds offset
         self.layer = TestQgsPalLabeling.loadFeatureLayer('point_ordered_placement')
         # Make a big symbol
-        symbol = QgsMarkerSymbol.createSimple({u'color': u'31,120,180,255',
-                                               u'outline_color': u'0,0,0,0',
-                                               u'outline_style': u'solid',
-                                               u'size': u'10',
-                                               u'name': u'rectangle',
-                                               u'size_unit': u'MM'})
+        symbol = QgsMarkerSymbol.createSimple({'color': '31,120,180,255',
+                                               'outline_color': '0,0,0,0',
+                                               'outline_style': 'solid',
+                                               'size': '10',
+                                               'name': 'rectangle',
+                                               'size_unit': 'MM'})
         renderer = QgsSingleSymbolRenderer(symbol)
         self.layer.setRenderer(renderer)
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
@@ -432,6 +435,19 @@ class TestPointPlacement(TestPlacementBase):
         self.checkTest()
         self.removeMapLayer(self.layer)
         self.layer = None
+
+    def test_label_curved_zero_width_char(self):
+        # Test that curved label work with zero-width characters
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        self.lyr.fieldName = "'invisible​space'"
+        self.lyr.isExpression = True
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

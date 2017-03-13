@@ -16,22 +16,25 @@
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
+#include "qgssnappingconfig.h"
+#include "qgssettings.h"
 
 #include <QAction>
 
-QHash<QgsMapCanvas*, QgsMapCanvasTracer*> QgsMapCanvasTracer::sTracers;
+
+QHash<QgsMapCanvas *, QgsMapCanvasTracer *> QgsMapCanvasTracer::sTracers;
 
 
-QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* messageBar )
-    : mCanvas( canvas )
-    , mMessageBar( messageBar )
-    , mLastMessage( nullptr )
-    , mActionEnableTracing( nullptr )
+QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
+  : mCanvas( canvas )
+  , mMessageBar( messageBar )
+  , mLastMessage( nullptr )
+  , mActionEnableTracing( nullptr )
 {
   sTracers.insert( canvas, this );
 
@@ -39,12 +42,12 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* mes
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( invalidateGraph() ) );
   connect( canvas, SIGNAL( layersChanged() ), this, SLOT( invalidateGraph() ) );
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( invalidateGraph() ) );
-  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( onCurrentLayerChanged() ) );
+  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( onCurrentLayerChanged() ) );
   connect( canvas->snappingUtils(), SIGNAL( configChanged() ), this, SLOT( invalidateGraph() ) );
 
   // arbitrarily chosen limit that should allow for fairly fast initialization
   // of the underlying graph structure
-  setMaxFeatureCount( QSettings().value( "/qgis/digitizing/tracing_max_feature_count", 10000 ).toInt() );
+  setMaxFeatureCount( QgsSettings().value( QStringLiteral( "/qgis/digitizing/tracing_max_feature_count" ), 10000 ).toInt() );
 }
 
 QgsMapCanvasTracer::~QgsMapCanvasTracer()
@@ -52,7 +55,7 @@ QgsMapCanvasTracer::~QgsMapCanvasTracer()
   sTracers.remove( mCanvas );
 }
 
-QgsMapCanvasTracer* QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas* canvas )
+QgsMapCanvasTracer *QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas *canvas )
 {
   return sTracers.value( canvas, 0 );
 }
@@ -88,41 +91,40 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
     return;
 
   mLastMessage = new QgsMessageBarItem( tr( "Tracing" ), message, QgsMessageBar::WARNING,
-                                        QSettings().value( "/qgis/messageTimeout", 5 ).toInt() );
+                                        QgsSettings().value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt() );
   mMessageBar->pushItem( mLastMessage );
 }
 
 void QgsMapCanvasTracer::configure()
 {
-  setCrsTransformEnabled( mCanvas->mapSettings().hasCrsTransformEnabled() );
   setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
   setExtent( mCanvas->extent() );
 
-  QList<QgsVectorLayer*> layers;
-  QStringList visibleLayerIds = mCanvas->mapSettings().layers();
+  QList<QgsVectorLayer *> layers;
+  QList<QgsMapLayer *> visibleLayers = mCanvas->mapSettings().layers();
 
-  switch ( mCanvas->snappingUtils()->snapToMapMode() )
+  switch ( mCanvas->snappingUtils()->config().mode() )
   {
     default:
-    case QgsSnappingUtils::SnapCurrentLayer:
+    case QgsSnappingConfig::ActiveLayer:
     {
-      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
-      if ( vl && visibleLayerIds.contains( vl->id() ) )
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+      if ( vl && visibleLayers.contains( vl ) )
         layers << vl;
     }
     break;
-    case QgsSnappingUtils::SnapAllLayers:
-      Q_FOREACH ( const QString& layerId, visibleLayerIds )
+    case QgsSnappingConfig::AllLayers:
+      Q_FOREACH ( QgsMapLayer *layer, visibleLayers )
       {
-        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl )
           layers << vl;
       }
       break;
-    case QgsSnappingUtils::SnapAdvanced:
-      Q_FOREACH ( const QgsSnappingUtils::LayerConfig& cfg, mCanvas->snappingUtils()->layers() )
+    case QgsSnappingConfig::AdvancedConfiguration:
+      Q_FOREACH ( const QgsSnappingUtils::LayerConfig &cfg, mCanvas->snappingUtils()->layers() )
       {
-        if ( visibleLayerIds.contains( cfg.layer->id() ) )
+        if ( visibleLayers.contains( cfg.layer ) )
           layers << cfg.layer;
       }
       break;
@@ -134,6 +136,6 @@ void QgsMapCanvasTracer::configure()
 void QgsMapCanvasTracer::onCurrentLayerChanged()
 {
   // no need to bother if we are not snapping
-  if ( mCanvas->snappingUtils()->snapToMapMode() == QgsSnappingUtils::SnapCurrentLayer )
+  if ( mCanvas->snappingUtils()->config().mode() == QgsSnappingConfig::ActiveLayer )
     invalidateGraph();
 }

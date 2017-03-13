@@ -40,7 +40,7 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
 }
 
 //Needed to make connection detectable (half HACK)
-//this signals that the device has started the GPS sucessfully,
+//this signals that the device has started the GPS successfully,
 //not that it has a fix yet.
 void QgsQtLocationConnection::broadcastConnectionAvailable()
 {
@@ -98,7 +98,7 @@ void QgsQtLocationConnection::parseData()
 }
 
 void QgsQtLocationConnection::satellitesInViewUpdated(
-  const QList<QGeoSatelliteInfo>& satellites )
+  const QList<QGeoSatelliteInfo> &satellites )
 {
   // The number of satellites in view is updated
   mLastGPSInformation.satellitesInView.clear();
@@ -122,7 +122,7 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
 }
 
 void QgsQtLocationConnection::satellitesInUseUpdated(
-  const QList<QGeoSatelliteInfo>& satellites )
+  const QList<QGeoSatelliteInfo> &satellites )
 {
   // The number of satellites in use is updated
   mLastGPSInformation.satellitesUsed = QString::number( satellites.count() ).toInt();
@@ -206,20 +206,20 @@ void QgsQtLocationConnection::startSatelliteMonitor()
       // is called
       QObject::connect( satelliteInfoSource,
                         SIGNAL( satellitesInUseUpdated(
-                                  const QList<QGeoSatelliteInfo>& ) ),
+                                  const QList<QGeoSatelliteInfo> & ) ),
                         this,
                         SLOT( satellitesInUseUpdated(
-                                const QList<QGeoSatelliteInfo>& ) ) );
+                                const QList<QGeoSatelliteInfo> & ) ) );
 
       // Whenever the satellite info source signals that the number of
       // satellites in view is updated, the satellitesInViewUpdated function
       // is called
       QObject::connect( satelliteInfoSource,
                         SIGNAL( satellitesInViewUpdated(
-                                  const QList<QGeoSatelliteInfo>& ) ),
+                                  const QList<QGeoSatelliteInfo> & ) ),
                         this,
                         SLOT( satellitesInViewUpdated(
-                                const QList<QGeoSatelliteInfo>& ) ) );
+                                const QList<QGeoSatelliteInfo> & ) ) );
 
       // Start listening for satellite updates
       satelliteInfoSource->startUpdates();

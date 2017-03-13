@@ -16,6 +16,7 @@
 #define QGSMAPCANVASTRACER_H
 
 #include "qgstracer.h"
+#include "qgis_gui.h"
 
 class QAction;
 class QgsMapCanvas;
@@ -41,20 +42,20 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   public:
     //! Create tracer associated with a particular map canvas, optionally message bar for reporting
-    explicit QgsMapCanvasTracer( QgsMapCanvas* canvas, QgsMessageBar* messageBar = 0 );
+    explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
     ~QgsMapCanvasTracer();
 
     //! Access to action that user may use to toggle tracing on/off. May be null if no action was associated
-    QAction* actionEnableTracing() const { return mActionEnableTracing; }
+    QAction *actionEnableTracing() const { return mActionEnableTracing; }
 
     //! Assign "enable tracing" checkable action to the tracer.
     //! The action is used to determine whether tracing is currently enabled by the user
-    void setActionEnableTracing( QAction* action ) { mActionEnableTracing = action; }
+    void setActionEnableTracing( QAction *action ) { mActionEnableTracing = action; }
 
     //! Retrieve instance of this class associated with given canvas (if any).
     //! The class keeps a simple registry of tracers associated with map canvas
     //! instances for easier access to the common tracer by various map tools
-    static QgsMapCanvasTracer* tracerForCanvas( QgsMapCanvas* canvas );
+    static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );
 
     //! Report a path finding error to the user
     void reportError( PathError err, bool addingVertex );
@@ -67,13 +68,13 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     void onCurrentLayerChanged();
 
   private:
-    QgsMapCanvas* mCanvas;
-    QgsMessageBar* mMessageBar;
-    QgsMessageBarItem* mLastMessage;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
+    QgsMessageBarItem *mLastMessage = nullptr;
 
-    QAction* mActionEnableTracing;
+    QAction *mActionEnableTracing = nullptr;
 
-    static QHash<QgsMapCanvas*, QgsMapCanvasTracer*> sTracers;
+    static QHash<QgsMapCanvas *, QgsMapCanvasTracer *> sTracers;
 };
 
 #endif // QGSMAPCANVASTRACER_H

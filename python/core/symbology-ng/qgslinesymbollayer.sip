@@ -25,7 +25,7 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -41,7 +41,7 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     // new stuff
 
@@ -144,7 +144,7 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 
     void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context );
 
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
+    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -161,7 +161,7 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     virtual void setWidth( double width );
     virtual double width() const;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed( const QgsRenderContext& context ) const;
 
     // new stuff
 
@@ -273,9 +273,9 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
-    QSet<QString> usedAttributes() const;
+    QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
-    void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined /Transfer/ );
+    void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty& property );
 
   protected:
 
@@ -283,4 +283,8 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     void renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context );
     double markerAngle( const QPolygonF& points, bool isRing, int vertex );
+
+  private:
+
+    QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer& other );
 };

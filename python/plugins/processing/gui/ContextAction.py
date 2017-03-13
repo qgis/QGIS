@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,7 +30,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class ContextAction:
+class ContextAction(object):
 
     def setData(self, itemData, toolbox):
         self.itemData = itemData

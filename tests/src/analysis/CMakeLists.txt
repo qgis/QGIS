@@ -15,6 +15,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/analysis
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
@@ -77,6 +80,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(analyzertest testqgsvectoranalyzer.cpp)
+ADD_QGIS_TEST(geometrysnappertest testqgsgeometrysnapper.cpp)
 ADD_QGIS_TEST(openstreetmaptest testopenstreetmap.cpp)
 ADD_QGIS_TEST(zonalstatisticstest testqgszonalstatistics.cpp)
 ADD_QGIS_TEST(rastercalculatortest testqgsrastercalculator.cpp)

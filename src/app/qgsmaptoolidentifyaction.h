@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_app.h"
 
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
@@ -41,18 +42,18 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
-    QgsMapToolIdentifyAction( QgsMapCanvas * canvas );
+    QgsMapToolIdentifyAction( QgsMapCanvas *canvas );
 
     ~QgsMapToolIdentifyAction();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     virtual void activate() override;
 
@@ -60,15 +61,15 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
-    void handleChangedRasterResults( QList<IdentifyResult>& results );
+    void handleChangedRasterResults( QList<IdentifyResult> &results );
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( const QString& );
+    void identifyMessage( const QString & );
     void copyToClipboard( QgsFeatureStore & );
 
   private slots:
-    void showAttributeTable( QgsMapLayer* layer, const QList<QgsFeature>& featureList );
+    void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 
   private:
     //! Pointer to the identify results dialog for name/value pairs

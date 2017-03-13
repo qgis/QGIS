@@ -23,12 +23,12 @@
 
 
 QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent )
-    : QDialog( parent )
-    , mStyle( style )
+  : QDialog( parent )
+  , mStyle( style )
 {
   setupUi( this );
 
-  QStandardItemModel* model = new QStandardItemModel( groupTree );
+  QStandardItemModel *model = new QStandardItemModel( groupTree );
   groupTree->setModel( model );
 
   QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
@@ -37,24 +37,19 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
-  group->setData( "groupsheader", Qt::UserRole + 2 );
-  group->setEditable( false );
-  group->setFlags( group->flags() & ~Qt::ItemIsSelectable );
-  buildGroupTree( group );
-  group->setText( tr( "Groups" ) );//set title later
-  QStandardItem *ungrouped = new QStandardItem( tr( "Ungrouped" ) );
-  ungrouped->setData( 0 );
-  ungrouped->setData( "group", Qt::UserRole + 2 );
-  setBold( ungrouped );
-  setBold( group );
-  group->appendRow( ungrouped );
-  model->appendRow( group );
+  QStandardItem *tags = new QStandardItem( QLatin1String( "" ) ); //require empty name to get first order groups
+  tags->setData( "tagsheader", Qt::UserRole + 2 );
+  tags->setEditable( false );
+  tags->setFlags( tags->flags() & ~Qt::ItemIsSelectable );
+  buildTagTree( tags );
+  tags->setText( tr( "Tags" ) );//set title later
+  setBold( tags );
+  model->appendRow( tags );
 
   QStandardItem *tag = new QStandardItem( tr( "Smart Groups" ) );
-  tag->setData( "smartgroupsheader" , Qt::UserRole + 2 );
+  tag->setData( "smartgroupsheader", Qt::UserRole + 2 );
   tag->setEditable( false );
-  tag->setFlags( group->flags() & ~Qt::ItemIsSelectable );
+  tag->setFlags( tag->flags() & ~Qt::ItemIsSelectable );
   setBold( tag );
   QgsSymbolGroupMap sgMap = mStyle->smartgroupsListMap();
   QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
@@ -63,7 +58,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
     QStandardItem *item = new QStandardItem( i.value() );
     item->setEditable( false );
     item->setData( i.key() );
-    item->setData( "smartgroup" , Qt::UserRole + 2 );
+    item->setData( "smartgroup", Qt::UserRole + 2 );
     tag->appendRow( item );
     ++i;
   }
@@ -75,16 +70,10 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   {
     groupTree->setExpanded( model->indexFromItem( model->item( i ) ), true );
   }
-  connect( groupTree->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( groupTreeSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( groupTree->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( groupTreeSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 }
 
-
-QgsStyleGroupSelectionDialog::~QgsStyleGroupSelectionDialog()
-{
-}
-
-
-void QgsStyleGroupSelectionDialog::setBold( QStandardItem* item )
+void QgsStyleGroupSelectionDialog::setBold( QStandardItem *item )
 {
   QFont font = item->font();
   font.setBold( true );
@@ -100,66 +89,66 @@ void QgsStyleGroupSelectionDialog::groupTreeSelectionChanged( const QItemSelecti
 
   Q_FOREACH ( index, deselectedItems )
   {
-    if ( index.data( Qt::UserRole + 2 ).toString() == "groupsheader" )
+    if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tagssheader" ) )
     {
       // Ignore: it's the group header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "all" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
     {
       emit allDeselected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroupsheader" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroupsheader" ) )
     {
       // Ignore: it's the smartgroups header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroup" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroup" ) )
     {
       emit smartgroupDeselected( index.data().toString() );
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "group" )
-    { // It's a group
-      emit groupDeselected( index.data().toString() );
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tag" ) )
+    {
+      // It's a tag
+      emit tagDeselected( index.data().toString() );
     }
   }
   Q_FOREACH ( index, selectedItems )
   {
-    if ( index.data( Qt::UserRole + 2 ).toString() == "groupsheader" )
+    if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tagssheader" ) )
     {
       // Ignore: it's the group header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "all" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "all" ) )
     {
       emit allSelected();
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroupsheader" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroupsheader" ) )
     {
       // Ignore: it's the smartgroups header
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "smartgroup" )
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "smartgroup" ) )
     {
       emit smartgroupSelected( index.data().toString() );
     }
-    else if ( index.data( Qt::UserRole + 2 ).toString() == "group" )
-    {  // It's a group
-      emit groupSelected( index.data().toString() );
+    else if ( index.data( Qt::UserRole + 2 ).toString() == QLatin1String( "tag" ) )
+    {
+      // It's a tag
+      emit tagSelected( index.data().toString() );
     }
   }
 }
 
 
-void QgsStyleGroupSelectionDialog::buildGroupTree( QStandardItem* &parent )
+void QgsStyleGroupSelectionDialog::buildTagTree( QStandardItem *&parent )
 {
-  QgsSymbolGroupMap groups = mStyle->childGroupNames( parent->text() );
-  QgsSymbolGroupMap::const_iterator i = groups.constBegin();
-  while ( i != groups.constEnd() )
+  QStringList tags = mStyle->tags();
+  tags.sort();
+  Q_FOREACH ( const QString &tag, tags )
   {
-    QStandardItem *item = new QStandardItem( i.value() );
-    item->setData( i.key() );
-    item->setData( "group" , Qt::UserRole + 2 );
+    QStandardItem *item = new QStandardItem( tag );
+    item->setData( mStyle->tagId( tag ) );
+    item->setData( "tag", Qt::UserRole + 2 );
     item->setEditable( false );
     parent->appendRow( item );
-    buildGroupTree( item );
-    ++i;
   }
 }
 

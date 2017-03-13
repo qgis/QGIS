@@ -1,8 +1,10 @@
 #ifndef QGSLABELFEATURE_H
 #define QGSLABELFEATURE_H
 
+#include "qgis_core.h"
 #include "qgspallabeling.h"
 #include "geos_c.h"
+#include "qgsmargins.h"
 
 namespace pal
 {
@@ -34,53 +36,8 @@ class CORE_EXPORT QgsLabelFeature
 {
   public:
 
-    //! Stores visual margins for labels (left, right, top and bottom)
-    //! @note not available in Python bindings
-    struct VisualMargin
-    {
-      /** Default constructor, all margins are set to 0.0
-       */
-      VisualMargin()
-          : left( 0.0 )
-          , right( 0.0 )
-          , top( 0.0 )
-          , bottom( 0.0 )
-      {}
-
-      /** Constructor allowing margins to be specified
-       * @param top top margin
-       * @param right right margin
-       * @param bottom bottom margin
-       * @param left left margin
-       */
-      VisualMargin( double top, double right, double bottom, double left )
-          : left( left )
-          , right( right )
-          , top( top )
-          , bottom( bottom )
-      {}
-
-      //! Left margin
-      double left;
-      //! Right margin
-      double right;
-      //! Top margin
-      double top;
-      //! Bottom margin
-      double bottom;
-
-      VisualMargin& operator *=( double value )
-      {
-        left *= value;
-        right *= value;
-        top *= value;
-        bottom *= value;
-        return *this;
-      }
-    };
-
     //! Create label feature, takes ownership of the geometry instance
-    QgsLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size );
+    QgsLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size );
     //! Clean up geometry and curved label info (if present)
     virtual ~QgsLabelFeature();
 
@@ -88,33 +45,33 @@ class CORE_EXPORT QgsLabelFeature
     QgsFeatureId id() const { return mId; }
 
     //! Get access to the associated geometry
-    GEOSGeometry* geometry() const { return mGeometry; }
+    GEOSGeometry *geometry() const { return mGeometry; }
 
     /** Sets the label's obstacle geometry, if different to the feature geometry.
-     * This can be used to override the shape of the feature for obstacle detection, eg to
+     * This can be used to override the shape of the feature for obstacle detection, e.g., to
      * buffer around a point geometry to prevent labels being placed too close to the
      * point itself. It not set, the feature's geometry is used for obstacle detection.
      * Ownership of obstacle geometry is transferred.
      * @note added in QGIS 2.14
      * @see obstacleGeometry()
      */
-    void setObstacleGeometry( GEOSGeometry* obstacleGeom );
+    void setObstacleGeometry( GEOSGeometry *obstacleGeom );
 
     /** Returns the label's obstacle geometry, if different to the feature geometry.
      * @note added in QGIS 2.14
      * @see setObstacleGeometry()
      */
-    GEOSGeometry* obstacleGeometry() const { return mObstacleGeometry; }
+    GEOSGeometry *obstacleGeometry() const { return mObstacleGeometry; }
 
     /** Sets the label's permissible zone geometry. If set, the feature's label MUST be fully contained
      * within this zone, and the feature will not be labeled if no candidates can be generated which
      * are not contained within the zone.
      * @param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
-     * will be applied to the label candidates (this is the default behaviour).
+     * will be applied to the label candidates (this is the default behavior).
      * @note added in QGIS 3.0
      * @see permissibleZone()
      */
-    void setPermissibleZone( const QgsGeometry& geometry );
+    void setPermissibleZone( const QgsGeometry &geometry );
 
     /** Returns the label's permissible zone geometry. If a valid geometry is returned, the feature's label
      * MUST be fully contained within this zone, and the feature will not be labeled if no candidates can be
@@ -130,7 +87,7 @@ class CORE_EXPORT QgsLabelFeature
      * @note added in QGIS 3.0
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
-    const GEOSPreparedGeometry* permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared; }
+    const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared; }
 
     //! Size of the label (in map units)
     QSizeF size() const { return mSize; }
@@ -144,12 +101,12 @@ class CORE_EXPORT QgsLabelFeature
      * @param margin visual margins for label
      * @see visualMargin()
      */
-    void setVisualMargin( const VisualMargin& margin ) { mVisualMargin = margin; }
+    void setVisualMargin( const QgsMargins &margin ) { mVisualMargin = margin; }
 
     /** Returns the visual margin for the label feature.
      * @see setVisualMargin() for details
      */
-    const VisualMargin& visualMargin() const { return mVisualMargin; }
+    const QgsMargins &visualMargin() const { return mVisualMargin; }
 
     /** Sets the size of the rendered symbol associated with this feature. This size is taken into
      * account in certain label placement modes to avoid placing labels over the rendered
@@ -164,7 +121,7 @@ class CORE_EXPORT QgsLabelFeature
      * with a point feature.
      * @see symbolSize()
      */
-    const QSizeF& symbolSize() const { return mSymbolSize; }
+    const QSizeF &symbolSize() const { return mSymbolSize; }
 
     /** Returns the feature's labeling priority.
      * @returns feature's priority, as a value between 0 (highest priority)
@@ -172,6 +129,7 @@ class CORE_EXPORT QgsLabelFeature
      * @see setPriority
      */
     double priority() const { return mPriority; }
+
     /** Sets the priority for labeling the feature.
      * @param priority feature's priority, as a value between 0 (highest priority)
      * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
@@ -202,7 +160,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
     QgsPoint fixedPosition() const { return mFixedPosition; }
     //! Set coordinates of the fixed position (relevant only if hasFixedPosition() returns true)
-    void setFixedPosition( const QgsPoint& point ) { mFixedPosition = point; }
+    void setFixedPosition( const QgsPoint &point ) { mFixedPosition = point; }
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
@@ -219,6 +177,7 @@ class CORE_EXPORT QgsLabelFeature
      * @see quadOffset
      */
     bool hasFixedQuadrant() const { return mHasFixedQuadrant; }
+
     /** Sets whether the quadrant for the label must be respected. This can be used
      * to fix the quadrant for specific features when using an "around point" placement.
      * @see fixedQuadrant
@@ -238,7 +197,7 @@ class CORE_EXPORT QgsLabelFeature
     QgsPoint positionOffset() const { return mPositionOffset; }
     //! Applies only to "offset from point" placement strategy.
     //! Set what offset (in map units) to use from the point
-    void setPositionOffset( const QgsPoint& offset ) { mPositionOffset = offset; }
+    void setPositionOffset( const QgsPoint &offset ) { mPositionOffset = offset; }
 
     /** Returns the offset type, which determines how offsets and distance to label
      * behaves. Support depends on which placement mode is used for generating
@@ -271,7 +230,7 @@ class CORE_EXPORT QgsLabelFeature
      * is only used for OrderedPositionsAroundPoint placements.
      * @see predefinedPositionOrder()
      */
-    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition >& order ) { mPredefinedPositionOrder = order; }
+    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
 
     //! Applies only to linestring features - after what distance (in map units)
     //! the labels should be repeated (0 = no repetitions)
@@ -290,16 +249,19 @@ class CORE_EXPORT QgsLabelFeature
      * @see setIsObstacle
      */
     bool isObstacle() const { return mIsObstacle; }
+
     /** Sets whether the feature will act as an obstacle for labels.
      * @param enabled whether feature will act as an obstacle
      * @see isObstacle
      */
     void setIsObstacle( bool enabled ) { mIsObstacle = enabled; }
+
     /** Returns the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
      * @see setObstacleFactor
      */
     double obstacleFactor() const { return mObstacleFactor; }
+
     /** Sets the obstacle factor for the feature. The factor controls the penalty
      * for labels overlapping this feature.
      * @param factor larger factors ( > 1.0 ) will result in labels
@@ -316,37 +278,37 @@ class CORE_EXPORT QgsLabelFeature
      */
     QString labelText() const { return mLabelText; }
     //! Set text of the label
-    void setLabelText( const QString& text ) { mLabelText = text; }
+    void setLabelText( const QString &text ) { mLabelText = text; }
 
     //! Get additional infor required for curved label placement. Returns null if not set
-    pal::LabelInfo* curvedLabelInfo() const { return mInfo; }
+    pal::LabelInfo *curvedLabelInfo() const { return mInfo; }
     //! takes ownership of the instance
-    void setCurvedLabelInfo( pal::LabelInfo* info ) { mInfo = info; }
+    void setCurvedLabelInfo( pal::LabelInfo *info ) { mInfo = info; }
 
     //! Get PAL layer of the label feature. Should be only used internally in PAL
-    pal::Layer* layer() const { return mLayer; }
+    pal::Layer *layer() const { return mLayer; }
     //! Assign PAL layer to the label feature. Should be only used internally in PAL
-    void setLayer( pal::Layer* layer ) { mLayer = layer; }
+    void setLayer( pal::Layer *layer ) { mLayer = layer; }
 
     //! Return provider of this instance
-    QgsAbstractLabelProvider* provider() const;
+    QgsAbstractLabelProvider *provider() const;
 
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
-    pal::Layer* mLayer;
+    pal::Layer *mLayer = nullptr;
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
     //! Geometry of the feature to be labelled
-    GEOSGeometry* mGeometry;
+    GEOSGeometry *mGeometry = nullptr;
     //! Optional geometry to use for label obstacles, if different to mGeometry
-    GEOSGeometry* mObstacleGeometry;
+    GEOSGeometry *mObstacleGeometry = nullptr;
     //! Optional geometry to use for label's permissible zone
     QgsGeometry mPermissibleZone;
     //! Width and height of the label
     QSizeF mSize;
     //! Visual margin of label contents
-    VisualMargin mVisualMargin;
+    QgsMargins mVisualMargin;
     //! Size of associated rendered symbol, if applicable
     QSizeF mSymbolSize;
     //! Priority of the label
@@ -384,12 +346,15 @@ class CORE_EXPORT QgsLabelFeature
     //! text of the label
     QString mLabelText;
     //! extra information for curved labels (may be null)
-    pal::LabelInfo* mInfo;
+    pal::LabelInfo *mInfo = nullptr;
 
   private:
 
+    //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
+    GEOSGeometry *mPermissibleZoneGeos = nullptr;
+
     // TODO - not required when QgsGeometry caches geos preparedness
-    const GEOSPreparedGeometry* mPermissibleZoneGeosPrepared;
+    const GEOSPreparedGeometry *mPermissibleZoneGeosPrepared = nullptr;
 
 };
 

@@ -14,10 +14,10 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.core import (
-    Qgis,
     QgsField,
+    QgsLayerDefinition,
     QgsPoint,
-    QgsMapLayer,
+    QgsPathResolver,
     QgsVectorLayer,
     QgsFeatureRequest,
     QgsFeature,
@@ -46,13 +46,11 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
     @classmethod
-    def setUpClass(cls):
-        """Run before all tests"""
-        # Create test layer
-        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                                u'test', u'memory')
-        assert (cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+    def createLayer(cls):
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+            'test', 'memory')
+        assert (vl.isValid())
 
         f1 = QgsFeature()
         f1.setAttributes([5, -200, NULL, 'NuLl', '5'])
@@ -73,11 +71,20 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         f5.setAttributes([4, 400, 'Honey', 'Honey', '4'])
         f5.setGeometry(QgsGeometry.fromWkt('Point (-65.32 78.3)'))
 
-        cls.provider.addFeatures([f1, f2, f3, f4, f5])
+        vl.dataProvider().addFeatures([f1, f2, f3, f4, f5])
+        return vl
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # Create test layer
+        cls.vl = cls.createLayer()
+        assert (cls.vl.isValid())
+        cls.provider = cls.vl.dataProvider()
 
         # poly layer
-        cls.poly_vl = QgsVectorLayer(u'Polygon?crs=epsg:4326&field=pk:integer&key=pk',
-                                     u'test', u'memory')
+        cls.poly_vl = QgsVectorLayer('Polygon?crs=epsg:4326&field=pk:integer&key=pk',
+                                     'test', 'memory')
         assert (cls.poly_vl.isValid())
         cls.poly_provider = cls.poly_vl.dataProvider()
 
@@ -101,6 +108,9 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+
+    def getEditableLayer(self):
+        return self.createLayer()
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
@@ -127,6 +137,30 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
                        ("MultiPoint", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPoint),
                        ("MultiLineString", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineString),
                        ("MultiPolygon", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygon),
+                       ("PointZ", QgsWkbTypes.PointGeometry, QgsWkbTypes.PointZ),
+                       ("LineStringZ", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineStringZ),
+                       ("PolygonZ", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.PolygonZ),
+                       ("MultiPointZ", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPointZ),
+                       ("MultiLineStringZ", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineStringZ),
+                       ("MultiPolygonZ", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygonZ),
+                       ("PointM", QgsWkbTypes.PointGeometry, QgsWkbTypes.PointM),
+                       ("LineStringM", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineStringM),
+                       ("PolygonM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.PolygonM),
+                       ("MultiPointM", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPointM),
+                       ("MultiLineStringM", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineStringM),
+                       ("MultiPolygonM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygonM),
+                       ("PointZM", QgsWkbTypes.PointGeometry, QgsWkbTypes.PointZM),
+                       ("LineStringZM", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineStringZM),
+                       ("PolygonZM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.PolygonZM),
+                       ("MultiPointZM", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPointZM),
+                       ("MultiLineStringZM", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineStringZM),
+                       ("MultiPolygonZM", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygonZM),
+                       ("Point25D", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point25D),
+                       ("LineString25D", QgsWkbTypes.LineGeometry, QgsWkbTypes.LineString25D),
+                       ("Polygon25D", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.Polygon25D),
+                       ("MultiPoint25D", QgsWkbTypes.PointGeometry, QgsWkbTypes.MultiPoint25D),
+                       ("MultiLineString25D", QgsWkbTypes.LineGeometry, QgsWkbTypes.MultiLineString25D),
+                       ("MultiPolygon25D", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygon25D),
                        ("None", QgsWkbTypes.NullGeometry, QgsWkbTypes.NoGeometry)]
         for v in testVectors:
             layer = QgsVectorLayer(v[0], "test", "memory")
@@ -248,11 +282,11 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         myMemoryLayer.updateFields()
 
         # Export the layer to a layer-definition-XML
-        qlr = QgsMapLayer.asLayerDefinition([myMemoryLayer])
+        qlr = QgsLayerDefinition.exportLayerDefinitionLayers([myMemoryLayer], QgsPathResolver())
         assert qlr is not None
 
         # Import the layer from the layer-definition-XML
-        layers = QgsMapLayer.fromLayerDefinition(qlr)
+        layers = QgsLayerDefinition.loadLayerDefinitionLayers(qlr, QgsPathResolver())
         assert layers is not None
         myImportedLayer = layers[0]
         assert myImportedLayer is not None
@@ -310,8 +344,8 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                                u'test', u'memory')
+        cls.vl = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+                                'test', 'memory')
         assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -337,8 +371,8 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         cls.provider.addFeatures([f1, f2, f3, f4, f5])
 
         # poly layer
-        cls.poly_vl = QgsVectorLayer(u'Polygon?crs=epsg:4326&index=yes&field=pk:integer&key=pk',
-                                     u'test', u'memory')
+        cls.poly_vl = QgsVectorLayer('Polygon?crs=epsg:4326&index=yes&field=pk:integer&key=pk',
+                                     'test', 'memory')
         assert (cls.poly_vl.isValid())
         cls.poly_provider = cls.poly_vl.dataProvider()
 
@@ -374,6 +408,7 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

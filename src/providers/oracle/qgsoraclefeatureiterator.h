@@ -31,9 +31,9 @@ class QgsOracleProvider;
 class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsOracleFeatureSource( const QgsOracleProvider* p );
+    explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request );
 
   protected:
     QgsDataSourceUri mUri;
@@ -59,32 +59,27 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
 {
   public:
-    QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest &request );
+    QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsOracleFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+    bool openQuery( QString whereClause, QVariantList args, bool showLog = true );
 
-    bool openQuery( QString whereClause, bool showLog = true );
-
-    QgsOracleConn *mConnection;
+    QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
     bool mRewind;
     bool mExpressionCompiled;
     bool mFetchGeometry;
     QgsAttributeList mAttributeList;
     QString mSql;
+    QVariantList mArgs;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H

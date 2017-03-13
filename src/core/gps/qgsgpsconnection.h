@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 
+#include "qgis_core.h"
+
 class QIODevice;
 
 struct CORE_EXPORT QgsSatelliteInfo
@@ -74,41 +76,41 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     /** Constructor
         @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
-    QgsGPSConnection( QIODevice* dev );
+    QgsGPSConnection( QIODevice *dev );
     virtual ~QgsGPSConnection();
-    /** Opens connection to device*/
+    //! Opens connection to device
     bool connect();
-    /** Closes connection to device*/
+    //! Closes connection to device
     bool close();
 
-    /** Sets the GPS source. The class takes ownership of the device class*/
-    void setSource( QIODevice* source );
+    //! Sets the GPS source. The class takes ownership of the device class
+    void setSource( QIODevice *source );
 
-    /** Returns the status. Possible state are not connected, connected, data received*/
+    //! Returns the status. Possible state are not connected, connected, data received
     Status status() const { return mStatus; }
 
-    /** Returns the current gps information (lat, lon, etc.)*/
+    //! Returns the current gps information (lat, lon, etc.)
     QgsGPSInformation currentGPSInformation() const { return mLastGPSInformation; }
 
   signals:
-    void stateChanged( const QgsGPSInformation& info );
-    void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
+    void stateChanged( const QgsGPSInformation &info );
+    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
 
   protected:
-    /** Data source (e.g. serial device, socket, file,...)*/
-    QIODevice* mSource;
-    /** Last state of the gps related variables (e.g. position, time, ...)*/
+    //! Data source (e.g. serial device, socket, file,...)
+    QIODevice *mSource = nullptr;
+    //! Last state of the gps related variables (e.g. position, time, ...)
     QgsGPSInformation mLastGPSInformation;
-    /** Connection status*/
+    //! Connection status
     Status mStatus;
 
   private:
-    /** Closes and deletes mSource*/
+    //! Closes and deletes mSource
     void cleanupSource();
     void clearLastGPSInformation();
 
   protected slots:
-    /** Parse available data source content*/
+    //! Parse available data source content
     virtual void parseData() = 0;
 };
 

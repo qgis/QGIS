@@ -19,6 +19,7 @@
 // Needed for CMake variables defines
 #include "qgsconfig.h"
 
+#include "qgis_python.h"
 
 #include <QString>
 #include <QStringList>
@@ -67,17 +68,17 @@ class PYTHON_EXPORT QgsPythonUtils
 
     //! run a statement, show an error message on error
     //! @return true if no error occurred
-    virtual bool runString( const QString& command, QString msgOnError = QString(), bool single = true ) = 0;
+    virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
     //! run a statement, error reporting is not done
     //! @return true if no error occurred
-    virtual bool runStringUnsafe( const QString& command, bool single = true ) = 0;
+    virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
-    virtual bool evalString( const QString& command, QString& result ) = 0;
+    virtual bool evalString( const QString &command, QString &result ) = 0;
 
     //! get information about error to the supplied arguments
     //! @return false if there was no python error
-    virtual bool getError( QString& errorClassName, QString& errorText ) = 0;
+    virtual bool getError( QString &errorClassName, QString &errorText ) = 0;
 
     /* plugins */
 
@@ -85,26 +86,26 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual QStringList pluginList() = 0;
 
     //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( const QString& packageName ) = 0;
+    virtual bool isPluginLoaded( const QString &packageName ) = 0;
 
     //! return a list of active plugins
     virtual QStringList listActivePlugins() = 0;
 
     //! load python plugin (import)
-    virtual bool loadPlugin( const QString& packageName ) = 0;
+    virtual bool loadPlugin( const QString &packageName ) = 0;
 
     //! start plugin: add to active plugins and call initGui()
-    virtual bool startPlugin( const QString& packageName ) = 0;
+    virtual bool startPlugin( const QString &packageName ) = 0;
 
     //! helper function to get some information about plugin
     //! @param function one of these strings: name, tpye, version, description
-    virtual QString getPluginMetadata( const QString& pluginName, const QString& function ) = 0;
+    virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
 
     //! confirm that the plugin can be uninstalled
-    virtual bool canUninstallPlugin( const QString& packageName ) = 0;
+    virtual bool canUninstallPlugin( const QString &packageName ) = 0;
 
     //! unload plugin
-    virtual bool unloadPlugin( const QString& packageName ) = 0;
+    virtual bool unloadPlugin( const QString &packageName ) = 0;
 };
 
 #endif

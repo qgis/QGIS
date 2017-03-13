@@ -18,6 +18,7 @@
 #define QGSTIPGUI_H
 
 #include "ui_qgstipguibase.h"
+#include "qgis_app.h"
 class QgsTip;
 
 class APP_EXPORT QgsTipGui : public QDialog, private Ui::QgsTipGuiBase
@@ -34,7 +35,7 @@ class APP_EXPORT QgsTipGui : public QDialog, private Ui::QgsTipGuiBase
     int mTipPosition;
 
   private slots:
-    void on_cbxDisableTips_toggled( bool theFlag );
+    void on_cbxDisableTips_toggled( bool flag );
     void prevClicked();
     void nextClicked();
 };

@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRENDERERREGISTRY_H
 #define QGSRASTERRENDERERREGISTRY_H
 
+#include "qgis_core.h"
 #include "qgsrasterlayer.h" //for DrawingStyle enum
 #include <QHash>
 #include <QString>
@@ -28,15 +29,15 @@ class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
-typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
-typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer*, const QgsRectangle &extent );
+typedef QgsRasterRenderer *( *QgsRasterRendererCreateFunc )( const QDomElement &, QgsRasterInterface *input );
+typedef QgsRasterRendererWidget *( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer *, const QgsRectangle &extent );
 
 /** \ingroup core
   * Registry for raster renderer entries.
   */
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
-  QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName, QgsRasterRendererCreateFunc rendererFunction,
+  QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction,
                                   QgsRasterRendererWidgetCreateFunc widgetFunction );
   QgsRasterRendererRegistryEntry();
   QString name;
@@ -48,33 +49,34 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
 
 /** \ingroup core
   * Registry for raster renderers.
+  *
+  * QgsRasterRendererRegistry is not usually directly created, but rather accessed through
+  * QgsApplication::rasterRendererRegistry().
+  *
   * \note not available in Python bindings
   */
 class CORE_EXPORT QgsRasterRendererRegistry
 {
   public:
-    static QgsRasterRendererRegistry* instance();
 
-    void insert( const QgsRasterRendererRegistryEntry& entry );
-    void insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func );
-    bool rendererData( const QString& rendererName, QgsRasterRendererRegistryEntry& data ) const;
+    QgsRasterRendererRegistry();
+
+    void insert( const QgsRasterRendererRegistryEntry &entry );
+    void insertWidgetFunction( const QString &rendererName, QgsRasterRendererWidgetCreateFunc func );
+    bool rendererData( const QString &rendererName, QgsRasterRendererRegistryEntry &data ) const;
     QStringList renderersList() const;
     QList< QgsRasterRendererRegistryEntry > entries() const;
 
     /** Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
         Caller takes ownership*/
-    QgsRasterRenderer* defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const;
-
-  protected:
-    QgsRasterRendererRegistry();
+    QgsRasterRenderer *defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const;
 
   private:
-    static QgsRasterRendererRegistry* mInstance;
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;
     QStringList mSortedEntries;
 
     //read min/max values from
-    bool minMaxValuesForBand( int band, QgsRasterDataProvider* provider, double& minValue, double& maxValue ) const;
+    bool minMaxValuesForBand( int band, QgsRasterDataProvider *provider, double &minValue, double &maxValue ) const;
 };
 
 #endif // QGSRASTERRENDERERREGISTRY_H

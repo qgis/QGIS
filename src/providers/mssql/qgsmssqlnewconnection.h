@@ -18,7 +18,7 @@
 #define QGSMSSQLNEWCONNECTION_H
 #include "ui_qgsmssqlnewconnectionbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 
 /** \class QgsMssqlNewConnection
@@ -30,13 +30,13 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     Q_OBJECT
   public:
     //! Constructor
-    QgsMssqlNewConnection( QWidget *parent = nullptr, const QString& connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMssqlNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
-    //! Destructor
+
     ~QgsMssqlNewConnection();
 
     //! Tests the connection using the parameters supplied
-    bool testConnection( const QString& testDatabase = QString() );
+    bool testConnection( const QString &testDatabase = QString() );
 
     /**
      * @brief List all databases found for the given server.
@@ -47,7 +47,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     void on_btnListDatabase_clicked();
     void on_btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#mssql-spatial-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
 };

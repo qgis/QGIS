@@ -24,6 +24,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include <QPen>
 #include <QBrush>
+#include "qgis_gui.h"
 
 class QgsVectorLayer;
 class QgsGraduatedSymbolRenderer;
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @param layer source vector layer
      * @param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer* layer = nullptr, const QString& fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget *parent = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
     ~QgsHistogramWidget();
 
@@ -66,7 +67,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see setLayer
      * @see sourceFieldExp
      */
-    QgsVectorLayer* layer() { return mVectorLayer; }
+    QgsVectorLayer *layer() { return mVectorLayer; }
 
     /** Returns the source field name or expression used to calculate values displayed
      * in the histogram.
@@ -82,7 +83,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see pen
      * @see setBrush
      */
-    void setPen( const QPen& pen ) { mPen = pen; }
+    void setPen( const QPen &pen ) { mPen = pen; }
 
     /** Returns the pen used when drawing histogram bars.
      * @see setPen
@@ -96,7 +97,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see brush
      * @see setPen
      */
-    void setBrush( const QBrush& brush ) { mBrush = brush; }
+    void setBrush( const QBrush &brush ) { mBrush = brush; }
 
     /** Returns the brush used when drawing histogram bars.
      * @see setBrush
@@ -109,7 +110,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @param ranges graduated range list
      * @see graduatedRanges
      */
-    void setGraduatedRanges( const QgsRangeList& ranges );
+    void setGraduatedRanges( const QgsRangeList &ranges );
 
     /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
@@ -129,7 +130,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see xAxisTitle
      * @see setYAxisTitle
      */
-    void setXAxisTitle( const QString& title ) { mXAxisTitle = title; }
+    void setXAxisTitle( const QString &title ) { mXAxisTitle = title; }
 
     /** Returns the title for the histogram's y-axis.
      * @see setYAxisTitle
@@ -142,7 +143,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @see yAxisTitle
      * @see setXAxisTitle
      */
-    void setYAxisTitle( const QString& title ) { mYAxisTitle = title; }
+    void setYAxisTitle( const QString &title ) { mYAxisTitle = title; }
 
   public slots:
 
@@ -159,13 +160,13 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @param layer source vector layer
      * @see setSourceFieldExp
      */
-    void setLayer( QgsVectorLayer* layer );
+    void setLayer( QgsVectorLayer *layer );
 
     /** Sets the source field or expression to use for values in the histogram.
      * @param fieldOrExp field name or expression string
      * @see setLayer
      */
-    void setSourceFieldExp( const QString& fieldOrExp );
+    void setSourceFieldExp( const QString &fieldOrExp );
 
   protected:
 
@@ -173,13 +174,13 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      */
     virtual void drawHistogram();
 
-    QwtPlot* mPlot;
+    QwtPlot *mPlot = nullptr;
     QgsRangeList mRanges;
-    QList< QwtPlotMarker* > mRangeMarkers;
+    QList< QwtPlotMarker * > mRangeMarkers;
 
   private:
 
-    QgsVectorLayer * mVectorLayer;
+    QgsVectorLayer *mVectorLayer = nullptr;
     QString mSourceFieldExp;
     QList<double> mValues;
     QgsStatisticalSummary mStats;
@@ -196,9 +197,9 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void clearHistogram();
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QwtPlotHistogram* createPlotHistogram( const QString& title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
+    QwtPlotHistogram *createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
 #else
-    HistogramItem* createHistoItem( const QString& title, const QBrush& brush, const QPen& pen = Qt::NoPen ) const;
+    HistogramItem *createHistoItem( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
 #endif
 
 };

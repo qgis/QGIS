@@ -4,8 +4,8 @@
 ***************************************************************************
     ToolsTest
     ---------------------
-    Date                 : July 2017
-    Copyright            : (C) 2017 by Nyall Dawson
+    Date                 : July 2016
+    Copyright            : (C) 2016 by Nyall Dawson
     Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -25,27 +25,47 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.testing import start_app, unittest
-from processing.tests.TestData import points2
-from processing.tools import vector
+import os
+import shutil
+import tempfile
+
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
+from qgis.testing import start_app, unittest
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tests.TestData import points
+from processing.tools import vector
+
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 start_app()
 
 
 class VectorTest(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.cleanup_paths = []
+
+    @classmethod
+    def tearDownClass(cls):
+        for path in cls.cleanup_paths:
+            shutil.rmtree(path)
+
     def testFeatures(self):
         ProcessingConfig.initialize()
 
-        test_data = points2()
+        test_data = points()
         test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # disable check for geometry validity
+        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
 
         # test with all features
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test with selected features
         previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
@@ -59,15 +79,15 @@ class VectorTest(unittest.TestCase):
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
         test_layer.selectByIds([2, 4, 6])
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # using selected features, but no selection
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
         test_layer.removeSelection()
         features = vector.features(test_layer)
-        self.assertEqual(len(features), 8)
-        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7]))
+        self.assertEqual(len(features), 9)
+        self.assertEqual(set([f.id() for f in features]), set([0, 1, 2, 3, 4, 5, 6, 7, 8]))
 
         # test that feature request is honored
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, False)
@@ -83,6 +103,128 @@ class VectorTest(unittest.TestCase):
         self.assertEqual(set([f.id() for f in features]), set([2, 4, 6]))
 
         ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+
+        # test exception is raised when filtering invalid geoms
+        #ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 2)
+        #test_layer_invalid_geoms = QgsVectorLayer(invalid_geometries(), 'test', 'ogr')
+        #with self.assertRaises(GeoAlgorithmExecutionException):
+        #    features = vector.features(test_layer_invalid_geoms)
+        #    feats = [f for f in features]
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
+
+    def testValues(self):
+        ProcessingConfig.initialize()
+
+        # disable check for geometry validity
+        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
+
+        test_data = points()
+        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # field by index
+        res = vector.values(test_layer, 1)
+        self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        # field by name
+        res = vector.values(test_layer, 'id')
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        # two fields
+        res = vector.values(test_layer, 1, 2)
+        self.assertEqual(res[1], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
+
+        # two fields by name
+        res = vector.values(test_layer, 'id', 'id2')
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(res['id2'], [2, 1, 0, 2, 1, 0, 0, 0, 0])
+
+        # two fields by name and index
+        res = vector.values(test_layer, 'id', 2)
+        self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
+
+        # test with selected features
+        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        test_layer.selectByIds([2, 4, 6])
+        res = vector.values(test_layer, 1)
+        self.assertEqual(set(res[1]), set([5, 7, 3]))
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
+
+    def testUniqueValues(self):
+        ProcessingConfig.initialize()
+
+        # disable check for geometry validity
+        prevInvalidGeoms = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, 0)
+
+        test_data = points()
+        test_layer = QgsVectorLayer(test_data, 'test', 'ogr')
+
+        # field by index
+        v = vector.uniqueValues(test_layer, 2)
+        self.assertEqual(len(v), len(set(v)))
+        self.assertEqual(set(v), set([2, 1, 0]))
+
+        # field by name
+        v = vector.uniqueValues(test_layer, 'id2')
+        self.assertEqual(len(v), len(set(v)))
+        self.assertEqual(set(v), set([2, 1, 0]))
+
+        # test with selected features
+        previous_value = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, True)
+        test_layer.selectByIds([2, 4, 6])
+        v = vector.uniqueValues(test_layer, 'id')
+        self.assertEqual(len(v), len(set(v)))
+        self.assertEqual(set(v), set([5, 7, 3]))
+
+        ProcessingConfig.setSettingValue(ProcessingConfig.USE_SELECTED, previous_value)
+        ProcessingConfig.setSettingValue(ProcessingConfig.FILTER_INVALID_GEOMETRIES, prevInvalidGeoms)
+
+    def testOgrLayerNameExtraction(self):
+        outdir = tempfile.mkdtemp()
+        self.cleanup_paths.append(outdir)
+
+        def _copyFile(dst):
+            shutil.copyfile(os.path.join(testDataPath, 'custom', 'grass7', 'weighted.csv'), dst)
+
+        # OGR provider - single layer
+        _copyFile(os.path.join(outdir, 'a.csv'))
+        name = vector.ogrLayerName(outdir)
+        self.assertEqual(name, 'a')
+
+        # OGR provider - multiple layers
+        _copyFile(os.path.join(outdir, 'b.csv'))
+        name1 = vector.ogrLayerName(outdir + '|layerid=0')
+        name2 = vector.ogrLayerName(outdir + '|layerid=1')
+        self.assertEqual(sorted([name1, name2]), ['a', 'b'])
+
+        name = vector.ogrLayerName(outdir + '|layerid=2')
+        self.assertIsNone(name)
+
+        # OGR provider - layername takes precedence
+        name = vector.ogrLayerName(outdir + '|layername=f')
+        self.assertEqual(name, 'f')
+
+        name = vector.ogrLayerName(outdir + '|layerid=0|layername=f')
+        self.assertEqual(name, 'f')
+
+        name = vector.ogrLayerName(outdir + '|layername=f|layerid=0')
+        self.assertEqual(name, 'f')
+
+        # SQLiite provider
+        name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
+        self.assertEqual(name, 't')
+
+        # PostgreSQL provider
+        name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
+        self.assertEqual(name, 'city_data.edge')
 
 
 if __name__ == '__main__':

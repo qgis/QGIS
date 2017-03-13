@@ -349,7 +349,7 @@ private:
 
     static const ColorScheme _defaultColorScheme;
 
-    static ColorSchemeManager * theColorSchemeManager;
+    static ColorSchemeManager * sColorSchemeManager;
 };
 
 }

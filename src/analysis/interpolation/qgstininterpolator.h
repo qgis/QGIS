@@ -20,6 +20,7 @@
 
 #include "qgsinterpolator.h"
 #include <QString>
+#include "qgis_analysis.h"
 
 class Triangulation;
 class TriangleInterpolator;
@@ -31,12 +32,12 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
   public:
     //describes the type of interpolation
-    enum TIN_INTERPOLATION
+    enum TINInterpolation
     {
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation = Linear, bool showProgressDialog = false );
+    QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y
@@ -44,32 +45,33 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        @param y y-coordinate (in map units)
        @param result out: interpolation result
        @return 0 in case of success*/
-    int interpolatePoint( double x, double y, double& result ) override;
+    int interpolatePoint( double x, double y, double &result ) override;
 
     void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
-    void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}
+    void setTriangulationFilePath( const QString &filepath ) {mTriangulationFilePath = filepath;}
 
   private:
-    Triangulation* mTriangulation;
-    TriangleInterpolator* mTriangleInterpolator;
+    Triangulation *mTriangulation = nullptr;
+    TriangleInterpolator *mTriangleInterpolator = nullptr;
     bool mIsInitialized;
     bool mShowProgressDialog;
-    /** If true: export triangulation to shapefile after initialization*/
+    //! If true: export triangulation to shapefile after initialization
     bool mExportTriangulationToFile;
-    /** File path to export the triangulation*/
+    //! File path to export the triangulation
     QString mTriangulationFilePath;
-    /** Type of interpolation*/
-    TIN_INTERPOLATION mInterpolation;
+    //! Type of interpolation
+    TINInterpolation mInterpolation;
 
-    /** Create dual edge triangulation*/
+    //! Create dual edge triangulation
     void initialize();
+
     /** Inserts the vertices of a feature into the triangulation
       @param f the feature
       @param zCoord true if the z coordinate is the interpolation attribute
       @param attr interpolation attribute index (if zCoord is false)
       @param type point/structure line, break line
       @return 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
-    int insertData( QgsFeature* f, bool zCoord, int attr, InputType type );
+    int insertData( QgsFeature *f, bool zCoord, int attr, InputType type );
 };
 
 #endif

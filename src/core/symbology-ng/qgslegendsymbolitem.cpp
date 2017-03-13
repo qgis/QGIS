@@ -18,31 +18,31 @@
 #include "qgssymbol.h"
 
 QgsLegendSymbolItem::QgsLegendSymbolItem()
-    : mSymbol( nullptr )
-    , mCheckable( false )
-    , mOriginalSymbolPointer( nullptr )
-    , mScaleMinDenom( -1 )
-    , mScaleMaxDenom( -1 )
-    , mLevel( 0 )
+  : mSymbol( nullptr )
+  , mCheckable( false )
+  , mOriginalSymbolPointer( nullptr )
+  , mScaleMinDenom( -1 )
+  , mScaleMaxDenom( -1 )
+  , mLevel( 0 )
 {
 }
 
-QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString& parentRuleKey )
-    : mSymbol( symbol ? symbol->clone() : nullptr )
-    , mLabel( label )
-    , mKey( ruleKey )
-    , mCheckable( checkable )
-    , mOriginalSymbolPointer( symbol )
-    , mScaleMinDenom( scaleMinDenom )
-    , mScaleMaxDenom( scaleMaxDenom )
-    , mLevel( level )
-    , mParentKey( parentRuleKey )
+QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString &parentRuleKey )
+  : mSymbol( symbol ? symbol->clone() : nullptr )
+  , mLabel( label )
+  , mKey( ruleKey )
+  , mCheckable( checkable )
+  , mOriginalSymbolPointer( symbol )
+  , mScaleMinDenom( scaleMinDenom )
+  , mScaleMaxDenom( scaleMaxDenom )
+  , mLevel( level )
+  , mParentKey( parentRuleKey )
 {
 }
 
-QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem& other )
-    : mSymbol( nullptr )
-    , mOriginalSymbolPointer( nullptr )
+QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
+  : mSymbol( nullptr )
+  , mOriginalSymbolPointer( nullptr )
 {
   *this = other;
 }
@@ -52,7 +52,7 @@ QgsLegendSymbolItem::~QgsLegendSymbolItem()
   delete mSymbol;
 }
 
-QgsLegendSymbolItem& QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem & other )
+QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &other )
 {
   if ( this == &other )
     return *this;
@@ -83,7 +83,7 @@ bool QgsLegendSymbolItem::isScaleOK( double scale ) const
   return true;
 }
 
-void QgsLegendSymbolItem::setSymbol( QgsSymbol* s )
+void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
 {
   delete mSymbol;
   mSymbol = s ? s->clone() : nullptr;

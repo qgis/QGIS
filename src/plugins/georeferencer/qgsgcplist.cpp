@@ -19,12 +19,12 @@
 #include "qgsgcplist.h"
 
 QgsGCPList::QgsGCPList()
-    : QList<QgsGeorefDataPoint *>()
+  : QList<QgsGeorefDataPoint *>()
 {
 }
 
 QgsGCPList::QgsGCPList( const QgsGCPList &list )
-    : QList<QgsGeorefDataPoint *>()
+  : QList<QgsGeorefDataPoint *>()
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();
@@ -60,7 +60,7 @@ int QgsGCPList::size() const
   const_iterator it = begin();
   while ( it != end() )
   {
-    if (( *it )->isEnabled() )
+    if ( ( *it )->isEnabled() )
       s++;
     ++it;
   }
@@ -72,7 +72,7 @@ int QgsGCPList::sizeAll() const
   return QList<QgsGeorefDataPoint *>::size();
 }
 
-QgsGCPList &QgsGCPList::operator =( const QgsGCPList & list )
+QgsGCPList &QgsGCPList::operator =( const QgsGCPList &list )
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();

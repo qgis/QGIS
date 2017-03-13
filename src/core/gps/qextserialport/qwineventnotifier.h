@@ -1,5 +1,6 @@
 #ifndef QWINEVENTNOTIFIER_H
 #define QWINEVENTNOTIFIER_H
+#include "qgis_core.h"
 #include <QObject>
 
 #include <windows.h>

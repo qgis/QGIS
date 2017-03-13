@@ -18,6 +18,7 @@
 #ifndef QGSGPSDCONNECTION_H
 #define QGSGPSDCONNECTION_H
 
+#include "qgis_core.h"
 #include "qgsnmeaconnection.h"
 
 #include <QAbstractSocket>
@@ -28,7 +29,7 @@ class CORE_EXPORT QgsGpsdConnection: public QgsNMEAConnection
 {
     Q_OBJECT
   public:
-    QgsGpsdConnection( const QString& host, qint16 port, const QString& device );
+    QgsGpsdConnection( const QString &host, qint16 port, const QString &device );
     ~QgsGpsdConnection();
 
   private slots:

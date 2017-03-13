@@ -20,6 +20,7 @@
 
 #include "ui_qgsrasterformatsaveoptionswidgetbase.h"
 #include "qgsraster.h"
+#include "qgis_gui.h"
 
 class QgsRasterLayer;
 
@@ -27,7 +28,7 @@ class QgsRasterLayer;
  * A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
-      private Ui::QgsRasterFormatSaveOptionsWidgetBase
+  private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
     Q_OBJECT
 
@@ -42,25 +43,75 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
       ProfileLineEdit // Profile + LineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget* parent = nullptr, const QString& format = "GTiff",
+    QgsRasterFormatSaveOptionsWidget( QWidget *parent = nullptr, const QString &format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      const QString& provider = "gdal" );
-    ~QgsRasterFormatSaveOptionsWidget();
+                                      const QString &provider = "gdal" );
 
-    void setFormat( const QString& format );
-    void setProvider( const QString& provider );
-    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
-    void setRasterFileName( const QString& file ) { mRasterLayer = nullptr; mRasterFileName = file; }
+    /**
+     * Set output raster format, it is used to determine list
+     * of available options
+     */
+    void setFormat( const QString &format );
+
+    /**
+     * Set provider key, , it is used to determine list
+     * of available options
+     */
+    void setProvider( const QString &provider );
+
+    /**
+     * Set output raster layer
+     */
+    void setRasterLayer( QgsRasterLayer *rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
+
+    /**
+     * Set output raster file name
+     */
+    void setRasterFileName( const QString &file ) { mRasterLayer = nullptr; mRasterFileName = file; }
+
+    /**
+     * Returns list of selected options
+     * @see setOptions()
+     */
     QStringList options() const;
+
+    /**
+     * Populate widget with user-defined options. String should contain
+     * key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
+     * @see options()
+     * @note added in QGIS 3.0
+     */
+    void setOptions( const QString &options );
+
+    /**
+     * Set widget look and feel
+     */
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
+
+    /**
+     * Set pyramids format to use
+     */
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format )
     { mPyramids = true; mPyramidsFormat = format; }
 
   public slots:
 
     void apply();
+
+    /**
+     * Opens window with options desctiption for given provider
+     * and output format
+     */
     void helpOptions();
+
+    /**
+     * Validates options correctness
+     */
     QString validateOptions( bool gui = true, bool reportOk = true );
+
+    /**
+     * Reloads profiles list from QGIS settings
+     */
     void updateProfiles();
 
   private slots:
@@ -78,7 +129,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void updateControls();
 
   protected:
-    virtual void showEvent( QShowEvent * event ) override;
+    virtual void showEvent( QShowEvent *event ) override;
 
   signals:
     void optionsChanged();
@@ -87,20 +138,20 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
 
     QString mFormat;
     QString mProvider;
-    QgsRasterLayer* mRasterLayer;
+    QgsRasterLayer *mRasterLayer = nullptr;
     QString mRasterFileName;
     QMap< QString, QString> mOptionsMap;
-    static QMap< QString, QStringList > mBuiltinProfiles;
+    static QMap< QString, QStringList > sBuiltinProfiles;
     bool mPyramids;
     QgsRaster::RasterPyramidsFormat mPyramidsFormat;
 
     QString settingsKey( QString profile ) const;
     QString currentProfileKey() const;
-    QString createOptions( const QString& profile ) const;
-    void deleteCreateOptions( const QString& profile );
+    QString createOptions( const QString &profile ) const;
+    void deleteCreateOptions( const QString &profile );
     void setCreateOptions();
-    void setCreateOptions( const QString& profile, const QString& options );
-    void setCreateOptions( const QString& profile, const QStringList& list );
+    void setCreateOptions( const QString &profile, const QString &options );
+    void setCreateOptions( const QString &profile, const QStringList &list );
     QStringList profiles() const;
     bool eventFilter( QObject *obj, QEvent *event ) override;
     QString pseudoFormat() const;

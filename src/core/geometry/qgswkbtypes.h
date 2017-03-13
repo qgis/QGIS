@@ -21,6 +21,8 @@
 #include <QMap>
 #include <QString>
 
+#include "qgis_core.h"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsstatisticalsummary.cpp.
@@ -37,6 +39,29 @@ class CORE_EXPORT QgsWkbTypes
 {
   public:
 
+    /**
+     * The WKB type describes the number of dimensions a geometry has
+     *
+     *  - Point
+     *  - LineString
+     *  - Polygon
+     *
+     * as well as the number of dimensions for each individual vertex
+     *
+     *  - X (always)
+     *  - Y (always)
+     *  - Z (optional)
+     *  - M (measurement value, optional)
+     *
+     * it also has values for multi types, collections, unknown geometry,
+     * null geometry, no geometry and curve support.
+     *
+     * These classes of geometry are often used for data sources to
+     * communicate what kind of geometry should be expected for a given
+     * geometry field. It is also used for tools or algorithms to decide
+     * if they should be available for a given geometry type or act in
+     * a different mode.
+     */
     enum Type
     {
       Unknown = 0,
@@ -97,6 +122,12 @@ class CORE_EXPORT QgsWkbTypes
       MultiPolygon25D
     };
 
+    /**
+     * The geometry types are used to group QgsWkbTypes::Type in a
+     * coarse way.
+     *
+     * @see geometryType( QgsWkbTypes::Type )
+     */
     enum GeometryType
     {
       PointGeometry,
@@ -106,7 +137,7 @@ class CORE_EXPORT QgsWkbTypes
       NullGeometry
     };
 
-    /** Returns the single type for a WKB type. Eg, for MultiPolygon WKB types the single type would be Polygon.
+    /** Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * @see isSingleType()
      * @see multiType()
      * @see flatType()
@@ -232,7 +263,7 @@ class CORE_EXPORT QgsWkbTypes
       return Unknown;
     }
 
-    /** Returns the multi type for a WKB type. Eg, for Polygon WKB types the multi type would be MultiPolygon.
+    /** Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
      * @see isMultiType()
      * @see singleType()
      * @see flatType()
@@ -359,7 +390,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
-     * Eg, for PolygonZM WKB types the single type would be Polygon.
+     * For example, for PolygonZM WKB types the single type would be Polygon.
      * @see singleType()
      * @see multiType()
      */
@@ -455,7 +486,7 @@ class CORE_EXPORT QgsWkbTypes
       return Unknown;
     }
 
-    /** Returns the modified input geometry type according to hasZ / hasM */
+    //! Returns the modified input geometry type according to hasZ / hasM
     static Type zmType( Type type, bool hasZ, bool hasM )
     {
       type = flatType( type );
@@ -469,7 +500,7 @@ class CORE_EXPORT QgsWkbTypes
     /** Attempts to extract the WKB type from a WKT string.
      * @param wktStr a valid WKT string
      */
-    static Type parseType( const QString& wktStr );
+    static Type parseType( const QString &wktStr );
 
     /** Returns true if the WKB type is a single type.
      * @see isMultiType()
@@ -578,8 +609,9 @@ class CORE_EXPORT QgsWkbTypes
       return 2 + hasZ( type ) + hasM( type );
     }
 
-    /** Returns the geometry type for a WKB type, eg both MultiPolygon and CurvePolygon would have a
+    /** Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
      * PolygonGeometry geometry type.
+     * GeometryCollections are reported as QgsWkbTypes::UnknownGeometry.
      */
     static GeometryType geometryType( Type type )
     {
@@ -655,7 +687,7 @@ class CORE_EXPORT QgsWkbTypes
       return UnknownGeometry;
     }
 
-    /** Returns a display string type for a WKB type, eg the geometry name used in WKT geometry representations.
+    /** Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
     static QString displayString( Type type );
 
@@ -873,16 +905,16 @@ class CORE_EXPORT QgsWkbTypes
 
     struct wkbEntry
     {
-      wkbEntry( const QString& name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
+      wkbEntry( const QString &name, bool isMultiType, Type multiType, Type singleType, Type flatType, GeometryType geometryType,
                 bool hasZ, bool hasM )
-          : mName( name )
-          , mIsMultiType( isMultiType )
-          , mMultiType( multiType )
-          , mSingleType( singleType )
-          , mFlatType( flatType )
-          , mGeometryType( geometryType )
-          , mHasZ( hasZ )
-          , mHasM( hasM )
+        : mName( name )
+        , mIsMultiType( isMultiType )
+        , mMultiType( multiType )
+        , mSingleType( singleType )
+        , mFlatType( flatType )
+        , mGeometryType( geometryType )
+        , mHasZ( hasZ )
+        , mHasM( hasM )
       {}
       QString mName;
       bool mIsMultiType;
@@ -894,8 +926,7 @@ class CORE_EXPORT QgsWkbTypes
       bool mHasM;
     };
 
-    static QMap<Type, wkbEntry> registerTypes();
-    static QMap<Type, wkbEntry>* entries();
+    static const QMap<Type, wkbEntry> ENTRIES;
 };
 
 #endif // QGSWKBTYPES_H

@@ -22,21 +22,17 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input )
-    , mBrightness( 0 )
-    , mContrast( 0 )
+QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface *input )
+  : QgsRasterInterface( input )
+  , mBrightness( 0 )
+  , mContrast( 0 )
 {
 }
 
-QgsBrightnessContrastFilter::~QgsBrightnessContrastFilter()
-{
-}
-
-QgsBrightnessContrastFilter* QgsBrightnessContrastFilter::clone() const
+QgsBrightnessContrastFilter *QgsBrightnessContrastFilter::clone() const
 {
   QgsDebugMsgLevel( "Entered", 4 );
-  QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( nullptr );
+  QgsBrightnessContrastFilter *filter = new QgsBrightnessContrastFilter( nullptr );
   filter->setBrightness( mBrightness );
   filter->setContrast( mContrast );
   return filter;
@@ -72,7 +68,7 @@ Qgis::DataType QgsBrightnessContrastFilter::dataType( int bandNo ) const
   return Qgis::UnknownDataType;
 }
 
-bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface* input )
+bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
 {
   QgsDebugMsgLevel( "Entered", 4 );
 
@@ -109,7 +105,7 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface* input )
   return true;
 }
 
-QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height, QgsRasterBlockFeedback* feedback )
+QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
@@ -148,9 +144,9 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
   QRgb myColor;
 
   int r, g, b, alpha;
-  double f = qPow(( mContrast + 100 ) / 100.0, 2 );
+  double f = qPow( ( mContrast + 100 ) / 100.0, 2 );
 
-  for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
+  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {
@@ -177,7 +173,7 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
   if ( alpha == 255 )
   {
     // Opaque pixel, do simpler math
-    return qBound( 0, ( int )(((((( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
+    return qBound( 0, ( int )( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
   }
   else if ( alpha == 0 )
   {
@@ -192,31 +188,31 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
     double adjustedColor = colorComponent / alphaFactor;
 
     // Make sure to return a premultiplied color
-    return alphaFactor * qBound( 0., (((((( adjustedColor / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255. );
+    return alphaFactor * qBound( 0., ( ( ( ( ( ( adjustedColor / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255. );
   }
 }
 
-void QgsBrightnessContrastFilter::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsBrightnessContrastFilter::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   if ( parentElem.isNull() )
   {
     return;
   }
 
-  QDomElement filterElem = doc.createElement( "brightnesscontrast" );
+  QDomElement filterElem = doc.createElement( QStringLiteral( "brightnesscontrast" ) );
 
-  filterElem.setAttribute( "brightness", QString::number( mBrightness ) );
-  filterElem.setAttribute( "contrast", QString::number( mContrast ) );
+  filterElem.setAttribute( QStringLiteral( "brightness" ), QString::number( mBrightness ) );
+  filterElem.setAttribute( QStringLiteral( "contrast" ), QString::number( mContrast ) );
   parentElem.appendChild( filterElem );
 }
 
-void QgsBrightnessContrastFilter::readXml( const QDomElement& filterElem )
+void QgsBrightnessContrastFilter::readXml( const QDomElement &filterElem )
 {
   if ( filterElem.isNull() )
   {
     return;
   }
 
-  mBrightness = filterElem.attribute( "brightness", "0" ).toInt();
-  mContrast = filterElem.attribute( "contrast", "0" ).toInt();
+  mBrightness = filterElem.attribute( QStringLiteral( "brightness" ), QStringLiteral( "0" ) ).toInt();
+  mContrast = filterElem.attribute( QStringLiteral( "contrast" ), QStringLiteral( "0" ) ).toInt();
 }

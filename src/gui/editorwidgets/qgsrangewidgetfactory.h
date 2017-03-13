@@ -17,6 +17,7 @@
 #define QGSRANGEWIDGETFACTORY_H
 
 #include "qgseditorwidgetfactory.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsRangeWidgetFactory
@@ -26,15 +27,13 @@
 class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRangeWidgetFactory( const QString& name );
+    QgsRangeWidgetFactory( const QString &name );
 
     // QgsEditorWidgetFactory interface
   public:
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const override;
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx ) override;
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx ) override;
-    virtual QMap<const char*, int> supportedWidgetTypes() override;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    virtual QHash<const char *, int> supportedWidgetTypes() override;
 
   private:
     virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;

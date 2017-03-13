@@ -16,6 +16,8 @@
 #ifndef QGSATTRIBUTEFORMINTERFACE_H
 #define QGSATTRIBUTEFORMINTERFACE_H
 
+#include "qgis_gui.h"
+
 class QgsAttributeForm;
 class QgsFeature;
 
@@ -25,22 +27,22 @@ class QgsFeature;
 class GUI_EXPORT QgsAttributeFormInterface
 {
   public:
-    explicit QgsAttributeFormInterface( QgsAttributeForm* form );
+    explicit QgsAttributeFormInterface( QgsAttributeForm *form );
 
-    virtual ~QgsAttributeFormInterface();
+    virtual ~QgsAttributeFormInterface() = default;
 
-    virtual bool acceptChanges( const QgsFeature& feature );
+    virtual bool acceptChanges( const QgsFeature &feature );
 
     virtual void initForm();
 
     virtual void featureChanged();
 
-    QgsAttributeForm* form();
+    QgsAttributeForm *form();
 
-    const QgsFeature& feature();
+    const QgsFeature &feature();
 
   private:
-    QgsAttributeForm* mForm;
+    QgsAttributeForm *mForm = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMINTERFACE_H

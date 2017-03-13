@@ -18,6 +18,7 @@
 #ifndef QGSRASTERHISTOGRAM
 #define QGSRASTERHISTOGRAM
 
+#include "qgis_core.h"
 #include <QString>
 #include <QVector>
 
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsRasterHistogram
       valid = false;
     }
 
-    /** Compares region, size etc. not histogram itself */
+    //! Compares region, size etc. not histogram itself
     bool operator==( const QgsRasterHistogram &h ) const
     {
       return ( h.bandNumber == bandNumber &&
@@ -58,16 +59,16 @@ class CORE_EXPORT QgsRasterHistogram
                h.height == height );
     }
 
-    /** \brief The gdal band number (starts at 1)*/
+    //! \brief The gdal band number (starts at 1)
     int bandNumber;
 
-    /** \brief Number of bins (intervals,buckets) in histogram. */
+    //! \brief Number of bins (intervals,buckets) in histogram.
     int binCount;
 
-    /** \brief The number of non NULL cells used to calculate histogram. */
+    //! \brief The number of non NULL cells used to calculate histogram.
     int nonNullCount;
 
-    /** \brief Whether histogram includes out of range values (in first and last bin) */
+    //! \brief Whether histogram includes out of range values (in first and last bin)
     bool includeOutOfRange;
 
     /** \brief Store the histogram for a given layer
@@ -75,22 +76,22 @@ class CORE_EXPORT QgsRasterHistogram
       */
     HistogramVector histogramVector;
 
-    /** \brief The maximum histogram value. */
+    //! \brief The maximum histogram value.
     double maximum;
 
-    /** \brief The minimum histogram value. */
+    //! \brief The minimum histogram value.
     double minimum;
 
-    /** \brief Number of columns used to calc histogram */
+    //! \brief Number of columns used to calc histogram
     int width;
 
-    /** \brief Number of rows used to calc histogram */
+    //! \brief Number of rows used to calc histogram
     int height;
 
-    /** \brief Extent used to calc histogram */
+    //! \brief Extent used to calc histogram
     QgsRectangle extent;
 
-    /** \brief Histogram is valid */
+    //! \brief Histogram is valid
     bool valid;
 };
 #endif

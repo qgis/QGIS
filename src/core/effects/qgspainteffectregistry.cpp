@@ -21,9 +21,9 @@
 #include "qgstransformeffect.h"
 #include "qgscoloreffect.h"
 
-QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName )
-    : mName( name )
-    , mVisibleName( visibleName )
+QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName )
+  : mName( name )
+  , mVisibleName( visibleName )
 {
 
 }
@@ -31,35 +31,29 @@ QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString& n
 QgsPaintEffectRegistry::QgsPaintEffectRegistry()
 {
   //init registry with known effects
-  addEffectType( new QgsPaintEffectMetadata( "blur", QObject::tr( "Blur" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "blur" ), QObject::tr( "Blur" ),
                  QgsBlurEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "dropShadow", QObject::tr( "Drop Shadow" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "dropShadow" ), QObject::tr( "Drop Shadow" ),
                  QgsDropShadowEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "innerShadow", QObject::tr( "Inner Shadow" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "innerShadow" ), QObject::tr( "Inner Shadow" ),
                  QgsInnerShadowEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "effectStack", QObject::tr( "Stack" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "effectStack" ), QObject::tr( "Stack" ),
                  QgsEffectStack::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "outerGlow", QObject::tr( "Outer Glow" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "outerGlow" ), QObject::tr( "Outer Glow" ),
                  QgsOuterGlowEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "innerGlow", QObject::tr( "Inner Glow" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "innerGlow" ), QObject::tr( "Inner Glow" ),
                  QgsInnerGlowEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "drawSource", QObject::tr( "Source" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "drawSource" ), QObject::tr( "Source" ),
                  QgsDrawSourceEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "transform", QObject::tr( "Transform" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "transform" ), QObject::tr( "Transform" ),
                  QgsTransformEffect::create, nullptr ) );
-  addEffectType( new QgsPaintEffectMetadata( "color", QObject::tr( "Colorise" ),
+  addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "color" ), QObject::tr( "Colorise" ),
                  QgsColorEffect::create, nullptr ) );
 }
 
 QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
 {
   qDeleteAll( mMetadata );
-}
-
-QgsPaintEffectRegistry* QgsPaintEffectRegistry::instance()
-{
-  static QgsPaintEffectRegistry sInstance;
-  return &sInstance;
 }
 
 QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QString &name ) const
@@ -84,7 +78,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QString &name, const
   if ( !mMetadata.contains( name ) )
     return nullptr;
 
-  QgsPaintEffect* effect = mMetadata[name]->createPaintEffect( properties );
+  QgsPaintEffect *effect = mMetadata[name]->createPaintEffect( properties );
   return effect;
 }
 
@@ -95,9 +89,9 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element
     return nullptr;
   }
 
-  QString type = element.attribute( QString( "type" ) );
+  QString type = element.attribute( QStringLiteral( "type" ) );
 
-  QgsPaintEffect* effect = instance()->createEffect( type );
+  QgsPaintEffect *effect = QgsApplication::paintEffectRegistry()->createEffect( type );
   if ( !effect )
     return nullptr;
 
@@ -108,7 +102,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::createEffect( const QDomElement &element
 QStringList QgsPaintEffectRegistry::effects() const
 {
   QStringList lst;
-  QMap<QString, QgsPaintEffectAbstractMetadata*>::ConstIterator it = mMetadata.begin();
+  QMap<QString, QgsPaintEffectAbstractMetadata *>::ConstIterator it = mMetadata.begin();
   for ( ; it != mMetadata.end(); ++it )
   {
     lst.append( it.key() );
@@ -116,29 +110,29 @@ QStringList QgsPaintEffectRegistry::effects() const
   return lst;
 }
 
-QgsPaintEffect* QgsPaintEffectRegistry::defaultStack()
+QgsPaintEffect *QgsPaintEffectRegistry::defaultStack()
 {
   //NOTE - also remember to update isDefaultStack below if making changes to this list
-  QgsEffectStack* stack = new QgsEffectStack();
-  QgsDropShadowEffect* dropShadow = new QgsDropShadowEffect();
+  QgsEffectStack *stack = new QgsEffectStack();
+  QgsDropShadowEffect *dropShadow = new QgsDropShadowEffect();
   dropShadow->setEnabled( false );
   stack->appendEffect( dropShadow );
-  QgsOuterGlowEffect* outerGlow = new QgsOuterGlowEffect();
+  QgsOuterGlowEffect *outerGlow = new QgsOuterGlowEffect();
   outerGlow->setEnabled( false );
   stack->appendEffect( outerGlow );
   stack->appendEffect( new QgsDrawSourceEffect() );
-  QgsInnerShadowEffect* innerShadow = new QgsInnerShadowEffect();
+  QgsInnerShadowEffect *innerShadow = new QgsInnerShadowEffect();
   innerShadow->setEnabled( false );
   stack->appendEffect( innerShadow );
-  QgsInnerGlowEffect* innerGlow = new QgsInnerGlowEffect();
+  QgsInnerGlowEffect *innerGlow = new QgsInnerGlowEffect();
   innerGlow->setEnabled( false );
   stack->appendEffect( innerGlow );
   return stack;
 }
 
-bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect* effect )
+bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect *effect )
 {
-  QgsEffectStack* effectStack = dynamic_cast< QgsEffectStack* >( effect );
+  QgsEffectStack *effectStack = dynamic_cast< QgsEffectStack * >( effect );
   if ( !effectStack )
     return false;
 
@@ -152,15 +146,15 @@ bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect* effect )
       return false;
   }
 
-  if ( !dynamic_cast< QgsDropShadowEffect* >( effectStack->effect( 0 ) ) )
+  if ( !dynamic_cast< QgsDropShadowEffect * >( effectStack->effect( 0 ) ) )
     return false;
-  if ( !dynamic_cast< QgsOuterGlowEffect* >( effectStack->effect( 1 ) ) )
+  if ( !dynamic_cast< QgsOuterGlowEffect * >( effectStack->effect( 1 ) ) )
     return false;
-  if ( !dynamic_cast< QgsDrawSourceEffect* >( effectStack->effect( 2 ) ) )
+  if ( !dynamic_cast< QgsDrawSourceEffect * >( effectStack->effect( 2 ) ) )
     return false;
-  if ( !dynamic_cast< QgsInnerShadowEffect* >( effectStack->effect( 3 ) ) )
+  if ( !dynamic_cast< QgsInnerShadowEffect * >( effectStack->effect( 3 ) ) )
     return false;
-  if ( !dynamic_cast< QgsInnerGlowEffect* >( effectStack->effect( 4 ) ) )
+  if ( !dynamic_cast< QgsInnerGlowEffect * >( effectStack->effect( 4 ) ) )
     return false;
 
   //we don't go as far as to check the individual effect's properties

@@ -17,6 +17,7 @@
 #ifndef QGSNUMERICSCALEBARSTYLE_H
 #define QGSNUMERICSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
 /** \ingroup core
@@ -25,22 +26,21 @@
 class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
 {
   public:
-    QgsNumericScaleBarStyle( QgsComposerScaleBar* bar );
-    ~QgsNumericScaleBarStyle();
+    QgsNumericScaleBarStyle( QgsComposerScaleBar *bar );
 
     QString name() const override;
 
-    void draw( QPainter* p, double xOffset = 0 ) const override;
+    void draw( QPainter *p, double xOffset = 0 ) const override;
 
     //calculation of box size is different compared to segment based scale bars
     QRectF calculateBoxSize() const override;
 
   private:
     QgsNumericScaleBarStyle(); //forbidden
-    /** Returns the text for the scale bar or an empty string in case of error*/
+    //! Returns the text for the scale bar or an empty string in case of error
     QString scaleText() const;
 
-    /** Store last width (in mm) to keep alignment to left/middle/right side*/
+    //! Store last width (in mm) to keep alignment to left/middle/right side
     mutable double mLastScaleBarWidth;
 };
 

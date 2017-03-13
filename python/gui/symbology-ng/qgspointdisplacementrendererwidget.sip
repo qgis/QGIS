@@ -9,5 +9,5 @@ class QgsPointDisplacementRendererWidget: QgsRendererWidget
     ~QgsPointDisplacementRendererWidget();
 
     QgsFeatureRenderer* renderer();
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setContext( const QgsSymbolWidgetContext& context );
 };

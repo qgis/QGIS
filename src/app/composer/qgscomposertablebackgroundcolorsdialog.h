@@ -38,7 +38,7 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
      * @param parent parent widget
      * @param flags window flags
      */
-    QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2* table, QWidget* parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2 *table, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
 
     ~QgsComposerTableBackgroundColorsDialog();
 
@@ -51,12 +51,12 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
 
   private:
 
-    QgsComposerTableV2* mComposerTable;
-    QMap< QgsComposerTableV2::CellStyleGroup, QCheckBox* > mCheckBoxMap;
-    QMap< QgsComposerTableV2::CellStyleGroup, QgsColorButton* > mColorButtonMap;
+    QgsComposerTableV2 *mComposerTable = nullptr;
+    QMap< QgsComposerTableV2::CellStyleGroup, QCheckBox * > mCheckBoxMap;
+    QMap< QgsComposerTableV2::CellStyleGroup, QgsColorButton * > mColorButtonMap;
 
 
-    /** Sets the GUI elements to the values of the table*/
+    //! Sets the GUI elements to the values of the table
     void setGuiElementValues();
 
 

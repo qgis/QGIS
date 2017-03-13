@@ -13,12 +13,6 @@
   <property name="windowTitle">
    <string>Style Manager</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QToolButton { padding-left: 3px; padding-right: 3px; }
-/* QMenu::item { padding: 2px 10px 2px 20px; }
-QMenu::item:selected {  background-color: gray; } */
-</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>6</number>
@@ -63,7 +57,7 @@ QMenu::item:selected {  background-color: gray; } */
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="0" colspan="3">
+       <item row="0" column="0">
         <widget class="QTreeView" name="groupTree">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -83,41 +77,46 @@ QMenu::item:selected {  background-color: gray; } */
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QPushButton" name="btnAddGroup">
+        <widget class="QPushButton" name="btnAddTag">
          <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+          <string>Add tag…</string>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="btnRemoveGroup">
+       <item row="2" column="0">
+        <widget class="QPushButton" name="btnAddSmartgroup">
          <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+          <string>Add smart group…</string>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="3" column="0">
         <widget class="QPushButton" name="btnManageGroups">
+         <property name="toolTip">
+          <string>Modify selected tag or smart group</string>
+         </property>
          <property name="text">
-          <string/>
+          <string>Modify group</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="btnShare">
+         <property name="text">
+          <string>Import / export</string>
          </property>
          <property name="icon">
           <iconset resource="../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionChangeLabelProperties.svg</normaloff>:/images/themes/default/mActionChangeLabelProperties.svg</iconset>
+           <normaloff>:/images/themes/default/mActionSharing.svg</normaloff>:/images/themes/default/mActionSharing.svg</iconset>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -172,7 +171,7 @@ QMenu::item:selected {  background-color: gray; } */
           </property>
           <attribute name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/styleicons/style-point.png</normaloff>:/images/themes/default/styleicons/style-point.png</iconset>
+            <normaloff>:/images/themes/default/mIconPointLayer.svg</normaloff>:/images/themes/default/mIconPointLayer.svg</iconset>
           </attribute>
           <attribute name="title">
            <string>Marker</string>
@@ -187,7 +186,7 @@ QMenu::item:selected {  background-color: gray; } */
           </property>
           <attribute name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/styleicons/style-line.png</normaloff>:/images/themes/default/styleicons/style-line.png</iconset>
+            <normaloff>:/images/themes/default/mIconLineLayer.svg</normaloff>:/images/themes/default/mIconLineLayer.svg</iconset>
           </attribute>
           <attribute name="title">
            <string>Line</string>
@@ -202,7 +201,7 @@ QMenu::item:selected {  background-color: gray; } */
           </property>
           <attribute name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/styleicons/style-polygon.png</normaloff>:/images/themes/default/styleicons/style-polygon.png</iconset>
+            <normaloff>:/images/themes/default/mIconPolygonLayer.svg</normaloff>:/images/themes/default/mIconPolygonLayer.svg</iconset>
           </attribute>
           <attribute name="title">
            <string>Fill</string>
@@ -217,7 +216,7 @@ QMenu::item:selected {  background-color: gray; } */
           </property>
           <attribute name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/styleicons/color.png</normaloff>:/images/themes/default/styleicons/color.png</iconset>
+            <normaloff>:/images/themes/default/styleicons/color.svg</normaloff>:/images/themes/default/styleicons/color.svg</iconset>
           </attribute>
           <attribute name="title">
            <string>Color ramp</string>
@@ -265,16 +264,10 @@ QMenu::item:selected {  background-color: gray; } */
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <layout class="QVBoxLayout" name="symbolBtnsLayout">
+       <item row="3" column="0">
+        <layout class="QHBoxLayout" name="symbolBtnsLayout">
          <item>
-          <widget class="QToolButton" name="btnAddItem">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
+          <widget class="QPushButton" name="btnAddItem">
            <property name="toolTip">
             <string>Add item</string>
            </property>
@@ -285,16 +278,10 @@ QMenu::item:selected {  background-color: gray; } */
             <iconset resource="../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="btnRemoveItem">
+          <widget class="QPushButton" name="btnRemoveItem">
            <property name="toolTip">
             <string>Remove item</string>
            </property>
@@ -305,26 +292,10 @@ QMenu::item:selected {  background-color: gray; } */
             <iconset resource="../../images/images.qrc">
              <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnEditItem">
+          <widget class="QPushButton" name="btnEditItem">
            <property name="toolTip">
             <string>Edit item</string>
            </property>
@@ -335,70 +306,27 @@ QMenu::item:selected {  background-color: gray; } */
             <iconset resource="../../images/images.qrc">
              <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
            </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonIconOnly</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="btnShare">
-           <property name="minimumSize">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
             <size>
              <width>0</width>
-             <height>16</height>
+             <height>0</height>
             </size>
            </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionSharing.svg</normaloff>:/images/themes/default/mActionSharing.svg</iconset>
-           </property>
-           <property name="popupMode">
-            <enum>QToolButton::InstantPopup</enum>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonIconOnly</enum>
-           </property>
-           <property name="autoRaise">
-            <bool>true</bool>
-           </property>
-          </widget>
+          </spacer>
          </item>
-        </layout>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QgsFilterLineEdit" name="searchBox">
            <property name="text">
             <string/>
            </property>
           </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Tags</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="tagsLineEdit"/>
-           </item>
-          </layout>
          </item>
         </layout>
        </item>
@@ -410,9 +338,6 @@ QMenu::item:selected {  background-color: gray; } */
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
      </property>
      <property name="centerButtons">
       <bool>false</bool>
@@ -450,15 +375,37 @@ QMenu::item:selected {  background-color: gray; } */
     <string>Edit item</string>
    </property>
   </action>
-  <action name="actnUngroup">
+  <action name="actnAddFavorite">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Ungroup</string>
+    <string>Add to favorites</string>
    </property>
    <property name="toolTip">
-    <string>Ungroup</string>
+    <string>Add to favorites</string>
+   </property>
+  </action>
+  <action name="actnRemoveFavorite">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Remove from favorites</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove from favorites</string>
+   </property>
+  </action>
+  <action name="actnDetag">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Clear tags</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear tags</string>
    </property>
   </action>
   <action name="actnEditSmartGroup">
@@ -466,13 +413,22 @@ QMenu::item:selected {  background-color: gray; } */
     <string>Edit smart group...</string>
    </property>
   </action>
-  <action name="actnAddGroup">
+  <action name="actnAddTag">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
    </property>
    <property name="text">
-    <string>Add group</string>
+    <string>Add tag…</string>
+   </property>
+  </action>
+  <action name="actnAddSmartgroup">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add smart group…</string>
    </property>
   </action>
   <action name="actnRemoveGroup">
@@ -481,20 +437,20 @@ QMenu::item:selected {  background-color: gray; } */
      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
    </property>
    <property name="text">
-    <string>Remove group</string>
+    <string>Remove</string>
    </property>
   </action>
-  <action name="actnGroupSymbols">
+  <action name="actnTagSymbols">
    <property name="text">
-    <string>Group symbols</string>
+    <string>Attach selected tag to symbols</string>
    </property>
   </action>
-  <action name="actnFinishGrouping">
+  <action name="actnFinishTagging">
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Finish grouping</string>
+    <string>Finish tagging</string>
    </property>
    <property name="visible">
     <bool>true</bool>
@@ -506,13 +462,13 @@ QMenu::item:selected {  background-color: gray; } */
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Export selected symbol(s) as PNG...</string>
+    <string>Export selected symbol(s) as PNG…</string>
    </property>
    <property name="toolTip">
-    <string>Export selected symbo(s) as PNG</string>
+    <string>Export selected symbol(s) as PNG</string>
    </property>
   </action>
   <action name="actnExportAsSVG">
@@ -521,10 +477,10 @@ QMenu::item:selected {  background-color: gray; } */
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export selected symbol(s) as SVG...</string>
+    <string>Export selected symbol(s) as SVG…</string>
    </property>
    <property name="toolTip">
     <string>Export selected symbol(s) as SVG</string>
@@ -540,17 +496,16 @@ QMenu::item:selected {  background-color: gray; } */
  </customwidgets>
  <tabstops>
   <tabstop>groupTree</tabstop>
-  <tabstop>btnAddGroup</tabstop>
-  <tabstop>btnRemoveGroup</tabstop>
+  <tabstop>btnAddTag</tabstop>
+  <tabstop>btnAddSmartgroup</tabstop>
   <tabstop>btnManageGroups</tabstop>
-  <tabstop>searchBox</tabstop>
-  <tabstop>tagsLineEdit</tabstop>
+  <tabstop>btnShare</tabstop>
   <tabstop>tabItemType</tabstop>
   <tabstop>listItems</tabstop>
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnRemoveItem</tabstop>
   <tabstop>btnEditItem</tabstop>
-  <tabstop>btnShare</tabstop>
+  <tabstop>searchBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
@@ -573,9 +528,25 @@ QMenu::item:selected {  background-color: gray; } */
    </hints>
   </connection>
   <connection>
-   <sender>btnAddGroup</sender>
+   <sender>btnAddTag</sender>
    <signal>clicked()</signal>
-   <receiver>actnAddGroup</receiver>
+   <receiver>actnAddTag</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>362</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnAddSmartgroup</sender>
+   <signal>clicked()</signal>
+   <receiver>actnAddSmartgroup</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">

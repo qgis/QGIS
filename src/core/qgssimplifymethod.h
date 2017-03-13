@@ -16,6 +16,8 @@
 #ifndef QGSSIMPLIFYMETHOD_H
 #define QGSSIMPLIFYMETHOD_H
 
+#include "qgis_core.h"
+
 class QgsAbstractGeometrySimplifier;
 
 /** \ingroup core
@@ -56,7 +58,7 @@ class CORE_EXPORT QgsSimplifyMethod
     inline bool forceLocalOptimization() const { return mForceLocalOptimization; }
 
     //! Creates a geometry simplifier according to specified method
-    static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );
+    static QgsAbstractGeometrySimplifier *createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod );
 
   protected:
     //! Simplification method

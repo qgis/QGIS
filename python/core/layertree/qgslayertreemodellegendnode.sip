@@ -20,7 +20,6 @@ class QgsLayerTreeModelLegendNode : QObject
     enum LegendNodeRoles
     {
       RuleKeyRole,                    //!< rule key of the node (QString)
-      SymbolLegacyRuleKeyRole,      //!< for QgsSymbolLegendNode only - legacy rule key (void ptr, to be cast to QgsSymbol ptr)
       ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
@@ -141,9 +140,22 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize iconSize() const;
 
-    //! Get the minimum icon size to prevent cropping
-    //! @note added in 2.10
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and use the variant which accepts a QgsRenderContext
+     * argument.
+     * @note added in 2.10
+     */
     QSize minimumIconSize() const;
+
+    /**
+     * Calculates the minimum icon size to prevent cropping. When evaluating
+     * the size for multiple icons it is more efficient to create a single
+     * render context in advance and call this method instead of minimumIconSize().
+     * @note added in QGIS 2.18
+     */
+    QSize minimumIconSize( QgsRenderContext* context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()

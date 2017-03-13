@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QUrl>
 
 //qgis includes...
@@ -76,6 +76,7 @@ class TestQgsGML : public QObject
     void testPartialFeature();
     void testThroughOGRGeometry();
     void testThroughOGRGeometry_urn_EPSG_4326();
+    void testAccents();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -101,8 +102,8 @@ const QString data1( "<myns:FeatureCollection "
 void TestQgsGML::testFromURL()
 {
   QgsFields fields;
-  fields.append( QgsField( "intfield", QVariant::Int, "int" ) );
-  QgsGml gmlParser( "mytypename", "mygeom", fields );
+  fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
   QTemporaryFile tmpFile;
   tmpFile.open();
@@ -110,7 +111,7 @@ void TestQgsGML::testFromURL()
   tmpFile.flush();
   QCOMPARE( gmlParser.getFeatures( QUrl::fromLocalFile( tmpFile.fileName() ).toString(), &wkbType ), 0 );
   QCOMPARE( wkbType, QgsWkbTypes::Point );
-  QMap<QgsFeatureId, QgsFeature* > featureMaps = gmlParser.featuresMap();
+  QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QCOMPARE( gmlParser.idsMap().size(), 1 );
   QCOMPARE( gmlParser.crs().authid(), QString( "EPSG:27700" ) );
@@ -120,11 +121,11 @@ void TestQgsGML::testFromURL()
 void TestQgsGML::testFromByteArray()
 {
   QgsFields fields;
-  fields.append( QgsField( "intfield", QVariant::Int, "int" ) );
-  QgsGml gmlParser( "mytypename", "mygeom", fields );
+  fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  QgsGml gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QgsWkbTypes::Type wkbType;
   QCOMPARE( gmlParser.getFeatures( data1.toAscii(), &wkbType ), 0 );
-  QMap<QgsFeatureId, QgsFeature* > featureMaps = gmlParser.featuresMap();
+  QMap<QgsFeatureId, QgsFeature * > featureMaps = gmlParser.featuresMap();
   QCOMPARE( featureMaps.size(), 1 );
   QVERIFY( featureMaps.constFind( 0 ) != featureMaps.constEnd() );
   QCOMPARE( featureMaps[ 0 ]->attributes().size(), 1 );
@@ -137,12 +138,12 @@ void TestQgsGML::testFromByteArray()
 void TestQgsGML::testStreamingParser()
 {
   QgsFields fields;
-  fields.append( QgsField( "intfield", QVariant::Int, "int" ) );
-  fields.append( QgsField( "longfield", QVariant::LongLong, "longlong" ) );
-  fields.append( QgsField( "doublefield", QVariant::Double, "double" ) );
-  fields.append( QgsField( "strfield", QVariant::String, "string" ) );
-  fields.append( QgsField( "datetimefield", QVariant::DateTime, "datetime" ) );
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  fields.append( QgsField( QStringLiteral( "intfield" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "longfield" ), QVariant::LongLong, QStringLiteral( "longlong" ) ) );
+  fields.append( QgsField( QStringLiteral( "doublefield" ), QVariant::Double, QStringLiteral( "double" ) ) );
+  fields.append( QgsField( QStringLiteral( "strfield" ), QVariant::String, QStringLiteral( "string" ) ) );
+  fields.append( QgsField( QStringLiteral( "datetimefield" ), QVariant::DateTime, QStringLiteral( "datetime" ) ) );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( data1.mid( 0, data1.size() / 2 ).toAscii(), false ), true );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
   QCOMPARE( gmlParser.processData( data1.mid( data1.size() / 2 ).toAscii(), true ), true );
@@ -168,7 +169,7 @@ void TestQgsGML::testStreamingParser()
 void TestQgsGML::testStreamingParserInvalidGML()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( "<FeatureCollection>", true ), false );
   QCOMPARE( gmlParser.getAndStealReadyFeatures().size(), 0 );
 }
@@ -176,7 +177,7 @@ void TestQgsGML::testStreamingParserInvalidGML()
 void TestQgsGML::testPointGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -202,7 +203,7 @@ void TestQgsGML::testPointGML2()
 void TestQgsGML::testLineStringGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -231,7 +232,7 @@ void TestQgsGML::testLineStringGML2()
 void TestQgsGML::testPolygonGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -269,7 +270,7 @@ void TestQgsGML::testPolygonGML2()
 void TestQgsGML::testMultiPointGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -307,7 +308,7 @@ void TestQgsGML::testMultiPointGML2()
 void TestQgsGML::testMultiLineStringGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -347,7 +348,7 @@ void TestQgsGML::testMultiLineStringGML2()
 void TestQgsGML::testMultiPolygonGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -384,7 +385,7 @@ void TestQgsGML::testMultiPolygonGML2()
 void TestQgsGML::testPointGML3()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -412,7 +413,7 @@ void TestQgsGML::testPointGML3()
 void TestQgsGML::testPointGML3_EPSG_4326()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -440,7 +441,7 @@ void TestQgsGML::testPointGML3_EPSG_4326()
 void TestQgsGML::testPointGML3_urn_EPSG_4326()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -468,7 +469,7 @@ void TestQgsGML::testPointGML3_urn_EPSG_4326()
 void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields, QgsGmlStreamingParser::Honour_EPSG );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields, QgsGmlStreamingParser::Honour_EPSG );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -496,7 +497,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG()
 void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG_invert()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields, QgsGmlStreamingParser::Honour_EPSG, true );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields, QgsGmlStreamingParser::Honour_EPSG, true );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -524,7 +525,7 @@ void TestQgsGML::testPointGML3_EPSG_4326_honour_EPSG_invert()
 void TestQgsGML::testLineStringGML3()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -553,7 +554,7 @@ void TestQgsGML::testLineStringGML3()
 void TestQgsGML::testLineStringGML3_LineStringSegment()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -580,7 +581,7 @@ void TestQgsGML::testLineStringGML3_LineStringSegment()
 void TestQgsGML::testPolygonGML3()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -618,7 +619,7 @@ void TestQgsGML::testPolygonGML3()
 void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -650,7 +651,7 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
 void TestQgsGML::testMultiLineStringGML3()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -690,7 +691,7 @@ void TestQgsGML::testMultiLineStringGML3()
 void TestQgsGML::testMultiPolygonGML3()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -736,7 +737,7 @@ void TestQgsGML::testMultiPolygonGML3()
 void TestQgsGML::testPointGML3_2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:wfs='http://wfs' "
@@ -765,7 +766,7 @@ void TestQgsGML::testPointGML3_2()
 void TestQgsGML::testBoundingBoxGML2()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -793,7 +794,7 @@ void TestQgsGML::testBoundingBoxGML2()
 void TestQgsGML::testBoundingBoxGML3()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -824,7 +825,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   QgsFields fields;
   // No attribute
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "xmlns:wfs='http://wfs' "
                                      "xmlns:gml='http://www.opengis.net/gml'>"
@@ -834,7 +835,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Valid numberOfFeatures
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberOfFeatures='1' "
                                      "xmlns:wfs='http://wfs' "
@@ -844,7 +845,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Invalid numberOfFeatures
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberOfFeatures='invalid' "
                                      "xmlns:wfs='http://wfs' "
@@ -854,7 +855,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Valid numberReturned
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberReturned='1' "
                                      "xmlns:wfs='http://wfs' "
@@ -864,7 +865,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Invalid numberReturned
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberReturned='invalid' "
                                      "xmlns:wfs='http://wfs' "
@@ -874,7 +875,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // Valid numberMatched
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberMatched='1' "
                                      "xmlns:wfs='http://wfs' "
@@ -884,7 +885,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
   }
   // numberMatched=unknown
   {
-    QgsGmlStreamingParser gmlParser( "", "", fields );
+    QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), fields );
     QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                      "numberMatched='unknown' "
                                      "xmlns:wfs='http://wfs' "
@@ -896,7 +897,7 @@ void TestQgsGML::testNumberMatchedNumberReturned()
 
 void TestQgsGML::testException()
 {
-  QgsGmlStreamingParser gmlParser( "", "", QgsFields() );
+  QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
   QCOMPARE( gmlParser.processData( QByteArray( "<ows:ExceptionReport xmlns:ows='http://www.opengis.net/ows/1.1' version='2.0.0'>"
                                    "  <ows:Exception exceptionCode='NoApplicableCode'>"
                                    "    <ows:ExceptionText>my_exception</ows:ExceptionText>"
@@ -909,19 +910,19 @@ void TestQgsGML::testException()
 void TestQgsGML::testTuple()
 {
   QgsFields fields;
-  fields.append( QgsField( "my_first_attr", QVariant::Int, "int" ) );
-  fields.append( QgsField( "my_second_attr", QVariant::Int, "int" ) );
+  fields.append( QgsField( QStringLiteral( "my_first_attr" ), QVariant::Int, QStringLiteral( "int" ) ) );
+  fields.append( QgsField( QStringLiteral( "my_second_attr" ), QVariant::Int, QStringLiteral( "int" ) ) );
   QList<QgsGmlStreamingParser::LayerProperties> layerProperties;
   QgsGmlStreamingParser::LayerProperties prop;
-  prop.mName = "ns:firstlayer";
-  prop.mGeometryAttribute = "geom";
+  prop.mName = QStringLiteral( "ns:firstlayer" );
+  prop.mGeometryAttribute = QStringLiteral( "geom" );
   layerProperties.append( prop );
-  prop.mName = "ns:secondlayer";
-  prop.mGeometryAttribute = "geom";
+  prop.mName = QStringLiteral( "ns:secondlayer" );
+  prop.mGeometryAttribute = QStringLiteral( "geom" );
   layerProperties.append( prop );
   QMap< QString, QPair<QString, QString> > mapFieldNameToSrcLayerNameFieldName;
-  mapFieldNameToSrcLayerNameFieldName.insert( "my_first_attr", QPair<QString, QString>( "ns:firstlayer", "a" ) );
-  mapFieldNameToSrcLayerNameFieldName.insert( "my_second_attr", QPair<QString, QString>( "ns:secondlayer", "a" ) );
+  mapFieldNameToSrcLayerNameFieldName.insert( QStringLiteral( "my_first_attr" ), QPair<QString, QString>( QStringLiteral( "ns:firstlayer" ), QStringLiteral( "a" ) ) );
+  mapFieldNameToSrcLayerNameFieldName.insert( QStringLiteral( "my_second_attr" ), QPair<QString, QString>( QStringLiteral( "ns:secondlayer" ), QStringLiteral( "a" ) ) );
   QgsGmlStreamingParser gmlParser( layerProperties, fields, mapFieldNameToSrcLayerNameFieldName );
   QCOMPARE( gmlParser.processData( QByteArray(
                                      "<wfs:FeatureCollection numberMatched=\"unknown\" numberReturned=\"1\" "
@@ -964,14 +965,14 @@ void TestQgsGML::testTuple()
 void TestQgsGML::testRenamedFields()
 {
   QgsFields fields;
-  fields.append( QgsField( "my_first_attr", QVariant::Int, "int" ) );
+  fields.append( QgsField( QStringLiteral( "my_first_attr" ), QVariant::Int, QStringLiteral( "int" ) ) );
   QList<QgsGmlStreamingParser::LayerProperties> layerProperties;
   QgsGmlStreamingParser::LayerProperties prop;
-  prop.mName = "ns:mylayer";
-  prop.mGeometryAttribute = "geom";
+  prop.mName = QStringLiteral( "ns:mylayer" );
+  prop.mGeometryAttribute = QStringLiteral( "geom" );
   layerProperties.append( prop );
   QMap< QString, QPair<QString, QString> > mapFieldNameToSrcLayerNameFieldName;
-  mapFieldNameToSrcLayerNameFieldName.insert( "my_first_attr", QPair<QString, QString>( "ns:mylayer", "b" ) );
+  mapFieldNameToSrcLayerNameFieldName.insert( QStringLiteral( "my_first_attr" ), QPair<QString, QString>( QStringLiteral( "ns:mylayer" ), QStringLiteral( "b" ) ) );
   QgsGmlStreamingParser gmlParser( layerProperties, fields, mapFieldNameToSrcLayerNameFieldName );
   QCOMPARE( gmlParser.processData( QByteArray(
                                      "<wfs:FeatureCollection numberMatched=\"unknown\" numberReturned=\"1\" "
@@ -1003,7 +1004,7 @@ void TestQgsGML::testRenamedFields()
 
 void TestQgsGML::testTruncatedResponse()
 {
-  QgsGmlStreamingParser gmlParser( "", "", QgsFields() );
+  QgsGmlStreamingParser gmlParser( QLatin1String( "" ), QLatin1String( "" ), QgsFields() );
   QCOMPARE( gmlParser.processData( QByteArray( "<wfs:FeatureCollection "
                                    "xmlns:wfs='http://wfs' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -1015,7 +1016,7 @@ void TestQgsGML::testTruncatedResponse()
 void TestQgsGML::testPartialFeature()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -1032,7 +1033,7 @@ void TestQgsGML::testPartialFeature()
 void TestQgsGML::testThroughOGRGeometry()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -1068,7 +1069,7 @@ void TestQgsGML::testThroughOGRGeometry()
 void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
 {
   QgsFields fields;
-  QgsGmlStreamingParser gmlParser( "mytypename", "mygeom", fields );
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "mytypename" ), QStringLiteral( "mygeom" ), fields );
   QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
                                    "xmlns:myns='http://myns' "
                                    "xmlns:gml='http://www.opengis.net/gml'>"
@@ -1103,5 +1104,53 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   delete features[0].first;
 }
 
-QTEST_MAIN( TestQgsGML )
+void TestQgsGML::testAccents()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QString::fromUtf8( QByteArray( "my\xc3\xa9typename" ) ),
+                                   QString::fromUtf8( QByteArray( "my\xc3\xa9geom" ) ),
+                                   fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:my\xc3\xa9typename fid='mytypename.1'>"
+                                   "<myns:my\xc3\xa9geom>"
+                                   "<gml:MultiSurface srsName='EPSG:27700'>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "</gml:MultiSurface>"
+                                   "</myns:my\xc3\xa9geom>"
+                                   "</myns:my\xc3\xa9typename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::MultiPolygon );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
+  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QCOMPARE( multi.size(), 2 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
+}
+
+QGSTEST_MAIN( TestQgsGML )
 #include "testqgsgml.moc"

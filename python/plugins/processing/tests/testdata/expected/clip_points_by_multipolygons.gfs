@@ -2,7 +2,8 @@
   <GMLFeatureClass>
     <Name>clip_points_by_multipolygons</Name>
     <ElementPath>clip_points_by_multipolygons</ElementPath>
-    <GeometryType>1</GeometryType>
+    <!--MULTIPOINT-->
+    <GeometryType>4</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>6</FeatureCount>

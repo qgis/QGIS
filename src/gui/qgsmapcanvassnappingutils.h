@@ -16,6 +16,7 @@
 #define QGSMAPCANVASSNAPPINGUTILS_H
 
 #include "qgssnappingutils.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
-    QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent = nullptr );
+    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
   protected:
     virtual void prepareIndexStarting( int count ) override;
@@ -41,8 +42,8 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
     void canvasCurrentLayerChanged();
 
   private:
-    QgsMapCanvas* mCanvas;
-    QProgressDialog* mProgress;
+    QgsMapCanvas *mCanvas = nullptr;
+    QProgressDialog *mProgress = nullptr;
 };
 
 

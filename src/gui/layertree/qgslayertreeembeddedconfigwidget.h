@@ -17,6 +17,7 @@
 #define QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H
 
 #include "ui_qgslayertreeembeddedconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 
@@ -29,14 +30,15 @@ class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui
 {
     Q_OBJECT
   public:
+
     /**
      * A widget to configure layer tree embedded widgets for a particular map layer.
      * @param parent The parent of the widget.
      */
-    QgsLayerTreeEmbeddedConfigWidget( QWidget* parent = nullptr );
+    QgsLayerTreeEmbeddedConfigWidget( QWidget *parent = nullptr );
 
     //! Initialize widget with a map layer
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
 
     //! Store changes made in the widget to the layer
     void applyToLayer();
@@ -46,7 +48,7 @@ class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui
     void onRemoveClicked();
 
   private:
-    QgsMapLayer* mLayer;
+    QgsMapLayer *mLayer = nullptr;
 };
 
 #endif // QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H

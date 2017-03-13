@@ -24,18 +24,18 @@
 #include "qgsrendercontext.h"
 #include "qgscsexception.h"
 
-QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
-    : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( nullptr )
-    , mPipe( nullptr )
-    , mContext( rendererContext )
-    , mFeedback( new Feedback( this ) )
+QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
+  : QgsMapLayerRenderer( layer->id() )
+  , mRasterViewPort( nullptr )
+  , mPipe( nullptr )
+  , mContext( rendererContext )
+  , mFeedback( new Feedback( this ) )
 {
   mPainter = rendererContext.painter();
-  const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-  mMapToPixel = &theQgsMapToPixel;
+  const QgsMapToPixel &qgsMapToPixel = rendererContext.mapToPixel();
+  mMapToPixel = &qgsMapToPixel;
 
-  QgsMapToPixel mapToPixel = theQgsMapToPixel;
+  QgsMapToPixel mapToPixel = qgsMapToPixel;
   if ( mapToPixel.mapRotation() )
   {
     // unset rotation for the sake of local computations.
@@ -147,7 +147,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort->mWidth = static_cast<int>( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() );
   mRasterViewPort->mHeight = static_cast<int>( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() );
 
-  //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
+  //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is because
   //mapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
 
@@ -172,11 +172,14 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   // TODO R->mLastViewPort = *mRasterViewPort;
 
   // TODO: is it necessary? Probably WMS only?
-  layer->dataProvider()->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
+  layer->dataProvider()->setDpi( 25.4 * rendererContext.scaleFactor() );
 
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
+  QgsRasterRenderer *rasterRenderer = mPipe->renderer();
+  if ( rasterRenderer )
+    layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -222,14 +225,14 @@ bool QgsRasterLayerRenderer::render()
   return true;
 }
 
-QgsFeedback* QgsRasterLayerRenderer::feedback() const
+QgsFeedback *QgsRasterLayerRenderer::feedback() const
 {
   return mFeedback;
 }
 
 QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
-    : mR( r )
-    , mMinimalPreviewInterval( 250 )
+  : mR( r )
+  , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
 }

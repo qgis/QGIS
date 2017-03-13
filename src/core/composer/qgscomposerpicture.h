@@ -17,6 +17,7 @@
 #ifndef QGSCOMPOSERPICTURE_H
 #define QGSCOMPOSERPICTURE_H
 
+#include "qgis_core.h"
 #include "qgscomposeritem.h"
 #include <QFile>
 #include <QImage>
@@ -37,11 +38,11 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     enum ResizeMode
     {
-      Zoom, /*!< enlarges image to fit frame while maintaining aspect ratio of picture */
-      Stretch, /*!< stretches image to fit frame, ignores aspect ratio */
-      Clip, /*!< draws image at original size and clips any portion which falls outside frame */
-      ZoomResizeFrame, /*!< enlarges image to fit frame, then resizes frame to fit resultant image */
-      FrameToImageSize /*!< sets size of frame to match original size of image without scaling */
+      Zoom, //!< Enlarges image to fit frame while maintaining aspect ratio of picture
+      Stretch, //!< Stretches image to fit frame, ignores aspect ratio
+      Clip, //!< Draws image at original size and clips any portion which falls outside frame
+      ZoomResizeFrame, //!< Enlarges image to fit frame, then resizes frame to fit resultant image
+      FrameToImageSize //!< Sets size of frame to match original size of image without scaling
     };
 
     /** Format of source image
@@ -53,14 +54,20 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
       Unknown
     };
 
-    QgsComposerPicture( QgsComposition *composition );
-    ~QgsComposerPicture();
+    //! Method for syncing rotation to a map's North direction
+    enum NorthMode
+    {
+      GridNorth = 0, //!< Align to grid north
+      TrueNorth, //!< Align to true north
+    };
 
-    /** Return correct graphics item type. */
+    QgsComposerPicture( QgsComposition *composition );
+
+    //! Return correct graphics item type.
     virtual int type() const override { return ComposerPicture; }
 
-    /** Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    //! Reimplementation of QCanvasItem::paint
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
@@ -70,7 +77,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @see picturePath
      * @note added in QGIS 2.5
      */
-    void setPicturePath( const QString& path );
+    void setPicturePath( const QString &path );
 
     /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
@@ -84,19 +91,19 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
      */
-    void setSceneRect( const QRectF& rectangle ) override;
+    void setSceneRect( const QRectF &rectangle ) override;
 
     /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /** Returns the rotation used for drawing the picture within the item's frame
      * @returns picture rotation in degrees
@@ -132,6 +139,38 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     bool useRotationMap() const { return mRotationMap; }
 
+    /**
+     * Returns the mode used to align the picture to a map's North.
+     * @see setNorthMode()
+     * @see northOffset()
+     * @note added in QGIS 2.18
+     */
+    NorthMode northMode() const { return mNorthMode; }
+
+    /**
+     * Sets the mode used to align the picture to a map's North.
+     * @see northMode()
+     * @see setNorthOffset()
+     * @note added in QGIS 2.18
+     */
+    void setNorthMode( NorthMode mode );
+
+    /**
+     * Returns the offset added to the picture's rotation from a map's North.
+     * @see setNorthOffset()
+     * @see northMode()
+     * @note added in QGIS 2.18
+     */
+    double northOffset() const { return mNorthOffset; }
+
+    /**
+     * Sets the offset added to the picture's rotation from a map's North.
+     * @see northOffset()
+     * @see setNorthMode()
+     * @note added in QGIS 2.18
+     */
+    void setNorthOffset( double offset );
+
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
      * @returns resize mode of picture
@@ -156,56 +195,56 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
 
-    /** Returns the fill color used for parameterized SVG files.
+    /** Returns the fill color used for parametrized SVG files.
      * @see setSvgFillColor()
-     * @see svgBorderColor()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
     QColor svgFillColor() const { return mSvgFillColor; }
 
-    /** Sets the fill color used for parameterized SVG files.
+    /** Sets the fill color used for parametrized SVG files.
      * @param color fill color.
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
      * @see svgFillColor()
-     * @see setSvgBorderColor()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgFillColor( const QColor& color );
+    void setSvgFillColor( const QColor &color );
 
-    /** Returns the border color used for parameterized SVG files.
-     * @see setSvgBorderColor()
+    /** Returns the stroke color used for parametrized SVG files.
+     * @see setSvgStrokeColor()
      * @see svgFillColor()
      * @note added in QGIS 2.14.1
      */
-    QColor svgBorderColor() const { return mSvgBorderColor; }
+    QColor svgStrokeColor() const { return mSvgStrokeColor; }
 
-    /** Sets the border color used for parameterized SVG files.
-     * @param color border color.
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
-     * @see svgBorderlColor()
+    /** Sets the stroke color used for parametrized SVG files.
+     * @param color stroke color.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
+     * @see svgStrokelColor()
      * @see setSvgFillColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderColor( const QColor& color );
+    void setSvgStrokeColor( const QColor &color );
 
-    /** Returns the border width (in mm) used for parameterized SVG files.
-     * @see setSvgBorderWidth()
-     * @see svgBorderColor()
+    /** Returns the stroke width (in mm) used for parametrized SVG files.
+     * @see setSvgStrokeWidth()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    double svgBorderWidth() const { return mSvgBorderWidth; }
+    double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
-    /** Sets the border width used for parameterized SVG files.
-     * @param width border width in mm
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
-     * @see svgBorderWidth()
-     * @see setSvgBorderColor()
+    /** Sets the stroke width used for parametrized SVG files.
+     * @param width stroke width in mm
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
+     * @see svgStrokeWidth()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderWidth( double width );
+    void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
      * @returns picture mode
@@ -235,7 +274,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @param context expression context for evaluating data defined picture sources
      * @note added in 2.3
      */
-    void refreshPicture( const QgsExpressionContext* context = nullptr );
+    void refreshPicture( const QgsExpressionContext *context = nullptr );
 
     /** Forces a recalculation of the picture's frame size
      * @note added in 2.3
@@ -245,19 +284,19 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   signals:
-    /** Is emitted on picture rotation change*/
+    //! Is emitted on picture rotation change
     void pictureRotationChanged( double newRotation );
 
   private:
 
     //default constructor is forbidden
     QgsComposerPicture();
-    /** Calculates bounding rect for svg file (mSourcefile) such that aspect ratio is correct*/
+    //! Calculates bounding rect for svg file (mSourcefile) such that aspect ratio is correct
     QRectF boundedSVGRect( double deviceWidth, double deviceHeight );
-    /** Calculates bounding rect for image such that aspect ratio is correct*/
+    //! Calculates bounding rect for image such that aspect ratio is correct
     QRectF boundedImageRect( double deviceWidth, double deviceHeight );
 
-    /** Returns size of current raster or svg picture */
+    //! Returns size of current raster or svg picture
     QSizeF pictureSize();
 
     QImage mImage;
@@ -267,30 +306,36 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     QSize mDefaultSvgSize;
 
-    /** Image rotation*/
+    //! Image rotation
     double mPictureRotation;
-    /** Map that sets the rotation (or 0 if this picture uses map independent rotation)*/
-    const QgsComposerMap* mRotationMap;
-    /** Width of the picture (in mm)*/
+    //! Map that sets the rotation (or 0 if this picture uses map independent rotation)
+    const QgsComposerMap *mRotationMap = nullptr;
+
+    //! Mode used to align to North
+    NorthMode mNorthMode;
+    //! Offset for north arrow
+    double mNorthOffset;
+
+    //! Width of the picture (in mm)
     double mPictureWidth;
-    /** Height of the picture (in mm)*/
+    //! Height of the picture (in mm)
     double mPictureHeight;
 
     ResizeMode mResizeMode;
     QgsComposerItem::ItemPositionMode mPictureAnchor;
 
-    QColor mSvgFillColor;
-    QColor mSvgBorderColor;
-    double mSvgBorderWidth;
+    QColor mSvgFillColor = QColor( 255, 255, 255 );
+    QColor mSvgStrokeColor = QColor( 0, 0, 0 );
+    double mSvgStrokeWidth = 0.2;
 
     bool mHasExpressionError;
     bool mLoaded;
     bool mLoadingSvg;
 
-    /** Loads an image file into the picture item and redraws the item*/
+    //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QString &path );
 
-    /** Sets up the picture item and connects to relevant signals*/
+    //! Sets up the picture item and connects to relevant signals
     void init();
 
     /** Returns part of a raster image which will be shown, given current picture
@@ -309,6 +354,8 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
   private slots:
 
     void remotePictureLoaded();
+
+    void updateMapRotation();
 };
 
 #endif

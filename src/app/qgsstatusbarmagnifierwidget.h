@@ -23,6 +23,7 @@ class QHBoxLayout;
 class QgsDoubleSpinBox;
 
 #include <QWidget>
+#include "qgis_app.h"
 
 /**
   * A widget which lets the user select the current level of magnification to
@@ -38,9 +39,9 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
     /** Constructor
       * @param parent is the parent widget
       */
-    QgsStatusBarMagnifierWidget( QWidget* parent = nullptr );
+    QgsStatusBarMagnifierWidget( QWidget *parent = nullptr );
 
-    /** Destructor */
+
     virtual ~QgsStatusBarMagnifierWidget();
 
     void setDefaultFactor( double factor );
@@ -48,7 +49,7 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
     /** Set the font of the text
       * @param font the font to use
       */
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
 
   public slots:
@@ -65,9 +66,9 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
 
 
   private:
-    QHBoxLayout *mLayout;
-    QLabel *mLabel;
-    QgsDoubleSpinBox *mSpinBox;
+    QHBoxLayout *mLayout = nullptr;
+    QLabel *mLabel = nullptr;
+    QgsDoubleSpinBox *mSpinBox = nullptr;
 };
 
 #endif

@@ -17,6 +17,7 @@
 #define QGSMAPLAYERCONFIGWIDGETFACTORY_H
 
 #include <QListWidgetItem>
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapLayerConfigWidget;
@@ -31,14 +32,13 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
 
-    /** Constructor */
+    //! Constructor
     QgsMapLayerConfigWidgetFactory();
 
-    /** Constructor */
-    QgsMapLayerConfigWidgetFactory( QString title, QIcon icon );
+    //! Constructor
+    QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
 
-    /** Destructor */
-    virtual ~QgsMapLayerConfigWidgetFactory();
+    virtual ~QgsMapLayerConfigWidgetFactory() = default;
 
     /**
      * @brief The icon that will be shown in the UI for the panel.
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * Set the icon for the factory object.
      * @param icon The icon to show in the interface.
      */
-    void setIcon( const QIcon& icon ) { mIcon = icon; }
+    void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
      * @brief The title of the panel.
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * e.g style dock uses this as a tooltip.
      * @param title The title to set.
      */
-    void setTitle( const QString& title ) { mTitle = title; }
+    void setTitle( const QString &title ) { mTitle = title; }
 
     /**
      * Flag if widget is supported for use in style dock.
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
     /**
-     * @brief Factory fucntion to create the widget on demand as needed by the dock.
+     * @brief Factory function to create the widget on demand as needed by the dock.
      * @note This function is called each time the panel is selected. Keep it light for better UX.
      * @param layer The active layer in the dock.
      * @param canvas The map canvas.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * @param parent The parent of the widget.
      * @return A new QgsMapStylePanel which is shown in the map style dock.
      */
-    virtual QgsMapLayerConfigWidget* createWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget* parent = 0 ) const = 0;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = 0 ) const = 0;
 
   private:
     QIcon mIcon;

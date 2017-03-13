@@ -17,18 +17,19 @@
 
 #include "qgsjoindialog.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
 
 #include <QStandardItemModel>
 #include <QPushButton>
 
-QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mLayer( layer )
+QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alreadyJoinedLayers, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mLayer( layer )
 {
   setupUi( this );
 
@@ -43,8 +44,8 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
 
   mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
-  connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mJoinFieldComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
-  connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( joinedLayerChanged( QgsMapLayer* ) ) );
+  connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, mJoinFieldComboBox, &QgsFieldComboBox::setLayer );
+  connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::joinedLayerChanged );
 
   mCacheInMemoryCheckBox->setChecked( true );
 
@@ -55,7 +56,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
     joinedLayerChanged( joinLayer );
   }
 
-  connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( checkDefinitionValid() ) );
+  connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::checkDefinitionValid );
   connect( mJoinFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( checkDefinitionValid() ) );
   connect( mTargetFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( checkDefinitionValid() ) );
 
@@ -66,25 +67,25 @@ QgsJoinDialog::~QgsJoinDialog()
 {
 }
 
-void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
+void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
 {
-  mJoinLayerComboBox->setLayer( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
-  mJoinFieldComboBox->setField( joinInfo.joinFieldName );
-  mTargetFieldComboBox->setField( joinInfo.targetFieldName );
-  mCacheInMemoryCheckBox->setChecked( joinInfo.memoryCache );
-  if ( joinInfo.prefix.isNull() )
+  mJoinLayerComboBox->setLayer( joinInfo.joinLayer() );
+  mJoinFieldComboBox->setField( joinInfo.joinFieldName() );
+  mTargetFieldComboBox->setField( joinInfo.targetFieldName() );
+  mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
+  if ( joinInfo.prefix().isNull() )
   {
     mUseCustomPrefix->setChecked( false );
   }
   else
   {
     mUseCustomPrefix->setChecked( true );
-    mCustomPrefix->setText( joinInfo.prefix );
+    mCustomPrefix->setText( joinInfo.prefix() );
   }
 
-  QStringList* lst = joinInfo.joinFieldNamesSubset();
+  QStringList *lst = joinInfo.joinFieldNamesSubset();
   mUseJoinFieldsSubset->setChecked( lst && !lst->isEmpty() );
-  QAbstractItemModel* model = mJoinFieldsSubsetView->model();
+  QAbstractItemModel *model = mJoinFieldsSubsetView->model();
   if ( model )
   {
     for ( int i = 0; i < model->rowCount(); ++i )
@@ -102,26 +103,23 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
   }
 }
 
-QgsVectorJoinInfo QgsJoinDialog::joinInfo() const
+QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
 {
-  QgsVectorJoinInfo info;
-  if ( mJoinLayerComboBox->currentLayer() )
-    info.joinLayerId = mJoinLayerComboBox->currentLayer()->id();
-  info.joinFieldName = mJoinFieldComboBox->currentField();
-  info.targetFieldName = mTargetFieldComboBox->currentField();
-  info.memoryCache = mCacheInMemoryCheckBox->isChecked();
-  info.targetFieldIndex = -1;
-  info.joinFieldIndex = -1;
+  QgsVectorLayerJoinInfo info;
+  info.setJoinLayer( qobject_cast<QgsVectorLayer *>( mJoinLayerComboBox->currentLayer() ) );
+  info.setJoinFieldName( mJoinFieldComboBox->currentField() );
+  info.setTargetFieldName( mTargetFieldComboBox->currentField() );
+  info.setUsingMemoryCache( mCacheInMemoryCheckBox->isChecked() );
 
   if ( mUseCustomPrefix->isChecked() )
-    info.prefix = mCustomPrefix->text();
+    info.setPrefix( mCustomPrefix->text() );
   else
-    info.prefix = QString::null;
+    info.setPrefix( QString::null );
 
   if ( mUseJoinFieldsSubset->isChecked() )
   {
     QStringList lst;
-    QAbstractItemModel* model = mJoinFieldsSubsetView->model();
+    QAbstractItemModel *model = mJoinFieldsSubsetView->model();
     if ( model )
     {
       for ( int i = 0; i < model->rowCount(); ++i )
@@ -142,28 +140,28 @@ bool QgsJoinDialog::createAttributeIndex() const
   return mCreateIndexCheckBox->isChecked();
 }
 
-void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
+void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
 {
   mJoinFieldComboBox->clear();
 
-  QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vLayer = dynamic_cast<QgsVectorLayer *>( layer );
   if ( !vLayer )
   {
     return;
   }
 
   mUseJoinFieldsSubset->setChecked( false );
-  QStandardItemModel* subsetModel = new QStandardItemModel( this );
-  Q_FOREACH ( const QgsField& field, vLayer->fields() )
+  QStandardItemModel *subsetModel = new QStandardItemModel( this );
+  Q_FOREACH ( const QgsField &field, vLayer->fields() )
   {
-    QStandardItem* subsetItem = new QStandardItem( field.name() );
+    QStandardItem *subsetItem = new QStandardItem( field.name() );
     subsetItem->setCheckable( true );
     //subsetItem->setFlags( subsetItem->flags() | Qt::ItemIsUserCheckable );
     subsetModel->appendRow( subsetItem );
   }
   mJoinFieldsSubsetView->setModel( subsetModel );
 
-  QgsVectorDataProvider* dp = vLayer->dataProvider();
+  QgsVectorDataProvider *dp = vLayer->dataProvider();
   bool canCreateAttrIndex = dp && ( dp->capabilities() & QgsVectorDataProvider::CreateAttributeIndex );
   if ( canCreateAttrIndex )
   {

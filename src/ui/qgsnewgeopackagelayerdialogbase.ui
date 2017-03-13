@@ -444,6 +444,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mDatabaseEdit</tabstop>
   <tabstop>mSelectDatabaseButton</tabstop>
   <tabstop>mTableNameEdit</tabstop>
@@ -460,8 +461,6 @@
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
-  <tabstop>buttonBox</tabstop>
-  <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERATTRIBUTETABLEV2_H
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 class QgsComposerMap;
@@ -30,7 +31,7 @@ class CORE_EXPORT QgsComposerAttributeTableCompareV2
 {
   public:
     QgsComposerAttributeTableCompareV2();
-    bool operator()( const QgsComposerTableRow& m1, const QgsComposerTableRow& m2 );
+    bool operator()( const QgsComposerTableRow &m1, const QgsComposerTableRow &m2 );
 
     /** Sets column number to sort by
      * @param col column number for sorting
@@ -61,13 +62,12 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     enum ContentSource
     {
-      LayerAttributes = 0, /*!< table shows attributes from features in a vector layer */
-      AtlasFeature, /*!< table shows attributes from the current atlas feature */
-      RelationChildren /*!< table shows attributes from related child features */
+      LayerAttributes = 0, //!< Table shows attributes from features in a vector layer
+      AtlasFeature, //!< Table shows attributes from the current atlas feature
+      RelationChildren //!< Table shows attributes from related child features
     };
 
-    QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
-    ~QgsComposerAttributeTableV2();
+    QgsComposerAttributeTableV2( QgsComposition *composition, bool createUndoCommands );
 
     virtual QString displayName() const override;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
 
     /** Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
@@ -85,9 +85,9 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see writeXml
      */
-    virtual bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
 
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
+    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) override;
 
     /** Sets the source for attributes to show in table body.
      * @param source content source
@@ -101,25 +101,25 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     ContentSource source() const { return mSource; }
 
-    /** Returns the source layer for the table, considering the table source mode. Eg,
+    /** Returns the source layer for the table, considering the table source mode. For example,
      * if the table is set to atlas feature mode, then the source layer will be the
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.
      * @returns actual source layer
      */
-    QgsVectorLayer* sourceLayer();
+    QgsVectorLayer *sourceLayer();
 
     /** Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
      * @see vectorLayer
      */
-    void setVectorLayer( QgsVectorLayer* layer );
+    void setVectorLayer( QgsVectorLayer *layer );
 
     /** Returns the vector layer the attribute table is currently using
      * @returns attribute table's current vector layer
      * @see setVectorLayer
      */
-    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+    QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
     /** Sets the relation id from which to display child features
      * @param relationId id for relation to display child features from
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setSource
      * @note only used if table source is set to RelationChildren
      */
-    void setRelationId( const QString& relationId );
+    void setRelationId( const QString &relationId );
 
     /** Returns the relation id which the table displays child features from
      * @returns relation id
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see composerMap
      * @see setDisplayOnlyVisibleFeatures
      */
-    void setComposerMap( const QgsComposerMap* map );
+    void setComposerMap( const QgsComposerMap *map );
 
     /** Returns the composer map whose extents are controlling the features shown in the
      * table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see setComposerMap
      * @see displayOnlyVisibleFeatures
      */
-    const QgsComposerMap* composerMap() const { return mComposerMap; }
+    const QgsComposerMap *composerMap() const { return mComposerMap; }
 
     /** Sets the maximum number of features shown by the table. Changing this setting may result
      * in the attribute table changing its size to accommodate the new number of rows, and requires
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @see featureFilter
      * @see setFilterFeatures
      */
-    void setFeatureFilter( const QString& expression );
+    void setFeatureFilter( const QString &expression );
 
     /** Sets the attributes to display in the table.
      * @param fields list of fields names from the vector layer to show.
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * to accommodate the new displayed feature attributes.
      * @note added in QGIS 2.16
      */
-    void setDisplayedFields( const QStringList& fields, bool refresh = true );
+    void setDisplayedFields( const QStringList &fields, bool refresh = true );
 
     /** Returns the attributes used to sort the table's features.
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
@@ -273,15 +273,15 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     QList<QPair<int, bool> > sortAttributes() const;
 
-    /** Sets a string to wrap the contents of the table cells by. Occurances of this string will
+    /** Sets a string to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @param wrapString string to replace with line break
      * @note added in QGIS 2.12
      * @see wrapString
      */
-    void setWrapString( const QString& wrapString );
+    void setWrapString( const QString &wrapString );
 
-    /** Returns the string used to wrap the contents of the table cells by. Occurances of this string will
+    /** Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @returns string which will be replaced with line break
      * @note added in QGIS 2.12
@@ -300,33 +300,33 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
   private:
 
-    /** Attribute source*/
+    //! Attribute source
     ContentSource mSource;
-    /** Associated vector layer*/
-    QgsVectorLayer* mVectorLayer;
-    /** Relation id, if in relation children mode*/
+    //! Associated vector layer
+    QgsVectorLayer *mVectorLayer = nullptr;
+    //! Relation id, if in relation children mode
     QString mRelationId;
 
-    /** Current vector layer, if in atlas feature mode*/
-    QgsVectorLayer* mCurrentAtlasLayer;
+    //! Current vector layer, if in atlas feature mode
+    QgsVectorLayer *mCurrentAtlasLayer = nullptr;
 
-    /** Associated composer map (used to display the visible features)*/
-    const QgsComposerMap* mComposerMap;
-    /** Maximum number of features that is displayed*/
+    //! Associated composer map (used to display the visible features)
+    const QgsComposerMap *mComposerMap = nullptr;
+    //! Maximum number of features that is displayed
     int mMaximumNumberOfFeatures;
 
-    /** True if only unique rows should be shown*/
+    //! True if only unique rows should be shown
     bool mShowUniqueRowsOnly;
 
-    /** Shows only the features that are visible in the associated composer map (true by default)*/
+    //! Shows only the features that are visible in the associated composer map (true by default)
     bool mShowOnlyVisibleFeatures;
 
-    /** Shows only the features that intersect the current atlas feature*/
+    //! Shows only the features that intersect the current atlas feature
     bool mFilterToAtlasIntersection;
 
-    /** True if feature filtering enabled*/
+    //! True if feature filtering enabled
     bool mFilterFeatures;
-    /** Feature filter expression*/
+    //! Feature filter expression
     QString mFeatureFilter;
 
     QString mWrapString;
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param map QMap of integers to strings, where the string is the alias to use for the
      * corresponding field, and the integer is the field index from the vector layer
      */
-    void restoreFieldAliasMap( const QMap<int, QString>& map );
+    void restoreFieldAliasMap( const QMap<int, QString> &map );
 
     /** Replaces occurrences of the wrap character with line breaks.
      * @param variant input cell contents
@@ -348,10 +348,10 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QVariant replaceWrapChar( const QVariant &variant ) const;
 
   private slots:
-    /** Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
-    void removeLayer( const QString& layerId );
+    //! Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes)
+    void removeLayer( const QString &layerId );
 
-    void atlasLayerChanged( QgsVectorLayer* layer );
+    void atlasLayerChanged( QgsVectorLayer *layer );
 
 };
 

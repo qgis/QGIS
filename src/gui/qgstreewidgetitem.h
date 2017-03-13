@@ -21,6 +21,7 @@
 
 #include <QTreeWidgetItem>
 #include <QObject>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsTreeWidgetItem
@@ -38,7 +39,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * @param view parent QTreeWidget view
      * @param type item type
      */
-    explicit QgsTreeWidgetItem( QTreeWidget * view, int type = Type );
+    explicit QgsTreeWidgetItem( QTreeWidget *view, int type = Type );
 
     /** Constructor for QgsTreeWidgetItem
      * @param type item type
@@ -92,7 +93,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      * @param value sort value
      * @see sortData()
      */
-    void setSortData( int column, const QVariant& value );
+    void setSortData( int column, const QVariant &value );
 
     /** Returns the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
@@ -116,7 +117,17 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      */
     int alwaysOnTopPriority() const;
 
+    /**
+     * Returns true if this item should appear before another item when sorting
+     * a list of items.
+     */
     virtual bool operator<( const QTreeWidgetItem &other ) const override;
+
+    /**
+     * Returns true if this item should appear after another item when sorting
+     * a list of items.
+     */
+    bool operator>=( const QTreeWidgetItem &other ) const { return !( *this < other ); }
 
   private:
 
@@ -144,15 +155,15 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
      */
     explicit QgsTreeWidgetItemObject( int type = Type );
 
-    /** Constructs a tree widget item of the specified type and appends it to the items in the given parent. */
-    explicit QgsTreeWidgetItemObject( QTreeWidget * parent, int type = Type );
+    //! Constructs a tree widget item of the specified type and appends it to the items in the given parent.
+    explicit QgsTreeWidgetItemObject( QTreeWidget *parent, int type = Type );
 
-    /** Sets the value for the item's column and role to the given value. */
-    virtual void setData( int column, int role, const QVariant & value );
+    //! Sets the value for the item's column and role to the given value.
+    virtual void setData( int column, int role, const QVariant &value );
 
   signals:
-    /** This signal is emitted when the contents of the column in the specified item has been edited by the user. */
-    void itemEdited( QTreeWidgetItem* item, int column );
+    //! This signal is emitted when the contents of the column in the specified item has been edited by the user.
+    void itemEdited( QTreeWidgetItem *item, int column );
 };
 
 #endif // QGSTREEWIDGETITEM_H

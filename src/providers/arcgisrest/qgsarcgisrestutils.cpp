@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestutils.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"
@@ -32,54 +32,55 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QThread>
-#include <qjson/parser.h>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 
 QVariant::Type QgsArcGisRestUtils::mapEsriFieldType( const QString &esriFieldType )
 {
-  if ( esriFieldType == "esriFieldTypeInteger" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeInteger" ) )
     return QVariant::LongLong;
-  if ( esriFieldType == "esriFieldTypeSmallInteger" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeSmallInteger" ) )
     return QVariant::Int;
-  if ( esriFieldType == "esriFieldTypeDouble" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeDouble" ) )
     return QVariant::Double;
-  if ( esriFieldType == "esriFieldTypeSingle" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeSingle" ) )
     return QVariant::Double;
-  if ( esriFieldType == "esriFieldTypeString" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeString" ) )
     return QVariant::String;
-  if ( esriFieldType == "esriFieldTypeDate" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeDate" ) )
     return QVariant::Date;
-  if ( esriFieldType == "esriFieldTypeGeometry" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeGeometry" ) )
     return QVariant::Invalid; // Geometry column should not appear as field
-  if ( esriFieldType == "esriFieldTypeOID" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeOID" ) )
     return QVariant::LongLong;
-  if ( esriFieldType == "esriFieldTypeBlob" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeBlob" ) )
     return QVariant::ByteArray;
-  if ( esriFieldType == "esriFieldTypeGlobalID" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeGlobalID" ) )
     return QVariant::String;
-  if ( esriFieldType == "esriFieldTypeRaster" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeRaster" ) )
     return QVariant::ByteArray;
-  if ( esriFieldType == "esriFieldTypeGUID" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeGUID" ) )
     return QVariant::String;
-  if ( esriFieldType == "esriFieldTypeXML" )
+  if ( esriFieldType == QLatin1String( "esriFieldTypeXML" ) )
     return QVariant::String;
   return QVariant::Invalid;
 }
 
-QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString& esriGeometryType )
+QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGeometryType )
 {
   // http://resources.arcgis.com/en/help/arcobjects-cpp/componenthelp/index.html#//000w0000001p000000
-  if ( esriGeometryType == "esriGeometryNull" )
+  if ( esriGeometryType == QLatin1String( "esriGeometryNull" ) )
     return QgsWkbTypes::Unknown;
-  else if ( esriGeometryType == "esriGeometryPoint" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryPoint" ) )
     return QgsWkbTypes::Point;
-  else if ( esriGeometryType == "esriGeometryMultipoint" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryMultipoint" ) )
     return QgsWkbTypes::MultiPoint;
-  else if ( esriGeometryType == "esriGeometryPolyline" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryPolyline" ) )
     return QgsWkbTypes::MultiCurve;
-  else if ( esriGeometryType == "esriGeometryPolygon" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryPolygon" ) )
     return QgsWkbTypes::Polygon;
-  else if ( esriGeometryType == "esriGeometryEnvelope" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryEnvelope" ) )
     return QgsWkbTypes::Polygon;
   // Unsupported (either by qgis, or format unspecified by the specification)
   //  esriGeometryCircularArc
@@ -99,7 +100,7 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString& esriGe
   return QgsWkbTypes::Unknown;
 }
 
-static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWkbTypes::Type pointType )
+static QgsPointV2 *parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
@@ -114,16 +115,16 @@ static QgsPointV2* parsePoint( const QVariantList& coordList, QgsWkbTypes::Type 
   return new QgsPointV2( pointType, x, y, z, m );
 }
 
-static QgsCircularString* parseCircularString( const QVariantMap& curveData, QgsWkbTypes::Type pointType, const QgsPointV2& startPoint )
+static QgsCircularString *parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPointV2 &startPoint )
 {
-  QVariantList coordsList = curveData["c"].toList();
+  QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
   QList<QgsPointV2> points;
   points.append( startPoint );
-  foreach ( const QVariant& coordData, coordsList )
+  foreach ( const QVariant &coordData, coordsList )
   {
-    QgsPointV2* point = parsePoint( coordData.toList(), pointType );
+    QgsPointV2 *point = parsePoint( coordData.toList(), pointType );
     if ( !point )
     {
       return nullptr;
@@ -131,22 +132,22 @@ static QgsCircularString* parseCircularString( const QVariantMap& curveData, Qgs
     points.append( *point );
     delete point;
   }
-  QgsCircularString* curve = new QgsCircularString();
+  QgsCircularString *curve = new QgsCircularString();
   curve->setPoints( points );
   return curve;
 }
 
-static QgsCompoundCurve* parseCompoundCurve( const QVariantList& curvesList, QgsWkbTypes::Type pointType )
+static QgsCompoundCurve *parseCompoundCurve( const QVariantList &curvesList, QgsWkbTypes::Type pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
-  QgsCompoundCurve* compoundCurve = new QgsCompoundCurve();
-  QgsLineString* lineString = new QgsLineString();
+  QgsCompoundCurve *compoundCurve = new QgsCompoundCurve();
+  QgsLineString *lineString = new QgsLineString();
   compoundCurve->addCurve( lineString );
-  foreach ( const QVariant& curveData, curvesList )
+  foreach ( const QVariant &curveData, curvesList )
   {
     if ( curveData.type() == QVariant::List )
     {
-      QgsPointV2* point = parsePoint( curveData.toList(), pointType );
+      QgsPointV2 *point = parsePoint( curveData.toList(), pointType );
       if ( !point )
       {
         delete compoundCurve;
@@ -158,7 +159,7 @@ static QgsCompoundCurve* parseCompoundCurve( const QVariantList& curvesList, Qgs
     else if ( curveData.type() == QVariant::Map )
     {
       // The last point of the linestring is the start point of this circular string
-      QgsCircularString* circularString = parseCircularString( curveData.toMap(), pointType, lineString->endPoint() );
+      QgsCircularString *circularString = parseCircularString( curveData.toMap(), pointType, lineString->endPoint() );
       if ( !circularString )
       {
         delete compoundCurve;
@@ -180,31 +181,31 @@ static QgsCompoundCurve* parseCompoundCurve( const QVariantList& curvesList, Qgs
   return compoundCurve;
 }
 
-static QgsAbstractGeometry* parseEsriGeometryPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry *parseEsriGeometryPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"x" : <x>, "y" : <y>, "z" : <z>, "m" : <m>}
   bool xok = false, yok = false;
-  double x = geometryData["x"].toDouble( &xok );
-  double y = geometryData["y"].toDouble( &yok );
+  double x = geometryData[QStringLiteral( "x" )].toDouble( &xok );
+  double y = geometryData[QStringLiteral( "y" )].toDouble( &yok );
   if ( !xok || !yok )
     return nullptr;
-  double z = geometryData["z"].toDouble();
-  double m = geometryData["m"].toDouble();
+  double z = geometryData[QStringLiteral( "z" )].toDouble();
+  double m = geometryData[QStringLiteral( "m" )].toDouble();
   return new QgsPointV2( pointType, x, y, z, m );
 }
 
-static QgsAbstractGeometry* parseEsriGeometryMultiPoint( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry *parseEsriGeometryMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
-  QVariantList coordsList = geometryData["points"].toList();
+  QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
 
-  QgsMultiPointV2* multiPoint = new QgsMultiPointV2();
-  foreach ( QVariant coordData, coordsList )
+  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  Q_FOREACH ( const QVariant &coordData, coordsList )
   {
     QVariantList coordList = coordData.toList();
-    QgsPointV2* p = parsePoint( coordList, pointType );
+    QgsPointV2 *p = parsePoint( coordList, pointType );
     if ( !p )
     {
       delete multiPoint;
@@ -215,20 +216,20 @@ static QgsAbstractGeometry* parseEsriGeometryMultiPoint( const QVariantMap& geom
   return multiPoint;
 }
 
-static QgsAbstractGeometry* parseEsriGeometryPolyline( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry *parseEsriGeometryPolyline( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curvePaths": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList pathsList;
-  if ( geometryData["paths"].isValid() )
-    pathsList = geometryData["paths"].toList();
-  else if ( geometryData["curvePaths"].isValid() )
-    pathsList = geometryData["curvePaths"].toList();
+  if ( geometryData[QStringLiteral( "paths" )].isValid() )
+    pathsList = geometryData[QStringLiteral( "paths" )].toList();
+  else if ( geometryData[QStringLiteral( "curvePaths" )].isValid() )
+    pathsList = geometryData[QStringLiteral( "curvePaths" )].toList();
   if ( pathsList.isEmpty() )
     return nullptr;
-  QgsMultiCurve* multiCurve = new QgsMultiCurve();
-  foreach ( const QVariant& pathData, pathsList )
+  QgsMultiCurve *multiCurve = new QgsMultiCurve();
+  foreach ( const QVariant &pathData, pathsList )
   {
-    QgsCompoundCurve* curve = parseCompoundCurve( pathData.toList(), pointType );
+    QgsCompoundCurve *curve = parseCompoundCurve( pathData.toList(), pointType );
     if ( !curve )
     {
       delete multiCurve;
@@ -239,18 +240,18 @@ static QgsAbstractGeometry* parseEsriGeometryPolyline( const QVariantMap& geomet
   return multiCurve;
 }
 
-static QgsAbstractGeometry* parseEsriGeometryPolygon( const QVariantMap& geometryData, QgsWkbTypes::Type pointType )
+static QgsAbstractGeometry *parseEsriGeometryPolygon( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
-  if ( geometryData["rings"].isValid() )
-    ringsList = geometryData["rings"].toList();
-  else if ( geometryData["ringPaths"].isValid() )
-    ringsList = geometryData["ringPaths"].toList();
+  if ( geometryData[QStringLiteral( "rings" )].isValid() )
+    ringsList = geometryData[QStringLiteral( "rings" )].toList();
+  else if ( geometryData[QStringLiteral( "ringPaths" )].isValid() )
+    ringsList = geometryData[QStringLiteral( "ringPaths" )].toList();
   if ( ringsList.isEmpty() )
     return nullptr;
-  QgsCurvePolygon* polygon = new QgsCurvePolygon();
-  QgsCompoundCurve* ext = parseCompoundCurve( ringsList.front().toList(), pointType );
+  QgsCurvePolygon *polygon = new QgsCurvePolygon();
+  QgsCompoundCurve *ext = parseCompoundCurve( ringsList.front().toList(), pointType );
   if ( !ext )
   {
     delete polygon;
@@ -259,7 +260,7 @@ static QgsAbstractGeometry* parseEsriGeometryPolygon( const QVariantMap& geometr
   polygon->setExteriorRing( ext );
   for ( int i = 1, n = ringsList.size(); i < n; ++i )
   {
-    QgsCompoundCurve* curve = parseCompoundCurve( ringsList[i].toList(), pointType );
+    QgsCompoundCurve *curve = parseCompoundCurve( ringsList[i].toList(), pointType );
     if ( !curve )
     {
       delete polygon;
@@ -270,47 +271,47 @@ static QgsAbstractGeometry* parseEsriGeometryPolygon( const QVariantMap& geometr
   return polygon;
 }
 
-static QgsAbstractGeometry* parseEsriEnvelope( const QVariantMap& geometryData )
+static QgsAbstractGeometry *parseEsriEnvelope( const QVariantMap &geometryData )
 {
   // {"xmin" : -109.55, "ymin" : 25.76, "xmax" : -86.39, "ymax" : 49.94}
   bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
-  double xmin = geometryData["xmin"].toDouble( &xminOk );
-  double ymin = geometryData["ymin"].toDouble( &yminOk );
-  double xmax = geometryData["xmax"].toDouble( &xmaxOk );
-  double ymax = geometryData["ymax"].toDouble( &ymaxOk );
+  double xmin = geometryData[QStringLiteral( "xmin" )].toDouble( &xminOk );
+  double ymin = geometryData[QStringLiteral( "ymin" )].toDouble( &yminOk );
+  double xmax = geometryData[QStringLiteral( "xmax" )].toDouble( &xmaxOk );
+  double ymax = geometryData[QStringLiteral( "ymax" )].toDouble( &ymaxOk );
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     return nullptr;
-  QgsLineString* ext = new QgsLineString();
+  QgsLineString *ext = new QgsLineString();
   ext->addVertex( QgsPointV2( xmin, ymin ) );
   ext->addVertex( QgsPointV2( xmax, ymin ) );
   ext->addVertex( QgsPointV2( xmax, ymax ) );
   ext->addVertex( QgsPointV2( xmin, ymax ) );
   ext->addVertex( QgsPointV2( xmin, ymin ) );
-  QgsPolygonV2* poly = new QgsPolygonV2();
+  QgsPolygonV2 *poly = new QgsPolygonV2();
   poly->setExteriorRing( ext );
   return poly;
 }
 
-QgsAbstractGeometry* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& geometryData, const QString& esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
+QgsAbstractGeometry *QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs )
 {
   QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, readZ, readM );
   if ( crs )
   {
-    *crs = parseSpatialReference( geometryData["spatialReference"].toMap() );
+    *crs = parseSpatialReference( geometryData[QStringLiteral( "spatialReference" )].toMap() );
   }
 
   // http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Geometry_Objects/02r3000000n1000000/
-  if ( esriGeometryType == "esriGeometryNull" )
+  if ( esriGeometryType == QLatin1String( "esriGeometryNull" ) )
     return nullptr;
-  else if ( esriGeometryType == "esriGeometryPoint" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryPoint" ) )
     return parseEsriGeometryPoint( geometryData, pointType );
-  else if ( esriGeometryType == "esriGeometryMultipoint" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryMultipoint" ) )
     return parseEsriGeometryMultiPoint( geometryData, pointType );
-  else if ( esriGeometryType == "esriGeometryPolyline" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryPolyline" ) )
     return parseEsriGeometryPolyline( geometryData, pointType );
-  else if ( esriGeometryType == "esriGeometryPolygon" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryPolygon" ) )
     return parseEsriGeometryPolygon( geometryData, pointType );
-  else if ( esriGeometryType == "esriGeometryEnvelope" )
+  else if ( esriGeometryType == QLatin1String( "esriGeometryEnvelope" ) )
     return parseEsriEnvelope( geometryData );
   // Unsupported (either by qgis, or format unspecified by the specification)
   //  esriGeometryCircularArc
@@ -332,52 +333,52 @@ QgsAbstractGeometry* QgsArcGisRestUtils::parseEsriGeoJSON( const QVariantMap& ge
 
 QgsCoordinateReferenceSystem QgsArcGisRestUtils::parseSpatialReference( const QVariantMap &spatialReferenceMap )
 {
-  QString spatialReference = spatialReferenceMap["latestWkid"].toString();
+  QString spatialReference = spatialReferenceMap[QStringLiteral( "latestWkid" )].toString();
   if ( spatialReference.isEmpty() )
-    spatialReference = spatialReferenceMap["wkid"].toString();
+    spatialReference = spatialReferenceMap[QStringLiteral( "wkid" )].toString();
   if ( spatialReference.isEmpty() )
-    spatialReference = spatialReferenceMap["wkt"].toString();
+    spatialReference = spatialReferenceMap[QStringLiteral( "wkt" )].toString();
   else
-    spatialReference = QString( "EPSG:%1" ).arg( spatialReference );
+    spatialReference = QStringLiteral( "EPSG:%1" ).arg( spatialReference );
   QgsCoordinateReferenceSystem crs;
   crs.createFromString( spatialReference );
-  if ( crs.authid().startsWith( "USER:" ) )
-    crs.createFromString( "EPSG:4326" ); // If we can't recognize the SRS, fall back to WGS84
+  if ( crs.authid().startsWith( QLatin1String( "USER:" ) ) )
+    crs.createFromString( QStringLiteral( "EPSG:4326" ) ); // If we can't recognize the SRS, fall back to WGS84
   return crs;
 }
 
 
-QVariantMap QgsArcGisRestUtils::getServiceInfo( const QString& baseurl, QString& errorTitle, QString& errorText )
+QVariantMap QgsArcGisRestUtils::getServiceInfo( const QString &baseurl, QString &errorTitle, QString &errorText )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer?f=json
   QUrl queryUrl( baseurl );
-  queryUrl.addQueryItem( "f", "json" );
+  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString& layerurl, QString& errorTitle, QString& errorText )
+QVariantMap QgsArcGisRestUtils::getLayerInfo( const QString &layerurl, QString &errorTitle, QString &errorText )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1?f=json
   QUrl queryUrl( layerurl );
-  queryUrl.addQueryItem( "f", "json" );
+  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjectIds( const QString& layerurl, QString& errorTitle, QString& errorText )
+QVariantMap QgsArcGisRestUtils::getObjectIds( const QString &layerurl, QString &errorTitle, QString &errorText )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=objectid%3Dobjectid&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
-  queryUrl.addQueryItem( "f", "json" );
-  queryUrl.addQueryItem( "where", "objectid=objectid" );
-  queryUrl.addQueryItem( "returnIdsOnly", "true" );
+  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+  queryUrl.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "objectid=objectid" ) );
+  queryUrl.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QVariantMap QgsArcGisRestUtils::getObjects( const QString& layerurl, const QList<quint32>& objectIds, const QString &crs,
-    bool fetchGeometry, const QStringList& fetchAttributes,
+QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
+    bool fetchGeometry, const QStringList &fetchAttributes,
     bool fetchM, bool fetchZ,
-    const QgsRectangle& filterRect,
-    QString& errorTitle, QString& errorText )
+    const QgsRectangle &filterRect,
+    QString &errorTitle, QString &errorText )
 {
   QStringList ids;
   foreach ( int id, objectIds )
@@ -385,42 +386,42 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString& layerurl, const QList
     ids.append( QString::number( id ) );
   }
   QUrl queryUrl( layerurl + "/query" );
-  queryUrl.addQueryItem( "f", "json" );
-  queryUrl.addQueryItem( "objectIds", ids.join( "," ) );
-  QString wkid = crs.indexOf( ":" ) >= 0 ? crs.split( ":" )[1] : "";
-  queryUrl.addQueryItem( "inSR", wkid );
-  queryUrl.addQueryItem( "outSR", wkid );
-  QString outFields = fetchAttributes.join( "," );
+  queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+  queryUrl.addQueryItem( QStringLiteral( "objectIds" ), ids.join( QStringLiteral( "," ) ) );
+  QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( QStringLiteral( ":" ) )[1] : QLatin1String( "" );
+  queryUrl.addQueryItem( QStringLiteral( "inSR" ), wkid );
+  queryUrl.addQueryItem( QStringLiteral( "outSR" ), wkid );
+  QString outFields = fetchAttributes.join( QStringLiteral( "," ) );
   if ( fetchGeometry )
   {
-    queryUrl.addQueryItem( "returnGeometry", "true" );
-    queryUrl.addQueryItem( "outFields", outFields );
+    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "true" ) );
+    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
   }
   else
   {
-    queryUrl.addQueryItem( "returnGeometry", "false" );
-    queryUrl.addQueryItem( "outFields", outFields );
+    queryUrl.addQueryItem( QStringLiteral( "returnGeometry" ), QStringLiteral( "false" ) );
+    queryUrl.addQueryItem( QStringLiteral( "outFields" ), outFields );
   }
-  queryUrl.addQueryItem( "returnM", fetchM ? "true" : "false" );
-  queryUrl.addQueryItem( "returnZ", fetchZ ? "true" : "false" );
+  queryUrl.addQueryItem( QStringLiteral( "returnM" ), fetchM ? "true" : "false" );
+  queryUrl.addQueryItem( QStringLiteral( "returnZ" ), fetchZ ? "true" : "false" );
   if ( !filterRect.isEmpty() )
   {
-    queryUrl.addQueryItem( "geometry", QString( "%1,%2,%3,%4" )
+    queryUrl.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
                            .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
                            .arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
-    queryUrl.addQueryItem( "geometryType", "esriGeometryEnvelope" );
-    queryUrl.addQueryItem( "spatialRel", "esriSpatialRelEnvelopeIntersects" );
+    queryUrl.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
+    queryUrl.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
   return queryServiceJSON( queryUrl, errorTitle, errorText );
 }
 
-QByteArray QgsArcGisRestUtils::queryService( const QUrl& url, QString& errorTitle, QString& errorText )
+QByteArray QgsArcGisRestUtils::queryService( const QUrl &url, QString &errorTitle, QString &errorText )
 {
   QEventLoop loop;
 
   QNetworkRequest request( url );
-  QNetworkReply* reply = 0;
-  QgsNetworkAccessManager* nam = QgsNetworkAccessManager::instance();
+  QNetworkReply *reply = 0;
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   // Request data, handling redirects
   while ( true )
@@ -436,7 +437,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl& url, QString& errorTitl
     if ( reply->error() != QNetworkReply::NoError )
     {
       QgsDebugMsg( QString( "Network error: %1" ).arg( reply->errorString() ) );
-      errorTitle = "Network error";
+      errorTitle = QStringLiteral( "Network error" );
       errorText = reply->errorString();
       return QByteArray();
     }
@@ -464,25 +465,24 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
   }
 
   // Parse data
-  QJson::Parser parser;
-  bool ok = false;
-  QVariantMap map = parser.parse( reply, &ok ).toMap();
-  if ( !ok )
+  QJsonParseError err;
+  QJsonDocument doc = QJsonDocument::fromJson( reply, &err );
+  if ( doc.isNull() )
   {
-    errorTitle = "Parsing error";
-    errorText = QString( "Line %1: %2" ).arg( parser.errorLine() ).arg( parser.errorString() );
-    QgsDebugMsg( QString( "Parsing error: %1 (line %2" ).arg( parser.errorString() ).arg( parser.errorLine() ) );
+    errorTitle = QStringLiteral( "Parsing error" );
+    errorText = err.errorString();
+    QgsDebugMsg( QString( "Parsing error: %1" ).arg( err.errorString() ) );
     return QVariantMap();
   }
-  return map;
+  return doc.object().toVariantMap();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject* parent )
-    : QObject( parent )
-    , mReply( nullptr )
-    , mResult( nullptr )
+QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject *parent )
+  : QObject( parent )
+  , mReply( nullptr )
+  , mResult( nullptr )
 {
 }
 
@@ -512,7 +512,7 @@ void QgsArcGisAsyncQuery::handleReply()
   if ( mReply->error() != QNetworkReply::NoError )
   {
     QgsDebugMsg( QString( "Network error: %1" ).arg( mReply->errorString() ) );
-    emit failed( "Network error", mReply->errorString() );
+    emit failed( QStringLiteral( "Network error" ), mReply->errorString() );
     return;
   }
 
@@ -535,10 +535,10 @@ void QgsArcGisAsyncQuery::handleReply()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject* parent )
-    : QObject( parent )
-    , mResults( nullptr )
-    , mPendingRequests( 0 )
+QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject *parent )
+  : QObject( parent )
+  , mResults( nullptr )
+  , mPendingRequests( 0 )
 {
 }
 
@@ -557,7 +557,7 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
       request.setRawHeader( "Connection", "keep-alive" );
     }
-    QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
+    QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
     reply->setProperty( "idx", i );
     connect( reply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
   }
@@ -565,7 +565,7 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
 
 void QgsArcGisAsyncParallelQuery::handleReply()
 {
-  QNetworkReply* reply = qobject_cast<QNetworkReply*>( QObject::sender() );
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
   QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
   int idx = reply->property( "idx" ).toInt();
   reply->deleteLater();

@@ -19,7 +19,7 @@
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include "qgis.h"
 
@@ -27,6 +27,7 @@ extern "C"
 {
 #include <sqlite3.h>
 #include <spatialite.h>
+#include "qgis_app.h"
 }
 
 class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
@@ -43,19 +44,19 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void on_mTypeBox_currentIndexChanged( int index );
     void on_pbnFindSRID_clicked();
     void on_toolButtonNewDatabase_clicked();
-    void nameChanged( const QString& );
+    void nameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#vector-create-spatialite" ) ); }
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
   private:
-    /** Returns the selected geometry type*/
+    //! Returns the selected geometry type
     QString selectedType() const;
 
-    /** Create a new database */
+    //! Create a new database
     bool createDb();
 
     bool apply();
@@ -63,7 +64,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
 };
 

@@ -24,12 +24,12 @@ class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
 
-    explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource* source );
+    explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource *source );
 
   protected:
-    virtual Result compileNode( const QgsExpression::Node* node, QString& result ) override;
-    virtual QString quotedIdentifier( const QString& identifier ) override;
-    virtual QString quotedValue( const QVariant& value, bool& ok ) override;
+    virtual Result compileNode( const QgsExpression::Node *node, QString &result ) override;
+    virtual QString quotedIdentifier( const QString &identifier ) override;
+    virtual QString quotedValue( const QVariant &value, bool &ok ) override;
 };
 
 #endif // QGSORACLEEXPRESSIONCOMPILER_H

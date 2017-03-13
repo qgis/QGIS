@@ -31,7 +31,7 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -50,6 +50,11 @@ class VectorGridLines(GeoAlgorithm):
     STEP_Y = 'STEP_Y'
     OUTPUT = 'OUTPUT'
 
+    def __init__(self):
+        GeoAlgorithm.__init__(self)
+        # this algorithm is deprecated - use GridLine instead
+        self.showInToolbox = False
+
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
@@ -58,7 +63,7 @@ class VectorGridLines(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Grid extent')))
+                                          self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.STEP_X,
                                           self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.STEP_Y,
@@ -66,7 +71,7 @@ class VectorGridLines(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         extent = self.getParameterValue(self.EXTENT).split(',')
         xSpace = self.getParameterValue(self.STEP_X)
         ySpace = self.getParameterValue(self.STEP_Y)
@@ -106,9 +111,9 @@ class VectorGridLines(GeoAlgorithm):
             idVar += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(int(count / count_max * 50))
+                feedback.setProgress(int(count / count_max * 50))
 
-        progress.setPercentage(50)
+        feedback.setProgress(50)
         # counters for progressbar - update every 5%
         count = 0
         count_max = (bbox.xMaximum() - bbox.xMinimum()) / xSpace
@@ -126,6 +131,6 @@ class VectorGridLines(GeoAlgorithm):
             idVar += 1
             count += 1
             if int(math.fmod(count, count_update)) == 0:
-                progress.setPercentage(50 + int(count / count_max * 50))
+                feedback.setProgress(50 + int(count / count_max * 50))
 
         del writer

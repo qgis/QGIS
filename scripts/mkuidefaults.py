@@ -27,12 +27,13 @@ from qgis.PyQt.QtCore import QCoreApplication, QSettings
 
 
 def chunks(l, n):
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i + n]
+
 
 QCoreApplication.setOrganizationName("QGIS")
 QCoreApplication.setOrganizationDomain("qgis.org")
-QCoreApplication.setApplicationName("QGIS2")
+QCoreApplication.setApplicationName("QGIS3")
 
 s = QSettings()
 

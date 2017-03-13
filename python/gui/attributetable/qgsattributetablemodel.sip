@@ -126,7 +126,7 @@ class QgsAttributeTableModel : QAbstractTableModel
     /**
      * Execute an action
      */
-    void executeAction( int action, const QModelIndex &idx ) const;
+    void executeAction( const QString& action, const QModelIndex &idx ) const;
 
     /**
      * Execute a QgsMapLayerAction
@@ -226,34 +226,4 @@ class QgsAttributeTableModel : QAbstractTableModel
     //! @note not available in python bindings
     // void progress( int i, bool &cancel );
     void finished();
-
-  protected slots:
-    /**
-     * Launched when attribute value has been changed
-     * @param fid feature id
-     * @param idx attribute index
-     * @param value new value
-     */
-    virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
-    /**
-     * Launched when eatures have been deleted
-     * @param fids feature ids
-     */
-    virtual void featuresDeleted( const QgsFeatureIds& fids );
-    /**
-     * Launched when a feature has been added
-     * @param fid feature id
-     */
-    virtual void featureAdded( QgsFeatureId fid );
-
-    /**
-     * Launched when layer has been deleted
-     */
-    virtual void layerDeleted();
-
-  protected:
-    /**
-      * Gets mFieldCount, mAttributes and mValueMaps
-      */
-    virtual void loadAttributes();
 };

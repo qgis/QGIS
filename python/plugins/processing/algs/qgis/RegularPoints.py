@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -31,7 +32,7 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
+from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
                        QgsGeometry, QgsPoint)
 from qgis.utils import iface
 
@@ -62,9 +63,9 @@ class RegularPoints(GeoAlgorithm):
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Input extent')))
+                                          self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.SPACING,
-                                          self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
+                                          self.tr('Point spacing/count'), 100, 999999999.999999999, 100))
         self.addParameter(ParameterNumber(self.INSET,
                                           self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
         self.addParameter(ParameterBoolean(self.RANDOMIZE,
@@ -73,8 +74,8 @@ class RegularPoints(GeoAlgorithm):
                                            self.tr('Use point spacing'), True))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
-        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
+    def processAlgorithm(self, feedback):
+        extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))
         inset = float(self.getParameterValue(self.INSET))
@@ -107,6 +108,11 @@ class RegularPoints(GeoAlgorithm):
         count = 0
         total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
+
+        extent_geom = QgsGeometry.fromRect(extent)
+        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.geometry())
+        extent_engine.prepareGeometry()
+
         while y >= extent.yMinimum():
             x = extent.xMinimum() + inset
             while x <= extent.xMaximum():
@@ -117,12 +123,12 @@ class RegularPoints(GeoAlgorithm):
                 else:
                     geom = QgsGeometry().fromPoint(QgsPoint(x, y))
 
-                if geom.intersects(extent):
+                if extent_engine.intersects(geom.geometry()):
                     f.setAttribute('id', count)
                     f.setGeometry(geom)
                     writer.addFeature(f)
                     x += pSpacing
                     count += 1
-                    progress.setPercentage(int(count * total))
+                    feedback.setProgress(int(count * total))
             y = y - pSpacing
         del writer

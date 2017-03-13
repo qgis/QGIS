@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMAPOVERVIEW_H
 #define QGSCOMPOSERMAPOVERVIEW_H
 
+#include "qgis_core.h"
 #include "qgscomposermapitem.h"
 #include <QString>
 #include <QObject>
@@ -43,9 +44,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
     /** Constructor for QgsComposerMapOverviewStack.
      * @param map QgsComposerMap the overview stack is attached to
      */
-    QgsComposerMapOverviewStack( QgsComposerMap* map );
-
-    virtual ~QgsComposerMapOverviewStack();
+    QgsComposerMapOverviewStack( QgsComposerMap *map );
 
     /** Adds a new map overview to the stack and takes ownership of the overview.
      * The overview will be added to the end of the stack, and rendered
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see removeOverview
      */
-    void addOverview( QgsComposerMapOverview* overview );
+    void addOverview( QgsComposerMapOverview *overview );
 
     /** Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
      * @param overviewId id for the QgsComposerMapOverview to remove
@@ -63,7 +62,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addOverview
      */
-    void removeOverview( const QString& overviewId );
+    void removeOverview( const QString &overviewId );
 
     /** Moves an overview up the stack, causing it to be rendered above other overviews
      * @param overviewId id for the QgsComposerMapOverview to move up
@@ -71,7 +70,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * called for the QgsComposerMap to redraw the map with the new overview stack order
      * @see moveOverviewDown
      */
-    void moveOverviewUp( const QString& overviewId );
+    void moveOverviewUp( const QString &overviewId );
 
     /** Moves an overview down the stack, causing it to be rendered below other overviews
      * @param overviewId id for the QgsComposerMapOverview to move down
@@ -79,28 +78,28 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * called for the QgsComposerMap to redraw the map with the new overview stack order
      * @see moveOverviewUp
      */
-    void moveOverviewDown( const QString& overviewId );
+    void moveOverviewDown( const QString &overviewId );
 
     /** Returns a const reference to an overview within the stack
      * @param overviewId id for the QgsComposerMapOverview to find
      * @returns const reference to overview, if found
      * @see overview
      */
-    const QgsComposerMapOverview* constOverview( const QString& overviewId ) const;
+    const QgsComposerMapOverview *constOverview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * @param overviewId id for the QgsComposerMapOverview to find
      * @returns reference to overview if found
      * @see constOverview
      */
-    QgsComposerMapOverview* overview( const QString& overviewId ) const;
+    QgsComposerMapOverview *overview( const QString &overviewId ) const;
 
     /** Returns a reference to an overview within the stack
      * @param index overview position in the stack
      * @returns reference to overview if found
      * @see constOverview
      */
-    QgsComposerMapOverview* overview( const int index ) const;
+    QgsComposerMapOverview *overview( const int index ) const;
 
     /** Returns a reference to an overview within the stack
      * @param idx overview position in the stack
@@ -113,7 +112,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
     /** Returns a list of QgsComposerMapOverviews contained by the stack
      * @returns list of overviews
      */
-    QList< QgsComposerMapOverview* > asList() const;
+    QList< QgsComposerMapOverview * > asList() const;
 
     /** Sets the overview stack's state from a DOM document
      * @param elem is DOM node corresponding to a 'ComposerMap' tag
@@ -121,7 +120,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXml
      */
-    bool readXml( const QDomElement& elem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &elem, const QDomDocument &doc ) override;
 
 };
 
@@ -142,28 +141,28 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @param name friendly display name for overview
      * @param map QgsComposerMap the overview is attached to
      */
-    QgsComposerMapOverview( const QString& name, QgsComposerMap* map );
+    QgsComposerMapOverview( const QString &name, QgsComposerMap *map );
 
     virtual ~QgsComposerMapOverview();
 
     /** Draws an overview
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter ) override;
+    void draw( QPainter *painter ) override;
 
     /** Stores overview state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @see readXml
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * @param doc is DOM document
      * @see writeXml
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     bool usesAdvancedEffects() const override;
 
@@ -182,20 +181,20 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      * @param symbol fill symbol for overview
      * @see frameSymbol
      */
-    void setFrameSymbol( QgsFillSymbol* symbol );
+    void setFrameSymbol( QgsFillSymbol *symbol );
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      */
-    QgsFillSymbol* frameSymbol() { return mFrameSymbol; }
+    QgsFillSymbol *frameSymbol() { return mFrameSymbol; }
 
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
      * @note not available in python bindings
      */
-    const QgsFillSymbol* frameSymbol() const { return mFrameSymbol; }
+    const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
 
     /** Retrieves the blending mode used for drawing the overview.
      * @returns blending mode for overview
@@ -250,22 +249,22 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
 
     QgsComposerMapOverview(); //forbidden
 
-    /** Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
+    //! Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present
     int mFrameMapId;
 
-    /** Drawing style for overview farme*/
-    QgsFillSymbol* mFrameSymbol;
+    //! Drawing style for overview farme
+    QgsFillSymbol *mFrameSymbol = nullptr;
 
-    /** Blend mode for overview*/
+    //! Blend mode for overview
     QPainter::CompositionMode mBlendMode;
 
-    /** True if overview is inverted*/
+    //! True if overview is inverted
     bool mInverted;
 
-    /** True if map is centered on overview*/
+    //! True if map is centered on overview
     bool mCentered;
 
-    /** Creates default overview symbol*/
+    //! Creates default overview symbol
     void createDefaultFrameSymbol();
 
 };

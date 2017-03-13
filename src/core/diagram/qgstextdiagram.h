@@ -17,6 +17,7 @@
 
 #define DIAGRAM_NAME_TEXT "Text"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -48,14 +49,13 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     };
 
     QgsTextDiagram();
-    ~QgsTextDiagram();
-    virtual QgsTextDiagram* clone() const override;
+    virtual QgsTextDiagram *clone() const override;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) override;
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) override;
-    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) override;
-    double legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const override;
+    QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
+    QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
+    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
 
     QString diagramName() const override { return DIAGRAM_NAME_TEXT; }
 
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
 
     /** Calculates intersection points between a line and an ellipse
       @return intersection points*/
-    void lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF>& result ) const;
+    void lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF> &result ) const;
 };
 
 #endif // QGSTEXTDIAGRAM_H

@@ -19,8 +19,8 @@
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgsauthmanager.h"
 #include "qgsauthmasterpassresetdialog.h"
 #include "qgslogger.h"
@@ -49,17 +49,17 @@ QColor QgsAuthGuiUtils::yellowColor()
 
 QString QgsAuthGuiUtils::greenTextStyleSheet( const QString &selector )
 {
-  return QString( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::greenColor().name() );
+  return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::greenColor().name() );
 }
 
 QString QgsAuthGuiUtils::orangeTextStyleSheet( const QString &selector )
 {
-  return QString( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::orangeColor().name() );
+  return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::orangeColor().name() );
 }
 
 QString QgsAuthGuiUtils::redTextStyleSheet( const QString &selector )
 {
-  return QString( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::redColor().name() );
+  return QStringLiteral( "%1{color: %2;}" ).arg( selector, QgsAuthGuiUtils::redColor().name() );
 }
 
 bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar, int timeout )
@@ -120,7 +120,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
   QgsMessageBar::MessageLevel level( QgsMessageBar::INFO );
 
   // check that a master password is even set in auth db
-  if ( !QgsAuthManager::instance()->masterPasswordHashInDb() )
+  if ( !QgsAuthManager::instance()->masterPasswordHashInDatabase() )
   {
     msg = QObject::tr( "Master password reset: NO current password hash in database" );
     msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, QgsMessageBar::WARNING, 0 );
@@ -201,12 +201,12 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
                                        parent,
                                        QObject::tr( "Erase Database" ),
                                        QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                                                    "Operation can NOT be undone!\n\n"
-                                                    "(Current database will be backed up and new one created.)" ),
+                                           "Operation can NOT be undone!\n\n"
+                                           "(Current database will be backed up and new one created.)" ),
                                        QMessageBox::Ok | QMessageBox::Cancel,
                                        QMessageBox::Cancel );
 
-  QgsAuthManager::instance()->setScheduledAuthDbErase( false );
+  QgsAuthManager::instance()->setScheduledAuthDatabaseErase( false );
 
   if ( btn == QMessageBox::Cancel )
   {
@@ -239,24 +239,24 @@ void QgsAuthGuiUtils::fileFound( bool found, QWidget *widget )
 {
   if ( !found )
   {
-    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( "QLineEdit" ) );
+    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) ) );
     widget->setToolTip( QObject::tr( "File not found" ) );
   }
   else
   {
-    widget->setStyleSheet( "" );
-    widget->setToolTip( "" );
+    widget->setStyleSheet( QLatin1String( "" ) );
+    widget->setToolTip( QLatin1String( "" ) );
   }
 }
 
 QString QgsAuthGuiUtils::getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter )
 {
-  QSettings settings;
-  QString recentdir = settings.value( "UI/lastAuthOpenFileDir", QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString recentdir = settings.value( QStringLiteral( "UI/lastAuthOpenFileDir" ), QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( parent, title, recentdir, extfilter );
   if ( !f.isEmpty() )
   {
-    settings.setValue( "UI/lastAuthOpenFileDir", QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( QStringLiteral( "UI/lastAuthOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }

@@ -20,7 +20,7 @@
 
 #include "qgsmssqlgeometryparser.h"
 #include "qgsfeatureiterator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
@@ -30,10 +30,9 @@ class QgsMssqlProvider;
 class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
-    ~QgsMssqlFeatureSource();
+    explicit QgsMssqlFeatureSource( const QgsMssqlProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QgsFields mFields;
@@ -72,25 +71,18 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
 {
   public:
-    QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsMssqlFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
-    void BuildStatement( const QgsFeatureRequest& request );
+    void BuildStatement( const QgsFeatureRequest &request );
 
-
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
 
@@ -100,7 +92,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QSqlDatabase mDatabase;
 
     // The current sql query
-    QSqlQuery* mQuery;
+    QSqlQuery *mQuery = nullptr;
 
     // The current sql statement
     QString mStatement;

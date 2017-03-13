@@ -15,9 +15,8 @@
 
 #include "qgstexteditconfigdlg.h"
 
-#include "qgseditorwidgetconfig.h"
-QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   connect( mIsMultiline, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
@@ -25,18 +24,18 @@ QgsTextEditConfigDlg::QgsTextEditConfigDlg( QgsVectorLayer* vl, int fieldIdx, QW
 }
 
 
-QgsEditorWidgetConfig QgsTextEditConfigDlg::config()
+QVariantMap QgsTextEditConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap cfg;
 
-  cfg.insert( "IsMultiline", mIsMultiline->isChecked() );
-  cfg.insert( "UseHtml", mUseHtml->isChecked() );
+  cfg.insert( QStringLiteral( "IsMultiline" ), mIsMultiline->isChecked() );
+  cfg.insert( QStringLiteral( "UseHtml" ), mUseHtml->isChecked() );
 
   return cfg;
 }
 
-void QgsTextEditConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsTextEditConfigDlg::setConfig( const QVariantMap &config )
 {
-  mIsMultiline->setChecked( config.value( "IsMultiline" ).toBool() );
-  mUseHtml->setChecked( config.value( "UseHtml" ).toBool() );
+  mIsMultiline->setChecked( config.value( QStringLiteral( "IsMultiline" ) ).toBool() );
+  mUseHtml->setChecked( config.value( QStringLiteral( "UseHtml" ) ).toBool() );
 }

@@ -13,17 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
-#include "qgshtmlannotationitem.h"
+#include "qgshtmlannotation.h"
 #include "qgsannotationwidget.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mItem( item )
-    , mEmbeddedWidget( nullptr )
+QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+  , mEmbeddedWidget( nullptr )
 {
   setupUi( this );
   setWindowTitle( tr( "HTML annotation" ) );
@@ -31,14 +34,15 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, Q
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-  if ( item )
+  if ( item && item->annotation() )
   {
-    mFileLineEdit->setText( item->htmlPage() );
+    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( item->annotation() );
+    mFileLineEdit->setText( annotation->sourceFile() );
   }
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsHtmlAnnotationDialog::applySettingsToItem );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsHtmlAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
@@ -55,15 +59,10 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
     mEmbeddedWidget->apply();
   }
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mItem->setHTMLPage( mFileLineEdit->text() );
-    QgsVectorLayer* layer = mItem->vectorLayer();
-    if ( layer )
-    {
-      //set last used annotation form as default for the layer
-      //layer->setAnnotationForm( mFileLineEdit->text() );
-    }
+    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
+    annotation->setSourceFile( mFileLineEdit->text() );
     mItem->update();
   }
 }
@@ -80,22 +79,18 @@ void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = QDir::homePath();
   }
-  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, "HTML (*.html *.htm);;All files (*.*)" );
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   mFileLineEdit->setText( filename );
 }
 
 void QgsHtmlAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
-  {
-    scene->removeItem( mItem );
-  }
-  delete mItem;
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 
-void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton* button )
+void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

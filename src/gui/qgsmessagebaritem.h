@@ -24,6 +24,7 @@
 #include <QIcon>
 #include <QTextEdit>
 #include <QHBoxLayout>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsMessageBarItem
@@ -44,11 +45,9 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! make out a widget containing a widget to be displayed on the bar
     QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent = nullptr );
 
-    ~QgsMessageBarItem();
+    QgsMessageBarItem *setText( const QString &text );
 
-    QgsMessageBarItem *setText( const QString& text );
-
-    QgsMessageBarItem *setTitle( const QString& title );
+    QgsMessageBarItem *setTitle( const QString &title );
 
     QgsMessageBarItem *setLevel( QgsMessageBar::MessageLevel level );
 
@@ -69,7 +68,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
 
   signals:
     //! emitted when the message level has changed
-    void styleChanged( const QString& styleSheet );
+    void styleChanged( const QString &styleSheet );
 
 
   private:
@@ -79,12 +78,12 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QString mText;
     QgsMessageBar::MessageLevel mLevel;
     int mDuration;
-    QWidget *mWidget;
+    QWidget *mWidget = nullptr;
     QIcon mUserIcon;
-    QHBoxLayout *mLayout;
-    QLabel *mLblIcon;
+    QHBoxLayout *mLayout = nullptr;
+    QLabel *mLblIcon = nullptr;
     QString mStyleSheet;
-    QTextEdit *mTextEdit;
+    QTextEdit *mTextEdit = nullptr;
 };
 
 #endif // qgsmessagebaritem_H

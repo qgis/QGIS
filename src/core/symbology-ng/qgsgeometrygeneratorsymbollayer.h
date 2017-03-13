@@ -16,6 +16,7 @@
 #ifndef QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 #define QGSGEOMETRYGENERATORSYMBOLLAYERV2_H
 
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 /** \ingroup core
@@ -26,7 +27,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
   public:
     ~QgsGeometryGeneratorSymbolLayer();
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties );
+    static QgsSymbolLayer *create( const QgsStringMap &properties );
 
     QString layerType() const override;
 
@@ -46,36 +47,36 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      */
     QgsSymbol::SymbolType symbolType() const { return mSymbolType; }
 
-    void startRender( QgsSymbolRenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext &context ) override;
 
-    void stopRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
 
-    QgsSymbolLayer* clone() const override;
+    QgsSymbolLayer *clone() const override;
 
     QgsStringMap properties() const override;
 
-    void drawPreviewIcon( QgsSymbolRenderContext& context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
     /**
      * Set the expression to generate this geometry.
      */
-    void setGeometryExpression( const QString& exp );
+    void setGeometryExpression( const QString &exp );
 
     /**
      * Get the expression to generate this geometry.
      */
     QString geometryExpression() const { return mExpression->expression(); }
 
-    virtual QgsSymbol* subSymbol() override { return mSymbol; }
+    virtual QgsSymbol *subSymbol() override { return mSymbol; }
 
-    virtual bool setSubSymbol( QgsSymbol* symbol ) override;
+    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
 
-    virtual QSet<QString> usedAttributes() const override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Will always return true.
     //! This is a hybrid layer, it constructs its own geometry so it does not
     //! care about the geometry of its parents.
-    bool isCompatibleWithSymbol( QgsSymbol* symbol ) const override;
+    bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
 
     /**
      * Will render this symbol layer using the context.
@@ -87,18 +88,18 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
      * @param context The rendering context which will be used to render and to
      *                construct a geometry.
      */
-    virtual void render( QgsSymbolRenderContext& context );
+    virtual void render( QgsSymbolRenderContext &context );
 
-    void setColor( const QColor& color ) override;
+    void setColor( const QColor &color ) override;
 
   private:
-    QgsGeometryGeneratorSymbolLayer( const QString& expression );
+    QgsGeometryGeneratorSymbolLayer( const QString &expression );
 
-    QScopedPointer<QgsExpression> mExpression;
-    QgsFillSymbol* mFillSymbol;
-    QgsLineSymbol* mLineSymbol;
-    QgsMarkerSymbol* mMarkerSymbol;
-    QgsSymbol* mSymbol;
+    std::unique_ptr<QgsExpression> mExpression;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsLineSymbol *mLineSymbol = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSymbol *mSymbol = nullptr;
 
     /**
      * The type of the sub symbol.

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -30,7 +31,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
+from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
                        QgsField, QgsSpatialIndex, QgsPoint)
 from qgis.utils import iface
 
@@ -58,7 +59,7 @@ class RandomPointsExtent(GeoAlgorithm):
         self.name, self.i18n_name = self.trAlgorithm('Random points in extent')
         self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Input extent')))
+                                          self.tr('Input extent'), optional=False))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
                                           self.tr('Points number'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
@@ -66,10 +67,10 @@ class RandomPointsExtent(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
-        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
+        extent = str(self.getParameterValue(self.EXTENT)).split(',')
 
         xMin = float(extent[0])
         xMax = float(extent[1])
@@ -111,7 +112,7 @@ class RandomPointsExtent(GeoAlgorithm):
                 index.insertFeature(f)
                 points[nPoints] = pnt
                 nPoints += 1
-                progress.setPercentage(int(nPoints * total))
+                feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:

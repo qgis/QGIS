@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSMULTISURFACEV2_H
 #define QGSMULTISURFACEV2_H
 
+#include "qgis_core.h"
 #include "qgsgeometrycollection.h"
 
 /** \ingroup core
@@ -28,23 +29,23 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
-    virtual QString geometryType() const override { return "MultiSurface"; }
-    QgsMultiSurface* clone() const override;
+    virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    QgsMultiSurface *clone() const override;
 
-    bool fromWkt( const QString& wkt ) override;
+    bool fromWkt( const QString &wkt ) override;
 
     // inherited: int wkbSize() const;
     // inherited: unsigned char* asWkb( int& binarySize ) const;
     // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g ) override;
+    //! Adds a geometry and takes ownership. Returns true in case of success
+    virtual bool addGeometry( QgsAbstractGeometry *g ) override;
 
-    virtual QgsAbstractGeometry* boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override;
 };
 
 #endif // QGSMULTISURFACEV2_H

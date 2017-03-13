@@ -24,6 +24,7 @@ class QVariant;
 class QgsFilterLineEdit;
 
 #include <QWidget>
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * @brief The QgsFileWidget class creates a widget for selecting a file or a folder.
@@ -41,6 +42,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     Q_PROPERTY( RelativeStorage relativeStorage READ relativeStorage WRITE setRelativeStorage )
 
   public:
+
     /**
      * @brief The StorageMode enum determines if the file picker should pick files or directories
      */
@@ -65,8 +67,6 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     explicit QgsFileWidget( QWidget *parent = 0 );
 
-    ~QgsFileWidget();
-
     //! Returns the current file path
     QString filePath();
 
@@ -78,14 +78,16 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     //! returns the open file dialog title
     QString dialogTitle() const;
+
     /**
      * @brief setDialogTitle defines the open file dialog title
      * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
      */
-    void setDialogTitle( const QString& title );
+    void setDialogTitle( const QString &title );
 
     //! returns the filters used for QDialog::getOpenFileName
     QString filter() const;
+
     /**
      * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
      * @param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
@@ -110,7 +112,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     //! returns the default root path
     QString defaultRoot() const;
     //! determines the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath
-    void setDefaultRoot( const QString& defaultRoot );
+    void setDefaultRoot( const QString &defaultRoot );
 
     //! returns the storage mode (i.e. file or directory)
     QgsFileWidget::StorageMode storageMode() const;
@@ -124,11 +126,11 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   signals:
     //! emitted as soon as the current file or directory is changed
-    void fileChanged( const QString& );
+    void fileChanged( const QString & );
 
   private slots:
     void openFileDialog();
-    void textEdited( const QString& path );
+    void textEdited( const QString &path );
 
   private:
     QString mFilePath;
@@ -141,15 +143,15 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     StorageMode mStorageMode;
     RelativeStorage mRelativeStorage;
 
-    QLabel* mLinkLabel;
-    QgsFilterLineEdit* mLineEdit;
-    QToolButton* mFileWidgetButton;
+    QLabel *mLinkLabel = nullptr;
+    QgsFilterLineEdit *mLineEdit = nullptr;
+    QToolButton *mFileWidgetButton = nullptr;
 
     //! returns a HTML code with a link to the given file path
-    QString toUrl( const QString& path ) const;
+    QString toUrl( const QString &path ) const;
 
     //! Returns a filePath with relative path options applied (or not) !
-    QString relativePath( const QString& filePath, bool removeRelative ) const;
+    QString relativePath( const QString &filePath, bool removeRelative ) const;
 
     friend class TestQgsFileWidget;
 };

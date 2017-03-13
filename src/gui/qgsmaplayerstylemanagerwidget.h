@@ -20,6 +20,7 @@
 #include <QStandardItemModel>
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -40,17 +41,17 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
      * @param canvas The canvas object.
      * @param parent The parent.
      */
-    QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas* canvas, QWidget *parent = 0 );
+    QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
     void apply() override {}
 
   private slots:
-    void styleClicked( QModelIndex index );
-    void currentStyleChanged( QString name );
-    void styleAdded( QString name );
-    void styleRemoved( QString name );
-    void styleRenamed( QString oldname, QString newname );
+    void styleClicked( const QModelIndex &index );
+    void currentStyleChanged( const QString &name );
+    void styleAdded( const QString &name );
+    void styleRemoved( const QString &name );
+    void styleRenamed( const QString &oldname, const QString &newname );
     void addStyle();
     void removeStyle();
     void saveAsDefault();
@@ -59,8 +60,8 @@ class GUI_EXPORT QgsMapLayerStyleManagerWidget : public QgsMapLayerConfigWidget
     void loadStyle();
 
   private:
-    QStandardItemModel* mModel;
-    QListView* mStyleList;
+    QStandardItemModel *mModel = nullptr;
+    QListView *mStyleList = nullptr;
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGERWIDGET_H

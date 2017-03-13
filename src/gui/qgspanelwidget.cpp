@@ -15,22 +15,22 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QDialog>
-#include <QSettings>
 #include <QVBoxLayout>
 
+#include "qgssettings.h"
 #include "qgspanelwidget.h"
 #include "qgslogger.h"
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
-    : QWidget( parent )
-    , mAutoDelete( true )
-    , mDockMode( false )
+  : QWidget( parent )
+  , mAutoDelete( true )
+  , mDockMode( false )
 {
 }
 
-void QgsPanelWidget::connectChildPanels( QList<QgsPanelWidget *> panels )
+void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 {
-  Q_FOREACH ( QgsPanelWidget* widget, panels )
+  Q_FOREACH ( QgsPanelWidget *widget, panels )
   {
     connectChildPanel( widget );
   }
@@ -38,7 +38,7 @@ void QgsPanelWidget::connectChildPanels( QList<QgsPanelWidget *> panels )
 
 void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
 {
-  connect( panel, SIGNAL( showPanel( QgsPanelWidget* ) ), this, SLOT( openPanel( QgsPanelWidget* ) ) );
+  connect( panel, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
   connect( panel, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
 }
 
@@ -47,20 +47,27 @@ void QgsPanelWidget::setDockMode( bool dockMode )
   mDockMode = dockMode;
 }
 
-QgsPanelWidget*QgsPanelWidget::findParentPanel( QWidget* widget )
+QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
 {
-  QWidget* p = widget;
+  QWidget *p = widget;
   while ( p )
   {
-    if ( QgsPanelWidget* panel = qobject_cast< QgsPanelWidget* >( p ) )
+    if ( QgsPanelWidget *panel = qobject_cast< QgsPanelWidget * >( p ) )
       return panel;
+
+    if ( p->window() == p )
+    {
+      // break on encountering a window - e.g., a dialog opened from a panel should not inline
+      // widgets inside the parent panel
+      return nullptr;
+    }
 
     p = p->parentWidget();
   }
   return nullptr;
 }
 
-void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
+void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
 {
   //panel dock mode inherits from this panel
   panel->setDockMode( dockMode() );
@@ -72,19 +79,19 @@ void QgsPanelWidget::openPanel( QgsPanelWidget* panel )
   else
   {
     // Show the dialog version if no one is connected
-    QDialog* dlg = new QDialog();
-    QString key =  QString( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
-    QSettings settings;
+    QDialog *dlg = new QDialog();
+    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );
     dlg->setLayout( new QVBoxLayout() );
     dlg->layout()->addWidget( panel );
-    QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
     connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
     dlg->layout()->addWidget( buttonBox );
     dlg->exec();
     settings.setValue( key, dlg->saveGeometry() );
-    emit panelAccepted( panel );
+    panel->acceptPanel();
   }
 }
 
@@ -102,8 +109,8 @@ void QgsPanelWidget::keyPressEvent( QKeyEvent *event )
 }
 
 QgsPanelWidgetWrapper::QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent )
-    : QgsPanelWidget( parent )
-    , mWidget( widget )
+  : QgsPanelWidget( parent )
+  , mWidget( widget )
 {
   this->setLayout( new QVBoxLayout() );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );

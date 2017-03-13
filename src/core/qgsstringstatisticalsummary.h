@@ -19,6 +19,8 @@
 #include <QSet>
 #include <QVariantList>
 
+#include "qgis_core.h"
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in test_qgsstringstatisticalsummary.py.
@@ -51,27 +53,28 @@ class CORE_EXPORT QgsStringStatisticalSummary
       Max = 16, //!< Maximum string value
       MinimumLength = 32, //!< Minimum length of string
       MaximumLength = 64, //!< Maximum length of string
-      All = Count | CountDistinct | CountMissing | Min | Max, //! All statistics
+      MeanLength = 128, //!< Mean length of strings
+      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength, //! All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /** Constructor for QgsStringStatistics
      * @param stats flags for statistics to calculate
      */
-    QgsStringStatisticalSummary( const QgsStringStatisticalSummary::Statistics& stats = All );
+    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const Statistics& stats ) { mStatistics = stats; }
+    void setStatistics( Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */
@@ -82,7 +85,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * @see calculateFromVariants()
      * @see addString()
      */
-    void calculate( const QStringList& values );
+    void calculate( const QStringList &values );
 
     /** Calculates summary statistics for an entire list of variants at once. Any
      * non-string variants will be ignored.
@@ -90,7 +93,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * @see calculate()
      * @see addValue()
      */
-    void calculateFromVariants( const QVariantList& values );
+    void calculateFromVariants( const QVariantList &values );
 
     /** Adds a single string to the statistics calculation. Calling this method
      * allows strings to be added to the calculation one at a time. For large
@@ -105,7 +108,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * @see addValue()
      * @see finalize()
      */
-    void addString( const QString& string );
+    void addString( const QString &string );
 
     /** Adds a single variant to the statistics calculation. Calling this method
      * allows variants to be added to the calculation one at a time. For large
@@ -119,7 +122,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * @see calculateFromVariants()
      * @see finalize()
      */
-    void addValue( const QVariant& value );
+    void addValue( const QVariant &value );
 
     /** Must be called after adding all strings with addString() and before retrieving
      * any calculated string statistics.
@@ -167,6 +170,12 @@ class CORE_EXPORT QgsStringStatisticalSummary
      */
     int maxLength() const { return mMaxLength; }
 
+    /**
+      * Returns the mean length of strings.
+      * @note added in QGIS 3.0
+      */
+    double meanLength() const { return mMeanLength; }
+
     /** Returns the friendly display name for a statistic
      * @param statistic statistic to return name for
      */
@@ -183,8 +192,10 @@ class CORE_EXPORT QgsStringStatisticalSummary
     QString mMax;
     int mMinLength;
     int mMaxLength;
+    long mSumLengths;
+    double mMeanLength;
 
-    void testString( const QString& string );
+    void testString( const QString &string );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsStringStatisticalSummary::Statistics )

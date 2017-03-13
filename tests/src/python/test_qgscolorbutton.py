@@ -17,6 +17,8 @@ import qgis  # NOQA
 from qgis.gui import QgsColorButton
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
+
+
 start_app()
 
 

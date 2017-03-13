@@ -26,8 +26,8 @@
 #include <QStringList>
 
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
-    : mReply( reply )
-    , mValid( false )
+  : mReply( reply )
+  , mValid( false )
 {
   QgsDebugMsg( "Entered." );
   if ( !mReply ) return;
@@ -77,7 +77,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       {
         QgsDebugMsg( QString( "No more boundaries, rest size = %1" ).arg( data.size() - from - 1 ) );
         // It may be end, last boundary is followed by '--'
-        if ( data.size() - from - 1 == 2 && QString( data.mid( from, 2 ) ) == "--" ) // end
+        if ( data.size() - from - 1 == 2 && QString( data.mid( from, 2 ) ) == QLatin1String( "--" ) ) // end
         {
           break;
         }
@@ -119,10 +119,10 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      Q_FOREACH ( const QString& row, headerRows )
+      Q_FOREACH ( const QString &row, headerRows )
       {
         QgsDebugMsg( "row = " + row );
-        QStringList kv = row.split( ": " );
+        QStringList kv = row.split( QStringLiteral( ": " ) );
         headersMap.insert( kv.value( 0 ).toLatin1(), kv.value( 1 ).toLatin1() );
       }
       mHeaders.append( headersMap );
@@ -145,5 +145,5 @@ bool QgsNetworkReplyParser::isMultipart( QNetworkReply *reply )
   // Multipart content type examples:
   //   multipart/mixed; boundary=wcs
   //   multipart/mixed; boundary="wcs"\n
-  return contentType.startsWith( "multipart/", Qt::CaseInsensitive );
+  return contentType.startsWith( QLatin1String( "multipart/" ), Qt::CaseInsensitive );
 }

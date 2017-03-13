@@ -29,27 +29,29 @@
     </widget>
    </item>
    <item row="3" column="1" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mButtonEditRamp">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsColorRampButton" name="btnColorRamp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="5" column="4">
-    <widget class="QgsDataDefinedButton" name="mShadeWholeShapeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mShadeWholeShapeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -92,14 +94,14 @@
     </layout>
    </item>
    <item row="6" column="4">
-    <widget class="QgsDataDefinedButton" name="mShadeDistanceDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mShadeDistanceDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="2" column="4">
-    <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mEndColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -126,7 +128,7 @@
      <item>
       <widget class="QRadioButton" name="mRadioUseMaxDistance">
        <property name="text">
-        <string>Shade to a set distance:</string>
+        <string>Set distance</string>
        </property>
       </widget>
      </item>
@@ -182,14 +184,14 @@
     </widget>
    </item>
    <item row="9" column="4">
-    <widget class="QgsDataDefinedButton" name="mBlurRadiusDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mBlurRadiusDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="4">
-    <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStartColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -245,7 +247,7 @@
     </widget>
    </item>
    <item row="8" column="4">
-    <widget class="QgsDataDefinedButton" name="mIgnoreRingsDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mIgnoreRingsDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -339,7 +341,7 @@
      <item>
       <widget class="QRadioButton" name="mRadioUseWholeShape">
        <property name="text">
-        <string>Shade whole shape</string>
+        <string>Whole shape</string>
        </property>
       </widget>
      </item>
@@ -402,9 +404,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -424,16 +426,16 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
   <tabstop>radioColorRamp</tabstop>
-  <tabstop>cboGradientColorRamp</tabstop>
-  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>mRadioUseWholeShape</tabstop>
   <tabstop>mRadioUseMaxDistance</tabstop>
   <tabstop>mSpinMaxDistance</tabstop>
@@ -479,7 +481,7 @@
   <connection>
    <sender>radioColorRamp</sender>
    <signal>toggled(bool)</signal>
-   <receiver>cboGradientColorRamp</receiver>
+   <receiver>btnColorRamp</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

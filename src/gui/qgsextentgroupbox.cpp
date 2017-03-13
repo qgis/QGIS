@@ -17,10 +17,10 @@
 #include "qgscoordinatetransform.h"
 #include "qgsrasterblock.h"
 
-QgsExtentGroupBox::QgsExtentGroupBox( QWidget* parent )
-    : QgsCollapsibleGroupBox( parent )
-    , mTitleBase( tr( "Extent" ) )
-    , mExtentState( OriginalExtent )
+QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
+  : QgsCollapsibleGroupBox( parent )
+  , mTitleBase( tr( "Extent" ) )
+  , mExtentState( OriginalExtent )
 {
   setupUi( this );
 
@@ -35,26 +35,26 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget* parent )
 }
 
 
-void QgsExtentGroupBox::setOriginalExtent( const QgsRectangle& originalExtent, const QgsCoordinateReferenceSystem& originalCrs )
+void QgsExtentGroupBox::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
 {
   mOriginalExtent = originalExtent;
   mOriginalCrs = originalCrs;
 }
 
 
-void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs )
+void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &currentCrs )
 {
   mCurrentExtent = currentExtent;
   mCurrentCrs = currentCrs;
 }
 
-void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem& outputCrs )
+void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
 {
   mOutputCrs = outputCrs;
 }
 
 
-void QgsExtentGroupBox::setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state )
+void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state )
 {
   QgsRectangle extent;
   if ( mOutputCrs == srcCrs )
@@ -130,7 +130,7 @@ void QgsExtentGroupBox::setOutputExtentFromOriginal()
 }
 
 
-void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle& extent, const QgsCoordinateReferenceSystem& crs )
+void QgsExtentGroupBox::setOutputExtentFromUser( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
   setOutputExtent( extent, crs, UserExtent );
 }
@@ -156,7 +156,7 @@ QgsRectangle QgsExtentGroupBox::outputExtent() const
                        mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
 }
 
-void QgsExtentGroupBox::setTitleBase( const QString& title )
+void QgsExtentGroupBox::setTitleBase( const QString &title )
 {
   mTitleBase = title;
   updateTitle();

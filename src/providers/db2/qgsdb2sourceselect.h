@@ -23,7 +23,7 @@
 #include "qgisgui.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsdb2tablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include <QMap>
 #include <QPair>
@@ -42,7 +42,7 @@ class QgsDb2SourceSelectDelegate : public QItemDelegate
 
   public:
     explicit QgsDb2SourceSelectDelegate( QObject *parent = NULL )
-        : QItemDelegate( parent )
+      : QItemDelegate( parent )
     {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
@@ -57,7 +57,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
 {
     Q_OBJECT
   public:
-    QgsDb2GeomColumnTypeThread( QString connectionName, bool useEstimatedMetadata );
+    QgsDb2GeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -67,7 +67,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
     void setLayerType( QgsDb2LayerProperty layerProperty );
 
   public slots:
-    void addGeometryColumn( QgsDb2LayerProperty layerProperty );
+    void addGeometryColumn( const QgsDb2LayerProperty &layerProperty );
     void stop();
 
   private:
@@ -94,11 +94,11 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
 
     //! static function to delete a connection
-    static void deleteConnection( QString key );
+    static void deleteConnection( const QString &key );
 
     //! Constructor
     QgsDb2SourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+
     ~QgsDb2SourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -108,7 +108,7 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QString connectionInfo();
 
   signals:
-    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
+    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void connectionsChanged();
     void addGeometryColumn( QgsDb2LayerProperty );
 
@@ -133,20 +133,20 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString & text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
-    void setSql( const QModelIndex& index );
+    void on_mSearchTableEdit_textChanged( const QString &text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
+    void setSql( const QModelIndex &index );
     //! Store the selected database
     void on_cmbConnections_activated( int );
-    void setLayerType( QgsDb2LayerProperty layerProperty );
+    void setLayerType( const QgsDb2LayerProperty &layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
-    void setSearchExpression( const QString& regexp );
+    void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#db2-spatial-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -161,18 +161,18 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mEmbeddedMode;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( QString connectionName, QgsDb2LayerProperty layerProperty, bool estimateMetadata );
+    void addSearchGeometryColumn( const QString &connectionName, const QgsDb2LayerProperty &layerProperty, bool estimateMetadata );
 
     // Set the position of the database connection list to the last
     // used one.
     void setConnectionListPosition();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
-    QString fullDescription( QString schema, QString table, QString column, QString type );
+    QString fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type );
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsDb2GeomColumnTypeThread* mColumnTypeThread;
+    QgsDb2GeomColumnTypeThread *mColumnTypeThread = nullptr;
     QString mConnInfo;
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
@@ -181,10 +181,10 @@ class QgsDb2SourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsDb2TableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
+    QgsDatabaseFilterProxyModel mProxyModel;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
 };

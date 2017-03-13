@@ -22,30 +22,26 @@
 #include "qgsmapsettings.h"
 #include <limits>
 
-QgsComposerPolyline::QgsComposerPolyline( QgsComposition* c )
-    : QgsComposerNodesItem( "ComposerPolyline", c )
-    , mPolylineStyleSymbol( nullptr )
+QgsComposerPolyline::QgsComposerPolyline( QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), c )
+  , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
 }
 
-QgsComposerPolyline::QgsComposerPolyline( QPolygonF polyline, QgsComposition* c )
-    : QgsComposerNodesItem( "ComposerPolyline", polyline, c )
-    , mPolylineStyleSymbol( nullptr )
+QgsComposerPolyline::QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolyline" ), polyline, c )
+  , mPolylineStyleSymbol( nullptr )
 {
   createDefaultPolylineStyleSymbol();
-}
-
-QgsComposerPolyline::~QgsComposerPolyline()
-{
 }
 
 bool QgsComposerPolyline::_addNode( const int indexPoint,
-                                    const QPointF &newPoint,
+                                    QPointF newPoint,
                                     const double radius )
 {
   const double distStart = computeDistance( newPoint, mPolygon[0] );
-  const double distEnd = computeDistance( newPoint, mPolygon[mPolygon.size()-1] );
+  const double distEnd = computeDistance( newPoint, mPolygon[mPolygon.size() - 1] );
 
   if ( indexPoint == ( mPolygon.size() - 1 ) )
   {
@@ -83,9 +79,9 @@ bool QgsComposerPolyline::_removeNode( const int index )
 void QgsComposerPolyline::createDefaultPolylineStyleSymbol()
 {
   QgsStringMap properties;
-  properties.insert( "color", "0,0,0,255" );
-  properties.insert( "width", "0.3" );
-  properties.insert( "capstyle", "square" );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
 
   mPolylineStyleSymbol.reset( QgsLineSymbol::createSimple( properties ) );
 
@@ -104,11 +100,7 @@ void QgsComposerPolyline::_draw( QPainter *painter )
 {
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
 
   QgsExpressionContext expressionContext = createExpressionContext();
@@ -128,9 +120,9 @@ void QgsComposerPolyline::_readXmlStyle( const QDomElement &elmt )
   mPolylineStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elmt ) );
 }
 
-void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
+void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol *symbol )
 {
-  mPolylineStyleSymbol.reset( static_cast<QgsLineSymbol*>( symbol->clone() ) );
+  mPolylineStyleSymbol.reset( static_cast<QgsLineSymbol *>( symbol->clone() ) );
   update();
   emit frameChanged();
 }
@@ -138,7 +130,7 @@ void QgsComposerPolyline::setPolylineStyleSymbol( QgsLineSymbol* symbol )
 void QgsComposerPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolylineStyleSymbol.data(),
+                         mPolylineStyleSymbol.get(),
                          doc );
   elmt.appendChild( pe );
 }

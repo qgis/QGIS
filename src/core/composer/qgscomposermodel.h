@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERMODEL_H
 #define QGSCOMPOSERMODEL_H
 
+#include "qgis_core.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 #include <QStringList>
@@ -54,18 +55,16 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     //! Columns returned by the model
     enum Columns
     {
-      Visibility = 0, /*!< Item visibility check box */
-      LockStatus, /*!< Item lock status check box */
-      ItemId, /*!< Item ID */
+      Visibility = 0, //!< Item visibility check box
+      LockStatus, //!< Item lock status check box
+      ItemId, //!< Item ID
     };
 
     /** Constructor
      * @param composition composition to attach to
      * @param parent parent object
      */
-    explicit QgsComposerModel( QgsComposition* composition, QObject* parent = nullptr );
-
-    ~QgsComposerModel();
+    explicit QgsComposerModel( QgsComposition *composition, QObject *parent = nullptr );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -73,14 +72,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     Qt::DropActions supportedDropActions() const override;
     virtual QStringList mimeTypes() const override;
-    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const override;
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     /** Clears all items from z-order list and resets the model
      * @note added in QGIS 2.5
@@ -166,7 +165,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see getComposerItemBelow
      * @note added in QGIS 2.5
      */
-    QgsComposerItem* getComposerItemAbove( QgsComposerItem *item ) const;
+    QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
 
     /** Finds the next composer item below an item. This method only considers
      * items which are currently in the composition, and ignores items which have been
@@ -177,14 +176,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see getComposerItemAbove
      * @note added in QGIS 2.5
      */
-    QgsComposerItem* getComposerItemBelow( QgsComposerItem *item ) const;
+    QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
 
     /** Returns the item z-order list. This list includes both items currently in the
      * composition and items which have been removed from the composition.
      * @returns item z-order list
      * @note added in QGIS 2.5
      */
-    QList<QgsComposerItem *>* zOrderList();
+    QList<QgsComposerItem *> *zOrderList();
 
     /** Marks an item as removed from the composition. This must be called whenever an item
      * has been removed from the composition.
@@ -255,22 +254,22 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
   protected:
 
-    /** Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
-    QList<QgsComposerItem*> mItemZList;
+    //! Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)
+    QList<QgsComposerItem *> mItemZList;
 
-    /** Cached list of items from mItemZList which are currently in the scene*/
-    QList<QgsComposerItem*> mItemsInScene;
+    //! Cached list of items from mItemZList which are currently in the scene
+    QList<QgsComposerItem *> mItemsInScene;
 
   private:
 
-    /** Parent composition*/
-    QgsComposition* mComposition;
+    //! Parent composition
+    QgsComposition *mComposition = nullptr;
 
     /** Returns the QgsComposerItem corresponding to a QModelIndex, if possible
      * @param index QModelIndex for item
      * @returns item corresponding to index
      */
-    QgsComposerItem* itemFromIndex( const QModelIndex &index ) const;
+    QgsComposerItem *itemFromIndex( const QModelIndex &index ) const;
 
     /** Rebuilds the list of all composer items which are present in the composition. This is
      * called when the stacking of order changes or when items are removed/restored to the
@@ -308,7 +307,7 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
      * @param composition composition to attach model to
      * @param parent optional parent
      */
-    QgsComposerProxyModel( QgsComposition* composition, QObject *parent = nullptr );
+    QgsComposerProxyModel( QgsComposition *composition, QObject *parent = nullptr );
 
     /** Returns the current item type filter, or QgsComposerItem::ComposerItem if no
      * item type filter is set.
@@ -327,32 +326,32 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
      * @param exceptList list of items to exclude
      * @see exceptedItemList()
      */
-    void setExceptedItemList( const QList< QgsComposerItem* >& exceptList );
+    void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 
     /** Returns the list of specific items excluded from the model.
      * @see setExceptedItemList()
      */
-    QList< QgsComposerItem* > exceptedItemList() const { return mExceptedList; }
+    QList< QgsComposerItem * > exceptedItemList() const { return mExceptedList; }
 
     /** Returns the QgsComposerModel used in this proxy model.
      */
-    QgsComposerModel* sourceLayerModel() const { return static_cast< QgsComposerModel* >( sourceModel() ); }
+    QgsComposerModel *sourceLayerModel() const { return static_cast< QgsComposerModel * >( sourceModel() ); }
 
     /** Returns the QgsComposerItem corresponding to an index from the source
      * QgsComposerModel model.
      * @param sourceIndex a QModelIndex
      * @returns QgsComposerItem for specified index from QgsComposerModel
      */
-    QgsComposerItem* itemFromSourceIndex( const QModelIndex& sourceIndex ) const;
+    QgsComposerItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition *mComposition = nullptr;
     QgsComposerItem::ItemType mItemTypeFilter;
-    QList< QgsComposerItem* > mExceptedList;
+    QList< QgsComposerItem * > mExceptedList;
 
 };
 

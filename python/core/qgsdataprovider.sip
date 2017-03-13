@@ -326,17 +326,11 @@ class QgsDataProvider : QObject
      */
     void dataChanged();
 
-    /**
-     *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     *   @param changed binary combination of changes
-     */
-    void dataChanged( int changed );
-
   protected:
 
     /** Add error message */
-    void appendError( const QgsErrorMessage & theMessage );
+    void appendError( const QgsErrorMessage & message );
 
     /** Set error message */
-    void setError( const QgsError & theError );
+    void setError( const QgsError & error );
 };

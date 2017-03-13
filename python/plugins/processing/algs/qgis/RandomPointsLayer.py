@@ -30,7 +30,7 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsWkbTypes,
+from qgis.core import (QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsWkbTypes,
                        QgsPoint, QgsFeature, QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -65,7 +65,7 @@ class RandomPointsLayer(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.VECTOR))
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
@@ -87,8 +87,6 @@ class RandomPointsLayer(GeoAlgorithm):
         index = QgsSpatialIndex()
         points = dict()
 
-        request = QgsFeatureRequest()
-
         random.seed()
 
         while nIterations < maxIterations and nPoints < pointCount:
@@ -100,8 +98,8 @@ class RandomPointsLayer(GeoAlgorithm):
             ids = idxLayer.intersects(geom.buffer(5, 5).boundingBox())
             if len(ids) > 0 and \
                     vector.checkMinDistance(pnt, index, minDistance, points):
-                for i in ids:
-                    f = layer.getFeatures(request.setFilterFid(i)).next()
+                request = QgsFeatureRequest().setFilterFids(ids).setSubsetOfAttributes([])
+                for f in layer.getFeatures(request):
                     tmpGeom = f.geometry()
                     if geom.within(tmpGeom):
                         f = QgsFeature(nPoints)
@@ -113,7 +111,7 @@ class RandomPointsLayer(GeoAlgorithm):
                         index.insertFeature(f)
                         points[nPoints] = pnt
                         nPoints += 1
-                        progress.setPercentage(int(nPoints * total))
+                        feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:

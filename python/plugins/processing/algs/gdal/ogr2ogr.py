@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -99,7 +100,7 @@ class Ogr2Ogr(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Convert format')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Conversion')
+        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
@@ -125,7 +126,7 @@ class Ogr2Ogr(GdalAlgorithm):
             output.value = outFile
 
         output = ogrConnectionString(outFile)
-        options = unicode(self.getParameterValue(self.OPTIONS))
+        options = str(self.getParameterValue(self.OPTIONS))
 
         if outFormat == 'SQLite' and os.path.isfile(output):
             os.remove(output)
@@ -133,7 +134,8 @@ class Ogr2Ogr(GdalAlgorithm):
         arguments = []
         arguments.append('-f')
         arguments.append(outFormat)
-        if len(options) > 0:
+
+        if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         arguments.append(output)

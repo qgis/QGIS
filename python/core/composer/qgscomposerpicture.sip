@@ -30,6 +30,13 @@ class QgsComposerPicture: QgsComposerItem
       Unknown
     };
 
+    //! Method for syncing rotation to a map's North direction
+    enum NorthMode
+    {
+      GridNorth, /*!< Align to grid north */
+      TrueNorth, /*!< Align to true north */
+    };
+
     QgsComposerPicture( QgsComposition *composition /TransferThis/);
     ~QgsComposerPicture();
 
@@ -109,6 +116,38 @@ class QgsComposerPicture: QgsComposerItem
      */
     bool useRotationMap() const;
 
+     /**
+     * Returns the mode used to align the picture to a map's North.
+     * @see setNorthMode()
+     * @see northOffset()
+     * @note added in QGIS 2.18
+     */
+    NorthMode northMode() const;
+
+    /**
+     * Sets the mode used to align the picture to a map's North.
+     * @see northMode()
+     * @see setNorthOffset()
+     * @note added in QGIS 2.18
+     */
+    void setNorthMode( NorthMode mode );
+
+    /**
+     * Returns the offset added to the picture's rotation from a map's North.
+     * @see setNorthOffset()
+     * @see northMode()
+     * @note added in QGIS 2.18
+     */
+    double northOffset() const;
+
+    /**
+     * Sets the offset added to the picture's rotation from a map's North.
+     * @see northOffset()
+     * @see setNorthMode()
+     * @note added in QGIS 2.18
+     */
+    void setNorthOffset( double offset );
+
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
      * @returns resize mode of picture
@@ -133,56 +172,56 @@ class QgsComposerPicture: QgsComposerItem
      */
     ItemPositionMode pictureAnchor() const;
 
-    /** Returns the fill color used for parameterized SVG files.
+    /** Returns the fill color used for parametrized SVG files.
      * @see setSvgFillColor()
-     * @see svgBorderColor()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
     QColor svgFillColor() const;
 
-    /** Sets the fill color used for parameterized SVG files.
+    /** Sets the fill color used for parametrized SVG files.
      * @param color fill color.
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
      * @see svgFillColor()
-     * @see setSvgBorderColor()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
     void setSvgFillColor( const QColor& color );
 
-    /** Returns the border color used for parameterized SVG files.
-     * @see setSvgBorderColor()
+    /** Returns the stroke color used for parametrized SVG files.
+     * @see setSvgStrokeColor()
      * @see svgFillColor()
      * @note added in QGIS 2.14.1
      */
-    QColor svgBorderColor() const;
+    QColor svgStrokeColor() const;
 
-    /** Sets the border color used for parameterized SVG files.
-     * @param color border color.
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
-     * @see svgBorderlColor()
+    /** Sets the stroke color used for parametrized SVG files.
+     * @param color stroke color.
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
+     * @see svgStrokelColor()
      * @see setSvgFillColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderColor( const QColor& color );
+    void setSvgStrokeColor( const QColor& color );
 
-    /** Returns the border width (in mm) used for parameterized SVG files.
-     * @see setSvgBorderWidth()
-     * @see svgBorderColor()
+    /** Returns the stroke width (in mm) used for parametrized SVG files.
+     * @see setSvgStrokeWidth()
+     * @see svgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    double svgBorderWidth() const;
+    double svgStrokeWidth() const;
 
-    /** Sets the border width used for parameterized SVG files.
-     * @param width border width in mm
-     * @note this setting only has an effect on parameterized SVG files, and is ignored for
-     * non-parameterized SVG files.
-     * @see svgBorderWidth()
-     * @see setSvgBorderColor()
+    /** Sets the stroke width used for parametrized SVG files.
+     * @param width stroke width in mm
+     * @note this setting only has an effect on parametrized SVG files, and is ignored for
+     * non-parametrized SVG files.
+     * @see svgStrokeWidth()
+     * @see setSvgStrokeColor()
      * @note added in QGIS 2.14.1
      */
-    void setSvgBorderWidth( double width );
+    void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
      * @returns picture mode

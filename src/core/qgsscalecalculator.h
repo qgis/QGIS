@@ -19,6 +19,7 @@
 #ifndef QGSSCALECALCULATOR_H
 #define QGSSCALECALCULATOR_H
 
+#include "qgis_core.h"
 #include <qgis.h>
 #include "qgsunittypes.h"
 
@@ -59,7 +60,7 @@ class CORE_EXPORT QgsScaleCalculator
      */
     void setMapUnits( QgsUnitTypes::DistanceUnit mapUnits );
 
-    /** Returns current map units */
+    //! Returns current map units
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**

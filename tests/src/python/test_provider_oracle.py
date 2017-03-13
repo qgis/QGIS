@@ -16,9 +16,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, NULL
+from qgis.core import QgsSettings, QgsVectorLayer, QgsFeatureRequest, NULL
 
-from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -33,7 +33,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = u"host=localhost port=1521 user='QGIS' password='qgis'"
+        cls.dbconn = "host=localhost port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_ORACLETEST_DB']
         # Create test layers
@@ -51,10 +51,10 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue(u'/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         filters = set([
@@ -74,7 +74,58 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             'NULL or true',
             'NULL or NULL',
             'not null',
-            'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))'])
+            'sqrt(pk) >= 2',
+            'radians(cnt) < 2',
+            'degrees(pk) <= 200',
+            'abs(cnt) <= 200',
+            'cos(pk) < 0',
+            'sin(pk) < 0',
+            'tan(pk) < 0',
+            'acos(-1) < pk',
+            'asin(1) < pk',
+            'atan(3.14) < pk',
+            'atan2(3.14, pk) < 1',
+            'exp(pk) < 10',
+            'ln(pk) <= 1',
+            'log(3, pk) <= 1',
+            'log10(pk) < 0.5',
+            'round(3.14) <= pk',
+            'floor(3.14) <= pk',
+            'ceil(3.14) <= pk',
+            'pk < pi()',
+            'round(cnt / 66.67) <= 2',
+            'floor(cnt / 66.67) <= 2',
+            'ceil(cnt / 66.67) <= 2',
+            'pk < pi() / 2',
+            'x($geometry) < -70',
+            'y($geometry) > 70',
+            'xmin($geometry) < -70',
+            'ymin($geometry) > 70',
+            'xmax($geometry) < -70',
+            'ymax($geometry) > 70',
+            'disjoint($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
+            'intersects($geometry,geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'))',
+            'contains(geom_from_wkt( \'Polygon ((-72.2 66.1, -65.2 66.1, -65.2 72.0, -72.2 72.0, -72.2 66.1))\'),$geometry)',
+            'distance($geometry,geom_from_wkt( \'Point (-70 70)\')) > 7',
+            'intersects($geometry,geom_from_gml( \'<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-72.2,66.1 -65.2,66.1 -65.2,72.0 -72.2,72.0 -72.2,66.1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>\'))',
+            'x($geometry) < -70',
+            'y($geometry) > 79',
+            'xmin($geometry) < -70',
+            'ymin($geometry) < 76',
+            'xmax($geometry) > -68',
+            'ymax($geometry) > 80',
+            'area($geometry) > 10',
+            'perimeter($geometry) < 12',
+            'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\')) = \'FF2FF1212\'',
+            'relate($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'), \'****F****\')',
+            'crosses($geometry,geom_from_wkt( \'Linestring (-68.2 82.1, -66.95 82.1, -66.95 79.05)\'))',
+            'overlaps($geometry,geom_from_wkt( \'Polygon ((-68.2 82.1, -66.95 82.1, -66.95 79.05, -68.2 79.05, -68.2 82.1))\'))',
+            'within($geometry,geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+            'overlaps(translate($geometry,-1,-1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+            'overlaps(buffer($geometry,1),geom_from_wkt( \'Polygon ((-75.1 76.1, -75.1 81.6, -68.8 81.6, -68.8 76.1, -75.1 76.1))\'))',
+            'intersects(centroid($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))',
+            'intersects(point_on_surface($geometry),geom_from_wkt( \'Polygon ((-74.4 78.2, -74.4 79.1, -66.8 79.1, -66.8 78.2, -74.4 78.2))\'))'
+        ])
         return filters
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
@@ -91,17 +142,18 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         f = next(vl.getFeatures(QgsFeatureRequest()))
 
-        date_idx = vl.fieldNameIndex('date_field')
-        self.assertTrue(isinstance(f.attributes()[date_idx], QDate))
+        date_idx = vl.fields().lookupField('date_field')
+        self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2004, 3, 4))
-        datetime_idx = vl.fieldNameIndex('datetime_field')
-        self.assertTrue(isinstance(f.attributes()[datetime_idx], QDateTime))
+        datetime_idx = vl.fields().lookupField('datetime_field')
+        self.assertIsInstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testDefaultValue(self):
         self.assertEqual(self.provider.defaultValue(1), NULL)
         self.assertEqual(self.provider.defaultValue(2), "'qgis'")
+
 
 if __name__ == '__main__':
     unittest.main()

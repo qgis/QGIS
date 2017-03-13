@@ -19,7 +19,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsRelation,
                        QgsGeometry,
                        QgsPoint,
-                       QgsMapLayerRegistry
+                       QgsProject
                        )
 from qgis.testing import start_app, unittest
 
@@ -64,7 +64,7 @@ def createReferencedLayer():
 
 
 def formatAttributes(attrs):
-    return repr([unicode(a) for a in attrs])
+    return repr([str(a) for a in attrs])
 
 
 class TestQgsRelation(unittest.TestCase):
@@ -72,19 +72,19 @@ class TestQgsRelation(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def tearDown(self):
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
 
     def test_isValid(self):
         rel = QgsRelation()
         assert not rel.isValid()
 
-        rel.setRelationId('rel1')
+        rel.setId('rel1')
         assert not rel.isValid()
 
-        rel.setRelationName('Relation Number One')
+        rel.setName('Relation Number One')
         assert not rel.isValid()
 
         rel.setReferencingLayer(self.referencingLayer.id())
@@ -99,8 +99,8 @@ class TestQgsRelation(unittest.TestCase):
     def test_getRelatedFeatures(self):
         rel = QgsRelation()
 
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
@@ -110,12 +110,12 @@ class TestQgsRelation(unittest.TestCase):
         self.assertEqual(rel.getRelatedFeaturesFilter(feat), '"foreignkey" = 123')
 
         it = rel.getRelatedFeatures(feat)
-        assert [a.attributes() for a in it] == [[u'test1', 123], [u'test2', 123]]
+        assert [a.attributes() for a in it] == [['test1', 123], ['test2', 123]]
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')
@@ -130,8 +130,8 @@ class TestQgsRelation(unittest.TestCase):
     def test_fieldPairs(self):
         rel = QgsRelation()
 
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
         rel.addFieldPair('foreignkey', 'y')

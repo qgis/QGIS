@@ -91,7 +91,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 %End
 
     virtual ~QgsApplication();
-
+    static QgsApplication* instance();
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject * receiver );
 
@@ -104,7 +104,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName( const QString &theThemeName );
+    static void setThemeName( const QString &themeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -116,7 +116,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     /**
      * @brief Set the current UI theme used to style the interface.  Use uiThemes() to
-     * find valid themes to use. Variabels found in variables.qss will be added to the stylesheet
+     * find valid themes to use. Variables found in variables.qss will be added to the stylesheet
      * on load.
      * @param themeName The name of the theme.
      * @note using an invalid theme name will reset to default
@@ -124,7 +124,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static void setUITheme( const QString &themeName );
 
     /**
-     * @brief All themes found in ~/.qgis2/themes folder.
+     * @brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
      * @note Valid theme folders must contain a style.qss file.
      * @return A hash of theme name and theme path. Valid theme folders contain style.qss
@@ -168,16 +168,16 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QString i18nPath();
 
     //! Returns the path to the master qgis.db file.
-    static QString qgisMasterDbFilePath();
+    static QString qgisMasterDatabaseFilePath();
 
     //! Returns the path to the settings directory in user's home dir
     static QString qgisSettingsDirPath();
 
     //! Returns the path to the user qgis.db file.
-    static QString qgisUserDbFilePath();
+    static QString qgisUserDatabaseFilePath();
 
     //! Returns the path to the user authentication database file: qgis-auth.db.
-    static QString qgisAuthDbFilePath();
+    static QString qgisAuthDatabaseFilePath();
 
     //! Returns the path to the splash screen image directory.
     static QString splashPath();
@@ -186,12 +186,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QString iconsPath();
 
     //! Returns the path to the srs.db file.
-    static QString srsDbFilePath();
+    static QString srsDatabaseFilePath();
 
-    //! Returns the pathes to svg directories.
+    //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the pathes to composer template directories
+    //! Returns the paths to composer template directories
     static QStringList composerTemplatePaths();
 
     //! Returns the system environment variables passed to application.
@@ -218,11 +218,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QIcon getThemeIcon( const QString &theName );
+    static QIcon getThemeIcon( const QString &name );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    static QPixmap getThemePixmap( const QString &theName );
+    static QPixmap getThemePixmap( const QString &name );
 
     //! Returns the path to user's style.
     static QString userStylePath();
@@ -248,11 +248,16 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString osName();
 
-    /** Returns the QGIS platform name, eg "desktop" or "server".
+    /** Returns the QGIS platform name, e.g., "desktop" or "server".
      * @note added in QGIS 2.14
      * @see osName()
      */
     static QString platform();
+
+    /** Returns the QGIS locale.
+     * @note added in QGIS 3.0
+     */
+    static QString locale();
 
     //! Returns the path to user's themes folder
     static QString userThemesFolder();
@@ -270,25 +275,25 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString &thePrefixPath, bool useDefaultPaths = false );
+    static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath( const QString &thePluginPath );
+    static void setPluginPath( const QString &pluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath( const QString &thePkgDataPath );
+    static void setPkgDataPath( const QString &pkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! Alters authentication data base directory path - used by 3rd party apps
-    static void setAuthDbDirPath( const QString& theAuthDbDirPath );
+    static void setAuthDatabaseDirPath( const QString& authDbDirPath );
 
     //! loads providers
     static void initQgis();
 
-    //! initialise qgis.db
-    static bool createDB( QString* errorMessage = 0 );
+    //! initialize qgis.db
+    static bool createDatabase( QString* errorMessage = 0 );
 
     //! Create the users theme folder
     static bool createThemeFolder();
@@ -347,13 +352,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void skipGdalDriver( const QString& theDriver );
+    static void skipGdalDriver( const QString& driver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
-    static void restoreGdalDriver( const QString& theDriver );
+    static void restoreGdalDriver( const QString& driver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
@@ -374,28 +379,108 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note added in 2.4 */
     static void setMaxThreads( int maxThreads );
 
+    /**
+     * Returns the application's task manager, used for managing application
+     * wide background task handling.
+     * @note added in QGIS 3.0
+     */
+    static QgsTaskManager* taskManager();
+
+    /**
+     * Returns the application's color scheme registry, used for managing color schemes.
+     * @note added in QGIS 3.0
+     */
+    static QgsColorSchemeRegistry* colorSchemeRegistry();
+
+    /**
+     * Returns the application's paint effect registry, used for managing paint effects.
+     * @note added in QGIS 3.0
+     */
+    static QgsPaintEffectRegistry* paintEffectRegistry();
+
+    /**
+     * Returns the application's renderer registry, used for managing vector layer renderers.
+     * @note added in QGIS 3.0
+     */
+    static QgsRendererRegistry* rendererRegistry();
+
+    /**
+     * Returns the application's data item provider registry, which keeps a list of data item
+     * providers that may add items to the browser tree.
+     * @note added in QGIS 3.0
+     */
+    static QgsDataItemProviderRegistry* dataItemProviderRegistry();
+
+    /**
+     * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+     * within SVG files.
+     * @note added in QGIS 3.0
+     */
+    static QgsSvgCache* svgCache();
+
+    /**
+     * Returns the application's symbol layer registry, used for managing symbol layers.
+     * @note added in QGIS 3.0
+     */
+    static QgsSymbolLayerRegistry* symbolLayerRegistry();
+
+    /**
+     * Returns the application's GPS connection registry, used for managing GPS connections.
+     * @note added in QGIS 3.0
+     */
+    static QgsGPSConnectionRegistry* gpsConnectionRegistry();
+
+    /**
+     * Returns the application's plugin layer registry, used for managing plugin layer types.
+     * @note added in QGIS 3.0
+     */
+    static QgsPluginLayerRegistry* pluginLayerRegistry();
+
+    /**
+     * Returns the application's message log.
+     * @note added in QGIS 3.0
+     */
+    static QgsMessageLog* messageLog();
+
+    /**
+     * Returns the application's processing registry, used for managing processing providers,
+     * algorithms, and various parameters and outputs.
+     * @note added in QGIS 3.0
+     */
+    static QgsProcessingRegistry* processingRegistry();
+
 %If(ANDROID)
     //dummy method to workaround sip generation issue issue
     bool x11EventFilter ( XEvent * event );
 %End
+    /**
+     * Returns the action scope registry.
+     *
+     * @note Added in QGIS 3.0
+     */
+    static QgsActionScopeRegistry* actionScopeRegistry();
 
-  public slots:
-
-    /** Causes the application instance to emit the settingsChanged() signal. This should
-     * be called whenever global, application-wide settings are altered to advise listeners
-     * that they may need to update their state.
-     * @see settingsChanged()
+    /**
+     * Returns the application runtime profiler.
      * @note added in QGIS 3.0
      */
-    void emitSettingsChanged();
+    static QgsRuntimeProfiler* profiler();
 
+    /**
+     * Provides access to the field formatter registry.
+     *
+     * @note Added in QGIS 3.0
+     */
+    static QgsFieldFormatterRegistry* fieldFormatterRegistry();
+    static QString nullRepresentation();
+    static void setNullRepresentation( const QString& nullRepresentation );
+    static QVariantMap customVariables();
+    static void setCustomVariables( const QVariantMap& customVariables );
+    static void setCustomVariable( const QString& name, const QVariant& value );
   signals:
     //! @note not available in python bindings
     // void preNotify( QObject * receiver, QEvent * event, bool * done );
 
-    /** Emitted whenever any global, application-wide settings are changed.
-     * @note added in QGIS 3.0
-     * @see emitSettingsChanged()
-     */
-    void settingsChanged();
+    void customVariablesChanged();
+    void nullRepresentationChanged();
 };

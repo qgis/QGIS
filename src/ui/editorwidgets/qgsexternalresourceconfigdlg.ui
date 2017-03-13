@@ -8,7 +8,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>371</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-210</y>
-        <width>465</width>
-        <height>621</height>
+        <y>0</y>
+        <width>467</width>
+        <height>715</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -66,16 +66,16 @@
              <enum>QLayout::SetMinimumSize</enum>
             </property>
             <property name="leftMargin">
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="topMargin">
-             <number>6</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>0</number>
             </property>
             <property name="bottomMargin">
-             <number>6</number>
+             <number>0</number>
             </property>
             <item>
              <widget class="QLabel" name="label">
@@ -101,7 +101,27 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="mRootPathButton">
+             <widget class="QLineEdit" name="mRootPathExpression">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mRootPathButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsPropertyOverrideButton" name="mRootPathPropertyOverrideButton">
               <property name="text">
                <string>...</string>
               </property>
@@ -139,7 +159,7 @@
              <item>
               <widget class="QRadioButton" name="mRelativeProject">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;Eg: if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the current QGIS project path.&lt;/p&gt;&lt;p&gt;For example, if your QGIS project is in &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/my_project.qgs&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;data/files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Relative to project path</string>
@@ -158,7 +178,7 @@
                 <bool>false</bool>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;Eg: if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If possible, this option makes the storage of the filenames with relative paths from the default path set just above.&lt;/p&gt;&lt;p&gt;For example, if your default path is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/&amp;quot;&lt;/span&gt; and your filename is &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;/home/user/data/files/test.pdf&amp;quot;&lt;/span&gt;, the attribute will only store &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;quot;files/test.pdf&amp;quot;&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Relative to default path</string>
@@ -395,6 +415,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -403,7 +428,6 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRootPath</tabstop>
-  <tabstop>mRootPathButton</tabstop>
   <tabstop>mRelativeGroupBox</tabstop>
   <tabstop>mRelativeProject</tabstop>
   <tabstop>mRelativeDefault</tabstop>

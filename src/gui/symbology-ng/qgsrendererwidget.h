@@ -20,6 +20,8 @@
 #include <QStackedWidget>
 #include "qgssymbol.h"
 #include "qgspanelwidget.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgssymbollayer.h"
 
 class QgsVectorLayer;
 class QgsStyle;
@@ -41,34 +43,31 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-    QgsRendererWidget( QgsVectorLayer* layer, QgsStyle* style );
-
-    virtual ~QgsRendererWidget() {}
+    QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
 
     //! return pointer to the renderer (no transfer of ownership)
-    virtual QgsFeatureRenderer* renderer() = 0;
+    virtual QgsFeatureRenderer *renderer() = 0;
 
     //! show a dialog with renderer's symbol level settings
-    void showSymbolLevelsDialog( QgsFeatureRenderer* r );
+    void showSymbolLevelsDialog( QgsFeatureRenderer *r );
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @see mapCanvas()
-     * @note added in QGIS 2.12
+    /** Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
+     * @note added in QGIS 3.0
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    virtual void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas
-     * @note added in QGIS 2.12
+    /** Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    const QgsMapCanvas* mapCanvas() const;
+    QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+    const QgsVectorLayer *vectorLayer() const { return mLayer; }
 
     /**
      * This method should be called whenever the renderer is actually set on the layer.
@@ -76,6 +75,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     void applyChanges();
 
   signals:
+
     /**
      * Emitted when expression context variables on the associated
      * vector layers have been changed. Will request the parent dialog
@@ -84,42 +84,46 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
     void layerVariablesChanged();
 
   protected:
-    QgsVectorLayer* mLayer;
-    QgsStyle* mStyle;
-    QMenu* contextMenu;
-    QAction* mCopyAction;
-    QAction* mPasteAction;
-    QgsMapCanvas* mMapCanvas;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsStyle *mStyle = nullptr;
+    QMenu *contextMenu = nullptr;
+    QAction *mCopyAction = nullptr;
+    QAction *mPasteAction = nullptr;
+
+    //! Context in which widget is shown
+    QgsSymbolWidgetContext mContext;
 
     /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
-    virtual QList<QgsSymbol*> selectedSymbols() { return QList<QgsSymbol*>(); }
+    virtual QList<QgsSymbol *> selectedSymbols() { return QList<QgsSymbol *>(); }
     virtual void refreshSymbolView() {}
 
   protected slots:
     void  contextMenuViewCategories( QPoint p );
-    /** Change color of selected symbols*/
+    //! Change color of selected symbols
     void changeSymbolColor();
-    /** Change opacity of selected symbols*/
+    //! Change opacity of selected symbols
     void changeSymbolTransparency();
-    /** Change units mm/map units of selected symbols*/
+    //! Change units mm/map units of selected symbols
     void changeSymbolUnit();
-    /** Change line widths of selected symbols*/
+    //! Change line widths of selected symbols
     void changeSymbolWidth();
-    /** Change marker sizes of selected symbols*/
+    //! Change marker sizes of selected symbols
     void changeSymbolSize();
-    /** Change marker angles of selected symbols*/
+    //! Change marker angles of selected symbols
     void changeSymbolAngle();
 
     virtual void copy() {}
     virtual void paste() {}
 
   private:
+
     /**
      * This will be called whenever the renderer is set on a layer.
      * This can be overwritten in subclasses.
      */
     virtual void apply();
+
 
 };
 
@@ -133,7 +137,7 @@ class QgsField;
 class QgsFields;
 
 #include "ui_widget_set_dd_value.h"
-#include "qgssizescalewidget.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
 Utility classes for "en masse" size definition
@@ -143,54 +147,55 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     Q_OBJECT
 
   public:
+
     /** Constructor
      * @param symbolList must not be empty
      * @param layer must not be null
      * @param label value label
      */
-    QgsDataDefinedValueDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer, const QString & label );
-    virtual ~QgsDataDefinedValueDialog() {}
+    QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
 
-    /** Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
-     * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @see mapCanvas()
-     * @note added in QGIS 2.12
+    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+     * @param context symbol widget context
+     * @see context()
+     * @note added in QGIS 3.0
      */
-    virtual void setMapCanvas( QgsMapCanvas* canvas );
+    void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the map canvas associated with the widget.
-     * @see setMapCanvas
-     * @note added in QGIS 2.12
+    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+     * @see setContext()
+     * @note added in QGIS 3.0
      */
-    const QgsMapCanvas* mapCanvas() const;
+    QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
      * @note added in QGIS 2.12
      */
-    const QgsVectorLayer* vectorLayer() const { return mLayer; }
+    const QgsVectorLayer *vectorLayer() const { return mLayer; }
 
   public slots:
     void dataDefinedChanged();
 
   protected:
+
     /**
      * Should be called in the constructor of child classes.
      *
      * @note May be missing Python bindings depending on the platform.
      */
-    void init( const QString& description ); // needed in children ctor to call virtual
+    void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsDataDefined symbolDataDefined() const;
+    QgsProperty symbolDataDefined() const;
 
-    virtual QgsDataDefined symbolDataDefined( const QgsSymbol* ) const = 0;
-    virtual double value( const QgsSymbol* ) const = 0;
-    virtual void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) = 0;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0;
+    virtual double value( const QgsSymbol * ) const = 0;
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0;
 
-    QList<QgsSymbol*> mSymbolList;
-    QgsVectorLayer* mLayer;
-    QgsMapCanvas* mMapCanvas;
+    QList<QgsSymbol *> mSymbolList;
+    QgsVectorLayer *mLayer = nullptr;
+
+    QgsSymbolWidgetContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
 };
@@ -202,20 +207,27 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedSizeDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
-        : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
+    QgsDataDefinedSizeDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
+      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
-      init( tr( "Symbol size" ) );
+      init( QgsSymbolLayer::PropertySize );
       if ( !symbolList.isEmpty() && symbolList.at( 0 ) && vectorLayer() )
-        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( vectorLayer(), static_cast<const QgsMarkerSymbol*>( symbolList.at( 0 ) ) ) );
+      {
+        mAssistantSymbol.reset( static_cast<const QgsMarkerSymbol *>( symbolList.at( 0 ) )->clone() );
+        mDDBtn->setSymbol( mAssistantSymbol );
+      }
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->size(); }
+    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsMarkerSymbol *>( symbol )->size(); }
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
+    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
+
+  private:
+
+    std::shared_ptr< QgsMarkerSymbol > mAssistantSymbol;
 };
 
 /** \ingroup gui
@@ -225,18 +237,18 @@ class GUI_EXPORT QgsDataDefinedRotationDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedRotationDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
-        : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
+    QgsDataDefinedRotationDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
+      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Rotation" ) )
     {
-      init( tr( "Symbol rotation" ) );
+      init( QgsSymbolLayer::PropertyAngle );
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsMarkerSymbol*>( symbol )->angle(); }
+    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsMarkerSymbol *>( symbol )->angle(); }
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
+    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 };
 
 /** \ingroup gui
@@ -246,18 +258,18 @@ class GUI_EXPORT QgsDataDefinedWidthDialog : public QgsDataDefinedValueDialog
 {
     Q_OBJECT
   public:
-    QgsDataDefinedWidthDialog( const QList<QgsSymbol*>& symbolList, QgsVectorLayer * layer )
-        : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
+    QgsDataDefinedWidthDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer )
+      : QgsDataDefinedValueDialog( symbolList, layer, tr( "Width" ) )
     {
-      init( tr( "Symbol width" ) );
+      init( QgsSymbolLayer::PropertyStrokeWidth );
     }
 
   protected:
-    QgsDataDefined symbolDataDefined( const QgsSymbol * symbol ) const override;
+    QgsProperty symbolDataDefined( const QgsSymbol *symbol ) const override;
 
-    double value( const QgsSymbol * symbol ) const override { return static_cast<const QgsLineSymbol*>( symbol )->width(); }
+    double value( const QgsSymbol *symbol ) const override { return static_cast<const QgsLineSymbol *>( symbol )->width(); }
 
-    void setDataDefined( QgsSymbol* symbol, const QgsDataDefined& dd ) override;
+    void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) override;
 };
 
 

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 import shutil
-from processing.tools.system import isWindows, isMac, userFolder, mkdir
+from processing.tools.system import isWindows, userFolder, mkdir
 from os import path
 
 
@@ -41,7 +41,7 @@ def rliPath():
 def removeConfigFile(alg):
     """ Remove the r.li user dir config file """
     configPath = alg.getParameterValue('config')
-    if isWindow():
+    if isWindows():
         command = "DEL {}".format(configPath)
     else:
         command = "rm {}".format(configPath)
@@ -85,7 +85,7 @@ def configFile(alg, outputTxt=False):
     if configTxt.value:
         # Creates a temporary txt file in user r.li directory
         tempConfig = alg.getTempFilename()
-        configFilePath = path.join(userGrass7, tempConfig)
+        configFilePath = path.join(userGrass7Path, tempConfig)
         # Inject rules into temporary txt file
         with open(configFilePath, "w") as f:
             f.write(configTxt.value)

@@ -19,6 +19,7 @@
 #include <QString>
 
 #include "qgsattributeforminterface.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * This class helps to support legacy open form scripts to be compatible with the new
@@ -28,7 +29,7 @@
 class GUI_EXPORT QgsAttributeFormLegacyInterface : public QgsAttributeFormInterface
 {
   public:
-    explicit QgsAttributeFormLegacyInterface( const QString& function, const QString& pyFormName, QgsAttributeForm* form );
+    explicit QgsAttributeFormLegacyInterface( const QString &function, const QString &pyFormName, QgsAttributeForm *form );
     ~QgsAttributeFormLegacyInterface();
 
     // QgsAttributeFormInterface interface

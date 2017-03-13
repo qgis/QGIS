@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERTEXTTABLE_H
 #define QGSCOMPOSERTEXTTABLE_H
 
+#include "qgis_core.h"
 #include "qgscomposertablev2.h"
 
 /** \ingroup core
@@ -30,8 +31,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
     Q_OBJECT
 
   public:
-    QgsComposerTextTableV2( QgsComposition* c, bool createUndoCommands );
-    ~QgsComposerTextTableV2();
+    QgsComposerTextTableV2( QgsComposition *c, bool createUndoCommands );
 
     /** Adds a row to the table
      * @param row list of strings to use for each cell's value in the newly added row
@@ -40,20 +40,20 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
      * of columns in the table then these extra strings will be ignored.
      * @note if adding many rows, @link setContents @endlink is much faster
      */
-    void addRow( const QStringList& row );
+    void addRow( const QStringList &row );
 
     /** Sets the contents of the text table.
      * @param contents list of table rows
      * @see addRow
      */
-    void setContents( const QList< QStringList >& contents );
+    void setContents( const QList< QStringList > &contents );
 
     bool getTableContents( QgsComposerTableContents &contents ) override;
 
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
+    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) override;
 
   private:
-    /** One stringlist per row*/
+    //! One stringlist per row
     QList< QStringList > mRowText;
 };
 

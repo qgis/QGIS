@@ -22,20 +22,20 @@
 
 #include "qgswfsdatasourceuri.h"
 
-/** Abstract base class for a WFS request. */
+//! Abstract base class for a WFS request.
 class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QString& theUri );
+    explicit QgsWfsRequest( const QString &uri );
 
     virtual ~QgsWfsRequest();
 
-    /** \brief proceed to sending a GET request */
-    bool sendGET( const QUrl& url, bool synchronous, bool forceRefresh = false, bool cache = true );
+    //! \brief proceed to sending a GET request
+    bool sendGET( const QUrl &url, bool synchronous, bool forceRefresh = false, bool cache = true );
 
-    /** \brief proceed to sending a synchronous POST request */
-    bool sendPOST( const QUrl& url, const QString& contentTypeHeader, const QByteArray& data );
+    //! \brief proceed to sending a synchronous POST request
+    bool sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data );
 
     enum ErrorCode { NoError,
                      NetworkError,
@@ -43,59 +43,59 @@ class QgsWfsRequest : public QObject
                      XmlError,
                      ServerExceptionError,
                      WFSVersionNotSupported
-                 };
+                   };
 
-    /** \brief Return error code (after download/post) */
+    //! \brief Return error code (after download/post)
     ErrorCode errorCode() const { return mErrorCode; }
 
-    /** \brief Return error message (after download/post) */
-    const QString& errorMessage() const { return mErrorMessage; }
+    //! \brief Return error message (after download/post)
+    QString errorMessage() const { return mErrorMessage; }
 
-    /** \brief Return server response (after download/post) */
-    const QByteArray& response() const { return mResponse; }
+    //! \brief Return server response (after download/post)
+    QByteArray response() const { return mResponse; }
 
   public slots:
-    /** Abort network request immediately */
+    //! Abort network request immediately
     void abort();
 
   signals:
-    /** \brief emit a signal when data arrives */
+    //! \brief emit a signal when data arrives
     void downloadProgress( qint64, qint64 );
 
-    /** \brief emit a signal once the download is finished */
+    //! \brief emit a signal once the download is finished
     void downloadFinished();
 
   protected slots:
     void replyProgress( qint64, qint64 );
     void replyFinished();
-    void requestTimedOut( QNetworkReply* reply );
+    void requestTimedOut( QNetworkReply *reply );
 
   protected:
-    /** URI */
+    //! URI
     QgsWFSDataSourceURI mUri;
 
-    /** The reply to the request */
-    QNetworkReply *mReply;
+    //! The reply to the request
+    QNetworkReply *mReply = nullptr;
 
-    /** The error message associated with the last error. */
+    //! The error message associated with the last error.
     QString mErrorMessage;
 
-    /** Error code */
+    //! Error code
     ErrorCode mErrorCode;
 
-    /** Raw response */
+    //! Raw response
     QByteArray mResponse;
 
-    /** Whether the request is aborted. */
+    //! Whether the request is aborted.
     bool mIsAborted;
 
-    /** Whether to force refresh (i.e. issue a network request and not use cache) */
+    //! Whether to force refresh (i.e. issue a network request and not use cache)
     bool mForceRefresh;
 
-    /** Whether the request has timed-out */
+    //! Whether the request has timed-out
     bool mTimedout;
 
-    /** Whether we already received bytes */
+    //! Whether we already received bytes
     bool mGotNonEmptyResponse;
 
   protected:
@@ -105,9 +105,9 @@ class QgsWfsRequest : public QObject
 
     /** Return (translated) error message, composed with a
         (possibly translated, but sometimes coming from server) reason  */
-    virtual QString errorMessageWithReason( const QString& reason ) = 0;
+    virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
-    /** Return experiation delay in second */
+    //! Return experiation delay in second
     virtual int defaultExpirationInSec() { return 0; }
 
   private:

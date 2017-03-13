@@ -19,9 +19,10 @@
 
 #include "ui_qgsnewvectorlayerdialogbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 #include "qgis.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsNewVectorLayerDialog
@@ -34,19 +35,19 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     // run the dialog, create the layer.
     // @return fileName on success, empty string use aborted, QString::null if creation failed
-    static QString runAndCreateLayer( QWidget* parent = nullptr, QString* enc = nullptr );
+    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr );
 
     QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
-    /** Returns the selected geometry type*/
+    //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
-    /** Appends the chosen attribute names and types to at*/
-    void attributes( QList< QPair<QString, QString> >& at ) const;
-    /** Returns the file format for storage*/
+    //! Appends the chosen attribute names and types to at
+    void attributes( QList< QPair<QString, QString> > &at ) const;
+    //! Returns the file format for storage
     QString selectedFileFormat() const;
-    /** Returns the file format for storage*/
+    //! Returns the file format for storage
     QString selectedFileEncoding() const;
-    /** Returns the selected crs id*/
+    //! Returns the selected crs id
     int selectedCrsId() const;
 
   protected slots:
@@ -54,12 +55,12 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void on_mRemoveAttributeButton_clicked();
     void on_mFileFormatComboBox_currentIndexChanged( int index );
     void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void nameChanged( const QString& );
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#creating-a-new-shapefile-layer" ) ); }
+    void nameChanged( const QString & );
     void selectionChanged();
 
   private:
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
 };
 
 #endif //qgsnewvectorlayerdialog_H

@@ -15,21 +15,21 @@
 
 #include "qgskeyvaluewidget.h"
 
-QgsKeyValueWidget::QgsKeyValueWidget( QWidget* parent )
-    : QgsTableWidgetBase( parent )
-    , mModel( this )
+QgsKeyValueWidget::QgsKeyValueWidget( QWidget *parent )
+  : QgsTableWidgetBase( parent )
+  , mModel( this )
 {
   init( &mModel );
 }
 
-void QgsKeyValueWidget::setMap( const QVariantMap& map )
+void QgsKeyValueWidget::setMap( const QVariantMap &map )
 {
   removeButton->setEnabled( false );
   mModel.setMap( map );
 }
 
 ///@cond PRIVATE
-void QgsKeyValueModel::setMap( const QVariantMap& map )
+void QgsKeyValueModel::setMap( const QVariantMap &map )
 {
   emit beginResetModel();
   mLines.clear();
@@ -54,17 +54,17 @@ QVariantMap QgsKeyValueModel::map() const
 }
 
 QgsKeyValueModel::QgsKeyValueModel( QObject *parent ) :
-    QAbstractTableModel( parent )
+  QAbstractTableModel( parent )
 {
 }
 
-int QgsKeyValueModel::rowCount( const QModelIndex& parent ) const
+int QgsKeyValueModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return mLines.count();
 }
 
-int QgsKeyValueModel::columnCount( const QModelIndex & parent ) const
+int QgsKeyValueModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return 2;
@@ -79,7 +79,7 @@ QVariant QgsKeyValueModel::headerData( int section, Qt::Orientation orientation,
   return QVariant();
 }
 
-QVariant QgsKeyValueModel::data( const QModelIndex& index, int role ) const
+QVariant QgsKeyValueModel::data( const QModelIndex &index, int role ) const
 {
   if ( index.row() < 0 ||
        index.row() >= mLines.count() ||
@@ -94,7 +94,7 @@ QVariant QgsKeyValueModel::data( const QModelIndex& index, int role ) const
   return QVariant();
 }
 
-bool QgsKeyValueModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsKeyValueModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( index.row() < 0 || index.row() >= mLines.count() || role != Qt::EditRole )
   {
@@ -117,13 +117,13 @@ Qt::ItemFlags QgsKeyValueModel::flags( const QModelIndex &index ) const
   return QAbstractTableModel::flags( index ) | Qt::ItemIsEditable;
 }
 
-bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex & parent )
+bool QgsKeyValueModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
   beginInsertRows( QModelIndex(), position, position + rows - 1 );
   for ( int i = 0; i < rows; ++i )
   {
-    mLines.insert( position, Line( "", QVariant() ) );
+    mLines.insert( position, Line( QLatin1String( "" ), QVariant() ) );
   }
   endInsertRows();
   return true;

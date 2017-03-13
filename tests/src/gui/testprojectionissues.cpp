@@ -17,12 +17,12 @@
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include "qgstestutils.h"
 
 class TestProjectionIssues : public QObject
@@ -30,8 +30,8 @@ class TestProjectionIssues : public QObject
     Q_OBJECT
   public:
     TestProjectionIssues()
-        : mRasterLayer( 0 )
-        , mMapCanvas( 0 )
+      : mRasterLayer( 0 )
+      , mMapCanvas( 0 )
     {}
 
   private slots:
@@ -40,11 +40,10 @@ class TestProjectionIssues : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void issue5895();// test for #5895
-    void issue15183();// test for #15183
 
   private:
-    QgsRasterLayer* mRasterLayer;
-    QgsMapCanvas*   mMapCanvas;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsMapCanvas   *mMapCanvas = nullptr;
 };
 
 void TestProjectionIssues::initTestCase()
@@ -53,7 +52,7 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   // Set to WGS84
@@ -61,29 +60,28 @@ void TestProjectionIssues::initTestCase()
   sourceCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
   mRasterLayer->setCrs( sourceCRS, false );
 
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   QList<QgsMapLayer *> mapLayers;
   mapLayers.append( mRasterLayer );
-  QgsMapLayerRegistry::instance()->addMapLayers( mapLayers );
+  QgsProject::instance()->addMapLayers( mapLayers );
 
   // Add all layers in registry to the canvas
-  QList<QgsMapCanvasLayer> canvasLayers;
-  Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
+  QList<QgsMapLayer *> canvasLayers;
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
   {
-    canvasLayers.append( QgsMapCanvasLayer( layer ) );
+    canvasLayers.append( layer );
   }
 
   // create canvas
   mMapCanvas = new QgsMapCanvas();
-  mMapCanvas->setLayerSet( canvasLayers );
+  mMapCanvas->setLayers( canvasLayers );
 
   //reproject to SWEDREF 99 TM
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromId( 3006, QgsCoordinateReferenceSystem::EpsgCrsId );
   mMapCanvas->setDestinationCrs( destCRS );
-  mMapCanvas->setCrsTransformEnabled( true );
 
 }
 
@@ -111,28 +109,5 @@ void TestProjectionIssues::issue5895()
   mMapCanvas->zoomByFactor( 2.0 ); // Zoom out. This should exceed the transform limits.
 }
 
-void TestProjectionIssues::issue15183()
-{
-  QgsRectangle largeExtent( -610861, 5101721, 2523921, 6795055 );
-  mMapCanvas->setExtent( largeExtent );
-
-  // Set to CRS's
-  QgsCoordinateReferenceSystem sourceCRS;
-  sourceCRS = mMapCanvas->mapSettings().destinationCrs();
-  QgsCoordinateReferenceSystem targetCRS;
-  targetCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-
-  QgsCoordinateTransform ct( sourceCRS, targetCRS );
-  QgsRectangle initialExtent = ct.transformBoundingBox( mMapCanvas->extent() );
-
-  mMapCanvas->setCrsTransformEnabled( false );
-  mMapCanvas->setDestinationCrs( targetCRS );
-
-  QgsRectangle currentExtent = mMapCanvas->extent();
-
-  // Compare center
-  QGSCOMPARENEARPOINT( initialExtent.center(), currentExtent.center(), 0.00001 );
-}
-
-QTEST_MAIN( TestProjectionIssues )
+QGSTEST_MAIN( TestProjectionIssues )
 #include "testprojectionissues.moc"

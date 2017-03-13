@@ -29,35 +29,30 @@ QgsSentDataSourceBuilder::QgsSentDataSourceBuilder()
 
 }
 
-QgsSentDataSourceBuilder::~QgsSentDataSourceBuilder()
-{
-
-}
-
-QgsMapLayer* QgsSentDataSourceBuilder::createMapLayer( const QDomElement& elem,
-    const QString& layerName,
-    QList<QTemporaryFile*>& filesToRemove,
-    QList<QgsMapLayer*>& layersToRemove,
+QgsMapLayer *QgsSentDataSourceBuilder::createMapLayer( const QDomElement &elem,
+    const QString &layerName,
+    QList<QTemporaryFile *> &filesToRemove,
+    QList<QgsMapLayer *> &layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( layerName );
   Q_UNUSED( allowCaching );
-  if ( elem.tagName() == "SentRDS" )
+  if ( elem.tagName() == QLatin1String( "SentRDS" ) )
   {
     return rasterLayerFromSentRDS( elem, filesToRemove, layersToRemove );
   }
-  else if ( elem.tagName() == "SentVDS" )
+  else if ( elem.tagName() == QLatin1String( "SentVDS" ) )
   {
     return vectorLayerFromSentVDS( elem, filesToRemove, layersToRemove );
   }
   return nullptr;
 }
 
-QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElement& sentVDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
+QgsVectorLayer *QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElement &sentVDSElem, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove ) const
 {
-  if ( sentVDSElem.attribute( "format" ) == "GML" )
+  if ( sentVDSElem.attribute( QStringLiteral( "format" ) ) == QLatin1String( "GML" ) )
   {
-    QTemporaryFile* tmpFile = new QTemporaryFile();
+    QTemporaryFile *tmpFile = new QTemporaryFile();
     if ( tmpFile->open() )
     {
       filesToRemove.push_back( tmpFile ); //make sure the temporary file gets deleted after each request
@@ -70,26 +65,26 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
       return nullptr;
     }
 
-    QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), "WFS" );
-    if ( !theVectorLayer || !theVectorLayer->isValid() )
+    QgsVectorLayer *vectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), QStringLiteral( "WFS" ) );
+    if ( !vectorLayer || !vectorLayer->isValid() )
     {
       QgsDebugMsg( "invalid maplayer" );
       return nullptr;
     }
     QgsDebugMsg( "returning maplayer" );
 
-    layersToRemove.push_back( theVectorLayer ); //make sure the layer gets deleted after each request
+    layersToRemove.push_back( vectorLayer ); //make sure the layer gets deleted after each request
 
-    if ( !theVectorLayer || !theVectorLayer->isValid() )
+    if ( !vectorLayer || !vectorLayer->isValid() )
     {
       return nullptr;
     }
-    return theVectorLayer;
+    return vectorLayer;
   }
   return nullptr;
 }
 
-QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElement& sentRDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
+QgsRasterLayer *QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElement &sentRDSElem, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove ) const
 {
   QgsDebugMsg( "Entering" );
   QString tempFilePath = createTempFile();
@@ -99,11 +94,11 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
   }
   QFile tempFile( tempFilePath );
 
-  QTemporaryFile* tmpFile = new QTemporaryFile();
+  QTemporaryFile *tmpFile = new QTemporaryFile();
 
-  QString encoding = sentRDSElem.attribute( "encoding" );
+  QString encoding = sentRDSElem.attribute( QStringLiteral( "encoding" ) );
 
-  if ( encoding == "base64" )
+  if ( encoding == QLatin1String( "base64" ) )
   {
     if ( tmpFile->open() )
     {
@@ -135,7 +130,7 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
   QgsDebugMsg( "TempFilePath is: " + tempFilePath );
   tmpFile->close();
 
-  QgsRasterLayer* rl = new QgsRasterLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ) );
+  QgsRasterLayer *rl = new QgsRasterLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ) );
   filesToRemove.push_back( tmpFile ); //make sure the temporary file gets deleted after each request
   layersToRemove.push_back( rl ); //make sure the layer gets deleted after each request
   return rl;

@@ -16,6 +16,7 @@
 #ifndef QGSDATETIMESTATISTICALSUMMARY_H
 #define QGSDATETIMESTATISTICALSUMMARY_H
 
+#include "qgis_core.h"
 #include "qgis.h"
 #include "qgsinterval.h"
 #include <QSet>
@@ -60,20 +61,20 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /** Constructor for QgsDateTimeStatisticalSummary
      * @param stats flags for statistics to calculate
      */
-    QgsDateTimeStatisticalSummary( const QgsDateTimeStatisticalSummary::Statistics& stats = All );
+    QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 
     /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @see setStatistics
      */
     Statistics statistics() const { return mStatistics; }
 
     /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (eg count).
+     * are always calculated (e.g., count).
      * @param stats flags for statistics to calculate
      * @see statistics
      */
-    void setStatistics( const Statistics& stats ) { mStatistics = stats; }
+    void setStatistics( Statistics stats ) { mStatistics = stats; }
 
     /** Resets the calculated values
      */
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * @param values list of variants
      * @see addValue()
      */
-    void calculate( const QVariantList& values );
+    void calculate( const QVariantList &values );
 
     /** Adds a single datetime to the statistics calculation. Calling this method
      * allows datetimes to be added to the calculation one at a time. For large
@@ -98,7 +99,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
      * @see calculate()
      * @see finalize()
      */
-    void addValue( const QVariant& value );
+    void addValue( const QVariant &value );
 
     /** Must be called after adding all datetimes with addValue() and before retrieving
      * any calculated datetime statistics.
@@ -154,8 +155,9 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     int mCountMissing;
     QDateTime mMin;
     QDateTime mMax;
+    bool mIsTimes;
 
-    void testDateTime( const QDateTime& dateTime );
+    void testDateTime( const QDateTime &dateTime );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDateTimeStatisticalSummary::Statistics )

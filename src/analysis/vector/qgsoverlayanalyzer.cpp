@@ -19,7 +19,7 @@
 
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -30,9 +30,9 @@
 #include "qgsdistancearea.h"
 #include <QProgressDialog>
 
-bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-                                       const QString& shapefileName, bool onlySelectedFeatures,
-                                       QProgressDialog* p )
+bool QgsOverlayAnalyzer::intersection( QgsVectorLayer *layerA, QgsVectorLayer *layerB,
+                                       const QString &shapefileName, bool onlySelectedFeatures,
+                                       QProgressDialog *p )
 {
   if ( !layerA || !layerB )
   {
@@ -54,31 +54,25 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 
   QgsVectorFileWriter vWriter( shapefileName, dpA->encoding(), fieldsA, outputType, crs );
   QgsFeature currentFeature;
-  QgsSpatialIndex index;
 
   //take only selection
   if ( onlySelectedFeatures )
   {
-    const QgsFeatureIds selectionB = layerB->selectedFeaturesIds();
-    QgsFeatureIds::const_iterator it = selectionB.constBegin();
-    for ( ; it != selectionB.constEnd(); ++it )
-    {
-      if ( !layerB->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
-      {
-        continue;
-      }
-      index.insertFeature( currentFeature );
-    }
+    QgsFeatureIds selectionB = layerB->selectedFeatureIds();
+    QgsFeatureRequest req = QgsFeatureRequest().setFilterFids( selectionB ).setSubsetOfAttributes( QgsAttributeList() );
+    QgsSpatialIndex index = QgsSpatialIndex( layerB->getFeatures( req ) );
+
     //use QgsVectorLayer::featureAtId
-    const QgsFeatureIds selectionA = layerA->selectedFeaturesIds();
+    const QgsFeatureIds selectionA = layerA->selectedFeatureIds();
     if ( p )
     {
       p->setMaximum( selectionA.size() );
     }
+    req = QgsFeatureRequest().setFilterFids( selectionA );
+    QgsFeatureIterator selectionAIt = layerA->getFeatures( req );
     QgsFeature currentFeature;
     int processedFeatures = 0;
-    it = selectionA.constBegin();
-    for ( ; it != selectionA.constEnd(); ++it )
+    while ( selectionAIt.nextFeature( currentFeature ) )
     {
       if ( p )
       {
@@ -89,10 +83,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
       {
         break;
       }
-      if ( !layerA->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( currentFeature ) )
-      {
-        continue;
-      }
+
       intersectFeature( currentFeature, &vWriter, layerB, &index );
       ++processedFeatures;
     }
@@ -105,11 +96,8 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   //take all features
   else
   {
-    QgsFeatureIterator fit = layerB->getFeatures();
-    while ( fit.nextFeature( currentFeature ) )
-    {
-      index.insertFeature( currentFeature );
-    }
+    QgsFeatureRequest req = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() );
+    QgsSpatialIndex index = QgsSpatialIndex( layerB->getFeatures( req ) );
 
     int featureCount = layerA->featureCount();
     if ( p )
@@ -118,7 +106,7 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
     }
     int processedFeatures = 0;
 
-    fit = layerA->getFeatures();
+    QgsFeatureIterator fit = layerA->getFeatures();
 
     QgsFeature currentFeature;
     while ( fit.nextFeature( currentFeature ) )
@@ -142,8 +130,8 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   return true;
 }
 
-void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw,
-    QgsVectorLayer* vl, QgsSpatialIndex* index )
+void QgsOverlayAnalyzer::intersectFeature( QgsFeature &f, QgsVectorFileWriter *vfw,
+    QgsVectorLayer *vl, QgsSpatialIndex *index )
 {
   if ( !f.hasGeometry() )
   {
@@ -154,17 +142,12 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   QgsGeometry intersectGeometry;
   QgsFeature overlayFeature;
 
-  QList<QgsFeatureId> intersects;
-  intersects = index->intersects( featureGeometry.boundingBox() );
-  QList<QgsFeatureId>::const_iterator it = intersects.constBegin();
+  QList<QgsFeatureId> intersects = index->intersects( featureGeometry.boundingBox() );
+  QgsFeatureRequest req = QgsFeatureRequest().setFilterFids( intersects.toSet() );
+  QgsFeatureIterator intersectIt = vl->getFeatures( req );
   QgsFeature outFeature;
-  for ( ; it != intersects.constEnd(); ++it )
+  while ( intersectIt.nextFeature( overlayFeature ) )
   {
-    if ( !vl->getFeatures( QgsFeatureRequest().setFilterFid( *it ) ).nextFeature( overlayFeature ) )
-    {
-      continue;
-    }
-
     if ( featureGeometry.intersects( overlayFeature.geometry() ) )
     {
       intersectGeometry = featureGeometry.intersection( overlayFeature.geometry() );
@@ -184,10 +167,10 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 }
 
-void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFields& fieldListB )
+void QgsOverlayAnalyzer::combineFieldLists( QgsFields &fieldListA, const QgsFields &fieldListB )
 {
   QList<QString> names;
-  Q_FOREACH ( const QgsField& field, fieldListA )
+  Q_FOREACH ( const QgsField &field, fieldListA )
     names.append( field.name() );
 
   for ( int idx = 0; idx < fieldListB.count(); ++idx )
@@ -196,7 +179,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
     int count = 0;
     while ( names.contains( field.name() ) )
     {
-      QString name = QString( "%1_%2" ).arg( field.name() ).arg( count );
+      QString name = QStringLiteral( "%1_%2" ).arg( field.name() ).arg( count );
       field = QgsField( name, field.type() );
       ++count;
     }
@@ -205,7 +188,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
   }
 }
 
-void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributes& attributesA, const QgsAttributes& attributesB )
+void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributes &attributesA, const QgsAttributes &attributesB )
 {
   attributesA += attributesB;
 }

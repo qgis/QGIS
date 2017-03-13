@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgslistwidgetfactory.h>
 #include <qgslistwidget.h>
@@ -38,17 +38,17 @@ class TestQgsListWidget : public QObject
 
     void testStringUpdate()
     {
-      const QgsListWidgetFactory factory( "testList" );
-      QgsVectorLayer vl( "Point?field=fld:string[]", "test", "memory" );
-      QgsEditorWidgetWrapper* wrapper = factory.create( &vl, 0, nullptr, nullptr );
+      const QgsListWidgetFactory factory( QStringLiteral( "testList" ) );
+      QgsVectorLayer vl( QStringLiteral( "Point?field=fld:string[]" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
       QVERIFY( wrapper );
-      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant& ) ) );
+      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsListWidget* widget = qobject_cast< QgsListWidget* >( wrapper->widget() );
+      QgsListWidget *widget = qobject_cast< QgsListWidget * >( wrapper->widget() );
       QVERIFY( widget );
 
       QStringList initial;
-      initial << "one" << "two";
+      initial << QStringLiteral( "one" ) << QStringLiteral( "two" );
       wrapper->setValue( initial );
 
       const QVariant value = wrapper->value();
@@ -56,13 +56,13 @@ class TestQgsListWidget : public QObject
       QCOMPARE( value.toStringList(), initial );
       QCOMPARE( spy.count(), 0 );
 
-      QAbstractItemModel* model = widget->tableView->model();
+      QAbstractItemModel *model = widget->tableView->model();
       model->setData( model->index( 0, 0 ), "hello" );
       QCOMPARE( spy.count(), 1 );
       QVERIFY( widget->valid() );
 
       QStringList expected = initial;
-      expected[0] = "hello";
+      expected[0] = QStringLiteral( "hello" );
       QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
       QCOMPARE( int( eventValue.type() ), int( QVariant::StringList ) );
       QCOMPARE( eventValue.toStringList(), expected );
@@ -73,13 +73,13 @@ class TestQgsListWidget : public QObject
 
     void testIntUpdate()
     {
-      const QgsListWidgetFactory factory( "testList" );
-      QgsVectorLayer vl( "Point?field=fld:int[]", "test", "memory" );
-      QgsEditorWidgetWrapper* wrapper = factory.create( &vl, 0, nullptr, nullptr );
+      const QgsListWidgetFactory factory( QStringLiteral( "testList" ) );
+      QgsVectorLayer vl( QStringLiteral( "Point?field=fld:int[]" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
       QVERIFY( wrapper );
-      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant& ) ) );
+      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsListWidget* widget = qobject_cast< QgsListWidget* >( wrapper->widget() );
+      QgsListWidget *widget = qobject_cast< QgsListWidget * >( wrapper->widget() );
       QVERIFY( widget );
 
       QVariantList initial;
@@ -91,7 +91,7 @@ class TestQgsListWidget : public QObject
       QCOMPARE( value.toList(), initial );
       QCOMPARE( spy.count(), 0 );
 
-      QAbstractItemModel* model = widget->tableView->model();
+      QAbstractItemModel *model = widget->tableView->model();
       model->setData( model->index( 0, 0 ), 3 );
       QCOMPARE( spy.count(), 1 );
 
@@ -122,5 +122,5 @@ class TestQgsListWidget : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsListWidget )
+QGSTEST_MAIN( TestQgsListWidget )
 #include "testqgslistwidget.moc"

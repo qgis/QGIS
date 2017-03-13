@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -57,7 +58,7 @@ class sieve(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Sieve')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.THRESHOLD,
                                           self.tr('Threshold'), 0, 9999, 2))
@@ -71,7 +72,7 @@ class sieve(GdalAlgorithm):
 
         arguments = []
         arguments.append('-st')
-        arguments.append(unicode(self.getParameterValue(self.THRESHOLD)))
+        arguments.append(str(self.getParameterValue(self.THRESHOLD)))
 
         arguments.append('-' +
                          self.PIXEL_CONNECTIONS[self.getParameterValue(

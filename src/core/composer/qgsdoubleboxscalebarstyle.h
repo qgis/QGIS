@@ -17,6 +17,7 @@
 #ifndef QGSDOUBLEBOXSCALEBARSTYLE_H
 #define QGSDOUBLEBOXSCALEBARSTYLE_H
 
+#include "qgis_core.h"
 #include "qgsscalebarstyle.h"
 
 /** \ingroup core
@@ -25,12 +26,11 @@
 class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle
 {
   public:
-    QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
-    ~QgsDoubleBoxScaleBarStyle();
+    QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar *bar );
 
     QString name() const override;
 
-    void draw( QPainter* p, double xOffset = 0 ) const override;
+    void draw( QPainter *p, double xOffset = 0 ) const override;
 
   private:
     QgsDoubleBoxScaleBarStyle(); //forbidden

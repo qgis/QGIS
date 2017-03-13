@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QFile>
 #include <QNetworkReply>
+#include "qgis_analysis.h"
 
 class QgsRectangle;
 
@@ -45,18 +46,18 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     static QString defaultServiceUrl();
 
     //! Create query (in Overpass Query Language) that fetches everything in given rectangle
-    static QString queryFromRect( const QgsRectangle& rect );
+    static QString queryFromRect( const QgsRectangle &rect );
 
     QgsOSMDownload();
     ~QgsOSMDownload();
 
-    void setServiceUrl( const QString& serviceUrl ) { mServiceUrl = serviceUrl; }
+    void setServiceUrl( const QString &serviceUrl ) { mServiceUrl = serviceUrl; }
     QString serviceUrl() const { return mServiceUrl; }
 
-    void setQuery( const QString& query ) { mQuery = query; }
+    void setQuery( const QString &query ) { mQuery = query; }
     QString query() const { return mQuery; }
 
-    void setOutputFileName( const QString& outputFileName ) { mFile.setFileName( outputFileName ); }
+    void setOutputFileName( const QString &outputFileName ) { mFile.setFileName( outputFileName ); }
     QString outputFileName() const { return mFile.fileName(); }
 
     bool hasError() const { return !mError.isNull(); }
@@ -82,8 +83,8 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     bool isFinished() const;
 
   signals:
-    void finished(); //!< emitted when the network reply has finished (with success or with an error)
-    void downloadProgress( qint64, qint64 ); //!< normally the total length is not known (until we reach end)
+    void finished(); //!< Emitted when the network reply has finished (with success or with an error)
+    void downloadProgress( qint64, qint64 ); //!< Normally the total length is not known (until we reach end)
 
   private slots:
     void onReadyRead();
@@ -95,7 +96,7 @@ class ANALYSIS_EXPORT QgsOSMDownload : public QObject
     QString mQuery;
     QString mError;
 
-    QNetworkReply* mReply;
+    QNetworkReply *mReply = nullptr;
     QFile mFile;
 };
 

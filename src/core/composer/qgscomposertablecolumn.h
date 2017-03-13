@@ -23,6 +23,8 @@
 #include <QDomElement>
 #include <QColor>
 
+#include "qgis_core.h"
+
 /** \ingroup core
  * Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
 are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
@@ -36,9 +38,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Constructor for QgsComposerTableColumn.
      * @param heading column heading
      */
-    QgsComposerTableColumn( const QString& heading = QString() );
-
-    virtual ~QgsComposerTableColumn();
+    QgsComposerTableColumn( const QString &heading = QString() );
 
     /** Writes the column's properties to xml for storage.
      * @param columnElem an existing QDomElement in which to store the column's properties.
@@ -46,14 +46,14 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.3
      * @see readXml
      */
-    virtual bool writeXml( QDomElement& columnElem, QDomDocument & doc ) const;
+    virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 
     /** Reads the column's properties from xml.
      * @param columnElem a QDomElement holding the column's desired properties.
      * @note added in 2.3
      * @see writeXml
      */
-    virtual bool readXml( const QDomElement& columnElem );
+    virtual bool readXml( const QDomElement &columnElem );
 
     /** Returns the width for a column.
      * @returns column width in mm, or 0 if column width is automatically calculated.
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note added in 2.3
      * @see heading
      */
-    void setHeading( const QString& heading ) { mHeading = heading; }
+    void setHeading( const QString &heading ) { mHeading = heading; }
 
     /** Returns the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
      */
-    void setAttribute( const QString& attribute ) { mAttribute = attribute; }
+    void setAttribute( const QString &attribute ) { mAttribute = attribute; }
 
     /** Returns the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
@@ -191,11 +191,11 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @returns a new QgsComposerTableColumn with same properties as this column.
      * @note added in 2.3
      */
-    QgsComposerTableColumn* clone();
+    QgsComposerTableColumn *clone();
 
   private:
 
-    QColor mBackgroundColor; //curently unused
+    QColor mBackgroundColor; //currently unused
     Qt::AlignmentFlag mHAlignment;
     Qt::AlignmentFlag mVAlignment;
     QString mHeading;

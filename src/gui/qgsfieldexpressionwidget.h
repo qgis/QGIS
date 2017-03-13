@@ -16,16 +16,17 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QSharedPointer>
 #include <QWidget>
 #include <QToolButton>
 #include <QComboBox>
 #include <QColor>
+#include <memory>
 
 #include "qgsdistancearea.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgis_gui.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -47,19 +48,20 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
 
   public:
+
     /**
      * @brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
     explicit QgsFieldExpressionWidget( QWidget *parent = nullptr );
 
     //! define the title used in the expression dialog
-    void setExpressionDialogTitle( const QString& title );
+    void setExpressionDialogTitle( const QString &title );
 
     //! return the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
     //! setFilters allows fitering according to the type of field
-    void setFilters( const QgsFieldProxyModel::Filters& filters );
+    void setFilters( QgsFieldProxyModel::Filters filters );
 
     void setLeftHandButtonStyle( bool isLeft );
 
@@ -110,8 +112,11 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     QString expression() const;
 
-    //! Returns the currently used layer
-    QgsVectorLayer* layer() const;
+    /**
+     * Returns the layer currently associated with the widget.
+     * @see setLayer()
+     */
+    QgsVectorLayer *layer() const;
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -120,23 +125,24 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *                  create an expression context when required.
      * @note added in QGIS 3.0
      */
-    void registerExpressionContextGenerator( const QgsExpressionContextGenerator* generator );
+    void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
   signals:
     //! the signal is emitted when the currently selected field changes
-    void fieldChanged( const QString& fieldName );
+    void fieldChanged( const QString &fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
-    void fieldChanged( const QString& fieldName, bool isValid );
+    void fieldChanged( const QString &fieldName, bool isValid );
 
 //    void returnPressed();
 
   public slots:
-    //! set the layer used to display the fields and expression
-    void setLayer( QgsVectorLayer* layer );
 
-    //! convenience slot to connect QgsMapLayerComboBox layer signal
-    void setLayer( QgsMapLayer* layer );
+    /**
+     * Sets the layer used to display the fields and expression.
+     * @see layer()
+     */
+    void setLayer( QgsMapLayer *layer );
 
     //! sets the current row in the widget
     void setRow( int row ) { mCombo->setCurrentIndex( row ); }
@@ -150,14 +156,14 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *
      * @note Added in QGIS 3.0
      */
-    void setExpression( const QString& expression );
+    void setExpression( const QString &expression );
 
   protected slots:
     //! open the expression dialog to edit the current or add a new expression
     void editExpression();
 
     //! when expression is edited by the user in the line edit, it will be checked for validity
-    void expressionEdited( const QString& expression );
+    void expressionEdited( const QString &expression );
 
     //! when expression has been edited (finished) it will be added to the model
     void expressionEditingFinished();
@@ -169,12 +175,12 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * @param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */
-    void updateLineEditStyle( const QString& expression = QString() );
+    void updateLineEditStyle( const QString &expression = QString() );
 
-    bool isExpressionValid( const QString& expressionStr );
+    bool isExpressionValid( const QString &expressionStr );
 
   protected:
-    void changeEvent( QEvent* event ) override;
+    void changeEvent( QEvent *event ) override;
 
   private slots:
     void reloadLayer();
@@ -183,13 +189,13 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void afterResetModel();
 
   private:
-    QComboBox* mCombo;
-    QToolButton* mButton;
-    QgsFieldProxyModel* mFieldProxyModel;
+    QComboBox *mCombo = nullptr;
+    QToolButton *mButton = nullptr;
+    QgsFieldProxyModel *mFieldProxyModel = nullptr;
     QString mExpressionDialogTitle;
-    QSharedPointer<const QgsDistanceArea> mDa;
+    std::shared_ptr<const QgsDistanceArea> mDa;
     QgsExpressionContext mExpressionContext;
-    const QgsExpressionContextGenerator* mExpressionContextGenerator;
+    const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
 
     friend class TestQgsFieldExpressionWidget;

@@ -27,43 +27,43 @@
 class QgsWFSUtils
 {
   public:
-    /** Return the name of temporary directory. */
+    //! Return the name of temporary directory.
     static QString acquireCacheDirectory();
 
-    /** To be called when a temporary file is removed from the directory */
+    //! To be called when a temporary file is removed from the directory
     static void releaseCacheDirectory();
 
-    /** Initial cleanup. */
+    //! Initial cleanup.
     static void init();
 
-    /** Removes a possible namespace prefix from a typename*/
-    static QString removeNamespacePrefix( const QString& tname );
-    /** Returns namespace prefix (or an empty string if there is no prefix)*/
-    static QString nameSpacePrefix( const QString& tname );
+    //! Removes a possible namespace prefix from a typename
+    static QString removeNamespacePrefix( const QString &tname );
+    //! Returns namespace prefix (or an empty string if there is no prefix)
+    static QString nameSpacePrefix( const QString &tname );
 
-    /** Return a unique identifier made from feature content */
-    static QString getMD5( const QgsFeature& f );
+    //! Return a unique identifier made from feature content
+    static QString getMD5( const QgsFeature &f );
 
   protected:
     friend class QgsWFSUtilsKeepAlive;
-    static QSharedMemory* createAndAttachSHM();
+    static QSharedMemory *createAndAttachSHM();
 
   private:
-    static QMutex gmMutex;
-    static QThread* gmThread;
-    static bool gmKeepAliveWorks;
-    static int gmCounter;
+    static QMutex sMutex;
+    static QThread *sThread;
+    static bool sKeepAliveWorks;
+    static int sCounter;
 
-    /** Return the name of temporary directory. */
+    //! Return the name of temporary directory.
     static QString getCacheDirectory( bool createIfNotExisting );
 
     static QString getBaseCacheDirectory( bool createIfNotExisting );
 
-    /** Remove (recursively) a directory. */
+    //! Remove (recursively) a directory.
     static bool removeDir( const QString &dirName );
 };
 
-/** For internal use of QgsWFSUtils */
+//! For internal use of QgsWFSUtils
 class QgsWFSUtilsKeepAlive: public QThread
 {
     Q_OBJECT
@@ -75,7 +75,7 @@ class QgsWFSUtilsKeepAlive: public QThread
   private slots:
     void updateTimestamp();
   private:
-    QSharedMemory* mSharedMemory;
+    QSharedMemory *mSharedMemory = nullptr;
 };
 
 #endif // QGSWFSUTILS_H

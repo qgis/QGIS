@@ -25,21 +25,21 @@
 class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
+    explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p );
     ~QgsDelimitedTextFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    QgsExpression *mSubsetExpression;
+    QgsExpression *mSubsetExpression = nullptr;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
-    QgsSpatialIndex *mSpatialIndex;
+    QgsSpatialIndex *mSpatialIndex = nullptr;
     bool mUseSubsetIndex;
     QList<quintptr> mSubsetIndex;
-    QgsDelimitedTextFile *mFile;
+    QgsDelimitedTextFile *mFile = nullptr;
     QgsFields mFields;
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -64,30 +64,26 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
       FeatureIds
     };
   public:
-    QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsDelimitedTextFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
-    bool wantGeometry( const QgsPoint & point ) const;
-    bool wantGeometry( const QgsGeometry& geom ) const;
+    bool wantGeometry( const QgsPoint &point ) const;
+    bool wantGeometry( const QgsGeometry &geom ) const;
 
   protected:
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
 
     bool setNextFeatureId( qint64 fid );
 
-    bool nextFeatureInternal( QgsFeature& feature );
-    QgsGeometry loadGeometryWkt( const QStringList& tokens, bool &isNull );
-    QgsGeometry loadGeometryXY( const QStringList& tokens, bool &isNull );
-    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
+    bool nextFeatureInternal( QgsFeature &feature );
+    QgsGeometry loadGeometryWkt( const QStringList &tokens, bool &isNull );
+    QgsGeometry loadGeometryXY( const QStringList &tokens, bool &isNull );
+    void fetchAttribute( QgsFeature &feature, int fieldIdx, const QStringList &tokens );
 
     QList<QgsFeatureId> mFeatureIds;
     IteratorMode mMode;

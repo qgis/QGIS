@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>251</width>
-    <height>23</height>
+    <width>249</width>
+    <height>37</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,26 +17,44 @@
    <property name="spacing">
     <number>2</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
     <widget class="QgsDoubleSpinBox" name="spnValue">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="decimals">
       <number>6</number>
      </property>
      <property name="minimum">
-      <double>-99999999.999999001622200</double>
+      <double>-9999999999999.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>99999999.999999001622200</double>
+      <double>9999999999999.000000000000000</double>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QToolButton" name="btnCalc">
-     <property name="toolTip">
-      <string>Open number input dialog</string>
+    <widget class="QToolButton" name="btnSelect">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
       <string>...</string>

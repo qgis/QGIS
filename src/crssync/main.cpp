@@ -36,13 +36,15 @@ void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
   }
 }
 
-int main( int argc, char ** argv )
+int main( int argc, char **argv )
 {
-  QgsApplication a( argc, argv, false );
+  QCoreApplication app( argc, argv );
+
+  QgsApplication::init();
 
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
-    char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     QgsApplication::setPrefixPath( prefixPath ? prefixPath : CMAKE_INSTALL_PREFIX, TRUE );
   }
 
@@ -50,7 +52,7 @@ int main( int argc, char ** argv )
 
   CPLPushErrorHandler( showError );
 
-  int res = QgsCoordinateReferenceSystem::syncDb();
+  int res = QgsCoordinateReferenceSystem::syncDatabase();
 
   CPLPopErrorHandler();
 

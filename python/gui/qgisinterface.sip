@@ -24,12 +24,35 @@ class QgisInterface : QObject
     /** Virtual destructor */
     virtual ~QgisInterface();
 
-    /** Get pointer to legend interface */
-    virtual QgsLegendInterface* legendInterface() = 0;
-
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView* layerTreeView() = 0;
+
+    /** Add action to context menu for layers in the layer tree.
+     * If allLayers is true, then the action will be available for all layers of given type,
+     * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
+     * after this call.
+     *
+     * If menu argument is not empty, the action will be also added to a menu within the main window,
+     * creating menu with the given name if it does not exist yet.
+     *
+     * @see removeCustomActionForLayerType()
+     * @see addCustomActionForLayer()
+     */
+    virtual void addCustomActionForLayerType( QAction* action, QString menu,
+                                              QgsMapLayer::LayerType type, bool allLayers ) = 0;
+
+    /** Add action to context menu for a specific layer in the layer tree.
+     * It is necessary to first call addCustomActionForLayerType() with allLayers=false
+     * in order for this method to have any effect.
+     * @see addCustomActionForLayerType()
+     */
+    virtual void addCustomActionForLayer( QAction* action, QgsMapLayer* layer ) = 0;
+
+    /** Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
+     * @see addCustomActionForLayerType()
+     */
+    virtual bool removeCustomActionForLayerType( QAction* action ) = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -57,9 +80,9 @@ class QgisInterface : QObject
     virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
 
     //! Add a project
-    virtual bool addProject( const QString& theProject ) = 0;
+    virtual bool addProject( const QString& project ) = 0;
     //! Start a blank project
-    virtual void newProject( bool thePromptToSaveFlag = false ) = 0;
+    virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
@@ -79,7 +102,7 @@ class QgisInterface : QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction* addToolBarWidget( QWidget* widget /Transfer/ ) = 0;
 
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
@@ -92,7 +115,7 @@ class QgisInterface : QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addRasterToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction* addRasterToolBarWidget( QWidget* widget /Transfer/ ) = 0;
 
     //! Add an icon to the Raster toolbar
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
@@ -111,7 +134,7 @@ class QgisInterface : QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addVectorToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction* addVectorToolBarWidget( QWidget* widget /Transfer/ ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
@@ -127,7 +150,7 @@ class QgisInterface : QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addDatabaseToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction* addDatabaseToolBarWidget( QWidget* widget /Transfer/ ) = 0;
 
     //! Remove an action (icon) from the Database toolbar
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
@@ -143,7 +166,7 @@ class QgisInterface : QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addWebToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction* addWebToolBarWidget( QWidget* widget /Transfer/ ) = 0;
 
     //! Remove an action (icon) from the Web toolbar
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
@@ -191,7 +214,7 @@ class QgisInterface : QObject
      * @param composerView pointer to existing composer view
      * @param title window title for duplicated composer (one will be generated if empty)
      * @return pointer to duplicate composer's view
-     * @note dupicate composer window will be hidden until loaded, then shown and activated
+     * @note duplicate composer window will be hidden until loaded, then shown and activated
      */
     virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) = 0;
 
@@ -381,8 +404,6 @@ class QgisInterface : QObject
     // View menu actions
     //! Get access to the native pan action. Call trigger() on it to set the default pan map tool.
     virtual QAction *actionPan() = 0;
-    //! Get access to the native touch action.
-    virtual QAction *actionTouch() = 0;
     //! Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
     virtual QAction *actionPanToSelected() = 0;
     //! Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.
@@ -460,6 +481,11 @@ class QgisInterface : QObject
     virtual QAction *actionHideAllLayers() = 0;
     virtual QAction *actionShowAllLayers() = 0;
     virtual QAction *actionHideSelectedLayers() = 0;
+    /**
+     * Returns the Hide Deselected Layers action.
+     * @note added in QGIS 3.0
+     */
+    virtual QAction *actionHideDeselectedLayers() = 0;
     virtual QAction *actionShowSelectedLayers() = 0;
 
     // Plugin menu actions
@@ -507,8 +533,8 @@ class QgisInterface : QObject
     virtual QgsVectorLayerTools* vectorLayerTools() = 0;
 
     /** This method is only needed when using a UI form with a custom widget plugin and calling
-     * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
-     * Python will crash bringing QGIS wtih it
+     * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
+     * Python will crash bringing QGIS with it
      * if the custom form is not loaded from a C++ method call.
      *
      * This method uses a QTimer to call QUiLoader in order to load the form via C++

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -49,9 +49,9 @@ class OgrSql(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
 
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterTable(self.INPUT, self.tr('Input layer or table')))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL'), ''))
 
         self.addParameter(ParameterSelection(

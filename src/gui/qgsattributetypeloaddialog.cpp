@@ -21,7 +21,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
 #include <QTableWidgetItem>
@@ -37,8 +37,8 @@
 #include <QFileDialog>
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
-    : QDialog()
-    , mLayer( vl )
+  : QDialog()
+  , mLayer( vl )
 {
   setupUi( this );
 
@@ -51,11 +51,6 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
 
   keyComboBox->setDisabled( true );
   valueComboBox->setDisabled( true );
-}
-
-QgsAttributeTypeLoadDialog::~QgsAttributeTypeLoadDialog()
-{
-
 }
 
 void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
@@ -72,7 +67,7 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->blockSignals( true );
   layerComboBox->clear();
-  Q_FOREACH ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  Q_FOREACH ( QgsMapLayer *l, QgsProject::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )
@@ -91,7 +86,7 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   keyComboBox->clear();
   valueComboBox->clear();
 
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? nullptr : QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? nullptr : QgsProject::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
   if ( vLayer )
   {
     QMap<QString, int> fieldMap = vLayer->dataProvider()->fieldNameMap();
@@ -126,10 +121,10 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     //when nothing is selected there is no reason for preview
     return;
   }
-  int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
-  int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
+  int idx = keyComboBox->currentData().toInt();
+  int idx2 = valueComboBox->currentData().toInt();
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
 
@@ -175,10 +170,10 @@ bool QgsAttributeTypeLoadDialog::insertNull()
 void QgsAttributeTypeLoadDialog::loadDataToValueMap()
 {
   mValueMap.clear();
-  int idx = keyComboBox->itemData( keyComboBox->currentIndex() ).toInt();
-  int idx2 = valueComboBox->itemData( valueComboBox->currentIndex() ).toInt();
-  QgsMapLayer* dataLayer = QgsMapLayerRegistry::instance()->mapLayer( layerComboBox->itemData( layerComboBox->currentIndex() ).toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
+  int idx = keyComboBox->currentData().toInt();
+  int idx2 = valueComboBox->currentData().toInt();
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
 

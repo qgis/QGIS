@@ -13,7 +13,7 @@
                                                                                                                                                                 
   <gml:featureMember>
     <ogr:clip_polys_by_multipolygon fid="polys.0">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
       <ogr:floatval>44.123456</ogr:floatval>
@@ -21,7 +21,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_polys_by_multipolygon fid="polys.5">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,1 2,2 3,2 4.0,1.666666666666667 4,1 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>2,1 2,2 3,2 4.0,1.666666666666667 4,1 2,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>3.33</ogr:floatval>
@@ -29,7 +29,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:clip_polys_by_multipolygon fid="polys.3">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,1 8,1 8,0 7,0 7,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,1 8,1 8,0 7,0 7,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
     </ogr:clip_polys_by_multipolygon>

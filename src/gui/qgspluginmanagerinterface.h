@@ -21,6 +21,7 @@
 #include <QString>
 #include <QMap>
 #include "qgsmessagebar.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsPluginManagerInterface
@@ -34,26 +35,23 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
     //! Constructor
     QgsPluginManagerInterface();
 
-    //! Virtual destructor
-    virtual ~QgsPluginManagerInterface();
-
     //! remove python plugins from the metadata registry (c++ plugins stay)
     virtual void clearPythonPluginMetadata() = 0;
 
     //! add a single plugin to the metadata registry
-    virtual void addPluginMetadata( const QMap<QString, QString>& metadata ) = 0;
+    virtual void addPluginMetadata( const QMap<QString, QString> &metadata ) = 0;
 
     //! refresh plugin list model (and metadata browser content if necessary)
     virtual void reloadModel() = 0;
 
     //! return given plugin metadata
-    virtual const QMap<QString, QString> * pluginMetadata( const QString& key ) const = 0;
+    virtual const QMap<QString, QString> *pluginMetadata( const QString &key ) const = 0;
 
     //! clear the repository listWidget
     virtual void clearRepositoryList() = 0;
 
     //! add repository to the repository listWidget
-    virtual void addToRepositoryList( const QMap<QString, QString>& repository ) = 0;
+    virtual void addToRepositoryList( const QMap<QString, QString> &repository ) = 0;
 
     //! show the Plugin Manager window and optionally open tab tabIndex
     virtual void showPluginManager( int tabIndex = -1 ) = 0;

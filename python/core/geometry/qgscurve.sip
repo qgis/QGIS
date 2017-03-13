@@ -10,7 +10,7 @@ class QgsCurve: public QgsAbstractGeometry
     virtual bool operator==( const QgsCurve& other ) const = 0;
     virtual bool operator!=( const QgsCurve& other ) const = 0;
 
-    virtual QgsCurve* clone() const = 0;
+    virtual QgsCurve* clone() const = 0 /Factory/;
 
     /** Returns the starting point of the curve.
      * @see endPoint
@@ -35,7 +35,7 @@ class QgsCurve: public QgsAbstractGeometry
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve
      */
-    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
+    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
 
     /** Adds a curve to a painter path.
      */
@@ -54,8 +54,7 @@ class QgsCurve: public QgsAbstractGeometry
      */
     virtual int numPoints() const = 0;
 
-    /** Calculates the area of the curve. Derived classes should override this
-     * to return the correct area of the curve.
+    /** Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
     virtual void sumUpArea( double& sum ) const = 0;
 

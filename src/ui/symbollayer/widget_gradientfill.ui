@@ -72,7 +72,7 @@
     </layout>
    </item>
    <item row="5" column="2">
-    <widget class="QgsDataDefinedButton" name="mSpreadDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mSpreadDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -150,27 +150,29 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
-     <item>
-      <widget class="QgsColorRampComboBox" name="cboGradientColorRamp"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mButtonEditRamp">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsColorRampButton" name="btnColorRamp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="8" column="2" rowspan="2">
-    <widget class="QgsDataDefinedButton" name="mRefPoint1YDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRefPoint1YDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -255,14 +257,14 @@
     </layout>
    </item>
    <item row="17" column="2">
-    <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mAngleDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
-    <widget class="QgsDataDefinedButton" name="mCoordinateModeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mCoordinateModeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -299,7 +301,7 @@
     </layout>
    </item>
    <item row="3" column="2">
-    <widget class="QgsDataDefinedButton" name="mGradientTypeDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mGradientTypeDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -313,21 +315,21 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mStartColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="13" column="2" rowspan="2">
-    <widget class="QgsDataDefinedButton" name="mRefPoint2YDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRefPoint2YDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="15" column="2">
-    <widget class="QgsDataDefinedButton" name="mRefPoint2CentroidDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRefPoint2CentroidDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -430,14 +432,14 @@
     </widget>
    </item>
    <item row="10" column="2">
-    <widget class="QgsDataDefinedButton" name="mRefPoint1CentroidDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRefPoint1CentroidDDBtn">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mEndColorDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -481,7 +483,7 @@
     </layout>
    </item>
    <item row="6" column="2" rowspan="2">
-    <widget class="QgsDataDefinedButton" name="mRefPoint1XDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRefPoint1XDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -495,7 +497,7 @@
     </widget>
    </item>
    <item row="12" column="2">
-    <widget class="QgsDataDefinedButton" name="mRefPoint2XDDBtn">
+    <widget class="QgsPropertyOverrideButton" name="mRefPoint2XDDBtn">
      <property name="text">
       <string>...</string>
      </property>
@@ -545,9 +547,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDataDefinedButton</class>
+   <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -560,19 +568,13 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
   <tabstop>btnChangeColor</tabstop>
   <tabstop>btnChangeColor2</tabstop>
   <tabstop>radioColorRamp</tabstop>
-  <tabstop>cboGradientColorRamp</tabstop>
-  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>cboGradientType</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
   <tabstop>cboGradientSpread</tabstop>
@@ -623,7 +625,7 @@
   <connection>
    <sender>radioColorRamp</sender>
    <signal>toggled(bool)</signal>
-   <receiver>cboGradientColorRamp</receiver>
+   <receiver>btnColorRamp</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

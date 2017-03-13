@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -79,8 +81,8 @@ class FixedTableDialog(BASE, WIDGET):
         model.setHorizontalHeaderLabels(self.param.cols)
 
         # Populate table
-        for i in xrange(rows):
-            for j in xrange(cols):
+        for i in range(rows):
+            for j in range(cols):
                 item = QStandardItem(table[i][j])
                 model.setItem(i, j, item)
         self.tblView.setModel(model)
@@ -89,10 +91,10 @@ class FixedTableDialog(BASE, WIDGET):
         cols = self.tblView.model().columnCount()
         rows = self.tblView.model().rowCount()
         self.rettable = []
-        for i in xrange(rows):
+        for i in range(rows):
             self.rettable.append(list())
-            for j in xrange(cols):
-                self.rettable[i].append(unicode(self.tblView.model().item(i, j).text()))
+            for j in range(cols):
+                self.rettable[i].append(str(self.tblView.model().item(i, j).text()))
         QDialog.accept(self)
 
     def reject(self):
@@ -110,5 +112,5 @@ class FixedTableDialog(BASE, WIDGET):
             self.tblView.setUpdatesEnabled(True)
 
     def addRow(self):
-        items = [QStandardItem('0') for i in xrange(self.tblView.model().columnCount())]
+        items = [QStandardItem('0') for i in range(self.tblView.model().columnCount())]
         self.tblView.model().appendRow(items)

@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QListWidget>
 #include <QLineEdit>
+#include "qgis_gui.h"
 class QCheckBox;
 
 class QgsCheckboxWidgetFactory;
@@ -42,7 +43,7 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
      * @param fieldIdx index of associated field
      * @param parent parent widget
      */
-    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     /** Returns a variant representing the current state of the widget.
      * @note this will not be a boolean true or false value, it will instead
@@ -64,8 +65,8 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   protected slots:
     void setExpression( QString exp ) override;
@@ -74,8 +75,8 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void stateChanged( int state );
 
   private:
-    QCheckBox* mCheckBox;
-    QgsVectorLayer* mLayer;
+    QCheckBox *mCheckBox = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsCheckboxWidgetFactory;
 };

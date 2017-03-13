@@ -30,6 +30,7 @@
 #ifndef LABELPOSITION_H
 #define LABELPOSITION_H
 
+#include "qgis_core.h"
 #include "pointset.h"
 #include "rtree.hpp"
 #include <fstream>
@@ -90,8 +91,8 @@ namespace pal
                      double alpha, double cost,
                      FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
-      /** Copy constructor */
-      LabelPosition( const LabelPosition& other );
+      //! Copy constructor
+      LabelPosition( const LabelPosition &other );
 
       ~LabelPosition() { delete nextPart; }
 
@@ -124,28 +125,28 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      /** Return bounding box - amin: xmin,ymin - amax: xmax,ymax */
+      //! Return bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
-      /** Get distance from this label to a point. If point lies inside, returns negative number. */
+      //! Get distance from this label to a point. If point lies inside, returns negative number.
       double getDistanceToPoint( double xp, double yp ) const;
 
-      /** Returns true if this label crosses the specified line */
-      bool crossesLine( PointSet* line ) const;
+      //! Returns true if this label crosses the specified line
+      bool crossesLine( PointSet *line ) const;
 
-      /** Returns true if this label crosses the boundary of the specified polygon */
-      bool crossesBoundary( PointSet* polygon ) const;
+      //! Returns true if this label crosses the boundary of the specified polygon
+      bool crossesBoundary( PointSet *polygon ) const;
 
       /** Returns cost of position intersection with polygon (testing area of intersection and center).
        * Cost ranges between 0 and 12, with extra cost if center of label position is covered.
        */
-      int polygonIntersectionCost( PointSet* polygon ) const;
+      int polygonIntersectionCost( PointSet *polygon ) const;
 
       /** Returns true if if any intersection between polygon and position exists.
       */
-      bool intersectsWithPolygon( PointSet* polygon ) const;
+      bool intersectsWithPolygon( PointSet *polygon ) const;
 
-      /** Shift the label by specified offset */
+      //! Shift the label by specified offset
       void offsetPosition( double xOffset, double yOffset );
 
       /** \brief return id
@@ -157,12 +158,13 @@ namespace pal
       /** \brief return the feature corresponding to this labelposition
        * \return the feature
        */
-      FeaturePart * getFeaturePart();
+      FeaturePart *getFeaturePart();
 
       int getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
 
       int getProblemFeatureId() const { return probFeat; }
+
       /** Set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
       void setProblemIds( int probFid, int lpId )
@@ -195,7 +197,7 @@ namespace pal
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
-      /** Make sure the cost is less than 1 */
+      //! Make sure the cost is less than 1
       void validateCost();
 
       /**
@@ -203,6 +205,7 @@ namespace pal
        * \return x coordinate
        */
       double getX( int i = 0 ) const;
+
       /**
        * \brief get the down-left y coordinate
        * \return y coordinate
@@ -221,8 +224,8 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition* getNextPart() const { return nextPart; }
-      void setNextPart( LabelPosition* next ) { nextPart = next; }
+      LabelPosition *getNextPart() const { return nextPart; }
+      void setNextPart( LabelPosition *next ) { nextPart = next; }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -234,25 +237,25 @@ namespace pal
       //! Returns the number of upside down characters for this label position
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
-      void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );
-      void insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index );
+      void removeFromIndex( RTree<LabelPosition *, double, 2, double> *index );
+      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index );
 
       typedef struct
       {
-        Pal* pal;
-        FeaturePart *obstacle;
+        Pal *pal = nullptr;
+        FeaturePart *obstacle = nullptr;
       } PruneCtx;
 
-      /** Check whether the candidate in ctx overlap with obstacle feat */
+      //! Check whether the candidate in ctx overlap with obstacle feat
       static bool pruneCallback( LabelPosition *candidatePosition, void *ctx );
 
       // for counting number of overlaps
       typedef struct
       {
-        LabelPosition *lp;
-        int *nbOv;
-        double *cost;
-        double *inactiveCost;
+        LabelPosition *lp = nullptr;
+        int *nbOv = nullptr;
+        double *cost = nullptr;
+        double *inactiveCost = nullptr;
         //int *feat;
       } CountContext;
 
@@ -272,7 +275,7 @@ namespace pal
 
       int id;
 
-      FeaturePart *feature;
+      FeaturePart *feature = nullptr;
 
       // bug # 1 (maxence 10/23/2008)
       int probFeat;
@@ -283,7 +286,7 @@ namespace pal
       double w;
       double h;
 
-      LabelPosition* nextPart;
+      LabelPosition *nextPart = nullptr;
       int partId;
 
       //True if label direction is the same as line / polygon ring direction.
@@ -295,8 +298,8 @@ namespace pal
 
       LabelPosition::Quadrant quadrant;
 
-      bool isInConflictSinglePart( LabelPosition* lp );
-      bool isInConflictMultiPart( LabelPosition* lp );
+      bool isInConflictSinglePart( LabelPosition *lp );
+      bool isInConflictMultiPart( LabelPosition *lp );
 
     private:
       double mCost;
@@ -310,7 +313,7 @@ namespace pal
       /** Calculates the polygon intersection cost for a single label position part
        * @returns double between 0 - 12
        */
-      double polygonIntersectionCostForParts( PointSet* polygon ) const;
+      double polygonIntersectionCostForParts( PointSet *polygon ) const;
 
   };
 

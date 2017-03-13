@@ -18,7 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsrectangle.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 class TestQgsCoordinateTransform: public QObject
 {
@@ -206,5 +206,5 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QVERIFY( qgsDoubleNear( resultRect.yMaximum(), expectedRect.yMaximum(), 0.001 ) );
 }
 
-QTEST_MAIN( TestQgsCoordinateTransform )
+QGSTEST_MAIN( TestQgsCoordinateTransform )
 #include "testqgscoordinatetransform.moc"

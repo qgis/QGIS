@@ -19,6 +19,7 @@
 #include <QWidget>
 
 #include "qgsmaptooledit.h"
+#include "qgis_app.h"
 
 class QgsDoubleSpinBox;
 class QHBoxLayout;
@@ -31,7 +32,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
   public:
 
-    explicit QgsAngleMagnetWidget( const QString& label = QString(), QWidget *parent = nullptr );
+    explicit QgsAngleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     ~QgsAngleMagnetWidget();
 
@@ -55,23 +56,23 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
     void angleSpinBoxValueChanged( double angle );
 
   private:
-    QHBoxLayout* mLayout;
-    QgsDoubleSpinBox* mAngleSpinBox;
-    QgsSpinBox* mMagnetSpinBox;
+    QHBoxLayout *mLayout = nullptr;
+    QgsDoubleSpinBox *mAngleSpinBox = nullptr;
+    QgsSpinBox *mMagnetSpinBox = nullptr;
 };
 
 
-/** Map tool to rotate features */
+//! Map tool to rotate features
 class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    QgsMapToolRotateFeature( QgsMapCanvas* canvas );
+    QgsMapToolRotateFeature( QgsMapCanvas *canvas );
     virtual ~QgsMapToolRotateFeature();
 
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -91,25 +92,25 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void createRotationWidget();
     void deleteRotationWidget();
 
-    /** Start point of the move in map coordinates*/
+    //! Start point of the move in map coordinates
     QgsPoint mStartPointMapCoords;
     QPointF mInitialPos;
 
-    /** Rubberband that shows the feature being moved*/
-    QgsRubberBand* mRubberBand;
+    //! Rubberband that shows the feature being moved
+    QgsRubberBand *mRubberBand = nullptr;
 
-    /** Id of moved feature*/
+    //! Id of moved feature
     QgsFeatureIds mRotatedFeatures;
     double mRotation;
     double mRotationOffset;
 
     QPoint mStPoint;
-    QgsVertexMarker* mAnchorPoint;
+    QgsVertexMarker *mAnchorPoint = nullptr;
 
     bool mRotationActive;
 
-    /** Shows current angle value and allows numerical editing*/
-    QgsAngleMagnetWidget* mRotationWidget;
+    //! Shows current angle value and allows numerical editing
+    QgsAngleMagnetWidget *mRotationWidget = nullptr;
 };
 
 #endif

@@ -22,8 +22,9 @@
 #include <QObject>
 #include <QPair>
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsfeature.h"
+#include "qgis_grass_lib.h"
 
 extern "C"
 {
@@ -54,24 +55,24 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     bool isValid() const { return mValid; }
     QgsGrassVectorMap *map() { return mMap; }
 
-    /** Category index index */
+    //! Category index index
     int cidxFieldIndex();
 
-    /** Current number of cats in cat index, changing during editing */
+    //! Current number of cats in cat index, changing during editing
     int cidxFieldNumCats();
 
     /** Original fields before editing started + topo field if edited.
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields() */
-    QgsFields & fields() { return mFields; }
+    QgsFields &fields() { return mFields; }
 
     /** Current fields, as modified during editing, it contains cat field, without topo field.
      *  This fields are used by layers which are not editied to reflect current state of editing. */
-    QgsFields & tableFields() { return mTableFields; }
+    QgsFields &tableFields() { return mTableFields; }
 
-    static QStringList fieldNames( QgsFields & fields );
+    static QStringList fieldNames( QgsFields &fields );
 
-    QMap<int, QList<QVariant> > & attributes() { return mAttributes; }
+    QMap<int, QList<QVariant> > &attributes() { return mAttributes; }
 
     /** Get attribute for index corresponding to current fields(),
      * if there is no table, returns cat */
@@ -86,13 +87,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void addUser();
     void removeUser();
 
-    /** Load attributes from the map. Old sources are released. */
+    //! Load attributes from the map. Old sources are released.
     void load();
 
-    /** Clear all cached data */
+    //! Clear all cached data
     void clear();
 
-    /** Decrease number of users and clear if no more users */
+    //! Decrease number of users and clear if no more users
     void close();
 
     void startEdit();
@@ -108,7 +109,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     /** Update attributes
      *   @param cat
      *   @param index ields  index */
-    void changeAttributeValue( int cat, QgsField field, QVariant value, QString &error );
+    void changeAttributeValue( int cat, const QgsField &field, const QVariant &value, QString &error );
 
     /** Insert new attributes to the table (it does not check if attributes already exists)
      *   @param cat */
@@ -156,7 +157,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     void deleteColumn( const QgsField &field, QString &error );
 
-    /** Insert records for all existing categories to the table */
+    //! Insert records for all existing categories to the table
     void insertCats( QString &error );
 
     // update fields to real state
@@ -166,14 +167,14 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     void printCachedAttributes();
 
   private:
-    QString quotedValue( QVariant value );
-    dbDriver * openDriver( QString &error );
+    QString quotedValue( const QVariant &value );
+    dbDriver *openDriver( QString &error );
     void addTopoField( QgsFields &fields );
     int mField;
     bool mValid;
-    QgsGrassVectorMap *mMap;
+    QgsGrassVectorMap *mMap = nullptr;
     struct field_info *mFieldInfo;
-    dbDriver *mDriver;
+    dbDriver *mDriver = nullptr;
 
     bool mHasTable;
     // index of key column

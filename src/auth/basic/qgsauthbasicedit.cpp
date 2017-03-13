@@ -19,8 +19,8 @@
 
 
 QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
 }
@@ -43,9 +43,9 @@ bool QgsAuthBasicEdit::validateConfig()
 QgsStringMap QgsAuthBasicEdit::configMap() const
 {
   QgsStringMap config;
-  config.insert( "username", leUsername->text() );
-  config.insert( "password", lePassword->text() );
-  config.insert( "realm", leRealm->text() );
+  config.insert( QStringLiteral( "username" ), leUsername->text() );
+  config.insert( QStringLiteral( "password" ), lePassword->text() );
+  config.insert( QStringLiteral( "realm" ), leRealm->text() );
 
   return config;
 }
@@ -55,9 +55,9 @@ void QgsAuthBasicEdit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  leUsername->setText( configmap.value( "username" ) );
-  lePassword->setText( configmap.value( "password" ) );
-  leRealm->setText( configmap.value( "realm" ) );
+  leUsername->setText( configmap.value( QStringLiteral( "username" ) ) );
+  lePassword->setText( configmap.value( QStringLiteral( "password" ) ) );
+  leRealm->setText( configmap.value( QStringLiteral( "realm" ) ) );
 
   validateConfig();
 }
@@ -83,5 +83,5 @@ void QgsAuthBasicEdit::on_leUsername_textChanged( const QString &txt )
 
 void QgsAuthBasicEdit::on_chkPasswordShow_stateChanged( int state )
 {
-  lePassword->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  lePassword->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }

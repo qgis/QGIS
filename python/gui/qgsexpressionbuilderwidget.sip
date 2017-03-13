@@ -36,16 +36,16 @@ class QgsExpressionItem : QStandardItem
       */
     void setHelpText( const QString& helpText );
 
-    /** Get the type of expression item eg header, field, ExpressionNode.
+    /** Get the type of expression item, e.g., header, field, ExpressionNode.
       *
       * @return The QgsExpressionItem::ItemType
       */
     QgsExpressionItem::ItemType getItemType() const;
 
     //! Custom sort order role
-    static const int CustomSortRole;
+    static const int CUSTOM_SORT_ROLE;
     //! Item type role
-    static const int ItemTypeRole;
+    static const int ITEM_TYPE_ROLE;
 };
 
 /** Search proxy used to filter the QgsExpressionBuilderWidget tree.
@@ -70,7 +70,7 @@ class QgsExpressionItemSearchProxy : QSortFilterProxyModel
 
 
 /** A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for exmaple of usage.
+  * See QgsExpressionBuilderDialog for example of usage.
   */
 class QgsExpressionBuilderWidget : QWidget
 {

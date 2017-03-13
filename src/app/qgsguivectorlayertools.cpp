@@ -17,24 +17,26 @@
 #include <QToolButton>
 
 #include "qgsguivectorlayertools.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmessagebar.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsmessageviewer.h"
 #include "qgsfeatureaction.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsmessageviewer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
-    : QObject( nullptr )
+  : QgsVectorLayerTools()
 {}
 
-bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttributeMap& defaultValues, const QgsGeometry& defaultGeometry, QgsFeature* feat ) const
+bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat ) const
 {
-  QgsFeature* f = feat;
+  QgsFeature *f = feat;
   if ( !feat )
     f = new QgsFeature();
 
@@ -47,7 +49,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer* layer, const QgsAttribu
   return added;
 }
 
-bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
+bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
 {
   if ( !layer )
   {
@@ -72,7 +74,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
   return res;
 }
 
-bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
+bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer *layer ) const
 {
   bool res = true;
 
@@ -95,8 +97,7 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   return res;
 }
 
-
-bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel ) const
+bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCancel ) const
 {
   bool res = true;
 
@@ -158,13 +159,13 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCance
   return res;
 }
 
-void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
+void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  " ) )
+                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) )
                            );
 
   QToolButton *showMore = new QToolButton();
@@ -172,13 +173,13 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer* vlayer ) const
   QAction *act = new QAction( showMore );
   act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
   act->setText( tr( "Show more" ) );
-  showMore->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+  showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
   showMore->setCursor( Qt::PointingHandCursor );
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );
   showMore->setDefaultAction( act );
-  connect( showMore, SIGNAL( triggered( QAction* ) ), mv, SLOT( exec() ) );
-  connect( showMore, SIGNAL( triggered( QAction* ) ), showMore, SLOT( deleteLater() ) );
+  connect( showMore, SIGNAL( triggered( QAction * ) ), mv, SLOT( exec() ) );
+  connect( showMore, SIGNAL( triggered( QAction * ) ), showMore, SLOT( deleteLater() ) );
 
   // no timeout set, since notice needs attention and is only shown first time layer is labeled
   QgsMessageBarItem *errorMsg = new QgsMessageBarItem(

@@ -25,24 +25,24 @@
 #include "qgslogger.h"
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-    : QDateTimeEdit( parent )
-    , mAllowNull( true )
-    , mIsNull( true )
-    , mIsEmpty( false )
+  : QDateTimeEdit( parent )
+  , mAllowNull( true )
+  , mIsNull( true )
+  , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
-  mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
+  mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearText.svg" ) ) );
   mClearButton->setCursor( Qt::ArrowCursor );
-  mClearButton->setStyleSheet( "position: absolute; border: none; padding: 0px;" );
+  mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
   mClearButton->hide();
   connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
 
-  mNullLabel = new QLineEdit( QSettings().value( "qgis/nullValue", "NULL" ).toString(), this );
+  mNullLabel = new QLineEdit( QgsApplication::nullRepresentation(), this );
   mNullLabel->setReadOnly( true );
-  mNullLabel->setStyleSheet( "position: absolute; border: none; font-style: italic; color: grey;" );
+  mNullLabel->setStyleSheet( QStringLiteral( "position: absolute; border: none; font-style: italic; color: grey;" ) );
   mNullLabel->hide();
 
-  setStyleSheet( QString( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
+  setStyleSheet( QStringLiteral( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
@@ -58,9 +58,9 @@ void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
 
-  mNullLabel->setVisible(( mAllowNull && mIsNull ) && !mIsEmpty );
+  mNullLabel->setVisible( ( mAllowNull && mIsNull ) && !mIsEmpty );
   mClearButton->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
-  lineEdit()->setVisible(( !mAllowNull || !mIsNull ) && !mIsEmpty );
+  lineEdit()->setVisible( ( !mAllowNull || !mIsNull ) && !mIsEmpty );
 }
 
 
@@ -77,7 +77,7 @@ void QgsDateTimeEdit::setEmpty()
   mClearButton->setVisible( mAllowNull );
 }
 
-void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
+void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
   QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
   if ( mAllowNull && mIsNull && lerect.contains( event->pos() ) )
@@ -86,7 +86,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
   QDateTimeEdit::mousePressEvent( event );
 }
 
-void QgsDateTimeEdit::changed( const QDateTime & dateTime )
+void QgsDateTimeEdit::changed( const QDateTime &dateTime )
 {
   mIsEmpty = false;
   mIsNull = dateTime.isNull();
@@ -105,7 +105,7 @@ int QgsDateTimeEdit::frameWidth() const
   return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
 }
 
-void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
+void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
 {
   mIsEmpty = false;
 
@@ -134,7 +134,7 @@ QDateTime QgsDateTimeEdit::dateTime() const
   }
 }
 
-void QgsDateTimeEdit::resizeEvent( QResizeEvent * event )
+void QgsDateTimeEdit::resizeEvent( QResizeEvent *event )
 {
   QDateTimeEdit::resizeEvent( event );
 

@@ -21,9 +21,11 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #ifndef QGSCONTRASTENHANCEMENT_H
 #define QGSCONTRASTENHANCEMENT_H
 
+#include "qgis_core.h"
 #include <limits>
 
 #include "qgis.h"
+#include "qgsraster.h"
 
 class QgsContrastEnhancementFunction;
 class QDomDocument;
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsContrastEnhancement
 
   public:
 
-    /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used.  */
+    //! \brief This enumerator describes the types of contrast enhancement algorithms that can be used.
     enum ContrastEnhancementAlgorithm
     {
       NoEnhancement,                  //this should be the default color scaling algorithm
@@ -50,102 +52,103 @@ class CORE_EXPORT QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
-    QgsContrastEnhancement( const QgsContrastEnhancement& ce );
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();
+
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & ) = delete;
 
     /*
      *
      * Static methods
      *
      */
-    /** \brief Helper function that returns the maximum possible value for a GDAL data type */
+    //! \brief Helper function that returns the maximum possible value for a GDAL data type
     static double maximumValuePossible( Qgis::DataType );
 
-    /** \brief Helper function that returns the minimum possible value for a GDAL data type */
+    //! \brief Helper function that returns the minimum possible value for a GDAL data type
     static double minimumValuePossible( Qgis::DataType );
+
+    //! \brief Return a string to serialize ContrastEnhancementAlgorithm
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+
+    //! \brief Deserialize ContrastEnhancementAlgorithm
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
     /*
      *
      * Non-Static Inline methods
      *
      */
-    /** \brief Return the maximum value for the contrast enhancement range. */
+    //! \brief Return the maximum value for the contrast enhancement range.
     double maximumValue() const { return mMaximumValue; }
 
-    /** \brief Return the minimum value for the contrast enhancement range. */
+    //! \brief Return the minimum value for the contrast enhancement range.
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
-
-    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
-
-    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
 
     /*
      *
      * Non-Static methods
      *
      */
-    /** \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed */
+    //! \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed
     int enhanceContrast( double );
 
-    /** \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped) */
+    //! \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped)
     bool isValueInDisplayableRange( double );
 
-    /** \brief Set the contrast enhancement algorithm */
+    //! \brief Set the contrast enhancement algorithm
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
-    /** \brief A public method that allows the user to set their own custom contrast enhancment function */
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
+    //! \brief A public method that allows the user to set their own custom contrast enhancement function
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
 
-    /** \brief Set the maximum value for the contrast enhancement range. */
+    //! \brief Set the maximum value for the contrast enhancement range.
     void setMaximumValue( double, bool generateTable = true );
 
-    /** \brief Return the minimum value for the contrast enhancement range. */
+    //! \brief Return the minimum value for the contrast enhancement range.
     void setMinimumValue( double, bool generateTable = true );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
-    /** \brief Current contrast enhancement algorithm */
+    //! \brief Current contrast enhancement algorithm
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
 
-    /** \brief Pointer to the contrast enhancement function */
-    QgsContrastEnhancementFunction* mContrastEnhancementFunction;
+    //! \brief Pointer to the contrast enhancement function
+    QgsContrastEnhancementFunction *mContrastEnhancementFunction = nullptr;
 
-    /** \brief Flag indicating if the lookup table needs to be regenerated */
+    //! \brief Flag indicating if the lookup table needs to be regenerated
     bool mEnhancementDirty;
 
-    /** \brief Scalar so that values can be used as array indicies */
+    //! \brief Scalar so that values can be used as array indices
     double mLookupTableOffset;
 
-    /** \brief Pointer to the lookup table */
-    int *mLookupTable;
+    //! \brief Pointer to the lookup table
+    int *mLookupTable = nullptr;
 
-    /** \brief User defineable minimum value for the band, used for enhanceContrasting */
+    //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;
 
-    /** \brief user defineable maximum value for the band, used for enhanceContrasting */
+    //! \brief user defineable maximum value for the band, used for enhanceContrasting
     double mMaximumValue;
 
-    /** \brief Data type of the band */
+    //! \brief Data type of the band
     Qgis::DataType mRasterDataType;
 
-    /** \brief Maximum range of values for a given data type */
+    //! \brief Maximum range of values for a given data type
     double mRasterDataTypeRange;
 
-
-
-    /** \brief Method to generate a new lookup table */
+    //! \brief Method to generate a new lookup table
     bool generateLookupTable();
 
-    /** \brief Method to calculate the actual enhanceContrasted value(s) */
+    //! \brief Method to calculate the actual enhanceContrasted value(s)
     int calculateContrastEnhancementValue( double );
 
-    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& );
 };
 
 #endif

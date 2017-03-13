@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -36,7 +36,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
+#include <qgsproject.h>
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -52,9 +52,9 @@ class TestQgsMapRendererJob : public QObject
 
   public:
     TestQgsMapRendererJob()
-        : mError( QgsVectorFileWriter::NoError )
-        , mMapSettings( 0 )
-        , mpPolysLayer( 0 )
+      : mError( QgsVectorFileWriter::NoError )
+      , mMapSettings( 0 )
+      , mpPolysLayer( 0 )
     {
     }
 
@@ -69,7 +69,7 @@ class TestQgsMapRendererJob : public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
-    /** This method tests render perfomance */
+    //! This method tests render performance
     void performanceTest();
 
     /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
@@ -83,8 +83,8 @@ class TestQgsMapRendererJob : public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mReport;
 };
 
@@ -101,12 +101,12 @@ void TestQgsMapRendererJob::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create some objects that will be used in all tests...
-  mEncoding = "UTF-8";
-  QgsField myField1( "Value", QVariant::Int, "int", 10, 0, "Value on lon" );
+  mEncoding = QStringLiteral( "UTF-8" );
+  QgsField myField1( QStringLiteral( "Value" ), QVariant::Int, QStringLiteral( "int" ), 10, 0, QStringLiteral( "Value on lon" ) );
   mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
-  // Create the test dataset if it doesnt exist
+  // Create the test dataset if it doesn't exist
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
@@ -180,13 +180,13 @@ void TestQgsMapRendererJob::initTestCase()
   //
   QFileInfo myPolyFileInfo( myFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QVERIFY( mpPolysLayer->isValid() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mMapSettings->setLayers( QStringList() << mpPolysLayer->id() );
-  mReport += "<h1>Map Render Tests</h1>\n";
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
+  mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );
 }
 
 void TestQgsMapRendererJob::cleanupTestCase()
@@ -208,11 +208,11 @@ void TestQgsMapRendererJob::performanceTest()
 {
   mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
-  myChecker.setControlName( "expected_maprender" );
+  myChecker.setControlName( QStringLiteral( "expected_maprender" ) );
   mMapSettings->setFlag( QgsMapSettings::Antialiasing );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
-  bool myResultFlag = myChecker.runTest( "maprender" );
+  bool myResultFlag = myChecker.runTest( QStringLiteral( "maprender" ) );
   mReport += myChecker.report();
   QVERIFY( myResultFlag );
 }
@@ -224,32 +224,32 @@ void TestQgsMapRendererJob::testFourAdjacentTiles_data()
   QTest::addColumn<QString>( "shapeFile" );
   QTest::addColumn<QString>( "qmlFile" );
 
-  QString shapeFile = TEST_DATA_DIR + QString( "/france_parts.shp" );
-  QString qmlFile = TEST_DATA_DIR + QString( "/adjacent_tiles/line_pattern_30_degree.qml" );
-  QString controlName = "expected_adjacent_line_fill";
+  QString shapeFile = TEST_DATA_DIR + QStringLiteral( "/france_parts.shp" );
+  QString qmlFile = TEST_DATA_DIR + QStringLiteral( "/adjacent_tiles/line_pattern_30_degree.qml" );
+  QString controlName = QStringLiteral( "expected_adjacent_line_fill" );
 
   QStringList bboxList1;
-  bboxList1 << "-1.5,48,-0.5,49";
-  bboxList1 << "-0.5,48,0.5,49";
-  bboxList1 << "-1.5,47,-0.5,48";
-  bboxList1 << "-0.5,47,0.5,48";
+  bboxList1 << QStringLiteral( "-1.5,48,-0.5,49" );
+  bboxList1 << QStringLiteral( "-0.5,48,0.5,49" );
+  bboxList1 << QStringLiteral( "-1.5,47,-0.5,48" );
+  bboxList1 << QStringLiteral( "-0.5,47,0.5,48" );
 
   QTest::newRow( "adjacent_line_fill" ) << bboxList1 << controlName << shapeFile << qmlFile;
 
-  qmlFile = TEST_DATA_DIR + QString( "/adjacent_tiles/point_pattern_simple_marker.qml" );
-  controlName = "expected_adjacent_marker_fill";
+  qmlFile = TEST_DATA_DIR + QStringLiteral( "/adjacent_tiles/point_pattern_simple_marker.qml" );
+  controlName = QStringLiteral( "expected_adjacent_marker_fill" );
 
   QTest::newRow( "adjacent_marker_fill" ) << bboxList1 << controlName << shapeFile << qmlFile;
 
-  shapeFile = TEST_DATA_DIR + QString( "/lines.shp" );
-  qmlFile = TEST_DATA_DIR + QString( "/adjacent_tiles/simple_line_dashed.qml" );
-  controlName = "expected_adjacent_dashed_line";
+  shapeFile = TEST_DATA_DIR + QStringLiteral( "/lines.shp" );
+  qmlFile = TEST_DATA_DIR + QStringLiteral( "/adjacent_tiles/simple_line_dashed.qml" );
+  controlName = QStringLiteral( "expected_adjacent_dashed_line" );
 
   QStringList bboxList2;
-  bboxList2 << "-105,35,-95,45";
-  bboxList2 << "-95,35,-85,45";
-  bboxList2 << "-105,25,-95,35";
-  bboxList2 << "-95,25,-85,35";
+  bboxList2 << QStringLiteral( "-105,35,-95,45" );
+  bboxList2 << QStringLiteral( "-95,35,-85,45" );
+  bboxList2 << QStringLiteral( "-105,25,-95,35" );
+  bboxList2 << QStringLiteral( "-95,25,-85,35" );
 
   QTest::newRow( "adjacent_dashed_line" ) << bboxList2 << controlName << shapeFile << qmlFile;
 }
@@ -264,7 +264,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   QVERIFY( bboxList.size() == 4 );
 
   //create maplayer, set QML and add to maplayer registry
-  QgsVectorLayer* vectorLayer = new QgsVectorLayer( shapeFile, "testshape", "ogr" );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( shapeFile, QStringLiteral( "testshape" ), QStringLiteral( "ogr" ) );
 
   //todo: read QML
   QFile symbologyFile( qmlFile );
@@ -285,7 +285,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QFAIL( errorMsg.toLocal8Bit().data() );
   }
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << vectorLayer );
 
   QImage globalImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   globalImage.fill( Qt::white );
@@ -296,7 +296,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsMapSettings mapSettings;
 
     //extent
-    QStringList rectCoords = bboxList.at( i ).split( "," );
+    QStringList rectCoords = bboxList.at( i ).split( QStringLiteral( "," ) );
     if ( rectCoords.size() != 4 )
     {
       QFAIL( "bbox string invalid" );
@@ -304,7 +304,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsRectangle rect( rectCoords[0].toDouble(), rectCoords[1].toDouble(), rectCoords[2].toDouble(), rectCoords[3].toDouble() );
     mapSettings.setExtent( rect );
     mapSettings.setOutputSize( QSize( 256, 256 ) );
-    mapSettings.setLayers( QStringList() << vectorLayer->id() );
+    mapSettings.setLayers( QList<QgsMapLayer *>() << vectorLayer );
     mapSettings.setFlags( QgsMapSettings::RenderMapTile );
     mapSettings.setOutputDpi( 96 );
 
@@ -317,14 +317,14 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     globalPainter.drawImage( globalImageX, globalImageY, img );
   }
 
-  QgsMapLayerRegistry::instance()->removeMapLayers( QStringList() << vectorLayer->id() );
+  QgsProject::instance()->removeMapLayers( QStringList() << vectorLayer->id() );
 
-  QString renderedImagePath = QDir::tempPath() + "/" + QTest::currentDataTag() + QString( ".png" );
+  QString renderedImagePath = QDir::tempPath() + "/" + QTest::currentDataTag() + QStringLiteral( ".png" );
   globalImage.save( renderedImagePath );
 
   QgsRenderChecker checker;
 
-  checker.setControlPathPrefix( "adjacent_tiles" );
+  checker.setControlPathPrefix( QStringLiteral( "adjacent_tiles" ) );
   checker.setControlName( controlName );
   bool result = checker.compareImages( QTest::currentDataTag(), 100, renderedImagePath );
   mReport += checker.report();
@@ -332,7 +332,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
 }
 
 
-QTEST_MAIN( TestQgsMapRendererJob )
+QGSTEST_MAIN( TestQgsMapRendererJob )
 #include "testqgsmaprendererjob.moc"
 
 

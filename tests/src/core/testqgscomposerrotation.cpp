@@ -23,11 +23,11 @@
 #include "qgscomposerlabel.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgsfontutils.h"
 #include "qgsrasterdataprovider.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -37,12 +37,11 @@ class TestQgsComposerRotation : public QObject
 
   public:
     TestQgsComposerRotation()
-        : mComposition( 0 )
-        , mComposerRect( 0 )
-        , mComposerLabel( 0 )
-        , mComposerMap( 0 )
-        , mMapSettings( 0 )
-        , mRasterLayer( 0 )
+      : mComposition( 0 )
+      , mComposerRect( 0 )
+      , mComposerLabel( 0 )
+      , mComposerMap( 0 )
+      , mRasterLayer( 0 )
     {}
 
   private slots:
@@ -57,12 +56,11 @@ class TestQgsComposerRotation : public QObject
     void mapItemRotation(); //test if composer map item rotation is functioning
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape* mComposerRect;
-    QgsComposerLabel* mComposerLabel;
-    QgsComposerMap* mComposerMap;
-    QgsMapSettings *mMapSettings;
-    QgsRasterLayer* mRasterLayer;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerShape *mComposerRect = nullptr;
+    QgsComposerLabel *mComposerLabel = nullptr;
+    QgsComposerMap *mComposerMap = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
     QString mReport;
 };
 
@@ -71,21 +69,14 @@ void TestQgsComposerRotation::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
-  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
-
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
-  mMapSettings->setCrsTransformEnabled( false );
-
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerRect = new QgsComposerShape( 70, 70, 150, 100, mComposition );
@@ -93,14 +84,14 @@ void TestQgsComposerRotation::initTestCase()
   mComposerRect->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
 
   mComposerLabel = new QgsComposerLabel( mComposition );
-  mComposerLabel->setText( "test label" );
+  mComposerLabel->setText( QStringLiteral( "test label" ) );
   mComposerLabel->setFont( QgsFontUtils::getStandardTestFont() );
   mComposerLabel->setPos( 70, 70 );
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposerLabel->setBackgroundEnabled( true );
 
-  mReport = "<h1>Composer Rotation Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Rotation Tests</h1>\n" );
 }
 
 void TestQgsComposerRotation::cleanupTestCase()
@@ -114,7 +105,7 @@ void TestQgsComposerRotation::cleanupTestCase()
   delete mComposerLabel;
   delete mComposerRect;
   delete mComposition;
-  delete mMapSettings;
+  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -144,8 +135,8 @@ void TestQgsComposerRotation::shapeRotation()
 
   mComposerRect->setItemRotation( 45, true );
 
-  QgsCompositionChecker checker( "composerrotation_shape", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_shape" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport ) );
 
   mComposition->removeItem( mComposerRect );
@@ -157,8 +148,8 @@ void TestQgsComposerRotation::labelRotation()
   mComposition->addComposerLabel( mComposerLabel );
   mComposerLabel->setItemRotation( 135, true );
 
-  QgsCompositionChecker checker( "composerrotation_label", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_label" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
@@ -174,9 +165,10 @@ void TestQgsComposerRotation::mapRotation()
   mComposition->addItem( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   mComposerMap->setMapRotation( 90 );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
 
-  QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_maprotation" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport, 0, 200 ) );
 }
 
@@ -192,11 +184,12 @@ void TestQgsComposerRotation::mapItemRotation()
   mComposition->addItem( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   mComposerMap->setItemRotation( 90, true );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
 
-  QgsCompositionChecker checker( "composerrotation_mapitemrotation", mComposition );
-  checker.setControlPathPrefix( "composer_items" );
+  QgsCompositionChecker checker( QStringLiteral( "composerrotation_mapitemrotation" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
-QTEST_MAIN( TestQgsComposerRotation )
+QGSTEST_MAIN( TestQgsComposerRotation )
 #include "testqgscomposerrotation.moc"

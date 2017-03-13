@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'April 2016'
@@ -25,8 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from i import regroupRasters, copyFile, multipleOutputDir
-from qgis.core import QgsMessageLog
+from .i import copyFile, multipleOutputDir
 from qgis.core import QgsCoordinateReferenceSystem
 from ..Grass7Utils import Grass7Utils
 from processing.core.parameters import getParameterFromString
@@ -37,7 +37,7 @@ def processCommand(alg):
     # Creates a new location with the CRS
     crsParam = alg.getParameterFromName('crs')
     crsId = int(crsParam.value[5:])
-    #QgsMessageLog.logMessage('crs = {}'.format(crs), 'DEBUG', QgsMessageLog.INFO)
+    # QgsMessageLog.logMessage('crs = {}'.format(crs), 'DEBUG', QgsMessageLog.INFO)
     crs = QgsCoordinateReferenceSystem()
     crs.createFromId(crsId, QgsCoordinateReferenceSystem.EpsgCrsId)
     command = "g.proj proj4=\"{}\" location=TARGET".format(crs.toProj4())

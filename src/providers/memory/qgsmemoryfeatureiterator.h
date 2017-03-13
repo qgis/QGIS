@@ -17,7 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontext.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 
 class QgsMemoryProvider;
@@ -30,15 +30,15 @@ class QgsSpatialIndex;
 class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsMemoryFeatureSource( const QgsMemoryProvider* p );
+    explicit QgsMemoryFeatureSource( const QgsMemoryProvider *p );
     ~QgsMemoryFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
-    QgsSpatialIndex* mSpatialIndex;
+    QgsSpatialIndex *mSpatialIndex = nullptr;
     QString mSubsetString;
     QgsExpressionContext mExpressionContext;
 
@@ -49,30 +49,26 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
 class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>
 {
   public:
-    QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsMemoryFeatureIterator( QgsMemoryFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsMemoryFeatureIterator();
 
-    //! reset the iterator to the starting position
     virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
     virtual bool close() override;
 
   protected:
 
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
 
-    bool nextFeatureUsingList( QgsFeature& feature );
-    bool nextFeatureTraverseAll( QgsFeature& feature );
+    bool nextFeatureUsingList( QgsFeature &feature );
+    bool nextFeatureTraverseAll( QgsFeature &feature );
 
     QgsGeometry mSelectRectGeom;
     QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
-    QgsExpression* mSubsetExpression;
+    QgsExpression *mSubsetExpression = nullptr;
 
 };
 

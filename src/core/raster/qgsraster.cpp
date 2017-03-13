@@ -19,39 +19,6 @@
 
 #include "qgsraster.h"
 
-QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits theLimits )
-{
-  switch ( theLimits )
-  {
-    case QgsRaster::ContrastEnhancementMinMax:
-      return "MinMax";
-    case QgsRaster::ContrastEnhancementStdDev:
-      return "StdDev";
-    case QgsRaster::ContrastEnhancementCumulativeCut:
-      return "CumulativeCut";
-    default:
-      break;
-  }
-  return "None";
-}
-
-QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( const QString& theLimits )
-{
-  if ( theLimits == "MinMax" )
-  {
-    return ContrastEnhancementMinMax;
-  }
-  else if ( theLimits == "StdDev" )
-  {
-    return ContrastEnhancementStdDev;
-  }
-  else if ( theLimits == "CumulativeCut" )
-  {
-    return ContrastEnhancementCumulativeCut;
-  }
-  return ContrastEnhancementNone;
-}
-
 bool QgsRaster::isRepresentableValue( double value, Qgis::DataType dataType )
 {
   switch ( dataType )

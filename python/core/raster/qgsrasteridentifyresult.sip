@@ -7,15 +7,15 @@ class QgsRasterIdentifyResult
     QgsRasterIdentifyResult();
 
     /** \brief Constructor. Creates valid result.
-     *  @param theFormat the result format
-     *  @param theResults the results
+     *  @param format the result format
+     *  @param results the results
      */
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant>& results );
 
     /** \brief Constructor. Creates invalid result with error.
-     *  @param theError the error
+     *  @param error the error
      */
-    QgsRasterIdentifyResult( const QgsError& theError );
+    QgsRasterIdentifyResult( const QgsError& error );
 
     virtual ~QgsRasterIdentifyResult();
 
@@ -33,7 +33,7 @@ class QgsRasterIdentifyResult
     QMap<int, QVariant> results() const;
 
     /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> & theParams );
+    void setParams( const QMap<QString, QVariant> & params );
 
     /** Get map of optional parameters */
     QMap<QString, QVariant> params() const;
@@ -42,6 +42,6 @@ class QgsRasterIdentifyResult
     QgsError error() const;
 
     /** \brief Set error */
-    void setError( const QgsError & theError );
+    void setError( const QgsError & error );
 };
 

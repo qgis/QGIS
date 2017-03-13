@@ -27,15 +27,15 @@ class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLege
     Q_OBJECT
 
   public:
-    QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent = nullptr );
+    QgsComposerLegendLayersDialog( QList<QgsMapLayer *> layers, QWidget *parent = nullptr );
     ~QgsComposerLegendLayersDialog();
-    QgsMapLayer* selectedLayer();
+    QgsMapLayer *selectedLayer();
 
   private:
     QgsComposerLegendLayersDialog(); //forbidden
 
-    /** Stores the relation between items and map layer pointers. */
-    QMap<QListWidgetItem*, QgsMapLayer*> mItemLayerMap;
+    //! Stores the relation between items and map layer pointers.
+    QMap<QListWidgetItem *, QgsMapLayer *> mItemLayerMap;
 };
 
-#endif //QGSCOMPOSERLEGENDITEMDIALOG_H
+#endif //QGSCOMPOSERLEGENDLAYERSDIALOG_H

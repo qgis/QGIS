@@ -34,27 +34,19 @@ class QgsAction
     };
 
     /**
-     * Create a new QgsAction
-     *
-     * @param type          The type of this action
-     * @param description   A human readable description string
-     * @param action        The action text. Its interpretation depends on the type
-     * @param capture       If this is set to true, the output will be captured when an action is run
+     * Default constructor
      */
-    QgsAction( ActionType type, const QString& description, const QString& action, bool capture );
-
+    QgsAction();
 
     /**
      * Create a new QgsAction
      *
      * @param type          The type of this action
      * @param description   A human readable description string
-     * @param action        The action text. Its interpretation depends on the type
-     * @param icon          Path to an icon for this action
+     * @param command       The action text. Its interpretation depends on the type
      * @param capture       If this is set to true, the output will be captured when an action is run
-     * @param shortTitle    A short string used to label user interface elements like buttons
      */
-    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString() );
+    QgsAction( ActionType type, const QString& description, const QString& command, bool capture = false );
 
     /**
      * Create a new QgsAction
@@ -64,10 +56,10 @@ class QgsAction
      * @param action               The action text. Its interpretation depends on the type
      * @param icon                 Path to an icon for this action
      * @param capture              If this is set to true, the output will be captured when an action is run
-     * @param showInAttributeTable If this is false, the action will be hidden on the attribute table action widget
      * @param shortTitle           A short string used to label user interface elements like buttons
+     * @param actionScopes         A set of scopes in which this action will be available
      */
-    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, bool showInAttributeTable, const QString& shortTitle = QString() );
+    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString(), const QSet<QString>& actionScopes = QSet<QString>() );
 
     //! The name of the action. This may be a longer description.
     QString name() const;
@@ -75,14 +67,28 @@ class QgsAction
     //! The short title is used to label user interface elements like buttons
     QString shortTitle() const;
 
+    /**
+     * Returns a unique id for this action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    QUuid id() const;
+
+    /**
+     * Returns true if this action was a default constructed one.
+     *
+     * @note Added in QGIS 3.0
+     */
+    bool isValid() const;
+
     //! The path to the icon
     QString iconPath() const;
 
     //! The icon
     QIcon icon() const;
 
-    //! The action
-    QString action() const;
+    //! The command
+    QString command() const;
 
     //! The action type
     ActionType type() const;
@@ -90,9 +96,55 @@ class QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const;
 
-    //! Whether this action should be shown on the attribute table
-    bool showInAttributeTable() const;
-
-    //! Whether the action is runable on the current platform
+    //! Checks if the action is runable on the current platform
     bool runable() const;
+
+    /**
+     * Run this action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void run( QgsVectorLayer* layer, const QgsFeature& feature, const QgsExpressionContext& expressionContext ) const;
+
+    /**
+     * Run this action.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void run( const QgsExpressionContext& expressionContext ) const;
+
+    /**
+     * The action scopes define where an action will be available.
+     * Action scopes may offer additional variables like the clicked
+     * coordinate.
+     *
+     * @see QgsActionScope
+     * @note Added in QGIS 3.0
+     */
+    QSet<QString> actionScopes() const;
+
+    /**
+     * The action scopes define where an action will be available.
+     * Action scopes may offer additional variables like the clicked
+     * coordinate.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void setActionScopes( const QSet<QString>& actionScopes );
+
+    /**
+     * Reads an XML definition from actionNode
+     * into this object.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void readXml( const QDomNode& actionNode );
+
+    /**
+     * Appends an XML definition for this action as a new
+     * child node to actionsNode.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void writeXml(QDomNode& actionsNode ) const;
 };

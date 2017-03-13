@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
 #include <qgslogger.h>
 #include <QDateTime>
 #include <QMetaType>
@@ -21,33 +22,20 @@
 
 class QgsMessageLogConsole;
 
-QgsMessageLog *QgsMessageLog::sInstance = nullptr;
-
 QgsMessageLog::QgsMessageLog()
-    : QObject()
+  : QObject()
 {
-  sInstance = this;
+  qRegisterMetaType< QgsMessageLog::MessageLevel >( "QgsMessageLog::MessageLevel" );
 }
 
-QgsMessageLog *QgsMessageLog::instance()
-{
-  if ( !sInstance )
-  {
-    qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
-    sInstance = new QgsMessageLog();
-  }
-
-  return sInstance;
-}
-
-void QgsMessageLog::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLog::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
   QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );
 
-  QgsMessageLog::instance()->emitMessage( message, tag, level );
+  QgsApplication::messageLog()->emitMessage( message, tag, level );
 }
 
-void QgsMessageLog::emitMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLog::emitMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
   emit messageReceived( message, tag, level );
   if ( level != QgsMessageLog::INFO )
@@ -57,19 +45,19 @@ void QgsMessageLog::emitMessage( const QString& message, const QString& tag, Qgs
 }
 
 QgsMessageLogConsole::QgsMessageLogConsole()
-    : QObject( QgsMessageLog::instance() )
+  : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
+  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
            this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
 }
 
-void QgsMessageLogConsole::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
   std::cout
-    << tag.toLocal8Bit().data() << "[" <<
-    ( level == QgsMessageLog::INFO ? "INFO"
-      : level == QgsMessageLog::WARNING ? "WARNING"
-      : "CRITICAL" )
-    << "]: " << message.toLocal8Bit().data() << std::endl;
+      << tag.toLocal8Bit().data() << "[" <<
+      ( level == QgsMessageLog::INFO ? "INFO"
+        : level == QgsMessageLog::WARNING ? "WARNING"
+        : "CRITICAL" )
+      << "]: " << message.toLocal8Bit().data() << std::endl;
 }
 

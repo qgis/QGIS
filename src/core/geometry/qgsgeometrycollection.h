@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYCOLLECTIONV2_H
 #define QGSGEOMETRYCOLLECTIONV2_H
 
+#include "qgis_core.h"
 #include "qgsabstractgeometry.h"
 #include "qgspointv2.h"
 #include <QVector>
@@ -30,11 +31,11 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
   public:
     QgsGeometryCollection();
-    QgsGeometryCollection( const QgsGeometryCollection& c );
-    QgsGeometryCollection& operator=( const QgsGeometryCollection& c );
+    QgsGeometryCollection( const QgsGeometryCollection &c );
+    QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection* clone() const override;
+    virtual QgsGeometryCollection *clone() const override;
 
     /** Returns the number of geometries within the collection.
      */
@@ -43,27 +44,28 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /** Returns a const reference to a geometry from within the collection.
      * @param n index of geometry to return
      */
-    const QgsAbstractGeometry* geometryN( int n ) const;
+    const QgsAbstractGeometry *geometryN( int n ) const;
 
     /** Returns a geometry from within the collection.
      * @param n index of geometry to return
      */
-    QgsAbstractGeometry* geometryN( int n );
+    QgsAbstractGeometry *geometryN( int n );
 
     //methods inherited from QgsAbstractGeometry
+    bool isEmpty() const override;
     virtual int dimension() const override;
-    virtual QString geometryType() const override { return "GeometryCollection"; }
+    virtual QString geometryType() const override { return QStringLiteral( "GeometryCollection" ); }
     virtual void clear() override;
-    virtual QgsAbstractGeometry* boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override;
 
-    /** Adds a geometry and takes ownership. Returns true in case of success.*/
-    virtual bool addGeometry( QgsAbstractGeometry* g );
+    //! Adds a geometry and takes ownership. Returns true in case of success.
+    virtual bool addGeometry( QgsAbstractGeometry *g );
 
     /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
      * @param g geometry to insert. Ownership is transferred to the collection.
      * @param index position to insert geometry before
      */
-    virtual bool insertGeometry( QgsAbstractGeometry* g, int index );
+    virtual bool insertGeometry( QgsAbstractGeometry *g, int index );
 
     /** Removes a geometry from the collection.
      * @param nr index of geometry to remove
@@ -71,32 +73,33 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     virtual bool removeGeometry( int nr );
 
-    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                             bool transformZ = false ) override;
-    void transform( const QTransform& t ) override;
+    void transform( const QTransform &t ) override;
 #if 0
-    virtual void clip( const QgsRectangle& rect ) override;
+    virtual void clip( const QgsRectangle &rect ) override;
 #endif
-    virtual void draw( QPainter& p ) const override;
+    virtual void draw( QPainter &p ) const override;
 
-    bool fromWkb( QgsConstWkbPtr wkb ) override;
-    virtual bool fromWkt( const QString& wkt ) override;
-    int wkbSize() const override;
-    unsigned char* asWkb( int& binarySize ) const override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    virtual bool fromWkt( const QString &wkt ) override;
+    QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
     virtual QgsRectangle boundingBox() const override;
 
     virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
+    virtual int nCoordinates() const override;
+
+    virtual double closestSegment( const QgsPointV2 &pt, QgsPointV2 &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const override;
+    bool nextVertex( QgsVertexId &id, QgsPointV2 &vertex ) const override;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos ) override;
+    virtual bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
+    virtual bool moveVertex( QgsVertexId position, const QgsPointV2 &newPos ) override;
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual double length() const override;
@@ -108,7 +111,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /** Returns a geometry without curves. Caller takes ownership
      * @param tolerance segmentation tolerance
      * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsAbstractGeometry* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * @param vertex the vertex id
@@ -127,7 +130,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual bool dropMValue() override;
 
   protected:
-    QVector< QgsAbstractGeometry* > mGeometries;
+    QVector< QgsAbstractGeometry * > mGeometries;
 
     /** Returns whether child type names are omitted from Wkt representations of the collection
      * @note added in QGIS 2.12
@@ -136,7 +139,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     /** Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry*>& subtypes, const QString& defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 
     virtual QgsRectangle calculateBoundingBox() const override;
     virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }

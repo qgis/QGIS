@@ -25,7 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -57,7 +57,7 @@ class GeometryConvert(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         index = self.getParameterValue(self.TYPE)
@@ -92,7 +92,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from %s to %s', geomType, newType))
+                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
             elif geomType in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
                 if newType == QgsWkbTypes.Point and splitNodes:
                     points = geom.asMultiPoint()
@@ -108,7 +108,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(feat)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from %s to %s', geomType, newType))
+                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
             elif geomType in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
                 if newType == QgsWkbTypes.Point and splitNodes:
                     points = geom.asPolyline()
@@ -126,7 +126,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from %s to %s', geomType, newType))
+                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
             elif geomType in [QgsWkbTypes.MultiLineString, QgsWkbTypes.MultiLineString25D]:
                 if newType == QgsWkbTypes.Point and splitNodes:
                     lines = geom.asMultiPolyline()
@@ -152,7 +152,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from %s to %s', geomType, newType))
+                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
             elif geomType in [QgsWkbTypes.Polygon, QgsWkbTypes.Polygon25D]:
                 if newType == QgsWkbTypes.Point and splitNodes:
                     rings = geom.asPolygon()
@@ -177,7 +177,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from %s to %s', geomType, newType))
+                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
             elif geomType in [QgsWkbTypes.MultiPolygon, QgsWkbTypes.MultiPolygon25D]:
                 if newType == QgsWkbTypes.Point and splitNodes:
                     polygons = geom.asMultiPolygon()
@@ -211,8 +211,8 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from %s to %s', geomType, newType))
+                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
 
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

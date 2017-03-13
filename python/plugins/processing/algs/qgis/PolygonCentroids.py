@@ -29,7 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsGeometry, QgsFeature, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsFeature, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -62,7 +62,7 @@ class PolygonCentroids(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Centroids')))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT_LAYER))
 
@@ -80,7 +80,7 @@ class PolygonCentroids(GeoAlgorithm):
             inGeom = feat.geometry()
             attrs = feat.attributes()
 
-            if inGeom.isEmpty():
+            if inGeom.isNull():
                 outGeom = QgsGeometry(None)
             else:
                 outGeom = QgsGeometry(inGeom.centroid())
@@ -91,6 +91,6 @@ class PolygonCentroids(GeoAlgorithm):
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         del writer

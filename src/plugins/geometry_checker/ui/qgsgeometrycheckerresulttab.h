@@ -32,7 +32,7 @@ class QgsGeometryCheckerResultTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerResultTab( QgisInterface* iface, QgsGeometryChecker* checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget* parent = nullptr );
+    QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget *parent = nullptr );
     ~QgsGeometryCheckerResultTab();
     void finalize();
     bool isCloseable() const { return mCloseable; }
@@ -40,14 +40,14 @@ class QgsGeometryCheckerResultTab : public QWidget
     static QString sSettingsGroup;
 
   private:
-    QTabWidget* mTabWidget;
+    QTabWidget *mTabWidget = nullptr;
     Ui::QgsGeometryCheckerResultTab ui;
-    QgisInterface* mIface;
-    QgsGeometryChecker* mChecker;
-    QgsFeaturePool* mFeaturePool;
-    QList<QgsRubberBand*> mCurrentRubberBands;
-    QMap<QgsGeometryCheckError*, QPersistentModelIndex> mErrorMap;
-    QDialog* mAttribTableDialog;
+    QgisInterface *mIface = nullptr;
+    QgsGeometryChecker *mChecker = nullptr;
+    QgsFeaturePool *mFeaturePool = nullptr;
+    QList<QgsRubberBand *> mCurrentRubberBands;
+    QMap<QgsGeometryCheckError *, QPersistentModelIndex> mErrorMap;
+    QDialog *mAttribTableDialog = nullptr;
     int mErrorCount;
     int mFixedCount;
     bool mCloseable;
@@ -56,15 +56,15 @@ class QgsGeometryCheckerResultTab : public QWidget
 
     bool exportErrorsDo( const QString &file );
     void fixErrors( bool prompt );
-    void setRowStatus( int row, const QColor& color, const QString& message, bool selectable );
+    void setRowStatus( int row, const QColor &color, const QString &message, bool selectable );
 
   private slots:
-    void addError( QgsGeometryCheckError* error );
-    void updateError( QgsGeometryCheckError* error , bool statusChanged );
+    void addError( QgsGeometryCheckError *error );
+    void updateError( QgsGeometryCheckError *error, bool statusChanged );
     void exportErrors();
-    void highlightError( QgsGeometryCheckError* error );
+    void highlightError( QgsGeometryCheckError *error );
     void highlightErrors( bool current = false );
-    void onSelectionChanged( const QItemSelection& newSel, const QItemSelection& /*oldSel*/ );
+    void onSelectionChanged( const QItemSelection &newSel, const QItemSelection & /*oldSel*/ );
     void openAttributeTable();
     void fixErrorsWithDefault() { fixErrors( false ); }
     void fixErrorsWithPrompt() { fixErrors( true ); }

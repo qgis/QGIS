@@ -21,6 +21,7 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis_core.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>
@@ -33,6 +34,7 @@
 #include "qgsraster.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterviewport.h"
+#include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 
 class QgsMapToPixel;
@@ -61,7 +63,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *  SingleBandGray -> a GRAYSCALE layer drawn as a range of gray colors (0-255)
  *  SingleBandPseudoColor -> a GRAYSCALE layer drawn using a pseudocolor algorithm
  *  PalettedSingleBandGray -> a PaletteD layer drawn in gray scale (using only one of the color components)
- *  PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as psuedo color
+ *  PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as pseudo color
  *  PalettedMultiBandColor -> a PaletteD image where the bands contains 24bit color info and 8 bits is pulled out per color
  *  MultiBandSingleBandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
  *  MultiBandSingleBandPseudoColor -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
@@ -73,7 +75,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *  bandStatistics function. Note that statistics gathering is a slow process and
  *  every effort should be made to call this function as few times as possible. For this
  *  reason, qgsraster has a vector class member to store stats for each band. The
- *  constructor initialises this vector on startup, but only populates the band name and
+ *  constructor initializes this vector on startup, but only populates the band name and
  *  number fields.
  *
  *  Note that where bands are of gdal 'undefined' type, their values may exceed the
@@ -136,16 +138,29 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
-    /** \brief Default cumulative cut lower limit */
-    static const double CUMULATIVE_CUT_LOWER;
 
-    /** \brief Default cumulative cut upper limit */
-    static const double CUMULATIVE_CUT_UPPER;
-
-    /** \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
+    //! \brief Default sample size (number of pixels) for estimated statistics/histogram calculation
     static const double SAMPLE_SIZE;
 
-    /** \brief Constructor. Provider is not set. */
+    //! \brief Default enhancement algorithm for single band raster
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm SINGLE_BAND_ENHANCEMENT_ALGORITHM;
+
+    //! \brief Default enhancement algorithm for multiple band raster of type Byte
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM;
+
+    //! \brief Default enhancement algorithm for multiple band raster of type different from Byte
+    static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
+
+    //! \brief Default enhancement limits for single band raster
+    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+
+    //! \brief Default enhancement limits for multiple band raster of type Byte
+    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+
+    //! \brief Default enhancement limits for multiple band raster of type different from Byte
+    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+
+    //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
 
     /** \brief This is the constructor for the RasterLayer class.
@@ -164,25 +179,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &path,
-                    const QString &baseName = QString::null,
-                    bool loadDefaultStyleFlag = true );
-
-    //TODO - QGIS 3.0
-    //This constructor is confusing if used with string literals for providerKey,
-    //as the previous constructor will be called with the literal for providerKey
-    //implicitly converted to a bool.
-    //for QGIS 3.0, make either constructor explicit or alter the signatures
-    /** \brief [ data provider interface ] Constructor in provider mode */
     QgsRasterLayer( const QString &uri,
-                    const QString &baseName,
-                    const QString &providerKey,
+                    const QString &baseName = QString(),
+                    const QString &providerKey = "gdal",
                     bool loadDefaultStyleFlag = true );
 
-    /** \brief The destructor */
     ~QgsRasterLayer();
 
-    /** \brief This enumerator describes the types of shading that can be used */
+    //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
     {
       UndefinedShader,
@@ -192,7 +196,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       UserDefinedShader
     };
 
-    /** \brief This enumerator describes the type of raster layer */
+    //! \brief This enumerator describes the type of raster layer
     enum LayerType
     {
       GrayOrUndefined,
@@ -206,108 +210,128 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
      */
-    static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
-    static bool isValidRasterFileName( const QString & theFileNameQString );
+    static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
+    static bool isValidRasterFileName( const QString &fileNameQString );
 
-    /** Return time stamp for given file name */
-    static QDateTime lastModified( const QString &  name );
+    //! Return time stamp for given file name
+    static QDateTime lastModified( const QString   &name );
 
-    /** [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider );
+    //! [ data provider interface ] Set the data provider
+    void setDataProvider( const QString &provider );
 
-    /** \brief  Accessor for raster layer type (which is a read only property) */
+    //! \brief  Accessor for raster layer type (which is a read only property)
     LayerType rasterType() { return mRasterType; }
 
-    /** Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* theRenderer );
-    QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
+    //! Set raster renderer. Takes ownership of the renderer object
+    void setRenderer( QgsRasterRenderer *renderer );
+    QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
-    /** Set raster resample filter. Takes ownership of the resample filter object*/
-    QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
+    //! Set raster resample filter. Takes ownership of the resample filter object
+    QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
 
-    QgsBrightnessContrastFilter * brightnessFilter() const { return mPipe.brightnessFilter(); }
-    QgsHueSaturationFilter * hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
+    QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
+    QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
-    /** Get raster pipe */
-    QgsRasterPipe * pipe() { return &mPipe; }
+    //! Get raster pipe
+    QgsRasterPipe *pipe() { return &mPipe; }
 
-    /** \brief Accessor that returns the width of the (unclipped) raster  */
+    //! \brief Accessor that returns the width of the (unclipped) raster
     int width() const;
 
-    /** \brief Accessor that returns the height of the (unclipped) raster */
+    //! \brief Accessor that returns the height of the (unclipped) raster
     int height() const;
 
-    /** \brief Get the number of bands in this layer  */
+    //! \brief Get the number of bands in this layer
     int bandCount() const;
 
-    /** \brief Get the name of a band given its number  */
-    QString bandName( int theBandNoInt ) const;
+    //! \brief Get the name of a band given its number
+    QString bandName( int bandNoInt ) const;
 
-    /** Returns the data provider */
-    QgsRasterDataProvider* dataProvider();
+    //! Returns the data provider
+    QgsRasterDataProvider *dataProvider();
 
     /** Returns the data provider in a const-correct manner
       @note available in python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider* dataProvider() const;
+    const QgsRasterDataProvider *dataProvider() const;
 
-    /** Synchronises with changes in the datasource */
+    //! Synchronises with changes in the datasource
     virtual void reload() override;
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
 
-    /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
-    void draw( QPainter * theQPainter,
-               QgsRasterViewPort * myRasterViewPort,
-               const QgsMapToPixel* theQgsMapToPixel = nullptr );
+    //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
+    void draw( QPainter *theQPainter,
+               QgsRasterViewPort *myRasterViewPort,
+               const QgsMapToPixel *qgsMapToPixel = nullptr );
 
-    /** Returns a list with classification items (Text and color) */
+    //! Returns a list with classification items (Text and color)
     QgsLegendColorList legendSymbologyItems() const;
 
     virtual bool isSpatial() const override { return true; }
 
-    /** \brief Obtain GDAL Metadata for this layer */
+    //! \brief Obtain GDAL Metadata for this layer
     QString metadata() const override;
 
-    /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
-    QPixmap paletteAsPixmap( int theBandNumber = 1 );
+    //! \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+    QPixmap paletteAsPixmap( int bandNumber = 1 );
 
-    /** \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
+    //! \brief [ data provider interface ] Which provider is being used for this Raster Layer?
     QString providerType() const;
 
-    /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
-    double rasterUnitsPerPixelX();
-    double rasterUnitsPerPixelY();
+    //! \brief Returns the number of raster units per each raster pixel in X axis. In a world file, this is normally the first row (without the sign)
+    double rasterUnitsPerPixelX() const;
+    //! \brief Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
+    double rasterUnitsPerPixelY() const;
 
     /** \brief Set contrast enhancement algorithm
-     *  @param theAlgorithm Contrast enhancement algorithm
-     *  @param theLimits Limits
-     *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
-     *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param theGenerateLookupTableFlag Generate lookup table. */
+     *  @param algorithm Contrast enhancement algorithm
+     *  @param limits Limits
+     *  @param extent Extent used to calculate limits, if empty, use full layer extent
+     *  @param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  @param generateLookupTableFlag Generate lookup table. */
 
 
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
-                                 const QgsRectangle& theExtent = QgsRectangle(),
-                                 int theSampleSize = SAMPLE_SIZE,
-                                 bool theGenerateLookupTableFlag = true );
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 const QgsRectangle &extent = QgsRectangle(),
+                                 int sampleSize = SAMPLE_SIZE,
+                                 bool generateLookupTableFlag = true );
 
-    /** \brief Set default contrast enhancement */
+    /** \brief Refresh contrast enhancement with new extent.
+     *  @note not available in python bindings
+     */
+    // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
+    void refreshContrastEnhancement( const QgsRectangle &extent );
+
+    /** \brief Refresh renderer with new extent, if needed
+     *  @note not available in python bindings
+     */
+    // Used by QgsRasterLayerRenderer
+    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
+
+    /** \brief Return default contrast enhancemnt settings for that type of raster.
+     *  @note not available in python bindings
+     */
+    bool defaultContrastEnhancementSettings(
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
+      QgsRasterMinMaxOrigin::Limits &myLimits ) const;
+
+    //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
 
-    /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
-    void showProgress( int theValue );
+    //! \brief [ data provider interface ] A wrapper function to emit a progress update signal
+    void showProgress( int value );
 
-    /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
+    //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     virtual QStringList subLayers() const override;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
      @note added in 2.4 */
-    QImage previewAsImage( QSize size, const QColor& bgColor = Qt::white,
+    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /**
@@ -321,71 +345,88 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( const QString& name, bool vis ) override;
+    virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
 
-    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const override;
 
   public slots:
-    void showStatusMessage( const QString & theMessage );
+    void showStatusMessage( const QString &message );
 
-    /** \brief receive progress signal from provider */
-    void onProgress( int, double, const QString& );
+    //! \brief receive progress signal from provider
+    void onProgress( int, double, const QString & );
 
   signals:
-    /** \brief Signal for notifying listeners of long running processes */
-    void progressUpdate( int theValue );
+    //! \brief Signal for notifying listeners of long running processes
+    void progressUpdate( int value );
 
   protected:
-    /** \brief Read the symbology for the current layer from the Dom node supplied */
-    bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
+    //! \brief Read the symbology for the current layer from the Dom node supplied
+    bool readSymbology( const QDomNode &node, QString &errorMessage ) override;
 
-    /** \brief Read the style information for the current layer from the Dom node supplied */
+    //! \brief Read the style information for the current layer from the Dom node supplied
     bool readStyle( const QDomNode &node, QString &errorMessage ) override;
 
-    /** \brief Reads layer specific state from project file Dom node */
-    bool readXml( const QDomNode& layer_node ) override;
+    //! \brief Reads layer specific state from project file Dom node
+    bool readXml( const QDomNode &layer_node ) override;
 
-    /** \brief Write the symbology for the layer into the docment provided */
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const override;
+    //! \brief Write the symbology for the layer into the docment provided
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage ) const override;
 
-    /** \brief Write the style for the layer into the docment provided */
+    //! \brief Write the style for the layer into the docment provided
     bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
 
-    /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
+    //! \brief Write layer specific state to project file Dom node
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const override;
 
   private:
-    /** \brief Initialize default values */
+    //! \brief Initialize default values
     void init();
 
-    /** \brief Close data provider and clear related members */
+    //! \brief Close data provider and clear related members
     void closeDataProvider();
 
-    /** \brief Update the layer if it is outdated */
+    //! \brief Update the layer if it is outdated
     bool update();
 
-    /** Sets corresponding renderer for style*/
-    void setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle );
+    //! Sets corresponding renderer for style
+    void setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle );
 
-    /** \brief  Constant defining flag for XML and a constant that signals property not used */
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+                                 QgsRasterMinMaxOrigin::Limits limits,
+                                 const QgsRectangle &extent,
+                                 int sampleSize,
+                                 bool generateLookupTableFlag,
+                                 QgsRasterRenderer *rasterRenderer );
+
+    void computeMinMax( int band,
+                        const QgsRasterMinMaxOrigin &mmo,
+                        QgsRasterMinMaxOrigin::Limits limits,
+                        const QgsRectangle &extent,
+                        int sampleSize,
+                        double &min, double &max );
+
+    //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
 
-    /** Pointer to data provider */
-    QgsRasterDataProvider* mDataProvider;
+    //! Pointer to data provider
+    QgsRasterDataProvider *mDataProvider = nullptr;
 
-    /** [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
+    //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;
 
     QgsRasterViewPort mLastViewPort;
 
-    /** [ data provider interface ] Data provider key */
+    //! [ data provider interface ] Data provider key
     QString mProviderKey;
 
     LayerType mRasterType;
 
     QgsRasterPipe mPipe;
+
+    //! To save computations and possible infinite cycle of notifications
+    QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 };
 
 #endif

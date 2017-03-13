@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include "qgsunittypes.h"
+#include "qgis_app.h"
 
 class QPainter;
 
@@ -40,8 +41,8 @@ class APP_EXPORT QgsDecorationItem: public QObject
     };
 
     //! Constructor
-    QgsDecorationItem( QObject* parent = nullptr );
-    //! Destructor
+    QgsDecorationItem( QObject *parent = nullptr );
+
     virtual ~ QgsDecorationItem();
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
@@ -79,7 +80,7 @@ class APP_EXPORT QgsDecorationItem: public QObject
 
   protected:
 
-    /** True if decoration item has to be displayed*/
+    //! True if decoration item has to be displayed
     bool mEnabled;
 
     //! Placement of the decoration

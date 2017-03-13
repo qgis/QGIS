@@ -17,11 +17,11 @@
 #include "qgscomposermultiframe.h"
 #include "qgscomposition.h"
 
-QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height )
-    : QgsComposerItem( x, y, width, height, c )
-    , mMultiFrame( mf )
-    , mHidePageIfEmpty( false )
-    , mHideBackgroundIfEmpty( false )
+QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height )
+  : QgsComposerItem( x, y, width, height, c )
+  , mMultiFrame( mf )
+  , mHidePageIfEmpty( false )
+  , mHideBackgroundIfEmpty( false )
 {
 
   //default to no background
@@ -37,43 +37,39 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 }
 
 QgsComposerFrame::QgsComposerFrame()
-    : QgsComposerItem( 0, 0, 0, 0, nullptr )
-    , mMultiFrame( nullptr )
-    , mHidePageIfEmpty( false )
-    , mHideBackgroundIfEmpty( false )
+  : QgsComposerItem( 0, 0, 0, 0, nullptr )
+  , mMultiFrame( nullptr )
+  , mHidePageIfEmpty( false )
+  , mHideBackgroundIfEmpty( false )
 {
   //default to no background
   setBackgroundEnabled( false );
 }
 
-QgsComposerFrame::~QgsComposerFrame()
+bool QgsComposerFrame::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
-}
-
-bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
-{
-  QDomElement frameElem = doc.createElement( "ComposerFrame" );
-  frameElem.setAttribute( "sectionX", QString::number( mSection.x() ) );
-  frameElem.setAttribute( "sectionY", QString::number( mSection.y() ) );
-  frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
-  frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
-  frameElem.setAttribute( "hidePageIfEmpty", mHidePageIfEmpty );
-  frameElem.setAttribute( "hideBackgroundIfEmpty", mHideBackgroundIfEmpty );
+  QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );
+  frameElem.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
+  frameElem.setAttribute( QStringLiteral( "sectionHeight" ), QString::number( mSection.height() ) );
+  frameElem.setAttribute( QStringLiteral( "hidePageIfEmpty" ), mHidePageIfEmpty );
+  frameElem.setAttribute( QStringLiteral( "hideBackgroundIfEmpty" ), mHideBackgroundIfEmpty );
   elem.appendChild( frameElem );
 
   return _writeXml( frameElem, doc );
 }
 
-bool QgsComposerFrame::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerFrame::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
-  double x = itemElem.attribute( "sectionX" ).toDouble();
-  double y = itemElem.attribute( "sectionY" ).toDouble();
-  double width = itemElem.attribute( "sectionWidth" ).toDouble();
-  double height = itemElem.attribute( "sectionHeight" ).toDouble();
+  double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
+  double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
+  double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
+  double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
   mSection = QRectF( x, y, width, height );
-  mHidePageIfEmpty = itemElem.attribute( "hidePageIfEmpty", "0" ).toInt();
-  mHideBackgroundIfEmpty = itemElem.attribute( "hideBackgroundIfEmpty", "0" ).toInt();
-  QDomElement composerItem = itemElem.firstChildElement( "ComposerItem" );
+  mHidePageIfEmpty = itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  QDomElement composerItem = itemElem.firstChildElement( QStringLiteral( "ComposerItem" ) );
   if ( composerItem.isNull() )
   {
     return false;
@@ -171,7 +167,7 @@ void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
   QgsComposerItem::setSceneRect( fixedRect );
 }
 
-void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerFrame::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -208,7 +204,7 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
-void QgsComposerFrame::beginItemCommand( const QString& text )
+void QgsComposerFrame::beginItemCommand( const QString &text )
 {
   if ( mComposition )
   {

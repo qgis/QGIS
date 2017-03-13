@@ -14,6 +14,13 @@
  ***************************************************************************/
 #include "qgswkbptr.h"
 
+QgsWkbPtr::QgsWkbPtr( QByteArray &wkb )
+{
+  mP = reinterpret_cast<unsigned char *>( wkb.data() );
+  mStart = mP;
+  mEnd = mP + wkb.length();
+}
+
 QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
 {
   mP = p;
@@ -24,7 +31,15 @@ QgsWkbPtr::QgsWkbPtr( unsigned char *p, int size )
 void QgsWkbPtr::verifyBound( int size ) const
 {
   if ( !mP || mP + size > mEnd )
-    throw QgsWkbException( "wkb access out of bounds" );
+    throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
+}
+
+QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
+{
+  mP = reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) );
+  mEnd = mP + wkb.length();
+  mEndianSwap = false;
+  mWkbType = QgsWkbTypes::Unknown;
 }
 
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
@@ -54,7 +69,7 @@ QgsWkbTypes::Type QgsConstWkbPtr::readHeader() const
 void QgsConstWkbPtr::verifyBound( int size ) const
 {
   if ( !mP || mP + size > mEnd )
-    throw QgsWkbException( "wkb access out of bounds" );
+    throw QgsWkbException( QStringLiteral( "wkb access out of bounds" ) );
 }
 
 const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPointF &point ) const
@@ -73,7 +88,7 @@ const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPolygonF &points ) const
   read( nPoints );
 
   points.resize( nPoints );
-  QPointF* ptr = points.data();
+  QPointF *ptr = points.data();
 
   for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
   {

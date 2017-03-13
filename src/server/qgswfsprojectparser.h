@@ -19,49 +19,43 @@
 #define QGSWFSPROJECTPARSER_H
 
 #include "qgsserverprojectparser.h"
+#include "qgis_server.h"
 
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsAccessControl;
-#endif
 
 
 class SERVER_EXPORT QgsWfsProjectParser
 {
   public:
     QgsWfsProjectParser(
-      const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , const QgsAccessControl* ac
-#endif
+      const QString &filePath
+      , const QgsAccessControl *ac
     );
     ~QgsWfsProjectParser();
 
-    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
-    QString serviceUrl() const;
-    QString wfsServiceUrl() const;
-    void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
+    QgsWfsProjectParser( const QgsWfsProjectParser &rh ) = delete;
+    QgsWfsProjectParser &operator=( const QgsWfsProjectParser &rh ) = delete;
 
-    void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+    void serviceCapabilities( QDomElement &parentElement, QDomDocument &doc ) const;
+    void featureTypeList( QDomElement &parentElement, QDomDocument &doc ) const;
+
+    void describeFeatureType( const QString &aTypeName, QDomElement &parentElement, QDomDocument &doc ) const;
 
     QStringList wfsLayers() const;
     QSet<QString> wfsLayerSet() const;
-    int wfsLayerPrecision( const QString& aLayerId ) const;
+    int wfsLayerPrecision( const QString &aLayerId ) const;
 
-    QList<QgsMapLayer*> mapLayerFromTypeName( const QString& aTypeName, bool useCache = true ) const;
+    QList<QgsMapLayer *> mapLayerFromTypeName( const QString &aTypeName, bool useCache = true ) const;
 
     QSet<QString> wfstUpdateLayers() const;
     QSet<QString> wfstInsertLayers() const;
     QSet<QString> wfstDeleteLayers() const;
 
   private:
-    QgsServerProjectParser* mProjectParser;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-    const QgsAccessControl* mAccessControl;
-#endif
+    QgsServerProjectParser *mProjectParser = nullptr;
+    const QgsAccessControl *mAccessControl = nullptr;
 
-    QgsWfsProjectParser( const QgsWfsProjectParser& rh );
-    QgsWfsProjectParser& operator=( const QgsWfsProjectParser& rh );
 };
 
 #endif // QGSWFSPROJECTPARSER_H

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 
@@ -21,15 +21,16 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
 #include "qgssnappingutils.h"
+#include "qgssnappingconfig.h"
 
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  explicit FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPoint &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
 
   QgsPoint mPoint;
 };
@@ -40,11 +41,11 @@ class TestQgsSnappingUtils : public QObject
     Q_OBJECT
   public:
     TestQgsSnappingUtils()
-        : mVL( 0 )
+      : mVL( 0 )
     {}
 
   private:
-    QgsVectorLayer* mVL;
+    QgsVectorLayer *mVL = nullptr;
   private slots:
 
     void initTestCase()
@@ -52,7 +53,7 @@ class TestQgsSnappingUtils : public QObject
       QgsApplication::init();
       QgsApplication::initQgis();
       // Will make sure the settings dir with the style file for color ramp is created
-      QgsApplication::createDB();
+      QgsApplication::createDatabase();
       QgsApplication::showSettings();
 
       // vector layer with a triangle:
@@ -61,7 +62,7 @@ class TestQgsSnappingUtils : public QObject
       //         \ |
       //          \|
       //           + (1,0)
-      mVL = new QgsVectorLayer( "Polygon", "x", "memory" );
+      mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsPolygon polygon;
       QgsPolyline polyline;
@@ -73,7 +74,7 @@ class TestQgsSnappingUtils : public QObject
       flist << ff;
       mVL->dataProvider()->addFeatures( flist );
 
-      QgsMapLayerRegistry::instance()->addMapLayer( mVL );
+      QgsProject::instance()->addMapLayer( mVL );
     }
 
     void cleanupTestCase()
@@ -93,14 +94,21 @@ class TestQgsSnappingUtils : public QObject
       u.setCurrentLayer( mVL );
 
       // first try with no snapping enabled
-      u.setDefaultSettings( 0, 10, QgsTolerance::Pixels );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( false );
+      snappingConfig.setTolerance( 10 );
+      snappingConfig.setUnits( QgsTolerance::Pixels );
+      snappingConfig.setMode( QgsSnappingConfig::ActiveLayer );
+      u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m0 = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( !m0.isValid() );
       QVERIFY( !m0.hasVertex() );
 
       // now enable snapping
-      u.setDefaultSettings( QgsPointLocator::Vertex | QgsPointLocator::Edge, 10, QgsTolerance::Pixels );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m.isValid() );
@@ -113,7 +121,9 @@ class TestQgsSnappingUtils : public QObject
 
       // do not consider edges in the following test - on 32-bit platforms
       // result was an edge match very close to (1,0) instead of being exactly (1,0)
-      u.setDefaultSettings( QgsPointLocator::Vertex, 10, QgsTolerance::Pixels );
+
+      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      u.setConfig( snappingConfig );
 
       // test with filtering
       FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
@@ -129,8 +139,11 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( mapSettings.hasValidSettings() );
 
       QgsSnappingUtils u;
+      QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
-      u.setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AllLayers );
+      u.setConfig( snappingConfig );
 
       // right now there are no layers in map settings - snapping will fail
 
@@ -138,7 +151,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m.isValid() );
 
       // now check with our layer
-      mapSettings.setLayers( QStringList() << mVL->id() );
+      mapSettings.setLayers( QList<QgsMapLayer *>() << mVL );
       u.setMapSettings( mapSettings );
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );
@@ -154,11 +167,12 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( mapSettings.hasValidSettings() );
 
       QgsSnappingUtils u;
+      QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
-      u.setSnapToMapMode( QgsSnappingUtils::SnapAdvanced );
-      QList<QgsSnappingUtils::LayerConfig> layers;
-      layers << QgsSnappingUtils::LayerConfig( mVL, QgsPointLocator::Vertex, 10, QgsTolerance::Pixels );
-      u.setLayers( layers );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::Vertex, 10, QgsTolerance::Pixels ) );
+      u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m.isValid() );
@@ -178,7 +192,7 @@ class TestQgsSnappingUtils : public QObject
       //         \/
       //         /\    .
       // (0,0)  x  x (1,0)
-      QgsVectorLayer* vl = new QgsVectorLayer( "LineString", "x", "memory" );
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsPolyline polyline1, polyline2;
       polyline1 << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
       polyline2 << QgsPoint( 1, 0 ) << QgsPoint( 0, 1 );
@@ -201,16 +215,19 @@ class TestQgsSnappingUtils : public QObject
 
       QgsSnappingUtils u;
       u.setMapSettings( mapSettings );
-      u.setSnapToMapMode( QgsSnappingUtils::SnapAdvanced );
-      QList<QgsSnappingUtils::LayerConfig> layers;
-      layers << QgsSnappingUtils::LayerConfig( vl, QgsPointLocator::Vertex, 0.1, QgsTolerance::ProjectUnits );
-      u.setLayers( layers );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.1, QgsTolerance::ProjectUnits );
+      snappingConfig.setIndividualLayerSettings( vl, layerSettings );
+      u.setConfig( snappingConfig );
 
       // no snapping on intersections by default - should find nothing
       QgsPointLocator::Match m = u.snapToMap( QgsPoint( 0.45, 0.5 ) );
       QVERIFY( !m.isValid() );
 
-      u.setSnapOnIntersections( true );
+      snappingConfig.setIntersectionSnapping( true );
+      u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m2 = u.snapToMap( QgsPoint( 0.45, 0.5 ) );
       QVERIFY( m2.isValid() );
@@ -221,7 +238,7 @@ class TestQgsSnappingUtils : public QObject
     }
 };
 
-QTEST_MAIN( TestQgsSnappingUtils )
+QGSTEST_MAIN( TestQgsSnappingUtils )
 
 #include "testqgssnappingutils.moc"
 

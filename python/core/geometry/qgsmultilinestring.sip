@@ -6,7 +6,7 @@ class QgsMultiLineString: public QgsMultiCurve
 
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiLineString* clone() const;
+    virtual QgsMultiLineString* clone() const /Factory/;
 
     bool fromWkt( const QString& wkt );
 
@@ -18,7 +18,7 @@ class QgsMultiLineString: public QgsMultiCurve
     QString asJSON( int precision = 17 ) const;
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve
     @return the converted geometry. Caller takes ownership*/

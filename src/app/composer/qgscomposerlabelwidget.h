@@ -30,7 +30,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
 {
     Q_OBJECT
   public:
-    explicit QgsComposerLabelWidget( QgsComposerLabel* label );
+    explicit QgsComposerLabelWidget( QgsComposerLabel *label );
 
   public slots:
     void on_mHtmlCheckBox_stateChanged( int i );
@@ -39,7 +39,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void on_mInsertExpressionButton_clicked();
     void on_mMarginXDoubleSpinBox_valueChanged( double d );
     void on_mMarginYDoubleSpinBox_valueChanged( double d );
-    void on_mFontColorButton_colorChanged( const QColor& newLabelColor );
+    void on_mFontColorButton_colorChanged( const QColor &newLabelColor );
     void on_mCenterRadioButton_clicked();
     void on_mLeftRadioButton_clicked();
     void on_mRightRadioButton_clicked();
@@ -51,7 +51,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void setGuiElementValues();
 
   private:
-    QgsComposerLabel* mComposerLabel;
+    QgsComposerLabel *mComposerLabel = nullptr;
 
     void blockAllSignals( bool block );
 };

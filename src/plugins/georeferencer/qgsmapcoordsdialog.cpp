@@ -16,20 +16,20 @@
 #include <QPushButton>
 
 #include "qgsmapcanvas.h"
-
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
+#include "qgssettings.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint &pixelCoords, QWidget* parent )
-    : QDialog( parent, Qt::Dialog )
-    , mPrevMapTool( nullptr )
-    , mQgisCanvas( qgisCanvas )
-    , mPixelCoords( pixelCoords )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint &pixelCoords, QWidget *parent )
+  : QDialog( parent, Qt::Dialog )
+  , mPrevMapTool( nullptr )
+  , mQgisCanvas( qgisCanvas )
+  , mPixelCoords( pixelCoords )
 {
   setupUi( this );
 
-  QSettings s;
-  restoreGeometry( s.value( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ).toByteArray() );
+  QgsSettings s;
+  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ) ).toByteArray() );
 
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -47,12 +47,12 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint
 
   connect( mPointFromCanvasPushButton, SIGNAL( clicked( bool ) ), this, SLOT( setToolEmitPoint( bool ) ) );
 
-  connect( mToolEmitPoint, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ),
-           this, SLOT( maybeSetXY( const QgsPoint&, Qt::MouseButton ) ) );
+  connect( mToolEmitPoint, SIGNAL( canvasClicked( const QgsPoint &, Qt::MouseButton ) ),
+           this, SLOT( maybeSetXY( const QgsPoint &, Qt::MouseButton ) ) );
   connect( mToolEmitPoint, SIGNAL( mouseReleased() ), this, SLOT( setPrevTool() ) );
 
-  connect( leXCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );
-  connect( leYCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );
+  connect( leXCoord, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateOK() ) );
+  connect( leYCoord, SIGNAL( textChanged( const QString & ) ), this, SLOT( updateOK() ) );
   updateOK();
 }
 
@@ -60,8 +60,8 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
 {
   delete mToolEmitPoint;
 
-  QSettings settings;
-  settings.setValue( "/Plugin-GeoReferencer/MapCoordsWindow/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
 }
 
 void QgsMapCoordsDialog::updateOK()
@@ -91,7 +91,7 @@ void QgsMapCoordsDialog::on_buttonBox_accepted()
   close();
 }
 
-void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button )
+void QgsMapCoordsDialog::maybeSetXY( const QgsPoint &xy, Qt::MouseButton button )
 {
   // Only LeftButton should set point
   if ( Qt::LeftButton == button )
@@ -133,7 +133,7 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   }
 }
 
-double QgsMapCoordsDialog::dmsToDD( const QString& dms )
+double QgsMapCoordsDialog::dmsToDD( const QString &dms )
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );

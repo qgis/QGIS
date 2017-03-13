@@ -14,6 +14,7 @@
 
 #include "ui_qgsdecorationscalebardialog.h"
 #include <QDialog>
+#include "qgis_app.h"
 
 class QgsDecorationScaleBar;
 
@@ -25,7 +26,7 @@ class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDe
     Q_OBJECT
 
   public:
-    QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent = nullptr );
+    QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, int units, QWidget *parent = nullptr );
     ~QgsDecorationScaleBarDialog();
 
   private slots:
@@ -35,7 +36,7 @@ class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDe
     void apply();
 
   protected:
-    QgsDecorationScaleBar& mDeco;
+    QgsDecorationScaleBar &mDeco;
 };
 
 #endif

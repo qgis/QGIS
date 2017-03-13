@@ -30,12 +30,14 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
+from processing.core.parameters import (ParameterBoolean,
+                                        ParameterString,
+                                        ParameterSelection,
+                                        ParameterMultipleInput)
 from processing.core.outputs import OutputRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterSelection
 from processing.tools.system import isWindows
 from processing.tools import dataobjects
+
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -44,10 +46,11 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class merge(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    OPTIONS = 'OPTIONS'
     PCT = 'PCT'
     SEPARATE = 'SEPARATE'
     RTYPE = 'RTYPE'
+    OUTPUT = 'OUTPUT'
 
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
@@ -56,32 +59,45 @@ class merge(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Merge')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
-        self.addParameter(ParameterMultipleInput(merge.INPUT,
-                                                 self.tr('Input layers'), dataobjects.TYPE_RASTER))
-        self.addParameter(ParameterBoolean(merge.PCT,
-                                           self.tr('Grab pseudocolor table from first layer'), False))
-        self.addParameter(ParameterBoolean(merge.SEPARATE,
-                                           self.tr('Place each input file into a separate band'), False))
+        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
+        self.addParameter(ParameterMultipleInput(self.INPUT,
+                                                 self.tr('Input layers'),
+                                                 dataobjects.TYPE_RASTER))
+        self.addParameter(ParameterString(self.OPTIONS,
+                                          self.tr('Additional creation options'),
+                                          optional=True,
+                                          metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
+        self.addParameter(ParameterBoolean(self.PCT,
+                                           self.tr('Grab pseudocolor table from first layer'),
+                                           False))
+        self.addParameter(ParameterBoolean(self.SEPARATE,
+                                           self.tr('Place each input file into a separate band'),
+                                           False))
         self.addParameter(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'), self.TYPE, 5))
+                                             self.tr('Output raster type'),
+                                             self.TYPE, 5))
 
-        self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Merged')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Merged')))
 
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if self.getParameterValue(merge.SEPARATE):
+        if self.getParameterValue(self.SEPARATE):
             arguments.append('-separate')
-        if self.getParameterValue(merge.PCT):
+        if self.getParameterValue(self.PCT):
             arguments.append('-pct')
+        opts = self.getParameterValue(self.OPTIONS)
+        if opts:
+            arguments.append('-co')
+            arguments.append(opts)
+
         arguments.append('-o')
-        out = self.getOutputValue(merge.OUTPUT)
+        out = self.getOutputValue(self.OUTPUT)
         arguments.append(out)
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.extend(self.getParameterValue(merge.INPUT).split(';'))
+        arguments.extend(self.getParameterValue(self.INPUT).split(';'))
 
         commands = []
         if isWindows():

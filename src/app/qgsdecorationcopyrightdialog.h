@@ -13,6 +13,7 @@
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
 #include "ui_qgsdecorationcopyrightdialog.h"
+#include "qgis_app.h"
 
 class QColor;
 class QFont;
@@ -24,18 +25,18 @@ class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsD
     Q_OBJECT
 
   public:
-    QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent = nullptr );
+    QgsDecorationCopyrightDialog( QgsDecorationCopyright &deco, QWidget *parent = nullptr );
     ~QgsDecorationCopyrightDialog();
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
-    void on_pbnColorChooser_colorChanged( const QColor& c );
+    void on_pbnColorChooser_colorChanged( const QColor &c );
     void apply();
 
   protected:
-    QgsDecorationCopyright& mDeco;
+    QgsDecorationCopyright &mDeco;
 };
 
 #endif

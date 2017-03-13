@@ -5,7 +5,7 @@ class QgsMultiSurface: public QgsGeometryCollection
 %End
   public:
     virtual QString geometryType() const;
-    virtual QgsMultiSurface* clone() const;
+    virtual QgsMultiSurface* clone() const /Factory/;
 
     bool fromWkt( const QString& wkt );
 
@@ -18,7 +18,7 @@ class QgsMultiSurface: public QgsGeometryCollection
 
 
     /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g );
+    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
 
     virtual QgsAbstractGeometry* boundary() const /Factory/;
 

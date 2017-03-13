@@ -33,17 +33,17 @@ class QgsDb2RootItem : public QgsDataCollectionItem
     Q_OBJECT
 
   public:
-    QgsDb2RootItem( QgsDataItem* parent, QString name, QString path );
+    QgsDb2RootItem( QgsDataItem *parent, QString name, QString path );
     ~QgsDb2RootItem();
 
     /**
      * Add saved connections as children.
      */
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
-    virtual QWidget * paramWidget() override;
+    virtual QWidget *paramWidget() override;
 
-    virtual QList<QAction*> actions() override;
+    virtual QList<QAction *> actions() override;
 
   public slots:
     //void connectionsChanged();
@@ -58,7 +58,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsDb2ConnectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsDb2ConnectionItem( QgsDataItem *parent, QString name, QString path );
     ~QgsDb2ConnectionItem();
 
     static bool ConnInfoFromSettings( const QString connName,
@@ -75,21 +75,22 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
       const QString &authcfg,
       QString &connInfo,
       QString &errorMsg );
+
     /**
      * Fetch geometry column data from server and populate Browser Panel with
      * schemas and layers.
      */
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
     /**
      * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
      */
-    virtual QList<QAction*> actions() override;
+    virtual QList<QAction *> actions() override;
 
     virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
-    bool handleDrop( const QMimeData * data, const QString& toSchema );
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool handleDrop( const QMimeData *data, const QString &toSchema );
     void refresh() override;
 
     QString connInfo() const { return mConnInfo; }
@@ -98,6 +99,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( QgsDb2LayerProperty );
 
   public slots:
+
     /**
      * Refresh with saved connection data.
      */
@@ -130,17 +132,17 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsDb2SchemaItem( QgsDataItem* parent, QString name, QString path );
+    QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path );
     ~QgsDb2SchemaItem();
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
-    QgsDb2LayerItem* addLayer( QgsDb2LayerProperty layerProperty, bool refresh );
+    QgsDb2LayerItem *addLayer( QgsDb2LayerProperty layerProperty, bool refresh );
 
     void refresh() override {} // do not refresh directly
-    void addLayers( QgsDataItem* newLayers );
+    void addLayers( QgsDataItem *newLayers );
     virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 };
 
 /**
@@ -152,12 +154,12 @@ class QgsDb2LayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsDb2LayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
+    QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
     ~QgsDb2LayerItem();
 
     QString createUri();
 
-    QgsDb2LayerItem* createClone();
+    QgsDb2LayerItem *createClone();
 
   private:
     QgsDb2LayerProperty mLayerProperty;

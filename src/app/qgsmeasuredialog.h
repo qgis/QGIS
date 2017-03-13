@@ -21,7 +21,8 @@
 
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgis_app.h"
 
 class QCloseEvent;
 class QgsMeasureTool;
@@ -33,7 +34,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f = 0 );
+    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = 0 );
 
     //! Save position
     void saveWindowLocation();
@@ -42,7 +43,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restorePosition();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint();
 
     //! Mose move
     void mouseMove( const QgsPoint &point );
@@ -60,7 +61,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void closeEvent( QCloseEvent *e ) override;
 
     //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) ); }
 
     //! When any external settings change
     void updateSettings();
@@ -70,6 +71,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Open configuration tab
     void openConfigTab();
+
+    void crsChanged();
 
   private:
 
@@ -112,7 +115,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
-    QgsMeasureTool* mTool;
+    QgsMeasureTool *mTool = nullptr;
 
     QgsPoint mLastMousePoint;
 

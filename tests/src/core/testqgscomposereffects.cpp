@@ -19,8 +19,9 @@
 #include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgscomposershape.h"
+#include "qgsproject.h"
 #include <QObject>
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
@@ -30,10 +31,9 @@ class TestQgsComposerEffects : public QObject
 
   public:
     TestQgsComposerEffects()
-        : mComposition( 0 )
-        , mComposerRect1( 0 )
-        , mComposerRect2( 0 )
-        , mMapSettings( 0 )
+      : mComposition( 0 )
+      , mComposerRect1( 0 )
+      , mComposerRect2( 0 )
     {}
 
   private slots:
@@ -45,10 +45,9 @@ class TestQgsComposerEffects : public QObject
     void transparency(); //test if composer transparency is functioning
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape *mComposerRect1;
-    QgsComposerShape *mComposerRect2;
-    QgsMapSettings *mMapSettings;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerShape *mComposerRect1 = nullptr;
+    QgsComposerShape *mComposerRect2 = nullptr;
     QString mReport;
 };
 
@@ -57,11 +56,9 @@ void TestQgsComposerEffects::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create composition with two rectangles
 
-  mComposition = new QgsComposition( *mMapSettings );
+  mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerRect1 = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerRect1->setShapeType( QgsComposerShape::Rectangle );
@@ -72,13 +69,12 @@ void TestQgsComposerEffects::initTestCase()
   mComposerRect2->setShapeType( QgsComposerShape::Rectangle );
   mComposition->addComposerShape( mComposerRect2 );
 
-  mReport = "<h1>Composer Effects Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Composer Effects Tests</h1>\n" );
 }
 
 void TestQgsComposerEffects::cleanupTestCase()
 {
   delete mComposition;
-  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
@@ -106,8 +102,8 @@ void TestQgsComposerEffects::blend_modes()
 {
   mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  QgsCompositionChecker checker( "composereffects_blend", mComposition );
-  checker.setControlPathPrefix( "composer_effects" );
+  QgsCompositionChecker checker( QStringLiteral( "composereffects_blend" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testComposition( mReport ) );
   // reset blending
   mComposerRect2->setBlendMode( QPainter::CompositionMode_SourceOver );
@@ -117,10 +113,10 @@ void TestQgsComposerEffects::transparency()
 {
   mComposerRect2->setTransparency( 50 );
 
-  QgsCompositionChecker checker( "composereffects_transparency", mComposition );
-  checker.setControlPathPrefix( "composer_effects" );
+  QgsCompositionChecker checker( QStringLiteral( "composereffects_transparency" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
   QVERIFY( checker.testComposition( mReport ) );
 }
 
-QTEST_MAIN( TestQgsComposerEffects )
+QGSTEST_MAIN( TestQgsComposerEffects )
 #include "testqgscomposereffects.moc"

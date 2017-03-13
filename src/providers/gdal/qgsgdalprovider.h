@@ -40,7 +40,7 @@ class QgsRasterPyramid;
  */
 int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,
-                                  void * pProgressArg );
+                                  void *pProgressArg );
 
 
 class QgsCoordinateTransform;
@@ -58,6 +58,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -65,179 +66,98 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *                otherwise we contact the host directly.
      *
      */
-    QgsGdalProvider( QString const & uri = QString(), bool update = false );
+    QgsGdalProvider( QString const &uri = QString(), bool update = false );
 
-    /** Create invalid provider with error */
-    QgsGdalProvider( QString const & uri, QgsError error );
+    //! Create invalid provider with error
+    QgsGdalProvider( QString const &uri, QgsError error );
 
-    //! Destructor
+
     ~QgsGdalProvider();
 
-    QgsGdalProvider * clone() const override;
+    QgsGdalProvider *clone() const override;
 
-    /** \brief   Renders the layer as an image
-     */
-    QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
-
-    /** Return a provider name
-     *
-     * Essentially just returns the provider key.  Should be used to build file
-     * dialogs so that providers can be shown with their supported types. Thus
-     * if more than one provider supports a given format, the user is able to
-     * select a specific provider to open that file.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString name() const override;
-
-
-    /** Return description
-     *
-     * Return a terse string describing what the provider is.
-     *
-     * @note
-     *
-     * Instead of being pure virtual, might be better to generalize this
-     * behavior and presume that none of the sub-classes are going to do
-     * anything strange with regards to their name or description?
-     *
-     */
     QString description() const override;
-
     virtual QgsCoordinateReferenceSystem crs() const override;
-
     virtual QgsRectangle extent() const override;
-
     bool isValid() const override;
-
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0, int theDpi = 96 ) override;
-
-    /**
-     * \brief   Returns the caption error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
+    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
-
-    /**
-     * \brief   Returns the verbose error text for the last error in this provider
-     *
-     * If an operation returns 0 (e.g. draw()), this function
-     * returns the text of the error associated with the failure.
-     * Interactive users of this provider can then, for example,
-     * call a QMessageBox to display the contents.
-     */
-
     QString lastError() override;
-
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on which
-        sublayers are visible on this provider, so it may
-        be prudent to check this value per intended operation.
-      */
     int capabilities() const override;
-
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
-
     int bandCount() const override;
-
     int colorInterpretation( int bandNo ) const override;
-
     int xBlockSize() const override;
     int yBlockSize() const override;
-
     int xSize() const override;
     int ySize() const override;
+    QString generateBandName( int bandNumber ) const override;
 
-    QString generateBandName( int theBandNumber ) const override;
-
-    /** Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
-    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    // Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data, QgsRasterBlockFeedback* feedback = nullptr ) override;
-
-    /** Read band scale for raster value
-     * @@note added in 2.3 */
+    void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     double bandScale( int bandNo ) const override;
-    /** Read band offset for raster value
-     * @@note added in 2.3 */
     double bandOffset( int bandNo ) const override;
-
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
-
-    /**
-     * Get metadata in a format suitable for feeding directly
-     * into a subset of the GUI raster properties "Metadata" tab.
-     */
     QString metadata() override;
-
-    /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const override;
     static QStringList subLayers( GDALDatasetH dataset );
 
-    bool hasStatistics( int theBandNo,
-                        int theStats = QgsRasterBandStats::All,
-                        const QgsRectangle & theExtent = QgsRectangle(),
-                        int theSampleSize = 0 ) override;
+    bool hasStatistics( int bandNo,
+                        int stats = QgsRasterBandStats::All,
+                        const QgsRectangle &boundingBox = QgsRectangle(),
+                        int sampleSize = 0 ) override;
 
-    QgsRasterBandStats bandStatistics( int theBandNo,
-                                       int theStats = QgsRasterBandStats::All,
-                                       const QgsRectangle & theExtent = QgsRectangle(),
-                                       int theSampleSize = 0 ) override;
+    QgsRasterBandStats bandStatistics( int bandNo,
+                                       int stats = QgsRasterBandStats::All,
+                                       const QgsRectangle &boundingBox = QgsRectangle(),
+                                       int sampleSize = 0 ) override;
 
-    bool hasHistogram( int theBandNo,
-                       int theBinCount = 0,
-                       double theMinimum = std::numeric_limits<double>::quiet_NaN(),
-                       double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-                       const QgsRectangle & theExtent = QgsRectangle(),
-                       int theSampleSize = 0,
-                       bool theIncludeOutOfRange = false ) override;
+    bool hasHistogram( int bandNo,
+                       int binCount = 0,
+                       double minimum = std::numeric_limits<double>::quiet_NaN(),
+                       double maximum = std::numeric_limits<double>::quiet_NaN(),
+                       const QgsRectangle &boundingBox = QgsRectangle(),
+                       int sampleSize = 0,
+                       bool includeOutOfRange = false ) override;
 
-    QgsRasterHistogram histogram( int theBandNo,
-                                  int theBinCount = 0,
-                                  double theMinimum = std::numeric_limits<double>::quiet_NaN(),
-                                  double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-                                  const QgsRectangle & theExtent = QgsRectangle(),
-                                  int theSampleSize = 0,
-                                  bool theIncludeOutOfRange = false ) override;
+    QgsRasterHistogram histogram( int bandNo,
+                                  int binCount = 0,
+                                  double minimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double maximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle &boundingBox = QgsRectangle(),
+                                  int sampleSize = 0,
+                                  bool includeOutOfRange = false ) override;
 
-    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
-                           const QString & theResamplingMethod = "NEAREST",
-                           QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
-                           const QStringList & theCreateOptions = QStringList() ) override;
+    QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
+                           const QString &resamplingMethod = "NEAREST",
+                           QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
+                           const QStringList &createOptions = QStringList() ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
-    /** \brief Close data set and release related data */
+    //! \brief Close data set and release related data
     void closeDataset();
 
-    /** Emit a signal to notify of the progress event. */
-    void emitProgress( int theType, double theProgress, QString theMessage );
-    void emitProgressUpdate( int theProgress );
+    //! Emit a signal to notify of the progress event.
+    void emitProgress( int type, double value, const QString &message );
+    void emitProgressUpdate( int progress );
 
     static QMap<QString, QString> supportedMimes();
 
-    /** Writes into the provider datasource*/
-    bool write( void* data, int band, int width, int height, int xOffset, int yOffset ) override;
+    bool isEditable() const override;
+    bool setEditable( bool enabled ) override;
+    bool write( void *data, int band, int width, int height, int xOffset, int yOffset ) override;
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
-
-    /** Remove dataset*/
     bool remove() override;
 
-    QString validateCreationOptions( const QStringList& createOptions, const QString& format ) override;
+    QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
-                                           const QStringList & theConfigOptions, const QString & fileFormat ) override;
-
+                                           const QStringList &configOptions, const QString &fileFormat ) override;
   private:
     // update mode
     bool mUpdate;
@@ -245,7 +165,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
-    /** Do some initialization on the dataset (e.g. handling of south-up datasets)*/
+    //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
 
     /**
@@ -253,7 +173,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     bool mValid;
 
-    /** \brief Whether this raster has overviews / pyramids or not */
+    //! \brief Whether this raster has overviews / pyramids or not
     bool mHasPyramids;
 
     /** \brief Gdal data types used to represent data in in QGIS,
@@ -276,21 +196,27 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // List of estimated max values, index 0 for band 1
     //mutable QList<double> mMaximum;
 
-    /** \brief Pointer to the gdaldataset */
+    //! \brief Pointer to the gdaldataset
     GDALDatasetH mGdalBaseDataset;
 
-    /** \brief Pointer to the gdaldataset (possibly warped vrt) */
+    //! \brief Pointer to the gdaldataset (possibly warped vrt)
     GDALDatasetH mGdalDataset;
 
-    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
+    //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
     double mGeoTransform[6];
 
     QgsCoordinateReferenceSystem mCrs;
 
     QList<QgsRasterPyramid> mPyramidList;
 
-    /** \brief sublayers list saved for subsequent access */
+    //! \brief sublayers list saved for subsequent access
     QStringList mSubLayers;
+
+    //! Whether a per-dataset mask band is exposed as an alpha band for the point of view of the rest of the application.
+    bool mMaskBandExposedAsAlpha = false;
+
+    //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
+    GDALRasterBandH getBand( int bandNo ) const;
 };
 
 #endif

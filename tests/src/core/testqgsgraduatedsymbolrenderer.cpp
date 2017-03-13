@@ -12,12 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QSettings>
-#include <QSharedPointer>
 
 #include "qgsgraduatedsymbolrenderer.h"
 
@@ -137,5 +136,5 @@ void TestQgsGraduatedSymbolRenderer::rangesHaveGaps()
   QVERIFY( renderer.rangesHaveGaps() );
 }
 
-QTEST_MAIN( TestQgsGraduatedSymbolRenderer )
+QGSTEST_MAIN( TestQgsGraduatedSymbolRenderer )
 #include "testqgsgraduatedsymbolrenderer.moc"

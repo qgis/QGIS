@@ -28,22 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 
 try:
-    import matplotlib.pyplot
-    assert matplotlib  # NOQA silence pyflakes
-    hasMatplotlib = True
+    import plotly  # NOQA
+    hasPlotly = True
 except:
-    hasMatplotlib = False
+    hasPlotly = False
 
-try:
-    import shapely
-    assert shapely  # silence pyflakes
-    hasShapely = True
-except:
-    hasShapely = False
-
-from qgis.PyQt.QtGui import QIcon
-
-from qgis.core import Qgis, QgsWkbTypes
+from qgis.core import QgsApplication
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
@@ -56,6 +46,7 @@ from .VectorGridPolygons import VectorGridPolygons
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .ExtractByLocation import ExtractByLocation
+from .ExtractByExpression import ExtractByExpression
 from .PointsInPolygon import PointsInPolygon
 from .PointsInPolygonUnique import PointsInPolygonUnique
 from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -92,7 +83,6 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .SelectByLocation import SelectByLocation
 from .Union import Union
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .Eliminate import Eliminate
 from .SpatialJoin import SpatialJoin
 from .DeleteColumn import DeleteColumn
 from .DeleteHoles import DeleteHoles
@@ -131,13 +121,16 @@ from .RandomPointsPolygonsFixed import RandomPointsPolygonsFixed
 from .RandomPointsPolygonsVariable import RandomPointsPolygonsVariable
 from .RandomPointsAlongLines import RandomPointsAlongLines
 from .PointsToPaths import PointsToPaths
+from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .PostGISExecuteSQL import PostGISExecuteSQL
+from .ImportIntoSpatialite import ImportIntoSpatialite
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .SetVectorStyle import SetVectorStyle
 from .SetRasterStyle import SetRasterStyle
 from .SelectByExpression import SelectByExpression
 from .SelectByAttributeSum import SelectByAttributeSum
 from .HypsometricCurves import HypsometricCurves
+from .SplitWithLines import SplitWithLines
 from .SplitLinesWithLines import SplitLinesWithLines
 from .FieldsMapper import FieldsMapper
 from .Datasources2Vrt import Datasources2Vrt
@@ -158,6 +151,38 @@ from .PolygonCentroids import PolygonCentroids
 from .Translate import Translate
 from .SingleSidedBuffer import SingleSidedBuffer
 from .PointsAlongGeometry import PointsAlongGeometry
+from .Aspect import Aspect
+from .Slope import Slope
+from .Ruggedness import Ruggedness
+from .Hillshade import Hillshade
+from .Relief import Relief
+from .IdwInterpolation import IdwInterpolation
+from .TinInterpolation import TinInterpolation
+from .ZonalStatisticsQgis import ZonalStatisticsQgis
+from .RemoveNullGeometry import RemoveNullGeometry
+from .ExtendLines import ExtendLines
+from .ExtractSpecificNodes import ExtractSpecificNodes
+from .GeometryByExpression import GeometryByExpression
+from .SnapGeometries import SnapGeometriesToLayer
+from .PoleOfInaccessibility import PoleOfInaccessibility
+from .RasterCalculator import RasterCalculator
+from .CreateAttributeIndex import CreateAttributeIndex
+from .DropGeometry import DropGeometry
+from .BasicStatistics import BasicStatisticsForField
+from .Heatmap import Heatmap
+from .Orthogonalize import Orthogonalize
+from .ShortestPathPointToPoint import ShortestPathPointToPoint
+from .ShortestPathPointToLayer import ShortestPathPointToLayer
+from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+from .ServiceAreaFromPoint import ServiceAreaFromPoint
+from .ServiceAreaFromLayer import ServiceAreaFromLayer
+from .TruncateTable import TruncateTable
+from .Polygonize import Polygonize
+from .FixGeometry import FixGeometry
+from .ExecuteSQL import ExecuteSQL
+from .FindProjection import FindProjection
+from .TopoColors import TopoColor
+from .EliminateSelection import EliminateSelection
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -166,8 +191,8 @@ pluginPath = os.path.normpath(os.path.join(
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
-        self._icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.svg'))
+        super().__init__()
+        self._icon = QgsApplication.getThemeIcon("/providerQgis.svg")
 
         self.alglist = [SumLines(), PointsInPolygon(),
                         PointsInPolygonWeighted(), PointsInPolygonUnique(),
@@ -179,7 +204,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(),
                         PolygonsToLines(), LinesToPolygons(), ExtractNodes(),
-                        Eliminate(), ConvexHull(), FixedDistanceBuffer(),
+                        ConvexHull(), FixedDistanceBuffer(),
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
@@ -202,22 +227,36 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
+                        SpatialiteExecuteSQL(), ImportIntoSpatialite(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
-                        SplitLinesWithLines(), CreateConstantRaster(),
+                        SplitWithLines(), SplitLinesWithLines(), CreateConstantRaster(),
                         FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
                         CheckValidity(), OrientedMinimumBoundingBox(), Smooth(),
                         ReverseLineDirection(), SpatialIndex(), DefineProjection(),
                         RectanglesOvalsDiamondsVariable(),
                         RectanglesOvalsDiamondsFixed(), MergeLines(),
                         BoundingBox(), Boundary(), PointOnSurface(),
-                        OffsetLine(), PolygonCentroids(),
-                        Translate(), SingleSidedBuffer(),
-                        PointsAlongGeometry()
+                        OffsetLine(), PolygonCentroids(), Translate(),
+                        SingleSidedBuffer(), PointsAlongGeometry(),
+                        Aspect(), Slope(), Ruggedness(), Hillshade(),
+                        Relief(), ZonalStatisticsQgis(),
+                        IdwInterpolation(), TinInterpolation(),
+                        RemoveNullGeometry(), ExtractByExpression(),
+                        ExtendLines(), ExtractSpecificNodes(),
+                        GeometryByExpression(), SnapGeometriesToLayer(),
+                        PoleOfInaccessibility(), CreateAttributeIndex(),
+                        DropGeometry(), BasicStatisticsForField(),
+                        RasterCalculator(), Heatmap(), Orthogonalize(),
+                        ShortestPathPointToPoint(), ShortestPathPointToLayer(),
+                        ShortestPathLayerToPoint(), ServiceAreaFromPoint(),
+                        ServiceAreaFromLayer(), TruncateTable(), Polygonize(),
+                        FixGeometry(), ExecuteSQL(), FindProjection(),
+                        TopoColor(), EliminateSelection()
                         ]
 
-        if hasMatplotlib:
+        if hasPlotly:
             from .VectorLayerHistogram import VectorLayerHistogram
             from .RasterLayerHistogram import RasterLayerHistogram
             from .VectorLayerScatterplot import VectorLayerScatterplot
@@ -225,21 +264,12 @@ class QGISAlgorithmProvider(AlgorithmProvider):
             from .BarPlot import BarPlot
             from .PolarPlot import PolarPlot
 
-            self.alglist.extend([
-                VectorLayerHistogram(), RasterLayerHistogram(),
-                VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
-                PolarPlot(),
-            ])
+            self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+                                 VectorLayerScatterplot(), MeanAndStdDevPlot(),
+                                 BarPlot(), PolarPlot()])
 
-        if hasShapely:
-            from .Polygonize import Polygonize
-            self.alglist.extend([Polygonize()])
-
-        if Qgis.QGIS_VERSION_INT >= 21300:
-            from .ExecuteSQL import ExecuteSQL
-            self.alglist.extend([ExecuteSQL()])
-
-        self.externalAlgs = []  # to store algs added by 3rd party plugins as scripts
+        # to store algs added by 3rd party plugins as scripts
+        self.externalAlgs = []
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
@@ -255,14 +285,17 @@ class QGISAlgorithmProvider(AlgorithmProvider):
     def unload(self):
         AlgorithmProvider.unload(self)
 
-    def getName(self):
+    def id(self):
         return 'qgis'
 
-    def getDescription(self):
-        return self.tr('QGIS geoalgorithms')
+    def name(self):
+        return 'QGIS'
 
-    def getIcon(self):
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def _loadAlgorithms(self):
         self.algs = list(self.alglist) + self.externalAlgs

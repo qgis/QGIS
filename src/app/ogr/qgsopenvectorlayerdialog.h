@@ -21,7 +21,7 @@
 
 #include <ui_qgsopenvectorlayerdialogbase.h>
 #include <QDialog>
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 /**
  *  Class for a  dialog to select the type and source for ogr vectors, supports
@@ -32,7 +32,7 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     Q_OBJECT
 
   public:
-    QgsOpenVectorLayerDialog( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsOpenVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsOpenVectorLayerDialog();
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
@@ -82,9 +82,9 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     void on_btnNew_clicked();
     void on_btnEdit_clicked();
     void on_btnDelete_clicked();
-    void on_cmbDatabaseTypes_currentIndexChanged( const QString & text );
-    void on_cmbConnections_currentIndexChanged( const QString & text );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
+    void on_cmbConnections_currentIndexChanged( const QString &text );
+    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#loading-a-layer-from-a-file" ) ); }
 };
 
 #endif // QGSOPENVECTORDIALOG_H

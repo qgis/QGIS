@@ -14,50 +14,53 @@
  ***************************************************************************/
 #include "qgsellipsesymbollayerwidget.h"
 #include "qgsellipsesymbollayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 
-QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
-    , mLayer( nullptr )
+QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+  , mLayer( nullptr )
 {
   setupUi( this );
 
-  mSymbolWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
-  mSymbolHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
-  mOutlineWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
-  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels );
+  mSymbolWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mSymbolHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnChangeColorFill->setAllowAlpha( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
-  btnChangeColorFill->setContext( "symbology" );
+  btnChangeColorFill->setContext( QStringLiteral( "symbology" ) );
   btnChangeColorFill->setShowNoColor( true );
   btnChangeColorFill->setNoColorString( tr( "Transparent fill" ) );
-  btnChangeColorBorder->setAllowAlpha( true );
-  btnChangeColorBorder->setColorDialogTitle( tr( "Select border color" ) );
-  btnChangeColorBorder->setContext( "symbology" );
-  btnChangeColorBorder->setShowNoColor( true );
-  btnChangeColorBorder->setNoColorString( tr( "Transparent border" ) );
+  btnChangeColorStroke->setAllowAlpha( true );
+  btnChangeColorStroke->setColorDialogTitle( tr( "Select stroke color" ) );
+  btnChangeColorStroke->setContext( QStringLiteral( "symbology" ) );
+  btnChangeColorStroke->setShowNoColor( true );
+  btnChangeColorStroke->setNoColorString( tr( "Transparent stroke" ) );
 
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
   mRotationSpinBox->setClearValue( 0.0 );
 
   QStringList names;
-  names << "circle" << "rectangle" << "diamond" << "cross" << "triangle" << "right_half_triangle" << "left_half_triangle" << "semi_circle";
+  names << QStringLiteral( "circle" ) << QStringLiteral( "rectangle" ) << QStringLiteral( "diamond" ) << QStringLiteral( "cross" ) << QStringLiteral( "triangle" ) << QStringLiteral( "right_half_triangle" ) << QStringLiteral( "left_half_triangle" ) << QStringLiteral( "semi_circle" );
   QSize iconSize = mShapeListWidget->iconSize();
 
-  Q_FOREACH ( const QString& name, names )
+  Q_FOREACH ( const QString &name, names )
   {
-    QgsEllipseSymbolLayer* lyr = new QgsEllipseSymbolLayer();
+    QgsEllipseSymbolLayer *lyr = new QgsEllipseSymbolLayer();
     lyr->setSymbolName( name );
-    lyr->setOutlineColor( QColor( 0, 0, 0 ) );
+    lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     lyr->setFillColor( QColor( 200, 200, 200 ) );
     lyr->setSymbolWidth( 4 );
     lyr->setSymbolHeight( 2 );
     QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, iconSize );
-    QListWidgetItem* item = new QListWidgetItem( icon, "", mShapeListWidget );
+    QListWidgetItem *item = new QListWidgetItem( icon, QLatin1String( "" ), mShapeListWidget );
     item->setToolTip( name );
     item->setData( Qt::UserRole, name );
     delete lyr;
@@ -68,20 +71,20 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer* 
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
 }
 
-void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != "EllipseMarker" )
+  if ( !layer || layer->layerType() != QLatin1String( "EllipseMarker" ) )
   {
     return;
   }
 
-  mLayer = static_cast<QgsEllipseSymbolLayer*>( layer );
+  mLayer = static_cast<QgsEllipseSymbolLayer *>( layer );
   mWidthSpinBox->setValue( mLayer->symbolWidth() );
   mHeightSpinBox->setValue( mLayer->symbolHeight() );
   mRotationSpinBox->setValue( mLayer->angle() );
-  mOutlineStyleComboBox->setPenStyle( mLayer->outlineStyle() );
-  mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
-  btnChangeColorBorder->setColor( mLayer->outlineColor() );
+  mStrokeStyleComboBox->setPenStyle( mLayer->strokeStyle() );
+  mStrokeWidthSpinBox->setValue( mLayer->strokeWidth() );
+  btnChangeColorStroke->setColor( mLayer->strokeColor() );
   btnChangeColorFill->setColor( mLayer->fillColor() );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
@@ -94,8 +97,8 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   blockComboSignals( true );
   mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
   mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
-  mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
-  mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
+  mStrokeWidthUnitWidget->setUnit( mLayer->strokeWidthUnit() );
+  mStrokeWidthUnitWidget->setMapUnitScale( mLayer->strokeWidthMapUnitScale() );
   mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
   mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
@@ -108,22 +111,22 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   blockComboSignals( false );
 
-  registerDataDefinedButton( mSymbolWidthDDBtn, "width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mSymbolHeightDDBtn, "height", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mRotationDDBtn, "rotation", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
-  registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
-  registerDataDefinedButton( mFillColorDDBtn, "fill_color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
-  registerDataDefinedButton( mBorderColorDDBtn, "outline_color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
-  registerDataDefinedButton( mOutlineStyleDDBtn, "outline_style", QgsDataDefinedButton::String, QgsDataDefinedButton::lineStyleDesc() );
-  registerDataDefinedButton( mJoinStyleDDBtn, "join_style", QgsDataDefinedButton::String, QgsDataDefinedButton::penJoinStyleDesc() );
-  registerDataDefinedButton( mShapeDDBtn, "symbol_name", QgsDataDefinedButton::String, QgsDataDefinedButton::markerStyleDesc() );
-  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
+  registerDataDefinedButton( mSymbolWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mSymbolHeightDDBtn, QgsSymbolLayer::PropertyHeight );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
+  registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
+  registerDataDefinedButton( mFillColorDDBtn, QgsSymbolLayer::PropertyFillColor );
+  registerDataDefinedButton( mStrokeColorDDBtn, QgsSymbolLayer::PropertyStrokeColor );
+  registerDataDefinedButton( mStrokeStyleDDBtn, QgsSymbolLayer::PropertyStrokeStyle );
+  registerDataDefinedButton( mJoinStyleDDBtn, QgsSymbolLayer::PropertyJoinStyle );
+  registerDataDefinedButton( mShapeDDBtn, QgsSymbolLayer::PropertyName );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
 
 }
 
-QgsSymbolLayer* QgsEllipseSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsEllipseSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -132,7 +135,7 @@ void QgsEllipseSymbolLayerWidget::on_mShapeListWidget_itemSelectionChanged()
 {
   if ( mLayer )
   {
-    QListWidgetItem* item = mShapeListWidget->currentItem();
+    QListWidgetItem *item = mShapeListWidget->currentItem();
     if ( item )
     {
       mLayer->setSymbolName( item->data( Qt::UserRole ).toString() );
@@ -168,38 +171,38 @@ void QgsEllipseSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
   }
 }
 
-void QgsEllipseSymbolLayerWidget::on_mOutlineStyleComboBox_currentIndexChanged( int index )
+void QgsEllipseSymbolLayerWidget::on_mStrokeStyleComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
 
   if ( mLayer )
   {
-    mLayer->setOutlineStyle( mOutlineStyleComboBox->penStyle() );
+    mLayer->setStrokeStyle( mStrokeStyleComboBox->penStyle() );
     emit changed();
   }
 }
 
-void QgsEllipseSymbolLayerWidget::on_mOutlineWidthSpinBox_valueChanged( double d )
+void QgsEllipseSymbolLayerWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
-    mLayer->setOutlineWidth( d );
+    mLayer->setStrokeWidth( d );
     emit changed();
   }
 }
 
-void QgsEllipseSymbolLayerWidget::on_btnChangeColorBorder_colorChanged( const QColor& newColor )
+void QgsEllipseSymbolLayerWidget::on_btnChangeColorStroke_colorChanged( const QColor &newColor )
 {
   if ( !mLayer )
   {
     return;
   }
 
-  mLayer->setOutlineColor( newColor );
+  mLayer->setStrokeColor( newColor );
   emit changed();
 }
 
-void QgsEllipseSymbolLayerWidget::on_btnChangeColorFill_colorChanged( const QColor& newColor )
+void QgsEllipseSymbolLayerWidget::on_btnChangeColorFill_colorChanged( const QColor &newColor )
 {
   if ( !mLayer )
   {
@@ -220,12 +223,12 @@ void QgsEllipseSymbolLayerWidget::on_mSymbolWidthUnitWidget_changed()
   }
 }
 
-void QgsEllipseSymbolLayerWidget::on_mOutlineWidthUnitWidget_changed()
+void QgsEllipseSymbolLayerWidget::on_mStrokeWidthUnitWidget_changed()
 {
   if ( mLayer )
   {
-    mLayer->setOutlineWidthUnit( mOutlineWidthUnitWidget->unit() );
-    mLayer->setOutlineWidthMapUnitScale( mOutlineWidthUnitWidget->getMapUnitScale() );
+    mLayer->setStrokeWidthUnit( mStrokeWidthUnitWidget->unit() );
+    mLayer->setStrokeWidthMapUnitScale( mStrokeWidthUnitWidget->getMapUnitScale() );
     emit changed();
   }
 }
@@ -259,12 +262,12 @@ void QgsEllipseSymbolLayerWidget::penJoinStyleChanged()
 void QgsEllipseSymbolLayerWidget::blockComboSignals( bool block )
 {
   mSymbolWidthUnitWidget->blockSignals( block );
-  mOutlineWidthUnitWidget->blockSignals( block );
+  mStrokeWidthUnitWidget->blockSignals( block );
   mSymbolHeightUnitWidget->blockSignals( block );
   mHorizontalAnchorComboBox->blockSignals( block );
   mVerticalAnchorComboBox->blockSignals( block );
   mSymbolWidthUnitWidget->blockSignals( block );
-  mOutlineWidthUnitWidget->blockSignals( block );
+  mStrokeWidthUnitWidget->blockSignals( block );
   mSymbolHeightUnitWidget->blockSignals( block );
   mOffsetUnitWidget->blockSignals( block );
   cboJoinStyle->blockSignals( block );
@@ -274,7 +277,7 @@ void QgsEllipseSymbolLayerWidget::on_mHorizontalAnchorComboBox_currentIndexChang
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -283,7 +286,7 @@ void QgsEllipseSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexChanged
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
     emit changed();
   }
 }

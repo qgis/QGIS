@@ -48,6 +48,8 @@ class QgsColorRamp
      */
     virtual QString type() const = 0;
 
+    virtual void invert();
+
     /** Creates a clone of the color ramp.
      */
     virtual QgsColorRamp* clone() const = 0 /Factory/;
@@ -118,6 +120,7 @@ class QgsGradientColorRamp : QgsColorRamp
     virtual double value( int index ) const;
     virtual QColor color( double value ) const;
     virtual QString type() const;
+    virtual void invert();
     virtual QgsGradientColorRamp* clone() const /Factory/;
     virtual QgsStringMap properties() const;
 
@@ -180,12 +183,12 @@ class QgsGradientColorRamp : QgsColorRamp
      */
     QgsGradientStopsList stops() const;
 
-    /** Returns any additional info attached to the gradient ramp (eg authorship notes)
+    /** Returns any additional info attached to the gradient ramp (e.g., authorship notes)
      * @see setInfo()
      */
     QgsStringMap info() const;
 
-    /** Sets additional info to attach to the gradient ramp (eg authorship notes)
+    /** Sets additional info to attach to the gradient ramp (e.g., authorship notes)
      * @param info map of string info to attach
      * @see info()
      */
@@ -333,6 +336,7 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
     virtual double value( int index ) const;
     virtual QColor color( double value ) const;
     virtual QString type() const;
+    virtual void invert();
     virtual QgsPresetSchemeColorRamp* clone() const /Factory/;
     virtual QgsStringMap properties() const;
     int count() const;
@@ -355,7 +359,8 @@ class QgsColorBrewerColorRamp : QgsColorRamp
 %End
   public:
     QgsColorBrewerColorRamp( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
-                                     int colors = DEFAULT_COLORBREWER_COLORS );
+                                     int colors = DEFAULT_COLORBREWER_COLORS,
+                                     bool inverted = false );
 
     static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
@@ -364,6 +369,8 @@ class QgsColorBrewerColorRamp : QgsColorRamp
     virtual QColor color( double value ) const;
 
     virtual QString type() const;
+
+    virtual void invert();
 
     virtual QgsColorBrewerColorRamp* clone() const /Factory/;
 
@@ -394,16 +401,30 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
 #include <qgscolorramp.h>
 %End
   public:
+    /** Constructor for QgsCptCityColorRamp
+     * @param schemeName cpt-city scheme name
+     * @param variantName cpt-city variant name
+     * @param inverted invert ramp ordering
+     * @param doLoadFile load cpt-city ramp from file
+     */
     QgsCptCityColorRamp( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
                            const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
-                           bool doLoadFile = true );
+                           bool inverted = false, bool doLoadFile = true );
+    /** Constructor for QgsCptCityColorRamp
+     * @param schemeName cpt-city scheme name
+     * @param variantList cpt-city variant list
+     * @param variantName cpt-city variant name
+     * @param inverted invert ramp ordering
+     * @param doLoadFile load cpt-city ramp from file
+     */
     QgsCptCityColorRamp( const QString& schemeName, const QStringList& variantList,
-                           const QString& variantName = QString(), bool doLoadFile = true );
+                           const QString& variantName = QString(), bool inverted = false,
+                           bool doLoadFile = true );
 
     static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
 
     virtual QString type() const;
-
+    virtual void invert();
     virtual QgsCptCityColorRamp* clone() const /Factory/;
     void copy( const QgsCptCityColorRamp* other );
     QgsGradientColorRamp* cloneGradientRamp() const /Factory/;

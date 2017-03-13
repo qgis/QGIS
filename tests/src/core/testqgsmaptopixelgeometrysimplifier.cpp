@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -114,14 +114,14 @@ void TestQgsMapToPixelGeometrySimplifier::testDefaultGeometry()
   int fl = QgsMapToPixelSimplifier::SimplifyGeometry;
   QgsMapToPixelSimplifier simplifier( fl, 10.0 );
   QgsGeometry ret = simplifier.simplify( g );
-  QVERIFY( ret.isEmpty() ); // not simplifiable
+  QVERIFY( ret.isNull() ); // not simplifiable
 }
 
 void TestQgsMapToPixelGeometrySimplifier::testLine1()
 {
   // NOTE: we need more than 4 vertices, or the line will not be
   //       reduced at all by the algorithm
-  QgsGeometry g( QgsGeometry::fromWkt( "LINESTRING(0 0,1 1,2 0,3 1,4 0,20 1,20 0,10 0,5 0)" ) );
+  QgsGeometry g( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(0 0,1 1,2 0,3 1,4 0,20 1,20 0,10 0,5 0)" ) ) );
   int fl;
   QString wkt;
 
@@ -188,7 +188,7 @@ void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
 
 void TestQgsMapToPixelGeometrySimplifier::testCircularString()
 {
-  static const QString WKT( "MultiCurve (LineString (5 5, 3 5, 3 3, 0 3),CircularString (0 0, 2 1, 2 2))" );
+  static const QString WKT( QStringLiteral( "MultiCurve (LineString (5 5, 3 5, 3 3, 0 3),CircularString (0 0, 2 1, 2 2))" ) );
   const QgsGeometry g( QgsGeometry::fromWkt( WKT ) );
 
   const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 0.1 );
@@ -197,14 +197,14 @@ void TestQgsMapToPixelGeometrySimplifier::testCircularString()
 
 void TestQgsMapToPixelGeometrySimplifier::testVisvalingam()
 {
-  QString wkt( "LineString (0 0, 30 0, 31 30, 32 0, 40 0, 41 100, 42 0, 50 0)" );
+  QString wkt( QStringLiteral( "LineString (0 0, 30 0, 31 30, 32 0, 40 0, 41 100, 42 0, 50 0)" ) );
   QgsGeometry g = QgsGeometry::fromWkt( wkt );
 
   const QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 7, QgsMapToPixelSimplifier::Visvalingam );
-  QString expectedWkt( "LineString (0 0, 40 0, 41 100, 42 0, 50 0)" );
+  QString expectedWkt( QStringLiteral( "LineString (0 0, 40 0, 41 100, 42 0, 50 0)" ) );
 
   QCOMPARE( simplifier.simplify( g ).exportToWkt(), expectedWkt );
 }
 
-QTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )
+QGSTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )
 #include "testqgsmaptopixelgeometrysimplifier.moc"

@@ -18,21 +18,21 @@
 #include "qgsvectorlayer.h"
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mFilters( AllTypes )
-    , mModel( new QgsFieldModel( this ) )
+  : QSortFilterProxyModel( parent )
+  , mFilters( AllTypes )
+  , mModel( new QgsFieldModel( this ) )
 {
   setSourceModel( mModel );
 }
 
-QgsFieldProxyModel *QgsFieldProxyModel::setFilters( const Filters& filters )
+QgsFieldProxyModel *QgsFieldProxyModel::setFilters( QgsFieldProxyModel::Filters filters )
 {
   mFilters = filters;
   invalidateFilter();
   return this;
 }
 
-bool QgsFieldProxyModel::isReadOnly( const QModelIndex& index ) const
+bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 {
   QVariant originVariant = sourceModel()->data( index, QgsFieldModel::FieldOriginRole );
   if ( originVariant.isNull() )
@@ -79,13 +79,13 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   if ( !ok )
     return true;
 
-  if (( mFilters.testFlag( String ) && type == QVariant::String ) ||
-      ( mFilters.testFlag( LongLong ) && type == QVariant::LongLong ) ||
-      ( mFilters.testFlag( Int ) && type == QVariant::Int ) ||
-      ( mFilters.testFlag( Double ) && type == QVariant::Double ) ||
-      ( mFilters.testFlag( Date ) && type == QVariant::Date ) ||
-      ( mFilters.testFlag( Date ) && type == QVariant::DateTime ) ||
-      ( mFilters.testFlag( Time ) && type == QVariant::Time ) )
+  if ( ( mFilters.testFlag( String ) && type == QVariant::String ) ||
+       ( mFilters.testFlag( LongLong ) && type == QVariant::LongLong ) ||
+       ( mFilters.testFlag( Int ) && type == QVariant::Int ) ||
+       ( mFilters.testFlag( Double ) && type == QVariant::Double ) ||
+       ( mFilters.testFlag( Date ) && type == QVariant::Date ) ||
+       ( mFilters.testFlag( Date ) && type == QVariant::DateTime ) ||
+       ( mFilters.testFlag( Time ) && type == QVariant::Time ) )
     return true;
 
   return false;
@@ -93,6 +93,12 @@ bool QgsFieldProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
 
 bool QgsFieldProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+  // empty field is always first
+  if ( sourceModel()->data( left, QgsFieldModel::IsEmptyRole ).toBool() )
+    return true;
+  else if ( sourceModel()->data( right, QgsFieldModel::IsEmptyRole ).toBool() )
+    return false;
+
   // order is field order, then expressions
   bool lok, rok;
   int leftId = sourceModel()->data( left, QgsFieldModel::FieldIndexRole ).toInt( &lok );

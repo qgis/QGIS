@@ -1,4 +1,4 @@
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 
 #include <qgspostgresconn.h>
@@ -10,8 +10,8 @@ class TestQgsPostgresConn: public QObject
     void quotedValueHstore()
     {
       QVariantMap map;
-      map["1"] = "2";
-      map["a"] = "b \"c' \\x";
+      map[QStringLiteral( "1" )] = "2";
+      map[QStringLiteral( "a" )] = "b \"c' \\x";
 
       const QString actual = QgsPostgresConn::quotedValue( map );
       QCOMPARE( actual, QString( "E'\"1\"=>\"2\",\"a\"=>\"b \\\\\"c\\' \\\\\\\\x\"'::hstore" ) );
@@ -27,7 +27,7 @@ class TestQgsPostgresConn: public QObject
     void quotedValueStringArray()
     {
       QStringList list;
-      list << "a" << "b \"c' \\x";
+      list << QStringLiteral( "a" ) << QStringLiteral( "b \"c' \\x" );
       const QString actual = QgsPostgresConn::quotedValue( list );
       QCOMPARE( actual, QString( "E'{\"a\",\"b \\\\\"c\\' \\\\\\\\x\"}'" ) );
     }
@@ -42,5 +42,5 @@ class TestQgsPostgresConn: public QObject
 
 };
 
-QTEST_MAIN( TestQgsPostgresConn )
+QGSTEST_MAIN( TestQgsPostgresConn )
 #include "testqgspostgresconn.moc"

@@ -18,6 +18,7 @@
 
 #define DIAGRAM_NAME_HISTOGRAM "Histogram"
 
+#include "qgis_core.h"
 #include "qgsdiagram.h"
 #include <QPen>
 #include <QBrush>
@@ -37,15 +38,14 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
 {
   public:
     QgsHistogramDiagram();
-    ~QgsHistogramDiagram();
 
-    virtual QgsHistogramDiagram* clone() const override;
+    virtual QgsHistogramDiagram *clone() const override;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) override;
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) override;
-    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) override;
-    double legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const override;
+    QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
+    QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
+    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
     QString diagramName() const override { return DIAGRAM_NAME_HISTOGRAM; }
 
   private:

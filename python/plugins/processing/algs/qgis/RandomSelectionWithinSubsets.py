@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -56,7 +57,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
     def defineCharacteristics(self):
-        self.allowOnlyOpenedLayers = True
         self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
@@ -74,7 +74,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, feedback):
         filename = self.getParameterValue(self.INPUT)
 
         layer = dataobjects.getObjectFromUri(filename)
@@ -82,7 +82,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         layer.removeSelection()
-        index = layer.fieldNameIndex(field)
+        index = layer.fields().lookupField(field)
 
         unique = vector.getUniqueValues(layer, index)
         featureCount = layer.featureCount()
@@ -115,7 +115,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                     if attrs[index] == i:
                         FIDs.append(inFeat.id())
                     current += 1
-                    progress.setPercentage(int(current * total))
+                    feedback.setProgress(int(current * total))
 
                 if method == 1:
                     selValue = int(round(value * len(FIDs), 0))
@@ -130,6 +130,6 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
                 selran.extend(selFeat)
             layer.selectByIds(selran)
         else:
-            layer.selectByIds(range(featureCount))  # FIXME: implies continuous feature ids
+            layer.selectByIds(list(range(featureCount)))  # FIXME: implies continuous feature ids
 
         self.setOutputValue(self.OUTPUT, filename)

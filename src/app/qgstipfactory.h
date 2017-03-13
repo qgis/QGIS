@@ -18,6 +18,7 @@
 
 #include "qgstip.h"
 #include <QList>
+#include "qgis_app.h"
 
 /** \ingroup app
 * \brief A factory class to serve up tips to the user.
@@ -31,26 +32,30 @@ class APP_EXPORT QgsTipFactory : public QObject
 {
     Q_OBJECT //used for tr() so we don't need to do QObject::tr()
   public:
-    /** Constructor */
+    //! Constructor
     QgsTipFactory();
-    /** Destructor */
+
     ~QgsTipFactory();
+
     /** Get a random tip (generic or gui-centric)
      * @return An QgsTip containing the tip
      */
     QgsTip getTip();
+
     /** Get a specific tip (generic or gui-centric).
-     * @param thePosition The tip returned will be based on the
-     *        number passed in as thePosition. If the
+     * @param position The tip returned will be based on the
+     *        number passed in as position. If the
      *        position is invalid, an empty string will be
      *        returned.
      * @return An QgsTip containing the tip
      */
-    QgsTip getTip( int thePosition );
+    QgsTip getTip( int position );
+
     /** Get a random generic tip
      * @return An QgsTip containing the tip
      */
     QgsTip getGenericTip();
+
     /** Get a random gui-centric tip
      * @return An QgsTip  containing the tip
      */
@@ -60,9 +65,9 @@ class APP_EXPORT QgsTipFactory : public QObject
     int count();
 
   private:
-    void addGenericTip( const QgsTip& );
-    void addGuiTip( const QgsTip& );
-    int randomNumber( int theMax );
+    void addGenericTip( const QgsTip & );
+    void addGuiTip( const QgsTip & );
+    int randomNumber( int max );
     //@TODO move tipts into a sqlite db
     QList <QgsTip> mGenericTips;
     QList <QgsTip> mGuiTips;

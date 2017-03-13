@@ -21,6 +21,7 @@
 
 
 #include "qgsscalecombobox.h"
+#include "qgis_gui.h"
 
 class QgsMapCanvas;
 
@@ -38,24 +39,22 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
   public:
     explicit QgsScaleWidget( QWidget *parent = nullptr );
 
-    virtual ~QgsScaleWidget();
-
     //! shows a button to set the scale to the current scale of the map canvas next to the combobox
     //! @note the map canvas must be defined to show the button
     void setShowCurrentScaleButton( bool showCurrentScaleButton );
     bool showCurrentScaleButton() { return mShowCurrentScaleButton;}
 
     //! set the map canvas associated to the current button
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     //! Function to read the selected scale as text
     QString scaleString() { return mScaleComboBox->scaleString(); }
     //! Function to set the selected scale from text
-    bool setScaleString( const QString& scaleTxt ) { return mScaleComboBox->setScaleString( scaleTxt ); }
+    bool setScaleString( const QString &scaleTxt ) { return mScaleComboBox->setScaleString( scaleTxt ); }
     //! Function to read the selected scale as double
     double scale() const { return mScaleComboBox->scale();}
     //! Function to set the selected scale from double
-    void setScale( double scale ) { return mScaleComboBox->setScale( scale ); }
+    void setScale( double scale );
     //! Function to read the min scale
     double minScale() const { return mScaleComboBox->minScale(); }
 
@@ -64,7 +63,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     // be expected.
     static QString toString( double scale ) { return QgsScaleComboBox::toString( scale ); }
     //! Helper function to convert a scale string to double
-    static double toDouble( const QString& scaleString, bool *ok = nullptr ) { return QgsScaleComboBox::toDouble( scaleString, ok ); }
+    static double toDouble( const QString &scaleString, bool *ok = nullptr ) { return QgsScaleComboBox::toDouble( scaleString, ok ); }
 
   public slots:
     void updateScales( const QStringList &scales = QStringList() ) { return mScaleComboBox->updateScales( scales ); }
@@ -80,9 +79,9 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     void scaleChanged( double scale );
 
   private:
-    QgsScaleComboBox* mScaleComboBox;
-    QToolButton* mCurrentScaleButton;
-    QgsMapCanvas* mCanvas;
+    QgsScaleComboBox *mScaleComboBox = nullptr;
+    QToolButton *mCurrentScaleButton = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
     bool mShowCurrentScaleButton;
 };
 

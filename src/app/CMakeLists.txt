@@ -1,3 +1,5 @@
+ADD_SUBDIRECTORY(dwg/libdxfrw)
+
 SET(QGIS_APP_SRCS
   qgisapp.cpp
   qgisappinterface.cpp
@@ -28,6 +30,7 @@ SET(QGIS_APP_SRCS
   qgsdecorationscalebardialog.cpp
   qgsdecorationgrid.cpp
   qgsdecorationgriddialog.cpp
+  qgsdiscoverrelationsdlg.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
@@ -43,11 +46,12 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
-  qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
+  qgssnappinglayertreemodel.cpp
+  qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
@@ -114,9 +118,7 @@ SET(QGIS_APP_SRCS
   qgsrelationadddlg.cpp
   qgsselectbyformdialog.cpp
   qgsstatisticalsummarydockwidget.cpp
-  qgssubstitutionlistwidget.cpp
   qgstextannotationdialog.cpp
-  qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgstipgui.cpp
@@ -138,19 +140,17 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerlabelwidget.cpp
   composer/qgscomposerpicturewidget.cpp
   composer/qgscomposermanager.cpp
+  composer/qgscomposermapgridwidget.cpp
   composer/qgscomposermapwidget.cpp
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposershapewidget.cpp
   composer/qgscomposerpolygonwidget.cpp
   composer/qgscomposerpolylinewidget.cpp
   composer/qgscomposertablebackgroundcolorsdialog.cpp
-  composer/qgscomposerlegenditemdialog.cpp
   composer/qgscomposerlegendlayersdialog.cpp
   composer/qgscomposerlegendwidget.cpp
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
-
-  legend/qgsapplegendinterface.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -163,6 +163,9 @@ SET(QGIS_APP_SRCS
   openstreetmap/qgsosmdownloaddialog.cpp
   openstreetmap/qgsosmimportdialog.cpp
   openstreetmap/qgsosmexportdialog.cpp
+
+  dwg/qgsdwgimportdialog.cpp
+  dwg/qgsdwgimporter.cpp
 
   pluginmanager/qgspluginmanager.cpp
   pluginmanager/qgspluginmanager_texts.cpp
@@ -207,6 +210,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdecorationgriddialog.h
   qgsdelattrdialog.h
   qgsdiagramproperties.h
+  qgsdiscoverrelationsdlg.h
   qgsdisplayangle.h
   qgsdxfexportdialog.h
   qgsfeatureaction.h
@@ -218,13 +222,14 @@ SET (QGIS_APP_MOC_HDRS
   qgsidentifyresultsdialog.h
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
-  qgslabelpreview.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
   qgsmaplayerstyleguiutils.h
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
+  qgssnappinglayertreemodel.h
+  qgssnappingwidget.h
   qgsstatusbarcoordinateswidget.h
   qgsstatusbarmagnifierwidget.h
   qgsstatusbarscalewidget.h
@@ -287,10 +292,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
   qgsselectbyformdialog.h
-  qgssnappingdialog.h
   qgssponsors.h
   qgsstatisticalsummarydockwidget.h
-  qgssubstitutionlistwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
@@ -309,9 +312,9 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposeritemwidget.h
   composer/qgscomposerlabelwidget.h
   composer/qgscomposerlegendwidget.h
-  composer/qgscomposerlegenditemdialog.h
   composer/qgscomposerlegendlayersdialog.h
   composer/qgscomposermanager.h
+  composer/qgscomposermapgridwidget.h
   composer/qgscomposermapwidget.h
   composer/qgscomposerpicturewidget.h
   composer/qgscomposerscalebarwidget.h
@@ -322,8 +325,6 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  legend/qgsapplegendinterface.h
-
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
@@ -333,6 +334,8 @@ SET (QGIS_APP_MOC_HDRS
   openstreetmap/qgsosmdownloaddialog.h
   openstreetmap/qgsosmimportdialog.h
   openstreetmap/qgsosmexportdialog.h
+
+  dwg/qgsdwgimportdialog.h
 
   pluginmanager/qgspluginmanager.h
   pluginmanager/qgsapppluginmanagerinterface.h
@@ -345,7 +348,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsvariantdelegate.h
   )
 
-SET (WITH_QWTPOLAR TRUE CACHE BOOL "Determines whether QwtPolar should be built")
+SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 
 IF (WITH_QWTPOLAR)
   ADD_DEFINITIONS(-DWITH_QWTPOLAR)
@@ -465,21 +468,23 @@ ENDIF (POSTGRES_FOUND)
 
 SET(IMAGE_RCCS ../../images/images.qrc)
 
-QT4_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
+QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
 # add test resources, e.g. standard test font
 SET(TEST_RCCS ../../tests/testdata/testdata.qrc)
-QT4_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
+QT5_ADD_RESOURCES(TEST_RCC_SRCS ${TEST_RCCS})
 
-QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
-
-SET (QGIS_APPMAIN_SRCS main.cpp)
+QT5_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
 
 IF (WIN32)
+  FIND_PACKAGE(Qt5WinExtras)
+
+  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  SET (QGIS_APPMAIN_SRCS mainwin.cpp)
+
   IF (MSVC)
     SET (QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
   ELSE(MSVC)
-
     # Icon for windows MINGW
     # Note: can't include .rc directly to source files
     # as it's ignored when used MinGW
@@ -498,6 +503,8 @@ IF (WIN32)
       -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
     SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
   ENDIF (MSVC)
+ELSE(WIN32)
+  SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (WIN32)
 
 IF(PEDANTIC)
@@ -521,6 +528,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/python
+  ${CMAKE_BINARY_DIR}/src/analysis
+  ${CMAKE_BINARY_DIR}/src/app
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
@@ -532,6 +544,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster
   ../analysis/openstreetmap
   ../core
+  ../core/annotations
   ../core/auth
   ../core/gps
   ../core/composer
@@ -552,6 +565,8 @@ INCLUDE_DIRECTORIES(
   ../python
   gps
   openstreetmap
+  dwg
+  dwg/libdxfrw
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
@@ -577,22 +592,20 @@ ENDIF (POSTGRES_FOUND)
 
 #############
 IF (ANDROID)
-  ADD_LIBRARY(${QGIS_APP_NAME} SHARED ${QGIS_APPMAIN_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  ADD_LIBRARY(${QGIS_APP_NAME} SHARED ${QGIS_APPMAIN_SRCS})
 ELSE (ANDROID)
-  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
 ENDIF (ANDROID)
 
-REMOVE_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
-ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
-
-# Putting IMAGE_RCC_SRCS into qgis_app lib is cousing problems when the lib is loaded (by plugin for example) in test unit (qgis_composerpicturetest).
+# Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
+# loaded (by plugin for example) in test unit (qgis_composerpicturetest).
 ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
   ${QT_QTSQL_LIBRARY}
   ${QT_QTUITOOLS_LIBRARY}
-  ${QT_QTWEBKIT_LIBRARY}
+  ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
@@ -600,6 +613,13 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_core
   qgis_gui
   qgis_analysis
+  libdxfrw
+)
+
+GENERATE_EXPORT_HEADER(
+   qgis_app
+   BASE_NAME APP
+   EXPORT_FILE_NAME qgis_app.h
 )
 
 IF (NOT ANDROID)
@@ -617,11 +637,9 @@ if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
 
-TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
-  #should only be needed for win
-  ${QT_QTMAIN_LIBRARY}
-  qgis_app
-)
+IF(NOT WIN32)
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_app)
+ENDIF(NOT WIN32)
 
 IF (ANDROID)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} log)
@@ -630,11 +648,11 @@ ENDIF (ANDROID)
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} DbgHelp)
-  TARGET_LINK_LIBRARIES(qgis_app DbgHelp)
+  TARGET_LINK_LIBRARIES(qgis_app DbgHelp Qt5::WinExtras)
 ENDIF(WIN32)
 
 IF (APPLE)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY} )
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY})
 
   SET_TARGET_PROPERTIES(${QGIS_APP_NAME} PROPERTIES
     INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
@@ -648,7 +666,7 @@ IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 
 IF (POSTGRES_FOUND)
-  TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${POSTGRES_LIBRARY})
+  TARGET_LINK_LIBRARIES (qgis_app ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
 
 IF(MSVC)

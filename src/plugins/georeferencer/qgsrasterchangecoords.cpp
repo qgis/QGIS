@@ -20,25 +20,19 @@
 
 #include <QFile>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
-
 QgsRasterChangeCoords::QgsRasterChangeCoords()
-    : mHasCrs( false )
-    , mUL_X( 0. )
-    , mUL_Y( 0. )
-    , mResX( 1. )
-    , mResY( 1. )
+  : mHasCrs( false )
+  , mUL_X( 0. )
+  , mUL_Y( 0. )
+  , mResX( 1. )
+  , mResY( 1. )
 {
 }
 
 void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
 {
   GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( TO8F( fileRaster ), GA_ReadOnly );
+  GDALDatasetH hDS = GDALOpen( fileRaster.toUtf8().constData(), GA_ReadOnly );
   double adfGeoTransform[6];
   if ( GDALGetProjectionRef( hDS ) && GDALGetGeoTransform( hDS, adfGeoTransform ) == CE_None )
     //if ( false )
@@ -75,7 +69,7 @@ QgsRectangle QgsRasterChangeCoords::getBoundingBox( const QgsRectangle &rect, bo
   QgsPoint( QgsRasterChangeCoords::* func )( const QgsPoint & );
 
   func = toPixel ? &QgsRasterChangeCoords::toColumnLine : &QgsRasterChangeCoords::toXY;
-  rectReturn.set(( this->*func )( p1 ), ( this->*func )( p2 ) );
+  rectReturn.set( ( this->*func )( p1 ), ( this->*func )( p2 ) );
 
   return rectReturn;
 }

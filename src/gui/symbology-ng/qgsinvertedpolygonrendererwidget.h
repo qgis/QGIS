@@ -18,6 +18,7 @@
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererwidget.h"
+#include "qgis_gui.h"
 
 class QMenu;
 
@@ -31,29 +32,30 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
     Q_OBJECT
 
   public:
+
     /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
-     * @param renderer the mask renderer (will take ownership)
+     * @param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
-     * @param renderer the mask renderer (will take ownership)
+     * @param renderer the mask renderer (will not take ownership)
      */
-    QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    QgsInvertedPolygonRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    /** @returns the current feature renderer */
-    virtual QgsFeatureRenderer* renderer() override;
-    void setMapCanvas( QgsMapCanvas* canvas ) override;
+    virtual QgsFeatureRenderer *renderer() override;
+
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
   protected:
-    /** The mask renderer */
-    QScopedPointer<QgsInvertedPolygonRenderer> mRenderer;
-    /** The widget used to represent the mask's embedded renderer */
-    QScopedPointer<QgsRendererWidget> mEmbeddedRendererWidget;
+    //! The mask renderer
+    std::unique_ptr<QgsInvertedPolygonRenderer> mRenderer;
+    //! The widget used to represent the mask's embedded renderer
+    std::unique_ptr<QgsRendererWidget> mEmbeddedRendererWidget;
 
   private slots:
     void on_mRendererComboBox_currentIndexChanged( int index );

@@ -19,8 +19,8 @@
 #include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgsdialog.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTextEdit>
@@ -28,9 +28,9 @@
 #include <QMenu>
 #include <QCheckBox>
 
-QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, const QString& provider )
-    : QWidget( parent )
-    , mProvider( provider )
+QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
+  : QWidget( parent )
+  , mProvider( provider )
 {
   setupUi( this );
 
@@ -41,22 +41,17 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent,
   updateUi();
 }
 
-QgsRasterPyramidsOptionsWidget::~QgsRasterPyramidsOptionsWidget()
-{
-}
-
-
 void QgsRasterPyramidsOptionsWidget::updateUi()
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // keep it in sync with qgsrasterlayerproperties.cpp
   tmpStr = mySettings.value( prefix + "format", "external" ).toString();
-  if ( tmpStr == "internal" )
+  if ( tmpStr == QLatin1String( "internal" ) )
     cbxPyramidsFormat->setCurrentIndex( INTERNAL );
-  else if ( tmpStr == "external_erdas" )
+  else if ( tmpStr == QLatin1String( "external_erdas" ) )
     cbxPyramidsFormat->setCurrentIndex( ERDAS );
   else
     cbxPyramidsFormat->setCurrentIndex( GTIFF );
@@ -98,7 +93,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
       mOverviewCheckBoxes[ i ]->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
-  Q_FOREACH ( const QString& lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
+  Q_FOREACH ( const QString &lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
       mOverviewCheckBoxes[ lev.toInt()]->setChecked( true );
@@ -117,28 +112,28 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
 QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const
 {
-  return cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString();
+  return cboResamplingMethod->currentData().toString();
 }
 
 void QgsRasterPyramidsOptionsWidget::apply()
 {
-  QSettings mySettings;
+  QgsSettings mySettings;
   QString prefix = mProvider + "/driverOptions/_pyramids/";
   QString tmpStr;
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
   if ( cbxPyramidsFormat->currentIndex() == INTERNAL )
-    tmpStr = "internal";
+    tmpStr = QStringLiteral( "internal" );
   else if ( cbxPyramidsFormat->currentIndex() == ERDAS )
-    tmpStr = "external_erdas";
+    tmpStr = QStringLiteral( "external_erdas" );
   else
-    tmpStr = "external";
+    tmpStr = QStringLiteral( "external" );
   mySettings.setValue( prefix + "format", tmpStr );
   mySettings.setValue( prefix + "resampling", resamplingMethod() );
   mySettings.setValue( prefix + "overviewStr", lePyramidsLevels->text().trimmed() );
 
   // overview list
-  tmpStr = "";
+  tmpStr = QLatin1String( "" );
   Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
   {
     if ( mOverviewCheckBoxes[ i ]->isChecked() )
@@ -196,7 +191,7 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   if ( cbxPyramidsLevelsCustom->isChecked() )
   {
     // should we also validate that numbers are increasing?
-    Q_FOREACH ( const QString& lev, lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts ) )
+    Q_FOREACH ( const QString &lev, lePyramidsLevels->text().trimmed().split( ' ', QString::SkipEmptyParts ) )
     {
       QgsDebugMsg( "lev= " + lev );
       int tmpInt = lev.toInt();

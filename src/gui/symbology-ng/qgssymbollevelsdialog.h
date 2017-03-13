@@ -22,6 +22,7 @@
 #include "qgsrenderer.h"
 
 #include "ui_qgssymbollevelsdialogbase.h"
+#include "qgis_gui.h"
 
 /** \ingroup gui
  * \class QgsSymbolLevelsDialog
@@ -31,7 +32,7 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
     Q_OBJECT
   public:
     //! @note not available in python bindings
-    QgsSymbolLevelsDialog( const QgsLegendSymbolList& list, bool usingSymbolLevels, QWidget* parent = nullptr );
+    QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent = nullptr );
 
     ~QgsSymbolLevelsDialog();
 
