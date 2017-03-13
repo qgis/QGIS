@@ -1648,6 +1648,7 @@ void QgsMapCanvas::setTheme( const QString &theme )
   {
     mTheme.clear();
     mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
+    setLayers( QgsProject::instance()->mapThemeCollection()->masterVisibleLayers() );
     emit themeChanged( QString() );
   }
   else
