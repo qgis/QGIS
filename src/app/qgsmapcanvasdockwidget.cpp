@@ -261,7 +261,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
 
 void QgsMapCanvasDockWidget::mapCrsChanged()
 {
-  mActionSetCrs->setText( tr( "Change Map CRS (%1)" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
+  mActionSetCrs->setText( tr( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
                           mMapCanvas->mapSettings().destinationCrs().authid() :
                           tr( "No projection" ) ) );
 }
