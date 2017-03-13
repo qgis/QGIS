@@ -86,5 +86,6 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
         self.assertFalse(bridge.hasCustomLayerOrder())
 
+
 if __name__ == '__main__':
     unittest.main()
