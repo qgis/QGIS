@@ -3113,7 +3113,7 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
-QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry )
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3166,6 +3166,9 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
   markDirty();
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
+
+  mapCanvasWidget->setViewExtentSynchronized( synced );
+
   return mapCanvas;
 }
 
@@ -11748,6 +11751,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "width" ), w->width() );
     node.setAttribute( QStringLiteral( "height" ), w->height() );
     node.setAttribute( QStringLiteral( "floating" ), w->isFloating() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    node.setAttribute( QStringLiteral( "synced" ), w->isViewExtentSynchronized() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
@@ -11782,8 +11786,9 @@ void QgisApp::readProject( const QDomDocument &doc )
       int w = elementNode.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
       int h = elementNode.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
       bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
+      bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
 
-      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ) );
+      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced );
       mapCanvas->readProject( doc );
     }
   }

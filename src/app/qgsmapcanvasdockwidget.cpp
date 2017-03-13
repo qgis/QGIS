@@ -177,6 +177,16 @@ void QgsMapCanvasDockWidget::closeWithoutWarning()
   close();
 }
 
+void QgsMapCanvasDockWidget::setViewExtentSynchronized( bool enabled )
+{
+  mActionSyncView->setChecked( enabled );
+}
+
+bool QgsMapCanvasDockWidget::isViewExtentSynchronized() const
+{
+  return mActionSyncView->isChecked();
+}
+
 void QgsMapCanvasDockWidget::closeEvent( QCloseEvent *event )
 {
   if ( mShowCloseWarning && mMapCanvas->layerCount() > 0

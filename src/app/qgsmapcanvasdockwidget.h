@@ -54,6 +54,13 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      */
     void closeWithoutWarning();
 
+    /**
+     * Sets whether the view extent should be synchronized with the main canvas extent.
+     */
+    void setViewExtentSynchronized( bool enabled );
+
+    bool isViewExtentSynchronized() const;
+
   signals:
 
     void renameTriggered();

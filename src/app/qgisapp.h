@@ -241,7 +241,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * and \a dockGeometry arguments can be used to specify an initial floating state
      * and widget geometry rect for the dock.
      */
-    QgsMapCanvas *createNewMapCanvas( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect() );
+    QgsMapCanvas *createNewMapCanvas( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
+                                      bool synced = false );
 
     /**
      * Closes any additional map canvases. The main map canvas will not
