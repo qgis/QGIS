@@ -110,6 +110,10 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     void nodeVisibilityChanged();
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
+  private slots:
+
+    void projectLayerOrderChanged();
+
   protected:
     QgsLayerTreeGroup *mRoot = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
@@ -124,6 +128,8 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
     bool mHasFirstLayer;
     bool mLastLayerCount;
+    bool mUpdatingProjectLayerOrder = false;
+
     QgsCoordinateReferenceSystem mFirstCRS;
 };
 
