@@ -102,6 +102,7 @@ class TestQgsMapThemeCollection(unittest.TestCase):
     def testMasterLayerOrder(self):
         """ test master layer order"""
         prj = QgsProject.instance()
+        prj.clear()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
@@ -173,6 +174,35 @@ class TestQgsMapThemeCollection(unittest.TestCase):
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme1'), [layer3, layer])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme2'), [layer3, layer2, layer])
         self.assertEqual(prj.mapThemeCollection().mapThemeVisibleLayers('theme3'), [layer2, layer])
+
+    def testMasterVisibleLayers(self):
+        """ test master visible layers"""
+        prj = QgsProject.instance()
+        prj.clear()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        # general setup...
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer2, layer])
+        prj.setLayerOrder([layer3, layer, layer2])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer, layer2])
+
+        #hide some layers
+        root = prj.layerTreeRoot()
+        layer_node = root.findLayer(layer2)
+        layer_node.setItemVisibilityChecked(False)
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer])
+        layer_node.setItemVisibilityChecked(True)
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer3, layer, layer2])
+        layer_node.setItemVisibilityChecked(False)
+        prj.setLayerOrder([layer, layer2, layer3])
+        self.assertEqual(prj.mapThemeCollection().masterVisibleLayers(), [layer, layer3])
 
 
 if __name__ == '__main__':

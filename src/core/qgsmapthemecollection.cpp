@@ -183,6 +183,21 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterLayerOrder() const
   return mProject->layerOrder();
 }
 
+QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
+{
+  QList< QgsMapLayer * > visible;
+  Q_FOREACH ( QgsMapLayer *layer, masterLayerOrder() )
+  {
+    QgsLayerTreeLayer *nodeLayer = mProject->layerTreeRoot()->findLayer( layer );
+    if ( nodeLayer )
+    {
+      if ( nodeLayer->isVisible() )
+        visible << layer;
+    }
+  }
+  return visible;
+}
+
 
 bool QgsMapThemeCollection::hasMapTheme( const QString &name ) const
 {

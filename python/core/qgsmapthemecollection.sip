@@ -117,6 +117,7 @@ class QgsMapThemeCollection : QObject
     QgsProject *project();
     void setProject( QgsProject *project );
     QList< QgsMapLayer * > masterLayerOrder() const;
+    QList< QgsMapLayer * > masterVisibleLayers() const;
 
   signals:
 
