@@ -146,7 +146,7 @@ QList<QAction *> QgsOWSConnectionItem::actions()
 void QgsOWSConnectionItem::editConnection()
 {
 #if 0
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-ows/", mName );
+  QgsNewHttpConnection nc( 0, "qgis/connections-ows/", mName );
 
   if ( nc.exec() )
   {
@@ -235,7 +235,7 @@ void QgsOWSRootItem::connectionsChanged()
 void QgsOWSRootItem::newConnection()
 {
 #if 0
-  QgsNewHttpConnection nc( 0, "/Qgis/connections-ows/" );
+  QgsNewHttpConnection nc( 0, "qgis/connections-ows/" );
 
   if ( nc.exec() )
   {

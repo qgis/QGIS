@@ -43,8 +43,8 @@ QgsWMSConnection::QgsWMSConnection( const QString &connName )
 
   QgsSettings settings;
 
-  QString key = "/Qgis/connections-wms/" + mConnName;
-  QString credentialsKey = "/Qgis/WMS/" + mConnName;
+  QString key = "qgis/connections-wms/" + mConnName;
+  QString credentialsKey = "qgis/WMS/" + mConnName;
 
   QStringList connStringParts;
 
@@ -143,6 +143,6 @@ void QgsWMSConnection::setSelectedConnection( const QString &name )
 void QgsWMSConnection::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "/Qgis/connections-wms/" + name );
-  settings.remove( "/Qgis/WMS/" + name );
+  settings.remove( "qgis/connections-wms/" + name );
+  settings.remove( "qgis/WMS/" + name );
 }

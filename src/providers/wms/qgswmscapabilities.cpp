@@ -2075,7 +2075,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           if ( cmd.expirationDate().isNull() )
           {
             QgsSettings s;
-            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
+            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
           }
 
           nam->cache()->updateMetaData( cmd );

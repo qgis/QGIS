@@ -67,7 +67,7 @@ void QgsAfsRootItem::connectionsChanged()
 
 void QgsAfsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-arcgisfeatureserver/" ) );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
   nc.setWindowTitle( tr( "Create a new ArcGisFeatureServer connection" ) );
 
   if ( nc.exec() )
@@ -130,7 +130,7 @@ QList<QAction *> QgsAfsConnectionItem::actions()
 
 void QgsAfsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-arcgisfeatureserver/" ), mName );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
   nc.setWindowTitle( tr( "Modify ArcGisFeatureServer connection" ) );
 
   if ( nc.exec() )

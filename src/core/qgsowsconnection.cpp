@@ -42,8 +42,8 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
 
   QgsSettings settings;
 
-  QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
-  QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
+  QString key = "qgis//connections-" + mService.toLower() + '/' + mConnName;
+  QString credentialsKey = "qgis//" + mService + '/' + mConnName;
 
   QStringList connStringParts;
 
@@ -99,25 +99,25 @@ QgsDataSourceUri QgsOwsConnection::uri() const
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + service.toLower() );
+  settings.beginGroup( "qgis//connections-" + service.toLower() );
   return settings.childGroups();
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
   QgsSettings settings;
-  return settings.value( "/Qgis/connections-" + service.toLower() + "/selected" ).toString();
+  return settings.value( "qgis//connections-" + service.toLower() + "/selected" ).toString();
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( "/Qgis/connections-" + service.toLower() + "/selected", name );
+  settings.setValue( "qgis//connections-" + service.toLower() + "/selected", name );
 }
 
 void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "/Qgis/connections-" + service.toLower() + '/' + name );
-  settings.remove( "/Qgis/" + service + '/' + name );
+  settings.remove( "qgis//connections-" + service.toLower() + '/' + name );
+  settings.remove( "qgis//" + service + '/' + name );
 }
