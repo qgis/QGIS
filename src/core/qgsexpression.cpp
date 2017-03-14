@@ -905,10 +905,13 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   {
     QgsExpression groupByExp( groupBy );
     QVariant groupByValue = groupByExp.evaluate( context );
+    QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
+                            groupByValue.isNull() ? "is" : "=",
+                            QgsExpression::quotedValue( groupByValue ) );
     if ( !parameters.filter.isEmpty() )
-      parameters.filter = QStringLiteral( "(%1) AND (%2=%3)" ).arg( parameters.filter, groupBy, QgsExpression::quotedValue( groupByValue ) );
+      parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
     else
-      parameters.filter = QStringLiteral( "(%2 = %3)" ).arg( groupBy, QgsExpression::quotedValue( groupByValue ) );
+      parameters.filter = groupByClause;
   }
 
   QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4" ).arg( vl->id(),
@@ -2232,7 +2235,7 @@ static QVariant fcnGeometry( const QVariantList &, const QgsExpressionContext *c
   if ( !geom.isNull() )
     return  QVariant::fromValue( geom );
   else
-    return QVariant();
+    return QVariant( QVariant::UserType );
 }
 static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -4124,7 +4127,7 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         << new StaticFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
         // functions for arrays
-        << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ) )
+        << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new StaticFunction( QStringLiteral( "array_length" ), 1, fcnArrayLength, QStringLiteral( "Arrays" ) )
         << new StaticFunction( QStringLiteral( "array_contains" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new StaticFunction( QStringLiteral( "array_find" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )
