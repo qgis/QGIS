@@ -2347,22 +2347,22 @@ tests:
         name: expected/topocolor_polys_min_dist.gml
         type: vector
 
-  # - algorithm: qgis:regularpoints
-  #   name: Regular point with standard extent
-  #   params:
-  #     CRS: EPSG:4326
-  #     EXTENT: -0.9182432432432436,10.208108108108108,-3.1266891891891904,5.480067567567567
-  #     INSET: 0.0
-  #     IS_SPACING: false
-  #     RANDOMIZE: false
-  #     SPACING: 100
-  #   results:
-  #     OUTPUT:
-  #       name: expected/regular_points.gml
-  #       type: vector
-  #       compare:
-  #         geometry:
-  #           precision: 5
+  - algorithm: qgis:regularpoints
+    name: Regular point with standard extent
+    params:
+      EXTENT: -0.9182432432432436,10.208108108108108,-3.1266891891891904,5.480067567567567
+      INSET: 0.0
+      IS_SPACING: false
+      RANDOMIZE: false
+      SPACING: 100
+    results:
+      OUTPUT:
+        name: expected/regular_points.gml
+        type: vector
+        CRS: EPSG:4326
+        compare:
+          geometry:
+            precision: 5
 
   - algorithm: qgis:rectanglesovalsdiamondsvariable
     name: Rectangular buffer shape
