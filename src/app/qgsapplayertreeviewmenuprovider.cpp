@@ -129,7 +129,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( !layer->isInScaleRange( mCanvas->scale() ) )
           menu->addAction( tr( "Zoom to &Visible Scale" ), QgisApp::instance(), SLOT( zoomToLayerScale() ) );
 
-        menu->addAction( actions->actionCheckAndAllParents( menu ) );
+        QAction *checkAll = actions->actionCheckAndAllParents( menu );
+        if ( checkAll )
+          menu->addAction( checkAll );
 
         // set layer crs
         menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSetCRS.png" ) ), tr( "Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCrs() ) );
