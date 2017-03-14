@@ -567,9 +567,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == Qt::TextAlignmentRole )
   {
     if ( fldRightAlign )
-      return QVariant( Qt::AlignRight );
+      return QVariant( Qt::AlignRight | Qt::AlignVCenter );
     else
-      return QVariant( Qt::AlignLeft );
+      return QVariant( Qt::AlignLeft | Qt::AlignVCenter );
   }
 
   QVariant val;
