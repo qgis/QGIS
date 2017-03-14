@@ -276,6 +276,7 @@ SET(QGIS_GUI_SRCS
   qgssourceselectdialog.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
+  qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
@@ -422,6 +423,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssourceselectdialog.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
+  qgspasswordlineedit.h
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h

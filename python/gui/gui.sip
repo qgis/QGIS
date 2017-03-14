@@ -134,6 +134,7 @@
 %Include qgsowssourceselect.sip
 %Include qgspanelwidget.sip
 %Include qgspanelwidgetstack.sip
+%Include qgspasswordlineedit.sip
 %Include qgspixmaplabel.sip
 %Include qgspluginmanagerinterface.sip
 %Include qgspresetcolorrampdialog.sip

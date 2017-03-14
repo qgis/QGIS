@@ -29,34 +29,14 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>6</number>
+    <widget class="QgsPasswordLineEdit" name="leMasterPassCurrent">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
      </property>
-     <item>
-      <widget class="QLineEdit" name="leMasterPassCurrent">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-       <property name="placeholderText">
-        <string>Required</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkPassShowCurrent">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Show</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_7">
@@ -73,34 +53,14 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>6</number>
+    <widget class="QgsPasswordLineEdit" name="leMasterPassNew">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
      </property>
-     <item>
-      <widget class="QLineEdit" name="leMasterPassNew">
-       <property name="echoMode">
-        <enum>QLineEdit::Password</enum>
-       </property>
-       <property name="placeholderText">
-        <string>Required</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="chkPassShowNew">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Show</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <property name="placeholderText">
+      <string>Required</string>
+     </property>
+    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -170,11 +130,16 @@ and re-encrypted using new password</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>leMasterPassCurrent</tabstop>
-  <tabstop>chkPassShowCurrent</tabstop>
   <tabstop>leMasterPassNew</tabstop>
-  <tabstop>chkPassShowNew</tabstop>
   <tabstop>chkKeepBackup</tabstop>
  </tabstops>
  <resources/>
