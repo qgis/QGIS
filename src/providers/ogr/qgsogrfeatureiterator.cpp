@@ -33,6 +33,12 @@
 // - mAttributeFields
 // - mEncoding
 
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For QGIS purposes, both
+// states (unset/null) are equivalent.
+#ifndef OGRNullMarker
+#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
+#endif
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
@@ -335,7 +341,7 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
   QVariant value;
 
-  if ( OGR_F_IsFieldSet( ogrFet, attindex ) )
+  if ( OGR_F_IsFieldSetAndNotNull( ogrFet, attindex ) )
   {
     switch ( mSource->mFields.at( attindex ).type() )
     {
