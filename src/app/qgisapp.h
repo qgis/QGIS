@@ -246,6 +246,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                       double scaleFactor = 1.0 );
 
     /**
+     * Closes the additional map canvas with matching \a name.
+     */
+    void closeMapCanvas( const QString &name );
+
+    /**
      * Closes any additional map canvases. The main map canvas will not
      * be affected.
      */

@@ -113,8 +113,16 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Create a new map canvas with the specified unique \a name.
      * @note added in QGIS 3.0
+     * @see closeMapCanvas()
      */
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
+
+    /**
+     * Closes the additional map canvas with matching \a name.
+     * @note added in QGIS 3.0
+     * @see createNewMapCanvas()
+     */
+    virtual void closeMapCanvas( const QString &name ) = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 

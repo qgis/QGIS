@@ -62,6 +62,8 @@ class QgisInterface : QObject
 
     virtual QgsMapCanvas* createNewMapCanvas( const QString& name ) = 0;
 
+    virtual void closeMapCanvas( const QString &name ) = 0;
+
   public slots:
 
 
