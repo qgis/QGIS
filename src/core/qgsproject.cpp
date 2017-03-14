@@ -419,22 +419,16 @@ QFileInfo QgsProject::fileInfo() const
 
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
-  QgsCoordinateReferenceSystem projectCrs;
-  long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-  if ( currentCRS != -1 )
-  {
-    projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-  }
-  return projectCrs;
+  return mCrs;
 }
 
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  mCrs = crs;
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ), crs.toProj4() );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
   setDirty( true );
-
   emit crsChanged();
 }
 
@@ -815,6 +809,19 @@ bool QgsProject::read()
 
   // now get project title
   _getTitle( *doc, mTitle );
+
+  //crs
+  QgsCoordinateReferenceSystem projectCrs;
+  if ( QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
+  {
+    long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+    if ( currentCRS != -1 )
+    {
+      projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+    }
+  }
+  mCrs = projectCrs;
+  emit crsChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )

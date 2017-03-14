@@ -1009,6 +1009,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString mTitle;              // project title
     bool mAutoTransaction;       // transaction grouped editing
     bool mEvaluateDefaultValues; // evaluate default values immediately
+    QgsCoordinateReferenceSystem mCrs;
     bool mDirty;                 // project has been modified since it has been read or saved
 };
 

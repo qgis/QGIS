@@ -617,6 +617,29 @@ void QgsProjectFileTransform::transform2200to2300()
 
 void QgsProjectFileTransform::transform2990()
 {
+  QDomNodeList srsNodes = mDom.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+  if ( srsNodes.count() > 0 )
+  {
+    QDomElement srsElem = srsNodes.at( 0 ).toElement();
+    QDomNodeList projNodes = srsElem.elementsByTagName( "ProjectionsEnabled" );
+    if ( projNodes.count() == 0 )
+    {
+      QDomElement projElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
+      projElem.setAttribute( "type", "int" );
+      projElem.setNodeValue( "0" );
+      srsElem.appendChild( projElem );
+    }
+  }
+  else
+  {
+    QDomElement srsElem = mDom.createElement( QStringLiteral( "SpatialRefSys" ) );
+    mDom.appendChild( srsElem );
+    QDomElement projElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
+    projElem.setAttribute( "type", "int" );
+    projElem.setNodeValue( "0" );
+    srsElem.appendChild( projElem );
+  }
+
   QDomNodeList mapLayers = mDom.elementsByTagName( QStringLiteral( "maplayer" ) );
 
   for ( int mapLayerIndex = 0; mapLayerIndex < mapLayers.count(); ++mapLayerIndex )
