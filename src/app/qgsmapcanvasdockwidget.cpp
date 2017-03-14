@@ -26,6 +26,7 @@
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgisapp.h"
+#include "qgsvertexmarker.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -43,7 +44,10 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   setWindowTitle( name );
   mMapCanvas = new QgsMapCanvas( this );
-
+  mXyMarker = new QgsVertexMarker( mMapCanvas );
+  mXyMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
+  mXyMarker->setIconSize( 6 );
+  mXyMarker->setColor( QColor( 30, 30, 30, 225 ) );
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );
 
@@ -92,6 +96,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsMenu->addSeparator();
   settingsMenu->addAction( mActionSetCrs );
   settingsMenu->addAction( mActionShowAnnotations );
+  settingsMenu->addAction( mActionShowCursor );
   settingsMenu->addAction( mActionRename );
 
   connect( settingsMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::settingsMenuAboutToShow );
@@ -99,6 +104,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mActionRename, &QAction::triggered, this, &QgsMapCanvasDockWidget::renameTriggered );
   mActionShowAnnotations->setChecked( mMapCanvas->annotationsVisible() );
   connect( mActionShowAnnotations, &QAction::toggled, this, [ = ]( bool checked ) { mMapCanvas->setAnnotationsVisible( checked ); } );
+  mActionShowCursor->setChecked( true );
+  connect( mActionShowCursor, &QAction::toggled, this, [ = ]( bool checked ) { mXyMarker->setVisible( checked ); } );
 
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
@@ -172,6 +179,17 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   } );
 }
 
+void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
+{
+  if ( mMainCanvas )
+  {
+    disconnect( mMainCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsMapCanvasDockWidget::syncMarker );
+  }
+
+  mMainCanvas = canvas;
+  connect( mMainCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsMapCanvasDockWidget::syncMarker );
+}
+
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
 {
   return mMapCanvas;
@@ -185,6 +203,16 @@ void QgsMapCanvasDockWidget::setViewExtentSynchronized( bool enabled )
 bool QgsMapCanvasDockWidget::isViewExtentSynchronized() const
 {
   return mActionSyncView->isChecked();
+}
+
+void QgsMapCanvasDockWidget::setCursorMarkerVisible( bool visible )
+{
+  mActionShowCursor->setChecked( visible );
+}
+
+bool QgsMapCanvasDockWidget::isCursorMarkerVisible() const
+{
+  return mXyMarker->isVisible();
 }
 
 void QgsMapCanvasDockWidget::resizeEvent( QResizeEvent * )
@@ -304,6 +332,24 @@ void QgsMapCanvasDockWidget::settingsMenuAboutToShow()
   whileBlocking( mActionShowAnnotations )->setChecked( mMapCanvas->annotationsVisible() );
 }
 
+void QgsMapCanvasDockWidget::syncMarker( const QgsPoint &p )
+{
+  if ( !mXyMarker->isVisible() )
+    return;
+
+  // reproject point
+  QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                             mMapCanvas->mapSettings().destinationCrs() );
+  QgsPoint t = p;
+  try
+  {
+    t = ct.transform( p );
+  }
+  catch ( QgsCsException & )
+  {}
+
+  mXyMarker->setCenter( t );
+}
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   : QWidgetAction( parent )

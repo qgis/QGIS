@@ -242,7 +242,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * and widget geometry rect for the dock.
      */
     QgsMapCanvas *createNewMapCanvas( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
-                                      bool synced = false );
+                                      bool synced = false, bool showCursor = true );
 
     /**
      * Closes any additional map canvases. The main map canvas will not

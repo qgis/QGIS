@@ -18,6 +18,7 @@
 #include <ui_qgsmapcanvasdockwidgetbase.h>
 
 #include "qgsdockwidget.h"
+#include "qgspoint.h"
 #include "qgis_app.h"
 #include <QWidgetAction>
 #include <QTimer>
@@ -28,6 +29,7 @@ class QgsScaleComboBox;
 class QgsDoubleSpinBox;
 class QgsStatusBarMagnifierWidget;
 class QgsMapToolPan;
+class QgsVertexMarker;
 
 /**
  * \class QgsMapCanvasDockWidget
@@ -43,7 +45,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     /**
      * Sets the main app map canvas.
      */
-    void setMainCanvas( QgsMapCanvas *canvas ) { mMainCanvas = canvas; }
+    void setMainCanvas( QgsMapCanvas *canvas );
 
     /**
      * Returns the map canvas contained in the dock widget.
@@ -52,10 +54,27 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 
     /**
      * Sets whether the view extent should be synchronized with the main canvas extent.
+     * @see isViewExtentSynchronized()
      */
     void setViewExtentSynchronized( bool enabled );
 
+    /**
+     * Returns true if the view extent is synchronized with the main canvas extent.
+     * @see setViewExtentSynchronized()
+     */
     bool isViewExtentSynchronized() const;
+
+    /**
+     * Sets whether the cursor position marker is visible.
+     * @see isCursorMarkerVisible()
+     */
+    void setCursorMarkerVisible( bool visible );
+
+    /**
+     * Returns true if the cursor position marker is visible.
+     * @see setCursorMarkerVisible()
+     */
+    bool isCursorMarkerVisible() const;
 
   signals:
 
@@ -73,6 +92,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void mapCrsChanged();
     void menuAboutToShow();
     void settingsMenuAboutToShow();
+    void syncMarker( const QgsPoint &p );
 
   private:
 
@@ -89,6 +109,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     bool mBlockExtentSync = false;
     QgsMapToolPan *mPanTool = nullptr;
     QTimer mResizeTimer;
+    QgsVertexMarker *mXyMarker = nullptr;
     void syncViewExtent( QgsMapCanvas *sourceCanvas );
 };
 

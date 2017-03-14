@@ -3113,7 +3113,7 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
-QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced )
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced, bool showCursor )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3169,6 +3169,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
 
   mapCanvasWidget->setViewExtentSynchronized( synced );
+  mapCanvasWidget->setCursorMarkerVisible( showCursor );
 
   return mapCanvas;
 }
@@ -11753,6 +11754,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "height" ), w->height() );
     node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
     node.setAttribute( QStringLiteral( "synced" ), w->isViewExtentSynchronized() );
+    node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
@@ -11788,8 +11790,9 @@ void QgisApp::readProject( const QDomDocument &doc )
       int h = elementNode.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
       bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
       bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
+      bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
 
-      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced );
+      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced, showCursor );
       mapCanvas->readProject( doc );
     }
   }
