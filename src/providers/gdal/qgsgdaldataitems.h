@@ -26,13 +26,13 @@ class QgsGdalLayerItem : public QgsLayerItem
     QStringList mSublayers;
 
   public:
-    QgsGdalLayerItem( QgsDataItem* parent,
+    QgsGdalLayerItem( QgsDataItem *parent,
                       QString name, QString path, QString uri,
                       QStringList *mSublayers = nullptr );
 
-    bool setCrs( const QgsCoordinateReferenceSystem& crs ) override;
+    bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
     QString layerName() const override;
 };

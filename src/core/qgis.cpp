@@ -38,7 +38,7 @@
 const QString Qgis::QGIS_VERSION( QStringLiteral( VERSION ) );
 
 // development version
-const char* Qgis::QGIS_DEV_VERSION = QGSVERSION;
+const char *Qgis::QGIS_DEV_VERSION = QGSVERSION;
 
 // Version number used for comparing versions using the
 // "Check QGIS Version" function
@@ -134,7 +134,7 @@ void qgsFree( void *ptr )
   free( ptr );
 }
 
-bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
 {
   // invalid < NULL < any value
   if ( !lhs.isValid() )
@@ -202,12 +202,12 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
   }
 }
 
-bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 {
   return ! qgsVariantLessThan( lhs, rhs );
 }
 
-QString qgsVsiPrefix( const QString& path )
+QString qgsVsiPrefix( const QString &path )
 {
   if ( path.startsWith( QLatin1String( "/vsizip/" ), Qt::CaseInsensitive ) ||
        path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )

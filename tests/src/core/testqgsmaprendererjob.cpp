@@ -52,9 +52,9 @@ class TestQgsMapRendererJob : public QObject
 
   public:
     TestQgsMapRendererJob()
-        : mError( QgsVectorFileWriter::NoError )
-        , mMapSettings( 0 )
-        , mpPolysLayer( 0 )
+      : mError( QgsVectorFileWriter::NoError )
+      , mMapSettings( 0 )
+      , mpPolysLayer( 0 )
     {
     }
 
@@ -84,7 +84,7 @@ class TestQgsMapRendererJob : public QObject
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
     QgsMapSettings *mMapSettings = nullptr;
-    QgsMapLayer * mpPolysLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mReport;
 };
 
@@ -185,7 +185,7 @@ void TestQgsMapRendererJob::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );
 }
 
@@ -264,7 +264,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   QVERIFY( bboxList.size() == 4 );
 
   //create maplayer, set QML and add to maplayer registry
-  QgsVectorLayer* vectorLayer = new QgsVectorLayer( shapeFile, QStringLiteral( "testshape" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( shapeFile, QStringLiteral( "testshape" ), QStringLiteral( "ogr" ) );
 
   //todo: read QML
   QFile symbologyFile( qmlFile );
@@ -285,7 +285,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QFAIL( errorMsg.toLocal8Bit().data() );
   }
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << vectorLayer );
 
   QImage globalImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   globalImage.fill( Qt::white );
@@ -304,7 +304,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsRectangle rect( rectCoords[0].toDouble(), rectCoords[1].toDouble(), rectCoords[2].toDouble(), rectCoords[3].toDouble() );
     mapSettings.setExtent( rect );
     mapSettings.setOutputSize( QSize( 256, 256 ) );
-    mapSettings.setLayers( QList<QgsMapLayer*>() << vectorLayer );
+    mapSettings.setLayers( QList<QgsMapLayer *>() << vectorLayer );
     mapSettings.setFlags( QgsMapSettings::RenderMapTile );
     mapSettings.setOutputDpi( 96 );
 

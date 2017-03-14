@@ -57,22 +57,22 @@ namespace pal
        */
       static inline double cross_product( double x1, double y1, double x2, double y2, double x3, double y3 )
       {
-        return ( x2 - x1 ) *( y3 - y1 ) - ( x3 - x1 ) *( y2 - y1 );
+        return ( x2 - x1 ) * ( y3 - y1 ) - ( x3 - x1 ) * ( y2 - y1 );
       }
 
       static inline double dist_euc2d( double x1, double y1, double x2, double y2 )
       {
-        return sqrt(( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 ) );
+        return sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
       }
 
       static inline double dist_euc2d_sq( double x1, double y1, double x2, double y2 )
       {
-        return ( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 );
+        return ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 );
       }
 
       static void findLineCircleIntersection( double cx, double cy, double radius,
                                               double x1, double y1, double x2, double y2,
-                                              double& xRes, double& yRes );
+                                              double &xRes, double &yRes );
 
       /**
        * \brief Compute the convex hull in O(n·log(n))
@@ -83,7 +83,7 @@ namespace pal
        * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
        * \return convexHull's size
        */
-      static int convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull );
+      static int convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull );
 
       /**
        * Returns true if the two segments intersect.
@@ -111,7 +111,7 @@ namespace pal
        * @param alpha candidate angle
        * @returns true if candidate is totally contained
        */
-      static bool containsCandidate( const GEOSPreparedGeometry* geom, double x, double y, double width, double height, double alpha );
+      static bool containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha );
 
   };
 } //namespace

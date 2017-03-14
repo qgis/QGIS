@@ -33,16 +33,17 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererSequentialJob( const QgsMapSettings& settings );
+    QgsMapRendererSequentialJob( const QgsMapSettings &settings );
     ~QgsMapRendererSequentialJob();
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 
     virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    virtual QgsLabelingResults *takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;
@@ -53,9 +54,9 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 
   private:
 
-    QgsMapRendererCustomPainterJob* mInternalJob = nullptr;
+    QgsMapRendererCustomPainterJob *mInternalJob = nullptr;
     QImage mImage;
-    QPainter* mPainter = nullptr;
+    QPainter *mPainter = nullptr;
     std::unique_ptr< QgsLabelingResults > mLabelingResults;
     bool mUsedCachedLabels = false;
 

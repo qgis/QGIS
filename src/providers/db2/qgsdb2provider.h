@@ -50,9 +50,9 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     static bool openDatabase( QSqlDatabase db );
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     virtual QgsWkbTypes::Type wkbType() const override;
 
@@ -71,7 +71,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool isValid() const override;
     QString subsetString() const override;
 
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
@@ -83,9 +83,9 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
@@ -93,10 +93,10 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     //! Import a vector layer into the database
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem& srs,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
@@ -144,7 +144,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     static int sConnectionId;
 
     //sets the error messages
-    void setLastError( const QString& error )
+    void setLastError( const QString &error )
     {
       mLastError = error;
     }

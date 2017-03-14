@@ -18,22 +18,23 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgspointv2.h"
-#include <qgslogger.h>
-#include <qgsvertexmarker.h>
-#include <qgsgeometryvalidator.h>
-#include <qgsvectorlayer.h>
-#include <qgsrubberband.h>
-#include <qgisapp.h>
-#include <qgslayertreeview.h>
-#include <qgsproject.h>
+#include "qgssettings.h"
+#include "qgslogger.h"
+#include "qgsvertexmarker.h"
+#include "qgsgeometryvalidator.h"
+#include "qgsvectorlayer.h"
+#include "qgsrubberband.h"
+#include "qgisapp.h"
+#include "qgslayertreeview.h"
+#include "qgsproject.h"
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,
                                         QgsMapCanvas *canvas )
-    : mFeatureId( featureId )
-    , mGeometry( nullptr )
-    , mChangingGeometry( false )
-    , mValidator( nullptr )
+  : mFeatureId( featureId )
+  , mGeometry( nullptr )
+  , mChangingGeometry( false )
+  , mValidator( nullptr )
 {
   setSelectedFeature( featureId, vlayer, canvas );
 }
@@ -83,7 +84,7 @@ void QgsSelectedFeature::updateGeometry( const QgsGeometry *geom )
   }
 }
 
-void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas )
+void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas )
 {
   mFeatureId = featureId;
   mVlayer = vlayer;
@@ -93,7 +94,7 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   mGeometry = nullptr;
 
   // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 
   // feature was deleted
   connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
@@ -158,8 +159,8 @@ void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, const QgsGeometry &g
 
 void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
 {
-  QSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
     return;
 
   if ( !g )
@@ -416,7 +417,7 @@ void QgsSelectedFeature::createVertexMap()
     return;
   }
 
-  const QgsAbstractGeometry* geom = mGeometry->geometry();
+  const QgsAbstractGeometry *geom = mGeometry->geometry();
   if ( !geom )
   {
     return;
@@ -474,7 +475,7 @@ void QgsSelectedFeature::invertVertexSelection( int vertexNr )
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::invertVertexSelection( const QVector<int>& vertexIndices )
+void QgsSelectedFeature::invertVertexSelection( const QVector<int> &vertexIndices )
 {
   Q_FOREACH ( int index, vertexIndices )
   {
@@ -489,7 +490,7 @@ void QgsSelectedFeature::invertVertexSelection( const QVector<int>& vertexIndice
 
 void QgsSelectedFeature::updateVertexMarkersPosition()
 {
-  Q_FOREACH ( QgsVertexEntry* vertexEntry, mVertexMap )
+  Q_FOREACH ( QgsVertexEntry *vertexEntry, mVertexMap )
   {
     vertexEntry->placeMarker();
   }
@@ -500,12 +501,12 @@ QgsFeatureId QgsSelectedFeature::featureId()
   return mFeatureId;
 }
 
-QList<QgsVertexEntry*> &QgsSelectedFeature::vertexMap()
+QList<QgsVertexEntry *> &QgsSelectedFeature::vertexMap()
 {
   return mVertexMap;
 }
 
-QgsVectorLayer* QgsSelectedFeature::vlayer()
+QgsVectorLayer *QgsSelectedFeature::vlayer()
 {
   return mVlayer;
 }

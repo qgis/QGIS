@@ -23,16 +23,16 @@
 #include <QPainter>
 #include <QPen>
 
-QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget* parent )
-    : QComboBox( parent )
+QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget *parent )
+  : QComboBox( parent )
 {
   QList < QPair<Qt::PenStyle, QString> > styles;
   styles << qMakePair( Qt::SolidLine, tr( "Solid Line" ) )
-  << qMakePair( Qt::NoPen, tr( "No Pen" ) )
-  << qMakePair( Qt::DashLine, tr( "Dash Line" ) )
-  << qMakePair( Qt::DotLine, tr( "Dot Line" ) )
-  << qMakePair( Qt::DashDotLine, tr( "Dash Dot Line" ) )
-  << qMakePair( Qt::DashDotDotLine, tr( "Dash Dot Dot Line" ) );
+         << qMakePair( Qt::NoPen, tr( "No Pen" ) )
+         << qMakePair( Qt::DashLine, tr( "Dash Line" ) )
+         << qMakePair( Qt::DotLine, tr( "Dot Line" ) )
+         << qMakePair( Qt::DashDotLine, tr( "Dash Dot Line" ) )
+         << qMakePair( Qt::DashDotDotLine, tr( "Dash Dot Dot Line" ) );
 
   setIconSize( QSize( 32, 12 ) );
 
@@ -40,7 +40,7 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget* parent )
   {
     Qt::PenStyle style = styles.at( i ).first;
     QString name = styles.at( i ).second;
-    addItem( iconForPen( style ), name, QVariant(( int ) style ) );
+    addItem( iconForPen( style ), name, QVariant( ( int ) style ) );
   }
 }
 
@@ -51,7 +51,7 @@ Qt::PenStyle QgsPenStyleComboBox::penStyle() const
 
 void QgsPenStyleComboBox::setPenStyle( Qt::PenStyle style )
 {
-  int idx = findData( QVariant(( int ) style ) );
+  int idx = findData( QVariant( ( int ) style ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
@@ -76,8 +76,8 @@ QIcon QgsPenStyleComboBox::iconForPen( Qt::PenStyle style )
 /////////
 // join
 
-QgsPenJoinStyleComboBox::QgsPenJoinStyleComboBox( QWidget* parent )
-    : QComboBox( parent )
+QgsPenJoinStyleComboBox::QgsPenJoinStyleComboBox( QWidget *parent )
+  : QComboBox( parent )
 {
   QString path = QgsApplication::defaultThemePath();
   addItem( QIcon( path + "/join_bevel.svg" ), tr( "Bevel" ), QVariant( Qt::BevelJoin ) );
@@ -100,8 +100,8 @@ void QgsPenJoinStyleComboBox::setPenJoinStyle( Qt::PenJoinStyle style )
 /////////
 // cap
 
-QgsPenCapStyleComboBox::QgsPenCapStyleComboBox( QWidget* parent )
-    : QComboBox( parent )
+QgsPenCapStyleComboBox::QgsPenCapStyleComboBox( QWidget *parent )
+  : QComboBox( parent )
 {
   QString path = QgsApplication::defaultThemePath();
   addItem( QIcon( path + "/cap_square.svg" ), tr( "Square" ), QVariant( Qt::SquareCap ) );

@@ -26,8 +26,8 @@
 #include <Qsci/qscilexerpython.h>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
-    : QgsCodeEditor( parent )
-    , mAPISFilesList( filenames )
+  : QgsCodeEditor( parent )
+  , mAPISFilesList( filenames )
 {
   if ( !parent )
   {
@@ -49,14 +49,14 @@ void QgsCodeEditorPython::setSciLexerPython()
 
   QFont font = getMonospaceFont();
 
-  QsciLexerPython* pyLexer = new QsciLexerPython( this );
+  QsciLexerPython *pyLexer = new QsciLexerPython( this );
   pyLexer->setDefaultFont( font );
   pyLexer->setFont( font, -1 );
   pyLexer->setColor( Qt::red, QsciLexerPython::Comment );
   pyLexer->setColor( Qt::darkGreen, QsciLexerPython::Keyword );
   pyLexer->setColor( Qt::darkBlue, QsciLexerPython::Decorator );
 
-  QsciAPIs* apis = new QsciAPIs( pyLexer );
+  QsciAPIs *apis = new QsciAPIs( pyLexer );
 
   // check if the file is a prepared apis file.
   //QString mPapFileName = QFileInfo( mAPISFilesList[0] ).fileName();

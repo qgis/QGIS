@@ -18,7 +18,7 @@
 
 #include "qgsgrassrasterprovider.h"
 
-QGISEXTERN QgsGrassRasterProvider * classFactory( const QString *uri )
+QGISEXTERN QgsGrassRasterProvider *classFactory( const QString *uri )
 {
   return new QgsGrassRasterProvider( *uri );
 }

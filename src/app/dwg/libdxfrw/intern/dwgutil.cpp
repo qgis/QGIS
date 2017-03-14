@@ -169,7 +169,7 @@ void dwgCompressor::decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
   bufD = dbuf;
   sizeC = csize - 2;
   sizeD = dsize;
-  QgsDebugMsgLevel( QString( "last 2 bytes: 0x%1 0x%2" ).arg( bufC[sizeC], 0, 16 ).arg( bufC[sizeC+1], 0, 16 ), 5 );
+  QgsDebugMsgLevel( QString( "last 2 bytes: 0x%1 0x%2" ).arg( bufC[sizeC], 0, 16 ).arg( bufC[sizeC + 1], 0, 16 ), 5 );
   sizeC = csize;
 
   duint32 compBytes;
@@ -179,7 +179,7 @@ void dwgCompressor::decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
   pos = 0; //current position in compressed buffer
   rpos = 0; //current position in resulting decompressed buffer
   litCount = litLength18();
-  //copy first lileral lenght
+  //copy first lileral length
   for ( duint32 i = 0; i < litCount; ++i )
   {
     bufD[rpos++] = bufC[pos++];
@@ -220,9 +220,9 @@ void dwgCompressor::decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
     }
     else if ( oc > 0x3F )
     {
-      compBytes = (( oc & 0xF0 ) >> 4 ) - 1;
+      compBytes = ( ( oc & 0xF0 ) >> 4 ) - 1;
       duint8 ll2 = bufC[pos++];
-      compOffset = ( ll2 << 2 ) | (( oc & 0x0C ) >> 2 );
+      compOffset = ( ll2 << 2 ) | ( ( oc & 0x0C ) >> 2 );
       litCount = oc & 0x03;
       if ( litCount < 1 )
       {
@@ -264,7 +264,7 @@ void dwgCompressor::decrypt18Hdr( duint8 *buf, duint32 size, duint32 offset )
 {
   duint8 max = size / 4;
   duint32 secMask = 0x4164536b ^ offset;
-  duint32* pHdr = ( duint32* )buf;
+  duint32 *pHdr = ( duint32 * )buf;
   for ( duint8 j = 0; j < max; j++ )
     *pHdr++ ^= secMask;
 }
@@ -312,7 +312,7 @@ void dwgCompressor::decompress21( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
   duint8 opCode;
 
   opCode = cbuf[srcIndex++];
-  if (( opCode >> 4 ) == 2 )
+  if ( ( opCode >> 4 ) == 2 )
   {
     srcIndex = srcIndex + 2;
     length = cbuf[srcIndex++] & 0x07;
@@ -351,19 +351,19 @@ void dwgCompressor::decompress21( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
       }
       sourceOffset = dstIndex - sourceOffset;
       for ( duint32 i = 0; i < length; i++ )
-        dbuf[dstIndex++] = dbuf[sourceOffset+i];
+        dbuf[dstIndex++] = dbuf[sourceOffset + i];
 
       length = opCode & 7;
-      if (( length != 0 ) || ( srcIndex >= csize ) )
+      if ( ( length != 0 ) || ( srcIndex >= csize ) )
       {
         break;
       }
       opCode = cbuf[srcIndex++];
-      if (( opCode >> 4 ) == 0 )
+      if ( ( opCode >> 4 ) == 0 )
       {
         break;
       }
-      if (( opCode >> 4 ) == 15 )
+      if ( ( opCode >> 4 ) == 15 )
       {
         opCode &= 15;
       }
@@ -381,26 +381,26 @@ void dwgCompressor::readInstructions21( duint8 *cbuf, duint32 *si, duint8 *oc, d
   duint32 srcIndex = *si;
   duint32 sourceOffset;
   unsigned char opCode = *oc;
-  switch (( opCode >> 4 ) )
+  switch ( ( opCode >> 4 ) )
   {
     case 0:
       length = ( opCode & 0xf ) + 0x13;
       sourceOffset = cbuf[srcIndex++];
       opCode = cbuf[srcIndex++];
-      length = (( opCode >> 3 ) & 0x10 ) + length;
-      sourceOffset = (( opCode & 0x78 ) << 5 ) + 1 + sourceOffset;
+      length = ( ( opCode >> 3 ) & 0x10 ) + length;
+      sourceOffset = ( ( opCode & 0x78 ) << 5 ) + 1 + sourceOffset;
       break;
     case 1:
       length = ( opCode & 0xf ) + 3;
       sourceOffset = cbuf[srcIndex++];
       opCode = cbuf[srcIndex++];
-      sourceOffset = (( opCode & 0xf8 ) << 5 ) + 1 + sourceOffset;
+      sourceOffset = ( ( opCode & 0xf8 ) << 5 ) + 1 + sourceOffset;
       break;
     case 2:
       sourceOffset = cbuf[srcIndex++];
-      sourceOffset = (( cbuf[srcIndex++] << 8 ) & 0xff00 ) | sourceOffset;
+      sourceOffset = ( ( cbuf[srcIndex++] << 8 ) & 0xff00 ) | sourceOffset;
       length = opCode & 7;
-      if (( opCode & 8 ) == 0 )
+      if ( ( opCode & 8 ) == 0 )
       {
         opCode = cbuf[srcIndex++];
         length = ( opCode & 0xf8 ) + length;
@@ -410,14 +410,14 @@ void dwgCompressor::readInstructions21( duint8 *cbuf, duint32 *si, duint8 *oc, d
         sourceOffset++;
         length = ( cbuf[srcIndex++] << 3 ) + length;
         opCode = cbuf[srcIndex++];
-        length = ((( opCode & 0xf8 ) << 8 ) + length ) + 0x100;
+        length = ( ( ( opCode & 0xf8 ) << 8 ) + length ) + 0x100;
       }
       break;
     default:
       length = opCode >> 4;
       sourceOffset = opCode & 15;
       opCode = cbuf[srcIndex++];
-      sourceOffset = ((( opCode & 0xf8 ) << 1 ) + sourceOffset ) + 1;
+      sourceOffset = ( ( ( opCode & 0xf8 ) << 1 ) + sourceOffset ) + 1;
       break;
   }
   *oc = opCode;
@@ -456,256 +456,256 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
       dbuf[dix] = cbuf[six];
       break;
     case 2: //Ok
-      dbuf[dix++] = cbuf[six+1];
+      dbuf[dix++] = cbuf[six + 1];
       dbuf[dix] = cbuf[six];
       break;
     case 3: //Ok
-      dbuf[dix++] = cbuf[six+2];
-      dbuf[dix++] = cbuf[six+1];
+      dbuf[dix++] = cbuf[six + 2];
+      dbuf[dix++] = cbuf[six + 1];
       dbuf[dix] = cbuf[six];
       break;
     case 4: //Ok
-      for ( int i = 0; i < 4;i++ ) //RLZ is OK, or are inverse?, OK
+      for ( int i = 0; i < 4; i++ ) //RLZ is OK, or are inverse?, OK
         dbuf[dix++] = cbuf[six++];
       break;
     case 5: //Ok
-      dbuf[dix++] = cbuf[six+4];
-      for ( int i = 0; i < 4;i++ )
+      dbuf[dix++] = cbuf[six + 4];
+      for ( int i = 0; i < 4; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 6: //Ok
-      dbuf[dix++] = cbuf[six+5];
-      for ( int i = 1; i < 5;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 5];
+      for ( int i = 1; i < 5; i++ )
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
     case 7:
       //in doc: six+5, six+6, 1-5, six+0
-      dbuf[dix++] = cbuf[six+6];
-      dbuf[dix++] = cbuf[six+5];
-      for ( int i = 1; i < 5;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 6];
+      dbuf[dix++] = cbuf[six + 5];
+      for ( int i = 1; i < 5; i++ )
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
     case 8: //Ok
-      for ( int i = 0; i < 8;i++ ) //RLZ 4[0],4[4] or 4[4],4[0]
+      for ( int i = 0; i < 8; i++ ) //RLZ 4[0],4[4] or 4[4],4[0]
         dbuf[dix++] = cbuf[six++];
       break;
     case 9: //Ok
-      dbuf[dix++] = cbuf[six+8];
-      for ( int i = 0; i < 8;i++ )
+      dbuf[dix++] = cbuf[six + 8];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 10: //Ok
-      dbuf[dix++] = cbuf[six+9];
-      for ( int i = 1; i < 9;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 9];
+      for ( int i = 1; i < 9; i++ )
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
     case 11:
       //in doc: six+9, six+10, 1-9, six+0
-      dbuf[dix++] = cbuf[six+10];
-      dbuf[dix++] = cbuf[six+9];
-      for ( int i = 1; i < 9;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 10];
+      dbuf[dix++] = cbuf[six + 9];
+      for ( int i = 1; i < 9; i++ )
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
     case 12: //Ok
-      for ( int i = 8; i < 12;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
+      for ( int i = 8; i < 12; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 13: //Ok
-      dbuf[dix++] = cbuf[six+12];
-      for ( int i = 8; i < 12;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
+      dbuf[dix++] = cbuf[six + 12];
+      for ( int i = 8; i < 12; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 14: //Ok
-      dbuf[dix++] = cbuf[six+13];
+      dbuf[dix++] = cbuf[six + 13];
       for ( int i = 9; i < 13; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 1; i < 9; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
     case 15:
       //in doc: six+13, six+14, 9-12, 1-8, six+0
-      dbuf[dix++] = cbuf[six+14];
-      dbuf[dix++] = cbuf[six+13];
+      dbuf[dix++] = cbuf[six + 14];
+      dbuf[dix++] = cbuf[six + 13];
       for ( int i = 9; i < 13; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 1; i < 9; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
     case 16: //Ok
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 17: //Seems Ok
-      for ( int i = 9; i < 17;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      dbuf[dix++] = cbuf[six+8];
-      for ( int i = 0; i < 8;i++ )
+      for ( int i = 9; i < 17; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      dbuf[dix++] = cbuf[six + 8];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 18:
       //in doc: six+17, 1-16, six+0
-      dbuf[dix++] = cbuf[six+17];
-      for ( int i = 9; i < 17;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 1; i < 9;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 17];
+      for ( int i = 9; i < 17; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 1; i < 9; i++ )
+        dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
     case 19:
       //in doc: 16-18, 0-15
-      dbuf[dix++] = cbuf[six+18];
-      dbuf[dix++] = cbuf[six+17];
-      dbuf[dix++] = cbuf[six+16];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
+      dbuf[dix++] = cbuf[six + 18];
+      dbuf[dix++] = cbuf[six + 17];
+      dbuf[dix++] = cbuf[six + 16];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 20:
       //in doc: 16-19, 0-15
-      for ( int i = 16; i < 20;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
+      for ( int i = 16; i < 20; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 21:
       //in doc: six+20, 16-19, 0-15
-      dbuf[dix++] = cbuf[six+20];
-      for ( int i = 16; i < 20;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 20];
+      for ( int i = 16; i < 20; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
+        dbuf[dix++] = cbuf[six + i];
       break;
     case 22:
       //in doc: six+20, six+21, 16-19, 0-15
-      dbuf[dix++] = cbuf[six+21];
-      dbuf[dix++] = cbuf[six+20];
-      for ( int i = 16; i < 20;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
+      dbuf[dix++] = cbuf[six + 21];
+      dbuf[dix++] = cbuf[six + 20];
+      for ( int i = 16; i < 20; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 23:
       //in doc: six+20, six+21, six+22, 16-19, 0-15
-      dbuf[dix++] = cbuf[six+22];
-      dbuf[dix++] = cbuf[six+21];
-      dbuf[dix++] = cbuf[six+20];
-      for ( int i = 16; i < 20;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 0; i < 8;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 22];
+      dbuf[dix++] = cbuf[six + 21];
+      dbuf[dix++] = cbuf[six + 20];
+      for ( int i = 16; i < 20; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 0; i < 8; i++ )
+        dbuf[dix++] = cbuf[six + i];
       break;
     case 24:
       //in doc: 16-23, 0-15
-      for ( int i = 16; i < 24;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      for ( int i = 16; i < 24; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 25:
       //in doc: 17-24, six+16, 0-15
-      for ( int i = 17; i < 25;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      dbuf[dix++] = cbuf[six+16];
+      for ( int i = 17; i < 25; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      dbuf[dix++] = cbuf[six + 16];
       for ( int i = 8; i < 16; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 26:
       //in doc: six+25, 17-24, six+16, 0-15
-      dbuf[dix++] = cbuf[six+25];
-      for ( int i = 17; i < 25;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      dbuf[dix++] = cbuf[six+16];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 25];
+      for ( int i = 17; i < 25; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      dbuf[dix++] = cbuf[six + 16];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 27:
       //in doc: six+25, six+26, 17-24, six+16, 0-15
-      dbuf[dix++] = cbuf[six+26];
-      dbuf[dix++] = cbuf[six+25];
-      for ( int i = 17; i < 25;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      dbuf[dix++] = cbuf[six+16];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 26];
+      dbuf[dix++] = cbuf[six + 25];
+      for ( int i = 17; i < 25; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      dbuf[dix++] = cbuf[six + 16];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 28:
       //in doc: 24-27, 16-23, 0-15
       for ( int i = 24; i < 28; i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 16; i < 24;i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 16; i < 24; i++ )
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 8; i < 16; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 29:
       //in doc: six+28, 24-27, 16-23, 0-15
-      dbuf[dix++] = cbuf[six+28];
+      dbuf[dix++] = cbuf[six + 28];
       for ( int i = 24; i < 28; i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 16; i < 24;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 16; i < 24; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 30:
       //in doc: six+28, six+29, 24-27, 16-23, 0-15
-      dbuf[dix++] = cbuf[six+29];
-      dbuf[dix++] = cbuf[six+28];
+      dbuf[dix++] = cbuf[six + 29];
+      dbuf[dix++] = cbuf[six + 28];
       for ( int i = 24; i < 28; i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 16; i < 24;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 8; i < 16;i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 16; i < 24; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 8; i < 16; i++ )
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
     case 31:
       //in doc: six+30, 26-29, 18-25, 2-17, 0-1
-      dbuf[dix++] = cbuf[six+30];
-      for ( int i = 26; i < 30;i++ )
-        dbuf[dix++] = cbuf[six+i];
-      for ( int i = 18; i < 26;i++ )
-        dbuf[dix++] = cbuf[six+i];
+      dbuf[dix++] = cbuf[six + 30];
+      for ( int i = 26; i < 30; i++ )
+        dbuf[dix++] = cbuf[six + i];
+      for ( int i = 18; i < 26; i++ )
+        dbuf[dix++] = cbuf[six + i];
       /*        for (int i = 2; i<18; i++)
                   dbuf[dix++] = cbuf[six+i];*/
       for ( int i = 10; i < 18; i++ )
-        dbuf[dix++] = cbuf[six+i];
+        dbuf[dix++] = cbuf[six + i];
       for ( int i = 2; i < 10; i++ )
-        dbuf[dix++] = cbuf[six+i];
-      dbuf[dix++] = cbuf[six+1];
+        dbuf[dix++] = cbuf[six + i];
+      dbuf[dix++] = cbuf[six + 1];
       dbuf[dix] = cbuf[six];
       break;
     default:
@@ -728,7 +728,7 @@ secEnum::DWGSection secEnum::getEnum( std::string nameSec )
   }
   else if ( nameSec == "AcDb:SummaryInfo" )
   {
-    return SUMARYINFO;
+    return SUMMARYINFO;
   }
   else if ( nameSec == "AcDb:Preview" )
   {

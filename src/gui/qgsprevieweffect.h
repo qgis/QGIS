@@ -39,7 +39,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
       PreviewDeuteranope
     };
 
-    QgsPreviewEffect( QObject* parent );
+    QgsPreviewEffect( QObject *parent );
 
     /** Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
      * @param mode PreviewMode to use to draw the widget

@@ -19,8 +19,8 @@ import tempfile
 import shutil
 from osgeo import gdal, ogr, osr
 
-from qgis.core import QgsDataSourceUri
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.core import QgsDataSourceUri, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
 from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
@@ -40,7 +40,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerGpkg.com")
         QCoreApplication.setApplicationName("TestPyQgsDBManagerGpkg")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
         cls.basetestpath = tempfile.mkdtemp()
@@ -61,7 +61,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
 
-        QSettings().clear()
+        QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
 
     def testSupportedDbTypes(self):
@@ -264,7 +264,7 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         self.assertEqual(table.name, 'testLayer')
         model = table.tableDataModel(None)
         self.assertEqual(model.rowCount(), 1)
-        self.assertEqual(model.getData(0, 0), 1) # fid
+        self.assertEqual(model.getData(0, 0), 1)  # fid
         self.assertEqual(model.getData(0, 1), 'LINESTRING (1 2,3 4)')
         self.assertEqual(model.getData(0, 2), 'foo')
 
@@ -420,12 +420,13 @@ class TestPyQgsDBManagerGpkg(unittest.TestCase):
         db = connection.database()
         self.assertIsNotNone(db)
 
-        tables = db.tables()
-        for i in range(len(tables)):
-            table = tables[i]
-            info = table.info()
+        # tables = db.tables()
+        # for i in range(len(tables)):
+        #     table = tables[i]
+        #     info = table.info()
 
         connection.remove()
+
 
 if __name__ == '__main__':
     unittest.main()

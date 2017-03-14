@@ -107,8 +107,7 @@ class PointsDisplacement(GeoAlgorithm):
                     dx = radius * sinusCurrentAngle
                     dy = radius * cosinusCurrentAngle
 
-                    new_point = QgsPoint(old_point.x() + dx, old_point.y()
-                                         + dy)
+                    new_point = QgsPoint(old_point.x() + dx, old_point.y() + dy)
                     out_feature = QgsFeature()
                     out_feature.setGeometry(QgsGeometry.fromPoint(new_point))
                     out_feature.setAttributes(f.attributes())

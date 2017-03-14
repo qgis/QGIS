@@ -51,19 +51,19 @@ class QgsImageWarper
      * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
      */
-    int warpFile( const QString& input,
-                  const QString& output,
+    int warpFile( const QString &input,
+                  const QString &output,
                   const QgsGeorefTransform &georefTransform,
                   ResamplingMethod resampling,
                   bool useZeroAsTrans,
-                  const QString& compression,
-                  const QgsCoordinateReferenceSystem& crs,
+                  const QString &compression,
+                  const QgsCoordinateReferenceSystem &crs,
                   double destResX = 0.0, double destResY = 0.0 );
   private:
     struct TransformChain
     {
       GDALTransformerFunc GDALTransformer;
-      void *              GDALTransformerArg = nullptr;
+      void               *GDALTransformerArg = nullptr;
       double              adfGeotransform[6];
       double              adfInvGeotransform[6];
     };
@@ -84,11 +84,11 @@ class QgsImageWarper
     void destroyGeoToPixelTransform( void *GeoToPixelTransfomArg ) const;
 
     bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
-                                 const GDALTransformerFunc& pfnTransform, GDALDatasetH &hSrcDS,
+                                 const GDALTransformerFunc &pfnTransform, GDALDatasetH &hSrcDS,
                                  GDALWarpOptions *&psWarpOptions );
 
     bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS, uint resX, uint resY,
-                                   double *adfGeoTransform, bool useZeroAsTrans, const QString& compression, const QgsCoordinateReferenceSystem& crs );
+                                   double *adfGeoTransform, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs );
 
     QWidget *mParent = nullptr;
     void      *createWarpProgressArg( QProgressDialog *progressDialog ) const;

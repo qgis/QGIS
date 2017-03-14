@@ -25,7 +25,7 @@ class DummyProvider : public QgsProcessingProvider
 {
   public:
 
-    DummyProvider( const QString& id ) : mId( id ) {}
+    DummyProvider( const QString &id ) : mId( id ) {}
 
     virtual QString id() const override { return mId; }
 
@@ -69,23 +69,23 @@ void TestQgsProcessing::addProvider()
   QVERIFY( !r.addProvider( nullptr ) );
 
   // add a provider
-  DummyProvider* p = new DummyProvider( "p1" );
+  DummyProvider *p = new DummyProvider( "p1" );
   QVERIFY( r.addProvider( p ) );
-  QCOMPARE( r.providers(), QList< QgsProcessingProvider* >() << p );
+  QCOMPARE( r.providers(), QList< QgsProcessingProvider * >() << p );
   QCOMPARE( spyProviderAdded.count(), 1 );
   QCOMPARE( spyProviderAdded.last().at( 0 ).toString(), QString( "p1" ) );
 
   //try adding another provider
-  DummyProvider* p2 = new DummyProvider( "p2" );
+  DummyProvider *p2 = new DummyProvider( "p2" );
   QVERIFY( r.addProvider( p2 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider* >() << p << p2 );
+  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
   QCOMPARE( spyProviderAdded.last().at( 0 ).toString(), QString( "p2" ) );
 
   //try adding a provider with duplicate id
-  DummyProvider* p3 = new DummyProvider( "p2" );
+  DummyProvider *p3 = new DummyProvider( "p2" );
   QVERIFY( !r.addProvider( p3 ) );
-  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider* >() << p << p2 );
+  QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
   delete p3;
 }
@@ -98,13 +98,13 @@ void TestQgsProcessing::providerById()
   QVERIFY( !r.providerById( "p1" ) );
 
   // add a provider
-  DummyProvider* p = new DummyProvider( "p1" );
+  DummyProvider *p = new DummyProvider( "p1" );
   QVERIFY( r.addProvider( p ) );
   QCOMPARE( r.providerById( "p1" ), p );
   QVERIFY( !r.providerById( "p2" ) );
 
   //try adding another provider
-  DummyProvider* p2 = new DummyProvider( "p2" );
+  DummyProvider *p2 = new DummyProvider( "p2" );
   QVERIFY( r.addProvider( p2 ) );
   QCOMPARE( r.providerById( "p1" ), p );
   QCOMPARE( r.providerById( "p2" ), p2 );
@@ -119,20 +119,20 @@ void TestQgsProcessing::removeProvider()
   QVERIFY( !r.removeProvider( nullptr ) );
   QVERIFY( !r.removeProvider( "p1" ) );
   // provider not in registry
-  DummyProvider* p = new DummyProvider( "p1" );
+  DummyProvider *p = new DummyProvider( "p1" );
   QVERIFY( !r.removeProvider( p ) );
   QCOMPARE( spyProviderRemoved.count(), 0 );
 
   // add some providers
   QVERIFY( r.addProvider( p ) );
-  DummyProvider* p2 = new DummyProvider( "p2" );
+  DummyProvider *p2 = new DummyProvider( "p2" );
   QVERIFY( r.addProvider( p2 ) );
 
   // remove one by pointer
   QVERIFY( r.removeProvider( p ) );
   QCOMPARE( spyProviderRemoved.count(), 1 );
   QCOMPARE( spyProviderRemoved.last().at( 0 ).toString(), QString( "p1" ) );
-  QCOMPARE( r.providers(), QList< QgsProcessingProvider* >() << p2 );
+  QCOMPARE( r.providers(), QList< QgsProcessingProvider * >() << p2 );
 
   // should fail, already removed
   QVERIFY( !r.removeProvider( "p1" ) );

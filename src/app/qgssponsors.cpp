@@ -22,10 +22,10 @@
 
 #ifdef Q_OS_MACX
 QgsSponsors::QgsSponsors( QWidget *parent )
-    : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+  : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
-QgsSponsors::QgsSponsors( QWidget *parent )
-    : QDialog( parent )  // Normal dialog in non Mac-OS
+QgsSponsors::QgsSponsors( QWidget * parent )
+  : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );

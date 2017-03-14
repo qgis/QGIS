@@ -25,7 +25,7 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererparalleljob.h"
 
-QgsGlobeTileStatistics* QgsGlobeTileStatistics::s_instance = 0;
+QgsGlobeTileStatistics *QgsGlobeTileStatistics::s_instance = 0;
 
 QgsGlobeTileStatistics::QgsGlobeTileStatistics() : mTileCount( 0 ), mQueueTileCount( 0 )
 {
@@ -50,12 +50,12 @@ void QgsGlobeTileStatistics::updateQueueTileCount( int num )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsRectangle& tileExtent, int tileSize , int tileLod )
-    : osg::Image()
-    , mTileSource( tileSource )
-    , mTileExtent( tileExtent )
-    , mTileSize( tileSize )
-    , mLod( tileLod )
+QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource *tileSource, const QgsRectangle &tileExtent, int tileSize, int tileLod )
+  : osg::Image()
+  , mTileSource( tileSource )
+  , mTileExtent( tileExtent )
+  , mTileSize( tileSize )
+  , mLod( tileLod )
 {
   mTileSource->addTile( this );
 #ifdef GLOBE_SHOW_TILE_STATS
@@ -68,7 +68,7 @@ QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource* tileSource, const QgsR
             GL_BGRA, GL_UNSIGNED_BYTE,
             mTileData, osg::Image::NO_DELETE );
 
-  mTileSource->mTileUpdateManager.addTile( const_cast<QgsGlobeTileImage*>( this ) );
+  mTileSource->mTileUpdateManager.addTile( const_cast<QgsGlobeTileImage *>( this ) );
   mDpi = 72;
 #else
   QImage qImage( mTileData, mTileSize, mTileSize, QImage::Format_ARGB32_Premultiplied );
@@ -94,7 +94,7 @@ QgsGlobeTileImage::~QgsGlobeTileImage()
 #endif
 }
 
-QgsMapSettings QgsGlobeTileImage::createSettings( int dpi , const QStringList &layerSet ) const
+QgsMapSettings QgsGlobeTileImage::createSettings( int dpi, const QStringList &layerSet ) const
 {
   QgsMapSettings settings;
   settings.setBackgroundColor( QColor( Qt::transparent ) );
@@ -129,8 +129,8 @@ void QgsGlobeTileImage::update( osg::NodeVisitor * )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeTileUpdateManager::QgsGlobeTileUpdateManager( QObject* parent )
-    : QObject( parent ), mCurrentTile( 0 ), mRenderer( 0 )
+QgsGlobeTileUpdateManager::QgsGlobeTileUpdateManager( QObject *parent )
+  : QObject( parent ), mCurrentTile( 0 ), mRenderer( 0 )
 {
   connect( this, SIGNAL( startRendering() ), this, SLOT( start() ) );
   connect( this, SIGNAL( cancelRendering() ), this, SLOT( cancel() ) );
@@ -214,8 +214,8 @@ void QgsGlobeTileUpdateManager::renderingFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeTileSource::QgsGlobeTileSource( const osgEarth::TileSourceOptions& options )
-    : TileSource( options )
+QgsGlobeTileSource::QgsGlobeTileSource( const osgEarth::TileSourceOptions &options )
+  : TileSource( options )
 {
   osgEarth::GeoExtent geoextent( osgEarth::SpatialReference::get( "wgs84" ), -180., -90., 180., 90. );
   osgEarth::DataExtentList extents;
@@ -224,13 +224,13 @@ QgsGlobeTileSource::QgsGlobeTileSource( const osgEarth::TileSourceOptions& optio
   dirtyDataExtents();
 }
 
-osgEarth::TileSource::Status QgsGlobeTileSource::initialize( const osgDB::Options* /*dbOptions*/ )
+osgEarth::TileSource::Status QgsGlobeTileSource::initialize( const osgDB::Options * /*dbOptions*/ )
 {
   setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
   return STATUS_OK;
 }
 
-osg::Image* QgsGlobeTileSource::createImage( const osgEarth::TileKey& key, osgEarth::ProgressCallback* progress )
+osg::Image *QgsGlobeTileSource::createImage( const osgEarth::TileKey &key, osgEarth::ProgressCallback *progress )
 {
   Q_UNUSED( progress );
 
@@ -248,11 +248,11 @@ osg::Image* QgsGlobeTileSource::createImage( const osgEarth::TileKey& key, osgEa
   return new QgsGlobeTileImage( this, tileExtent, getPixelsPerTile(), key.getLOD() );
 }
 
-void QgsGlobeTileSource::refresh( const QgsRectangle& dirtyExtent )
+void QgsGlobeTileSource::refresh( const QgsRectangle &dirtyExtent )
 {
   mTileUpdateManager.updateLayerSet( mLayerSet );
   mTileListLock.lock();
-  foreach ( QgsGlobeTileImage* tile, mTiles )
+  foreach ( QgsGlobeTileImage *tile, mTiles )
   {
     if ( tile->extent().intersects( dirtyExtent ) )
     {
@@ -267,19 +267,19 @@ void QgsGlobeTileSource::setLayerSet( const QStringList &layerSet )
   mLayerSet = layerSet;
 }
 
-const QStringList& QgsGlobeTileSource::layerSet() const
+const QStringList &QgsGlobeTileSource::layerSet() const
 {
   return mLayerSet;
 }
 
-void QgsGlobeTileSource::addTile( QgsGlobeTileImage* tile )
+void QgsGlobeTileSource::addTile( QgsGlobeTileImage *tile )
 {
   mTileListLock.lock();
   mTiles.append( tile );
   mTileListLock.unlock();
 }
 
-void QgsGlobeTileSource::removeTile( QgsGlobeTileImage* tile )
+void QgsGlobeTileSource::removeTile( QgsGlobeTileImage *tile )
 {
   mTileListLock.lock();
   mTiles.removeOne( tile );

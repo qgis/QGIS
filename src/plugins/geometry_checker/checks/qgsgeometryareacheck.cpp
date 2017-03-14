@@ -18,9 +18,9 @@
 #include "qgsgeometryareacheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -31,10 +31,10 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
     }
 
     QgsGeometry g = feature.geometry();
-    QgsAbstractGeometry* geom = g.geometry();
-    if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+    QgsAbstractGeometry *geom = g.geometry();
+    if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
     {
-      QgsGeometryCollection* multiGeom = static_cast<QgsGeometryCollection*>( geom );
+      QgsGeometryCollection *multiGeom = static_cast<QgsGeometryCollection *>( geom );
       for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
       {
         double value;
@@ -55,7 +55,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
   }
 }
 
-void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes &changes ) const
+void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -64,7 +64,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsGeometry g = feature.geometry();
-  QgsAbstractGeometry* geom = g.geometry();
+  QgsAbstractGeometry *geom = g.geometry();
   QgsVertexId vidx = error->vidx();
 
   // Check if polygon still exists
@@ -75,10 +75,10 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 
   // Check if error still applies
-  if ( dynamic_cast<QgsGeometryCollection*>( geom ) )
+  if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
     double value;
-    if ( !checkThreshold( static_cast<QgsGeometryCollection*>( geom )->geometryN( vidx.part ), value ) )
+    if ( !checkThreshold( static_cast<QgsGeometryCollection *>( geom )->geometryN( vidx.part ), value ) )
     {
       error->setObsolete();
       return;
@@ -122,14 +122,14 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError* error, int method, i
   }
 }
 
-bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString& errMsg ) const
+bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
 {
   double maxVal = 0.;
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
   bool matchFound = false;
   QgsGeometry g = feature.geometry();;
-  QgsAbstractGeometry* geom = g.geometry();
+  QgsAbstractGeometry *geom = g.geometry();
 
   // Search for touching neighboring geometries
   Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( g.boundingBox() ) )
@@ -140,7 +140,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
       continue;
     }
     QgsGeometry testFeatureGeom = testFeature.geometry();
-    QgsAbstractGeometry* testGeom = testFeatureGeom.geometry();
+    QgsAbstractGeometry *testGeom = testFeatureGeom.geometry();
     for ( int testPartIdx = 0, nTestParts = testGeom->partCount(); testPartIdx < nTestParts; ++testPartIdx )
     {
       if ( testId == feature.id() && testPartIdx == partIdx )
@@ -159,8 +159,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
           }
           else
           {
-            if ( dynamic_cast<QgsGeometryCollection*>( testGeom ) )
-              val = static_cast<QgsGeometryCollection*>( testGeom )->geometryN( testPartIdx )->area();
+            if ( dynamic_cast<QgsGeometryCollection *>( testGeom ) )
+              val = static_cast<QgsGeometryCollection *>( testGeom )->geometryN( testPartIdx )->area();
             else
               val = testGeom->area();
           }
@@ -196,9 +196,9 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature& feature, int partIdx, 
 
   // Merge geometries
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
-  QgsAbstractGeometry* mergeGeom = mergeFeatureGeom.geometry();
-  QgsGeometryEngine* geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
-  QgsAbstractGeometry* combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
+  QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
+  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
+  QgsAbstractGeometry *combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   delete geomEngine;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {

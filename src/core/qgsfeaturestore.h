@@ -34,28 +34,28 @@ class CORE_EXPORT QgsFeatureStore
     QgsFeatureStore();
 
     //! Constructor
-    QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs );
+    QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
 
     //! Get fields list
-    QgsFields& fields() { return mFields; }
+    QgsFields &fields() { return mFields; }
 
     //! Set fields. Resets feature's fields to pointer to new internal fields.
-    void setFields( const QgsFields & fields );
+    void setFields( const QgsFields &fields );
 
     //! Get crs
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     //! Set crs
-    void setCrs( const QgsCoordinateReferenceSystem& crs ) { mCrs = crs; }
+    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     /** Add feature. Feature's fields will be set to pointer to the store fields.
      * @param feature
      * @note added in 2.1
      */
-    void addFeature( const QgsFeature& feature );
+    void addFeature( const QgsFeature &feature );
 
     //! Get features list reference
-    QgsFeatureList& features() { return mFeatures; }
+    QgsFeatureList &features() { return mFeatures; }
 
     //! Set map of optional parameters
     void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }

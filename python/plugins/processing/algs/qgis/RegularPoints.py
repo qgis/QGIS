@@ -32,7 +32,7 @@ from math import sqrt
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (Qgis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
+from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
                        QgsGeometry, QgsPoint)
 from qgis.utils import iface
 

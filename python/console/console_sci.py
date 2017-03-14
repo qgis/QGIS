@@ -21,7 +21,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from builtins import bytes
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
+from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
 from qgis.PyQt.QtGui import QColor, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QClipboard
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
@@ -33,7 +33,7 @@ import codecs
 import re
 import traceback
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
 _init_commands = ["from qgis.core import *", "import qgis.utils",
@@ -52,7 +52,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.opening = ['(', '{', '[', "'", '"']
         self.closing = [')', '}', ']', "'", '"']
 
-        self.settings = QSettings()
+        self.settings = QgsSettings()
 
         # Enable non-ascii chars for editor
         self.setUtf8(True)
@@ -93,12 +93,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
 
         # not too small
-        #self.setMinimumSize(500, 300)
+        # self.setMinimumSize(500, 300)
 
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
 
-        ## Disable command key
+        # Disable command key
         ctrl, shift = self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
@@ -107,7 +107,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl + shift)
 
-        ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
+        # New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCSS = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Space), self)
         self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
         self.newShortcutCSS.setContext(Qt.WidgetShortcut)
@@ -226,7 +226,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         self.setLexer(self.lexer)
 
-    ## TODO: show completion list for file and directory
+    # TODO: show completion list for file and directory
 
     def getText(self):
         """ Get the text as a unicode string. """
@@ -429,13 +429,13 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showPrevious()
         elif e.key() == Qt.Key_Up and not self.isListActive():
             self.showNext()
-        ## TODO: press event for auto-completion file directory
+        # TODO: press event for auto-completion file directory
         else:
             t = e.text()
             self.autoCloseBracket = self.settings.value("pythonConsole/autoCloseBracket", False, type=bool)
             self.autoImport = self.settings.value("pythonConsole/autoInsertionImport", True, type=bool)
             txt = cmd[:index].replace('>>> ', '').replace('... ', '')
-            ## Close bracket automatically
+            # Close bracket automatically
             if t in self.opening and self.autoCloseBracket:
                 i = self.opening.index(t)
                 if self.hasSelectedText() and startPos != 0:
@@ -444,13 +444,13 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     self.insert(self.opening[i] + selText + self.closing[i])
                     self.setCursorPosition(endLine, endPos + 2)
                     return
-                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt)
-                                   or re.match(r'^[ \t]*class \w+$', txt)):
+                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) or
+                                   re.match(r'^[ \t]*class \w+$', txt)):
                     self.insert('):')
                 else:
                     self.insert(self.closing[i])
-            ## FIXES #8392 (automatically removes the redundant char
-            ## when autoclosing brackets option is enabled)
+            # FIXES #8392 (automatically removes the redundant char
+            # when autoclosing brackets option is enabled)
             elif t in [')', ']', '}'] and self.autoCloseBracket:
                 txt = self.text(line)
                 try:
@@ -531,7 +531,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.move_cursor_to_end()
         self.insertFromDropPaste(stringPaste)
 
-    ## Drag and drop
+    # Drag and drop
     def dropEvent(self, e):
         if e.mimeData().hasText():
             stringDrag = e.mimeData().text()
@@ -595,8 +595,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             more = self.runsource(src)
             if not more:
                 self.buffer = []
-        ## prevents to commands with more lines to break the console
-        ## in the case they have a eol different from '\n'
+        # prevents to commands with more lines to break the console
+        # in the case they have a eol different from '\n'
         self.setText('')
         self.move_cursor_to_end()
         self.displayPrompt(more)
@@ -665,8 +665,8 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
         itemsSelected = self.listView.selectionModel().selectedIndexes()
         if itemsSelected:
             item = itemsSelected[0].row()
-            ## Remove item from the command history (just for the current session)
+            # Remove item from the command history (just for the current session)
             self.parent.history.pop(item)
             self.parent.historyIndex -= 1
-            ## Remove row from the command history dialog
+            # Remove row from the command history dialog
             self.model.removeRow(item)

@@ -18,8 +18,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
-QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
@@ -27,7 +27,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
   connect( mEditExpression, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
 
-  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SIGNAL( changed() ) );
+  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SIGNAL( changed() ) );
   connect( mKeyColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
   connect( mValueColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
   connect( mAllowMulti, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
@@ -53,9 +53,9 @@ QVariantMap QgsValueRelationConfigDlg::config()
   return cfg;
 }
 
-void QgsValueRelationConfigDlg::setConfig( const QVariantMap& config )
+void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
 {
-  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
+  QgsVectorLayer *lyr = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
@@ -68,7 +68,7 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap& config )
 
 void QgsValueRelationConfigDlg::editExpression()
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( mLayerName->currentLayer() );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() );
   if ( !vl )
     return;
 

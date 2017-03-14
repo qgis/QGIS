@@ -30,14 +30,14 @@ class QgsGeometryCheckerPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    explicit QgsGeometryCheckerPlugin( QgisInterface* iface );
+    explicit QgsGeometryCheckerPlugin( QgisInterface *iface );
     void initGui() override;
     void unload() override;
 
   private:
-    QgisInterface* mIface = nullptr;
-    QgsGeometryCheckerDialog* mDialog = nullptr;
-    QAction* mMenuAction = nullptr;
+    QgisInterface *mIface = nullptr;
+    QgsGeometryCheckerDialog *mDialog = nullptr;
+    QAction *mMenuAction = nullptr;
 };
 
 

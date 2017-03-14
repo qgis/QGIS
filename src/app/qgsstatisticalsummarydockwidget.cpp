@@ -18,9 +18,10 @@
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
+
 #include <QTableWidget>
 #include <QAction>
-#include <QSettings>
 
 QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::sDisplayStats =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
@@ -62,16 +63,16 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-  << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-  << QgsExpressionContextUtils::layerScope( mLayer );
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
+             << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
-    : QgsDockWidget( parent )
-    , mLayer( nullptr )
+  : QgsDockWidget( parent )
+  , mLayer( nullptr )
 {
   setupUi( this );
 
@@ -85,18 +86,18 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mLayerComboBox->setLayer( mLayerComboBox->layer( 0 ) );
   mFieldExpressionWidget->setLayer( mLayerComboBox->layer( 0 ) );
 
-  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( layerChanged( QgsMapLayer* ) ) );
+  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SLOT( layerChanged( QgsMapLayer * ) ) );
   connect( mFieldExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( refreshStatistics() ) );
   connect( mSelectedOnlyCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshStatistics() ) );
   connect( mButtonRefresh, SIGNAL( clicked( bool ) ), this, SLOT( refreshStatistics() ) );
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
 
-  QSettings settings;
+  QgsSettings settings;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
   {
-    QAction* action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
+    QAction *action = new QAction( QgsStatisticalSummary::displayName( stat ), mOptionsToolButton );
     action->setCheckable( true );
-    bool checked = settings.value( QStringLiteral( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
+    bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), true ).toBool();
     action->setChecked( checked );
     action->setData( stat );
     mStatsActions.insert( stat, action );
@@ -105,9 +106,9 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   }
 
   //count of null values statistic:
-  QAction* nullCountAction = new QAction( tr( "Missing (null) values" ), mOptionsToolButton );
+  QAction *nullCountAction = new QAction( tr( "Missing (null) values" ), mOptionsToolButton );
   nullCountAction->setCheckable( true );
-  bool checked = settings.value( QStringLiteral( "/StatisticalSummaryDock/checked_missing_values" ), true ).toBool();
+  bool checked = settings.value( QStringLiteral( "StatisticalSummaryDock/checked_missing_values" ), true ).toBool();
   nullCountAction->setChecked( checked );
   nullCountAction->setData( MISSING_VALUES );
   mStatsActions.insert( MISSING_VALUES, nullCountAction );
@@ -249,7 +250,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
 
 void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer* newLayer = dynamic_cast< QgsVectorLayer* >( layer );
+  QgsVectorLayer *newLayer = dynamic_cast< QgsVectorLayer * >( layer );
   if ( mLayer && mLayer != newLayer )
   {
     disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
@@ -277,21 +278,21 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
 {
   refreshStatistics();
-  QAction* action = dynamic_cast<QAction*>( sender() );
+  QAction *action = dynamic_cast<QAction *>( sender() );
   int stat = action->data().toInt();
 
-  QSettings settings;
+  QgsSettings settings;
   if ( stat >= 0 )
   {
-    settings.setValue( QStringLiteral( "/StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/checked_%1" ).arg( stat ), checked );
   }
   else if ( stat == MISSING_VALUES )
   {
-    settings.setValue( QStringLiteral( "/StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
+    settings.setValue( QStringLiteral( "StatisticalSummaryDock/checked_missing_values" ).arg( stat ), checked );
   }
 }
 
-void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList& layers )
+void QgsStatisticalSummaryDockWidget::layersRemoved( const QStringList &layers )
 {
   if ( mLayer && layers.contains( mLayer->id() ) )
   {
@@ -339,15 +340,15 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics( bool selectedOnl
   }
 }
 
-void QgsStatisticalSummaryDockWidget::addRow( int row, const QString& name, const QString& value,
+void QgsStatisticalSummaryDockWidget::addRow( int row, const QString &name, const QString &value,
     bool showValue )
 {
-  QTableWidgetItem* nameItem = new QTableWidgetItem( name );
+  QTableWidgetItem *nameItem = new QTableWidgetItem( name );
   nameItem->setToolTip( name );
   nameItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   mStatisticsTable->setItem( row, 0, nameItem );
 
-  QTableWidgetItem* valueItem = new QTableWidgetItem();
+  QTableWidgetItem *valueItem = new QTableWidgetItem();
   if ( showValue )
   {
     valueItem->setText( value );

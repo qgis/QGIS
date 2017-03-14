@@ -42,14 +42,14 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer* layer, const QgsSymbol* symbol, const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
      * @note added in QGIS 3.0
      */
-    void setContext( const QgsSymbolWidgetContext& context );
+    void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
@@ -70,11 +70,11 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
 
   signals:
     void changed();
-    void changeLayer( QgsSymbolLayer* );
+    void changeLayer( QgsSymbolLayer * );
 
   protected:
     void populateLayerTypes();
-    void updateSymbolLayerWidget( QgsSymbolLayer* layer );
+    void updateSymbolLayerWidget( QgsSymbolLayer *layer );
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -87,10 +87,10 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
   protected: // data
-    QgsSymbolLayer* mLayer = nullptr;
+    QgsSymbolLayer *mLayer = nullptr;
 
-    const QgsSymbol* mSymbol = nullptr;
-    const QgsVectorLayer* mVectorLayer = nullptr;
+    const QgsSymbol *mSymbol = nullptr;
+    const QgsVectorLayer *mVectorLayer = nullptr;
 
   private slots:
     void reloadLayer();

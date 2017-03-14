@@ -19,8 +19,8 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 
-QgsDatumTransformStore::QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs )
-    : mDestCRS( destCrs )
+QgsDatumTransformStore::QgsDatumTransformStore( const QgsCoordinateReferenceSystem &destCrs )
+  : mDestCRS( destCrs )
 {
 }
 
@@ -29,13 +29,13 @@ void QgsDatumTransformStore::clear()
   mEntries.clear();
 }
 
-void QgsDatumTransformStore::setDestinationCrs( const QgsCoordinateReferenceSystem& destCrs )
+void QgsDatumTransformStore::setDestinationCrs( const QgsCoordinateReferenceSystem &destCrs )
 {
   mDestCRS = destCrs;
   clear();
 }
 
-void QgsDatumTransformStore::addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
+void QgsDatumTransformStore::addEntry( const QString &layerId, const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform, int destDatumTransform )
 {
   Entry lt;
   lt.srcAuthId = srcAuthId;
@@ -45,12 +45,12 @@ void QgsDatumTransformStore::addEntry( const QString& layerId, const QString& sr
   mEntries.insert( layerId, lt );
 }
 
-bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
+bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer *layer ) const
 {
   return mEntries.contains( layer->id() );
 }
 
-QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer* layer ) const
+QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer *layer ) const
 {
   if ( !layer )
     return QgsCoordinateTransform();
@@ -74,7 +74,7 @@ QgsCoordinateTransform QgsDatumTransformStore::transformation( const QgsMapLayer
   }
 }
 
-void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
+void QgsDatumTransformStore::readXml( const QDomNode &parentNode )
 {
   clear();
 
@@ -102,7 +102,7 @@ void QgsDatumTransformStore::readXml( const QDomNode& parentNode )
   }
 }
 
-void QgsDatumTransformStore::writeXml( QDomNode& parentNode, QDomDocument& doc ) const
+void QgsDatumTransformStore::writeXml( QDomNode &parentNode, QDomDocument &doc ) const
 {
   // layer coordinate transform infos
   QDomElement layerCoordTransformInfo = doc.createElement( QStringLiteral( "layer_coordinate_transform_info" ) );

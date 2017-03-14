@@ -23,7 +23,7 @@ from qgis.testing import (
     unittest
 )
 from utilities import unitTestDataPath
-from osgeo import gdal, ogr
+from osgeo import gdal, ogr  # NOQA
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -237,6 +237,7 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,7 +20,6 @@ from qgis.core import (QgsComposerLegend,
                        QgsComposition,
                        QgsMapSettings,
                        QgsVectorLayer,
-                       QgsProject,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
                        QgsRectangle,
@@ -54,7 +53,6 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        s.setCrsTransformEnabled(False)
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
@@ -90,7 +88,6 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        s.setCrsTransformEnabled(False)
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
@@ -129,7 +126,6 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        s.setCrsTransformEnabled(False)
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
@@ -147,7 +143,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
 
-        #disable auto resizing
+        # disable auto resizing
         legend.setResizeToContents(False)
 
         composition.addComposerLegend(legend)
@@ -172,7 +168,6 @@ class TestQgsComposerLegend(unittest.TestCase):
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        s.setCrsTransformEnabled(False)
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
 
@@ -207,7 +202,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
     def testDataDefinedTitle(self):
-        mapSettings = QgsMapSettings()
+        mapSettings = QgsMapSettings()  # NOQA
 
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
@@ -225,7 +220,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         self.assertEqual(legend.legendSettings().title(), 'new')
 
     def testDataDefinedColumnCount(self):
-        mapSettings = QgsMapSettings()
+        mapSettings = QgsMapSettings()  # NOQA
 
         composition = QgsComposition(QgsProject.instance())
         composition.setPaperSize(297, 210)
@@ -241,6 +236,7 @@ class TestQgsComposerLegend(unittest.TestCase):
         legend.refreshDataDefinedProperty()
         self.assertEqual(legend.columnCount(), 2)
         self.assertEqual(legend.legendSettings().columnCount(), 5)
+
 
 if __name__ == '__main__':
     unittest.main()

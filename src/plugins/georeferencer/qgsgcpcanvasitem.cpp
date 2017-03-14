@@ -17,13 +17,14 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgssettings.h"
 
-QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource )
-    : QgsMapCanvasItem( mapCanvas )
-    , mDataPoint( dataPoint )
-    , mPointBrush( Qt::red )
-    , mLabelBrush( Qt::yellow )
-    , mIsGCPSource( isGCPSource )
+QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, const QgsGeorefDataPoint *dataPoint, bool isGCPSource )
+  : QgsMapCanvasItem( mapCanvas )
+  , mDataPoint( dataPoint )
+  , mPointBrush( Qt::red )
+  , mLabelBrush( Qt::yellow )
+  , mIsGCPSource( isGCPSource )
 {
   setFlags( QGraphicsItem::ItemIsMovable );
   mResidualPen.setColor( QColor( 255, 0, 0 ) );
@@ -32,7 +33,7 @@ QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefData
   updatePosition();
 }
 
-void QgsGCPCanvasItem::paint( QPainter* p )
+void QgsGCPCanvasItem::paint( QPainter *p )
 {
   QgsRenderContext context;
   if ( !setRenderContextVariables( p, context ) )
@@ -60,7 +61,7 @@ void QgsGCPCanvasItem::paint( QPainter* p )
   p->setBrush( mPointBrush );
   p->drawEllipse( -2, -2, 5, 5 );
 
-  QSettings s;
+  QgsSettings s;
   bool showIDs = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool();
   bool showCoords = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ) ).toBool();
 
@@ -160,7 +161,7 @@ void QgsGCPCanvasItem::updatePosition()
   setPos( toCanvasCoordinates( mIsGCPSource ? mDataPoint->pixelCoords() : mDataPoint->mapCoords() ) );
 }
 
-void QgsGCPCanvasItem::drawResidualArrow( QPainter* p, const QgsRenderContext& context )
+void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &context )
 {
   Q_UNUSED( context );
   if ( !mDataPoint || !mIsGCPSource || !mMapCanvas )
@@ -186,13 +187,13 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
   double mapUnitsPerScreenPixel = mMapCanvas->mapUnitsPerPixel();
   double mapUnitsPerRasterPixel = 1.0;
 
-  QList<QgsMapLayer*> canvasLayers = mMapCanvas->mapSettings().layers();
+  QList<QgsMapLayer *> canvasLayers = mMapCanvas->mapSettings().layers();
   if ( !canvasLayers.isEmpty() )
   {
-    QgsMapLayer* mapLayer = canvasLayers.at( 0 );
+    QgsMapLayer *mapLayer = canvasLayers.at( 0 );
     if ( mapLayer )
     {
-      QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( mapLayer );
+      QgsRasterLayer *rasterLayer = dynamic_cast<QgsRasterLayer *>( mapLayer );
       if ( rasterLayer )
       {
         mapUnitsPerRasterPixel = rasterLayer->rasterUnitsPerPixelX();
@@ -208,7 +209,7 @@ void QgsGCPCanvasItem::checkBoundingRectChange()
   prepareGeometryChange();
 }
 
-double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderContext& c )
+double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderContext &c )
 {
   return points * 0.3527 * c.scaleFactor();
 }

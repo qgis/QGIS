@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMenu>
 
 #include <cmath>
@@ -30,13 +29,14 @@
 #include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
+#include "qgssettings.h"
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
+  bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 
-bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& center, const double radius, const QList<QgsPoint>& segment, QgsPoint& intersection )
+bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint &center, const double radius, const QList<QgsPoint> &segment, QgsPoint &intersection )
 {
   Q_ASSERT( segment.count() == 2 );
 
@@ -87,17 +87,17 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
 }
 
 
-QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
-    : QgsDockWidget( parent )
-    , mMapCanvas( canvas )
-    , mCurrentMapToolSupportsCad( false )
-    , mCadEnabled( false )
-    , mConstructionMode( false )
-    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
-    , mCommonAngleConstraint( QSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
-    , mSnappedToVertex( false )
-    , mSessionActive( false )
-    , mErrorMessage( nullptr )
+QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
+  : QgsDockWidget( parent )
+  , mMapCanvas( canvas )
+  , mCurrentMapToolSupportsCad( false )
+  , mCadEnabled( false )
+  , mConstructionMode( false )
+  , mSnappingMode( ( QgsMapMouseEvent::SnappingMode ) QgsSettings().value( QStringLiteral( "/Cad/SnappingMode" ), QgsMapMouseEvent::SnapProjectConfig ).toInt() )
+  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
+  , mSnappedToVertex( false )
+  , mSessionActive( false )
+  , mErrorMessage( nullptr )
 {
   setupUi( this );
 
@@ -148,20 +148,20 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mXLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
   connect( mYLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
   //also watch for focus out events on these widgets
-  QgsFocusWatcher* angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
+  QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
   connect( angleWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
-  QgsFocusWatcher* distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
+  QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
   connect( distanceWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
-  QgsFocusWatcher* xWatcher = new QgsFocusWatcher( mXLineEdit );
+  QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
   connect( xWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
-  QgsFocusWatcher* yWatcher = new QgsFocusWatcher( mYLineEdit );
+  QgsFocusWatcher *yWatcher = new QgsFocusWatcher( mYLineEdit );
   connect( yWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
 
   // config menu
   QMenu *menu = new QMenu( this );
   // common angles
-  QActionGroup* angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
-  mCommonAngleActions = QMap<QAction*, int>();
+  QActionGroup *angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
+  mCommonAngleActions = QMap<QAction *, int>();
   QList< QPair< int, QString > > commonAngles;
   commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
   commonAngles << QPair<int, QString>( 30, tr( "Snap to 30%1 angles" ).arg( QStringLiteral( "°" ) ) );
@@ -169,7 +169,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   commonAngles << QPair<int, QString>( 90, tr( "Snap to 90%1 angles" ).arg( QStringLiteral( "°" ) ) );
   for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); ++it )
   {
-    QAction* action = new QAction( it->second, menu );
+    QAction *action = new QAction( it->second, menu );
     action->setCheckable( true );
     action->setChecked( it->first == mCommonAngleConstraint );
     menu->addAction( action );
@@ -178,15 +178,15 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   }
   // snapping on layers
   menu->addSeparator();
-  QActionGroup* snapButtonGroup = new QActionGroup( menu ); // actions are exclusive for snapping modes
-  mSnappingActions = QMap<QAction*, QgsMapMouseEvent::SnappingMode>();
+  QActionGroup *snapButtonGroup = new QActionGroup( menu ); // actions are exclusive for snapping modes
+  mSnappingActions = QMap<QAction *, QgsMapMouseEvent::SnappingMode>();
   QList< QPair< QgsMapMouseEvent::SnappingMode, QString > > snappingModes;
   snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::NoSnapping, tr( "Do not snap to vertices or segment" ) );
   snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::SnapProjectConfig, tr( "Snap according to project configuration" ) );
   snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::SnapAllLayers, tr( "Snap to all layers" ) );
   for ( QList< QPair< QgsMapMouseEvent::SnappingMode, QString > >::const_iterator it = snappingModes.begin(); it != snappingModes.end(); ++it )
   {
-    QAction* action = new QAction( it->second, menu );
+    QAction *action = new QAction( it->second, menu );
     action->setCheckable( true );
     action->setChecked( it->first == mSnappingMode );
     menu->addAction( action );
@@ -195,7 +195,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   }
 
   mSettingsButton->setMenu( menu );
-  connect( mSettingsButton, SIGNAL( triggered( QAction* ) ), this, SLOT( settingsButtonTriggered( QAction* ) ) );
+  connect( mSettingsButton, SIGNAL( triggered( QAction * ) ), this, SLOT( settingsButtonTriggered( QAction * ) ) );
 
   // set tooltips
   mConstructionModeButton->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
@@ -226,7 +226,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   disable();
 }
 
-void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent* )
+void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent * )
 {
   // disable CAD but do not unset map event filter
   // so it will be reactivated whenever the map tool is show again
@@ -318,25 +318,25 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
   mConstructionModeButton->setChecked( enabled );
 }
 
-void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
+void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
   // snapping
-  QMap<QAction*, QgsMapMouseEvent::SnappingMode>::const_iterator isn = mSnappingActions.constFind( action );
+  QMap<QAction *, QgsMapMouseEvent::SnappingMode>::const_iterator isn = mSnappingActions.constFind( action );
   if ( isn != mSnappingActions.constEnd() )
   {
     isn.key()->setChecked( true );
     mSnappingMode = isn.value();
-    QSettings().setValue( QStringLiteral( "/Cad/SnappingMode" ), ( int )isn.value() );
+    QgsSettings().setValue( QStringLiteral( "/Cad/SnappingMode" ), ( int )isn.value() );
     return;
   }
 
   // common angles
-  QMap<QAction*, int>::const_iterator ica = mCommonAngleActions.constFind( action );
+  QMap<QAction *, int>::const_iterator ica = mCommonAngleActions.constFind( action );
   if ( ica != mCommonAngleActions.constEnd() )
   {
     ica.key()->setChecked( true );
     mCommonAngleConstraint = ica.value();
-    QSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
+    QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), ica.value() );
     return;
   }
 }
@@ -363,14 +363,14 @@ void QgsAdvancedDigitizingDockWidget::emit pointChanged()
   // run a fake map mouse event to update the paint item
   QPoint globalPos = mMapCanvas->cursor().pos();
   QPoint pos = mMapCanvas->mapFromGlobal( globalPos );
-  QMouseEvent* e = new QMouseEvent( QEvent::MouseMove, pos, globalPos, Qt::NoButton, Qt::NoButton, Qt::NoModifier );
+  QMouseEvent *e = new QMouseEvent( QEvent::MouseMove, pos, globalPos, Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   mCurrentMapTool->canvasMoveEvent( e );
 }
 #endif
 
-QgsAdvancedDigitizingDockWidget::CadConstraint* QgsAdvancedDigitizingDockWidget::objectToConstraint( const QObject* obj ) const
+QgsAdvancedDigitizingDockWidget::CadConstraint *QgsAdvancedDigitizingDockWidget::objectToConstraint( const QObject *obj ) const
 {
-  CadConstraint* constraint = nullptr;
+  CadConstraint *constraint = nullptr;
   if ( obj == mAngleLineEdit || obj == mLockAngleButton )
   {
     constraint = mAngleConstraint.get();
@@ -390,7 +390,7 @@ QgsAdvancedDigitizingDockWidget::CadConstraint* QgsAdvancedDigitizingDockWidget:
   return constraint;
 }
 
-double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString& inputValue, bool& ok ) const
+double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValue, bool &ok ) const
 {
   ok = false;
   double value = inputValue.toDouble( &ok );
@@ -411,7 +411,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString& inputValu
   }
 }
 
-void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint* constraint, const QString& textValue, bool convertExpression )
+void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression )
 {
   if ( !constraint || textValue.isEmpty() )
   {
@@ -433,7 +433,7 @@ void QgsAdvancedDigitizingDockWidget::updateConstraintValue( CadConstraint* cons
 
 void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
 {
-  CadConstraint* constraint = objectToConstraint( sender() );
+  CadConstraint *constraint = objectToConstraint( sender() );
   if ( !constraint )
   {
     return;
@@ -475,9 +475,9 @@ void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default t
   }
 }
 
-void QgsAdvancedDigitizingDockWidget::constraintTextEdited( const QString& textValue )
+void QgsAdvancedDigitizingDockWidget::constraintTextEdited( const QString &textValue )
 {
-  CadConstraint* constraint = objectToConstraint( sender() );
+  CadConstraint *constraint = objectToConstraint( sender() );
   if ( !constraint )
   {
     return;
@@ -488,11 +488,11 @@ void QgsAdvancedDigitizingDockWidget::constraintTextEdited( const QString& textV
 
 void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
 {
-  QLineEdit* lineEdit = qobject_cast< QLineEdit* >( sender()->parent() );
+  QLineEdit *lineEdit = qobject_cast< QLineEdit * >( sender()->parent() );
   if ( !lineEdit )
     return;
 
-  CadConstraint* constraint = objectToConstraint( lineEdit );
+  CadConstraint *constraint = objectToConstraint( lineEdit );
   if ( !constraint )
   {
     return;
@@ -573,7 +573,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 }
 
 
-bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
+bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 {
   bool res = true;
 
@@ -760,8 +760,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       // this threshold might be adapted
       if ( qAbs( d ) > 0.01 )
       {
-        point.setX((( x3 - x4 )*( x1*y2 - y1*x2 ) - ( x1 - x2 )*( x3*y4 - y3*x4 ) ) / d );
-        point.setY((( y3 - y4 )*( x1*y2 - y1*x2 ) - ( y1 - y2 )*( x3*y4 - y3*x4 ) ) / d );
+        point.setX( ( ( x3 - x4 ) * ( x1 * y2 - y1 * x2 ) - ( x1 - x2 ) * ( x3 * y4 - y3 * x4 ) ) / d );
+        point.setY( ( ( y3 - y4 ) * ( x1 * y2 - y1 * x2 ) - ( y1 - y2 ) * ( x3 * y4 - y3 * x4 ) ) / d );
       }
     }
   }
@@ -878,7 +878,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
 }
 
 
-bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent* e, CadConstraint::LockMode lockMode )
+bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
   if ( mAdditionalConstraint == NoConstraint )
   {
@@ -919,13 +919,13 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent* e, CadCo
   return true;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasPressEvent( QgsMapMouseEvent* e )
+bool QgsAdvancedDigitizingDockWidget::canvasPressEvent( QgsMapMouseEvent *e )
 {
   applyConstraints( e );
   return mCadEnabled && mConstructionMode;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent* e, AdvancedDigitizingMode mode )
+bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode )
 {
   if ( !mCadEnabled )
     return false;
@@ -966,7 +966,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent* e, A
   return mConstructionMode;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent* e )
+bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mCadEnabled )
     return false;
@@ -988,7 +988,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent* e )
   return false;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent* e )
+bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent *e )
 {
   // event on map tool
 
@@ -1054,7 +1054,7 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
   }
 }
 
-bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject* obj, QEvent* event )
+bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
 {
   // event for line edits
   Q_UNUSED( obj );
@@ -1062,7 +1062,7 @@ bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject* obj, QEvent* event )
   {
     return false;
   }
-  QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>( event );
+  QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event );
   if ( !keyEvent )
   {
     return false;
@@ -1070,7 +1070,7 @@ bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject* obj, QEvent* event )
   return filterKeyPress( keyEvent ) ;
 }
 
-bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
+bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 {
   switch ( e->key() )
   {
@@ -1231,7 +1231,7 @@ void QgsAdvancedDigitizingDockWidget::disable()
   setCadEnabled( false );
 }
 
-void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPoint& point )
+void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPoint &point )
 {
   if ( !pointsCount() )
   {
@@ -1264,7 +1264,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
   updateCapacity();
 }
 
-void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint& point )
+void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPoint &point )
 {
   if ( !pointsCount() )
   {
@@ -1334,7 +1334,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
   setRelative( mRelative ? false : true );
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool* exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 0;
@@ -1344,7 +1344,7 @@ QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool* exist ) const
     return QgsPoint();
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool* exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 1;
@@ -1354,7 +1354,7 @@ QgsPoint QgsAdvancedDigitizingDockWidget::previousPoint( bool* exist ) const
     return QgsPoint();
 }
 
-QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool* exist ) const
+QgsPoint QgsAdvancedDigitizingDockWidget::penultimatePoint( bool *exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 2;

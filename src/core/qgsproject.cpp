@@ -43,6 +43,8 @@
 #include "qgstransactiongroup.h"
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
+#include "qgssettings.h"
+#include "qgsmaplayerlistutils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -52,7 +54,6 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
-#include <QSettings>
 
 #ifdef Q_OS_UNIX
 #include <utime.h>
@@ -71,7 +72,7 @@ QgsProject *QgsProject::sProject = nullptr;
     of { "properties", "someplugin", "foo", "bar", "baz" }.  "properties" is
     always first because that's the permanent ``root'' Property node.
  */
-QStringList makeKeyTokens_( const QString& scope, const QString& key )
+QStringList makeKeyTokens_( const QString &scope, const QString &key )
 {
   QStringList keyTokens = QStringList( scope );
   keyTokens += key.split( '/', QString::SkipEmptyParts );
@@ -113,12 +114,12 @@ QStringList makeKeyTokens_( const QString& scope, const QString& key )
 
    @return null if not found, otherwise located Property
 */
-QgsProjectProperty* findKey_( const QString& scope,
-                              const QString& key,
-                              QgsProjectPropertyKey& rootProperty )
+QgsProjectProperty *findKey_( const QString &scope,
+                              const QString &key,
+                              QgsProjectPropertyKey &rootProperty )
 {
-  QgsProjectPropertyKey* currentProperty = &rootProperty;
-  QgsProjectProperty* nextProperty;           // link to next property down hierarchy
+  QgsProjectPropertyKey *currentProperty = &rootProperty;
+  QgsProjectProperty *nextProperty;           // link to next property down hierarchy
 
   QStringList keySequence = makeKeyTokens_( scope, key );
 
@@ -143,11 +144,11 @@ QgsProjectProperty* findKey_( const QString& scope,
         // property node
         return currentProperty;
       }
-      else if (( nextProperty = currentProperty->find( keySequence.first() ) ) )
+      else if ( ( nextProperty = currentProperty->find( keySequence.first() ) ) )
       {
         if ( nextProperty->isKey() )
         {
-          currentProperty = static_cast<QgsProjectPropertyKey*>( nextProperty );
+          currentProperty = static_cast<QgsProjectPropertyKey *>( nextProperty );
         }
         else if ( nextProperty->isValue() && 1 == keySequence.count() )
         {
@@ -188,17 +189,17 @@ QgsProjectProperty* findKey_( const QString& scope,
 @param rootProperty is the property from which to start adding
 @param value the value associated with the key
 */
-QgsProjectProperty *addKey_( const QString& scope,
-                             const QString& key,
-                             QgsProjectPropertyKey* rootProperty,
-                             const QVariant& value )
+QgsProjectProperty *addKey_( const QString &scope,
+                             const QString &key,
+                             QgsProjectPropertyKey *rootProperty,
+                             const QVariant &value )
 {
   QStringList keySequence = makeKeyTokens_( scope, key );
 
   // cursor through property key/value hierarchy
   QgsProjectPropertyKey *currentProperty = rootProperty;
   QgsProjectProperty *nextProperty; // link to next property down hierarchy
-  QgsProjectPropertyKey* newPropertyKey = nullptr;
+  QgsProjectPropertyKey *newPropertyKey = nullptr;
 
   while ( ! keySequence.isEmpty() )
   {
@@ -224,9 +225,9 @@ QgsProjectProperty *addKey_( const QString& scope,
 
         return currentProperty;
       }
-      else if (( nextProperty = currentProperty->find( keySequence.first() ) ) )
+      else if ( ( nextProperty = currentProperty->find( keySequence.first() ) ) )
       {
-        currentProperty = dynamic_cast<QgsProjectPropertyKey*>( nextProperty );
+        currentProperty = dynamic_cast<QgsProjectPropertyKey *>( nextProperty );
 
         if ( currentProperty )
         {
@@ -239,7 +240,7 @@ QgsProjectProperty *addKey_( const QString& scope,
       }
       else                // the next subkey doesn't exist, so add it
       {
-        if (( newPropertyKey = currentProperty->addKey( keySequence.first() ) ) )
+        if ( ( newPropertyKey = currentProperty->addKey( keySequence.first() ) ) )
         {
           currentProperty = newPropertyKey;
         }
@@ -257,8 +258,8 @@ QgsProjectProperty *addKey_( const QString& scope,
 }
 
 
-void removeKey_( const QString& scope,
-                 const QString& key,
+void removeKey_( const QString &scope,
+                 const QString &key,
                  QgsProjectPropertyKey &rootProperty )
 {
   QgsProjectPropertyKey *currentProperty = &rootProperty;
@@ -290,10 +291,10 @@ void removeKey_( const QString& scope,
       {
         previousQgsPropertyKey->removeKey( currentProperty->name() );
       }
-      else if (( nextProperty = currentProperty->find( keySequence.first() ) ) )
+      else if ( ( nextProperty = currentProperty->find( keySequence.first() ) ) )
       {
         previousQgsPropertyKey = currentProperty;
-        currentProperty = dynamic_cast<QgsProjectPropertyKey*>( nextProperty );
+        currentProperty = dynamic_cast<QgsProjectPropertyKey *>( nextProperty );
 
         if ( currentProperty )
         {
@@ -305,7 +306,8 @@ void removeKey_( const QString& scope,
         }
       }
       else                // if the next key down isn't found
-      {                   // then the overall key sequence doesn't exist
+      {
+        // then the overall key sequence doesn't exist
         return;
       }
     }
@@ -317,16 +319,16 @@ void removeKey_( const QString& scope,
 
 }
 
-QgsProject::QgsProject( QObject* parent )
-    : QObject( parent )
-    , mBadLayerHandler( new QgsProjectBadLayerHandler() )
-    , mSnappingConfig( this )
-    , mRelationManager( new QgsRelationManager( this ) )
-    , mAnnotationManager( new QgsAnnotationManager( this ) )
-    , mRootGroup( new QgsLayerTreeGroup )
-    , mAutoTransaction( false )
-    , mEvaluateDefaultValues( false )
-    , mDirty( false )
+QgsProject::QgsProject( QObject *parent )
+  : QObject( parent )
+  , mBadLayerHandler( new QgsProjectBadLayerHandler() )
+  , mSnappingConfig( this )
+  , mRelationManager( new QgsRelationManager( this ) )
+  , mAnnotationManager( new QgsAnnotationManager( this ) )
+  , mRootGroup( new QgsLayerTreeGroup )
+  , mAutoTransaction( false )
+  , mEvaluateDefaultValues( false )
+  , mDirty( false )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
   clear();
@@ -335,9 +337,9 @@ QgsProject::QgsProject( QObject* parent )
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this, this );
-  connect( this, SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( onMapLayersAdded( QList<QgsMapLayer*> ) ) );
+  connect( this, SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( onMapLayersAdded( QList<QgsMapLayer *> ) ) );
   connect( this, SIGNAL( layersRemoved( QStringList ) ), this, SLOT( cleanTransactionGroups() ) );
-  connect( this, SIGNAL( layersWillBeRemoved( QList<QgsMapLayer*> ) ), this, SLOT( onMapLayersRemoved( QList<QgsMapLayer*> ) ) );
+  connect( this, SIGNAL( layersWillBeRemoved( QList<QgsMapLayer *> ) ), this, SLOT( onMapLayersRemoved( QList<QgsMapLayer *> ) ) );
 }
 
 
@@ -361,7 +363,7 @@ QgsProject *QgsProject::instance()
   return sProject;
 }
 
-void QgsProject::setTitle( const QString& title )
+void QgsProject::setTitle( const QString &title )
 {
   if ( title == mTitle )
     return;
@@ -388,7 +390,7 @@ void QgsProject::setDirty( bool b )
   mDirty = b;
 }
 
-void QgsProject::setFileName( const QString& name )
+void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
     return;
@@ -417,29 +419,28 @@ QFileInfo QgsProject::fileInfo() const
 
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
-  QgsCoordinateReferenceSystem projectCrs;
-  long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-  if ( currentCRS != -1 )
-  {
-    projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-  }
-  return projectCrs;
+  return mCrs;
 }
 
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  mCrs = crs;
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ), crs.toProj4() );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
   setDirty( true );
+  emit crsChanged();
 }
 
 QString QgsProject::ellipsoid() const
 {
+  if ( !crs().isValid() )
+    return GEO_NONE;
+
   return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), GEO_NONE );
 }
 
-void QgsProject::setEllipsoid( const QString& ellipsoid )
+void QgsProject::setEllipsoid( const QString &ellipsoid )
 {
   writeEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), ellipsoid );
   setDirty( true );
@@ -454,12 +455,13 @@ void QgsProject::clear()
   mEvaluateDefaultValues = false;
   mDirty = false;
   mCustomVariables.clear();
+  mLayerOrder.clear();
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mAnnotationManager->clear();
   mSnappingConfig.reset();
-  emit snappingConfigChanged();
+  emit snappingConfigChanged( mSnappingConfig );
 
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
@@ -473,7 +475,7 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  QSettings s;
+  QgsSettings s;
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
@@ -481,7 +483,7 @@ void QgsProject::clear()
 }
 
 // basically a debugging tool to dump property list values
-void dump_( const QgsProjectPropertyKey& topQgsPropertyKey )
+void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
 {
   QgsDebugMsg( "current properties:" );
   topQgsPropertyKey.dump();
@@ -518,7 +520,7 @@ scope.  "layers" is a list containing three string values.
 @param project_properties should be the top QgsProjectPropertyKey node.
 
 */
-void _getProperties( const QDomDocument& doc, QgsProjectPropertyKey& project_properties )
+void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_properties )
 {
   QDomElement propertiesElem = doc.documentElement().firstChildElement( QStringLiteral( "properties" ) );
 
@@ -546,7 +548,7 @@ void _getProperties( const QDomDocument& doc, QgsProjectPropertyKey& project_pro
    Get the project title
    @todo XXX we should go with the attribute xor title, not both.
 */
-static void _getTitle( const QDomDocument& doc, QString& title )
+static void _getTitle( const QDomDocument &doc, QString &title )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "title" ) );
 
@@ -580,7 +582,7 @@ static void _getTitle( const QDomDocument& doc, QString& title )
 
 }
 
-QgsProjectVersion getVersion( const QDomDocument& doc )
+QgsProjectVersion getVersion( const QDomDocument &doc )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
 
@@ -603,17 +605,17 @@ QgsSnappingConfig QgsProject::snappingConfig() const
   return mSnappingConfig;
 }
 
-void QgsProject::setSnappingConfig( const QgsSnappingConfig& snappingConfig )
+void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
 {
   if ( mSnappingConfig == snappingConfig )
     return;
 
   mSnappingConfig = snappingConfig;
   setDirty();
-  emit snappingConfigChanged();
+  emit snappingConfigChanged( mSnappingConfig );
 }
 
-bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& brokenNodes )
+bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes )
 {
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... )' signal
@@ -644,7 +646,7 @@ bool QgsProject::_getMapLayers( const QDomDocument& doc, QList<QDomNode>& broken
   QVector<QDomNode> sortedLayerNodes = depSorter.sortedLayerNodes();
 
   int i = 0;
-  Q_FOREACH ( const QDomNode& node, sortedLayerNodes )
+  Q_FOREACH ( const QDomNode &node, sortedLayerNodes )
   {
     QDomElement element = node.toElement();
 
@@ -721,7 +723,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   }
 }
 
-bool QgsProject::read( const QString& filename )
+bool QgsProject::read( const QString &filename )
 {
   mFile.setFileName( filename );
 
@@ -808,6 +810,19 @@ bool QgsProject::read()
   // now get project title
   _getTitle( *doc, mTitle );
 
+  //crs
+  QgsCoordinateReferenceSystem projectCrs;
+  if ( QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
+  {
+    long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+    if ( currentCRS != -1 )
+    {
+      projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+    }
+  }
+  mCrs = projectCrs;
+  emit crsChanged();
+
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
   {
@@ -864,19 +879,62 @@ bool QgsProject::read()
 
   // Resolve references to other vector layers
   // Needs to be done here once all dependent layers are loaded
-  for ( QMap<QString, QgsMapLayer*>::iterator it = mMapLayers.begin(); it != mMapLayers.end(); it++ )
+  for ( QMap<QString, QgsMapLayer *>::iterator it = mMapLayers.begin(); it != mMapLayers.end(); it++ )
   {
-    if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( it.value() ) )
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
       vl->resolveReferences( this );
   }
-
-  // now that layers are loaded, we can resolve layer tree's references to the layers
-  mRootGroup->resolveReferences( this );
 
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
+
+  // load layer order
+  QList< QgsMapLayer * > layerOrder;
+  QDomNodeList layerOrderNodes = doc->elementsByTagName( QStringLiteral( "layerorder" ) );
+  if ( layerOrderNodes.count() )
+  {
+    QDomElement layerOrderElem = layerOrderNodes.at( 0 ).toElement();
+    for ( int i = 0; i < layerOrderElem.childNodes().count(); ++i )
+    {
+      QDomElement layerElem = layerOrderElem.childNodes().at( i ).toElement();
+      layerOrder << mMapLayers.value( layerElem.attribute( QStringLiteral( "id" ) ) );
+    }
+  }
+  else
+  {
+    //old layer order nodes
+    QStringList order;
+    QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
+    if ( elem.isNull() )
+    {
+      bool oldEnabled;
+      QgsLayerTreeUtils::readOldLegendLayerOrder( doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ), oldEnabled, order );
+    }
+    else
+    {
+      QDomElement customOrderElem = elem.firstChildElement( QStringLiteral( "custom-order" ) );
+      if ( !customOrderElem.isNull() )
+      {
+
+        QDomElement itemElem = customOrderElem.firstChildElement( QStringLiteral( "item" ) );
+        while ( !itemElem.isNull() )
+        {
+          order.append( itemElem.text() );
+          itemElem = itemElem.nextSiblingElement( QStringLiteral( "item" ) );
+        }
+      }
+    }
+    Q_FOREACH ( const QString &id, order )
+    {
+      layerOrder << mMapLayers.value( id );
+    }
+  }
+  setLayerOrder( layerOrder );
+
+  // now that layers are loaded, we can resolve layer tree's references to the layers
+  mRootGroup->resolveReferences( this );
 
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
@@ -890,14 +948,14 @@ bool QgsProject::read()
   mAnnotationManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
-  QMap<QString, QgsMapLayer*> existingMaps = mapLayers();
-  for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
+  QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
   {
     it.value()->setDependencies( it.value()->dependencies() );
   }
 
   mSnappingConfig.readProject( *doc );
-  emit snappingConfigChanged();
+  emit snappingConfigChanged( mSnappingConfig );
 
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
@@ -925,6 +983,7 @@ bool QgsProject::read()
     setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
+  emit crsChanged();
 
   return true;
 }
@@ -946,7 +1005,7 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList() );
         if ( newGroup )
         {
-          QList<QgsLayerTreeNode*> clonedChildren;
+          QList<QgsLayerTreeNode *> clonedChildren;
           Q_FOREACH ( QgsLayerTreeNode *newGroupChild, newGroup->children() )
             clonedChildren << newGroupChild->clone();
           delete newGroup;
@@ -976,7 +1035,7 @@ QVariantMap QgsProject::customVariables() const
   return mCustomVariables;
 }
 
-void QgsProject::setCustomVariables( const QVariantMap& variables )
+void QgsProject::setCustomVariables( const QVariantMap &variables )
 {
   if ( variables == mCustomVariables )
     return;
@@ -1000,22 +1059,22 @@ void QgsProject::setCustomVariables( const QVariantMap& variables )
   emit customVariablesChanged();
 }
 
-QList<QgsVectorLayer*> QgsProject::avoidIntersectionsLayers() const
+QList<QgsVectorLayer *> QgsProject::avoidIntersectionsLayers() const
 {
-  QList<QgsVectorLayer*> layers;
+  QList<QgsVectorLayer *> layers;
   QStringList layerIds = readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), QStringList() );
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( const QString &layerId, layerIds )
   {
-    if ( QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mapLayer( layerId ) ) )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer( layerId ) ) )
       layers << vlayer;
   }
   return layers;
 }
 
-void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer*>& layers )
+void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers )
 {
   QStringList list;
-  Q_FOREACH ( QgsVectorLayer* layer, layers )
+  Q_FOREACH ( QgsVectorLayer *layer, layers )
     list << layer->id();
   writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), list );
   emit avoidIntersectionsLayersChanged();
@@ -1026,20 +1085,20 @@ QgsExpressionContext QgsProject::createExpressionContext() const
   QgsExpressionContext context;
 
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( this );
+          << QgsExpressionContextUtils::projectScope( this );
 
   return context;
 }
 
-void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
+void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
 {
-  QMap<QString, QgsMapLayer*> existingMaps = mapLayers();
+  QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
 
   bool tgChanged = false;
 
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
-    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
     {
       if ( autoTransaction() )
@@ -1049,7 +1108,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
           QString connString = QgsDataSourceUri( vlayer->source() ).connectionInfo();
           QString key = vlayer->providerType();
 
-          QgsTransactionGroup* tg = mTransactionGroups.value( qMakePair( key, connString ) );
+          QgsTransactionGroup *tg = mTransactionGroups.value( qMakePair( key, connString ) );
 
           if ( !tg )
           {
@@ -1069,7 +1128,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
     connect( layer, SIGNAL( configChanged() ), this, SLOT( setDirty() ) );
 
     // check if we have to update connections for layers with dependencies
-    for ( QMap<QString, QgsMapLayer*>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
+    for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
     {
       QSet<QgsMapLayerDependency> deps = it.value()->dependencies();
       if ( deps.contains( layer->id() ) )
@@ -1081,19 +1140,19 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer*>& layers )
   }
 
   if ( mSnappingConfig.addLayers( layers ) )
-    emit snappingConfigChanged();
+    emit snappingConfigChanged( mSnappingConfig );
 }
 
-void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer*>& layers )
+void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 {
   if ( mSnappingConfig.removeLayers( layers ) )
-    emit snappingConfigChanged();
+    emit snappingConfigChanged( mSnappingConfig );
 }
 
 void QgsProject::cleanTransactionGroups( bool force )
 {
   bool changed = false;
-  for ( QMap< QPair< QString, QString>, QgsTransactionGroup*>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
+  for ( QMap< QPair< QString, QString>, QgsTransactionGroup *>::Iterator tg = mTransactionGroups.begin(); tg != mTransactionGroups.end(); )
   {
     if ( tg.value()->isEmpty() || force )
     {
@@ -1110,15 +1169,15 @@ void QgsProject::cleanTransactionGroups( bool force )
     emit transactionGroupsChanged();
 }
 
-bool QgsProject::readLayer( const QDomNode& layerNode )
+bool QgsProject::readLayer( const QDomNode &layerNode )
 {
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes ) )
   {
     // have to try to update joins for all layers now - a previously added layer may be dependent on this newly
     // added layer for joins
-    QVector<QgsVectorLayer*> vectorLayers = layers<QgsVectorLayer*>();
-    Q_FOREACH ( QgsVectorLayer* layer, vectorLayers )
+    QVector<QgsVectorLayer *> vectorLayers = layers<QgsVectorLayer *>();
+    Q_FOREACH ( QgsVectorLayer *layer, vectorLayers )
     {
       // TODO: should be only done later - and with all layers (other layers may have referenced this layer)
       layer->resolveReferences( this );
@@ -1129,7 +1188,7 @@ bool QgsProject::readLayer( const QDomNode& layerNode )
   return false;
 }
 
-bool QgsProject::write( const QString& filename )
+bool QgsProject::write( const QString &filename )
 {
   mFile.setFileName( filename );
 
@@ -1193,13 +1252,13 @@ bool QgsProject::write()
   emit writeProject( *doc );
 
   // within top level node save list of layers
-  const QMap<QString, QgsMapLayer*> &layers = mapLayers();
+  const QMap<QString, QgsMapLayer *> &layers = mapLayers();
 
   // Iterate over layers in zOrder
   // Call writeXml() on each
   QDomElement projectLayersNode = doc->createElement( QStringLiteral( "projectlayers" ) );
 
-  QMap<QString, QgsMapLayer*>::ConstIterator li = layers.constBegin();
+  QMap<QString, QgsMapLayer *>::ConstIterator li = layers.constBegin();
   while ( li != layers.end() )
   {
     QgsMapLayer *ml = li.value();
@@ -1236,6 +1295,16 @@ bool QgsProject::write()
   }
 
   qgisNode.appendChild( projectLayersNode );
+
+  QDomElement layerOrderNode = doc->createElement( QStringLiteral( "layerorder" ) );
+  Q_FOREACH ( QgsMapLayer *layer, layerOrder() )
+  {
+    QDomElement mapLayerElem = doc->createElement( QStringLiteral( "layer" ) );
+    mapLayerElem.setAttribute( QStringLiteral( "id" ), layer->id() );
+    layerOrderNode.appendChild( mapLayerElem );
+  }
+  qgisNode.appendChild( layerOrderNode );
+
 
   // now add the optional extra properties
 
@@ -1335,47 +1404,47 @@ bool QgsProject::write()
   return true;
 }
 
-bool QgsProject::writeEntry( const QString& scope, QString const& key, bool value )
+bool QgsProject::writeEntry( const QString &scope, QString const &key, bool value )
 {
   setDirty( true );
 
   return addKey_( scope, key, &mProperties, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, const QString& key, double value )
+bool QgsProject::writeEntry( const QString &scope, const QString &key, double value )
 {
   setDirty( true );
 
   return addKey_( scope, key, &mProperties, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, QString const& key, int value )
+bool QgsProject::writeEntry( const QString &scope, QString const &key, int value )
 {
   setDirty( true );
 
   return addKey_( scope, key, &mProperties, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, const QString& key, const QString& value )
+bool QgsProject::writeEntry( const QString &scope, const QString &key, const QString &value )
 {
   setDirty( true );
 
   return addKey_( scope, key, &mProperties, value );
 }
 
-bool QgsProject::writeEntry( const QString& scope, const QString& key, const QStringList& value )
+bool QgsProject::writeEntry( const QString &scope, const QString &key, const QStringList &value )
 {
   setDirty( true );
 
   return addKey_( scope, key, &mProperties, value );
 }
 
-QStringList QgsProject::readListEntry( const QString& scope,
+QStringList QgsProject::readListEntry( const QString &scope,
                                        const QString &key,
-                                       const QStringList& def,
-                                       bool* ok ) const
+                                       const QStringList &def,
+                                       bool *ok ) const
 {
-  QgsProjectProperty* property = findKey_( scope, key, mProperties );
+  QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
   QVariant value;
 
@@ -1397,10 +1466,10 @@ QStringList QgsProject::readListEntry( const QString& scope,
 }
 
 
-QString QgsProject::readEntry( const QString& scope,
-                               const QString& key,
-                               const QString& def,
-                               bool* ok ) const
+QString QgsProject::readEntry( const QString &scope,
+                               const QString &key,
+                               const QString &def,
+                               bool *ok ) const
 {
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
@@ -1421,8 +1490,8 @@ QString QgsProject::readEntry( const QString& scope,
   return def;
 }
 
-int QgsProject::readNumEntry( const QString& scope, const QString &key, int def,
-                              bool* ok ) const
+int QgsProject::readNumEntry( const QString &scope, const QString &key, int def,
+                              bool *ok ) const
 {
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
@@ -1448,9 +1517,9 @@ int QgsProject::readNumEntry( const QString& scope, const QString &key, int def,
   return def;
 }
 
-double QgsProject::readDoubleEntry( const QString& scope, const QString& key,
+double QgsProject::readDoubleEntry( const QString &scope, const QString &key,
                                     double def,
-                                    bool* ok ) const
+                                    bool *ok ) const
 {
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
   if ( property )
@@ -1468,8 +1537,8 @@ double QgsProject::readDoubleEntry( const QString& scope, const QString& key,
   return def;
 }
 
-bool QgsProject::readBoolEntry( const QString& scope, const QString &key, bool def,
-                                bool* ok ) const
+bool QgsProject::readBoolEntry( const QString &scope, const QString &key, bool def,
+                                bool *ok ) const
 {
   QgsProjectProperty *property = findKey_( scope, key, mProperties );
 
@@ -1489,7 +1558,7 @@ bool QgsProject::readBoolEntry( const QString& scope, const QString &key, bool d
 }
 
 
-bool QgsProject::removeEntry( const QString& scope, const QString& key )
+bool QgsProject::removeEntry( const QString &scope, const QString &key )
 {
   removeKey_( scope, key, mProperties );
 
@@ -1499,7 +1568,7 @@ bool QgsProject::removeEntry( const QString& scope, const QString& key )
 }
 
 
-QStringList QgsProject::entryList( const QString& scope, const QString& key ) const
+QStringList QgsProject::entryList( const QString &scope, const QString &key ) const
 {
   QgsProjectProperty *foundProperty = findKey_( scope, key, mProperties );
 
@@ -1507,16 +1576,16 @@ QStringList QgsProject::entryList( const QString& scope, const QString& key ) co
 
   if ( foundProperty )
   {
-    QgsProjectPropertyKey *propertyKey = dynamic_cast<QgsProjectPropertyKey*>( foundProperty );
+    QgsProjectPropertyKey *propertyKey = dynamic_cast<QgsProjectPropertyKey *>( foundProperty );
 
     if ( propertyKey )
-      { propertyKey->entryList( entries ); }
+    { propertyKey->entryList( entries ); }
   }
 
   return entries;
 }
 
-QStringList QgsProject::subkeyList( const QString& scope, const QString& key ) const
+QStringList QgsProject::subkeyList( const QString &scope, const QString &key ) const
 {
   QgsProjectProperty *foundProperty = findKey_( scope, key, mProperties );
 
@@ -1524,10 +1593,10 @@ QStringList QgsProject::subkeyList( const QString& scope, const QString& key ) c
 
   if ( foundProperty )
   {
-    QgsProjectPropertyKey *propertyKey = dynamic_cast<QgsProjectPropertyKey*>( foundProperty );
+    QgsProjectPropertyKey *propertyKey = dynamic_cast<QgsProjectPropertyKey *>( foundProperty );
 
     if ( propertyKey )
-      { propertyKey->subkeyList( entries ); }
+    { propertyKey->subkeyList( entries ); }
   }
 
   return entries;
@@ -1544,17 +1613,17 @@ QgsPathResolver QgsProject::pathResolver() const
   return QgsPathResolver( absolutePaths ? QString() : fileName() );
 }
 
-QString QgsProject::readPath( const QString& src ) const
+QString QgsProject::readPath( const QString &src ) const
 {
   return pathResolver().readPath( src );
 }
 
-QString QgsProject::writePath( const QString& src ) const
+QString QgsProject::writePath( const QString &src ) const
 {
   return pathResolver().writePath( src );
 }
 
-void QgsProject::setError( const QString& errorMessage )
+void QgsProject::setError( const QString &errorMessage )
 {
   mErrorMessage = errorMessage;
 }
@@ -1798,7 +1867,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QStringList thisProjectIdentifyDisabledLayers = nonIdentifiableLayers();
 
   // consider the layers might be identify disabled in its project
-  Q_FOREACH ( const QString& layerId, newGroup->findLayerIds() )
+  Q_FOREACH ( const QString &layerId, newGroup->findLayerIds() )
   {
     if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
     {
@@ -1844,9 +1913,9 @@ bool QgsProject::evaluateDefaultValues() const
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
-  Q_FOREACH ( QgsMapLayer* layer, mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
   {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( vl )
     {
       vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
@@ -1874,7 +1943,7 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
     return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
 
   //fallback to QGIS default measurement unit
-  QSettings s;
+  QgsSettings s;
   bool ok = false;
   QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::DistanceMeters;
@@ -1892,7 +1961,7 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
     return QgsUnitTypes::decodeAreaUnit( areaUnitString );
 
   //fallback to QGIS default area unit
-  QSettings s;
+  QgsSettings s;
   bool ok = false;
   QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
   return ok ? type : QgsUnitTypes::AreaSquareMeters;
@@ -1922,22 +1991,22 @@ QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
   return mRootGroup;
 }
 
-QgsMapThemeCollection* QgsProject::mapThemeCollection()
+QgsMapThemeCollection *QgsProject::mapThemeCollection()
 {
   return mMapThemeCollection.get();
 }
 
-QgsAnnotationManager* QgsProject::annotationManager()
+QgsAnnotationManager *QgsProject::annotationManager()
 {
   return mAnnotationManager.get();
 }
 
-void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )
+void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers )
 {
   QStringList currentLayers = nonIdentifiableLayers();
 
   QStringList newLayers;
-  Q_FOREACH ( QgsMapLayer* l, layers )
+  Q_FOREACH ( QgsMapLayer *l, layers )
   {
     newLayers << l->id();
   }
@@ -1947,7 +2016,7 @@ void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )
 
   QStringList disabledLayerIds;
 
-  Q_FOREACH ( QgsMapLayer* l, layers )
+  Q_FOREACH ( QgsMapLayer *l, layers )
   {
     disabledLayerIds << l->id();
   }
@@ -1955,7 +2024,7 @@ void QgsProject::setNonIdentifiableLayers( const QList<QgsMapLayer*>& layers )
   setNonIdentifiableLayers( disabledLayerIds );
 }
 
-void QgsProject::setNonIdentifiableLayers( const QStringList& layerIds )
+void QgsProject::setNonIdentifiableLayers( const QStringList &layerIds )
 {
   writeEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ), layerIds );
 
@@ -1985,7 +2054,7 @@ void QgsProject::setAutoTransaction( bool autoTransaction )
   }
 }
 
-QMap<QPair<QString, QString>, QgsTransactionGroup*> QgsProject::transactionGroups()
+QMap<QPair<QString, QString>, QgsTransactionGroup *> QgsProject::transactionGroups()
 {
   return mTransactionGroups;
 }
@@ -2001,15 +2070,15 @@ int QgsProject::count() const
   return mMapLayers.size();
 }
 
-QgsMapLayer * QgsProject::mapLayer( const QString& layerId ) const
+QgsMapLayer *QgsProject::mapLayer( const QString &layerId ) const
 {
   return mMapLayers.value( layerId );
 }
 
-QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString& layerName ) const
+QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) const
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
+  Q_FOREACH ( QgsMapLayer *layer, mMapLayers )
   {
     if ( layer->name() == layerName )
     {
@@ -2020,12 +2089,12 @@ QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString& layerName ) con
 }
 
 QList<QgsMapLayer *> QgsProject::addMapLayers(
-  const QList<QgsMapLayer *>& layers,
+  const QList<QgsMapLayer *> &layers,
   bool addToLegend,
   bool takeOwnership )
 {
   QList<QgsMapLayer *> myResultList;
-  Q_FOREACH ( QgsMapLayer* myLayer, layers )
+  Q_FOREACH ( QgsMapLayer *myLayer, layers )
   {
     if ( !myLayer || !myLayer->isValid() )
     {
@@ -2041,7 +2110,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
       {
         myLayer->setParent( this );
       }
-      connect( myLayer, SIGNAL( destroyed( QObject* ) ), this, SLOT( onMapLayerDeleted( QObject* ) ) );
+      connect( myLayer, SIGNAL( destroyed( QObject * ) ), this, SLOT( onMapLayerDeleted( QObject * ) ) );
       emit layerWasAdded( myLayer );
     }
   }
@@ -2056,18 +2125,18 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
 }
 
 QgsMapLayer *
-QgsProject::addMapLayer( QgsMapLayer* layer,
+QgsProject::addMapLayer( QgsMapLayer *layer,
                          bool addToLegend,
                          bool takeOwnership )
 {
   QList<QgsMapLayer *> addedLayers;
-  addedLayers = addMapLayers( QList<QgsMapLayer*>() << layer, addToLegend, takeOwnership );
+  addedLayers = addMapLayers( QList<QgsMapLayer *>() << layer, addToLegend, takeOwnership );
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
 }
 
-void QgsProject::removeMapLayers( const QStringList& layerIds )
+void QgsProject::removeMapLayers( const QStringList &layerIds )
 {
-  QList<QgsMapLayer*> layers;
+  QList<QgsMapLayer *> layers;
   Q_FOREACH ( const QString &myId, layerIds )
   {
     layers << mMapLayers.value( myId );
@@ -2076,21 +2145,24 @@ void QgsProject::removeMapLayers( const QStringList& layerIds )
   removeMapLayers( layers );
 }
 
-void QgsProject::removeMapLayers( const QList<QgsMapLayer*>& layers )
+void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
 {
   if ( layers.isEmpty() )
     return;
 
   QStringList layerIds;
-  QList<QgsMapLayer*> layerList;
+  QList<QgsMapLayer *> layerList;
 
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  bool layerOrderHasChanged = false;
+  QList< QgsMapLayer * > currentOrder = layerOrder();
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     // check layer and the registry contains it
     if ( layer && mMapLayers.contains( layer->id() ) )
     {
       layerIds << layer->id();
       layerList << layer;
+      layerOrderHasChanged = layerOrderHasChanged || currentOrder.contains( layer );
     }
   }
 
@@ -2100,7 +2172,7 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer*>& layers )
   emit layersWillBeRemoved( layerIds );
   emit layersWillBeRemoved( layerList );
 
-  Q_FOREACH ( QgsMapLayer* lyr, layerList )
+  Q_FOREACH ( QgsMapLayer *lyr, layerList )
   {
     QString myId( lyr->id() );
     emit layerWillBeRemoved( myId );
@@ -2114,17 +2186,19 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer*>& layers )
   }
 
   emit layersRemoved( layerIds );
+  if ( layerOrderHasChanged )
+    emit layerOrderChanged();
 }
 
-void QgsProject::removeMapLayer( const QString& layerId )
+void QgsProject::removeMapLayer( const QString &layerId )
 {
-  removeMapLayers( QList<QgsMapLayer*>() << mMapLayers.value( layerId ) );
+  removeMapLayers( QList<QgsMapLayer *>() << mMapLayers.value( layerId ) );
 }
 
-void QgsProject::removeMapLayer( QgsMapLayer* layer )
+void QgsProject::removeMapLayer( QgsMapLayer *layer )
 {
   if ( layer )
-    removeMapLayers( QList<QgsMapLayer*>() << layer );
+    removeMapLayers( QList<QgsMapLayer *>() << layer );
 }
 
 void QgsProject::removeAllMapLayers()
@@ -2138,15 +2212,29 @@ void QgsProject::removeAllMapLayers()
 
 void QgsProject::reloadAllLayers()
 {
-  Q_FOREACH ( QgsMapLayer* layer, mMapLayers )
+  Q_FOREACH ( QgsMapLayer *layer, mMapLayers )
   {
     layer->reload();
   }
 }
 
-void QgsProject::onMapLayerDeleted( QObject* obj )
+QList<QgsMapLayer *> QgsProject::layerOrder() const
 {
-  QString id = mMapLayers.key( static_cast<QgsMapLayer*>( obj ) );
+  return _qgis_listQPointerToRaw( mLayerOrder );
+}
+
+void QgsProject::setLayerOrder( const QList<QgsMapLayer *> &order )
+{
+  if ( order == layerOrder() )
+    return;
+
+  mLayerOrder = _qgis_listRawToQPointer( order );
+  emit layerOrderChanged();
+}
+
+void QgsProject::onMapLayerDeleted( QObject *obj )
+{
+  QString id = mMapLayers.key( static_cast<QgsMapLayer *>( obj ) );
 
   if ( !id.isNull() )
   {
@@ -2155,7 +2243,7 @@ void QgsProject::onMapLayerDeleted( QObject* obj )
   }
 }
 
-QMap<QString, QgsMapLayer*> QgsProject::mapLayers() const
+QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
 {
   return mMapLayers;
 }

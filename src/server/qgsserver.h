@@ -71,7 +71,7 @@ class SERVER_EXPORT QgsServer
      * @param request a QgsServerRequest holding request parameters
      * @param response a QgsServerResponse for handling response I/O)
      */
-    void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
 
     /** Handles the request from query string
      * The query string is normally read from environment
@@ -81,10 +81,10 @@ class SERVER_EXPORT QgsServer
      * @param queryString QString containing the query string
      * @return the response headers and body QPair of QByteArray
      */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
+    QPair<QByteArray, QByteArray> handleRequest( const QString &queryString );
 
     //! Returns a pointer to the server interface
-    QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
+    QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! Initialize python
@@ -99,8 +99,8 @@ class SERVER_EXPORT QgsServer
 
     // All functions that where previously in the main file are now
     // static methods of this class
-    static QString configPath( const QString& defaultConfigPath,
-                               const QMap<QString, QString>& parameters );
+    static QString configPath( const QString &defaultConfigPath,
+                               const QMap<QString, QString> &parameters );
 
     /**
      * @brief QgsServer::printRequestParameters prints the request parameters
@@ -108,22 +108,22 @@ class SERVER_EXPORT QgsServer
      * @param logLevel
      */
     static void printRequestParameters(
-      const QMap< QString, QString>& parameterMap,
+      const QMap< QString, QString> &parameterMap,
       QgsMessageLog::MessageLevel logLevel );
 
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
     //! Create and return a request handler instance
-    static QgsRequestHandler* createRequestHandler( const QgsServerRequest& request, QgsServerResponse& response );
+    static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
 
     // Return the server name
     static QString &serverName();
 
     // Status
-    static QString* sConfigFilePath;
-    static QgsCapabilitiesCache* sCapabilitiesCache;
-    static QgsServerInterfaceImpl* sServerInterface;
+    static QString *sConfigFilePath;
+    static QgsCapabilitiesCache *sCapabilitiesCache;
+    static QgsServerInterfaceImpl *sServerInterface;
     //! Initialization must run once for all servers
     static bool sInitialized;
 
@@ -133,7 +133,7 @@ class SERVER_EXPORT QgsServer
     static QgsServerSettings sSettings;
 
     // map of QgsProject
-    QMap<QString, const QgsProject*> mProjectRegistry;
+    QMap<QString, const QgsProject *> mProjectRegistry;
 };
 #endif // QGSSERVER_H
 

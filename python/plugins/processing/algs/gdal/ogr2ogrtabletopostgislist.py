@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterTable
@@ -71,13 +71,13 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         self.processing = False
 
     def dbConnectionNames(self):
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import layer/table as geometryless table into PostgreSQL database')
-        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))

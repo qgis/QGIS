@@ -38,12 +38,12 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags fl )
-    : QWidget( parent, fl )
-    , mCurrentHttpImageRequestId( 0 )
-    , mImageSizeRatio( 0.0 )
-    , mScaleFactor( 1.0 )
-    , mScaleToFit( 0.0 )
+eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags fl )
+  : QWidget( parent, fl )
+  , mCurrentHttpImageRequestId( 0 )
+  , mImageSizeRatio( 0.0 )
+  , mScaleFactor( 1.0 )
+  , mScaleToFit( 0.0 )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton();
@@ -67,8 +67,8 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags
   connect( pbtnZoomFull, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomFull_clicked() ) );
 
   //Setup zoom button layout
-  QWidget* myButtonBar = new QWidget();
-  QHBoxLayout* myButtonBarLayout = new QHBoxLayout();
+  QWidget *myButtonBar = new QWidget();
+  QHBoxLayout *myButtonBarLayout = new QHBoxLayout();
   myButtonBarLayout->addStretch();
   myButtonBarLayout->addWidget( pbtnZoomIn );
   myButtonBarLayout->addWidget( pbtnZoomOut );
@@ -78,7 +78,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags
   //setup display area
   mDisplayArea = new QScrollArea();
 
-  QVBoxLayout* myLayout = new QVBoxLayout;
+  QVBoxLayout *myLayout = new QVBoxLayout;
   myLayout->addWidget( myButtonBar );
   myLayout->addWidget( mDisplayArea );
   setLayout( myLayout );
@@ -129,7 +129,7 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 * Public method called to display an image loaded locally from disk
 * @param path - The path and filename of the image to load from disk
 */
-void eVisImageDisplayWidget::displayImage( const QString& path )
+void eVisImageDisplayWidget::displayImage( const QString &path )
 {
   mImageLoaded = mImage->load( path, nullptr, Qt::AutoColor );
   setToolTip( path );
@@ -162,13 +162,13 @@ void eVisImageDisplayWidget::displayImage()
     //TODO: See about migrating these nasty scaling routines to use a QMatrix
     if ( mScaleByWidth )
     {
-      mySize.setWidth( static_cast<int>( mImage->width() *( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
-      mySize.setHeight( static_cast<int>(( double )mySize.width() * mImageSizeRatio ) );
+      mySize.setWidth( static_cast<int>( mImage->width() * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
+      mySize.setHeight( static_cast<int>( ( double )mySize.width() * mImageSizeRatio ) );
     }
     else
     {
-      mySize.setHeight( static_cast<int>( mImage->height() *( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
-      mySize.setWidth( static_cast<int>(( double )mySize.height() * mImageSizeRatio ) );
+      mySize.setHeight( static_cast<int>( mImage->height() * ( mScaleToFit + ( mScaleFactor * mCurrentZoomStep ) ) ) );
+      mySize.setWidth( static_cast<int>( ( double )mySize.height() * mImageSizeRatio ) );
     }
   }
   else
@@ -186,7 +186,7 @@ void eVisImageDisplayWidget::displayImage()
 * Public method called to display an image loaded from a url
 * @param url - The url from which to load an image
 */
-void eVisImageDisplayWidget::displayUrlImage( const QString& url )
+void eVisImageDisplayWidget::displayUrlImage( const QString &url )
 {
   Q_UNUSED( url );
 }

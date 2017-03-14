@@ -16,26 +16,26 @@
  ***************************************************************************/
 
 #include "qgsrasterminmaxorigin.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-#include <QSettings>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
-    : mLimits( None )
-    , mExtent( WholeRaster )
-    , mAccuracy( Estimated )
-    , mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
-    , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
-    , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
+  : mLimits( None )
+  , mExtent( WholeRaster )
+  , mAccuracy( Estimated )
+  , mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
+  , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
+  , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
-  QSettings mySettings;
-  mCumulativeCutLower = mySettings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
-  mCumulativeCutUpper = mySettings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
-  mStdDevFactor = mySettings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
+  QgsSettings mySettings;
+  mCumulativeCutLower = mySettings.value( QStringLiteral( "Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
+  mCumulativeCutUpper = mySettings.value( QStringLiteral( "Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
+  mStdDevFactor = mySettings.value( QStringLiteral( "Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
 }
 
-bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin& other ) const
+bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) const
 {
   return mLimits == other.mLimits &&
          mExtent == other.mExtent &&
@@ -61,7 +61,7 @@ QString QgsRasterMinMaxOrigin::limitsString( Limits limits )
   return QStringLiteral( "None" );
 }
 
-QgsRasterMinMaxOrigin::Limits QgsRasterMinMaxOrigin::limitsFromString( const QString& limits )
+QgsRasterMinMaxOrigin::Limits QgsRasterMinMaxOrigin::limitsFromString( const QString &limits )
 {
   if ( limits == QLatin1String( "MinMax" ) )
   {
@@ -92,7 +92,7 @@ QString QgsRasterMinMaxOrigin::extentString( Extent minMaxExtent )
   return QStringLiteral( "WholeRaster" );
 }
 
-QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QString& extent )
+QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QString &extent )
 {
   if ( extent == QLatin1String( "WholeRaster" ) )
   {
@@ -119,14 +119,14 @@ QString QgsRasterMinMaxOrigin::statAccuracyString( StatAccuracy accuracy )
   return QStringLiteral( "Estimated" );
 }
 
-QgsRasterMinMaxOrigin::StatAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString& accuracy )
+QgsRasterMinMaxOrigin::StatAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString &accuracy )
 {
   if ( accuracy == QLatin1String( "Exact" ) )
     return Exact;
   return Estimated;
 }
 
-void QgsRasterMinMaxOrigin::writeXml( QDomDocument& doc, QDomElement& parentElem ) const
+void QgsRasterMinMaxOrigin::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   // limits
   QDomElement limitsElem = doc.createElement( QStringLiteral( "limits" ) );
@@ -165,7 +165,7 @@ void QgsRasterMinMaxOrigin::writeXml( QDomDocument& doc, QDomElement& parentElem
   parentElem.appendChild( stdDevFactorElem );
 }
 
-void QgsRasterMinMaxOrigin::readXml( const QDomElement& elem )
+void QgsRasterMinMaxOrigin::readXml( const QDomElement &elem )
 {
   QDomElement limitsElem = elem.firstChildElement( QStringLiteral( "limits" ) );
   if ( !limitsElem.isNull() )

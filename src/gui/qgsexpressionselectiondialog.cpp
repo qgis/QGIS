@@ -20,14 +20,14 @@
 #include "qgsgeometry.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 
-QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
-    , mMessageBar( nullptr )
-    , mMapCanvas( nullptr )
+QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( layer )
+  , mMessageBar( nullptr )
+  , mMapCanvas( nullptr )
 {
   setupUi( this );
 
@@ -55,16 +55,16 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   // by default, zoom to features is hidden, shown only if canvas is set
   mButtonZoomToFeatures->setVisible( false );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 }
 
-QgsExpressionBuilderWidget* QgsExpressionSelectionDialog::expressionBuilder()
+QgsExpressionBuilderWidget *QgsExpressionSelectionDialog::expressionBuilder()
 {
   return mExpressionBuilder;
 }
 
-void QgsExpressionSelectionDialog::setExpressionText( const QString& text )
+void QgsExpressionSelectionDialog::setExpressionText( const QString &text )
 {
   mExpressionBuilder->setExpressionText( text );
 }
@@ -74,18 +74,18 @@ QString QgsExpressionSelectionDialog::expressionText()
   return mExpressionBuilder->expressionText();
 }
 
-void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea & da )
+void QgsExpressionSelectionDialog::setGeomCalculator( const QgsDistanceArea &da )
 {
   // Store in child widget only.
   mExpressionBuilder->setGeomCalculator( da );
 }
 
-void QgsExpressionSelectionDialog::setMessageBar( QgsMessageBar* messageBar )
+void QgsExpressionSelectionDialog::setMessageBar( QgsMessageBar *messageBar )
 {
   mMessageBar = messageBar;
 }
 
-void QgsExpressionSelectionDialog::setMapCanvas( QgsMapCanvas* canvas )
+void QgsExpressionSelectionDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   mButtonZoomToFeatures->setVisible( true );
@@ -150,8 +150,8 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
   }
   features.close();
 
-  QSettings settings;
-  int timeout = settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  QgsSettings settings;
+  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
     mMapCanvas->zoomToFeatureExtent( bbox );
@@ -177,8 +177,8 @@ void QgsExpressionSelectionDialog::closeEvent( QCloseEvent *closeEvent )
 {
   QDialog::closeEvent( closeEvent );
 
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionSelectionDialog::on_mPbnClose_clicked()

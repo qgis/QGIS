@@ -38,12 +38,12 @@ class QNetworkReply;
 struct QgsWcsCoverageSummary
 {
   QgsWcsCoverageSummary()
-      : orderId( 0 )
-      , valid( false )
-      , described( false )
-      , width( 0 )
-      , height( 0 )
-      , hasSize( false )
+    : orderId( 0 )
+    , valid( false )
+    , described( false )
+    , width( 0 )
+    , height( 0 )
+    , hasSize( false )
   { }
 
   int           orderId;
@@ -97,7 +97,7 @@ class QgsWcsCapabilities : public QObject
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsWcsCapabilities( QgsDataSourceUri const & uri );
+    explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
     QgsWcsCapabilities();
 
 
@@ -123,7 +123,7 @@ class QgsWcsCapabilities : public QObject
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
     //! Get coverage summary for identifier
-    QgsWcsCoverageSummary coverage( QString const & identifier );
+    QgsWcsCoverageSummary coverage( QString const &identifier );
 
     //! Get list of all coverage summaries
     QList<QgsWcsCoverageSummary> coverages();
@@ -137,7 +137,7 @@ class QgsWcsCapabilities : public QObject
 
     /** \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
-    QString getCapabilitiesUrl( const QString& version ) const;
+    QString getCapabilitiesUrl( const QString &version ) const;
 
     //! \brief Returns the GetCoverage full url using current version
     QString getCapabilitiesUrl() const;
@@ -149,7 +149,7 @@ class QgsWcsCapabilities : public QObject
     QString getCoverageUrl() const;
 
     //! Send request to server
-    bool sendRequest( QString const & url );
+    bool sendRequest( QString const &url );
 
     /** Get additional coverage info from server. Version 1.0 GetCapabilities
      *  response does not contain all info (CRS, formats).
@@ -164,7 +164,7 @@ class QgsWcsCapabilities : public QObject
     bool setAuthorization( QNetworkRequest &request ) const;
 
     //! set authorization reply
-    bool setAuthorizationReply( QNetworkReply * reply ) const;
+    bool setAuthorizationReply( QNetworkReply *reply ) const;
 
     QString version() const { return mCapabilities.version; }
 
@@ -221,7 +221,7 @@ class QgsWcsCapabilities : public QObject
     void progressChanged( int progress, int totalSteps );
 
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( QString const &  statusQString );
+    void statusChanged( QString const   &statusQString );
 
     void downloadFinished();
 
@@ -233,10 +233,10 @@ class QgsWcsCapabilities : public QObject
     void parseUri();
 
     //! Get coverage summary for identifier
-    QgsWcsCoverageSummary * coverageSummary( QString const & identifier, QgsWcsCoverageSummary* parent = nullptr );
+    QgsWcsCoverageSummary *coverageSummary( QString const &identifier, QgsWcsCoverageSummary *parent = nullptr );
 
     // ! Get list of all sub coverages
-    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = nullptr );
+    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary *parent = nullptr );
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
 
@@ -260,7 +260,7 @@ class QgsWcsCapabilities : public QObject
      *
      * TODO: Make network-timeout tolerant
      */
-    bool retrieveServerCapabilities( const QString& preferredVersion );
+    bool retrieveServerCapabilities( const QString &preferredVersion );
 
     //! Retrieve the best WCS version supported by server and QGIS
     bool retrieveServerCapabilities();

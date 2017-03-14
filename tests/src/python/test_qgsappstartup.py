@@ -23,11 +23,9 @@ import shutil
 import subprocess
 import tempfile
 import errno
-import locale
 
 from qgis.testing import unittest
 from utilities import unitTestDataPath
-from builtins import str
 
 print('CTEST_FULL_OUTPUT')
 
@@ -81,7 +79,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
         p = subprocess.Popen(call, env=myenv)
 
         s = 0
-        ok = True
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:
@@ -119,8 +116,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
         for t in ['test_plugins', 'test plugins', 'test_pluginsé€']:
 
             # get a unicode test dir
-            if sys.version_info.major == 2:
-                t = t.encode(locale.getpreferredencoding())
             testDir = os.path.join(self.TMP_DIR, t)
 
             # copy from testdata
@@ -162,6 +157,9 @@ class TestPyQgsAppStartup(unittest.TestCase):
             env={'PYQGIS_STARTUP': testmod})
 
     def testOptionsAsFiles(self):
+        if os.name == 'nt':
+            return
+
         # verify QGIS accepts filenames that match options after the special option '--'
         # '--help' should return immediately (after displaying the usage hints)
         # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'

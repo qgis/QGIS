@@ -16,7 +16,6 @@ import qgis  # NOQA
 
 from qgis.gui import (QgsSearchWidgetWrapper,
                       QgsAttributeFormEditorWidget,
-                      QgsSearchWidgetToolButton,
                       QgsDefaultSearchWidgetWrapper,
                       QgsAttributeForm,
                       QgsEditorWidgetRegistry

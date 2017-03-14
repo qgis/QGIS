@@ -14,23 +14,23 @@
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QPainter>
-#include <QSettings>
 #include <cmath>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   // rotation
@@ -59,8 +59,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
@@ -128,14 +128,14 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int rotationInt )
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
     double myRadiansDouble = ( PI / 180 ) * rotationInt;
-    int xShift = static_cast<int>((
-                                    ( centerXDouble * cos( myRadiansDouble ) ) +
-                                    ( centerYDouble * sin( myRadiansDouble ) )
-                                  ) - centerXDouble );
-    int yShift = static_cast<int>((
-                                    ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                    ( centerYDouble * cos( myRadiansDouble ) )
-                                  ) - centerYDouble );
+    int xShift = static_cast<int>( (
+                                     ( centerXDouble * cos( myRadiansDouble ) ) +
+                                     ( centerYDouble * sin( myRadiansDouble ) )
+                                   ) - centerXDouble );
+    int yShift = static_cast<int>( (
+                                     ( -centerXDouble * sin( myRadiansDouble ) ) +
+                                     ( centerYDouble * cos( myRadiansDouble ) )
+                                   ) - centerYDouble );
 
     //draw the pixmap in the proper position
     myQPainter.drawPixmap( xShift, yShift, myQPixmap );

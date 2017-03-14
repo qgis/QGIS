@@ -24,7 +24,7 @@
 
 ///@cond NOT_STABLE_API
 
-int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem& mapCrs )
+int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs )
 {
   // Get the display precision from the project settings
   bool automatic = QgsProject::instance()->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
@@ -62,7 +62,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
   return dp;
 }
 
-QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint& point, const QgsCoordinateReferenceSystem& destCrs, int precision )
+QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint &point, const QgsCoordinateReferenceSystem &destCrs, int precision )
 {
   QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
 
@@ -78,7 +78,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPoint& point, c
       {
         geo = ct.transform( point );
       }
-      catch ( QgsCsException& )
+      catch ( QgsCsException & )
       {
         return QString();
       }

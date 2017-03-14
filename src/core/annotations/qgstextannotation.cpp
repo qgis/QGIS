@@ -19,19 +19,19 @@
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotation::QgsTextAnnotation( QObject* parent )
-    : QgsAnnotation( parent )
-    , mDocument( new QTextDocument( QString() ) )
+QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
+  : QgsAnnotation( parent )
+  , mDocument( new QTextDocument( QString() ) )
 {
   mDocument->setUseDesignMetrics( true );
 }
 
-const QTextDocument* QgsTextAnnotation::document() const
+const QTextDocument *QgsTextAnnotation::document() const
 {
   return mDocument.get();
 }
 
-void QgsTextAnnotation::setDocument( const QTextDocument* doc )
+void QgsTextAnnotation::setDocument( const QTextDocument *doc )
 {
   if ( doc )
     mDocument.reset( doc->clone() );
@@ -40,9 +40,9 @@ void QgsTextAnnotation::setDocument( const QTextDocument* doc )
   emit appearanceChanged();
 }
 
-void QgsTextAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
+void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
   if ( !mDocument )
   {
     return;
@@ -62,7 +62,7 @@ void QgsTextAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size
   mDocument->drawContents( painter, clipRect );
 }
 
-void QgsTextAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
+void QgsTextAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement annotationElem = doc.createElement( QStringLiteral( "TextAnnotationItem" ) );
   if ( mDocument )
@@ -73,7 +73,7 @@ void QgsTextAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
   elem.appendChild( annotationElem );
 }
 
-void QgsTextAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+void QgsTextAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   mDocument.reset( new QTextDocument );
   mDocument->setHtml( itemElem.attribute( QStringLiteral( "document" ), QString() ) );

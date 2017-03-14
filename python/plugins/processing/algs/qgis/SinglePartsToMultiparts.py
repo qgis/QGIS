@@ -30,10 +30,9 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
@@ -84,7 +83,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
             atMap = feature.attributes()
             idVar = atMap[index]
             key = str(idVar).strip()
-            if not key in collection_geom:
+            if key not in collection_geom:
                 collection_geom[key] = []
                 collection_attrs[key] = atMap
 

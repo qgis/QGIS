@@ -37,7 +37,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     Q_PROPERTY( bool allowExpression READ allowExpression WRITE setAllowExpression )
     Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
-    Q_PROPERTY( QgsVectorLayer* layer READ layer WRITE setLayer )
+    Q_PROPERTY( QgsVectorLayer *layer READ layer WRITE setLayer )
 
   public:
 
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns true if a string represents a field reference, or false if it is an
      * expression consisting of more than direct field reference.
      */
-    bool isField( const QString& expression ) const;
+    bool isField( const QString &expression ) const;
 
     /**
      * Sets a single expression to be added after the fields at the end of the model.
@@ -116,7 +116,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns the layer associated with the model.
      * @see setLayer()
      */
-    QgsVectorLayer* layer() { return mLayer; }
+    QgsVectorLayer *layer() { return mLayer; }
 
     // QAbstractItemModel interface
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     QgsFields mFields;
     QList<QString> mExpression;
 
-    QgsVectorLayer* mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     bool mAllowExpression;
     bool mAllowEmpty;
 

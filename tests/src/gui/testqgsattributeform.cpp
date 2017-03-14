@@ -66,7 +66,7 @@ void TestQgsAttributeForm::testFieldConstraint()
 {
   // make a temporary vector layer
   QString def = QStringLiteral( "Point?field=col0:integer" );
-  QgsVectorLayer* layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
 
   // add a feature to the vector layer
@@ -87,7 +87,7 @@ void TestQgsAttributeForm::testFieldConstraint()
 
   // get wrapper
   QgsEditorWidgetWrapper *ww = nullptr;
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
 
   // no constraint so we expect a label with just the field name
   QLabel *label = form.mBuddyMap.value( ww->widget() );
@@ -99,7 +99,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   QgsAttributeForm form2( layer );
   form2.setFeature( ft );
   QSignalSpy spy( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
   label = form2.mBuddyMap.value( ww->widget() );
 
   // set value to 1
@@ -125,7 +125,7 @@ void TestQgsAttributeForm::testFieldConstraint()
   // build a form for this feature
   QgsAttributeForm form3( layer );
   form3.setFeature( ft );
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form3.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
   label = form3.mBuddyMap.value( ww->widget() );
 
   // set value to 1
@@ -145,7 +145,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 {
   // make a temporary layer to check through
   QString def = QStringLiteral( "Point?field=col0:integer&field=col1:integer&field=col2:integer&field=col3:integer" );
-  QgsVectorLayer* layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   // add features to the vector layer
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
@@ -171,10 +171,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
-  ww0 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
-  ww1 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[1] );
-  ww2 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[2] );
-  ww3 = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[3] );
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
 
   // get label for wrappers
   QLabel *label0 = form.mBuddyMap.value( ww0->widget() );
@@ -196,10 +196,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   QgsAttributeForm form2( layer );
   form2.setFeature( ft );
-  ww0 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[0] );
-  ww1 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[1] );
-  ww2 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[2] );
-  ww3 = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[3] );
+  ww0 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
+  ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[1] );
+  ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[2] );
+  ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[3] );
   label0 = form2.mBuddyMap.value( ww0->widget() );
   label1 = form2.mBuddyMap.value( ww1->widget() );
   label2 = form2.mBuddyMap.value( ww2->widget() );
@@ -230,7 +230,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
 {
   // make a temporary vector layer
   QString def = QStringLiteral( "Point?field=col0:integer" );
-  QgsVectorLayer* layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
 
   // add a feature to the vector layer
   QgsFeature ft( layer->dataProvider()->fields(), 1 );
@@ -248,7 +248,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
 
   // get wrapper
   QgsEditorWidgetWrapper *ww = nullptr;
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
 
   // testing stuff
   QSignalSpy spy1( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
@@ -269,7 +269,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   layer->setConstraintExpression( 0, QStringLiteral( "col0 = 0" ) );
   QgsAttributeForm form2( layer );
   form2.setFeature( ft );
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form2.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
   okButton = form2.mButtonBox->button( QDialogButtonBox::Ok );
   ww->setValue( 1 );
   QCOMPARE( okButton->isEnabled(), false );
@@ -278,7 +278,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   layer->setConstraintExpression( 0, QStringLiteral( "col0 = 2" ) );
   QgsAttributeForm form3( layer );
   form3.setFeature( ft );
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form3.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
   okButton = form3.mButtonBox->button( QDialogButtonBox::Ok );
 
   ww->setValue( 2 );
@@ -294,7 +294,7 @@ void TestQgsAttributeForm::testOKButtonStatus()
   layer->setFieldConstraint( 0, QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   QgsAttributeForm form4( layer );
   form4.setFeature( ft );
-  ww = qobject_cast<QgsEditorWidgetWrapper*>( form4.mWidgets[0] );
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form4.mWidgets[0] );
   okButton = form4.mButtonBox->button( QDialogButtonBox::Ok );
   ww->setValue( 1 );
   QVERIFY( !okButton->isEnabled() );

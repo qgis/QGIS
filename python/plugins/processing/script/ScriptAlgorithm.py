@@ -88,7 +88,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                         self.processParameterLine(line.strip('\n'))
                     except:
                         self.error = self.tr('This script has a syntax errors.\n'
-                                             'Problem with line: %s', 'ScriptAlgorithm') % line
+                                             'Problem with line: {0}', 'ScriptAlgorithm').format(line)
                 self.script += line
                 line = lines.readline()
         if self.group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
@@ -149,8 +149,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.addOutput(out)
         else:
             raise WrongScriptException(
-                self.tr('Could not load script: %s.\n'
-                        'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
+                self.tr('Could not load script: {0}.\n'
+                        'Problem with line "{1}"', 'ScriptAlgorithm').format(self.descriptionFile or '', line))
 
     def processAlgorithm(self, feedback):
         ns = {}
@@ -175,7 +175,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             if context.hasVariable(varname):
                 script = script.replace(var, context.variable(varname))
             else:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Cannot find variable: %s' % varname)
+                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, self.tr('Cannot find variable: {0}').format(varname))
 
         exec((script), ns)
         for out in self.outputs:

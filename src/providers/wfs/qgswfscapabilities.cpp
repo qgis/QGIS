@@ -20,13 +20,13 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
-#include <QSettings>
 #include <QStringList>
 
-QgsWfsCapabilities::QgsWfsCapabilities( const QString& uri )
-    : QgsWfsRequest( uri )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
+  : QgsWfsRequest( uri )
 {
   connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
@@ -40,7 +40,7 @@ bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefres
   QUrl url( baseURL() );
   url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
 
-  const QString& version = mUri.version();
+  const QString &version = mUri.version();
   if ( version == QgsWFSConstants::VERSION_AUTO )
     // MapServer honours the order with the first value being the preferred one
     url.addQueryItem( QStringLiteral( "ACCEPTVERSIONS" ), QStringLiteral( "2.0.0,1.1.0,1.0.0" ) );
@@ -76,7 +76,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   useEPSGColumnFormat = false;
 }
 
-QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
+QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name ) const
 {
   if ( name.contains( ':' ) )
     return name;
@@ -87,7 +87,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name
 
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
-  const QByteArray& buffer = mResponse;
+  const QByteArray &buffer = mResponse;
 
   QgsDebugMsg( "parsing capabilities: " + buffer );
 
@@ -416,7 +416,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.push_back( featureType );
   }
 
-  Q_FOREACH ( const FeatureType& f, mCaps.featureTypes )
+  Q_FOREACH ( const FeatureType &f, mCaps.featureTypes )
   {
     mCaps.setAllTypenames.insert( f.name );
     QString unprefixed( QgsWFSUtils::removeNamespacePrefix( f.name ) );
@@ -481,14 +481,14 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 
 int QgsWfsCapabilities::defaultExpirationInSec()
 {
-  QSettings s;
-  return s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
+  QgsSettings s;
+  return s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
 }
 
-void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
-    bool& insertCap,
-    bool& updateCap,
-    bool& deleteCap )
+void QgsWfsCapabilities::parseSupportedOperations( const QDomElement &operationsElem,
+    bool &insertCap,
+    bool &updateCap,
+    bool &deleteCap )
 {
   insertCap = false;
   updateCap = false;
@@ -537,7 +537,7 @@ void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operations
   }
 }
 
-static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
+static QgsWfsCapabilities::Function getSpatialPredicate( const QString &name )
 {
   QgsWfsCapabilities::Function f;
   // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
@@ -564,7 +564,7 @@ static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
   return f;
 }
 
-void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
+void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement &filterCapabilitiesElem )
 {
   // WFS 1.0
   QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Spatial_Capabilities" ) ).firstChildElement( QStringLiteral( "Spatial_Operators" ) );
@@ -677,7 +677,7 @@ void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
   }
 }
 
-QString QgsWfsCapabilities::errorMessageWithReason( const QString& reason )
+QString QgsWfsCapabilities::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of capabilities failed: %1" ).arg( reason );
 }

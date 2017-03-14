@@ -43,11 +43,11 @@ class TestQgsGradients : public QObject
 
   public:
     TestQgsGradients()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mGradientFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mGradientFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -70,13 +70,13 @@ class TestQgsGradients : public QObject
     void gradientSymbolFromQml();
   private:
     bool mTestHasError;
-    bool setQml( const QString& type );
-    bool imageCheck( const QString& type );
+    bool setQml( const QString &type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer = nullptr;
-    QgsGradientFillSymbolLayer* mGradientFill = nullptr;
-    QgsFillSymbol* mFillSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsGradientFillSymbolLayer *mGradientFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -117,7 +117,7 @@ void TestQgsGradients::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Gradient Renderer Tests</h1>\n" );
 
 }
@@ -163,7 +163,7 @@ void TestQgsGradients::gradientSymbolColors()
 
 void TestQgsGradients::gradientSymbolRamp()
 {
-  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );
@@ -265,7 +265,7 @@ void TestQgsGradients::gradientSymbolFromQml()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsGradients::setQml( const QString& type )
+bool TestQgsGradients::setQml( const QString &type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -280,7 +280,7 @@ bool TestQgsGradients::setQml( const QString& type )
   return myStyleFlag;
 }
 
-bool TestQgsGradients::imageCheck( const QString& testType )
+bool TestQgsGradients::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

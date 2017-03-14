@@ -27,10 +27,10 @@ class QgsGrassVectorMapLayer;
 class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsGrassFeatureSource( const QgsGrassProvider* provider );
+    QgsGrassFeatureSource( const QgsGrassProvider *provider );
     ~QgsGrassFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
 #if 0
@@ -49,15 +49,15 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 #endif
 
 
-    struct Map_info* map();
-    QgsGrassVectorMapLayer * mLayer = nullptr;
+    struct Map_info *map();
+    QgsGrassVectorMapLayer *mLayer = nullptr;
     int mLayerType;     // layer type POINT, LINE, ...
     int mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
 
     QgsWkbTypes::Type mQgisType; // WKBPoint, WKBLineString, ...
 
     QgsFields mFields;
-    QTextCodec* mEncoding = nullptr;
+    QTextCodec *mEncoding = nullptr;
 
     bool mEditing; // Standard QGIS editing mode
 
@@ -71,11 +71,11 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
 {
     Q_OBJECT
   public:
-    QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsGrassFeatureIterator();
 
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
     virtual bool rewind() override;
     virtual bool close() override;
 
@@ -109,9 +109,9 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     //! Reset selection
     void resetSelection( bool value );
 
-    void setSelectionRect( const QgsRectangle& rect, bool useIntersect );
+    void setSelectionRect( const QgsRectangle &rect, bool useIntersect );
 
-    void setFeatureGeometry( QgsFeature& feature, int id, int type );
+    void setFeatureGeometry( QgsFeature &feature, int id, int type );
 
     /** Set feature attributes.
      *  @param feature
@@ -124,7 +124,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
      */
-    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList & attlist, QgsGrassVectorMap::TopoSymbol symbol );
+    void setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList &attlist, QgsGrassVectorMap::TopoSymbol symbol );
 
     //! Canceled -> close when possible
     bool mCanceled;

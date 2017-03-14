@@ -39,8 +39,10 @@ class TestQgsMapSettings: public QObject
     void visiblePolygon();
     void testIsLayerVisible();
     void testMapLayerListUtils();
+    void testXmlReadWrite();
+
   private:
-    QString toString( const QPolygonF& p, int decimalPlaces = 2 ) const;
+    QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
 };
 
 void TestQgsMapSettings::initTestCase()
@@ -55,7 +57,7 @@ void TestQgsMapSettings::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-QString TestQgsMapSettings::toString( const QPolygonF& p, int dec ) const
+QString TestQgsMapSettings::toString( const QPolygonF &p, int dec ) const
 {
   QString s;
   const char *sep = "";
@@ -160,10 +162,10 @@ void TestQgsMapSettings::visiblePolygon()
 
 void TestQgsMapSettings::testIsLayerVisible()
 {
-  QgsVectorLayer* vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer* vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
+  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
 
-  QList<QgsMapLayer*> layers;
+  QList<QgsMapLayer *> layers;
   layers << vlA << vlB;
 
   QgsMapSettings ms;
@@ -192,13 +194,13 @@ void TestQgsMapSettings::testIsLayerVisible()
 
 void TestQgsMapSettings::testMapLayerListUtils()
 {
-  QgsVectorLayer* vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer* vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
+  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
 
-  QList<QgsMapLayer*> listRawSource;
+  QList<QgsMapLayer *> listRawSource;
   listRawSource << vlA << vlB;
 
-  QgsMapLayer* l = _qgis_findLayer( listRawSource, QStringLiteral( "a" ) );
+  QgsMapLayer *l = _qgis_findLayer( listRawSource, QStringLiteral( "a" ) );
   QCOMPARE( l, vlA );
 
   l = _qgis_findLayer( listRawSource, QStringLiteral( "z" ) );
@@ -210,7 +212,7 @@ void TestQgsMapSettings::testMapLayerListUtils()
   QCOMPARE( listQPointer[0].data(), vlA );
   QCOMPARE( listQPointer[1].data(), vlB );
 
-  QList<QgsMapLayer*> listRaw = _qgis_listQPointerToRaw( listQPointer );
+  QList<QgsMapLayer *> listRaw = _qgis_listQPointerToRaw( listQPointer );
 
   QCOMPARE( listRaw.count(), 2 );
   QCOMPARE( listRaw[0], vlA );
@@ -228,7 +230,7 @@ void TestQgsMapSettings::testMapLayerListUtils()
 
   QCOMPARE( listQPointer.count(), 2 );  // still two items but one is invalid
 
-  QList<QgsMapLayer*> listRaw2 = _qgis_listQPointerToRaw( listQPointer );
+  QList<QgsMapLayer *> listRaw2 = _qgis_listQPointerToRaw( listQPointer );
 
   QCOMPARE( listRaw2.count(), 1 );
   QCOMPARE( listRaw2[0], vlB );
@@ -239,6 +241,37 @@ void TestQgsMapSettings::testMapLayerListUtils()
   QCOMPARE( listIDs2[0], vlB->id() );
 
   delete vlB;
+}
+
+void TestQgsMapSettings::testXmlReadWrite()
+{
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+  QDomElement element = doc.createElement( "s" );
+
+  //create a map settings object
+  QgsMapSettings s1;
+  s1.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+
+  //write to xml
+  s1.writeXml( element, doc );
+
+  // read a copy from xml
+  QgsMapSettings s2;
+  s2.readXml( element );
+
+  QCOMPARE( s2.destinationCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+
+  // test writing a map settings without a valid CRS
+  element = doc.createElement( "s" );
+  s1.setDestinationCrs( QgsCoordinateReferenceSystem() );
+  s1.writeXml( element, doc );
+  s2.readXml( element );
+  QVERIFY( !s2.destinationCrs().isValid() );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

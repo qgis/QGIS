@@ -31,22 +31,26 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     Q_OBJECT
 
   public:
-    explicit QgsExternalResourceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = 0 );
+    explicit QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = 0 );
 
     // QgsEditorConfigWidget interface
   public:
     QVariantMap config() override;
-    void setConfig( const QVariantMap& config ) override;
+    void setConfig( const QVariantMap &config ) override;
 
   private slots:
     //! Choose a base directory for rootPath
     void chooseDefaultPath();
 
+    void rootPathPropertyChanged();
+
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
 
-    //! Dynamic activation of RelativeGroupBox
-    void enableRelative( bool state );
+  private:
+
+    void setRootPathExpression( const QgsProperty &property );
+
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

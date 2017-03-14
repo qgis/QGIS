@@ -26,7 +26,7 @@
 
 
 
-static QString _tempFile( const QString& name )
+static QString _tempFile( const QString &name )
 {
   return QStringLiteral( "%1/aligntest-%2.tif" ).arg( QDir::tempPath(), name );
 }

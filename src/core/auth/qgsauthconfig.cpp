@@ -35,13 +35,13 @@ const QString QgsAuthMethodConfig::CONFIG_LIST_SEP = QStringLiteral( "```" );
 const int QgsAuthMethodConfig::CONFIG_VERSION = 1;
 
 // get uniqueConfigId only on save
-QgsAuthMethodConfig::QgsAuthMethodConfig( const QString& method, int version )
-    : mId( QString() )
-    , mName( QString() )
-    , mUri( QString() )
-    , mMethod( method )
-    , mVersion( version )
-    , mConfigMap( QgsStringMap() )
+QgsAuthMethodConfig::QgsAuthMethodConfig( const QString &method, int version )
+  : mId( QString() )
+  , mName( QString() )
+  , mUri( QString() )
+  , mMethod( method )
+  , mVersion( version )
+  , mConfigMap( QgsStringMap() )
 {
 }
 
@@ -93,7 +93,7 @@ void QgsAuthMethodConfig::loadConfigString( const QString &configstr )
 
   QStringList confs( configstr.split( CONFIG_SEP ) );
 
-  Q_FOREACH ( const QString& conf, confs )
+  Q_FOREACH ( const QString &conf, confs )
   {
     if ( conf.contains( CONFIG_KEY_SEP ) )
     {
@@ -123,7 +123,7 @@ int QgsAuthMethodConfig::removeConfig( const QString &key )
   return mConfigMap.remove( key );
 }
 
-QString QgsAuthMethodConfig::config( const QString &key, const QString& defaultvalue ) const
+QString QgsAuthMethodConfig::config( const QString &key, const QString &defaultvalue ) const
 {
   return mConfigMap.value( key, defaultvalue );
 }
@@ -164,15 +164,15 @@ bool QgsAuthMethodConfig::uriToResource( const QString &accessurl, QString *reso
 QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
                             const QSslKey &clientKey,
                             const QList<QSslCertificate> &caChain )
-    : mCert( QSslCertificate() )
-    , mCertKey( QSslKey() )
-    , mCaChain( caChain )
+  : mCert( QSslCertificate() )
+  , mCertKey( QSslKey() )
+  , mCaChain( caChain )
 {
   setClientCert( clientCert );
   setClientKey( clientKey );
 }
 
-static QByteArray fileData_( const QString& path, bool astext = false )
+static QByteArray fileData_( const QString &path, bool astext = false )
 {
   QByteArray data;
   QFile file( path );
@@ -270,7 +270,7 @@ const QgsPkiBundle QgsPkiBundle::fromPkcs12Paths( const QString &bundlepath,
       if ( cert_chain.size() > 1 )
       {
         QList<QSslCertificate> ca_chain;
-        Q_FOREACH ( const QCA::Certificate& ca_cert, cert_chain )
+        Q_FOREACH ( const QCA::Certificate &ca_cert, cert_chain )
         {
           if ( ca_cert != cert_chain.primary() )
           {
@@ -327,12 +327,12 @@ void QgsPkiBundle::setClientKey( const QSslKey &certkey )
 // QgsPkiConfigBundle
 //////////////////////////////////////////////////////
 
-QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
-                                        const QSslCertificate& cert,
-                                        const QSslKey& certkey )
-    : mConfig( config )
-    , mCert( cert )
-    , mCertKey( certkey )
+QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
+                                        const QSslCertificate &cert,
+                                        const QSslKey &certkey )
+  : mConfig( config )
+  , mCert( cert )
+  , mCertKey( certkey )
 {
 }
 
@@ -349,12 +349,12 @@ bool QgsPkiConfigBundle::isValid()
 const QString QgsAuthConfigSslServer::CONF_SEP = QStringLiteral( "|||" );
 
 QgsAuthConfigSslServer::QgsAuthConfigSslServer()
-    : mSslHostPort( QString() )
-    , mSslCert( QSslCertificate() )
-    , mSslIgnoredErrors( QList<QSslError::SslError>() )
-    , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
-    , mSslPeerVerifyDepth( 0 )
-    , mVersion( 1 )
+  : mSslHostPort( QString() )
+  , mSslCert( QSslCertificate() )
+  , mSslIgnoredErrors( QList<QSslError::SslError>() )
+  , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
+  , mSslPeerVerifyDepth( 0 )
+  , mVersion( 1 )
 {
   // TODO: figure out if Qt 5 has changed yet again, e.g. TLS-only
   mQtVersion = 480;
@@ -381,7 +381,7 @@ const QString QgsAuthConfigSslServer::configString() const
   configlist << QString::number( static_cast< int >( mSslProtocol ) );
 
   QStringList errs;
-  Q_FOREACH ( const QSslError::SslError& err, mSslIgnoredErrors )
+  Q_FOREACH ( const QSslError::SslError &err, mSslIgnoredErrors )
   {
     errs << QString::number( static_cast< int >( err ) );
   }
@@ -409,7 +409,7 @@ void QgsAuthConfigSslServer::loadConfigString( const QString &config )
 
   mSslIgnoredErrors.clear();
   QStringList errs( configlist.at( 3 ).split( QStringLiteral( "~~" ) ) );
-  Q_FOREACH ( const QString& err, errs )
+  Q_FOREACH ( const QString &err, errs )
   {
     mSslIgnoredErrors.append( static_cast< QSslError::SslError >( err.toInt() ) );
   }

@@ -29,7 +29,6 @@ import os
 import re
 import tempfile
 import inspect
-import sys
 import time
 import test_qgsdelimitedtextprovider_wanted as want  # NOQA
 import collections
@@ -44,9 +43,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsRectangle,
     QgsApplication,
-    QgsFeature,
-    QgsFeatureIterator
-)
+    QgsFeature)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -126,10 +123,7 @@ class MessageLogger(QObject):
 
     def logMessage(self, msg, tag, level):
         if tag == self.tag or not self.tag:
-            if sys.version_info.major == 2:
-                self.log.append(str(msg))
-            else:
-                self.log.append(str(msg))
+            self.log.append(str(msg))
 
     def messages(self):
         return self.log
@@ -240,10 +234,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
                 for field in f.fields():
                     fields.append(str(field.name()))
                     fieldTypes.append(str(field.typeName()))
-            if sys.version_info.major == 2:
-                fielddata = dict((name, str(f[name])) for name in fields)
-            else:
-                fielddata = dict((name, str(f[name])) for name in fields)
+            fielddata = dict((name, str(f[name])) for name in fields)
             g = f.geometry()
             if not g.isNull():
                 fielddata[geomkey] = str(g.exportToWkt())
@@ -676,7 +667,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             try:
                 os.remove(filename)
             except:
-                file(filename, "w").close()
+                open(filename, "w").close()
                 assert os.path.getsize(filename) == 0, "removal and truncation of {} failed".format(filename)
             # print "Deleted file - sleeping"
             time.sleep(1)

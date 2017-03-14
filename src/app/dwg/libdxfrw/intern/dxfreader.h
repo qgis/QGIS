@@ -30,10 +30,10 @@ class dxfReader
     enum TYPE type;
   public:
     explicit dxfReader( std::ifstream *stream, bool aSkip = false )
-        : doubleData( 0. )
-        , intData( 0 )
-        , int64( 0 )
-        , skip( aSkip )
+      : doubleData( 0. )
+      , intData( 0 )
+      , int64( 0 )
+      , skip( aSkip )
     {
       filestr = stream;
       type = INVALID;
@@ -55,7 +55,7 @@ class dxfReader
     std::string getCodePage() { return decoder.getCodePage();}
 
   protected:
-    virtual bool readCode( int *code ) = 0; //return true if sucesful (not EOF)
+    virtual bool readCode( int *code ) = 0; //return true if successful (not EOF)
     virtual bool readString( std::string *text ) = 0;
     virtual bool readString() = 0;
     virtual bool readInt16() = 0;
@@ -79,7 +79,7 @@ class dxfReaderBinary : public dxfReader
 {
   public:
     explicit dxfReaderBinary( std::ifstream *stream )
-        : dxfReader( stream, false )
+      : dxfReader( stream, false )
     {}
     virtual bool readCode( int *code );
     virtual bool readString( std::string *text );
@@ -95,7 +95,7 @@ class dxfReaderAscii : public dxfReader
 {
   public:
     explicit dxfReaderAscii( std::ifstream *stream )
-        : dxfReader( stream, true )
+      : dxfReader( stream, true )
     {}
     virtual bool readCode( int *code );
     virtual bool readString( std::string *text );

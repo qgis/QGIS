@@ -29,16 +29,15 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QObject, pyqtSignal
-from qgis.PyQt.QtGui import QIcon
-from qgis.core import NULL, QgsApplication
+from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
+from qgis.core import NULL, QgsApplication, QgsSettings
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
 
 class SettingsWatcher(QObject):
-
     settingsChanged = pyqtSignal()
+
 
 settingsWatcher = SettingsWatcher()
 
@@ -292,26 +291,26 @@ class Setting(object):
                     try:
                         float(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
+                        raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
                 validator = checkFloat
             elif self.valuetype == self.INT:
                 def checkInt(v):
                     try:
                         int(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n%s') % str(v))
+                        raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
                 validator = checkInt
             elif self.valuetype in [self.FILE, self.FOLDER]:
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
-                        raise ValueError(self.tr('Specified path does not exist:\n%s') % str(v))
+                        raise ValueError(self.tr('Specified path does not exist:\n{0}').format(v))
                 validator = checkFileOrFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
                 def checkMultipleFolders(v):
                     folders = v.split(';')
                     for f in folders:
                         if f and not os.path.exists(f):
-                            raise ValueError(self.tr('Specified path does not exist:\n%s') % str(f))
+                            raise ValueError(self.tr('Specified path does not exist:\n{0}').format(f))
                 validator = checkMultipleFolders
             else:
                 def validator(x):
@@ -323,7 +322,7 @@ class Setting(object):
         self.validator(value)
         self.value = value
 
-    def read(self, qsettings=QSettings()):
+    def read(self, qsettings=QgsSettings()):
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
@@ -337,7 +336,7 @@ class Setting(object):
             else:
                 self.value = value
 
-    def save(self, qsettings=QSettings()):
+    def save(self, qsettings=QgsSettings()):
         if self.valuetype == self.SELECTION:
             qsettings.setValue(self.qname, self.options.index(self.value))
         else:

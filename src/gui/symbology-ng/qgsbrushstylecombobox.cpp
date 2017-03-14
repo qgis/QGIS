@@ -22,25 +22,25 @@
 #include <QPainter>
 #include <QPen>
 
-QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget* parent )
-    : QComboBox( parent )
+QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget *parent )
+  : QComboBox( parent )
 {
   QList < QPair<Qt::BrushStyle, QString> > styles;
   styles << qMakePair( Qt::SolidPattern, tr( "Solid" ) )
-  << qMakePair( Qt::NoBrush, tr( "No Brush" ) )
-  << qMakePair( Qt::HorPattern, tr( "Horizontal" ) )
-  << qMakePair( Qt::VerPattern, tr( "Vertical" ) )
-  << qMakePair( Qt::CrossPattern, tr( "Cross" ) )
-  << qMakePair( Qt::BDiagPattern, tr( "BDiagonal" ) )
-  << qMakePair( Qt::FDiagPattern, tr( "FDiagonal" ) )
-  << qMakePair( Qt::DiagCrossPattern, tr( "Diagonal X" ) )
-  << qMakePair( Qt::Dense1Pattern, tr( "Dense 1" ) )
-  << qMakePair( Qt::Dense2Pattern, tr( "Dense 2" ) )
-  << qMakePair( Qt::Dense3Pattern, tr( "Dense 3" ) )
-  << qMakePair( Qt::Dense4Pattern, tr( "Dense 4" ) )
-  << qMakePair( Qt::Dense5Pattern, tr( "Dense 5" ) )
-  << qMakePair( Qt::Dense6Pattern, tr( "Dense 6" ) )
-  << qMakePair( Qt::Dense7Pattern, tr( "Dense 7" ) );
+         << qMakePair( Qt::NoBrush, tr( "No Brush" ) )
+         << qMakePair( Qt::HorPattern, tr( "Horizontal" ) )
+         << qMakePair( Qt::VerPattern, tr( "Vertical" ) )
+         << qMakePair( Qt::CrossPattern, tr( "Cross" ) )
+         << qMakePair( Qt::BDiagPattern, tr( "BDiagonal" ) )
+         << qMakePair( Qt::FDiagPattern, tr( "FDiagonal" ) )
+         << qMakePair( Qt::DiagCrossPattern, tr( "Diagonal X" ) )
+         << qMakePair( Qt::Dense1Pattern, tr( "Dense 1" ) )
+         << qMakePair( Qt::Dense2Pattern, tr( "Dense 2" ) )
+         << qMakePair( Qt::Dense3Pattern, tr( "Dense 3" ) )
+         << qMakePair( Qt::Dense4Pattern, tr( "Dense 4" ) )
+         << qMakePair( Qt::Dense5Pattern, tr( "Dense 5" ) )
+         << qMakePair( Qt::Dense6Pattern, tr( "Dense 6" ) )
+         << qMakePair( Qt::Dense7Pattern, tr( "Dense 7" ) );
 
   setIconSize( QSize( 32, 16 ) );
 
@@ -48,7 +48,7 @@ QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget* parent )
   {
     Qt::BrushStyle style = styles.at( i ).first;
     QString name = styles.at( i ).second;
-    addItem( iconForBrush( style ), name, QVariant(( int )style ) );
+    addItem( iconForBrush( style ), name, QVariant( ( int )style ) );
   }
 
   setCurrentIndex( 1 );
@@ -63,7 +63,7 @@ Qt::BrushStyle QgsBrushStyleComboBox::brushStyle() const
 
 void QgsBrushStyleComboBox::setBrushStyle( Qt::BrushStyle style )
 {
-  int idx = findData( QVariant(( int )style ) );
+  int idx = findData( QVariant( ( int )style ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 

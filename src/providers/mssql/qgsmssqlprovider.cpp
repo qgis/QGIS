@@ -53,12 +53,12 @@ static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mssql" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "MSSQL spatial data provider" );
 int QgsMssqlProvider::sConnectionId = 0;
 
-QgsMssqlProvider::QgsMssqlProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mNumberFeatures( 0 )
-    , mFidColIdx( -1 )
-    , mCrs()
-    , mWkbType( QgsWkbTypes::Unknown )
+QgsMssqlProvider::QgsMssqlProvider( const QString &uri )
+  : QgsVectorDataProvider( uri )
+  , mNumberFeatures( 0 )
+  , mFidColIdx( -1 )
+  , mCrs()
+  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
 
@@ -182,12 +182,12 @@ QgsMssqlProvider::~QgsMssqlProvider()
     mDatabase.close();
 }
 
-QgsAbstractFeatureSource* QgsMssqlProvider::featureSource() const
+QgsAbstractFeatureSource *QgsMssqlProvider::featureSource() const
 {
   return new QgsMssqlFeatureSource( this );
 }
 
-QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   if ( !mValid )
   {
@@ -210,7 +210,7 @@ bool QgsMssqlProvider::OpenDatabase( QSqlDatabase db )
   return true;
 }
 
-QSqlDatabase QgsMssqlProvider::GetDatabase( const QString& service, const QString& host, const QString& database, const QString& username, const QString& password )
+QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password )
 {
   QSqlDatabase db;
   QString connectionName;
@@ -280,7 +280,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString& service, const QStrin
   return db;
 }
 
-QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString& sqlTypeName )
+QVariant::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
 {
   QVariant::Type type = QVariant::Invalid;
   if ( sqlTypeName.startsWith( QLatin1String( "decimal" ), Qt::CaseInsensitive ) ||
@@ -453,7 +453,7 @@ void QgsMssqlProvider::loadFields()
         mFidColName = query.value( 3 ).toString();
         return;
       }
-      Q_FOREACH ( const QString& pk, pkCandidates )
+      Q_FOREACH ( const QString &pk, pkCandidates )
       {
         query.clear();
         query.setForwardOnly( true );
@@ -489,7 +489,7 @@ void QgsMssqlProvider::loadFields()
   }
 }
 
-QString QgsMssqlProvider::quotedValue( const QVariant& value )
+QString QgsMssqlProvider::quotedValue( const QVariant &value )
 {
   if ( value.isNull() )
     return QStringLiteral( "NULL" );
@@ -718,7 +718,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   while ( query.next() )
   {
     QByteArray ar = query.value( 0 ).toByteArray();
-    unsigned char* wkb = mParser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
+    unsigned char *wkb = mParser.ParseSqlGeometry( ( unsigned char * )ar.data(), ar.size() );
     if ( wkb )
     {
       geom.fromWkb( wkb, mParser.GetWkbLen() );
@@ -798,7 +798,7 @@ bool QgsMssqlProvider::isValid() const
   return mValid;
 }
 
-bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
+bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist )
 {
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -1109,7 +1109,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     if ( FID_IS_NEW( fid ) )
       continue;
 
-    const QgsAttributeMap& attrs = it.value();
+    const QgsAttributeMap &attrs = it.value();
     if ( attrs.isEmpty() )
       continue;
 
@@ -1294,7 +1294,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
   return true;
 }
 
-bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   if ( mFidColName.isEmpty() )
     return false;
@@ -1459,7 +1459,7 @@ QString  QgsMssqlProvider::name() const
   return TEXT_PROVIDER_KEY;
 } // ::name()
 
-bool QgsMssqlProvider::setSubsetString( const QString& theSQL, bool )
+bool QgsMssqlProvider::setSubsetString( const QString &theSQL, bool )
 {
   QString prevWhere = mSqlWhereClause;
 
@@ -1603,7 +1603,7 @@ void QgsMssqlProvider::mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QStr
     dim = 0;
 }
 
-QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString& geometryType, int dim )
+QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString &geometryType, int dim )
 {
   if ( dim == 3 )
   {
@@ -1642,10 +1642,10 @@ QgsWkbTypes::Type QgsMssqlProvider::getWkbType( const QString& geometryType, int
 }
 
 
-QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QString& uri,
+QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem& srs,
+    const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
     QString *errorMessage,
@@ -1946,7 +1946,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 }
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
-  const QString& uri,
+  const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
@@ -1960,9 +1960,9 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            oldToNewAttrIdxMap, errorMessage, options
          );
 }
-QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QString& sldStyle,
-                           const QString& styleName, const QString& styleDescription,
-                           const QString& uiFileContent, bool useAsDefault, QString& errCause )
+QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+                           const QString &styleName, const QString &styleDescription,
+                           const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2122,7 +2122,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 }
 
 
-QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
+QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2167,7 +2167,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
 }
 
 QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                           QStringList &descriptions, QString& errCause )
+                           QStringList &descriptions, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database
@@ -2247,7 +2247,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   }
   return numberOfRelatedStyles;
 }
-QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& errCause )
+QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   // connect to database

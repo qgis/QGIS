@@ -180,5 +180,6 @@ class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
         self.assertEqual(
             errorMsg, 'Table t_unknown is referenced by column c, but not selected in FROM / JOIN.')
 
+
 if __name__ == "__main__":
     unittest.main()

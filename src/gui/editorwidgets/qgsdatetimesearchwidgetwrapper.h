@@ -43,7 +43,7 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
      * @param fieldIdx index of associated field
      * @param parent parent widget
      */
-    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     /** Returns a variant representing the current state of the widget, respecting
      * the editor widget's configured field format for date/time values.
@@ -63,8 +63,8 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   protected slots:
     void setExpression( QString exp ) override;
@@ -73,8 +73,8 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void dateTimeChanged( const QDateTime &date );
 
   private:
-    QgsDateTimeEdit* mDateTimeEdit = nullptr;
-    QgsVectorLayer* mLayer = nullptr;
+    QgsDateTimeEdit *mDateTimeEdit = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsDateTimeEditFactory;
 };

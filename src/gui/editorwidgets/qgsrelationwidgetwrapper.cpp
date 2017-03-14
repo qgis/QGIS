@@ -22,19 +22,19 @@
 
 #include <QWidget>
 
-QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor, QWidget* parent )
-    : QgsWidgetWrapper( vl, editor, parent )
-    , mRelation( relation )
-    , mWidget( nullptr )
+QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
+  : QgsWidgetWrapper( vl, editor, parent )
+  , mRelation( relation )
+  , mWidget( nullptr )
 {
 }
 
-QWidget* QgsRelationWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsRelationWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsRelationEditorWidget( parent );
 }
 
-void QgsRelationWidgetWrapper::setFeature( const QgsFeature& feature )
+void QgsRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   if ( mWidget && mRelation.isValid() )
     mWidget->setFeature( feature );
@@ -71,9 +71,9 @@ void QgsRelationWidgetWrapper::setShowLabel( bool showLabel )
     mWidget->setShowLabel( showLabel );
 }
 
-void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
+void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationEditorWidget* w = dynamic_cast<QgsRelationEditorWidget*>( editor );
+  QgsRelationEditorWidget *w = dynamic_cast<QgsRelationEditorWidget *>( editor );
 
   // if the editor cannot be cast to relation editor, insert a new one
   if ( !w )
@@ -94,11 +94,11 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
-  const QgsAttributeEditorContext* ctx = &context();
+  const QgsAttributeEditorContext *ctx = &context();
   do
   {
-    if (( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-        || ( nmrel.isValid() && ctx->relation().name() == nmrel.name() ) )
+    if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
+         || ( nmrel.isValid() && ctx->relation().name() == nmrel.name() ) )
     {
       w->setVisible( false );
       break;

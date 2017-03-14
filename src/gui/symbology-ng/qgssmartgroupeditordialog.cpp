@@ -24,7 +24,7 @@
 // -------------------------- //
 // Condition Widget functions //
 // -------------------------- //
-QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget* parent ) : QWidget( parent )
+QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget *parent ) : QWidget( parent )
 {
   setupUi( this );
 
@@ -55,12 +55,12 @@ QString QgsSmartGroupCondition::parameter()
   return mCondLineEdit->text();
 }
 
-void QgsSmartGroupCondition::setConstraint( const QString& constraint )
+void QgsSmartGroupCondition::setConstraint( const QString &constraint )
 {
   mCondCombo->setCurrentIndex( mCondCombo->findData( QVariant( constraint ) ) );
 }
 
-void QgsSmartGroupCondition::setParameter( const QString& param )
+void QgsSmartGroupCondition::setParameter( const QString &param )
 {
   mCondLineEdit->setText( param );
 }
@@ -74,9 +74,9 @@ void QgsSmartGroupCondition::hideRemoveButton( bool hide )
 // ------------------------ //
 // Editor Dialog Functions  //
 // ------------------------ //
-QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle* style, QWidget* parent )
-    : QDialog( parent )
-    , mStyle( style )
+QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *parent )
+  : QDialog( parent )
+  , mStyle( style )
 {
   setupUi( this );
 
@@ -123,7 +123,7 @@ void QgsSmartGroupEditorDialog::removeCondition( int id )
   // hide the remove button of the last condition when 2nd last is removed
   if ( mConditionMap.count() == 2 )
   {
-    Q_FOREACH ( QgsSmartGroupCondition* condition, mConditionMap )
+    Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
     {
       condition->hideRemoveButton( true );
     }
@@ -137,7 +137,7 @@ QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
 {
   QgsSmartConditionMap conditions;
 
-  Q_FOREACH ( QgsSmartGroupCondition* condition, mConditionMap )
+  Q_FOREACH ( QgsSmartGroupCondition *condition, mConditionMap )
   {
     conditions.insert( condition->constraint(), condition->parameter() );
   }
@@ -150,7 +150,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
   return mAndOrCombo->currentData().toString();
 }
 
-void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map )
+void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map )
 {
   QStringList constraints;
   constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
@@ -182,12 +182,12 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap& map
   }
 }
 
-void QgsSmartGroupEditorDialog::setOperator( const QString& op )
+void QgsSmartGroupEditorDialog::setOperator( const QString &op )
 {
   mAndOrCombo->setCurrentIndex( mAndOrCombo->findData( QVariant( op ) ) );
 }
 
-void QgsSmartGroupEditorDialog::setSmartgroupName( const QString& name )
+void QgsSmartGroupEditorDialog::setSmartgroupName( const QString &name )
 {
   mNameLineEdit->setText( name );
 }

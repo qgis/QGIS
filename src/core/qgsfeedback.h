@@ -44,9 +44,9 @@ class CORE_EXPORT QgsFeedback : public QObject
     Q_OBJECT
   public:
     //! Construct a feedback object
-    QgsFeedback( QObject* parent = nullptr )
-        : QObject( parent )
-        , mCanceled( false )
+    QgsFeedback( QObject *parent = nullptr )
+      : QObject( parent )
+      , mCanceled( false )
     {}
 
     //! Tells the internal routines that the current operation should be canceled. This should be run by the main thread

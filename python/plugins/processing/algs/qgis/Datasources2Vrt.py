@@ -26,7 +26,6 @@ __copyright__ = '(C) 2015, Luigi Pirelli'
 
 __revision__ = '$Format:%H$'
 
-import os
 import codecs
 import xml.sax.saxutils
 

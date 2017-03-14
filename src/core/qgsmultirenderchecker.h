@@ -61,9 +61,9 @@ class CORE_EXPORT QgsMultiRenderChecker
      * suffixed) the path to the image will be constructed like this:
      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
      */
-    void setControlName( const QString& name );
+    void setControlName( const QString &name );
 
-    void setControlPathPrefix( const QString& prefix );
+    void setControlPathPrefix( const QString &prefix );
 
     /**
      * Set the path to the rendered image. If this is not set or set to QString::Null, an image
@@ -71,14 +71,14 @@ class CORE_EXPORT QgsMultiRenderChecker
      *
      * @param renderedImagePath A path to the rendered image with which control images will be compared
      */
-    void setRenderedImage( const QString& renderedImagePath ) { mRenderedImage = renderedImagePath; }
+    void setRenderedImage( const QString &renderedImagePath ) { mRenderedImage = renderedImagePath; }
 
     /**
      * Set the map settings to use to render the image
      *
      * @param mapSettings The map settings
      */
-    void setMapSettings( const QgsMapSettings& mapSettings );
+    void setMapSettings( const QgsMapSettings &mapSettings );
 
     /**
      * Set tolerance for color components used by runTest()
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsMultiRenderChecker
      *
      * @note make sure to call setExpectedImage and setMapSettings first
      */
-    bool runTest( const QString& testName, unsigned int mismatchCount = 0 );
+    bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 
     /**
      * Returns a report for this test
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
-    static void drawBackground( QImage* image ) { QgsRenderChecker::drawBackground( image ); }
+    static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
 
   private:
     QString mReport;
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsMultiRenderChecker
 class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
-    QgsCompositionChecker( const QString& testName, QgsComposition* composition );
+    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
 
     void setSize( QSize size ) { mSize = size; }
 
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
     QgsCompositionChecker(); //forbidden
 
     QString mTestName;
-    QgsComposition* mComposition = nullptr;
+    QgsComposition *mComposition = nullptr;
     QSize mSize;
     int mDotsPerMeter;
 };

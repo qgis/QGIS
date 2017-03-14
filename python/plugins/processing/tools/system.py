@@ -62,6 +62,7 @@ def isWindows():
 def isMac():
     return sys.platform == 'darwin'
 
+
 _tempFolderSuffix = uuid.uuid4().hex
 
 

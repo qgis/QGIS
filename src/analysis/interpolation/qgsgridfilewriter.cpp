@@ -22,24 +22,24 @@
 #include <QFileInfo>
 #include <QProgressDialog>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, const QString& outputPath, const QgsRectangle& extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
-    : mInterpolator( i )
-    , mOutputFilePath( outputPath )
-    , mInterpolationExtent( extent )
-    , mNumColumns( nCols )
-    , mNumRows( nRows )
-    , mCellSizeX( cellSizeX )
-    , mCellSizeY( cellSizeY )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
+  : mInterpolator( i )
+  , mOutputFilePath( outputPath )
+  , mInterpolationExtent( extent )
+  , mNumColumns( nCols )
+  , mNumRows( nRows )
+  , mCellSizeX( cellSizeX )
+  , mCellSizeY( cellSizeY )
 {
 
 }
 
 QgsGridFileWriter::QgsGridFileWriter()
-    : mInterpolator( nullptr )
-    , mNumColumns( 0 )
-    , mNumRows( 0 )
-    , mCellSizeX( 0 )
-    , mCellSizeY( 0 )
+  : mInterpolator( nullptr )
+  , mNumColumns( 0 )
+  , mNumRows( 0 )
+  , mCellSizeX( 0 )
+  , mCellSizeY( 0 )
 {
 
 }
@@ -67,7 +67,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   double currentXValue;
   double interpolatedValue;
 
-  QProgressDialog* progressDialog = nullptr;
+  QProgressDialog *progressDialog = nullptr;
   if ( showProgressDialog )
   {
     progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
@@ -106,7 +106,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   // create prj file
   QgsInterpolator::LayerData ld;
   ld = mInterpolator->layerData().first();
-  QgsVectorLayer* vl = ld.vectorLayer;
+  QgsVectorLayer *vl = ld.vectorLayer;
   QString crs = vl->crs().toWkt();
   QFileInfo fi( mOutputFilePath );
   QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
@@ -124,7 +124,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   return 0;
 }
 
-int QgsGridFileWriter::writeHeader( QTextStream& outStream )
+int QgsGridFileWriter::writeHeader( QTextStream &outStream )
 {
   outStream << "NCOLS " << mNumColumns << endl;
   outStream << "NROWS " << mNumRows << endl;

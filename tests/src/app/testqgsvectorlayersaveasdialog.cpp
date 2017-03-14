@@ -42,11 +42,11 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     void testAttributesAsDisplayedValues();
 
   private:
-    QgisApp * mQgisApp = nullptr;
+    QgisApp *mQgisApp = nullptr;
 };
 
 TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-    : mQgisApp( nullptr )
+  : mQgisApp( nullptr )
 {
 
 }
@@ -79,11 +79,11 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 
   QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
-  QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( QStringLiteral( "mDeselectAllAttributes" ) );
+  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( QStringLiteral( "mAttributeTable" ) );
-  QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( QStringLiteral( "mReplaceRawFieldValues" ) );
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( QStringLiteral( "mAttributeTable" ) );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->columnCount(), 3 );

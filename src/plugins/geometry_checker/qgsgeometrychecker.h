@@ -35,41 +35,41 @@ class QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck*>& checks, QgsFeaturePool* featurePool );
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsFeaturePool *featurePool );
     ~QgsGeometryChecker();
-    QFuture<void> execute( int* totalSteps = nullptr );
+    QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method );
-    QgsMapLayer* getLayer() const;
-    const QList<QgsGeometryCheck*> getChecks() const { return mChecks; }
+    QgsMapLayer *getLayer() const;
+    const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
     QStringList getMessages() const { return mMessages; }
 
   public slots:
     void setMergeAttributeIndex( int mergeAttributeIndex ) { mMergeAttributeIndex = mergeAttributeIndex; }
 
   signals:
-    void errorAdded( QgsGeometryCheckError* error );
-    void errorUpdated( QgsGeometryCheckError* error, bool statusChanged );
+    void errorAdded( QgsGeometryCheckError *error );
+    void errorUpdated( QgsGeometryCheckError *error, bool statusChanged );
     void progressValue( int value );
 
   private:
     class RunCheckWrapper
     {
       public:
-        explicit RunCheckWrapper( QgsGeometryChecker* instance ) : mInstance( instance ) {}
-        void operator()( const QgsGeometryCheck* check ) { mInstance->runCheck( check ); }
+        explicit RunCheckWrapper( QgsGeometryChecker *instance ) : mInstance( instance ) {}
+        void operator()( const QgsGeometryCheck *check ) { mInstance->runCheck( check ); }
       private:
-        QgsGeometryChecker* mInstance = nullptr;
+        QgsGeometryChecker *mInstance = nullptr;
     };
 
-    QList<QgsGeometryCheck*> mChecks;
-    QgsFeaturePool* mFeaturePool = nullptr;
-    QList<QgsGeometryCheckError*> mCheckErrors;
+    QList<QgsGeometryCheck *> mChecks;
+    QgsFeaturePool *mFeaturePool = nullptr;
+    QList<QgsGeometryCheckError *> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;
     int mMergeAttributeIndex;
     QAtomicInt mProgressCounter;
 
-    void runCheck( const QgsGeometryCheck* check );
+    void runCheck( const QgsGeometryCheck *check );
 
   private slots:
     void emitProgressValue();

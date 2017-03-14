@@ -57,7 +57,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   private:
     //! Simplify the geometry using the specified tolerance
-    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry& geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
+    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry &geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
 
   protected:
     //! Current simplification flags
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry& geometry ) const override;
+    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const override;
 
     //! Sets the tolerance of the vector layer managed
     void setTolerance( double value ) { mTolerance = value; }
@@ -96,10 +96,10 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
   public:
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    static bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope, double map2pixelTol );
+    static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    inline bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope ) const
+    inline bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const
     {
       return isGeneralizableByMapBoundingBox( envelope, mTolerance );
     }

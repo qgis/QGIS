@@ -27,16 +27,18 @@ class QgsMapThemeCollection : QObject
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord& other ) const;
 
-        //! Returns map layer or null if the layer does not exist anymore
         QgsMapLayer* layer() const;
 
-        //! Whether current style is valid and should be applied
+
+        void setLayer( QgsMapLayer* layer );
+
+
         bool usingCurrentStyle;
-        //! Name of the current style of the layer
+
         QString currentStyle;
-        //! Whether checkedLegendItems should be applied
+
         bool usingLegendItems;
-        //! Rule keys of check legend items in layer tree model
+
         QSet<QString> checkedLegendItems;
     };
 
@@ -55,6 +57,10 @@ class QgsMapThemeCollection : QObject
 
         //! Sets layer records for the theme.
         void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord>& records );
+        void removeLayerRecord( QgsMapLayer* layer );
+
+
+        void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord& record );
 
         //! Return set with only records for valid layers
         //! @note not available in python bindings
@@ -96,67 +102,29 @@ class QgsMapThemeCollection : QObject
     //! Returns a list of existing map theme names.
     QStringList mapThemes() const;
 
-    /**
-     * Returns the recorded state of a map theme.
-     */
-    MapThemeRecord mapThemeState( const QString& name ) const;
 
-    /**
-     * Returns the list of layer IDs that are visible for the specified map theme.
-     *
-     * @note The order of the returned list is not guaranteed to reflect the order of layers
-     * in the canvas.
-     * @note Added in QGIS 3.0
-     */
-    QStringList mapThemeVisibleLayerIds( const QString& name ) const;
 
-    /**
-     * Returns the list of layers that are visible for the specified map theme.
-     *
-     * @note The order of the returned list is not guaranteed to reflect the order of layers
-     * in the canvas.
-     * @note Added in QGIS 3.0
-     */
-    QList<QgsMapLayer*> mapThemeVisibleLayers( const QString& name ) const;
 
-    /**
-     * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
-     */
-    QMap<QString, QString> mapThemeStyleOverrides( const QString& name );
 
-    /**
-     * Reads the map theme collection state from XML
-     * @param doc DOM document
-     * @see writeXml
-     */
-    void readXml( const QDomDocument& doc );
+    MapThemeRecord mapThemeState( const QString &name ) const;
+    QStringList mapThemeVisibleLayerIds( const QString &name ) const;
+    QList<QgsMapLayer *> mapThemeVisibleLayers( const QString &name ) const;
+    QMap<QString, QString> mapThemeStyleOverrides( const QString &name );
+    void readXml( const QDomDocument &doc );
+    void writeXml( QDomDocument &doc );
+    static MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
+    void applyTheme( const QString &name, QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
+    QgsProject *project();
+    void setProject( QgsProject *project );
+    QList< QgsMapLayer * > masterLayerOrder() const;
+    QList< QgsMapLayer * > masterVisibleLayers() const;
 
-    /** Writes the map theme collection state to XML.
-     * @param doc DOM document
-     * @see readXml
-     */
-    void writeXml( QDomDocument& doc );
-
-    /**
-     * Static method to create theme from the current state of layer visibilities in layer tree,
-     * current style of layers and check state of legend items (from a layer tree model).
-     * @note added in QGIS 3.0
-     */
-    static MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
-
-    /**
-     * Apply theme given by its name and modify layer tree, current style of layers and checked
-     * legend items of passed layer tree model.
-     * @note added in QGIS 3.0
-     */
-    void applyTheme( const QString& name, QgsLayerTreeGroup* root, QgsLayerTreeModel* model );
-    QgsProject* project();
-    void setProject( QgsProject* project );
   signals:
 
-    /** Emitted when map themes within the collection are changed.
-     */
     void mapThemesChanged();
+
+    void mapThemeChanged( const QString &theme );
+
     void projectChanged();
 };
 

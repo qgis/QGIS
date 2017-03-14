@@ -56,7 +56,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param parent parent widget
      * @param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget* parent = nullptr, const QString& nullValue = QString::null );
+    QgsFilterLineEdit( QWidget *parent = nullptr, const QString &nullValue = QString::null );
 
     /** Returns true if the widget's clear button is visible.
      * @see setShowClearButton()
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @param nullValue string to show when widget's value is null
      * @see nullValue()
      */
-    void setNullValue( const QString& nullValue ) { mNullValue = nullValue; }
+    void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
 
     /** Returns the string used for representating null values in the widget.
      * @see setNullValue()
@@ -120,7 +120,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * @see clearMode()
      * @note added in QGIS 3.0
      */
-    void setDefaultValue( const QString& defaultValue ) { mDefaultValue = defaultValue; }
+    void setDefaultValue( const QString &defaultValue ) { mDefaultValue = defaultValue; }
 
     /** Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * widget will be set to the current nullValue().
      * @see value()
      */
-    void setValue( const QString& value ) { setText( value.isNull() ? mNullValue : value ); }
+    void setValue( const QString &value ) { setText( value.isNull() ? mNullValue : value ); }
 
     /**
      * Returns the text of this edit with support for handling null values. If the text
@@ -178,14 +178,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      *
      * @param value The current text or null string if it matches the nullValue() property.
      */
-    void valueChanged( const QString& value );
+    void valueChanged( const QString &value );
 
   protected:
-    void mousePressEvent( QMouseEvent* e ) override;
-    void mouseMoveEvent( QMouseEvent* e ) override;
-    void focusInEvent( QFocusEvent* e ) override;
-    void paintEvent( QPaintEvent* e ) override;
-    void leaveEvent( QEvent* e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
+    void focusInEvent( QFocusEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
+    void leaveEvent( QEvent *e ) override;
 
   private slots:
     void onTextChanged( const QString &text );
@@ -230,8 +230,8 @@ class QgsSpinBoxLineEdit : public QgsFilterLineEdit
 
   public:
 
-    QgsSpinBoxLineEdit( QWidget* parent = nullptr )
-        : QgsFilterLineEdit( parent )
+    QgsSpinBoxLineEdit( QWidget *parent = nullptr )
+      : QgsFilterLineEdit( parent )
     {}
 
   public slots:

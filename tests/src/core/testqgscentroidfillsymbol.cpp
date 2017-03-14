@@ -43,11 +43,11 @@ class TestQgsCentroidFillSymbol : public QObject
 
   public:
     TestQgsCentroidFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mCentroidFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPolysLayer( 0 )
+      , mCentroidFill( 0 )
+      , mFillSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -62,12 +62,12 @@ class TestQgsCentroidFillSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer = nullptr;
-    QgsCentroidFillSymbolLayer* mCentroidFill = nullptr;
-    QgsFillSymbol* mFillSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsCentroidFillSymbolLayer *mCentroidFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -108,7 +108,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Centroid Fill Symbol Tests</h1>\n" );
 
 }
@@ -147,7 +147,7 @@ void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 //
 
 
-bool TestQgsCentroidFillSymbol::imageCheck( const QString& testType )
+bool TestQgsCentroidFillSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

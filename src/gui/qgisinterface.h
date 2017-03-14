@@ -41,6 +41,7 @@ class QgsRasterLayer;
 class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsOptionsWidgetFactory;
 
 #include <QObject>
 #include <QFont>
@@ -73,9 +74,9 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Constructor
     QgisInterface();
 
-    virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
+    virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
-    virtual QgsLayerTreeView* layerTreeView() = 0;
+    virtual QgsLayerTreeView *layerTreeView() = 0;
 
     /** Add action to context menu for layers in the layer tree.
      * If allLayers is true, then the action will be available for all layers of given type,
@@ -88,7 +89,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @see removeCustomActionForLayerType()
      * @see addCustomActionForLayer()
      */
-    virtual void addCustomActionForLayerType( QAction* action, QString menu,
+    virtual void addCustomActionForLayerType( QAction *action, QString menu,
         QgsMapLayer::LayerType type, bool allLayers ) = 0;
 
     /** Add action to context menu for a specific layer in the layer tree.
@@ -96,12 +97,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * in order for this method to have any effect.
      * @see addCustomActionForLayerType()
      */
-    virtual void addCustomActionForLayer( QAction* action, QgsMapLayer* layer ) = 0;
+    virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 
     /** Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
      * @see addCustomActionForLayerType()
      */
-    virtual bool removeCustomActionForLayerType( QAction* action ) = 0;
+    virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -120,16 +121,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void zoomToActiveLayer() = 0;
 
     //! Add a vector layer
-    virtual QgsVectorLayer* addVectorLayer( const QString& vectorLayerPath, const QString& baseName, const QString& providerKey ) = 0;
+    virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
 
     //! Add a raster layer given a raster layer file name
-    virtual QgsRasterLayer* addRasterLayer( const QString& rasterLayerPath, const QString& baseName = QString() ) = 0;
+    virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
 
     //! Add a WMS layer
-    virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey ) = 0;
+    virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
 
     //! Add a project
-    virtual bool addProject( const QString& project ) = 0;
+    virtual bool addProject( const QString &project ) = 0;
     //! Start a blank project
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
@@ -151,7 +152,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction *addToolBarWidget( QWidget *widget ) = 0;
 
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
@@ -164,7 +165,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addRasterToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction *addRasterToolBarWidget( QWidget *widget ) = 0;
 
     //! Add an icon to the Raster toolbar
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
@@ -183,7 +184,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addVectorToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction *addVectorToolBarWidget( QWidget *widget ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
@@ -199,7 +200,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addDatabaseToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction *addDatabaseToolBarWidget( QWidget *widget ) = 0;
 
     //! Remove an action (icon) from the Database toolbar
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
@@ -215,49 +216,49 @@ class GUI_EXPORT QgisInterface : public QObject
      * @param widget widget to add. The toolbar will take ownership of this widget
      * @return the QAction you can use to remove this widget from the toolbar
      */
-    virtual QAction* addWebToolBarWidget( QWidget* widget ) = 0;
+    virtual QAction *addWebToolBarWidget( QWidget *widget ) = 0;
 
     //! Remove an action (icon) from the Web toolbar
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
-    virtual QToolBar *addToolBar( const QString& name ) = 0;
+    virtual QToolBar *addToolBar( const QString &name ) = 0;
 
     //! Add a toolbar
     //! @note added in 2.3
-    virtual void addToolBar( QToolBar* toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
+    virtual void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     //! Return a pointer to the map canvas
-    virtual QgsMapCanvas * mapCanvas() = 0;
+    virtual QgsMapCanvas *mapCanvas() = 0;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
      * @note added in 2.12
      */
-    virtual QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() = 0;
+    virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
 
     //! Return a pointer to the main window (instance of QgisApp in case of QGIS)
-    virtual QWidget * mainWindow() = 0;
+    virtual QWidget *mainWindow() = 0;
 
     //! Return the message bar of the main app
-    virtual QgsMessageBar * messageBar() = 0;
+    virtual QgsMessageBar *messageBar() = 0;
 
     //! Open the message log dock widget *
     virtual void openMessageLog() = 0;
 
     //! Adds a widget to the user input tool bar.
-    virtual void addUserInputWidget( QWidget* widget ) = 0;
+    virtual void addUserInputWidget( QWidget *widget ) = 0;
 
     //! Return mainwindows / composer views of running composer instances (currently only one)
-    virtual QList<QgsComposerView*> activeComposers() = 0;
+    virtual QList<QgsComposerView *> activeComposers() = 0;
 
     /** Create a new composer
      * @param title window title for new composer (one will be generated if empty)
      * @return pointer to composer's view
      * @note new composer window will be shown and activated
      */
-    virtual QgsComposerView* createNewComposer( const QString& title = QString() ) = 0;
+    virtual QgsComposerView *createNewComposer( const QString &title = QString() ) = 0;
 
     /** Duplicate an existing parent composer from composer view
      * @param composerView pointer to existing composer view
@@ -265,10 +266,10 @@ class GUI_EXPORT QgisInterface : public QObject
      * @return pointer to duplicate composer's view
      * @note duplicate composer window will be hidden until loaded, then shown and activated
      */
-    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) = 0;
+    virtual QgsComposerView *duplicateComposer( QgsComposerView *composerView, const QString &title = QString() ) = 0;
 
     //! Deletes parent composer of composer view, after closing composer window
-    virtual void deleteComposer( QgsComposerView* composerView ) = 0;
+    virtual void deleteComposer( QgsComposerView *composerView ) = 0;
 
     //! Return changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
@@ -276,19 +277,19 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Generate stylesheet
      * @param opts generated default option values, or a changed copy of them
      */
-    virtual void buildStyleSheet( const QMap<QString, QVariant>& opts ) = 0;
+    virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
 
     //! Save changed default option keys/values to user settings
-    virtual void saveStyleSheetOptions( const QMap<QString, QVariant>& opts ) = 0;
+    virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
 
     //! Get reference font for initial qApp (may not be same as QgisApp)
     virtual QFont defaultStyleSheetFont() = 0;
 
     //! Add action to the plugins menu
-    virtual void addPluginToMenu( const QString& name, QAction* action ) = 0;
+    virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
 
     //! Remove action from the plugins menu
-    virtual void removePluginMenu( const QString& name, QAction* action ) = 0;
+    virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
 
     //! Add "add layer" action to layer menu
     virtual void insertAddLayerAction( QAction *action ) = 0;
@@ -297,45 +298,45 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
     //! Add action to the Database menu
-    virtual void addPluginToDatabaseMenu( const QString& name, QAction* action ) = 0;
+    virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
 
     //! Remove action from the Database menu
-    virtual void removePluginDatabaseMenu( const QString& name, QAction* action ) = 0;
+    virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
 
     //! Add action to the Raster menu
-    virtual void addPluginToRasterMenu( const QString& name, QAction* action ) = 0;
+    virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
 
     //! Remove action from the Raster menu
-    virtual void removePluginRasterMenu( const QString& name, QAction* action ) = 0;
+    virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
 
     //! Add action to the Vector menu
-    virtual void addPluginToVectorMenu( const QString& name, QAction* action ) = 0;
+    virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
 
     //! Remove action from the Vector menu
-    virtual void removePluginVectorMenu( const QString& name, QAction* action ) = 0;
+    virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
 
     //! Add action to the Web menu
-    virtual void addPluginToWebMenu( const QString& name, QAction* action ) = 0;
+    virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
 
     //! Remove action from the Web menu
-    virtual void removePluginWebMenu( const QString& name, QAction* action ) = 0;
+    virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
 
     //! Add a dock widget to the main window
-    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
 
     //! Remove specified dock widget from main window (doesn't delete it).
-    virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
+    virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     /** Advanced digitizing dock widget
      *  @note Added in 2.12
      */
-    virtual QgsAdvancedDigitizingDockWidget* cadDockWidget() = 0;
+    virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 
     //! Open layer properties dialog
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
 
     //! Open attribute table dialog
-    virtual QDialog* showAttributeTable( QgsVectorLayer *l, const QString& filterExpression = QString() ) = 0;
+    virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
@@ -346,35 +347,48 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeWindow( QAction *action ) = 0;
 
     //! Register action to the shortcuts manager so its shortcut can be changed in GUI
-    virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) = 0;
+    virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
 
     //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
-    virtual bool unregisterMainWindowAction( QAction* action ) = 0;
+    virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /** Register a new tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterMapLayerPropertiesFactory() */
-    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
      * @note added in QGIS 2.16
      * @see registerMapLayerPropertiesFactory()
     */
-    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+
+    /** Register a new tab in the options dialog.
+     * @note added in QGIS 3.0
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterOptionsWidgetFactory() */
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /** Unregister a previously registered tab in the options dialog.
+     * @note added in QGIS 3.0
+     * @see registerOptionsWidgetFactory()
+    */
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /** Register a new custom drop handler.
      * @note added in QGIS 3.0
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterCustomDropHandler() */
-    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
+    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /** Unregister a previously registered custom drop handler.
      * @note added in QGIS 3.0
      * @see registerCustomDropHandler() */
-    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
 
@@ -389,7 +403,7 @@ class GUI_EXPORT QgisInterface : public QObject
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED
 #endif
-    virtual void openURL( const QString& url, bool useQgisDocDirectory = true ) = 0;
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0;
 
 
     /** Accessors for inserting items into menus and toolbars.
@@ -576,7 +590,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * @return A feature form
      */
-    virtual QgsAttributeDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
+    virtual QgsAttributeDialog *getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
     /**
      * Access the vector layer tools instance.
@@ -585,7 +599,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * @return An instance of the vector layer tools
      */
-    virtual QgsVectorLayerTools* vectorLayerTools() = 0;
+    virtual QgsVectorLayerTools *vectorLayerTools() = 0;
 
     /** This method is only needed when using a UI form with a custom widget plugin and calling
      * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
@@ -598,7 +612,7 @@ class GUI_EXPORT QgisInterface : public QObject
      *
      * More information here: http://qt-project.org/forums/viewthread/27098/
      */
-    virtual void preloadForm( const QString& uifile ) = 0;
+    virtual void preloadForm( const QString &uifile ) = 0;
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
@@ -613,22 +627,22 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
-    void currentLayerChanged( QgsMapLayer * layer );
+    void currentLayerChanged( QgsMapLayer *layer );
 
     /**
      * This signal is emitted when a new composer instance has been created
      */
-    void composerAdded( QgsComposerView* v );
+    void composerAdded( QgsComposerView *v );
 
     /**
      * This signal is emitted before a new composer instance is going to be removed
      */
-    void composerWillBeRemoved( QgsComposerView* v );
+    void composerWillBeRemoved( QgsComposerView *v );
 
     /** This signal is emitted when a composer instance has been removed
      * @note added in version 2.9
      */
-    void composerRemoved( QgsComposerView* v );
+    void composerRemoved( QgsComposerView *v );
 
     /**
      * This signal is emitted when the initialization is complete
@@ -657,7 +671,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * @note
      * added in version 2.7
      */
-    void layerSavedAs( QgsMapLayer* l, const QString& path );
+    void layerSavedAs( QgsMapLayer *l, const QString &path );
 };
 
 #endif //#ifndef QGISINTERFACE_H

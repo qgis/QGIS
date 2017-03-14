@@ -19,7 +19,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QPushButton>
 #include <QMenu>
 #include <QToolButton>
@@ -30,19 +31,19 @@
 #include <QInputDialog>
 #include <QVBoxLayout>
 
-QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& color, Layout widgetLayout )
-    : QgsPanelWidget( parent )
-    , mAllowAlpha( true )
-    , mLastCustomColorIndex( 0 )
-    , mPickingColor( false )
-    , mDiscarded( false )
+QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
+  : QgsPanelWidget( parent )
+  , mAllowAlpha( true )
+  , mLastCustomColorIndex( 0 )
+  , mPickingColor( false )
+  , mDiscarded( false )
 {
   setupUi( this );
 
   if ( widgetLayout == LayoutVertical )
   {
     // shuffle stuff around
-    QVBoxLayout* newLayout = new QVBoxLayout();
+    QVBoxLayout *newLayout = new QVBoxLayout();
     newLayout->setMargin( 0 );
     newLayout->setContentsMargins( 0, 0, 0, 0 );
     newLayout->addWidget( mTabWidget );
@@ -53,7 +54,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
     setLayout( newLayout );
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   mSchemeList->header()->hide();
   mSchemeList->setColumnWidth( 0, 44 );
@@ -63,7 +64,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorDialog );
 
   //choose a reasonable starting scheme
-  int activeScheme = settings.value( QStringLiteral( "/Windows/ColorDialog/activeScheme" ), 0 ).toInt();
+  int activeScheme = settings.value( QStringLiteral( "Windows/ColorDialog/activeScheme" ), 0 ).toInt();
   activeScheme = activeScheme >= mSchemeComboBox->count() ? 0 : activeScheme;
 
   mSchemeList->setScheme( schemeList.at( activeScheme ) );
@@ -85,7 +86,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   connect( mActionNewPalette, SIGNAL( triggered() ), this, SLOT( newPalette() ) );
   connect( mRemoveColorsFromSchemeButton, SIGNAL( clicked() ), mSchemeList, SLOT( removeSelection() ) );
 
-  QMenu* schemeMenu = new QMenu( mSchemeToolButton );
+  QMenu *schemeMenu = new QMenu( mSchemeToolButton );
   schemeMenu->addAction( mActionCopyColors );
   schemeMenu->addAction( mActionPasteColors );
   schemeMenu->addSeparator();
@@ -148,25 +149,25 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   mSwatchButton16->setShowMenu( false );
   mSwatchButton16->setBehavior( QgsColorButton::SignalOnly );
   //restore custom colors
-  mSwatchButton1->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor1" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton2->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor2" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton3->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor3" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton4->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor4" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton5->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor5" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton6->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor6" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton7->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor7" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton8->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor8" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton9->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor9" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton10->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor10" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton11->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor11" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton12->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor12" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton13->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor13" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton14->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor14" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton15->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor15" ), QVariant( QColor() ) ).value<QColor>() );
-  mSwatchButton16->setColor( settings.value( QStringLiteral( "/Windows/ColorDialog/customColor16" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton1->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor1" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton2->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor2" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton3->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor3" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton4->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor4" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton5->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor5" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton6->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor6" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton7->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor7" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton8->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor8" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton9->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor9" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton10->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor10" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton11->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor11" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton12->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor12" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton13->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor13" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton14->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor14" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton15->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor15" ), QVariant( QColor() ) ).value<QColor>() );
+  mSwatchButton16->setColor( settings.value( QStringLiteral( "Windows/ColorDialog/customColor16" ), QVariant( QColor() ) ).value<QColor>() );
 
   //restore sample radius
-  mSpinBoxRadius->setValue( settings.value( QStringLiteral( "/Windows/ColorDialog/sampleRadius" ), 1 ).toInt() );
+  mSpinBoxRadius->setValue( settings.value( QStringLiteral( "Windows/ColorDialog/sampleRadius" ), 1 ).toInt() );
   mSamplePreview->setColor( QColor() );
 
   if ( color.isValid() )
@@ -175,7 +176,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
   }
 
   //restore active component radio button
-  int activeRadio = settings.value( QStringLiteral( "/Windows/ColorDialog/activeComponent" ), 2 ).toInt();
+  int activeRadio = settings.value( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 2 ).toInt();
   switch ( activeRadio )
   {
     case 0:
@@ -197,7 +198,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor& c
       mBlueRadio->setChecked( true );
       break;
   }
-  int currentTab = settings.value( QStringLiteral( "/Windows/ColorDialog/activeTab" ), 0 ).toInt();
+  int currentTab = settings.value( QStringLiteral( "Windows/ColorDialog/activeTab" ), 0 ).toInt();
   mTabWidget->setCurrentIndex( currentTab );
 
 #ifdef Q_OS_MAC
@@ -274,14 +275,14 @@ void QgsCompoundColorWidget::refreshSchemeComboBox()
   QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
   for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
   {
-    mSchemeComboBox->addItem(( *schemeIt )->schemeName() );
+    mSchemeComboBox->addItem( ( *schemeIt )->schemeName() );
   }
   mSchemeComboBox->blockSignals( false );
 }
 
 void QgsCompoundColorWidget::importPalette()
 {
-  QSettings s;
+  QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
   QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
@@ -319,7 +320,7 @@ void QgsCompoundColorWidget::importPalette()
   }
 
   //TODO - handle conflicting file names, name for new palette
-  QgsUserColorScheme* importedScheme = new QgsUserColorScheme( fileInfo.fileName() );
+  QgsUserColorScheme *importedScheme = new QgsUserColorScheme( fileInfo.fileName() );
   importedScheme->setName( paletteName );
   importedScheme->setColors( importedColors );
 
@@ -341,7 +342,7 @@ void QgsCompoundColorWidget::removePalette()
   }
 
   //make user scheme is a user removable scheme
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( schemeList.at( prevIndex ) );
+  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
   if ( !userScheme )
   {
     return;
@@ -398,7 +399,7 @@ void QgsCompoundColorWidget::newPalette()
     fileNumber++;
   }
 
-  QgsUserColorScheme* newScheme = new QgsUserColorScheme( destFileInfo.fileName() );
+  QgsUserColorScheme *newScheme = new QgsUserColorScheme( destFileInfo.fileName() );
   newScheme->setName( name );
 
   QgsApplication::colorSchemeRegistry()->addColorScheme( newScheme );
@@ -436,7 +437,7 @@ void QgsCompoundColorWidget::schemeIndexChanged( int index )
     return;
   }
 
-  QgsColorScheme* scheme = schemeList.at( index );
+  QgsColorScheme *scheme = schemeList.at( index );
   mSchemeList->setScheme( scheme );
 
   updateActionsForCurrentScheme();
@@ -514,7 +515,7 @@ void QgsCompoundColorWidget::on_mAddCustomColorButton_clicked()
 void QgsCompoundColorWidget::on_mSampleButton_clicked()
 {
   //activate picker color
-  QPixmap samplerPixmap = QPixmap(( const char ** ) sampler_cursor );
+  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
   setCursor( QCursor( samplerPixmap, 0, 0 ) );
   grabMouse();
   grabKeyboard();
@@ -536,7 +537,7 @@ void QgsCompoundColorWidget::on_mTabWidget_currentChanged( int index )
 
 void QgsCompoundColorWidget::on_mActionShowInButtons_toggled( bool state )
 {
-  QgsUserColorScheme* scheme = dynamic_cast< QgsUserColorScheme* >( mSchemeList->scheme() );
+  QgsUserColorScheme *scheme = dynamic_cast< QgsUserColorScheme * >( mSchemeList->scheme() );
   if ( scheme )
   {
     scheme->setShowSchemeInMenu( state );
@@ -551,7 +552,7 @@ void QgsCompoundColorWidget::saveSettings()
     mSchemeList->saveColorsToScheme();
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   //record active component
   int activeRadio = 0;
@@ -567,34 +568,34 @@ void QgsCompoundColorWidget::saveSettings()
     activeRadio = 4;
   if ( mBlueRadio->isChecked() )
     activeRadio = 5;
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/activeComponent" ), activeRadio );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), activeRadio );
 
   //record current scheme
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/activeScheme" ), mSchemeComboBox->currentIndex() );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeScheme" ), mSchemeComboBox->currentIndex() );
 
   //record current tab
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/activeTab" ), mTabWidget->currentIndex() );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/activeTab" ), mTabWidget->currentIndex() );
 
   //record custom colors
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor1" ), QVariant( mSwatchButton1->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor2" ), QVariant( mSwatchButton2->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor3" ), QVariant( mSwatchButton3->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor4" ), QVariant( mSwatchButton4->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor5" ), QVariant( mSwatchButton5->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor6" ), QVariant( mSwatchButton6->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor7" ), QVariant( mSwatchButton7->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor8" ), QVariant( mSwatchButton8->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor9" ), QVariant( mSwatchButton9->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor10" ), QVariant( mSwatchButton10->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor11" ), QVariant( mSwatchButton11->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor12" ), QVariant( mSwatchButton12->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor13" ), QVariant( mSwatchButton13->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor14" ), QVariant( mSwatchButton14->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor15" ), QVariant( mSwatchButton15->color() ) );
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/customColor16" ), QVariant( mSwatchButton16->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor1" ), QVariant( mSwatchButton1->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor2" ), QVariant( mSwatchButton2->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor3" ), QVariant( mSwatchButton3->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor4" ), QVariant( mSwatchButton4->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor5" ), QVariant( mSwatchButton5->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor6" ), QVariant( mSwatchButton6->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor7" ), QVariant( mSwatchButton7->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor8" ), QVariant( mSwatchButton8->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor9" ), QVariant( mSwatchButton9->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor10" ), QVariant( mSwatchButton10->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor11" ), QVariant( mSwatchButton11->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor12" ), QVariant( mSwatchButton12->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor13" ), QVariant( mSwatchButton13->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor14" ), QVariant( mSwatchButton14->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor15" ), QVariant( mSwatchButton15->color() ) );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/customColor16" ), QVariant( mSwatchButton16->color() ) );
 
   //sample radius
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/sampleRadius" ), mSpinBoxRadius->value() );
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/sampleRadius" ), mSpinBoxRadius->value() );
 }
 
 void QgsCompoundColorWidget::stopPicking( QPoint eventPos, const bool takeSample )
@@ -631,8 +632,8 @@ void QgsCompoundColorWidget::setColor( const QColor &color )
     //alpha disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
   }
-  QList<QgsColorWidget*> colorWidgets = this->findChildren<QgsColorWidget *>();
-  Q_FOREACH ( QgsColorWidget* widget, colorWidgets )
+  QList<QgsColorWidget *> colorWidgets = this->findChildren<QgsColorWidget *>();
+  Q_FOREACH ( QgsColorWidget *widget, colorWidgets )
   {
     if ( widget == mSamplePreview )
     {
@@ -673,7 +674,7 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
   //scan through image and sum rgb components
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
-    QRgb* scanLine = ( QRgb* )image.constScanLine( heightIndex );
+    QRgb *scanLine = ( QRgb * )image.constScanLine( heightIndex );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       tmpRgb = scanLine[widthIndex];
@@ -805,14 +806,14 @@ void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
 
 void QgsCompoundColorWidget::updateActionsForCurrentScheme()
 {
-  QgsColorScheme* scheme = mSchemeList->scheme();
+  QgsColorScheme *scheme = mSchemeList->scheme();
 
   mActionImportColors->setEnabled( scheme->isEditable() );
   mActionPasteColors->setEnabled( scheme->isEditable() );
   mAddColorToSchemeButton->setEnabled( scheme->isEditable() );
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
-  QgsUserColorScheme* userScheme = dynamic_cast<QgsUserColorScheme*>( scheme );
+  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
   mActionRemovePalette->setEnabled( userScheme ? true : false );
   if ( userScheme )
   {

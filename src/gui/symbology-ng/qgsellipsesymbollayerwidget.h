@@ -29,16 +29,16 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     Q_OBJECT
 
   public:
-    QgsEllipseSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent = nullptr );
 
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerWidget( vl ); }
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) { return new QgsEllipseSymbolLayerWidget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
-    virtual QgsSymbolLayer* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    virtual QgsSymbolLayer *symbolLayer() override;
 
   protected:
-    QgsEllipseSymbolLayer* mLayer = nullptr;
+    QgsEllipseSymbolLayer *mLayer = nullptr;
 
   private:
     void blockComboSignals( bool block );
@@ -50,8 +50,8 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mStrokeStyleComboBox_currentIndexChanged( int index );
     void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_btnChangeColorStroke_colorChanged( const QColor& newColor );
-    void on_btnChangeColorFill_colorChanged( const QColor& newColor );
+    void on_btnChangeColorStroke_colorChanged( const QColor &newColor );
+    void on_btnChangeColorFill_colorChanged( const QColor &newColor );
 
     void on_mSymbolWidthUnitWidget_changed();
     void on_mStrokeWidthUnitWidget_changed();

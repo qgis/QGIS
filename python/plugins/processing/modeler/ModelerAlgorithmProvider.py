@@ -27,8 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import QgsApplication
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -95,7 +93,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                             self.algs.append(alg)
                         else:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('Could not load model %s', 'ModelerAlgorithmProvider') % descriptionFile)
+                                                   self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile))
                     except WrongModelException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('Could not load model %s\n%s', 'ModelerAlgorithmProvider') % (descriptionFile, e.msg))
+                                               self.tr('Could not load model {0}\n{1}', 'ModelerAlgorithmProvider').format(descriptionFile, e.msg))

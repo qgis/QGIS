@@ -12,19 +12,14 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.core import QgsXmlUtils
 
-from qgis.PyQt.QtXml import (
-    QDomDocument,
-    QDomElement
-)
+from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
+
 
 start_app()
 
@@ -76,6 +71,18 @@ class TestQgsXmlUtils(unittest.TestCase):
         doc = QDomDocument("properties")
 
         my_properties = {'a': True, 'b': False}
+        elem = QgsXmlUtils.writeVariant(my_properties, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+
+        self.assertEquals(my_properties, prop2)
+
+    def test_list(self):
+        """
+        Test that lists are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+        my_properties = [1, 4, 'a', 'test', 7.9]
         elem = QgsXmlUtils.writeVariant(my_properties, doc)
 
         prop2 = QgsXmlUtils.readVariant(elem)

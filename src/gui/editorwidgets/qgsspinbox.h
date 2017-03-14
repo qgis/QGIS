@@ -83,27 +83,27 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      * @see setClearValue()
      */
-    void setClearValue( int customValue, const QString& clearValueText = QString() );
+    void setClearValue( int customValue, const QString &clearValueText = QString() );
 
     /**
      * Defines if the clear value should be the minimum or maximum values of the widget or a custom value.
      * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValueMode( ClearValueMode mode, const QString& clearValueText = QString() );
+    void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 
     /** Returns the value used when clear() is called.
      * @see setClearValue()
      */
     int clearValue() const;
 
-    virtual int valueFromText( const QString & text ) const override;
-    virtual QValidator::State validate( QString & input, int & pos ) const override;
+    virtual int valueFromText( const QString &text ) const override;
+    virtual QValidator::State validate( QString &input, int &pos ) const override;
 
   protected:
 
-    virtual void changeEvent( QEvent* event ) override;
-    virtual void paintEvent( QPaintEvent* event ) override;
+    virtual void changeEvent( QEvent *event ) override;
+    virtual void paintEvent( QPaintEvent *event ) override;
 
   private slots:
     void changed( int value );
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     int frameWidth() const;
     bool shouldShowClearForValue( const int value ) const;
 
-    QgsSpinBoxLineEdit* mLineEdit = nullptr;
+    QgsSpinBoxLineEdit *mLineEdit = nullptr;
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;

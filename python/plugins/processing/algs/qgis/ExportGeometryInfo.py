@@ -30,7 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import Qgis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField, QgsWkbTypes
+from qgis.core import QgsProject, QgsCoordinateTransform, QgsFeature, QgsField, QgsWkbTypes
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -112,8 +112,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 2 - ellipsoidal
 
         if method == 2:
-            ellips = QgsProject.instance().readEntry('Measure', '/Ellipsoid',
-                                                     'NONE')[0]
+            ellips = QgsProject.instance().ellipsoid()
             crs = layer.crs().srsid()
         elif method == 1:
             mapCRS = iface.mapCanvas().mapSettings().destinationCrs()

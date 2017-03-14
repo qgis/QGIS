@@ -24,8 +24,8 @@
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
 
-QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled, double topologyTolerance, const QString& ellipsoidID )
-    : QgsGraphBuilderInterface( crs, otfEnabled, topologyTolerance, ellipsoidID )
+QgsGraphBuilder::QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled, double topologyTolerance, const QString &ellipsoidID )
+  : QgsGraphBuilderInterface( crs, otfEnabled, topologyTolerance, ellipsoidID )
 {
   mGraph = new QgsGraph();
 }
@@ -35,19 +35,19 @@ QgsGraphBuilder::~QgsGraphBuilder()
   delete mGraph;
 }
 
-void QgsGraphBuilder::addVertex( int, const QgsPoint& pt )
+void QgsGraphBuilder::addVertex( int, const QgsPoint &pt )
 {
   mGraph->addVertex( pt );
 }
 
-void QgsGraphBuilder::addEdge( int pt1id, const QgsPoint&, int pt2id, const QgsPoint&, const QVector< QVariant >& prop )
+void QgsGraphBuilder::addEdge( int pt1id, const QgsPoint &, int pt2id, const QgsPoint &, const QVector< QVariant > &prop )
 {
   mGraph->addEdge( pt1id, pt2id, prop );
 }
 
-QgsGraph* QgsGraphBuilder::graph()
+QgsGraph *QgsGraphBuilder::graph()
 {
-  QgsGraph* res = mGraph;
+  QgsGraph *res = mGraph;
   mGraph = nullptr;
   return res;
 }

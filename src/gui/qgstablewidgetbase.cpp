@@ -15,24 +15,24 @@
 
 #include "qgstablewidgetbase.h"
 
-QgsTableWidgetBase::QgsTableWidgetBase( QWidget* parent )
-    : QWidget( parent )
+QgsTableWidgetBase::QgsTableWidgetBase( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 }
 
-void QgsTableWidgetBase::init( QAbstractTableModel* model )
+void QgsTableWidgetBase::init( QAbstractTableModel *model )
 {
   tableView->setModel( model );
   connect( tableView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( onSelectionChanged() ) );
-  connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SIGNAL( valueChanged() ) );
+  connect( model, SIGNAL( dataChanged( const QModelIndex &, const QModelIndex & ) ), this, SIGNAL( valueChanged() ) );
 }
 
 void QgsTableWidgetBase::on_addButton_clicked()
 {
   const QItemSelectionModel *select = tableView->selectionModel();
   const int pos = select->hasSelection() ? select->selectedRows()[0].row() : 0;
-  QAbstractItemModel* model = tableView->model();
+  QAbstractItemModel *model = tableView->model();
   model->insertRows( pos, 1 );
   const QModelIndex index = model->index( pos, 0 );
   tableView->scrollTo( index );

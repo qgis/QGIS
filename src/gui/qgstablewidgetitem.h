@@ -31,7 +31,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
     /**
      * Creates a new table widget item with the specified text.
      */
-    QgsTableWidgetItem( const QString& text );
+    QgsTableWidgetItem( const QString &text );
 
 
     /**
@@ -46,7 +46,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
      */
     int sortRole() const;
 
-    bool operator <( const QTableWidgetItem& other ) const override;
+    bool operator <( const QTableWidgetItem &other ) const override;
 
   private:
     int mSortRole;

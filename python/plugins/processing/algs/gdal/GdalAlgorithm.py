@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QUrl
 
 from qgis.core import QgsApplication
@@ -36,7 +35,7 @@ from qgis.core import QgsApplication
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools import dataobjects, system
+from processing.tools import dataobjects
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))

@@ -24,8 +24,8 @@
 static QString PROVIDER_KEY = QStringLiteral( "ows" );
 static QString PROVIDER_DESCRIPTION = QStringLiteral( "OWS meta provider" );
 
-QgsOwsProvider::QgsOwsProvider( const QString& uri )
-    : QgsDataProvider( uri )
+QgsOwsProvider::QgsOwsProvider( const QString &uri )
+  : QgsDataProvider( uri )
 {
 }
 
@@ -33,7 +33,7 @@ QgsOwsProvider::~QgsOwsProvider()
 {
 }
 
-QGISEXTERN QgsOwsProvider * classFactory( const QString *uri )
+QGISEXTERN QgsOwsProvider *classFactory( const QString *uri )
 {
   return new QgsOwsProvider( *uri );
 }

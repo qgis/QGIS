@@ -25,14 +25,14 @@
 #include "qgsvectorlayer.h"
 #include "qgisgui.h"
 
-QgsRendererWidget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new QgsPointDisplacementRendererWidget( layer, style, renderer );
 }
 
-QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
   {
@@ -70,7 +70,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   //insert attributes into combo box
   if ( layer )
   {
-    Q_FOREACH ( const QgsField& f, layer->fields() )
+    Q_FOREACH ( const QgsField &f, layer->fields() )
     {
       mLabelFieldComboBox->addItem( f.name() );
     }
@@ -94,7 +94,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   {
     if ( *it != QLatin1String( "pointDisplacement" ) && *it != QLatin1String( "pointCluster" ) && *it != QLatin1String( "heatmapRenderer" ) )
     {
-      QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
+      QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
     }
   }
@@ -155,19 +155,19 @@ QgsPointDisplacementRendererWidget::~QgsPointDisplacementRendererWidget()
   delete mRenderer;
 }
 
-QgsFeatureRenderer* QgsPointDisplacementRendererWidget::renderer()
+QgsFeatureRenderer *QgsPointDisplacementRendererWidget::renderer()
 {
   return mRenderer;
 }
 
-void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsPointDisplacementRendererWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   QgsRendererWidget::setContext( context );
   if ( mDistanceUnitWidget )
     mDistanceUnitWidget->setMapCanvas( context.mapCanvas() );
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString& text )
+void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString &text )
 {
   if ( mRenderer )
   {
@@ -186,11 +186,11 @@ void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChan
 void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    QgsRendererWidget* tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
     emit widgetChanged();
@@ -202,7 +202,7 @@ void QgsPointDisplacementRendererWidget::on_mPlacementComboBox_currentIndexChang
   if ( !mRenderer )
     return;
 
-  mRenderer->setPlacement(( QgsPointDisplacementRenderer::Placement )mPlacementComboBox->itemData( index ).toInt() );
+  mRenderer->setPlacement( ( QgsPointDisplacementRenderer::Placement )mPlacementComboBox->itemData( index ).toInt() );
   emit widgetChanged();
 }
 
@@ -211,10 +211,10 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   if ( !mRenderer )
     return;
 
-  QgsRendererAbstractMetadata* m = QgsApplication::rendererRegistry()->rendererMetadata( mRenderer->embeddedRenderer()->type() );
+  QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( mRenderer->embeddedRenderer()->type() );
   if ( m )
   {
-    QgsRendererWidget* w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
+    QgsRendererWidget *w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
     w->setPanelTitle( tr( "Renderer settings" ) );
 
     QgsSymbolWidgetContext context = mContext;
@@ -257,7 +257,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( do
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( const QColor& newColor )
+void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mRenderer )
   {
@@ -268,7 +268,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( con
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( const QColor& newColor )
+void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mRenderer )
   {
@@ -322,7 +322,7 @@ void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateC
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged( const QString & text )
+void QgsPointDisplacementRendererWidget::on_mMaxScaleDenominatorEdit_textChanged( const QString &text )
 {
   if ( !mRenderer )
   {
@@ -361,8 +361,8 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   {
     return;
   }
-  QgsMarkerSymbol* markerSymbol = mRenderer->centerSymbol()->clone();
-  QgsSymbolSelectorWidget* dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
+  QgsMarkerSymbol *markerSymbol = mRenderer->centerSymbol()->clone();
+  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( markerSymbol, QgsStyle::defaultStyle(), mLayer, this );
   dlg->setPanelTitle( tr( "Center symbol" ) );
 
   QgsSymbolWidgetContext context = mContext;
@@ -376,15 +376,15 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   dlg->setContext( context );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget* ) ) );
+  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
   openPanel( dlg );
 }
 
 void QgsPointDisplacementRendererWidget::updateCenterSymbolFromWidget()
 {
-  QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( sender() );
-  QgsSymbol* symbol = dlg->symbol()->clone();
-  mRenderer->setCenterSymbol( static_cast< QgsMarkerSymbol* >( symbol ) );
+  QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
+  QgsSymbol *symbol = dlg->symbol()->clone();
+  mRenderer->setCenterSymbol( static_cast< QgsMarkerSymbol * >( symbol ) );
   updateCenterIcon();
   emit widgetChanged();
 }
@@ -393,14 +393,14 @@ void QgsPointDisplacementRendererWidget::cleanUpSymbolSelector( QgsPanelWidget *
 {
   if ( container )
   {
-    QgsSymbolSelectorWidget* dlg = qobject_cast<QgsSymbolSelectorWidget*>( container );
+    QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( container );
     delete dlg->symbol();
   }
 }
 
 void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
 {
-  QgsRendererWidget* w = qobject_cast<QgsRendererWidget*>( sender() );
+  QgsRendererWidget *w = qobject_cast<QgsRendererWidget *>( sender() );
   if ( !w )
     return;
 
@@ -410,7 +410,7 @@ void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
 
 void QgsPointDisplacementRendererWidget::updateCenterIcon()
 {
-  QgsMarkerSymbol* symbol = mRenderer->centerSymbol();
+  QgsMarkerSymbol *symbol = mRenderer->centerSymbol();
   if ( !symbol )
   {
     return;
@@ -419,10 +419,10 @@ void QgsPointDisplacementRendererWidget::updateCenterIcon()
   mCenterSymbolPushButton->setIcon( icon );
 }
 
-void QgsPointDisplacementRendererWidget::setupBlankUi( const QString& layerName )
+void QgsPointDisplacementRendererWidget::setupBlankUi( const QString &layerName )
 {
-  QLabel* label = new QLabel( tr( "The point displacement renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point displacement renderer" ).arg( layerName ), this );
-  QVBoxLayout* layout = new QVBoxLayout( this );
+  QLabel *label = new QLabel( tr( "The point displacement renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point displacement renderer" ).arg( layerName ), this );
+  QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( label );
 }

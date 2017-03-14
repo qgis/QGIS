@@ -27,7 +27,7 @@
 #include <qgis.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
-#include <qgsgenericprojectionselector.h>
+#include <qgsprojectionselectiondialog.h>
 #include "qgsdockwidget.h"
 
 #include "coordinatecapture.h"
@@ -65,17 +65,17 @@ static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-CoordinateCapture::CoordinateCapture( QgisInterface * qgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mpMapTool( nullptr )
-    , mpTrackMouseButton( nullptr )
-    , mpCaptureButton( nullptr )
-    , mypUserCrsToolButton( nullptr )
-    , mypCRSLabel( nullptr )
-    , mCanvasDisplayPrecision( 5 )
-    , mUserCrsDisplayPrecision( 5 )
-    , mQGisIface( qgisInterface )
-    , mQActionPointer( nullptr )
+CoordinateCapture::CoordinateCapture( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mpMapTool( nullptr )
+  , mpTrackMouseButton( nullptr )
+  , mpCaptureButton( nullptr )
+  , mypUserCrsToolButton( nullptr )
+  , mypCRSLabel( nullptr )
+  , mCanvasDisplayPrecision( 5 )
+  , mUserCrsDisplayPrecision( 5 )
+  , mQGisIface( qgisInterface )
+  , mQActionPointer( nullptr )
 {
 }
 
@@ -123,7 +123,7 @@ void CoordinateCapture::initGui()
   connect( mpMapTool, SIGNAL( mouseClicked( QgsPoint ) ), this, SLOT( mouseClicked( QgsPoint ) ) );
 
   // create a little widget with x and y display to put into our dock widget
-  QWidget * mypWidget = new QWidget();
+  QWidget *mypWidget = new QWidget();
   QGridLayout *mypLayout = new QGridLayout( mypWidget );
   mypLayout->setColumnMinimumWidth( 0, 36 );
   mypWidget->setLayout( mypLayout );
@@ -143,7 +143,7 @@ void CoordinateCapture::initGui()
   mpCanvasEdit->setReadOnly( true );
   mpCanvasEdit->setToolTip( tr( "Coordinate in map canvas coordinate reference system (lat,lon or east,north)" ) );
 
-  QPushButton * mypCopyButton = new QPushButton( mypWidget );
+  QPushButton *mypCopyButton = new QPushButton( mypWidget );
   mypCopyButton->setText( tr( "Copy to clipboard" ) );
   connect( mypCopyButton, SIGNAL( clicked() ), this, SLOT( copy() ) );
 
@@ -184,11 +184,11 @@ void CoordinateCapture::help()
 
 void CoordinateCapture::setCRS()
 {
-  QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
-  mySelector.setSelectedCrsId( mCrs.srsid() );
+  QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
+  mySelector.setCrs( mCrs );
   if ( mySelector.exec() )
   {
-    mCrs.createFromSrsId( mySelector.selectedCrsId() );
+    mCrs = mySelector.crs();
     mTransform.setDestinationCrs( mCrs );
     mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; //precision depends on CRS units
   }
@@ -200,14 +200,14 @@ void CoordinateCapture::setSourceCrs()
   mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees ) ? 5 : 3; // for the map canvas coordinate display
 }
 
-void CoordinateCapture::mouseClicked( const QgsPoint& point )
+void CoordinateCapture::mouseClicked( const QgsPoint &point )
 {
   //clicking on the canvas will update the widgets and then disable
   //tracking so the user can copy the click point coords
   mpTrackMouseButton->setChecked( false );
   update( point );
 }
-void CoordinateCapture::mouseMoved( const QgsPoint& point )
+void CoordinateCapture::mouseMoved( const QgsPoint &point )
 {
   //mouse movements will only update the widgets if the
   //tracking button is checked
@@ -216,7 +216,7 @@ void CoordinateCapture::mouseMoved( const QgsPoint& point )
     update( point );
   }
 }
-void CoordinateCapture::update( const QgsPoint& point )
+void CoordinateCapture::update( const QgsPoint &point )
 {
   //this is the coordinate resolved back to lat / lon
   QgsPoint myUserCrsPoint = mTransform.transform( point );
@@ -256,11 +256,10 @@ void CoordinateCapture::showOrHide()
 {
   if ( !mpDockWidget )
     run();
+  else if ( mQActionPointer->isChecked() )
+    mpDockWidget->show();
   else
-    if ( mQActionPointer->isChecked() )
-      mpDockWidget->show();
-    else
-      mpDockWidget->hide();
+    mpDockWidget->hide();
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -279,7 +278,7 @@ void CoordinateCapture::unload()
 }
 
 // Set icons to the current theme
-void CoordinateCapture::setCurrentTheme( const QString& themeName )
+void CoordinateCapture::setCurrentTheme( const QString &themeName )
 {
   Q_UNUSED( themeName );
   if ( mQActionPointer )
@@ -294,7 +293,7 @@ void CoordinateCapture::setCurrentTheme( const QString& themeName )
 }
 
 // Get path to the best available icon file
-QString CoordinateCapture::getIconPath( const QString& name )
+QString CoordinateCapture::getIconPath( const QString &name )
 {
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/coordinate_capture/" + name;
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/coordinate_capture/" + name;
@@ -335,7 +334,7 @@ QString CoordinateCapture::getIconPath( const QString& name )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
   return new CoordinateCapture( qgisInterfacePointer );
 }
@@ -376,7 +375,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * pluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
   delete pluginPointer;
 }

@@ -32,9 +32,9 @@ email                : jpalmer at linz dot govt dot nz
 #include <QMouseEvent>
 #include <QApplication>
 
-QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
+QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas )
 {
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
   if ( !vlayer )
   {
     QgisApp::instance()->messageBar()->pushMessage(
@@ -46,9 +46,9 @@ QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canv
   return vlayer;
 }
 
-void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRect, QgsRubberBand* rubberBand )
+void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
 {
-  const QgsMapToPixel* transform = canvas->getCoordinateTransform();
+  const QgsMapToPixel *transform = canvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
   QgsPoint lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
   QgsPoint ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
@@ -64,8 +64,8 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
   }
 }
 
-void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
-    QgsVectorLayer* vlayer,
+void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
+    QgsVectorLayer *vlayer,
     QPoint point )
 {
   int boxSize = 0;
@@ -86,7 +86,7 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect& selectRect,
   selectRect.setBottom( point.y() + boxSize );
 }
 
-void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e )
 {
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
   if ( e->modifiers() & Qt::ShiftModifier && e->modifiers() & Qt::ControlModifier )
@@ -100,9 +100,9 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas* canvas, const 
   setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
-void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, QMouseEvent* e )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return;
 
@@ -141,10 +141,10 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas* canvas, const Qgs
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry,
+void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry,
     QgsVectorLayer::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return;
 
@@ -157,14 +157,14 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas* canvas, const Qgs
 }
 
 
-QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, const QgsGeometry& selectGeometry, bool doContains, bool singleSelect )
+QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect )
 {
   QgsFeatureIds newSelectedFeatures;
 
   if ( selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
     return newSelectedFeatures;
 
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
     return newSelectedFeatures;
 
@@ -174,56 +174,53 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
   // and then click somewhere off the globe, an exception will be thrown.
   QgsGeometry selectGeomTrans = selectGeometry;
 
-  if ( canvas->mapSettings().hasCrsTransformEnabled() )
+  try
   {
-    try
-    {
-      QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
+    QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
 
-      if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
+    if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
+    {
+      // convert add more points to the edges of the rectangle
+      // improve transformation result
+      QgsPolygon poly( selectGeomTrans.asPolygon() );
+      if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
       {
-        // convert add more points to the edges of the rectangle
-        // improve transformation result
-        QgsPolygon poly( selectGeomTrans.asPolygon() );
-        if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
+        const QgsPolyline &ringIn = poly.at( 0 );
+
+        QgsPolygon newpoly( 1 );
+        newpoly[0].resize( 41 );
+        QgsPolyline &ringOut = newpoly[0];
+
+        ringOut[ 0 ] = ringIn.at( 0 );
+
+        int i = 1;
+        for ( int j = 1; j < 5; j++ )
         {
-          const QgsPolyline &ringIn = poly.at( 0 );
-
-          QgsPolygon newpoly( 1 );
-          newpoly[0].resize( 41 );
-          QgsPolyline &ringOut = newpoly[0];
-
-          ringOut[ 0 ] = ringIn.at( 0 );
-
-          int i = 1;
-          for ( int j = 1; j < 5; j++ )
+          QgsVector v( ( ringIn.at( j ) - ringIn.at( j - 1 ) ) / 10.0 );
+          for ( int k = 0; k < 9; k++ )
           {
-            QgsVector v(( ringIn.at( j ) - ringIn.at( j - 1 ) ) / 10.0 );
-            for ( int k = 0; k < 9; k++ )
-            {
-              ringOut[ i ] = ringOut[ i - 1 ] + v;
-              i++;
-            }
-            ringOut[ i++ ] = ringIn.at( j );
+            ringOut[ i ] = ringOut[ i - 1 ] + v;
+            i++;
           }
-          selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
+          ringOut[ i++ ] = ringIn.at( j );
         }
+        selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
       }
+    }
 
-      selectGeomTrans.transform( ct );
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      // catch exception for 'invalid' point and leave existing selection unchanged
-      QgsDebugMsg( "Caught CRS exception " );
-      QgisApp::instance()->messageBar()->pushMessage(
-        QObject::tr( "CRS Exception" ),
-        QObject::tr( "Selection extends beyond layer's coordinate system" ),
-        QgsMessageBar::WARNING,
-        QgisApp::instance()->messageTimeout() );
-      return newSelectedFeatures;
-    }
+    selectGeomTrans.transform( ct );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    // catch exception for 'invalid' point and leave existing selection unchanged
+    QgsDebugMsg( "Caught CRS exception " );
+    QgisApp::instance()->messageBar()->pushMessage(
+      QObject::tr( "CRS Exception" ),
+      QObject::tr( "Selection extends beyond layer's coordinate system" ),
+      QgsMessageBar::WARNING,
+      QgisApp::instance()->messageTimeout() );
+    return newSelectedFeatures;
   }
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
@@ -232,7 +229,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas* canvas, 
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
-  QgsFeatureRenderer* r = vlayer->renderer();
+  QgsFeatureRenderer *r = vlayer->renderer();
   if ( r )
     r->startRender( context, vlayer->fields() );
 

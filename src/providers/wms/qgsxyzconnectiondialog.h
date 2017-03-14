@@ -29,7 +29,7 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
   public:
     explicit QgsXyzConnectionDialog( QWidget *parent = 0 );
 
-    void setConnection( const QgsXyzConnection& conn );
+    void setConnection( const QgsXyzConnection &conn );
 
     QgsXyzConnection connection() const;
 

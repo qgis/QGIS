@@ -26,8 +26,8 @@ static QString quotedColumn( QString name )
   return "\"" + name.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) + "\"";
 }
 
-QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>( source, ownSource, request )
+QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>( source, ownSource, request )
 {
   try
   {
@@ -53,15 +53,15 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         QString mbr = QStringLiteral( "%1,%2,%3,%4" ).arg( rect.xMinimum() ).arg( rect.yMinimum() ).arg( rect.xMaximum() ).arg( rect.yMaximum() );
         wheres << quotedColumn( mDefinition.geometryField() ) + " is not null";
         wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(%3))" )
-        .arg( do_exact ? "" : "Mbr",
-              quotedColumn( mDefinition.geometryField() ),
-              mbr );
+               .arg( do_exact ? "" : "Mbr",
+                     quotedColumn( mDefinition.geometryField() ),
+                     mbr );
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFid )
       {
         wheres << QStringLiteral( "%1=%2" )
-        .arg( quotedColumn( mDefinition.uid() ) )
-        .arg( request.filterFid() );
+               .arg( quotedColumn( mDefinition.uid() ) )
+               .arg( request.filterFid() );
       }
       else if ( request.filterType() == QgsFeatureRequest::FilterFids )
       {
@@ -93,7 +93,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       // ensure that all attributes required for expression filter are being fetched
       if ( request.filterType() == QgsFeatureRequest::FilterExpression )
       {
-        Q_FOREACH ( const QString& field, request.filterExpression()->referencedColumns() )
+        Q_FOREACH ( const QString &field, request.filterExpression()->referencedColumns() )
         {
           int attrIdx = mFields.lookupField( field );
           if ( !mAttributes.contains( attrIdx ) )
@@ -125,9 +125,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
     }
     // the last column is the geometry, if any
-    if (( !( request.flags() & QgsFeatureRequest::NoGeometry )
-          || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
-        && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != QLatin1String( "*no*" ) )
+    if ( ( !( request.flags() & QgsFeatureRequest::NoGeometry )
+           || ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression()->needsGeometry() ) )
+         && !mDefinition.geometryField().isNull() && mDefinition.geometryField() != QLatin1String( "*no*" ) )
     {
       columns += "," + quotedColumn( mDefinition.geometryField() );
     }
@@ -142,7 +142,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
 
     mFid = 0;
   }
-  catch ( std::runtime_error& e )
+  catch ( std::runtime_error &e )
   {
     QgsMessageLog::logMessage( e.what(), QObject::tr( "VLayer" ) );
     close();
@@ -180,7 +180,7 @@ bool QgsVirtualLayerFeatureIterator::close()
   return true;
 }
 
-bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
@@ -244,8 +244,8 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
   return true;
 }
 
-QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider* p )
-    : mProvider( p )
+QgsVirtualLayerFeatureSource::QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p )
+  : mProvider( p )
 {
 }
 
@@ -253,7 +253,7 @@ QgsVirtualLayerFeatureSource::~QgsVirtualLayerFeatureSource()
 {
 }
 
-QgsFeatureIterator QgsVirtualLayerFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsVirtualLayerFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsVirtualLayerFeatureIterator( this, false, request ) );
 }

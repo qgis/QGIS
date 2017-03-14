@@ -91,8 +91,7 @@ class LexerR(QsciLexerCustom):
         index = editor.SendScintilla(editor.SCI_LINEFROMPOSITION, start)
         if index > 0:
             # The previous state may be needed for multi-line styling
-            pos = editor.SendScintilla(editor.SCI_GETLINEENDPOSITION, index
-                                       - 1)
+            pos = editor.SendScintilla(editor.SCI_GETLINEENDPOSITION, index - 1)
             state = editor.SendScintilla(editor.SCI_GETSTYLEAT, pos)
         else:
             state = self.Default

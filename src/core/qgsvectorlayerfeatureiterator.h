@@ -44,21 +44,21 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     /** Constructor for QgsVectorLayerFeatureSource.
      * @param layer source layer
      */
-    explicit QgsVectorLayerFeatureSource( const QgsVectorLayer* layer );
+    explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
     ~QgsVectorLayerFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
     friend class QgsVectorLayerFeatureIterator;
 
   protected:
 
-    QgsAbstractFeatureSource* mProviderFeatureSource = nullptr;
+    QgsAbstractFeatureSource *mProviderFeatureSource = nullptr;
 
-    QgsVectorLayerJoinBuffer* mJoinBuffer = nullptr;
+    QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;
 
-    QgsExpressionFieldBuffer* mExpressionFieldBuffer = nullptr;
+    QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
 
     QgsFields mFields;
 
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
   public:
-    QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsVectorLayerFeatureIterator();
 
@@ -92,18 +92,18 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
-    virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker ) override;
+    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override;
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
 
     //! Overrides default method as we only need to filter features in the edit buffer
     //! while for others filtering is left to the provider implementation.
     virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
+    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
     //! @note not available in Python bindings
     void rewindEditBuffer();
@@ -121,17 +121,17 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     void prepareField( int fieldIdx );
 
     //! @note not available in Python bindings
-    bool fetchNextAddedFeature( QgsFeature& f );
+    bool fetchNextAddedFeature( QgsFeature &f );
     //! @note not available in Python bindings
-    bool fetchNextChangedGeomFeature( QgsFeature& f );
+    bool fetchNextChangedGeomFeature( QgsFeature &f );
     //! @note not available in Python bindings
-    bool fetchNextChangedAttributeFeature( QgsFeature& f );
+    bool fetchNextChangedAttributeFeature( QgsFeature &f );
     //! @note not available in Python bindings
-    void useAddedFeature( const QgsFeature& src, QgsFeature& f );
+    void useAddedFeature( const QgsFeature &src, QgsFeature &f );
     //! @note not available in Python bindings
-    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
+    void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry &geom, QgsFeature &f );
     //! @note not available in Python bindings
-    bool nextFeatureFid( QgsFeature& f );
+    bool nextFeatureFid( QgsFeature &f );
     //! @note not available in Python bindings
     void addJoinedAttributes( QgsFeature &f );
 
@@ -152,32 +152,32 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * @note added in QGIS 2.14
      * @note not available in Python bindings
      */
-    void addExpressionAttribute( QgsFeature& f, int attrIndex );
+    void addExpressionAttribute( QgsFeature &f, int attrIndex );
 
     /** Update feature with uncommitted attribute updates.
      * @note not available in Python bindings
      */
-    void updateChangedAttributes( QgsFeature& f );
+    void updateChangedAttributes( QgsFeature &f );
 
     /** Update feature with uncommitted geometry updates.
      * @note not available in Python bindings
      */
-    void updateFeatureGeometry( QgsFeature& f );
+    void updateFeatureGeometry( QgsFeature &f );
 
     /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
      */
     struct FetchJoinInfo
     {
-      const QgsVectorLayerJoinInfo* joinInfo;//!< Canonical source of information about the join
+      const QgsVectorLayerJoinInfo *joinInfo;//!< Canonical source of information about the join
       QgsAttributeList attributes;      //!< Attributes to fetch
       int indexOffset;                  //!< At what position the joined fields start
-      QgsVectorLayer* joinLayer;        //!< Resolved pointer to the joined layer
+      QgsVectorLayer *joinLayer;        //!< Resolved pointer to the joined layer
       int targetField;                  //!< Index of field (of this layer) that drives the join
       int joinField;                    //!< Index of field (of the joined layer) must have equal value
 
-      void addJoinedAttributesCached( QgsFeature& f, const QVariant& joinValue ) const;
-      void addJoinedAttributesDirect( QgsFeature& f, const QVariant& joinValue ) const;
+      void addJoinedAttributesCached( QgsFeature &f, const QVariant &joinValue ) const;
+      void addJoinedAttributesDirect( QgsFeature &f, const QVariant &joinValue ) const;
     };
 
     QgsFeatureRequest mProviderRequest;
@@ -194,16 +194,16 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     /** Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
-    QMap<const QgsVectorLayerJoinInfo*, FetchJoinInfo> mFetchJoinInfo;
+    QMap<const QgsVectorLayerJoinInfo *, FetchJoinInfo> mFetchJoinInfo;
 
-    QMap<int, QgsExpression*> mExpressionFieldInfo;
+    QMap<int, QgsExpression *> mExpressionFieldInfo;
 
     bool mHasVirtualAttributes;
 
   private:
     std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
-    QgsInterruptionChecker* mInterruptionChecker = nullptr;
+    QgsInterruptionChecker *mInterruptionChecker = nullptr;
 
     QList< int > mPreparedFields;
     QList< int > mFieldsToPrepare;

@@ -14,11 +14,12 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsFeatureRenderer,
-                       QgsRendererAbstractMetadata,
-                       QgsRendererRegistry,
+from qgis.core import (QgsRendererAbstractMetadata,
                        QgsApplication,
-                       QgsVectorLayer
+                       QgsVectorLayer,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint
                        )
 from qgis.testing import start_app, unittest
 
@@ -172,6 +173,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         self.assertEqual(QgsApplication.rendererRegistry().renderersList(point_layer), ['singleSymbol', 'test1', 'test4'])
         self.assertEqual(QgsApplication.rendererRegistry().renderersList(line_layer), ['singleSymbol', 'test2', 'test4'])
         self.assertEqual(QgsApplication.rendererRegistry().renderersList(polygon_layer), ['singleSymbol', 'test3'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -18,9 +18,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerstylemanager.h"
 
-Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
-    : QgsRendererWidget( layer, style )
-    , mRenderer( nullptr )
+Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
+  : QgsRendererWidget( layer, style )
+  , mRenderer( nullptr )
 {
   if ( !layer )
     return;
@@ -29,8 +29,8 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
   if ( layer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //setup blank dialog
-    QGridLayout* layout = new QGridLayout( this );
-    QLabel* label = new QLabel( tr( "The 2.5D renderer only can be used with polygon layers. \n"
+    QGridLayout *layout = new QGridLayout( this );
+    QLabel *label = new QLabel( tr( "The 2.5D renderer only can be used with polygon layers. \n"
                                     "'%1' is not a polygon layer and cannot be rendered in 2.5D." )
                                 .arg( layer->name() ), this );
     layout->addWidget( label );
@@ -57,7 +57,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
 
   mHeightWidget->setLayer( layer );
 
-  QgsExpressionContextScope* scope = QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::layerScope( mLayer );
   QVariant height = scope->variable( QStringLiteral( "qgis_25d_height" ) );
   QVariant angle = scope->variable( QStringLiteral( "qgis_25d_angle" ) );
   delete scope;
@@ -81,7 +81,7 @@ Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* sty
   connect( mWallExpositionShading, SIGNAL( toggled( bool ) ), this, SLOT( updateRenderer() ) );
 }
 
-QgsFeatureRenderer* Qgs25DRendererWidget::renderer()
+QgsFeatureRenderer *Qgs25DRendererWidget::renderer()
 {
   return mRenderer;
 }
@@ -108,7 +108,7 @@ void Qgs25DRendererWidget::apply()
   }
 }
 
-QgsRendererWidget* Qgs25DRendererWidget::create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer )
+QgsRendererWidget *Qgs25DRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
   return new Qgs25DRendererWidget( layer, style, renderer );
 }

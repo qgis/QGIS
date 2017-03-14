@@ -22,13 +22,13 @@
 #include <QHBoxLayout>
 
 QgsFieldValuesLineEdit::QgsFieldValuesLineEdit( QWidget *parent )
-    : QgsFilterLineEdit( parent )
-    , mLayer( nullptr )
-    , mAttributeIndex( -1 )
-    , mUpdateRequested( false )
-    , mGatherer( nullptr )
+  : QgsFilterLineEdit( parent )
+  , mLayer( nullptr )
+  , mAttributeIndex( -1 )
+  , mUpdateRequested( false )
+  , mGatherer( nullptr )
 {
-  QCompleter* c = new QCompleter( this );
+  QCompleter *c = new QCompleter( this );
   c->setCaseSensitivity( Qt::CaseInsensitive );
   c->setFilterMode( Qt::MatchContains );
   setCompleter( c );
@@ -47,7 +47,7 @@ QgsFieldValuesLineEdit::~QgsFieldValuesLineEdit()
   }
 }
 
-void QgsFieldValuesLineEdit::setLayer( QgsVectorLayer* layer )
+void QgsFieldValuesLineEdit::setLayer( QgsVectorLayer *layer )
 {
   if ( mLayer == layer )
     return;
@@ -128,7 +128,7 @@ void QgsFieldValuesLineEdit::gathererThreadFinished()
   }
 }
 
-void QgsFieldValuesLineEdit::updateCompleter( const QStringList& values )
+void QgsFieldValuesLineEdit::updateCompleter( const QStringList &values )
 {
   mUpdateRequested = false;
   completer()->setModel( new QStringListModel( values ) );

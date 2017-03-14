@@ -30,30 +30,30 @@
 #include <QUrl>
 
 
-QgsDelimitedTextFile::QgsDelimitedTextFile( const QString& url )
-    : mFileName( QString() )
-    , mEncoding( QStringLiteral( "UTF-8" ) )
-    , mFile( nullptr )
-    , mStream( nullptr )
-    , mUseWatcher( false )
-    , mWatcher( nullptr )
-    , mDefinitionValid( false )
-    , mUseHeader( true )
-    , mDiscardEmptyFields( false )
-    , mTrimFields( false )
-    , mSkipLines( 0 )
-    , mMaxFields( 0 )
-    , mMaxNameLength( 200 ) // Don't want field names to be too unweildy!
-    , mAnchoredRegexp( false )
-    , mLineNumber( -1 )
-    , mRecordLineNumber( -1 )
-    , mRecordNumber( -1 )
-    , mHoldCurrentRecord( false )
-    , mMaxRecordNumber( -1 )
-    , mMaxFieldCount( 0 )
-    , mDefaultFieldName( QStringLiteral( "field_%1" ) )
+QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
+  : mFileName( QString() )
+  , mEncoding( QStringLiteral( "UTF-8" ) )
+  , mFile( nullptr )
+  , mStream( nullptr )
+  , mUseWatcher( false )
+  , mWatcher( nullptr )
+  , mDefinitionValid( false )
+  , mUseHeader( true )
+  , mDiscardEmptyFields( false )
+  , mTrimFields( false )
+  , mSkipLines( 0 )
+  , mMaxFields( 0 )
+  , mMaxNameLength( 200 ) // Don't want field names to be too unweildy!
+  , mAnchoredRegexp( false )
+  , mLineNumber( -1 )
+  , mRecordLineNumber( -1 )
+  , mRecordNumber( -1 )
+  , mHoldCurrentRecord( false )
+  , mMaxRecordNumber( -1 )
+  , mMaxFieldCount( 0 )
+  , mDefaultFieldName( QStringLiteral( "field_%1" ) )
     // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
-    , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
+  , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
 {
   // The default type is CSV
   setTypeCSV();
@@ -136,7 +136,7 @@ void QgsDelimitedTextFile::resetDefinition()
 }
 
 // Extract the provider definition from the url
-bool QgsDelimitedTextFile::setFromUrl( const QString& url )
+bool QgsDelimitedTextFile::setFromUrl( const QString &url )
 {
   QUrl qurl = QUrl::fromEncoded( url.toLatin1() );
   return setFromUrl( qurl );
@@ -308,13 +308,13 @@ QUrl QgsDelimitedTextFile::url()
   return url;
 }
 
-void QgsDelimitedTextFile::setFileName( const QString& filename )
+void QgsDelimitedTextFile::setFileName( const QString &filename )
 {
   resetDefinition();
   mFileName = filename;
 }
 
-void QgsDelimitedTextFile::setEncoding( const QString& encoding )
+void QgsDelimitedTextFile::setEncoding( const QString &encoding )
 {
   resetDefinition();
   mEncoding = encoding;
@@ -341,7 +341,7 @@ void QgsDelimitedTextFile::setTypeWhitespace()
   mType = DelimTypeWhitespace;
 }
 
-void QgsDelimitedTextFile::setTypeRegexp( const QString& regexp )
+void QgsDelimitedTextFile::setTypeRegexp( const QString &regexp )
 {
   resetDefinition();
   mType = DelimTypeRegexp;
@@ -372,7 +372,7 @@ QString QgsDelimitedTextFile::encodeChars( QString chars )
   return chars;
 }
 
-void QgsDelimitedTextFile::setTypeCSV( const QString& delim, const QString& quote, const QString& escape )
+void QgsDelimitedTextFile::setTypeCSV( const QString &delim, const QString &quote, const QString &escape )
 {
   resetDefinition();
   mType = DelimTypeCSV;
@@ -484,7 +484,7 @@ QStringList &QgsDelimitedTextFile::fieldNames()
   return mFieldNames;
 }
 
-int QgsDelimitedTextFile::fieldIndex( const QString& name )
+int QgsDelimitedTextFile::fieldIndex( const QString &name )
 {
   // If not yet opened then reset file to read column headers
   //

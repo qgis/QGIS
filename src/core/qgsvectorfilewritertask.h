@@ -41,9 +41,9 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
      * Constructor for QgsVectorFileWriterTask. Takes a source \a layer, destination \a fileName
      * and save \a options.
      */
-    QgsVectorFileWriterTask( QgsVectorLayer* layer,
-                             const QString& fileName,
-                             const QgsVectorFileWriter::SaveVectorOptions& options );
+    QgsVectorFileWriterTask( QgsVectorLayer *layer,
+                             const QString &fileName,
+                             const QgsVectorFileWriter::SaveVectorOptions &options );
 
     virtual void cancel() override;
 
@@ -53,13 +53,13 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
      * Emitted when writing the layer is successfully completed. The \a newFilename
      * parameter indicates the file path for the written file.
      */
-    void writeComplete( const QString& newFilename );
+    void writeComplete( const QString &newFilename );
 
     /**
      * Emitted when an error occurs which prevented the file being written (or if
      * the task is canceled). The writing \a error and \a errorMessage will be reported.
      */
-    void errorOccurred( int error, const QString& errorMessage );
+    void errorOccurred( int error, const QString &errorMessage );
 
   protected:
 

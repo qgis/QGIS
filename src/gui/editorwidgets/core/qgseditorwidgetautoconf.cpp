@@ -25,12 +25,12 @@
 class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 {
   public:
-    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
+    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
     {
       int bestScore = 0;
       QString bestType;
-      const QMap<QString, QgsEditorWidgetFactory*> factories = QgsEditorWidgetRegistry::instance()->factories();
-      for ( QMap<QString, QgsEditorWidgetFactory*>::const_iterator i = factories.begin(); i != factories.end(); ++i )
+      const QMap<QString, QgsEditorWidgetFactory *> factories = QgsEditorWidgetRegistry::instance()->factories();
+      for ( QMap<QString, QgsEditorWidgetFactory *>::const_iterator i = factories.begin(); i != factories.end(); ++i )
       {
         const int index = vl->fields().lookupField( fieldName );
         if ( index >= 0 )
@@ -62,7 +62,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
 {
   public:
-    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
+    QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
     {
       QgsField field = vl->fields().field( fieldName );
       if ( !field.editorWidgetSetup().isNull() )
@@ -84,7 +84,7 @@ QgsEditorWidgetAutoConf::QgsEditorWidgetAutoConf()
   registerPlugin( new FromDbTablePlugin() );
 }
 
-QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName ) const
+QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
   QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QVariantMap() );
 
@@ -119,7 +119,7 @@ QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVector
   return result;
 }
 
-void QgsEditorWidgetAutoConf::registerPlugin( QgsEditorWidgetAutoConfPlugin* plugin )
+void QgsEditorWidgetAutoConf::registerPlugin( QgsEditorWidgetAutoConfPlugin *plugin )
 {
   plugins.append( std::shared_ptr<QgsEditorWidgetAutoConfPlugin>( plugin ) );
 }

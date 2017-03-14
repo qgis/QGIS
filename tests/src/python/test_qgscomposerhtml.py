@@ -17,7 +17,6 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtCore import QUrl, qDebug
-from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
@@ -136,6 +135,7 @@ class TestQgsComposerHtml(unittest.TestCase):
         composerHtml = None
 
         assert myTestResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

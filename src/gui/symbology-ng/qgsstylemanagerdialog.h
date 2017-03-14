@@ -35,10 +35,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     Q_OBJECT
 
   public:
-    QgsStyleManagerDialog( QgsStyle* style, QWidget* parent = nullptr );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent = nullptr );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
-    static QString addColorRampStatic( QWidget* parent, QgsStyle* style,
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        QString RampType = QString() );
 
   public slots:
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void removeItem();
     void exportItemsSVG();
     void exportItemsPNG();
-    void exportSelectedItemsImages( const QString& dir, const QString& format, QSize size );
+    void exportSelectedItemsImages( const QString &dir, const QString &format, QSize size );
     void exportItems();
     void importItems();
 
@@ -60,9 +60,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#id2" ) ); }
 
-    void itemChanged( QStandardItem* item );
+    void itemChanged( QStandardItem *item );
 
-    void groupChanged( const QModelIndex& );
+    void groupChanged( const QModelIndex & );
     void groupRenamed( QStandardItem * );
     //! add a tag
     int addTag();
@@ -78,16 +78,16 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void editSmartgroupAction();
 
     //! symbol changed from one group
-    void regrouped( QStandardItem* );
+    void regrouped( QStandardItem * );
 
     //! filter the symbols based on input search term
-    void filterSymbols( const QString& );
+    void filterSymbols( const QString & );
 
     //! Perform symbol specific tasks when selected
-    void symbolSelected( const QModelIndex& );
+    void symbolSelected( const QModelIndex & );
 
     //! Perform tasks when the selected symbols change
-    void selectedSymbolsChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectedSymbolsChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Context menu for the groupTree
     void grouptreeContextMenu( QPoint );
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void listitemsContextMenu( QPoint );
 
   protected slots:
-    bool addColorRamp( QAction* action );
+    bool addColorRamp( QAction *action );
     //! Add selected symbols to favorites
     void addFavoriteSelectedSymbols();
     //! Remove selected symbols from favorites
@@ -114,13 +114,13 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     //! populate the groups
     void populateGroups();
     //! to set symbols checked when in editing mode
-    void setSymbolsChecked( const QStringList& );
+    void setSymbolsChecked( const QStringList & );
 
     //! populate list view with symbols of the current type with the given names
-    void populateSymbols( const QStringList& symbolNames, bool checkable = false );
+    void populateSymbols( const QStringList &symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps( const QStringList& colorRamps, bool checkable = false );
+    void populateColorRamps( const QStringList &colorRamps, bool checkable = false );
 
     int currentItemType();
     QString currentItemName();
@@ -144,9 +144,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void enableItemsForGroupingMode( bool );
 
     //! sets the text of the item with bold font
-    void setBold( QStandardItem* );
+    void setBold( QStandardItem * );
 
-    QgsStyle* mStyle = nullptr;
+    QgsStyle *mStyle = nullptr;
 
     QString mStyleFilename;
 
@@ -165,10 +165,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QMenu *mGroupListMenu = nullptr;
 
     //! Context menu for the group tree
-    QMenu* mGroupTreeContextMenu = nullptr;
+    QMenu *mGroupTreeContextMenu = nullptr;
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
-    QMenu* mMenuBtnAddItemColorRamp = nullptr;
+    QMenu *mMenuBtnAddItemColorRamp = nullptr;
 };
 
 #endif

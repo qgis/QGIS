@@ -19,16 +19,16 @@
 #include "qgsdockwidget.h"
 
 
-QgsDockWidget::QgsDockWidget( QWidget* parent , Qt::WindowFlags flags )
-    : QDockWidget( parent, flags )
-    , mVisibleAndActive( false )
+QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
+  : QDockWidget( parent, flags )
+  , mVisibleAndActive( false )
 {
   connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( handleVisibilityChanged( bool ) ) );
 }
 
-QgsDockWidget::QgsDockWidget( const QString& title, QWidget* parent, Qt::WindowFlags flags )
-    : QDockWidget( title, parent, flags )
-    , mVisibleAndActive( false )
+QgsDockWidget::QgsDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
+  : QDockWidget( title, parent, flags )
+  , mVisibleAndActive( false )
 {
   connect( this, SIGNAL( visibilityChanged( bool ) ), this, SLOT( handleVisibilityChanged( bool ) ) );
 }
@@ -57,7 +57,7 @@ bool QgsDockWidget::isUserVisible() const
   return mVisibleAndActive;
 }
 
-void QgsDockWidget::closeEvent( QCloseEvent* e )
+void QgsDockWidget::closeEvent( QCloseEvent *e )
 {
   emit closed();
   emit closedStateChanged( true );
@@ -65,7 +65,7 @@ void QgsDockWidget::closeEvent( QCloseEvent* e )
   QDockWidget::closeEvent( e );
 }
 
-void QgsDockWidget::showEvent( QShowEvent* e )
+void QgsDockWidget::showEvent( QShowEvent *e )
 {
   emit opened();
   emit closedStateChanged( false );

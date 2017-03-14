@@ -22,25 +22,25 @@
 #include "qgsvectorlayer.h"
 
 
-QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *>& layers, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mLayersChecked( QMap<QString, Qt::CheckState>() )
-    , mItemCheckable( false )
-    , mAllowEmpty( false )
-    , mShowCrs( false )
+QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent )
+  : QAbstractItemModel( parent )
+  , mLayersChecked( QMap<QString, Qt::CheckState>() )
+  , mItemCheckable( false )
+  , mAllowEmpty( false )
+  , mShowCrs( false )
 {
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( layers );
 }
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
-    : QAbstractItemModel( parent )
-    , mLayersChecked( QMap<QString, Qt::CheckState>() )
-    , mItemCheckable( false )
-    , mAllowEmpty( false )
-    , mShowCrs( false )
+  : QAbstractItemModel( parent )
+  , mLayersChecked( QMap<QString, Qt::CheckState>() )
+  , mItemCheckable( false )
+  , mAllowEmpty( false )
+  , mShowCrs( false )
 {
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( addLayers( QList<QgsMapLayer*> ) ) );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( addLayers( QList<QgsMapLayer *> ) ) );
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
   addLayers( QgsProject::instance()->mapLayers().values() );
 }
@@ -52,7 +52,7 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  Q_FOREACH ( const QString& key, mLayersChecked.keys() )
+  Q_FOREACH ( const QString &key, mLayersChecked.keys() )
   {
     mLayersChecked[key] = checkState;
   }
@@ -90,7 +90,7 @@ void QgsMapLayerModel::setShowCrs( bool showCrs )
 QList<QgsMapLayer *> QgsMapLayerModel::layersChecked( Qt::CheckState checkState )
 {
   QList<QgsMapLayer *> layers;
-  Q_FOREACH ( QgsMapLayer* layer, mLayers )
+  Q_FOREACH ( QgsMapLayer *layer, mLayers )
   {
     if ( mLayersChecked[layer->id()] == checkState )
     {
@@ -108,7 +108,7 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
-void QgsMapLayerModel::setAdditionalItems( const QStringList& items )
+void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
 {
   if ( items == mAdditionalItems )
     return;
@@ -133,13 +133,13 @@ void QgsMapLayerModel::setAdditionalItems( const QStringList& items )
   endInsertRows();
 }
 
-void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
+void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 {
   int offset = 0;
   if ( mAllowEmpty )
     offset++;
 
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( const QString &layerId, layerIds )
   {
     QModelIndex startIndex = index( 0, 0 );
     QModelIndexList list = match( startIndex, LayerIdRole, layerId, 1 );
@@ -154,14 +154,14 @@ void QgsMapLayerModel::removeLayers( const QStringList& layerIds )
   }
 }
 
-void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *>& layers )
+void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
 {
   int offset = 0;
   if ( mAllowEmpty )
     offset++;
 
   beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     mLayers.append( layer );
     mLayersChecked.insert( layer->id(), Qt::Unchecked );
@@ -177,7 +177,7 @@ QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &par
 
   if ( hasIndex( row, column, parent ) )
   {
-    QgsMapLayer* layer = nullptr;
+    QgsMapLayer *layer = nullptr;
     if ( row - offset >= 0 && row - offset < mLayers.count() )
       layer = mLayers.at( row - offset );
 
@@ -228,7 +228,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( additionalIndex >= 0 )
         return mAdditionalItems.at( additionalIndex );
 
-      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
       if ( !layer )
         return QVariant();
 
@@ -247,7 +247,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( isEmpty || additionalIndex >= 0 )
         return QVariant();
 
-      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
       return layer ? layer->id() : QVariant();
     }
 
@@ -256,7 +256,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( isEmpty || additionalIndex >= 0 )
         return QVariant();
 
-      return QVariant::fromValue<QgsMapLayer*>( static_cast<QgsMapLayer*>( index.internalPointer() ) );
+      return QVariant::fromValue<QgsMapLayer *>( static_cast<QgsMapLayer *>( index.internalPointer() ) );
     }
 
     case EmptyRole:
@@ -272,7 +272,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
         if ( isEmpty || additionalIndex >= 0 )
           return QVariant();
 
-        QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+        QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
         return layer ? mLayersChecked[layer->id()] : QVariant();
       }
 
@@ -281,7 +281,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
     case Qt::ToolTipRole:
     {
-      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
       if ( layer )
       {
         QString tooltip = "<b>" +
@@ -299,7 +299,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( isEmpty || additionalIndex >= 0 )
         return QVariant();
 
-      QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+      QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
       if ( !layer )
         return QVariant();
 
@@ -315,7 +315,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
           case QgsMapLayer::VectorLayer:
           {
-            QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
+            QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
             if ( !vl )
             {
               return QIcon();
@@ -392,7 +392,7 @@ bool QgsMapLayerModel::setData( const QModelIndex &index, const QVariant &value,
 
   if ( role == Qt::CheckStateRole && !isEmpty && additionalIndex < 0 )
   {
-    QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+    QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
     mLayersChecked[layer->id()] = ( Qt::CheckState )value.toInt();
     emit dataChanged( index, index );
     return true;

@@ -28,8 +28,6 @@ __revision__ = '$Format:%H$'
 
 def processCommand(alg):
     # We temporary remove the output
-    out = alg.getOutputFromName('out')
-    topidx = alg.getParameterValue('topidx')
     command = "r.topmodel parameters=\"{}\" topidxstats=\"{}\" input=\"{}\" output=\"{}\" {} {}--overwrite".format(
         alg.getParameterValue('parameters'),
         alg.getParameterValue('topidxstats'),

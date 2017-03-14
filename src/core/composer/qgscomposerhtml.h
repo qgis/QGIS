@@ -43,7 +43,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
       ManualHtml //!< HTML content is manually set for the item
     };
 
-    QgsComposerHtml( QgsComposition* c, bool createUndoCommands );
+    QgsComposerHtml( QgsComposition *c, bool createUndoCommands );
 
     ~QgsComposerHtml();
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see url
      * @see contentMode
      */
-    void setUrl( const QUrl& url );
+    void setUrl( const QUrl &url );
 
     /** Returns the URL of the content displayed in the item if the item is using
      * the QgsComposerHtml::Url mode.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setHtml( const QString& html );
+    void setHtml( const QString &html );
 
     /** Returns the HTML source displayed in the item if the item is using
      * the QgsComposerHtml::ManualHtml mode.
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see loadHtml
      * @note added in 2.5
      */
-    void setUserStylesheet( const QString& stylesheet );
+    void setUserStylesheet( const QString &stylesheet );
 
     /** Returns the user stylesheet CSS rules used while rendering the HTML content. These
      * overriding the styles specified within the HTML source.
@@ -202,10 +202,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     virtual QString displayName() const override;
     QSizeF totalSize() const override;
-    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
-    bool writeXml( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
-    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
+    void render( QPainter *p, const QRectF &renderExtent, const int frameIndex ) override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
+    void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) override;
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos ) override;
 
@@ -218,13 +218,13 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setUrl
      * @see url
      */
-    void loadHtml( const bool useCache = false, const QgsExpressionContext* context = nullptr );
+    void loadHtml( const bool useCache = false, const QgsExpressionContext *context = nullptr );
 
     //! Recalculates the frame sizes for the current viewport dimensions
     void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = nullptr ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   private slots:
     void frameLoaded( bool ok = true );
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   private:
     ContentMode mContentMode;
     QUrl mUrl;
-    QgsWebPage* mWebPage = nullptr;
+    QgsWebPage *mWebPage = nullptr;
     QString mHtml;
     QString mFetchedHtml;
     QString mLastFetchedUrl;
@@ -240,14 +240,14 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToMM;
-    QImage* mRenderedPage = nullptr;
+    QImage *mRenderedPage = nullptr;
     bool mEvaluateExpressions;
     bool mUseSmartBreaks;
     double mMaxBreakDistance;
 
     QgsFeature mExpressionFeature;
-    QgsVectorLayer* mExpressionLayer = nullptr;
-    QgsDistanceArea* mDistanceArea = nullptr;
+    QgsVectorLayer *mExpressionLayer = nullptr;
+    QgsDistanceArea *mDistanceArea = nullptr;
 
     QString mUserStylesheet;
     bool mEnableUserStylesheet;
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     //! JSON string representation of current atlas feature
     QString mAtlasFeatureJSON;
 
-    QgsNetworkContentFetcher* mFetcher = nullptr;
+    QgsNetworkContentFetcher *mFetcher = nullptr;
 
     double htmlUnitsToMM(); //calculate scale factor
 
@@ -263,10 +263,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void renderCachedImage();
 
     //fetches html content from a url and returns it as a string
-    QString fetchHtml( const QUrl& url );
+    QString fetchHtml( const QUrl &url );
 
     //! Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions
-    void setExpressionContext( const QgsFeature& feature, QgsVectorLayer* layer );
+    void setExpressionContext( const QgsFeature &feature, QgsVectorLayer *layer );
 
     //! Calculates the max width of frames in the html multiframe
     double maxFrameWidth() const;

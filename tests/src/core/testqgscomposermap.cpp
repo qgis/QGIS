@@ -36,12 +36,12 @@ class TestQgsComposerMap : public QObject
 
   public:
     TestQgsComposerMap()
-        : mComposition( 0 )
-        , mComposerMap( 0 )
-        , mRasterLayer( 0 )
-        , mPointsLayer( 0 )
-        , mPolysLayer( 0 )
-        , mLinesLayer( 0 )
+      : mComposition( 0 )
+      , mComposerMap( 0 )
+      , mRasterLayer( 0 )
+      , mPointsLayer( 0 )
+      , mPolysLayer( 0 )
+      , mLinesLayer( 0 )
     {}
 
   private slots:
@@ -59,10 +59,10 @@ class TestQgsComposerMap : public QObject
   private:
     QgsComposition *mComposition = nullptr;
     QgsComposerMap *mComposerMap = nullptr;
-    QgsRasterLayer* mRasterLayer = nullptr;
-    QgsVectorLayer* mPointsLayer = nullptr;
-    QgsVectorLayer* mPolysLayer = nullptr;
-    QgsVectorLayer* mLinesLayer = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsVectorLayer *mPointsLayer = nullptr;
+    QgsVectorLayer *mPolysLayer = nullptr;
+    QgsVectorLayer *mLinesLayer = nullptr;
     QString mReport;
 };
 
@@ -75,7 +75,7 @@ void TestQgsComposerMap::initTestCase()
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
@@ -91,7 +91,7 @@ void TestQgsComposerMap::initTestCase()
                                     lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // some layers need to be in project for data-defined layers functionality
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer << mPointsLayer << mPolysLayer << mLinesLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mRasterLayer << mPointsLayer << mPolysLayer << mLinesLayer );
 }
 
 void TestQgsComposerMap::cleanupTestCase()
@@ -115,7 +115,7 @@ void TestQgsComposerMap::init()
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
-  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
   mComposition->addComposerMap( mComposerMap );
 
   mReport = QStringLiteral( "<h1>Composer Map Tests</h1>\n" );
@@ -143,9 +143,9 @@ void TestQgsComposerMap::uniqueId()
   mComposition->addItemsFromXml( documentElement, doc, 0, false );
 
   //test if both composer maps have different ids
-  const QgsComposerMap* newMap = 0;
-  QList<const QgsComposerMap*> mapList = mComposition->composerMapItems();
-  QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
+  const QgsComposerMap *newMap = 0;
+  QList<const QgsComposerMap *> mapList = mComposition->composerMapItems();
+  QList<const QgsComposerMap *>::const_iterator mapIt = mapList.constBegin();
   for ( ; mapIt != mapList.constEnd(); ++mapIt )
   {
     if ( *mapIt != mComposerMap )
@@ -160,7 +160,7 @@ void TestQgsComposerMap::uniqueId()
   int oldId = mComposerMap->id();
   int newId = newMap->id();
 
-  mComposition->removeComposerItem( const_cast<QgsComposerMap*>( newMap ) );
+  mComposition->removeComposerItem( const_cast<QgsComposerMap *>( newMap ) );
 
   QVERIFY( oldId != newId );
 }
@@ -253,8 +253,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 {
   delete mComposition;
   QgsMapSettings ms;
-  ms.setLayers( QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
-  ms.setCrsTransformEnabled( true );
+  ms.setLayers( QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer );
 
   mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
@@ -264,7 +263,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
   //test malformed layer set string
   mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression( "'x'" ) );
-  QList<QgsMapLayer*> result = mComposerMap->layersToRender();
+  QList<QgsMapLayer *> result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 
   mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'x|'" ) ) );
@@ -295,7 +294,7 @@ void TestQgsComposerMap::dataDefinedLayers()
 
 
   //test with atlas feature evaluation
-  QgsVectorLayer* atlasLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *atlasLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
   QVERIFY( atlasLayer->isValid() );
   QgsFeature f1( atlasLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), mLinesLayer->name() );
@@ -333,7 +332,7 @@ void TestQgsComposerMap::dataDefinedStyles()
 {
   delete mComposition;
 
-  QList<QgsMapLayer*> layers = QList<QgsMapLayer*>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
 
   mComposition = new QgsComposition( QgsProject::instance() );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
@@ -353,7 +352,7 @@ void TestQgsComposerMap::dataDefinedStyles()
   // test following of preset
   mComposerMap->setFollowVisibilityPreset( true );
   mComposerMap->setFollowVisibilityPresetName( QStringLiteral( "test preset" ) );
-  QSet<QgsMapLayer*> result = mComposerMap->layersToRender().toSet();
+  QSet<QgsMapLayer *> result = mComposerMap->layersToRender().toSet();
   QCOMPARE( result.count(), 2 );
   mComposerMap->setFollowVisibilityPresetName( QString() );
 

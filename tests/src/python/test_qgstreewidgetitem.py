@@ -12,17 +12,13 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.core import NULL
 from qgis.gui import QgsTreeWidgetItem, QgsTreeWidgetItemObject
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTreeWidget
-
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 
 try:
     from qgis.PyQt.QtTest import QSignalSpy
@@ -139,6 +135,7 @@ class TestQgsTreeWidgetItemObject(unittest.TestCase):
         self.assertEqual(len(item_edited_spy), 1)
         i.setData(1, Qt.EditRole, 'b')
         self.assertEqual(len(item_edited_spy), 2)
+
 
 if __name__ == '__main__':
     unittest.main()

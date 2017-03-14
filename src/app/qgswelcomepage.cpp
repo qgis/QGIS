@@ -18,39 +18,39 @@
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
-#include <QSettings>
 
-QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
-    : QWidget( parent )
+QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
+  : QWidget( parent )
 {
-  QSettings settings;
+  QgsSettings settings;
 
-  QVBoxLayout* mainLayout = new QVBoxLayout;
+  QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );
   mainLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( mainLayout );
 
-  QHBoxLayout* layout = new QHBoxLayout();
+  QHBoxLayout *layout = new QHBoxLayout();
   layout->setMargin( 0 );
 
   mainLayout->addLayout( layout );
 
-  QWidget* recentProjectsContainer = new QWidget;
+  QWidget *recentProjectsContainer = new QWidget;
   recentProjectsContainer->setLayout( new QVBoxLayout );
   recentProjectsContainer->layout()->setContentsMargins( 0, 0, 0, 0 );
   recentProjectsContainer->layout()->setMargin( 0 );
 
   int titleSize = QApplication::fontMetrics().height() * 1.4;
-  QLabel* recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold;'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
+  QLabel *recentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold;'>%2</div>" ).arg( titleSize ).arg( tr( "Recent Projects" ) ) );
   recentProjectsTitle->setContentsMargins( 0, 3, 0, 0 );
 
   recentProjectsContainer->layout()->addWidget( recentProjectsTitle );
 
-  QListView* recentProjectsListView = new QListView();
+  QListView *recentProjectsListView = new QListView();
   recentProjectsListView->setResizeMode( QListView::Adjust );
 
   mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
@@ -66,7 +66,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget* parent )
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
   {
     connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
     mVersionInfo->checkVersion();
@@ -80,19 +80,19 @@ QgsWelcomePage::~QgsWelcomePage()
   delete mVersionInfo;
 }
 
-void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects )
+void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects )
 {
   mModel->setRecentProjects( recentProjects );
 }
 
-void QgsWelcomePage::itemActivated( const QModelIndex& index )
+void QgsWelcomePage::itemActivated( const QModelIndex &index )
 {
   QgisApp::instance()->openProject( mModel->data( index, Qt::ToolTipRole ).toString() );
 }
 
 void QgsWelcomePage::versionInfoReceived()
 {
-  QgsVersionInfo* versionInfo = qobject_cast<QgsVersionInfo*>( sender() );
+  QgsVersionInfo *versionInfo = qobject_cast<QgsVersionInfo *>( sender() );
   Q_ASSERT( versionInfo );
 
   if ( versionInfo->newVersionAvailable() )

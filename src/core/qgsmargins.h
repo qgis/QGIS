@@ -51,10 +51,10 @@ class CORE_EXPORT QgsMargins
      * @see setBottom()
      */
     QgsMargins( double left, double top, double right, double bottom )
-        : mLeft( left )
-        , mTop( top )
-        , mRight( right )
-        , mBottom( bottom )
+      : mLeft( left )
+      , mTop( top )
+      , mRight( right )
+      , mBottom( bottom )
     {}
 
     /**
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsMargins
      * if the string could not be interpreted as margins.
      * @see toString()
      */
-    static QgsMargins fromString( const QString& string );
+    static QgsMargins fromString( const QString &string );
 
   private:
     double mLeft = 0.0;
@@ -264,17 +264,17 @@ inline QgsMargins operator/( const QgsMargins &margins, double divisor )
                      margins.right() / divisor, margins.bottom() / divisor );
 }
 
-inline QgsMargins& QgsMargins::operator+=( const QgsMargins & margins )
+inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins )
 {
   return *this = *this + margins;
 }
 
-inline QgsMargins& QgsMargins::operator-=( const QgsMargins & margins )
+inline QgsMargins &QgsMargins::operator-=( const QgsMargins &margins )
 {
   return *this = *this - margins;
 }
 
-inline QgsMargins& QgsMargins::operator+=( double addend )
+inline QgsMargins &QgsMargins::operator+=( double addend )
 {
   mLeft += addend;
   mTop += addend;
@@ -283,7 +283,7 @@ inline QgsMargins& QgsMargins::operator+=( double addend )
   return *this;
 }
 
-inline QgsMargins& QgsMargins::operator-=( double subtrahend )
+inline QgsMargins &QgsMargins::operator-=( double subtrahend )
 {
   mLeft -= subtrahend;
   mTop -= subtrahend;
@@ -292,12 +292,12 @@ inline QgsMargins& QgsMargins::operator-=( double subtrahend )
   return *this;
 }
 
-inline QgsMargins& QgsMargins::operator*=( double factor )
+inline QgsMargins &QgsMargins::operator*=( double factor )
 {
   return *this = *this * factor;
 }
 
-inline QgsMargins& QgsMargins::operator/=( double divisor )
+inline QgsMargins &QgsMargins::operator/=( double divisor )
 {
   return *this = *this / divisor;
 }

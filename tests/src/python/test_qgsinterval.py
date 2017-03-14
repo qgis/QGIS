@@ -16,7 +16,6 @@ import qgis  # NOQA
 
 from qgis.core import QgsInterval
 from qgis.testing import unittest
-from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 
 
 class TestQgsInterval(unittest.TestCase):
@@ -157,6 +156,7 @@ class TestQgsInterval(unittest.TestCase):
         self.assertEqual(i.seconds(), 5)
         i = QgsInterval.fromString('bad')
         self.assertFalse(i.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()

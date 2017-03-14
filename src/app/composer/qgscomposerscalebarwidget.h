@@ -30,7 +30,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    explicit QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
+    explicit QgsComposerScaleBarWidget( QgsComposerScaleBar *scaleBar );
     ~QgsComposerScaleBarWidget();
 
   public slots:
@@ -40,14 +40,14 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void on_mSegmentSizeSpinBox_valueChanged( double d );
     void on_mSegmentsLeftSpinBox_valueChanged( int i );
     void on_mNumberOfSegmentsSpinBox_valueChanged( int i );
-    void on_mUnitLabelLineEdit_textChanged( const QString& text );
+    void on_mUnitLabelLineEdit_textChanged( const QString &text );
     void on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
     void on_mFontButton_clicked();
-    void on_mFontColorButton_colorChanged( const QColor& newColor );
-    void on_mFillColorButton_colorChanged( const QColor& newColor );
-    void on_mFillColor2Button_colorChanged( const QColor& newColor );
-    void on_mStrokeColorButton_colorChanged( const QColor& newColor );
-    void on_mStyleComboBox_currentIndexChanged( const QString& text );
+    void on_mFontColorButton_colorChanged( const QColor &newColor );
+    void on_mFillColorButton_colorChanged( const QColor &newColor );
+    void on_mFillColor2Button_colorChanged( const QColor &newColor );
+    void on_mStrokeColorButton_colorChanged( const QColor &newColor );
+    void on_mStyleComboBox_currentIndexChanged( const QString &text );
     void on_mLabelBarSpaceSpinBox_valueChanged( double d );
     void on_mBoxSizeSpinBox_valueChanged( double d );
     void on_mAlignmentComboBox_currentIndexChanged( int index );
@@ -59,18 +59,18 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
 
   private slots:
     void setGuiElements();
-    void segmentSizeRadioChanged( QAbstractButton*radio );
-    void composerMapChanged( QgsComposerItem* item );
+    void segmentSizeRadioChanged( QAbstractButton *radio );
+    void composerMapChanged( QgsComposerItem *item );
 
   private:
-    QgsComposerScaleBar* mComposerScaleBar = nullptr;
+    QgsComposerScaleBar *mComposerScaleBar = nullptr;
     QButtonGroup mSegmentSizeRadioGroup;
 
     //! Enables/disables the signals of the input gui elements
     void blockMemberSignals( bool enable );
 
     //! Enables/disables controls based on scale bar style
-    void toggleStyleSpecificControls( const QString& style );
+    void toggleStyleSpecificControls( const QString &style );
 
     void connectUpdateSignal();
     void disconnectUpdateSignal();

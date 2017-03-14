@@ -26,7 +26,6 @@ from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import QgsProject, QgsMapLayer, QgsDataSourceUri
-import re
 
 from . import resources_rc  # NOQA
 
@@ -93,7 +92,7 @@ class DBManagerPlugin(object):
     def onUpdateSqlLayer(self):
         l = self.iface.activeLayer()
         if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            table = uri.table()
+            table = QgsDataSourceUri(l.source()).table()
             if table.startswith('(') and table.endswith(')'):
                 self.run()
                 self.dlg.runSqlLayerWindow(l)

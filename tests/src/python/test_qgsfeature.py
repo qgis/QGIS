@@ -118,5 +118,6 @@ class TestQgsFeature(unittest.TestCase):
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)
         assert myGeometry is not None, myMessage
 
+
 if __name__ == '__main__':
     unittest.main()

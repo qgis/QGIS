@@ -43,7 +43,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      * @param ramp initial ramp to show in dialog
      * @param parent parent widget
      */
-    QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent = nullptr );
+    QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent = nullptr );
     ~QgsGradientColorRampDialog();
 
     /** Returns a color ramp representing the current settings from the dialog.
@@ -55,7 +55,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      * @param ramp color ramp
      * @see ramp()
      */
-    void setRamp( const QgsGradientColorRamp& ramp );
+    void setRamp( const QgsGradientColorRamp &ramp );
 
   signals:
 
@@ -67,12 +67,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     /** Sets the start color for the gradient ramp.
      * @see setColor2()
      */
-    void setColor1( const QColor& color );
+    void setColor1( const QColor &color );
 
     /** Sets the end color for the gradient ramp.
      * @see setColor1()
      */
-    void setColor2( const QColor& color );
+    void setColor2( const QColor &color );
 
   private slots:
     void on_cboType_currentIndexChanged( int index );
@@ -80,8 +80,8 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     void updateRampFromStopEditor();
     void updateColorButtons();
     void updateStopEditor();
-    void selectedStopChanged( const QgsGradientStop& stop );
-    void colorWidgetChanged( const QColor& color );
+    void selectedStopChanged( const QgsGradientStop &stop );
+    void colorWidgetChanged( const QColor &color );
     void on_mPositionSpinBox_valueChanged( double val );
     void on_mPlotHueCheckbox_toggled( bool checked );
     void on_mPlotLightnessCheckbox_toggled( bool checked );
@@ -94,12 +94,12 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
   private:
 
     QgsGradientColorRamp mRamp;
-    QwtPlotCurve* mLightnessCurve = nullptr;
-    QwtPlotCurve* mSaturationCurve = nullptr;
-    QwtPlotCurve* mHueCurve = nullptr;
-    QwtPlotCurve* mAlphaCurve = nullptr;
-    QList< QwtPlotMarker* > mMarkers;
-    QgsGradientPlotEventFilter* mPlotFilter = nullptr;
+    QwtPlotCurve *mLightnessCurve = nullptr;
+    QwtPlotCurve *mSaturationCurve = nullptr;
+    QwtPlotCurve *mHueCurve = nullptr;
+    QwtPlotCurve *mAlphaCurve = nullptr;
+    QList< QwtPlotMarker * > mMarkers;
+    QgsGradientPlotEventFilter *mPlotFilter = nullptr;
     int mCurrentPlotColorComponent;
     int mCurrentPlotMarkerIndex;
 
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
     QgsGradientPlotEventFilter( QwtPlot *plot );
 
-    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+    virtual bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot* mPlot = nullptr;
+    QwtPlot *mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond

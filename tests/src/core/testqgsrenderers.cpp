@@ -39,11 +39,11 @@ class TestQgsRenderers : public QObject
 
   public:
     TestQgsRenderers()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
+      : mTestHasError( false )
+      , mMapSettings( 0 )
+      , mpPointsLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mpPolysLayer( 0 )
     {}
     ~TestQgsRenderers()
     {
@@ -62,12 +62,12 @@ class TestQgsRenderers : public QObject
 //    void continuousSymbol();
   private:
     bool mTestHasError;
-    bool setQml( const QString& type ); //uniquevalue / continuous / single /
-    bool imageCheck( const QString& type ); //as above
+    bool setQml( const QString &type ); //uniquevalue / continuous / single /
+    bool imageCheck( const QString &type ); //as above
     QgsMapSettings *mMapSettings = nullptr;
-    QgsMapLayer * mpPointsLayer = nullptr;
-    QgsMapLayer * mpLinesLayer = nullptr;
-    QgsMapLayer * mpPolysLayer = nullptr;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsMapLayer *mpLinesLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -127,7 +127,7 @@ void TestQgsRenderers::initTestCase()
   // and is more light weight
   //
   mMapSettings->setLayers(
-    QList<QgsMapLayer*>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
+    QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
   mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()
@@ -156,7 +156,7 @@ void TestQgsRenderers::singleSymbol()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRenderers::setQml( const QString& type )
+bool TestQgsRenderers::setQml( const QString &type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -192,7 +192,7 @@ bool TestQgsRenderers::setQml( const QString& type )
   return myStyleFlag;
 }
 
-bool TestQgsRenderers::imageCheck( const QString& testType )
+bool TestQgsRenderers::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

@@ -27,14 +27,13 @@ import os
 
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsRectangle,
                        QgsMultiRenderChecker,
                        QgsPointClusterRenderer,
-                       QgsFontUtils,
                        QgsUnitTypes,
                        QgsMapUnitScale,
                        QgsMarkerSymbol,

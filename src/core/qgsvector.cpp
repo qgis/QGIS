@@ -19,14 +19,14 @@
 #include "qgsexception.h"
 
 QgsVector::QgsVector()
-    : mX( 0.0 )
-    , mY( 0.0 )
+  : mX( 0.0 )
+  , mY( 0.0 )
 {
 }
 
 QgsVector::QgsVector( double x, double y )
-    : mX( x )
-    , mY( y )
+  : mX( x )
+  , mY( y )
 {
 }
 
@@ -55,7 +55,7 @@ QgsVector QgsVector::operator+( QgsVector other ) const
   return QgsVector( mX + other.mX, mY + other.mY );
 }
 
-QgsVector& QgsVector::operator+=( QgsVector other )
+QgsVector &QgsVector::operator+=( QgsVector other )
 {
   mX += other.mX;
   mY += other.mY;
@@ -67,7 +67,7 @@ QgsVector QgsVector::operator-( QgsVector other ) const
   return QgsVector( mX - other.mX, mY - other.mY );
 }
 
-QgsVector& QgsVector::operator-=( QgsVector other )
+QgsVector &QgsVector::operator-=( QgsVector other )
 {
   mX -= other.mX;
   mY -= other.mY;

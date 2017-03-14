@@ -28,8 +28,8 @@
 #include <QColor>
 
 
-QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
   mToolName = tr( "Select" );
   mCursor = Qt::ArrowCursor;
@@ -37,9 +37,9 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
   mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
-void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( !vlayer )
     return;
 

@@ -25,17 +25,27 @@ namespace QgsWcs
 {
 
   /**
+   * Create ContentMetadata element for get capabilities document
+   */
+  QDomElement getContentMetadataElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project );
+
+  /**
+   * Create Service element for get capabilities document
+   */
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
    * Create get capabilities document
    */
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface* serverIface,
-      const QgsProject* project, const QString& version,
-      const QgsServerRequest& request );
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface,
+      const QgsProject *project, const QString &version,
+      const QgsServerRequest &request );
 
   /** Output WCS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
-                             const QString& version, const QgsServerRequest& request,
-                             QgsServerResponse& response );
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                             const QString &version, const QgsServerRequest &request,
+                             QgsServerResponse &response );
 
 } // samespace QgsWcs
 

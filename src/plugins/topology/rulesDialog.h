@@ -40,16 +40,16 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * @param qgisIface pointer to a QgisInterface instance
      * @param parent parent widget
      */
-    rulesDialog( const QMap<QString, TopologyRule>& testMap, QgisInterface* qgisIface, QWidget *parent );
+    rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent );
     ~rulesDialog();
     /*
      * Returns pointer to the test table
      */
-    QTableWidget* rulesTable() { return mRulesTable; }
+    QTableWidget *rulesTable() { return mRulesTable; }
     /*
      * Returns pointer to the test combobox
      */
-    QComboBox* rulesBox() { return mRuleBox; }
+    QComboBox *rulesBox() { return mRuleBox; }
 
     /*
      * Initialize Rules UI with layers and rules
@@ -59,14 +59,14 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
   private:
     QMap<QString, TopologyRule> mTestConfMap;
     QList<QString> mLayerIds;
-    QgisInterface* mQgisIface = nullptr;
+    QgisInterface *mQgisIface = nullptr;
 
     /*
      * Reads a test from the project
      * @param index test index
      * @param project pointer to QgsProject
      */
-    void readTest( int index, QgsProject* project );
+    void readTest( int index, QgsProject *project );
     /*
      * Sets the horizontal header for tet table
      */
@@ -79,7 +79,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * Shows or hides controls according to test settings
      * @param testName name of the test
      */
-    void showControls( const QString& testName );
+    void showControls( const QString &testName );
     /*
      * Adds test to the table
      */
@@ -96,7 +96,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * Updates Rule combobox to mach first layer
      * @param layerId layer ID
      */
-    void updateRuleItems( const QString& layerName );
+    void updateRuleItems( const QString &layerName );
 
     /*
      * Deletes all rules from rules dialog

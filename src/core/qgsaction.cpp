@@ -41,7 +41,7 @@ bool QgsAction::runable() const
          ;
 }
 
-void QgsAction::run( QgsVectorLayer* layer, const QgsFeature& feature, const QgsExpressionContext& expressionContext ) const
+void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const
 {
   QgsExpressionContext actionContext( expressionContext );
 
@@ -51,7 +51,7 @@ void QgsAction::run( QgsVectorLayer* layer, const QgsFeature& feature, const Qgs
   run( actionContext );
 }
 
-void QgsAction::run( const QgsExpressionContext& expressionContext ) const
+void QgsAction::run( const QgsExpressionContext &expressionContext ) const
 {
   if ( !isValid() )
   {
@@ -87,12 +87,12 @@ QSet<QString> QgsAction::actionScopes() const
   return mActionScopes;
 }
 
-void QgsAction::setActionScopes( const QSet<QString>& actionScopes )
+void QgsAction::setActionScopes( const QSet<QString> &actionScopes )
 {
   mActionScopes = actionScopes;
 }
 
-void QgsAction::readXml( const QDomNode& actionNode )
+void QgsAction::readXml( const QDomNode &actionNode )
 {
   QDomElement actionElement = actionNode.toElement();
   QDomNodeList actionScopeNodes = actionElement.elementsByTagName( "actionScope" );
@@ -100,9 +100,9 @@ void QgsAction::readXml( const QDomNode& actionNode )
   if ( actionScopeNodes.isEmpty() )
   {
     mActionScopes
-    << QStringLiteral( "Canvas" )
-    << QStringLiteral( "Field" )
-    << QStringLiteral( "Feature" );
+        << QStringLiteral( "Canvas" )
+        << QStringLiteral( "Field" )
+        << QStringLiteral( "Feature" );
   }
   else
   {
@@ -124,7 +124,7 @@ void QgsAction::readXml( const QDomNode& actionNode )
     mId = QUuid::createUuid();
 }
 
-void QgsAction::writeXml( QDomNode& actionsNode ) const
+void QgsAction::writeXml( QDomNode &actionsNode ) const
 {
   QDomElement actionSetting = actionsNode.ownerDocument().createElement( QStringLiteral( "actionsetting" ) );
   actionSetting.setAttribute( QStringLiteral( "type" ), mType );
@@ -135,7 +135,7 @@ void QgsAction::writeXml( QDomNode& actionsNode ) const
   actionSetting.setAttribute( QStringLiteral( "capture" ), mCaptureOutput );
   actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
 
-  Q_FOREACH ( const QString& scope, mActionScopes )
+  Q_FOREACH ( const QString &scope, mActionScopes )
   {
     QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( "actionScope" );
     actionScopeElem.setAttribute( "id", scope );

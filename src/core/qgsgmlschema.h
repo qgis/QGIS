@@ -40,15 +40,15 @@ class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
     QgsGmlFeatureClass();
-    QgsGmlFeatureClass( const QString& name, const QString& path );
+    QgsGmlFeatureClass( const QString &name, const QString &path );
 
-    QList<QgsField> & fields() { return  mFields; }
+    QList<QgsField> &fields() { return  mFields; }
 
-    int fieldIndex( const QString & name );
+    int fieldIndex( const QString &name );
 
     QString path() const { return mPath; }
 
-    QStringList & geometryAttributes() { return mGeometryAttributes; }
+    QStringList &geometryAttributes() { return mGeometryAttributes; }
 
   private:
     /* Feature class name:
@@ -93,10 +93,10 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QStringList typeNames() const;
 
     //! Get fields for type/class name parsed from GML or XSD
-    QList<QgsField> fields( const QString & typeName );
+    QList<QgsField> fields( const QString &typeName );
 
     //! Get list of geometry attributes for type/class name
-    QStringList geometryAttributes( const QString & typeName );
+    QStringList geometryAttributes( const QString &typeName );
 
     //! Get error if parseXSD() or guessSchema() failed
     QgsError error() const { return mError; }
@@ -115,57 +115,57 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     };
 
     //! XML handler methods
-    void startElement( const XML_Char* el, const XML_Char** attr );
-    void endElement( const XML_Char* el );
-    void characters( const XML_Char* chars, int len );
-    static void start( void* data, const XML_Char* el, const XML_Char** attr )
+    void startElement( const XML_Char *el, const XML_Char **attr );
+    void endElement( const XML_Char *el );
+    void characters( const XML_Char *chars, int len );
+    static void start( void *data, const XML_Char *el, const XML_Char **attr )
     {
-      static_cast<QgsGmlSchema*>( data )->startElement( el, attr );
+      static_cast<QgsGmlSchema *>( data )->startElement( el, attr );
     }
-    static void end( void* data, const XML_Char* el )
+    static void end( void *data, const XML_Char *el )
     {
-      static_cast<QgsGmlSchema*>( data )->endElement( el );
+      static_cast<QgsGmlSchema *>( data )->endElement( el );
     }
-    static void chars( void* data, const XML_Char* chars, int len )
+    static void chars( void *data, const XML_Char *chars, int len )
     {
-      static_cast<QgsGmlSchema*>( data )->characters( chars, len );
+      static_cast<QgsGmlSchema *>( data )->characters( chars, len );
     }
     // Add attribute or reset its type according to value of current feature
-    void addAttribute( const QString& name, const QString& value );
+    void addAttribute( const QString &name, const QString &value );
 
     //helper routines
 
     /** Reads attribute as string
       @return attribute value or an empty string if no such attribute*/
-    QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
+    QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
 
     //! Returns pointer to main window or 0 if it does not exist
-    QWidget* findMainWindow() const;
+    QWidget *findMainWindow() const;
 
     //! Get dom elements by path
-    QList<QDomElement> domElements( const QDomElement &element, const QString & path );
+    QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
     //! Get dom element by path
-    QDomElement domElement( const QDomElement &element, const QString & path );
+    QDomElement domElement( const QDomElement &element, const QString &path );
 
     //! Filter list of elements by attribute value
-    QList<QDomElement> domElements( QList<QDomElement> &elements, const QString & attr, const QString & attrVal );
+    QList<QDomElement> domElements( QList<QDomElement> &elements, const QString &attr, const QString &attrVal );
 
     //! Get dom element by path and attribute value
-    QDomElement domElement( const QDomElement &element, const QString & path, const QString & attr, const QString & attrVal );
+    QDomElement domElement( const QDomElement &element, const QString &path, const QString &attr, const QString &attrVal );
 
     //! Strip namespace from element name
-    QString stripNS( const QString & name );
+    QString stripNS( const QString &name );
 
     /** Find GML base type for complex type of given name
      * @param element input element
      * @param name complex type name
      * @return name of GML base type without NS, e.g. AbstractFeatureType or empty string if not passed on GML type
      */
-    QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString & name );
+    QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString &name );
 
     //! Get feature class information from complex type recursively
-    bool xsdFeatureClass( const QDomElement &element, const QString & typeName, QgsGmlFeatureClass & featureClass );
+    bool xsdFeatureClass( const QDomElement &element, const QString &typeName, QgsGmlFeatureClass &featureClass );
 
 
     //! Get safely (if empty) top from mode stack
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QStack<ParseMode> mParseModeStack;
     //! This contains the character data if an important element has been encountered
     QString mStringCash;
-    QgsFeature* mCurrentFeature = nullptr;
+    QgsFeature *mCurrentFeature = nullptr;
     QString mCurrentFeatureId;
     int mFeatureCount;
     QString mAttributeName;

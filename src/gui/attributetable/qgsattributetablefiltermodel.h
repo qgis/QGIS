@@ -76,7 +76,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = nullptr );
+    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent = nullptr );
 
     /**
      * Set the attribute table model that backs this model
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @note added in 2.0
      */
-    void setSourceModel( QgsAttributeTableModel* sourceModel );
+    void setSourceModel( QgsAttributeTableModel *sourceModel );
 
     /**
      * Changes the sort order of the features. If set to true, selected features
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @param ids  The list of feature ids which will be accepted by the filter
      */
-    virtual void setFilteredFeatures( const QgsFeatureIds& ids );
+    virtual void setFilteredFeatures( const QgsFeatureIds &ids );
 
     /**
      * Get a list of currently filtered feature ids
@@ -157,19 +157,19 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @return The feature id of the feature visible in the provided row
      */
-    QgsFeatureId rowToId( const QModelIndex& row );
+    QgsFeatureId rowToId( const QModelIndex &row );
 
     QModelIndex fidToIndex( QgsFeatureId fid ) override;
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
-    inline QModelIndex mapToMaster( const QModelIndex& proxyIndex ) const { return mapToSource( proxyIndex ); }
+    inline QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const { return mapToSource( proxyIndex ); }
 
-    inline QModelIndex mapFromMaster( const QModelIndex& sourceIndex ) const { return mapFromSource( sourceIndex ); }
+    inline QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const { return mapFromSource( sourceIndex ); }
 
-    virtual QModelIndex mapToSource( const QModelIndex& proxyIndex ) const override;
+    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
 
-    virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const override;
+    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
@@ -189,7 +189,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param expression The expression which should be used for sorting
      * @param order      The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
-    void sort( const QString& expression, Qt::SortOrder order = Qt::AscendingOrder );
+    void sort( const QString &expression, Qt::SortOrder order = Qt::AscendingOrder );
 
     /**
      * The expression which is used to sort the attribute table.
@@ -197,9 +197,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     QString sortExpression() const;
 
     //! Returns the map canvas
-    QgsMapCanvas* mapCanvas() const { return mCanvas; }
+    QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
-    virtual QVariant data( const QModelIndex& index, int role ) const override;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
 
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
@@ -216,7 +216,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * in which order they are shown as well as if and where an action column
      * is shown.
      */
-    void setAttributeTableConfig( const QgsAttributeTableConfig& config );
+    void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
   signals:
 
@@ -263,10 +263,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
   private:
     QgsFeatureIds mFilteredFeatures;
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
     FilterMode mFilterMode;
     bool mSelectedOnTop;
-    QgsAttributeTableModel* mTableModel = nullptr;
+    QgsAttributeTableModel *mTableModel = nullptr;
 
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;

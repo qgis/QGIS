@@ -26,11 +26,11 @@ QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 }
 
 QgsEditFormConfig::QgsEditFormConfig()
-    : d( new QgsEditFormConfigPrivate() )
+  : d( new QgsEditFormConfigPrivate() )
 {
 }
 
-QVariantMap QgsEditFormConfig::widgetConfig( const QString& widgetName ) const
+QVariantMap QgsEditFormConfig::widgetConfig( const QString &widgetName ) const
 {
   int fieldIndex = d->mFields.indexOf( widgetName );
   if ( fieldIndex != -1 )
@@ -39,7 +39,7 @@ QVariantMap QgsEditFormConfig::widgetConfig( const QString& widgetName ) const
     return d->mWidgetConfigs.value( widgetName );
 }
 
-void QgsEditFormConfig::setFields( const QgsFields& fields )
+void QgsEditFormConfig::setFields( const QgsFields &fields )
 {
   d.detach();
   d->mFields = fields;
@@ -49,7 +49,7 @@ void QgsEditFormConfig::setFields( const QgsFields& fields )
     d->mInvisibleRootContainer->clear();
     for ( int i = 0; i < d->mFields.size(); ++i )
     {
-      QgsAttributeEditorField* field = new QgsAttributeEditorField( d->mFields.at( i ).name(), i, d->mInvisibleRootContainer );
+      QgsAttributeEditorField *field = new QgsAttributeEditorField( d->mFields.at( i ).name(), i, d->mInvisibleRootContainer );
       d->mInvisibleRootContainer->addChildElement( field );
     }
   }
@@ -57,11 +57,11 @@ void QgsEditFormConfig::setFields( const QgsFields& fields )
 
 void QgsEditFormConfig::onRelationsLoaded()
 {
-  QList<QgsAttributeEditorElement*> relations = d->mInvisibleRootContainer->findElements( QgsAttributeEditorElement::AeTypeRelation );
+  QList<QgsAttributeEditorElement *> relations = d->mInvisibleRootContainer->findElements( QgsAttributeEditorElement::AeTypeRelation );
 
-  Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
+  Q_FOREACH ( QgsAttributeEditorElement *relElem, relations )
   {
-    QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
+    QgsAttributeEditorRelation *rel = dynamic_cast< QgsAttributeEditorRelation * >( relElem );
     if ( !rel )
       continue;
 
@@ -69,7 +69,7 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
-bool QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QVariantMap& config )
+bool QgsEditFormConfig::setWidgetConfig( const QString &widgetName, const QVariantMap &config )
 {
   if ( d->mFields.indexOf( widgetName ) != -1 )
   {
@@ -82,38 +82,38 @@ bool QgsEditFormConfig::setWidgetConfig( const QString& widgetName, const QVaria
   return true;
 }
 
-bool QgsEditFormConfig::removeWidgetConfig( const QString& widgetName )
+bool QgsEditFormConfig::removeWidgetConfig( const QString &widgetName )
 {
   d.detach();
   return d->mWidgetConfigs.remove( widgetName ) != 0;
 }
 
-QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig& o ) //NOLINT
-    : d( o.d )
+QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig &o ) //NOLINT
+  : d( o.d )
 {
 }
 
 QgsEditFormConfig::~QgsEditFormConfig() //NOLINT
 {}
 
-QgsEditFormConfig& QgsEditFormConfig::operator=( const QgsEditFormConfig & o ) //NOLINT
+QgsEditFormConfig &QgsEditFormConfig::operator=( const QgsEditFormConfig &o )  //NOLINT
 {
   d = o.d;
   return *this;
 }
 
-bool QgsEditFormConfig::operator==( const QgsEditFormConfig& o )
+bool QgsEditFormConfig::operator==( const QgsEditFormConfig &o )
 {
   return d == o.d;
 }
 
-void QgsEditFormConfig::addTab( QgsAttributeEditorElement* data )
+void QgsEditFormConfig::addTab( QgsAttributeEditorElement *data )
 {
   d.detach();
   d->mInvisibleRootContainer->addChildElement( data );
 }
 
-QList<QgsAttributeEditorElement*> QgsEditFormConfig::tabs() const
+QList<QgsAttributeEditorElement *> QgsEditFormConfig::tabs() const
 {
   return d->mInvisibleRootContainer->children();
 }
@@ -124,7 +124,7 @@ void QgsEditFormConfig::clearTabs()
   d->mInvisibleRootContainer->clear();
 }
 
-QgsAttributeEditorContainer* QgsEditFormConfig::invisibleRootContainer()
+QgsAttributeEditorContainer *QgsEditFormConfig::invisibleRootContainer()
 {
   return d->mInvisibleRootContainer;
 }
@@ -148,7 +148,7 @@ QString QgsEditFormConfig::uiForm() const
   return d->mUiFormPath;
 }
 
-void QgsEditFormConfig::setUiForm( const QString& ui )
+void QgsEditFormConfig::setUiForm( const QString &ui )
 {
   if ( ui.isEmpty() || ui.isNull() )
   {
@@ -205,7 +205,7 @@ QString QgsEditFormConfig::initFunction() const
   return d->mInitFunction;
 }
 
-void QgsEditFormConfig::setInitFunction( const QString& function )
+void QgsEditFormConfig::setInitFunction( const QString &function )
 {
   d.detach();
   d->mInitFunction = function;
@@ -216,7 +216,7 @@ QString QgsEditFormConfig::initCode() const
   return d->mInitCode;
 }
 
-void QgsEditFormConfig::setInitCode( const QString& code )
+void QgsEditFormConfig::setInitCode( const QString &code )
 {
   d.detach();
   d->mInitCode = code;
@@ -227,7 +227,7 @@ QString QgsEditFormConfig::initFilePath() const
   return d->mInitFilePath;
 }
 
-void QgsEditFormConfig::setInitFilePath( const QString& filePath )
+void QgsEditFormConfig::setInitFilePath( const QString &filePath )
 {
   d.detach();
   d->mInitFilePath = filePath;
@@ -255,7 +255,7 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
   d->mSuppressForm = s;
 }
 
-void QgsEditFormConfig::readXml( const QDomNode& node )
+void QgsEditFormConfig::readXml( const QDomNode &node )
 {
   d.detach();
   QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );
@@ -350,14 +350,14 @@ void QgsEditFormConfig::readXml( const QDomNode& node )
       {
         QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
-        QgsAttributeEditorElement* attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr );
+        QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr );
         addTab( attributeEditorWidget );
       }
     }
   }
 }
 
-void QgsEditFormConfig::writeXml( QDomNode& node ) const
+void QgsEditFormConfig::writeXml( QDomNode &node ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
@@ -463,13 +463,13 @@ void QgsEditFormConfig::writeXml( QDomNode& node ) const
   //// END TODO
 }
 
-QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement* parent )
+QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent )
 {
-  QgsAttributeEditorElement* newElement = nullptr;
+  QgsAttributeEditorElement *newElement = nullptr;
 
   if ( elem.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
-    QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( elem.attribute( QStringLiteral( "name" ) ), parent );
+    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( elem.attribute( QStringLiteral( "name" ) ), parent );
     bool ok;
     int cc = elem.attribute( QStringLiteral( "columnCount" ) ).toInt( &ok );
     if ( !ok )
@@ -514,7 +514,7 @@ QgsAttributeEditorElement* QgsEditFormConfig::attributeEditorElementFromDomEleme
     // At this time, the relations are not loaded
     // So we only grab the id and delegate the rest to onRelationsLoaded()
     QString name = elem.attribute( QStringLiteral( "name" ) );
-    QgsAttributeEditorRelation* relElement = new QgsAttributeEditorRelation( name, elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
+    QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( name, elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
     relElement->setShowLinkButton( elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
     relElement->setShowUnlinkButton( elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
     newElement = relElement;
@@ -541,11 +541,11 @@ void QgsAttributeEditorContainer::setColumnCount( int columnCount )
   mColumnCount = columnCount;
 }
 
-QgsAttributeEditorElement* QgsAttributeEditorContainer::clone( QgsAttributeEditorElement* parent ) const
+QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEditorElement *parent ) const
 {
-  QgsAttributeEditorContainer* element = new QgsAttributeEditorContainer( name(), parent );
+  QgsAttributeEditorContainer *element = new QgsAttributeEditorContainer( name(), parent );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, children() )
+  Q_FOREACH ( QgsAttributeEditorElement *child, children() )
   {
     element->addChildElement( child->clone( element ) );
   }
@@ -556,14 +556,14 @@ QgsAttributeEditorElement* QgsAttributeEditorContainer::clone( QgsAttributeEdito
   return element;
 }
 
-void QgsAttributeEditorContainer::saveConfiguration( QDomElement& elem ) const
+void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem ) const
 {
   elem.setAttribute( QStringLiteral( "columnCount" ), mColumnCount );
   elem.setAttribute( QStringLiteral( "groupBox" ), mIsGroupBox ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpressionEnabled" ), mVisibilityExpression.enabled() ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpression" ), mVisibilityExpression->expression() );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+  Q_FOREACH ( QgsAttributeEditorElement *child, mChildren )
   {
     QDomDocument doc = elem.ownerDocument();
     elem.appendChild( child->toDomElement( doc ) );

@@ -39,12 +39,12 @@ class TestQgsWcsPublicServers: public QObject
       QStringList versions; // version regex
       QStringList coverages; // coverage regex
       QString description; // problem description
-      Issue( const QString & d ) : description( d ) {}
+      Issue( const QString &d ) : description( d ) {}
     };
     struct Server
     {
       Server() {}
-      Server( const QString & u ) : url( u ) {}
+      Server( const QString &u ) : url( u ) {}
       QString url; // URL
       QString description; // notes
       QList<TestQgsWcsPublicServers::Issue> issues;
@@ -59,7 +59,7 @@ class TestQgsWcsPublicServers: public QObject
       QgisOffender    = 1 << 1
     };
 
-    TestQgsWcsPublicServers( const QString & cacheDirPath, int maxCoverages, const QString & server = QString(), const QString & coverage = QString(), const QString &version = QString(), bool force = false );
+    TestQgsWcsPublicServers( const QString &cacheDirPath, int maxCoverages, const QString &server = QString(), const QString &coverage = QString(), const QString &version = QString(), bool force = false );
 
     ~TestQgsWcsPublicServers();
 
@@ -67,19 +67,19 @@ class TestQgsWcsPublicServers: public QObject
     void test();
     void report();
   private:
-    QString cells( const QStringList& values, const QString& classStr = QString(), int colspan = 1, int rowspan = 1 );
-    QString row( const QStringList& values, const QString& classStr = QString() );
-    QString error( const QString& message );
-    void writeReport( const QString& report );
+    QString cells( const QStringList &values, const QString &classStr = QString(), int colspan = 1, int rowspan = 1 );
+    QString row( const QStringList &values, const QString &classStr = QString() );
+    QString error( const QString &message );
+    void writeReport( const QString &report );
 
-    QMap<QString, QString> readLog( const QString& fileName );
+    QMap<QString, QString> readLog( const QString &fileName );
 
-    Server getServer( const QString & url );
+    Server getServer( const QString &url );
 
-    QList<Issue> issues( const QString & url, const QString & coverage, const QString &version );
-    QStringList issueDescriptions( const QString & url, const QString & coverage, const QString &version );
+    QList<Issue> issues( const QString &url, const QString &coverage, const QString &version );
+    QStringList issueDescriptions( const QString &url, const QString &coverage, const QString &version );
 
-    int issueOffender( const QString & url, const QString & coverage, const QString &version );
+    int issueOffender( const QString &url, const QString &coverage, const QString &version );
 
     QString mCacheDirPath;
     QDir mCacheDir;

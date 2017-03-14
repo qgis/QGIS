@@ -36,16 +36,16 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
      * @param style
      * @param renderer the mask renderer (will not take ownership)
      */
-    static QgsRendererWidget* create( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
     /** Constructor
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will not take ownership)
      */
-    Qgs25DRendererWidget( QgsVectorLayer* layer, QgsStyle* style, QgsFeatureRenderer* renderer );
+    Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    QgsFeatureRenderer* renderer() override;
+    QgsFeatureRenderer *renderer() override;
 
   private slots:
     void updateRenderer();
@@ -53,7 +53,7 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, Ui::Qgs25DRend
   private:
     void apply() override;
 
-    Qgs25DRenderer* mRenderer = nullptr;
+    Qgs25DRenderer *mRenderer = nullptr;
 };
 
 #endif // QGS25DRENDERERWIDGET_H

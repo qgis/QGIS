@@ -37,9 +37,9 @@ class TestVectorLayerCache : public QObject
     Q_OBJECT
   public:
     TestVectorLayerCache()
-        : mVectorLayerCache( 0 )
-        , mFeatureIdIndex( 0 )
-        , mPointsLayer( 0 )
+      : mVectorLayerCache( 0 )
+      , mFeatureIdIndex( 0 )
+      , mPointsLayer( 0 )
     {}
 
   private slots:
@@ -55,13 +55,14 @@ class TestVectorLayerCache : public QObject
     void testFullCache();
     void testFullCacheThroughRequest();
     void testCanUseCacheForRequest();
+    void testCacheGeom();
 
-    void onCommittedFeaturesAdded( const QString&, const QgsFeatureList& );
+    void onCommittedFeaturesAdded( const QString &, const QgsFeatureList & );
 
   private:
-    QgsVectorLayerCache*           mVectorLayerCache = nullptr;
-    QgsCacheIndexFeatureId*        mFeatureIdIndex = nullptr;
-    QgsVectorLayer*                mPointsLayer = nullptr;
+    QgsVectorLayerCache           *mVectorLayerCache = nullptr;
+    QgsCacheIndexFeatureId        *mFeatureIdIndex = nullptr;
+    QgsVectorLayer                *mPointsLayer = nullptr;
     QgsFeatureList                 mAddedFeatures;
     QMap<QString, QString> mTmpFiles;
 };
@@ -80,7 +81,7 @@ void TestVectorLayerCache::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
 
-  Q_FOREACH ( const QString& f, backupFiles )
+  Q_FOREACH ( const QString &f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );
@@ -241,6 +242,15 @@ void TestVectorLayerCache::testFullCache()
   {
     QVERIFY( cache.isFidCached( f.id() ) );
   }
+
+  // add a feature to the layer
+  mPointsLayer->startEditing();
+  QgsFeature f2( mPointsLayer->fields() );
+  QVERIFY( mPointsLayer->addFeature( f2 ) );
+  QVERIFY( cache.hasFullCache() );
+  QVERIFY( cache.isFidCached( f2.id() ) );
+
+  mPointsLayer->rollBack();
 }
 
 void TestVectorLayerCache::testFullCacheThroughRequest()
@@ -331,7 +341,59 @@ void TestVectorLayerCache::testCanUseCacheForRequest()
   QVERIFY( cache.canUseCacheForRequest( QgsFeatureRequest().setFilterExpression( "$x<5" ), it ) );
 }
 
-void TestVectorLayerCache::onCommittedFeaturesAdded( const QString& layerId, const QgsFeatureList& features )
+void TestVectorLayerCache::testCacheGeom()
+{
+  QgsVectorLayerCache cache( mPointsLayer, 2 );
+  // cache geometry
+  cache.setCacheGeometry( true );
+
+  //first get some feature ids from layer
+  QgsFeature f;
+  QgsFeatureIterator it = mPointsLayer->getFeatures();
+  it.nextFeature( f );
+  QgsFeatureId id1 = f.id();
+  it.nextFeature( f );
+  QgsFeatureId id2 = f.id();
+
+  QgsFeatureRequest req;
+  req.setFlags( QgsFeatureRequest::NoGeometry ); // should be ignored by cache
+  req.setFilterFids( QgsFeatureIds() << id1 << id2 );
+
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // disabled geometry caching
+  cache.setCacheGeometry( false );
+  // we should still have cached features... no need to lose these!
+  QCOMPARE( cache.cachedFeatureIds(), QgsFeatureIds() << id1 << id2 );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // now upgrade cache from no geometry -> geometry, should be cleared since we
+  // cannot be confident that features existing in the cache have geometry
+  cache.setCacheGeometry( true );
+  QVERIFY( cache.cachedFeatureIds().isEmpty() );
+  it = cache.getFeatures( req );
+  while ( it.nextFeature( f ) )
+  {
+    QVERIFY( f.hasGeometry() );
+  }
+
+  // another test...
+  cache.setCacheGeometry( false );
+  cache.setFullCache( true );
+  QVERIFY( cache.hasFullCache() );
+  cache.setCacheGeometry( true );
+  QVERIFY( !cache.hasFullCache() );
+}
+
+void TestVectorLayerCache::onCommittedFeaturesAdded( const QString &layerId, const QgsFeatureList &features )
 {
   Q_UNUSED( layerId )
   mAddedFeatures.append( features );

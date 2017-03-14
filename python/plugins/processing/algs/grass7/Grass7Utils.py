@@ -77,13 +77,6 @@ class Grass7Utils(object):
         filename = os.path.join(userFolder(), filename)
         return filename
 
-    #~ @staticmethod
-    #~ def installedVersion():
-        #~ out = Grass7Utils.executeGrass7("grass -v")
-        #~ # FIXME: I do not know if this should be removed or let the user enter it
-        #~ # or something like that... This is just a temporary thing
-        #~ return '7.0.0'
-
     @staticmethod
     def installedVersion(run=False):
         if Grass7Utils.isGrass7Installed and not run:
@@ -278,7 +271,6 @@ class Grass7Utils(object):
                 command = os.path.join(Grass7Utils.grassPath(), 'grass.sh') + ' ' \
                     + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
             else:
-                print("Grass {}".format(Grass7Utils.version))
                 command = Grass7Utils.command + ' ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
@@ -369,8 +361,8 @@ class Grass7Utils(object):
     @staticmethod
     def addSessionLayers(exportedLayers):
         Grass7Utils.sessionLayers = dict(
-            list(Grass7Utils.sessionLayers.items())
-            + list(exportedLayers.items()))
+            list(Grass7Utils.sessionLayers.items()) +
+            list(exportedLayers.items()))
 
     @staticmethod
     def checkGrass7IsInstalled(ignorePreviousState=False):

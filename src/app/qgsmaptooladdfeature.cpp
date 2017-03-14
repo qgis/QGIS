@@ -35,9 +35,9 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
-    , mCheckGeometryType( true )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
+  , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
 }
@@ -68,9 +68,9 @@ void QgsMapToolAddFeature::activate()
   QgsMapToolCapture::activate();
 }
 
-void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer* vlayer = currentVectorLayer();
+  QgsVectorLayer *vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {
@@ -80,7 +80,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
   QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
-  QgsVectorDataProvider* provider = vlayer->dataProvider();
+  QgsVectorDataProvider *provider = vlayer->dataProvider();
 
   if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
   {
@@ -154,7 +154,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
-        QgsMultiPointV2* mp = new QgsMultiPointV2();
+        QgsMultiPointV2 *mp = new QgsMultiPointV2();
         mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
@@ -240,7 +240,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurve* curveToAdd = nullptr;
+      QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -252,13 +252,13 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
       if ( mode() == CaptureLine )
       {
-        QgsGeometry* g = new QgsGeometry( curveToAdd );
+        QgsGeometry *g = new QgsGeometry( curveToAdd );
         f->setGeometry( *g );
         delete g;
       }
       else
       {
-        QgsCurvePolygon* poly = nullptr;
+        QgsCurvePolygon *poly = nullptr;
         if ( hasCurvedSegments && providerSupportsCurvedSegments )
         {
           poly = new QgsCurvePolygon();
@@ -268,7 +268,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
           poly = new QgsPolygonV2();
         }
         poly->setExteriorRing( curveToAdd );
-        QgsGeometry* g = new QgsGeometry( poly );
+        QgsGeometry *g = new QgsGeometry( poly );
         f->setGeometry( *g );
         delete g;
 
@@ -295,11 +295,11 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
         //use always topological editing for avoidIntersection.
         //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-        QList<QgsVectorLayer*> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+        QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
         bool avoidIntersection = !intersectionLayers.isEmpty();
         if ( avoidIntersection ) //try to add topological points also to background layers
         {
-          Q_FOREACH ( QgsVectorLayer* vl, intersectionLayers )
+          Q_FOREACH ( QgsVectorLayer *vl, intersectionLayers )
           {
             //can only add topological points if background layer is editable...
             if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )

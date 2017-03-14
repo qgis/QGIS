@@ -24,8 +24,8 @@
 #include <QTextCodec>
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-    : mReply( nullptr )
-    , mContentLoaded( false )
+  : mReply( nullptr )
+  , mContentLoaded( false )
 {
 
 }
@@ -43,7 +43,7 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
   }
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl& url )
+void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
 {
   mContentLoaded = false;
 
@@ -82,18 +82,18 @@ QString QgsNetworkContentFetcher::contentAsString() const
   QByteArray array = mReply->readAll();
 
   //correctly encode reply as unicode
-  QTextCodec* codec = codecForHtml( array );
+  QTextCodec *codec = codecForHtml( array );
   return codec->toUnicode( array );
 }
 
-QTextCodec* QgsNetworkContentFetcher::codecForHtml( QByteArray& array ) const
+QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 {
   //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
   //see https://bugreports.qt-project.org/browse/QTBUG-41011
   //so test for that ourselves
 
   //basic check
-  QTextCodec* codec = QTextCodec::codecForUtfText( array, nullptr );
+  QTextCodec *codec = QTextCodec::codecForUtfText( array, nullptr );
   if ( codec )
   {
     return codec;

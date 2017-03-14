@@ -17,23 +17,23 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
 #include <QLayout>
 #include <QTextCodec>
 
-QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
-    const QString& caption, const QString& directory,
-    const QString& filter, const QString& encoding )
-    : QFileDialog( parent, caption, directory, filter )
+QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
+    const QString &caption, const QString &directory,
+    const QString &filter, const QString &encoding )
+  : QFileDialog( parent, caption, directory, filter )
 {
   mCancelAll       = false;
   mCancelAllButton = nullptr;
   mEncodingComboBox = new QComboBox( this );
-  QLabel* l = new QLabel( tr( "Encoding:" ), this );
+  QLabel *l = new QLabel( tr( "Encoding:" ), this );
 
   setOption( QFileDialog::DontUseNativeDialog );
   layout()->addWidget( l );
@@ -45,8 +45,8 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget* parent,
   QString enc = encoding;
   if ( encoding.isEmpty() )
   {
-    QSettings settings;
-    enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+    QgsSettings settings;
+    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
   }
 
   // The specified decoding is added if not existing alread, and then set current.
@@ -76,8 +76,8 @@ QString QgsEncodingFileDialog::encoding() const
 
 void QgsEncodingFileDialog::saveUsedEncoding()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
   QgsDebugMsg( QString( "Set encoding " + encoding() + " as default." ) );
 }
 

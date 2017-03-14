@@ -65,8 +65,8 @@ class APP_EXPORT QgsTipFactory : public QObject
     int count();
 
   private:
-    void addGenericTip( const QgsTip& );
-    void addGuiTip( const QgsTip& );
+    void addGenericTip( const QgsTip & );
+    void addGuiTip( const QgsTip & );
     int randomNumber( int max );
     //@TODO move tipts into a sqlite db
     QList <QgsTip> mGenericTips;

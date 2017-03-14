@@ -64,7 +64,7 @@ void QgsRasterShaderFunction::setMinimumValue( double value )
   @param returnAlphaValue  The blue component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::shade( double value, int* returnRedValue, int* returnGreenValue, int* returnBlueValue, int* returnAlphaValue )
+bool QgsRasterShaderFunction::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue )
 {
   Q_UNUSED( value );
 
@@ -90,7 +90,7 @@ bool QgsRasterShaderFunction::shade( double value, int* returnRedValue, int* ret
   @param returnAlphaValue  The alpha component of the new RGBA value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::shade( double redValue, double greenValue, double blueValue, double alphaValue, int* returnRedValue, int* returnGreenValue, int* returnBlueValue, int *returnAlphaValue )
+bool QgsRasterShaderFunction::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue )
 {
   Q_UNUSED( redValue );
   Q_UNUSED( greenValue );

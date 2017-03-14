@@ -59,7 +59,7 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * @note Added in 3.0
      */
-    virtual QString representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
     /**
      * If the default sort order should be overwritten for this widget, you can transform the value in here.
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * @note Added in 3.0
      */
-    virtual QVariant sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const;
+    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
     /**
      * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * @note Added in 3.0
      */
-    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const;
+    virtual Qt::AlignmentFlag alignmentFlag( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 
     /**
      * Create a cache for a given field.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * @note Added in 3.0
      */
-    virtual QVariant createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const;
+    virtual QVariant createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const;
 };
 
 #endif // QGSFIELDKIT_H

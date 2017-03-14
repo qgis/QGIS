@@ -126,6 +126,7 @@ def main():
     if grass.run_command('db.connect', driver="pg", database=conn, schema=schema) != 0:
         grass.fatal("Cannot connect to database.")
 
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     main()

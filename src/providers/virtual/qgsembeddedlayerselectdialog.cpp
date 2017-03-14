@@ -28,21 +28,21 @@ email                : hugo dot mercier at oslandia dot com
 #include <qgsproviderregistry.h>
 #include <qgsvectordataprovider.h>
 
-QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget* parent, QgsLayerTreeView* tv )
-    : QDialog( parent )
+QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent, QgsLayerTreeView *tv )
+  : QDialog( parent )
 {
   setupUi( this );
 
   // populate list
-  QList<QgsLayerTreeLayer*> layers = tv->layerTreeModel()->rootGroup()->findLayers();
-  Q_FOREACH ( const QgsLayerTreeLayer* l, layers )
+  QList<QgsLayerTreeLayer *> layers = tv->layerTreeModel()->rootGroup()->findLayers();
+  Q_FOREACH ( const QgsLayerTreeLayer *l, layers )
   {
     if ( l->layer() && l->layer()->type() == QgsMapLayer::VectorLayer )
     {
       // display layer name and store its pointer
       QListWidgetItem *item = new QListWidgetItem();
       item->setText( l->layer()->name() );
-      item->setData( Qt::UserRole, QVariant::fromValue( static_cast<void*>( l->layer() ) ) );
+      item->setData( Qt::UserRole, QVariant::fromValue( static_cast<void *>( l->layer() ) ) );
       mLayers->insertItem( mLayers->count(), item );
     }
   }
@@ -54,7 +54,7 @@ QStringList QgsEmbeddedLayerSelectDialog::layers() const
   QModelIndexList selected = mLayers->selectionModel()->selectedRows();
   for ( int i = 0; i < selected.size(); i++ )
   {
-    QgsVectorLayer* l = static_cast<QgsVectorLayer*>( mLayers->item( selected[i].row() )->data( Qt::UserRole ).value<void*>() );
+    QgsVectorLayer *l = static_cast<QgsVectorLayer *>( mLayers->item( selected[i].row() )->data( Qt::UserRole ).value<void *>() );
     ids << l->id();
   }
   return ids;

@@ -50,7 +50,7 @@ class CORE_EXPORT Qgis
     //! Release name
     static const QString QGIS_RELEASE_NAME;
     //! The development version
-    static const char* QGIS_DEV_VERSION;
+    static const char *QGIS_DEV_VERSION;
 
     // Enumerations
     //
@@ -142,9 +142,9 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
     /** Constructor for QgsSignalBlocker
      * @param object QObject to block signals from
      */
-    explicit QgsSignalBlocker( Object* object )
-        : mObject( object )
-        , mPreviousState( object->blockSignals( true ) )
+    explicit QgsSignalBlocker( Object *object )
+      : mObject( object )
+      , mPreviousState( object->blockSignals( true ) )
     {}
 
     ~QgsSignalBlocker()
@@ -153,11 +153,11 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
     }
 
     //! Returns pointer to blocked QObject
-    Object* operator->() { return mObject; }
+    Object *operator->() { return mObject; }
 
   private:
 
-    Object* mObject = nullptr;
+    Object *mObject = nullptr;
     bool mPreviousState;
 
 };
@@ -175,7 +175,7 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  * @note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
-template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object* object )
+template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object )
 {
   return QgsSignalBlocker<Object>( object );
 }
@@ -233,6 +233,17 @@ inline double qgsRound( double x )
   return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
 }
 
+/**
+ * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
+ *
+ * @note Added in QGIS 3.0
+ */
+inline double qgsRound( double number, double places )
+{
+  int scaleFactor = pow( 10, places );
+  return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
+}
+
 /** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * @param string string to convert
@@ -241,7 +252,7 @@ inline double qgsRound( double x )
  * @note added in version 2.9
  * @see permissiveToInt
  */
-CORE_EXPORT double qgsPermissiveToDouble( QString string, bool& ok );
+CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
 /** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
@@ -251,21 +262,21 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool& ok );
  * @note added in version 2.9
  * @see permissiveToDouble
  */
-CORE_EXPORT int qgsPermissiveToInt( QString string, bool& ok );
+CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
 //! Compares two QVariant values and returns whether the first is less than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
 //! @see qgsVariantGreaterThan()
-CORE_EXPORT bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
 //! Compares two QVariant values and returns whether the first is greater than the second.
 //! Useful for sorting lists of variants, correctly handling sorting of the various
 //! QVariant data types (such as strings, numeric values, dates and times)
 //! @see qgsVariantLessThan()
-CORE_EXPORT bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
-CORE_EXPORT QString qgsVsiPrefix( const QString& path );
+CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.

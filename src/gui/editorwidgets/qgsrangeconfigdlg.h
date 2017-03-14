@@ -30,9 +30,9 @@ class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    explicit QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
     virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap& config ) override;
+    virtual void setConfig( const QVariantMap &config ) override;
 
   protected slots:
     void rangeWidgetChanged( int index );

@@ -22,7 +22,7 @@ QgsNetworkDiskCache::ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
 QMutex QgsNetworkDiskCache::sDiskCacheMutex;
 
 QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
-    : QNetworkDiskCache( parent )
+  : QNetworkDiskCache( parent )
 {
 }
 

@@ -44,7 +44,7 @@ class CORE_EXPORT QgsHistogram
     /** Assigns numeric source values for the histogram.
      * @param values list of doubles
      */
-    void setValues( const QList<double>& values );
+    void setValues( const QList<double> &values );
 
     /** Assigns numeric source values for the histogram from a vector layer's field or as the
      * result of an expression.
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsHistogram
      * @param feedback optional feedback object to allow cancelation of calculation
      * @returns true if values were successfully set
      */
-    bool setValues( const QgsVectorLayer* layer, const QString& fieldOrExpression, QgsFeedback* feedback = nullptr );
+    bool setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback = nullptr );
 
     /** Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
      * determined by the inter-quartile range of values and the number of values.

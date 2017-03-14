@@ -37,11 +37,11 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     /* general purpose functions */
 
     //! initialize python and import bindings
-    void initPython( QgisInterface* interface ) override;
+    void initPython( QgisInterface *interface ) override;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! initialize python for server and import bindings
-    void initServerPython( QgsServerInterface* interface ) override;
+    void initServerPython( QgsServerInterface *interface ) override;
     bool startServerPlugin( QString packageName ) override;
 #endif
 
@@ -58,20 +58,20 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! this command is more advanced as enables error checking etc.
     //! when an exception is raised, it shows dialog with exception details
     //! @return true if no error occurred
-    bool runString( const QString& command, QString msgOnError = QString(), bool single = true ) override;
+    bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) override;
 
     //! run a statement, error reporting is not done
     //! @return true if no error occurred
-    bool runStringUnsafe( const QString& command, bool single = true ) override;
+    bool runStringUnsafe( const QString &command, bool single = true ) override;
 
-    bool evalString( const QString& command, QString& result ) override;
+    bool evalString( const QString &command, QString &result ) override;
 
     //! @return object's type name as a string
-    QString getTypeAsString( PyObject* obj );
+    QString getTypeAsString( PyObject *obj );
 
     //! get information about error to the supplied arguments
     //! @return false if there was no python error
-    bool getError( QString& errorClassName, QString& errorText ) override;
+    bool getError( QString &errorClassName, QString &errorText ) override;
 
     /* plugins related functions */
 
@@ -91,26 +91,26 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QStringList pluginList() override;
 
     //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( const QString& packageName ) override;
+    virtual bool isPluginLoaded( const QString &packageName ) override;
 
     //! return a list of active plugins
     virtual QStringList listActivePlugins() override;
 
     //! load python plugin (import)
-    bool loadPlugin( const QString& packageName ) override;
+    bool loadPlugin( const QString &packageName ) override;
 
     //! start plugin: add to active plugins and call initGui()
-    bool startPlugin( const QString& packageName ) override;
+    bool startPlugin( const QString &packageName ) override;
 
     //! helper function to get some information about plugin
     //! @param function one of these strings: name, tpye, version, description
-    QString getPluginMetadata( const QString& pluginName, const QString& function ) override;
+    QString getPluginMetadata( const QString &pluginName, const QString &function ) override;
 
     //! confirm it is safe to uninstall the plugin
-    bool canUninstallPlugin( const QString& packageName ) override;
+    bool canUninstallPlugin( const QString &packageName ) override;
 
     //! unload plugin
-    bool unloadPlugin( const QString& packageName ) override;
+    bool unloadPlugin( const QString &packageName ) override;
 
   protected:
 
@@ -139,13 +139,13 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QString getTraceback();
 
     //! convert python object to QString. If the object isn't unicode/str, it will be converted
-    QString PyObjectToQString( PyObject* obj );
+    QString PyObjectToQString( PyObject *obj );
 
     //! reference to module __main__
-    PyObject* mMainModule = nullptr;
+    PyObject *mMainModule = nullptr;
 
     //! dictionary of module __main__
-    PyObject* mMainDict = nullptr;
+    PyObject *mMainDict = nullptr;
 
     //! flag determining that python support is enabled
     bool mPythonEnabled;

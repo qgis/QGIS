@@ -31,33 +31,33 @@
 #include "qgsactionmanager.h"
 
 
-QgsVectorLayer* QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
+QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
     return tm->layer();
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->layer();
 
   return nullptr;
 }
 
-const QgsAttributeTableModel* QgsAttributeTableDelegate::masterModel( const QAbstractItemModel* model )
+const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbstractItemModel *model )
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
     return tm;
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->masterModel();
 
   return nullptr;
 }
 
-QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
@@ -67,8 +67,8 @@ QWidget* QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
-  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( vl, fieldIdx, nullptr, parent, context );
-  QWidget* w = eww->widget();
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( vl, fieldIdx, nullptr, parent, context );
+  QWidget *w = eww->widget();
 
   w->setAutoFillBackground( true );
   w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
@@ -89,13 +89,13 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   QVariant oldValue = model->data( index, Qt::EditRole );
 
   QVariant newValue;
-  QgsEditorWidgetWrapper* eww = QgsEditorWidgetWrapper::fromWidget( editor );
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 
   newValue = eww->value();
 
-  if (( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
+  if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
   {
     vl->beginEditCommand( tr( "Attribute changed" ) );
     vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
@@ -105,7 +105,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsEditorWidgetWrapper* eww =  QgsEditorWidgetWrapper::fromWidget( editor );
+  QgsEditorWidgetWrapper *eww =  QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 
@@ -117,7 +117,7 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
   mFeatureSelectionModel = featureSelectionModel;
 }
 
-void QgsAttributeTableDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
 

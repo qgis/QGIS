@@ -157,7 +157,7 @@ void TestQgsFeature::create()
   QCOMPARE( featureFromFieldsId.isValid(), false );
   //should be 3 invalid attributes
   QCOMPARE( featureFromFieldsId.attributes().count(), 3 );
-  Q_FOREACH ( const QVariant& a, featureFromFieldsId.attributes() )
+  Q_FOREACH ( const QVariant &a, featureFromFieldsId.attributes() )
   {
     QVERIFY( !a.isValid() );
   }
@@ -249,7 +249,7 @@ void TestQgsFeature::attributes()
   QCOMPARE( copy.attributes(), mAttrs );
   copy.initAttributes( 5 );
   QCOMPARE( copy.attributes().count(), 5 );
-  Q_FOREACH ( const QVariant& a, copy.attributes() )
+  Q_FOREACH ( const QVariant &a, copy.attributes() )
   {
     QVERIFY( !a.isValid() );
   }
@@ -369,7 +369,7 @@ void TestQgsFeature::fields()
   QCOMPARE( copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
-  Q_FOREACH ( const QVariant& a, copy.attributes() )
+  Q_FOREACH ( const QVariant &a, copy.attributes() )
   {
     QVERIFY( !a.isValid() );
   }

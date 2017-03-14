@@ -45,11 +45,11 @@ class TestQgsEllipseMarkerSymbol : public QObject
 
   public:
     TestQgsEllipseMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mEllipseMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mEllipseMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -67,12 +67,12 @@ class TestQgsEllipseMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer = nullptr;
-    QgsEllipseSymbolLayer* mEllipseMarkerLayer = nullptr;
-    QgsMarkerSymbol* mMarkerSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsEllipseSymbolLayer *mEllipseMarkerLayer = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -109,7 +109,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Ellipse Marker Tests</h1>\n" );
 
 }
@@ -206,7 +206,7 @@ void TestQgsEllipseMarkerSymbol::bounds()
 //
 
 
-bool TestQgsEllipseMarkerSymbol::imageCheck( const QString& testType )
+bool TestQgsEllipseMarkerSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

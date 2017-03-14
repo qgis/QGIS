@@ -71,7 +71,7 @@ class QgsGrassElementDialog: public QObject
     QString getItem( QString element,
                      QString title, QString label,
                      QString text, QString source = 0,
-                     bool * ok = 0 );
+                     bool *ok = 0 );
 
   public slots:
     void textChanged();

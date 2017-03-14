@@ -41,8 +41,8 @@ class CORE_EXPORT QgsRasterChecker
      * @param expectedKey expected provider key
      * @param expectedUri URI of the expected (control) raster
      */
-    bool runTest( const QString& verifiedKey, QString verifiedUri,
-                  const QString& expectedKey, QString expectedUri );
+    bool runTest( const QString &verifiedKey, QString verifiedUri,
+                  const QString &expectedKey, QString expectedUri );
   private:
     QString mReport;
     QString mExpectedUri;
@@ -54,13 +54,13 @@ class CORE_EXPORT QgsRasterChecker
     QString mErrMsgStyle;
 
     // Log error in html
-    void error( const QString& message, QString &report );
+    void error( const QString &message, QString &report );
     // compare values and add table row in html report, set ok to false if not equal
     QString compareHead();
     bool compare( double verifiedVal, double expectedVal, double tolerance );
-    void compare( const QString& paramName, int verifiedVal, int expectedVal, QString &report, bool &ok );
-    void compare( const QString& paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance = 0 );
-    void compareRow( const QString& paramName, const QString& verifiedVal, const QString& expectedVal, QString &report, bool ok, const QString& difference = "", const QString& tolerance = "" );
+    void compare( const QString &paramName, int verifiedVal, int expectedVal, QString &report, bool &ok );
+    void compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance = 0 );
+    void compareRow( const QString &paramName, const QString &verifiedVal, const QString &expectedVal, QString &report, bool ok, const QString &difference = "", const QString &tolerance = "" );
     double tolerance( double val, int places = 6 );
 }; // class QgsRasterChecker
 

@@ -77,12 +77,12 @@ class CORE_EXPORT QWebSettings : public QObject
       CaretBrowsingEnabled,
       NotificationsEnabled
     };
-    explicit QWebSettings( QObject* parent = 0 )
-        : QObject( parent )
+    explicit QWebSettings( QObject *parent = 0 )
+      : QObject( parent )
     {
     }
 
-    void setUserStyleSheetUrl( const QUrl& )
+    void setUserStyleSheetUrl( const QUrl & )
     {
     }
 
@@ -117,10 +117,10 @@ class CORE_EXPORT QWebPage : public QObject
       WebModalDialog
     };
 
-    explicit QWebPage( QObject* parent = 0 )
-        : QObject( parent )
-        , mSettings( new QWebSettings() )
-        , mFrame( new QWebFrame() )
+    explicit QWebPage( QObject *parent = 0 )
+      : QObject( parent )
+      , mSettings( new QWebSettings() )
+      , mFrame( new QWebFrame() )
     {
     }
 
@@ -135,12 +135,12 @@ class CORE_EXPORT QWebPage : public QObject
       return QPalette();
     }
 
-    void setPalette( const QPalette& palette )
+    void setPalette( const QPalette &palette )
     {
       Q_UNUSED( palette );
     }
 
-    void setViewportSize( const QSize & size ) const
+    void setViewportSize( const QSize &size ) const
     {
       Q_UNUSED( size );
     }
@@ -157,17 +157,17 @@ class CORE_EXPORT QWebPage : public QObject
       tb->setOpenExternalLinks( linkDelegationPolicy != DontDelegateLinks );
     }
 
-    void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager )
+    void setNetworkAccessManager( QNetworkAccessManager *networkAccessManager )
     {
       Q_UNUSED( networkAccessManager );
     }
 
-    QWebFrame* mainFrame() const
+    QWebFrame *mainFrame() const
     {
       return mFrame;
     }
 
-    QWebSettings* settings() const
+    QWebSettings *settings() const
     {
       return mSettings;
     }
@@ -177,7 +177,7 @@ class CORE_EXPORT QWebPage : public QObject
       return QSize();
     }
 
-    QMenu* createStandardContextMenu()
+    QMenu *createStandardContextMenu()
     {
       return new QMenu();
     }
@@ -190,11 +190,11 @@ class CORE_EXPORT QWebPage : public QObject
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
+    virtual void javaScriptConsoleMessage( const QString &, int, const QString & ) {}
 
   private:
-    QWebSettings* mSettings = nullptr;
-    QWebFrame* mFrame = nullptr;
+    QWebSettings *mSettings = nullptr;
+    QWebFrame *mFrame = nullptr;
 /// @endcond
 };
 #endif
@@ -214,8 +214,8 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     /** Constructor for QgsWebPage.
      * @param parent parent object
      */
-    explicit QgsWebPage( QObject* parent = 0 )
-        : QWebPage( parent )
+    explicit QgsWebPage( QObject *parent = 0 )
+      : QWebPage( parent )
     {}
 
     /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      * @param identifier identifier string
      * @see identifier()
      */
-    void setIdentifier( const QString& identifier ) { mIdentifier = identifier; }
+    void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
     /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
      * log so that users can identify which QgsWebPage has logged the message.
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString& message, int lineNumber, const QString& ) override
+    virtual void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
     {
       if ( mIdentifier.isEmpty() )
         QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );

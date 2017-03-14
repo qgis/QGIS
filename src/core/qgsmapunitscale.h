@@ -42,12 +42,12 @@ class CORE_EXPORT QgsMapUnitScale
      * @param maxScale maximum allowed scale, or 0.0 if no maximum scale set
      */
     explicit QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
-        : minScale( minScale )
-        , maxScale( maxScale )
-        , minSizeMMEnabled( false )
-        , minSizeMM( 0.0 )
-        , maxSizeMMEnabled( false )
-        , maxSizeMM( 0.0 )
+      : minScale( minScale )
+      , maxScale( maxScale )
+      , minSizeMMEnabled( false )
+      , minSizeMM( 0.0 )
+      , maxSizeMMEnabled( false )
+      , maxSizeMM( 0.0 )
     {}
 
     //! The minimum scale, or 0.0 if unset
@@ -69,9 +69,9 @@ class CORE_EXPORT QgsMapUnitScale
      * @param c render context
      * @returns map units per pixel, limited between minimum and maximum scales
      */
-    double computeMapUnitsPerPixel( const QgsRenderContext& c ) const;
+    double computeMapUnitsPerPixel( const QgsRenderContext &c ) const;
 
-    bool operator==( const QgsMapUnitScale& other ) const
+    bool operator==( const QgsMapUnitScale &other ) const
     {
       return qgsDoubleNear( minScale, other.minScale )
              && qgsDoubleNear( maxScale, other.maxScale )
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsMapUnitScale
              && qgsDoubleNear( maxSizeMM, other.maxSizeMM );
     }
 
-    bool operator!=( const QgsMapUnitScale& other ) const
+    bool operator!=( const QgsMapUnitScale &other ) const
     {
       return !operator==( other );
     }

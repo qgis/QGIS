@@ -14,17 +14,14 @@ __revision__ = '$Format:%H$'
 
 import os
 import tempfile
+
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsVectorDataProvider, QgsField
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
-from qgis.testing import (
-    start_app,
-    unittest
-)
-import osgeo.gdal
+from qgis.testing import start_app, unittest
+
+import osgeo.gdal  # NOQA
 from utilities import unitTestDataPath
-import tempfile
 import shutil
-import glob
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()

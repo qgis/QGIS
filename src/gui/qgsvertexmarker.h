@@ -39,19 +39,19 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_CIRCLE
     };
 
-    QgsVertexMarker( QgsMapCanvas* mapCanvas );
+    QgsVertexMarker( QgsMapCanvas *mapCanvas );
 
-    void setCenter( const QgsPoint& point );
+    void setCenter( const QgsPoint &point );
 
     void setIconType( int iconType );
 
     void setIconSize( int iconSize );
 
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
 
     void setPenWidth( int width );
 
-    void paint( QPainter* p ) override;
+    void paint( QPainter *p ) override;
 
     QRectF boundingRect() const override;
 

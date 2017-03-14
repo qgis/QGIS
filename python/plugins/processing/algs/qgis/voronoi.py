@@ -128,14 +128,16 @@ Algorithmica 2, 153-174.
 #        Delaunay triangle.
 #
 #############################################################################
+
+
 import math
 import sys
 import getopt
 TOLERANCE = 1e-9
 BIG_FLOAT = 1e38
 
-#------------------------------------------------------------------
 
+# ------------------------------------------------------------------
 
 class Context(object):
 
@@ -224,7 +226,7 @@ class Context(object):
                 # fix_print_with_import
                 print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 def voronoi(siteList, context):
@@ -369,7 +371,7 @@ def voronoi(siteList, context):
         # fix_print_with_import
         print(str(err))
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 def isEqual(a, b, relativeError=TOLERANCE):
@@ -377,7 +379,7 @@ def isEqual(a, b, relativeError=TOLERANCE):
     norm = max(abs(a), abs(b))
     return (norm < relativeError) or (abs(a - b) < (relativeError * norm))
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 class Site(object):
@@ -409,7 +411,7 @@ class Site(object):
         dy = self.y - other.y
         return math.sqrt(dx * dx + dy * dy)
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 class Edge(object):
@@ -473,7 +475,7 @@ class Edge(object):
         return newedge
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class Halfedge(object):
 
     def __init__(self, edge=None, pm=Edge.LE):
@@ -577,7 +579,7 @@ class Halfedge(object):
         else:
             return not above
 
-    #--------------------------
+    # --------------------------
     # create a new site where the Halfedges el1 and el2 intersect
     def intersect(self, other):
         e1 = self.edge
@@ -612,7 +614,7 @@ class Halfedge(object):
         return Site(xint, yint)
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class EdgeList(object):
 
     def __init__(self, xmin, xmax, nsites):
@@ -693,7 +695,7 @@ class EdgeList(object):
         return he
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class PriorityQueue(object):
 
     def __init__(self, ymin, ymax, nsites):
@@ -758,7 +760,7 @@ class PriorityQueue(object):
         return curr
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class SiteList(object):
 
     def __init__(self, pointList):
@@ -826,7 +828,7 @@ class SiteList(object):
     ymax = property(_getymax)
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 def computeVoronoiDiagram(points):
     """ Takes a list of point objects (which must have x and y fields).
         Returns a 3-tuple of:
@@ -845,7 +847,7 @@ def computeVoronoiDiagram(points):
     voronoi(siteList, context)
     return (context.vertices, context.lines, context.edges)
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 def computeDelaunayTriangulation(points):
@@ -859,7 +861,8 @@ def computeDelaunayTriangulation(points):
     voronoi(siteList, context)
     return context.triangles
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         optlist, args = getopt.getopt(sys.argv[1:], "thdp")

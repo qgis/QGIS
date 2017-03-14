@@ -154,7 +154,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLineEdit" name="txtPassword">
+            <widget class="QgsPasswordLineEdit" name="txtPassword">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -270,6 +270,11 @@ Untick save if you don't wish to be the case.</string>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>

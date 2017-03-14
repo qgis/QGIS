@@ -46,18 +46,18 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
      * @param manager task manager associated with widget
      * @param parent parent widget
      */
-    QgsTaskManagerWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent = nullptr );
 
     ~QgsTaskManagerWidget();
 
   private slots:
 
-    void modelRowsInserted( const QModelIndex& index, int start, int end );
+    void modelRowsInserted( const QModelIndex &index, int start, int end );
 
   private:
 
-    QTreeView* mTreeView = nullptr;
-    QgsTaskManagerModel* mModel = nullptr;
+    QTreeView *mTreeView = nullptr;
+    QgsTaskManagerModel *mModel = nullptr;
 };
 
 ///@cond PRIVATE
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
      * @param manager task manager associated with widget
      * @param parent parent widget
      */
-    QgsTaskManagerFloatingWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+    QgsTaskManagerFloatingWidget( QgsTaskManager *manager, QWidget *parent = nullptr );
 
 };
 
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
      * @param manager task manager associated with widget
      * @param parent parent widget
      */
-    QgsTaskManagerStatusBarWidget( QgsTaskManager* manager, QWidget* parent = nullptr );
+    QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent = nullptr );
 
     QSize sizeHint() const override;
 
@@ -115,9 +115,9 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
   private:
 
-    QgsTaskManagerFloatingWidget* mFloatingWidget = nullptr;
-    QProgressBar* mProgressBar = nullptr;
-    QgsTaskManager* mManager = nullptr;
+    QgsTaskManagerFloatingWidget *mFloatingWidget = nullptr;
+    QProgressBar *mProgressBar = nullptr;
+    QgsTaskManager *mManager = nullptr;
 };
 
 /**
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
      * @param manager task manager for model
      * @param parent parent object
      */
-    explicit QgsTaskManagerModel( QgsTaskManager* manager, QObject* parent = nullptr );
+    explicit QgsTaskManagerModel( QgsTaskManager *manager, QObject *parent = nullptr );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -152,14 +152,14 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex & index ) const override;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns the task associated with a specified model index, or nullptr if no
      * task was found.
      */
-    QgsTask* indexToTask( const QModelIndex& index ) const;
+    QgsTask *indexToTask( const QModelIndex &index ) const;
 
     //! Model roles
     enum Roles
@@ -176,7 +176,7 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
   private:
 
-    QgsTaskManager* mManager = nullptr;
+    QgsTaskManager *mManager = nullptr;
 
     QList< long > mRowToTaskIdList;
 
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
     /** Constructor for QgsTaskStatusWidget
      * @param parent parent object
      */
-    QgsTaskStatusWidget( QWidget* parent = nullptr, QgsTask::TaskStatus status = QgsTask::Queued, bool canCancel = true );
+    QgsTaskStatusWidget( QWidget *parent = nullptr, QgsTask::TaskStatus status = QgsTask::Queued, bool canCancel = true );
 
 
     QSize sizeHint() const override;
@@ -223,10 +223,10 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
   protected:
 
-    void paintEvent( QPaintEvent * e ) override;
-    void mousePressEvent( QMouseEvent* e ) override;
-    void mouseMoveEvent( QMouseEvent* e ) override;
-    void leaveEvent( QEvent* e ) override;
+    void paintEvent( QPaintEvent *e ) override;
+    void mousePressEvent( QMouseEvent *e ) override;
+    void mouseMoveEvent( QMouseEvent *e ) override;
+    void leaveEvent( QEvent *e ) override;
 
   private:
 

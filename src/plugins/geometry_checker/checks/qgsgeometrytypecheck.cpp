@@ -23,9 +23,9 @@
 #include "../utils/qgsfeaturepool.h"
 
 
-void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList &/*messages*/, QAtomicInt* progressCounter , const QgsFeatureIds &ids ) const
+void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
 {
-  const QgsFeatureIds& featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
+  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId featureid, featureIds )
   {
     if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
@@ -35,17 +35,17 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError*>& errors,
       continue;
     }
     QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry* geom = featureGeom.geometry();
+    QgsAbstractGeometry *geom = featureGeom.geometry();
 
     QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-    if (( mAllowedTypes & ( 1 << type ) ) == 0 )
+    if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
     {
       errors.append( new QgsGeometryTypeCheckError( this, featureid, geom->centroid(), type ) );
     }
   }
 }
 
-void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
 {
   QgsFeature feature;
   if ( !mFeaturePool->get( error->featureId(), feature ) )
@@ -54,11 +54,11 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry* geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.geometry();
 
   // Check if error still applies
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-  if (( mAllowedTypes & ( 1 << type ) ) != 0 )
+  if ( ( mAllowedTypes & ( 1 << type ) ) != 0 )
   {
     error->setObsolete();
     return;
@@ -72,7 +72,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
   else if ( method == Convert )
   {
     // Check if corresponding single type is allowed
-    if ( QgsWkbTypes::isMultiType( type ) && (( 1 << QgsWkbTypes::singleType( type ) ) & mAllowedTypes ) != 0 )
+    if ( QgsWkbTypes::isMultiType( type ) && ( ( 1 << QgsWkbTypes::singleType( type ) ) & mAllowedTypes ) != 0 )
     {
       // Explode multi-type feature into single-type features
       for ( int iPart = 1, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -89,9 +89,9 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError* error, int method, i
       changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed
-    else if ( QgsWkbTypes::isSingleType( type ) && (( 1 << QgsWkbTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
+    else if ( QgsWkbTypes::isSingleType( type ) && ( ( 1 << QgsWkbTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
     {
-      QgsGeometryCollection* geomCollection = nullptr;
+      QgsGeometryCollection *geomCollection = nullptr;
       switch ( QgsWkbTypes::multiType( type ) )
       {
         case QgsWkbTypes::MultiPoint:

@@ -39,8 +39,8 @@ class CORE_EXPORT QgsErrorMessage
     };
 
     QgsErrorMessage()
-        : mLine( 0 )
-        , mFormat( Text )
+      : mLine( 0 )
+      , mFormat( Text )
     {}
 
     /** Constructor.
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsErrorMessage
      *  @param function the function where error was created
      *  @param line the line where error was created
      */
-    QgsErrorMessage( const QString & message, const QString & tag = QString::null, const QString & file = QString::null, const QString & function = QString::null, int line = 0 );
+    QgsErrorMessage( const QString &message, const QString &tag = QString::null, const QString &file = QString::null, const QString &function = QString::null, int line = 0 );
 
     QString message() const { return mMessage; }
     QString tag() const { return mTag; }
@@ -89,18 +89,18 @@ class CORE_EXPORT QgsError
      *  @param message error message
      *  @param tag short description, e.g. GDAL, Provider, Layer
      */
-    QgsError( const QString & message, const QString & tag );
+    QgsError( const QString &message, const QString &tag );
 
     /** Append new error message.
      *  @param message error message string
      *  @param tag error label, for example GDAL, GDAL Provider, Raster layer
      */
-    void append( const QString & message, const QString & tag );
+    void append( const QString &message, const QString &tag );
 
     /** Append new error message.
      *  @param message error message
      */
-    void append( const QgsErrorMessage & message );
+    void append( const QgsErrorMessage &message );
 
     /** Test if any error is set.
      *  @return true if contains error

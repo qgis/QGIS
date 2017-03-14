@@ -16,12 +16,12 @@
 #include "qgswfstransactionrequest.h"
 #include "qgslogger.h"
 
-QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString& uri )
-    : QgsWfsRequest( uri )
+QgsWFSTransactionRequest::QgsWFSTransactionRequest( const QString &uri )
+  : QgsWfsRequest( uri )
 {
 }
 
-bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serverResponse )
+bool QgsWFSTransactionRequest::send( const QDomDocument &doc, QDomDocument &serverResponse )
 {
   QUrl url( baseURL() );
 
@@ -42,7 +42,7 @@ bool QgsWFSTransactionRequest::send( const QDomDocument& doc, QDomDocument& serv
   return false;
 }
 
-QString QgsWFSTransactionRequest::errorMessageWithReason( const QString& reason )
+QString QgsWFSTransactionRequest::errorMessageWithReason( const QString &reason )
 {
   return tr( "Sending of transaction failed: %1" ).arg( reason );
 }

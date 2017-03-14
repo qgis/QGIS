@@ -16,8 +16,8 @@
 
 //standard includes
 
-[pluginname]Gui::[pluginname]Gui( QWidget* parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+[pluginname]Gui::[pluginname]Gui( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 

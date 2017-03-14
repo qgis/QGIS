@@ -30,7 +30,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -201,8 +201,8 @@ class VoronoiPolygons(GeoAlgorithm):
                         ytemp = 0 - exX
                 else:
                     xtemp = width + exX
-                    ytemp = (c.lines[edge[0]][2] - (width + exX)
-                             * c.lines[edge[0]][0]) / c.lines[edge[0]][1]
+                    ytemp = (c.lines[edge[0]][2] - (width + exX) *
+                             c.lines[edge[0]][0]) / c.lines[edge[0]][1]
                 [x1, y1, x2, y2] = clip_line(
                     c.vertices[edge[1]][0],
                     c.vertices[edge[1]][1],
@@ -236,10 +236,10 @@ class VoronoiPolygons(GeoAlgorithm):
                     exY,
                 )
             if x1 or x2 or y1 or y2:
-                lines.append(QgsPoint(x1 + extent.xMinimum(), y1
-                                      + extent.yMinimum()))
-                lines.append(QgsPoint(x2 + extent.xMinimum(), y2
-                                      + extent.yMinimum()))
+                lines.append(QgsPoint(x1 + extent.xMinimum(),
+                                      y1 + extent.yMinimum()))
+                lines.append(QgsPoint(x2 + extent.xMinimum(),
+                                      y2 + extent.yMinimum()))
                 if 0 - exX in (x1, x2):
                     hasXMin = True
                 if 0 - exY in (y1, y2):
@@ -250,15 +250,15 @@ class VoronoiPolygons(GeoAlgorithm):
                     hasXMax = True
         if hasXMin:
             if hasYMax:
-                lines.append(QgsPoint(extent.xMinimum() - exX, height
-                                      + extent.yMinimum() + exY))
+                lines.append(QgsPoint(extent.xMinimum() - exX,
+                                      height + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(extent.xMinimum() - exX,
                                       extent.yMinimum() - exY))
         if hasXMax:
             if hasYMax:
-                lines.append(QgsPoint(width + extent.xMinimum() + exX, height
-                                      + extent.yMinimum() + exY))
+                lines.append(QgsPoint(width + extent.xMinimum() + exX,
+                                      height + extent.yMinimum() + exY))
             if hasYMin:
                 lines.append(QgsPoint(width + extent.xMinimum() + exX,
                                       extent.yMinimum() - exY))

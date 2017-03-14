@@ -33,8 +33,8 @@ namespace QgsWcs
   {
     public:
       // Constructor
-      Service( QgsServerInterface* serverIface )
-          : mServerIface( serverIface )
+      Service( QgsServerInterface *serverIface )
+        : mServerIface( serverIface )
       {}
 
       QString name()    const { return QStringLiteral( "WCS" ); }
@@ -45,8 +45,8 @@ namespace QgsWcs
         return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
       }
 
-      void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           const QgsProject* project )
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
+                           const QgsProject *project )
       {
         Q_UNUSED( project );
 
@@ -73,11 +73,11 @@ namespace QgsWcs
         }
         else if ( QSTR_COMPARE( req, "DescribeCoverage" ) )
         {
-          writeDescribeCoverage( mServerIface, versionString, request, response );
+          writeDescribeCoverage( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetCoverage" ) )
         {
-          writeGetCoverage( mServerIface, versionString, request, response );
+          writeGetCoverage( mServerIface, project, versionString, request, response );
         }
         else
         {
@@ -88,7 +88,7 @@ namespace QgsWcs
       }
 
     private:
-      QgsServerInterface* mServerIface = nullptr;
+      QgsServerInterface *mServerIface = nullptr;
   };
 
 
@@ -99,7 +99,7 @@ namespace QgsWcs
 class QgsWcsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry& registry, QgsServerInterface* serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
     {
       QgsDebugMsg( "WCSModule::registerSelf called" );
       registry.registerService( new  QgsWcs::Service( serverIface ) );
@@ -108,12 +108,12 @@ class QgsWcsModule: public QgsServiceModule
 
 
 // Entry points
-QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
+QGISEXTERN QgsServiceModule *QGS_ServiceModule_Init()
 {
   static QgsWcsModule module;
   return &module;
 }
-QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
+QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }

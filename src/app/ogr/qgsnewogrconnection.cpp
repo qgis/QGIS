@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QSettings>
 #include <QMessageBox>
 
 #include "qgsnewogrconnection.h"
@@ -23,17 +22,19 @@
 #include "qgsproviderregistry.h"
 #include "qgsogrhelperfunctions.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
+
 #include <ogr_api.h>
 #include <cpl_error.h>
 
-QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
+QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connType, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
 
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
@@ -68,8 +69,8 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
 
 QgsNewOgrConnection::~QgsNewOgrConnection()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
 }
 
 void QgsNewOgrConnection::testConnection()
@@ -98,17 +99,17 @@ void QgsNewOgrConnection::testConnection()
 //! Autoconnected SLOTS *
 void QgsNewOgrConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = '/' + cmbDatabaseTypes->currentText() + "/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
-      settings.contains( baseKey + txtName->text() + "/host" ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+       settings.contains( baseKey + txtName->text() + "/host" ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }

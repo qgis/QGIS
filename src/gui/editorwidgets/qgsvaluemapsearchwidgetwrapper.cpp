@@ -24,13 +24,13 @@
 #include <QSettings>
 #include <QSizePolicy>
 
-QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mComboBox( nullptr )
+QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mComboBox( nullptr )
 {
 }
 
-QWidget* QgsValueMapSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsValueMapSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
@@ -135,9 +135,9 @@ void QgsValueMapSearchWidgetWrapper::setEnabled( bool enabled )
   mComboBox->setEnabled( enabled );
 }
 
-void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {

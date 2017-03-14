@@ -38,8 +38,8 @@
 
 #define PI 3.14159265
 
-QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *parent )
-    : QWidget( parent )
+QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
+  : QWidget( parent )
 {
   mLayout = new QHBoxLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -48,7 +48,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString& label , QWidget *pare
 
   if ( !label.isEmpty() )
   {
-    QLabel* lbl = new QLabel( label, this );
+    QLabel *lbl = new QLabel( label, this );
     lbl->setAlignment( Qt::AlignRight | Qt::AlignCenter );
     mLayout->addWidget( lbl );
   }
@@ -128,14 +128,14 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
   emit angleChanged( angle );
 }
 
-QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mRubberBand( nullptr )
-    , mRotation( 0 )
-    , mRotationOffset( 0 )
-    , mAnchorPoint( nullptr )
-    , mRotationActive( false )
-    , mRotationWidget( nullptr )
+QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas *canvas )
+  : QgsMapToolEdit( canvas )
+  , mRubberBand( nullptr )
+  , mRotation( 0 )
+  , mRotationOffset( 0 )
+  , mAnchorPoint( nullptr )
+  , mRotationActive( false )
+  , mRotationWidget( nullptr )
 {
 }
 
@@ -146,7 +146,7 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
   deleteRubberband();
 }
 
-void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mRotationActive )
   {
@@ -167,7 +167,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   deleteRotationWidget();
 
@@ -176,7 +176,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  QgsVectorLayer* vlayer = currentVectorLayer();
+  QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
     deleteRubberband();
@@ -340,7 +340,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   mRotation = rotation;
   mRotationActive = false;
 
-  QgsVectorLayer* vlayer = currentVectorLayer();
+  QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
     deleteRubberband();
@@ -406,7 +406,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 void QgsMapToolRotateFeature::activate()
 {
 
-  QgsVectorLayer* vlayer = currentVectorLayer();
+  QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
     return;

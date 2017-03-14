@@ -19,19 +19,19 @@
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsmapcanvas.h"
 
-QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl )
-    : QgsMapToolIdentify( canvas )
-    , mCanvas( canvas )
-    , mLayer( vl )
+QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl )
+  : QgsMapToolIdentify( canvas )
+  , mCanvas( canvas )
+  , mLayer( vl )
 {
   mToolName = tr( "Identify feature" );
 
   // set cursor
-  QPixmap cursorPixmap = QPixmap(( const char ** ) cross_hair_cursor );
+  QPixmap cursorPixmap = QPixmap( ( const char ** ) cross_hair_cursor );
   mCursor = QCursor( cursorPixmap, 1, 1 );
 }
 
-void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
   QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
@@ -46,7 +46,7 @@ void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
   emit featureIdentified( results[0].mFeature.id() );
 }
 
-void QgsMapToolIdentifyFeature::keyPressEvent( QKeyEvent* e )
+void QgsMapToolIdentifyFeature::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
   {

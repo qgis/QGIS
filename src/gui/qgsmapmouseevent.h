@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param mapCanvas The map canvas on which the event occurred
      * @param event     The original mouse event
      */
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );
+    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event );
 
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param buttons   Further buttons that are pressed
      * @param modifiers Keyboard modifiers
      */
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
+    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * @param snapped if given, determines if a segment has been snapped
      * @param allLayers if true, override snapping mode
      */
-    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool* snapped = nullptr, bool allLayers = false ) const;
+    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool *snapped = nullptr, bool allLayers = false ) const;
 
     /**
      * Returns true if there is a snapped point cached.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      *
      * @param point The point in map coordinates
      */
-    void setMapPoint( const QgsPoint& point );
+    void setMapPoint( const QgsPoint &point );
 
     /**
      * Returns the original, unmodified map point of the mouse cursor.
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
   private:
 
-    QPoint mapToPixelCoordinates( const QgsPoint& point );
+    QPoint mapToPixelCoordinates( const QgsPoint &point );
 
     SnappingMode mSnappingMode;
 
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     QPoint mPixelPoint;
 
     //! The map canvas on which the event was triggered.
-    QgsMapCanvas* mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsPointLocator::Match mSnapMatch;
 };

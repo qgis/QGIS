@@ -6,6 +6,7 @@ class QgsDistanceArea
 %End
 
   public:
+
     //! Constructor
     QgsDistanceArea();
 

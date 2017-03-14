@@ -18,16 +18,18 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
+#include "qgssettings.h"
+
 #include <QAction>
 #include <QAbstractButton>
 
-QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
-    : QObject( canvas )
-    , mCanvas( canvas )
-    , mCursor( Qt::CrossCursor )
-    , mAction( nullptr )
-    , mButton( nullptr )
-    , mToolName( QString() )
+QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
+  : QObject( canvas )
+  , mCanvas( canvas )
+  , mCursor( Qt::CrossCursor )
+  , mAction( nullptr )
+  , mButton( nullptr )
+  , mToolName( QString() )
 {
 }
 
@@ -43,35 +45,35 @@ QgsPoint QgsMapTool::toMapCoordinates( QPoint point )
   return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
-QgsPointV2 QgsMapTool::toMapCoordinates( const QgsMapLayer* layer, const QgsPointV2& point )
+QgsPointV2 QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point )
 {
   QgsPoint result = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPoint( point.x(), point.y() ) );
   return QgsPointV2( result.x(), result.y() );
 }
 
 
-QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer* layer, QPoint point )
+QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, QPoint point )
 {
   QgsPoint pt = toMapCoordinates( point );
   return toLayerCoordinates( layer, pt );
 }
 
-QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer* layer, const QgsPoint& point )
+QgsPoint QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, const QgsPoint &point )
 {
   return mCanvas->mapSettings().mapToLayerCoordinates( layer, point );
 }
 
-QgsPoint QgsMapTool::toMapCoordinates( const QgsMapLayer* layer, const QgsPoint& point )
+QgsPoint QgsMapTool::toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point )
 {
   return mCanvas->mapSettings().layerToMapCoordinates( layer, point );
 }
 
-QgsRectangle QgsMapTool::toLayerCoordinates( const QgsMapLayer* layer, const QgsRectangle& rect )
+QgsRectangle QgsMapTool::toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect )
 {
   return mCanvas->mapSettings().mapToLayerCoordinates( layer, rect );
 }
 
-QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint& point )
+QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint &point )
 {
   qreal x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
@@ -105,7 +107,7 @@ void QgsMapTool::deactivate()
   emit deactivated();
 }
 
-void QgsMapTool::setAction( QAction* action )
+void QgsMapTool::setAction( QAction *action )
 {
   if ( mAction )
     disconnect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
@@ -120,43 +122,43 @@ void QgsMapTool::actionDestroyed()
     mAction = nullptr;
 }
 
-QAction* QgsMapTool::action()
+QAction *QgsMapTool::action()
 {
   return mAction;
 }
 
-void QgsMapTool::setButton( QAbstractButton* button )
+void QgsMapTool::setButton( QAbstractButton *button )
 {
   mButton = button;
 }
 
-QAbstractButton* QgsMapTool::button()
+QAbstractButton *QgsMapTool::button()
 {
   return mButton;
 }
 
-void QgsMapTool::setCursor( const QCursor& cursor )
+void QgsMapTool::setCursor( const QCursor &cursor )
 {
   mCursor = cursor;
 }
 
 
-void QgsMapTool::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
+void QgsMapTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapTool::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
@@ -182,15 +184,15 @@ bool QgsMapTool::gestureEvent( QGestureEvent *e )
   return true;
 }
 
-QgsMapCanvas* QgsMapTool::canvas()
+QgsMapCanvas *QgsMapTool::canvas()
 {
   return mCanvas;
 }
 
 double QgsMapTool::searchRadiusMM()
 {
-  QSettings settings;
-  double radius = settings.value( QStringLiteral( "/Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  QgsSettings settings;
+  double radius = settings.value( QStringLiteral( "Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
 
   if ( radius > 0 )
   {
@@ -199,12 +201,12 @@ double QgsMapTool::searchRadiusMM()
   return Qgis::DEFAULT_SEARCH_RADIUS_MM;
 }
 
-double QgsMapTool::searchRadiusMU( const QgsRenderContext& context )
+double QgsMapTool::searchRadiusMU( const QgsRenderContext &context )
 {
   return searchRadiusMM() * context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
 }
 
-double QgsMapTool::searchRadiusMU( QgsMapCanvas * canvas )
+double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
 {
   if ( !canvas )
   {

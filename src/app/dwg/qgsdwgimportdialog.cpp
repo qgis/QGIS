@@ -17,11 +17,11 @@
 
 #include "qgsdwgimportdialog.h"
 
-#include <QSettings>
 #include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QFileDialog>
 
+#include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsdwgimporter.h"
 #include "qgsvectorlayer.h"
@@ -38,7 +38,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgspallabeling.h"
 #include "qgsmapcanvas.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 #include "qgsproperty.h"
@@ -59,11 +59,11 @@ struct CursorOverride
 
 
 QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
+  : QDialog( parent, f )
 {
   setupUi( this );
 
-  QSettings s;
+  QgsSettings s;
   leDatabase->setText( s.value( "/DwgImport/lastDatabase", "" ).toString() );
   cbExpandInserts->setChecked( s.value( "/DwgImport/lastExpandInserts", true ).toBool() );
   cbMergeLayers->setChecked( s.value( "/DwgImport/lastMergeLayers", false ).toBool() );
@@ -73,7 +73,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   pbImportDrawing->setHidden( true );
   lblMessage->setHidden( true );
 
-  int crsid = s.value( "/DwgImport/lastCrs", QString::number( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() ) ).toInt();
+  int crsid = s.value( "/DwgImport/lastCrs", QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
 
   QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
   mCrsSelector->setCrs( crs );
@@ -89,7 +89,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
 
 QgsDwgImportDialog::~QgsDwgImportDialog()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( "/DwgImport/lastDatabase", leDatabase->text() );
   s.setValue( "/DwgImport/lastExpandInserts", cbExpandInserts->isChecked() );
   s.setValue( "/DwgImport/lastMergeLayers", cbMergeLayers->isChecked() );
@@ -219,7 +219,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
       item = new QTableWidgetItem();
       item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
-      item->setCheckState(( f.attribute( idxColor ).toInt() >= 0 && ( f.attribute( idxFlags ).toInt() & 1 ) == 0 ) ? Qt::Checked : Qt::Unchecked );
+      item->setCheckState( ( f.attribute( idxColor ).toInt() >= 0 && ( f.attribute( idxFlags ).toInt() & 1 ) == 0 ) ? Qt::Checked : Qt::Unchecked );
       mLayers->setItem( row, 1, item );
     }
 

@@ -47,7 +47,7 @@ class MngProgressBar
      * \brief Sets the format the current text.
      * \param format This property holds the string used to generate the current text.
      */
-    void setFormat( const QString& format );
+    void setFormat( const QString &format );
 
     /**
      * \brief Sets current value progress bar's
@@ -56,7 +56,7 @@ class MngProgressBar
     void step( int step );
 
   private:
-    QProgressBar * mPb = nullptr;
+    QProgressBar *mPb = nullptr;
 
 };
 

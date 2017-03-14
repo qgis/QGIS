@@ -42,10 +42,10 @@
 #include "../raster/qwt5_histogram_item.h"
 #endif
 
-QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget* parent, const QgsCurveTransform& transform )
-    : QWidget( parent )
-    , mCurve( transform )
-    , mCurrentPlotMarkerIndex( -1 )
+QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTransform &transform )
+  : QWidget( parent )
+  , mCurve( transform )
+  , mCurrentPlotMarkerIndex( -1 )
 {
   mPlot = new QwtPlot();
   mPlot->setMinimumSize( QSize( 0, 100 ) );
@@ -54,14 +54,14 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget* parent, const QgsCurveTrans
   mPlot->setAxisScale( QwtPlot::xBottom, 0, 1 );
   mPlot->setAxisScale( QwtPlot::xTop, 0, 1 );
 
-  QVBoxLayout* vlayout = new QVBoxLayout();
+  QVBoxLayout *vlayout = new QVBoxLayout();
   vlayout->addWidget( mPlot );
   setLayout( vlayout );
 
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-  QFrame* plotCanvasFrame = dynamic_cast<QFrame*>( mPlot->canvas() );
+  QFrame *plotCanvasFrame = dynamic_cast<QFrame *>( mPlot->canvas() );
   if ( plotCanvasFrame )
     plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
 #else
@@ -72,7 +72,7 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget* parent, const QgsCurveTrans
   mPlot->enableAxis( QwtPlot::xBottom, false );
 
   // add a grid
-  QwtPlotGrid * grid = new QwtPlotGrid();
+  QwtPlotGrid *grid = new QwtPlotGrid();
   QwtScaleDiv gridDiv( 0.0, 1.0, QList<double>(), QList<double>(), QList<double>() << 0.2 << 0.4 << 0.6 << 0.8 );
   grid->setXDiv( gridDiv );
   grid->setYDiv( gridDiv );
@@ -82,7 +82,7 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget* parent, const QgsCurveTrans
   mPlotCurve = new QwtPlotCurve();
   mPlotCurve->setTitle( QStringLiteral( "Curve" ) );
   mPlotCurve->setPen( QPen( QColor( 30, 30, 30 ), 0.0 ) ),
-  mPlotCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
+             mPlotCurve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
   mPlotCurve->attach( mPlot );
 
   mPlotFilter = new QgsCurveEditorPlotEventFilter( mPlot );
@@ -104,19 +104,19 @@ QgsCurveEditorWidget::~QgsCurveEditorWidget()
   }
 }
 
-void QgsCurveEditorWidget::setCurve( const QgsCurveTransform& curve )
+void QgsCurveEditorWidget::setCurve( const QgsCurveTransform &curve )
 {
   mCurve = curve;
   updatePlot();
   emit changed();
 }
 
-void QgsCurveEditorWidget::setHistogramSource( const QgsVectorLayer* layer, const QString& expression )
+void QgsCurveEditorWidget::setHistogramSource( const QgsVectorLayer *layer, const QString &expression )
 {
   if ( !mGatherer )
   {
     mGatherer.reset( new QgsHistogramValuesGatherer() );
-    connect( mGatherer.get(), &QgsHistogramValuesGatherer::calculatedHistogram, this, [=]
+    connect( mGatherer.get(), &QgsHistogramValuesGatherer::calculatedHistogram, this, [ = ]
     {
       mHistogram.reset( new QgsHistogram( mGatherer->histogram() ) );
       updateHistogram();
@@ -158,7 +158,7 @@ void QgsCurveEditorWidget::setMaxHistogramValueRange( double maxValueRange )
   updateHistogram();
 }
 
-void QgsCurveEditorWidget::keyPressEvent( QKeyEvent* event )
+void QgsCurveEditorWidget::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace )
   {
@@ -330,7 +330,7 @@ void QgsCurveEditorWidget::updateHistogram()
 void QgsCurveEditorWidget::updatePlot()
 {
   // remove existing markers
-  Q_FOREACH ( QwtPlotMarker* marker, mMarkers )
+  Q_FOREACH ( QwtPlotMarker *marker, mMarkers )
   {
     marker->detach();
     delete marker;
@@ -341,7 +341,7 @@ void QgsCurveEditorWidget::updatePlot()
   QVector< double > x;
 
   int i = 0;
-  Q_FOREACH ( const QgsPoint& point, mCurve.controlPoints() )
+  Q_FOREACH ( const QgsPoint &point, mCurve.controlPoints() )
   {
     x << point.x();
     addPlotMarker( point.x(), point.y(), mCurrentPlotMarkerIndex == i );
@@ -372,9 +372,9 @@ void QgsCurveEditorWidget::updatePlot()
 
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-QwtPlotHistogram* QgsCurveEditorWidget::createPlotHistogram( const QBrush& brush, const QPen& pen ) const
+QwtPlotHistogram *QgsCurveEditorWidget::createPlotHistogram( const QBrush &brush, const QPen &pen ) const
 {
-  QwtPlotHistogram* histogram = new QwtPlotHistogram( QString() );
+  QwtPlotHistogram *histogram = new QwtPlotHistogram( QString() );
   histogram->setBrush( brush );
   if ( pen != Qt::NoPen )
   {
@@ -395,9 +395,9 @@ QwtPlotHistogram* QgsCurveEditorWidget::createPlotHistogram( const QBrush& brush
   return histogram;
 }
 #else
-HistogramItem * QgsCurveEditorWidget::createHistoItem( const QBrush& brush, const QPen& pen ) const
+HistogramItem *QgsCurveEditorWidget::createHistoItem( const QBrush &brush, const QPen &pen ) const
 {
-  HistogramItem* item = new HistogramItem( QString() );
+  HistogramItem *item = new HistogramItem( QString() );
   item->setColor( brush.color() );
   item->setFlat( true );
   item->setSpacing( 0 );
@@ -420,8 +420,8 @@ HistogramItem * QgsCurveEditorWidget::createHistoItem( const QBrush& brush, cons
 /// @cond PRIVATE
 
 QgsCurveEditorPlotEventFilter::QgsCurveEditorPlotEventFilter( QwtPlot *plot )
-    : QObject( plot )
-    , mPlot( plot )
+  : QObject( plot )
+  , mPlot( plot )
 {
   mPlot->canvas()->installEventFilter( this );
 }
@@ -435,7 +435,7 @@ bool QgsCurveEditorPlotEventFilter::eventFilter( QObject *object, QEvent *event 
   {
     case QEvent::MouseButtonPress:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mousePress( mapPoint( mouseEvent->pos() ) );
@@ -444,7 +444,7 @@ bool QgsCurveEditorPlotEventFilter::eventFilter( QObject *object, QEvent *event 
     }
     case QEvent::MouseMove:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->buttons() & Qt::LeftButton )
       {
         // only emit when button pressed
@@ -454,7 +454,7 @@ bool QgsCurveEditorPlotEventFilter::eventFilter( QObject *object, QEvent *event 
     }
     case QEvent::MouseButtonRelease:
     {
-      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mouseRelease( mapPoint( mouseEvent->pos() ) );

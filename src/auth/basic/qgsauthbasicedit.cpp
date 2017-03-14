@@ -19,8 +19,8 @@
 
 
 QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
 }
@@ -83,5 +83,5 @@ void QgsAuthBasicEdit::on_leUsername_textChanged( const QString &txt )
 
 void QgsAuthBasicEdit::on_chkPasswordShow_stateChanged( int state )
 {
-  lePassword->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  lePassword->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }

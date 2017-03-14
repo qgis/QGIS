@@ -17,27 +17,92 @@
 
 #include "qgsserverprojectutils.h"
 
-int QgsServerProjectUtils::wmsMaxWidth( const QgsProject& project )
+bool QgsServerProjectUtils::owsServiceCapabilities( const QgsProject &project )
+{
+  return project.readBoolEntry( QStringLiteral( "WMSServiceCapabilities" ), QStringLiteral( "/" ), false );
+}
+
+QString QgsServerProjectUtils::owsServiceTitle( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSServiceTitle" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceAbstract( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSServiceAbstract" ), QStringLiteral( "/" ) );
+}
+
+QStringList QgsServerProjectUtils::owsServiceKeywords( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceOnlineResource( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSOnlineResource" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceContactOrganization( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSContactOrganization" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceContactPosition( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSContactPosition" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceContactPerson( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSContactPerson" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceContactMail( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSContactMail" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceContactPhone( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSContactPhone" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceFees( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSFees" ), QStringLiteral( "/" ) );
+}
+
+QString QgsServerProjectUtils::owsServiceAccessConstraints( const QgsProject &project )
+{
+  return project.readEntry( QStringLiteral( "WMSAccessConstraints" ), QStringLiteral( "/" ) );
+}
+
+int QgsServerProjectUtils::wmsMaxWidth( const QgsProject &project )
 {
   return project.readNumEntry( QStringLiteral( "WMSMaxWidth" ), QStringLiteral( "/" ), -1 );
 }
 
-int QgsServerProjectUtils::wmsMaxHeight( const QgsProject& project )
+int QgsServerProjectUtils::wmsMaxHeight( const QgsProject &project )
 {
   return project.readNumEntry( QStringLiteral( "WMSMaxHeight" ), QStringLiteral( "/" ), -1 );
 }
 
-QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject& project )
+QString QgsServerProjectUtils::wmsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WMSUrl" ), QStringLiteral( "/" ), "" );
 }
 
-QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject& project )
+QString QgsServerProjectUtils::wfsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), "" );
 }
 
-QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject& project )
+QString QgsServerProjectUtils::wcsServiceUrl( const QgsProject &project )
 {
   return project.readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), "" );
+}
+
+QStringList QgsServerProjectUtils::wcsLayers( const QgsProject &project )
+{
+  return project.readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
 }

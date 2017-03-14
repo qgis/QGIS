@@ -44,59 +44,59 @@
 
 #include <cmath>
 
-QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue )
-    : QgsComposerObject( composition )
-    , QGraphicsRectItem( nullptr )
-    , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( nullptr )
-    , mHAlignSnapItem( nullptr )
-    , mVAlignSnapItem( nullptr )
-    , mFrame( false )
-    , mBackground( true )
-    , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mItemPositionLocked( false )
-    , mLastValidViewScaleFactor( -1 )
-    , mItemRotation( 0 )
-    , mEvaluatedItemRotation( 0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mEffectsEnabled( true )
-    , mTransparency( 0 )
-    , mExcludeFromExports( false )
-    , mEvaluatedExcludeFromExports( false )
-    , mLastUsedPositionMode( UpperLeft )
-    , mIsGroupMember( false )
-    , mCurrentExportLayer( -1 )
-    , mId( QLatin1String( "" ) )
-    , mUuid( QUuid::createUuid().toString() )
+QgsComposerItem::QgsComposerItem( QgsComposition *composition, bool manageZValue )
+  : QgsComposerObject( composition )
+  , QGraphicsRectItem( nullptr )
+  , mRemovedFromComposition( false )
+  , mBoundingResizeRectangle( nullptr )
+  , mHAlignSnapItem( nullptr )
+  , mVAlignSnapItem( nullptr )
+  , mFrame( false )
+  , mBackground( true )
+  , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
+  , mItemPositionLocked( false )
+  , mLastValidViewScaleFactor( -1 )
+  , mItemRotation( 0 )
+  , mEvaluatedItemRotation( 0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mEffectsEnabled( true )
+  , mTransparency( 0 )
+  , mExcludeFromExports( false )
+  , mEvaluatedExcludeFromExports( false )
+  , mLastUsedPositionMode( UpperLeft )
+  , mIsGroupMember( false )
+  , mCurrentExportLayer( -1 )
+  , mId( QLatin1String( "" ) )
+  , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
 }
 
-QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
-    : QgsComposerObject( composition )
-    , QGraphicsRectItem( 0, 0, width, height, nullptr )
-    , mRemovedFromComposition( false )
-    , mBoundingResizeRectangle( nullptr )
-    , mHAlignSnapItem( nullptr )
-    , mVAlignSnapItem( nullptr )
-    , mFrame( false )
-    , mFrameColor( QColor( 0, 0, 0 ) )
-    , mBackground( true )
-    , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
-    , mItemPositionLocked( false )
-    , mLastValidViewScaleFactor( -1 )
-    , mItemRotation( 0 )
-    , mEvaluatedItemRotation( 0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mEffectsEnabled( true )
-    , mTransparency( 0 )
-    , mExcludeFromExports( false )
-    , mEvaluatedExcludeFromExports( false )
-    , mLastUsedPositionMode( UpperLeft )
-    , mIsGroupMember( false )
-    , mCurrentExportLayer( -1 )
-    , mId( QLatin1String( "" ) )
-    , mUuid( QUuid::createUuid().toString() )
+QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition, bool manageZValue )
+  : QgsComposerObject( composition )
+  , QGraphicsRectItem( 0, 0, width, height, nullptr )
+  , mRemovedFromComposition( false )
+  , mBoundingResizeRectangle( nullptr )
+  , mHAlignSnapItem( nullptr )
+  , mVAlignSnapItem( nullptr )
+  , mFrame( false )
+  , mFrameColor( QColor( 0, 0, 0 ) )
+  , mBackground( true )
+  , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
+  , mItemPositionLocked( false )
+  , mLastValidViewScaleFactor( -1 )
+  , mItemRotation( 0 )
+  , mEvaluatedItemRotation( 0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mEffectsEnabled( true )
+  , mTransparency( 0 )
+  , mExcludeFromExports( false )
+  , mEvaluatedExcludeFromExports( false )
+  , mLastUsedPositionMode( UpperLeft )
+  , mIsGroupMember( false )
+  , mCurrentExportLayer( -1 )
+  , mId( QLatin1String( "" ) )
+  , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
   setPos( x, y );
@@ -151,7 +151,7 @@ void QgsComposerItem::setSelected( bool s )
   update(); //to draw selection boxes
 }
 
-bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) const
+bool QgsComposerItem::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
 {
   if ( itemElem.isNull() )
   {
@@ -239,7 +239,7 @@ bool QgsComposerItem::_writeXml( QDomElement& itemElem, QDomDocument& doc ) cons
   return true;
 }
 
-bool QgsComposerItem::_readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerItem::_readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -472,7 +472,7 @@ QRectF QgsComposerItem::rectWithFrame() const
   return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
 }
 
-void QgsComposerItem::beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c )
+void QgsComposerItem::beginCommand( const QString &commandText, QgsComposerMergeCommand::Context c )
 {
   if ( mComposition )
   {
@@ -496,7 +496,7 @@ void QgsComposerItem::cancelCommand()
   }
 }
 
-void QgsComposerItem::drawSelectionBoxes( QPainter* p )
+void QgsComposerItem::drawSelectionBoxes( QPainter *p )
 {
   Q_UNUSED( p );
   if ( !mComposition || mComposition->plotStyle() != QgsComposition::Preview )
@@ -535,7 +535,7 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
 
 }
 
-void QgsComposerItem::drawFrame( QPainter* p )
+void QgsComposerItem::drawFrame( QPainter *p )
 {
   if ( mFrame && p )
   {
@@ -680,7 +680,7 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   setSceneRect( newRect );
 }
 
-void QgsComposerItem::setSceneRect( const QRectF& rectangle )
+void QgsComposerItem::setSceneRect( const QRectF &rectangle )
 {
   //setRect in item coordinates
   double newWidth = rectangle.width();
@@ -707,14 +707,14 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
   emit sizeChanged();
 }
 
-QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOnly, const QgsExpressionContext* context )
+QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOnly, const QgsExpressionContext *context )
 {
   QRectF result = newRect;
 
   //TODO QGIS 3.0
   //maintain pre 2.12 API. remove when API break allowed
   QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   //data defined position or size set? if so, update rect with data defined values
   bool ok = false;
@@ -820,7 +820,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
 
 bool QgsComposerItem::shouldDrawItem() const
 {
-  if (( mComposition && mComposition->plotStyle() == QgsComposition::Preview ) || !mComposition )
+  if ( ( mComposition && mComposition->plotStyle() == QgsComposition::Preview ) || !mComposition )
   {
     //preview mode or no composition, so ok to draw item
     return true;
@@ -837,7 +837,7 @@ QgsExpressionContext QgsComposerItem::createExpressionContext() const
   return context;
 }
 
-void QgsComposerItem::drawBackground( QPainter* p )
+void QgsComposerItem::drawBackground( QPainter *p )
 {
   if ( mBackground && p )
   {
@@ -850,7 +850,7 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
-void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
+void QgsComposerItem::setBackgroundColor( const QColor &backgroundColor )
 {
   mBackgroundColor = backgroundColor;
   setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
@@ -867,7 +867,7 @@ void QgsComposerItem::setBlendMode( const QPainter::CompositionMode blendMode )
   refreshBlendMode( context );
 }
 
-void QgsComposerItem::refreshBlendMode( const QgsExpressionContext& context )
+void QgsComposerItem::refreshBlendMode( const QgsExpressionContext &context )
 {
   QPainter::CompositionMode blendMode = mBlendMode;
 
@@ -894,7 +894,7 @@ void QgsComposerItem::setTransparency( const int transparency )
   refreshTransparency( true, context );
 }
 
-void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext& context )
+void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpressionContext &context )
 {
   //data defined transparency set?
   int transparency = mDataDefinedProperties.valueAsInt( QgsComposerObject::Transparency, context, mTransparency );
@@ -908,7 +908,7 @@ void QgsComposerItem::refreshTransparency( const bool updateItem, const QgsExpre
   }
 }
 
-void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpressionContext& context )
+void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpressionContext &context )
 {
   //data defined stroke color set?
   bool ok = false;
@@ -931,7 +931,7 @@ void QgsComposerItem::refreshFrameColor( const bool updateItem, const QgsExpress
   }
 }
 
-void QgsComposerItem::refreshBackgroundColor( const bool updateItem, const QgsExpressionContext& context )
+void QgsComposerItem::refreshBackgroundColor( const bool updateItem, const QgsExpressionContext &context )
 {
   //data defined color set?
   bool ok = false;
@@ -962,10 +962,10 @@ double QgsComposerItem::horizontalViewScaleFactor() const
   double result = -1;
   if ( scene() )
   {
-    QList<QGraphicsView*> viewList = scene()->views();
+    QList<QGraphicsView *> viewList = scene()->views();
     if ( !viewList.isEmpty() ) //if not, probably this function was called from non-gui code
     {
-      QGraphicsView* currentView = viewList.at( 0 );
+      QGraphicsView *currentView = viewList.at( 0 );
       if ( currentView->isVisible() )
       {
         result = currentView->transform().m11();
@@ -1009,7 +1009,7 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
   refreshRotation( true, adjustPosition, context );
 }
 
-void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustPosition, const QgsExpressionContext& context )
+void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustPosition, const QgsExpressionContext &context )
 {
   double rotation = mItemRotation;
 
@@ -1050,7 +1050,7 @@ void QgsComposerItem::refreshRotation( const bool updateItem, const bool adjustP
   }
 }
 
-QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
+QGraphicsLineItem *QgsComposerItem::hAlignSnapItem()
 {
   if ( !mHAlignSnapItem )
   {
@@ -1064,7 +1064,7 @@ QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
   return mHAlignSnapItem;
 }
 
-QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
+QGraphicsLineItem *QgsComposerItem::vAlignSnapItem()
 {
   if ( !mVAlignSnapItem )
   {
@@ -1114,7 +1114,7 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   //maintain 2.10 API
   //TODO QGIS 3.0 - remove this
   QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   //update data defined properties and redraw item to match
   if ( property == QgsComposerObject::PositionX || property == QgsComposerObject::PositionY ||
@@ -1159,7 +1159,7 @@ void QgsComposerItem::refreshDataDefinedProperty( const QgsComposerObject::DataD
   update();
 }
 
-void QgsComposerItem::setId( const QString& id )
+void QgsComposerItem::setId( const QString &id )
 {
   if ( id == mId )
   {

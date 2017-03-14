@@ -64,7 +64,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     Qgis::DataType dataType( int bandNo ) const override;
 
     //! \brief set source and destination CRS
-    void setCrs( const QgsCoordinateReferenceSystem & srcCRS, const QgsCoordinateReferenceSystem & destCRS,
+    void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
     //! \brief Get source CRS
@@ -78,16 +78,16 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     // Translated precision mode, for use in ComboBox etc.
     static QString precisionLabel( Precision precision );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Calculate destination extent and size from source extent and size
-    bool destExtentSize( const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
-                         QgsRectangle& destExtent, int& destXSize, int& destYSize );
+    bool destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
+                         QgsRectangle &destExtent, int &destXSize, int &destYSize );
 
     //! Calculate destination extent and size from source extent and size
-    static bool extentSize( const QgsCoordinateTransform& ct,
-                            const QgsRectangle& srcExtent, int srcXSize, int srcYSize,
-                            QgsRectangle& destExtent, int& destXSize, int& destYSize );
+    static bool extentSize( const QgsCoordinateTransform &ct,
+                            const QgsRectangle &srcExtent, int srcXSize, int srcYSize,
+                            QgsRectangle &destExtent, int &destXSize, int &destYSize );
 
   private:
 
@@ -122,8 +122,8 @@ class ProjectorData
     ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision );
     ~ProjectorData();
 
-    ProjectorData( const ProjectorData& other ) = delete;
-    ProjectorData& operator=( const ProjectorData& other ) = delete;
+    ProjectorData( const ProjectorData &other ) = delete;
+    ProjectorData &operator=( const ProjectorData &other ) = delete;
 
     /** \brief Get source row and column indexes for current source extent and resolution
         If source pixel is outside source extent srcRow and srcCol are left unchanged.
@@ -151,19 +151,19 @@ class ProjectorData
     inline bool approximateSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
     //! \brief insert rows to matrix
-    void insertRows( const QgsCoordinateTransform& ct );
+    void insertRows( const QgsCoordinateTransform &ct );
 
     //! \brief insert columns to matrix
-    void insertCols( const QgsCoordinateTransform& ct );
+    void insertCols( const QgsCoordinateTransform &ct );
 
     //! Calculate single control point in current matrix
-    void calcCP( int row, int col, const QgsCoordinateTransform& ct );
+    void calcCP( int row, int col, const QgsCoordinateTransform &ct );
 
     //! \brief calculate matrix row
-    bool calcRow( int row, const QgsCoordinateTransform& ct );
+    bool calcRow( int row, const QgsCoordinateTransform &ct );
 
     //! \brief calculate matrix column
-    bool calcCol( int col, const QgsCoordinateTransform& ct );
+    bool calcCol( int col, const QgsCoordinateTransform &ct );
 
     //! \brief calculate source extent
     void calcSrcExtent();
@@ -173,11 +173,11 @@ class ProjectorData
 
     /** \brief check error along columns
       * returns true if within threshold */
-    bool checkCols( const QgsCoordinateTransform& ct );
+    bool checkCols( const QgsCoordinateTransform &ct );
 
     /** \brief check error along rows
       * returns true if within threshold */
-    bool checkRows( const QgsCoordinateTransform& ct );
+    bool checkRows( const QgsCoordinateTransform &ct );
 
     //! Calculate array of src helper points
     void calcHelper( int matrixRow, QgsPoint *points );
@@ -193,7 +193,7 @@ class ProjectorData
     bool mApproximate;
 
     //! Transformation from destination CRS to source CRS
-    QgsCoordinateTransform* mInverseCt = nullptr;
+    QgsCoordinateTransform *mInverseCt = nullptr;
 
     //! Destination extent
     QgsRectangle mDestExtent;

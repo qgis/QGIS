@@ -58,8 +58,8 @@ class TestQgsComposerMap(unittest.TestCase):
                                            vector_file_info.completeBaseName(), 'ogr')
         assert self.vector_layer.isValid()
 
-        #pipe = mRasterLayer.pipe()
-        #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
+        # pipe = mRasterLayer.pipe()
+        # assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
         QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
@@ -224,6 +224,7 @@ class TestQgsComposerMap(unittest.TestCase):
         ptolerance = (0.001, 0.001, 1, 0.001, 0.001, 1e+03)
         for i in range(0, 6):
             assert abs(p[i] - pexpected[i]) < ptolerance[i]
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -13,7 +13,6 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import os
 
 from qgis.core import (QgsFeedback)
 from qgis.PyQt.QtTest import QSignalSpy

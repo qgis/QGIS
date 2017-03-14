@@ -52,9 +52,9 @@ namespace pal
       ~PalStat();
 
       //! PalStat cannot be copied
-      PalStat( const PalStat& other ) = delete;
+      PalStat( const PalStat &other ) = delete;
       //! PalStat cannot be copied
-      PalStat& operator=( const PalStat& other ) = delete;
+      PalStat &operator=( const PalStat &other ) = delete;
 
       /**
        * \brief the number of object in problem

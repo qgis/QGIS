@@ -22,8 +22,8 @@
 #include "qgsscalecalculator.h"
 
 QgsScaleCalculator::QgsScaleCalculator( double dpi, QgsUnitTypes::DistanceUnit mapUnits )
-    : mDpi( dpi )
-    , mMapUnits( mapUnits )
+  : mDpi( dpi )
+  , mMapUnits( mapUnits )
 {}
 
 void QgsScaleCalculator::setDpi( double dpi )

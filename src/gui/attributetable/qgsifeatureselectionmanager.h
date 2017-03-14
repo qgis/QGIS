@@ -32,8 +32,8 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     Q_OBJECT
 
   public:
-    QgsIFeatureSelectionManager( QObject* parent )
-        : QObject( parent ) {}
+    QgsIFeatureSelectionManager( QObject *parent )
+      : QObject( parent ) {}
 
     /**
      * The number of features that are selected in this layer
@@ -47,14 +47,14 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      *
      * @param ids            Feature ids to select
      */
-    virtual void select( const QgsFeatureIds& ids ) = 0;
+    virtual void select( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Deselect features
      *
      * @param ids            Feature ids to deselect
      */
-    virtual void deselect( const QgsFeatureIds& ids ) = 0;
+    virtual void deselect( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      *
      * @param ids   The ids which will be the new selection
      */
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids ) = 0;
+    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Return reference to identifiers of selected features
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * @param deselected      Ids of all features which have previously been selected but are not any more
      * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds& selected, const QgsFeatureIds& deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
 };
 
 #endif // QGSIFEATURESELECTIONMANAGER_H

@@ -41,7 +41,6 @@ import re
 import subprocess
 from shutil import copytree, rmtree
 import tempfile
-from time import sleep
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
@@ -60,7 +59,7 @@ from qgis.testing import (
 try:
     QGIS_SERVER_WFST_PORT = os.environ['QGIS_SERVER_WFST_PORT']
 except:
-    QGIS_SERVER_WFST_PORT = '0' # Auto
+    QGIS_SERVER_WFST_PORT = '0'  # Auto
 
 
 qgis_app = start_app()
@@ -110,7 +109,6 @@ class TestWFST(unittest.TestCase):
         del cls.server
         # Clear all test layers
         for ln in ['test_point', 'test_polygon', 'test_linestring']:
-            layer = cls._getLayer(ln)
             cls._clearLayer(ln)
         rmtree(cls.temp_path)
 

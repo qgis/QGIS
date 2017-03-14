@@ -16,25 +16,21 @@
  *
  ***************************************************************************/
 
-#include <QSettings>
-#include <QInputDialog>
 #include <QMessageBox>
-#include <QLabel>
-#include <qgslogger.h>
-#include <qlistwidget.h>
+#include <QSqlDatabase>
+#include <QSqlError>
 
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
-
+#include "qgssettings.h"
+#include "qgslogger.h"
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
 #include "qgscontexthelp.h"
 
-QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
-    , mAuthConfigSelect( nullptr )
+QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
+  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
@@ -45,7 +41,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/DB2/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
@@ -82,7 +78,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString& connNa
 //! Autoconnected SLOTS *
 void QgsDb2NewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
   bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
@@ -97,13 +93,13 @@ void QgsDb2NewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }

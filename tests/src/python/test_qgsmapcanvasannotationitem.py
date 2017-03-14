@@ -15,7 +15,6 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsTextAnnotation,
-                       QgsMapSettings,
                        QgsCoordinateReferenceSystem,
                        QgsRectangle,
                        QgsPoint,
@@ -23,12 +22,9 @@ from qgis.core import (QgsTextAnnotation,
                        QgsFeature,
                        QgsGeometry,
                        QgsFillSymbol)
-from qgis.gui import (QgsMapCanvas,
-                      QgsMapCanvasAnnotationItem)
+from qgis.gui import QgsMapCanvas, QgsMapCanvasAnnotationItem
 
-from qgis.PyQt.QtCore import (QDir,
-                              QPointF,
-                              QSizeF)
+from qgis.PyQt.QtCore import QPointF, QSizeF
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -140,7 +136,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
 
         canvas.setExtent(QgsRectangle(10, 30, 20, 35))
 
-        i = QgsMapCanvasAnnotationItem(a, canvas)
+        i = QgsMapCanvasAnnotationItem(a, canvas)  # NOQA
 
         layer = QgsVectorLayer("Point?crs=EPSG:4326&field=station:string&field=suburb:string",
                                'test', "memory")

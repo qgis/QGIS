@@ -4,7 +4,7 @@ from builtins import range
 ##To_keep=number 1
 ##Biggest parts=output vector
 
-from qgis.core import Qgis, QgsGeometry, QgsWkbTypes
+from qgis.core import QgsGeometry, QgsWkbTypes
 from operator import itemgetter
 
 To_keep = int(To_keep)

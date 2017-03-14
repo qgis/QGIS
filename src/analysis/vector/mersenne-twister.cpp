@@ -81,7 +81,7 @@ static inline void generate_numbers()
   }
 
   // i = 226
-  UNROLL(( i + PERIOD ) % SIZE );
+  UNROLL( ( i + PERIOD ) % SIZE );
 
   // i = [227 ... 622]
   while ( i < ( SIZE - 1 ) )
@@ -104,8 +104,8 @@ static inline void generate_numbers()
   }
 
   // i = 623
-  y = M32( MT[SIZE-1] ) | L31( MT[0] );
-  MT[SIZE-1] = MT[PERIOD-1] ^( y >> 1 ) ^ MATRIX[ODD( y )];
+  y = M32( MT[SIZE - 1] ) | L31( MT[0] );
+  MT[SIZE - 1] = MT[PERIOD - 1] ^ ( y >> 1 ) ^ MATRIX[ODD( y )];
 }
 
 extern "C" void seed( uint32_t value )
@@ -146,7 +146,7 @@ extern "C" void seed( uint32_t value )
   index = 0;
 
   for ( unsigned i = 1; i < SIZE; ++i )
-    MT[i] = 0x6c078965 * ( MT[i-1] ^ MT[i-1] >> 30 ) + i;
+    MT[i] = 0x6c078965 * ( MT[i - 1] ^ MT[i - 1] >> 30 ) + i;
 }
 
 extern "C" uint32_t rand_u32()

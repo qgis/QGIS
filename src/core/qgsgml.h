@@ -46,7 +46,7 @@ class CORE_EXPORT QgsGmlStreamingParser
 {
   public:
 
-    typedef QPair<QgsFeature*, QString> QgsGmlFeaturePtrGmlIdPair;
+    typedef QPair<QgsFeature *, QString> QgsGmlFeaturePtrGmlIdPair;
 
     /** \ingroup core
      * Layer properties
@@ -75,32 +75,32 @@ class CORE_EXPORT QgsGmlStreamingParser
     } AxisOrientationLogic;
 
     //! Constructor
-    QgsGmlStreamingParser( const QString& typeName,
-                           const QString& geometryAttribute,
-                           const QgsFields & fields,
+    QgsGmlStreamingParser( const QString &typeName,
+                           const QString &geometryAttribute,
+                           const QgsFields &fields,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
 
     //! Constructor for a join layer, or dealing with renamed fields
-    QgsGmlStreamingParser( const QList<LayerProperties>& layerProperties,
-                           const QgsFields & fields,
-                           const QMap< QString, QPair<QString, QString> >& mapFieldNameToSrcLayerNameFieldName,
+    QgsGmlStreamingParser( const QList<LayerProperties> &layerProperties,
+                           const QgsFields &fields,
+                           const QMap< QString, QPair<QString, QString> > &mapFieldNameToSrcLayerNameFieldName,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
 
     //! QgsGmlStreamingParser cannot be copied.
-    QgsGmlStreamingParser( const QgsGmlStreamingParser& other ) = delete;
+    QgsGmlStreamingParser( const QgsGmlStreamingParser &other ) = delete;
     //! QgsGmlStreamingParser cannot be copied.
-    QgsGmlStreamingParser& operator=( const QgsGmlStreamingParser& other ) = delete;
+    QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
 
     /** Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
-    bool processData( const QByteArray& data, bool atEnd, QString& errorMsg );
+    bool processData( const QByteArray &data, bool atEnd, QString &errorMsg );
 
     /** Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
-    bool processData( const QByteArray& data, bool atEnd );
+    bool processData( const QByteArray &data, bool atEnd );
 
     /** Returns the list of features that have been completely parsed. This
         can be called at any point. This will empty the list maintained internally
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QString srsName() const { return mSrsName; }
 
     //! Return layer bounding box
-    const QgsRectangle& layerExtent() const { return mLayerExtent; }
+    const QgsRectangle &layerExtent() const { return mLayerExtent; }
 
     //! Return the geometry type
     QgsWkbTypes::Type wkbType() const { return mWkbType; }
@@ -161,24 +161,24 @@ class CORE_EXPORT QgsGmlStreamingParser
     };
 
     //! XML handler methods
-    void startElement( const XML_Char* el, const XML_Char** attr );
-    void endElement( const XML_Char* el );
-    void characters( const XML_Char* chars, int len );
-    static void start( void* data, const XML_Char* el, const XML_Char** attr )
+    void startElement( const XML_Char *el, const XML_Char **attr );
+    void endElement( const XML_Char *el );
+    void characters( const XML_Char *chars, int len );
+    static void start( void *data, const XML_Char *el, const XML_Char **attr )
     {
-      static_cast<QgsGmlStreamingParser*>( data )->startElement( el, attr );
+      static_cast<QgsGmlStreamingParser *>( data )->startElement( el, attr );
     }
-    static void end( void* data, const XML_Char* el )
+    static void end( void *data, const XML_Char *el )
     {
-      static_cast<QgsGmlStreamingParser*>( data )->endElement( el );
+      static_cast<QgsGmlStreamingParser *>( data )->endElement( el );
     }
-    static void chars( void* data, const XML_Char* chars, int len )
+    static void chars( void *data, const XML_Char *chars, int len )
     {
-      static_cast<QgsGmlStreamingParser*>( data )->characters( chars, len );
+      static_cast<QgsGmlStreamingParser *>( data )->characters( chars, len );
     }
 
     // Set current feature attribute
-    void setAttribute( const QString& name, const QString& value );
+    void setAttribute( const QString &name, const QString &value );
 
     //helper routines
 
@@ -187,23 +187,23 @@ class CORE_EXPORT QgsGmlStreamingParser
        @param attr attribute strings
        @return 0 in case of success
       */
-    int readEpsgFromAttribute( int& epsgNr, const XML_Char** attr );
+    int readEpsgFromAttribute( int &epsgNr, const XML_Char **attr );
 
     /** Reads attribute as string
        @param attributeName
        @param attr
        @return attribute value or an empty string if no such attribute
       */
-    QString readAttribute( const QString& attributeName, const XML_Char** attr ) const;
+    QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
     //! Creates a rectangle from a coordinate string.
-    bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString& coordString ) const;
+    bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString &coordString ) const;
 
     /** Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
        @return 0 in case of success
       */
-    int pointsFromCoordinateString( QList<QgsPoint>& points, const QString& coordString ) const;
+    int pointsFromCoordinateString( QList<QgsPoint> &points, const QString &coordString ) const;
 
     /** Creates a set of points from a gml:posList or gml:pos coordinate string.
        @param points list that will contain the created points
@@ -211,12 +211,12 @@ class CORE_EXPORT QgsGmlStreamingParser
        @param dimension number of dimensions
        @return 0 in case of success
       */
-    int pointsFromPosListString( QList<QgsPoint>& points, const QString& coordString, int dimension ) const;
+    int pointsFromPosListString( QList<QgsPoint> &points, const QString &coordString, int dimension ) const;
 
-    int pointsFromString( QList<QgsPoint>& points, const QString& coordString ) const;
-    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint& ) const;
-    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& lineCoordinates ) const;
-    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint>& ringCoordinates ) const;
+    int pointsFromString( QList<QgsPoint> &points, const QString &coordString ) const;
+    int getPointWKB( QgsWkbPtr &wkbPtr, const QgsPoint & ) const;
+    int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint> &lineCoordinates ) const;
+    int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPoint> &ringCoordinates ) const;
 
     /** Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Typename without namespace prefix
     QString mTypeName;
     QByteArray mTypeNameBA;
-    const char* mTypeNamePtr = nullptr;
+    const char *mTypeNamePtr = nullptr;
     size_t mTypeNameUTF8Len;
 
     QgsWkbTypes::Type mWkbType;
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Name of geometry attribute
     QString mGeometryAttribute;
     QByteArray mGeometryAttributeBA;
-    const char* mGeometryAttributePtr = nullptr;
+    const char *mGeometryAttributePtr = nullptr;
     size_t mGeometryAttributeUTF8Len;
 
     QgsFields mFields;
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QStack<ParseMode> mParseModeStack;
     //! This contains the character data if an important element has been encountered
     QString mStringCash;
-    QgsFeature* mCurrentFeature = nullptr;
+    QgsFeature *mCurrentFeature = nullptr;
     QVector<QVariant> mCurrentAttributes; //attributes of current feature
     QString mCurrentFeatureId;
     int mFeatureCount;
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsRectangle mLayerExtent;
     //! GML namespace URI
     QString mGMLNameSpaceURI;
-    const char* mGMLNameSpaceURIPtr = nullptr;
+    const char *mGMLNameSpaceURIPtr = nullptr;
     //! Axis orientation logic
     AxisOrientationLogic mAxisOrientationLogic;
     //! Whether to invert axis orientation. This value is immutable, but combined with what is inferred from data and mAxisOrientationLogic, is used to compute mInvertAxisOrientation
@@ -336,9 +336,9 @@ class CORE_EXPORT QgsGml : public QObject
     Q_OBJECT
   public:
     QgsGml(
-      const QString& typeName,
-      const QString& geometryAttribute,
-      const QgsFields & fields );
+      const QString &typeName,
+      const QString &geometryAttribute,
+      const QgsFields &fields );
 
     /** Does the Http GET request to the wfs server
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
@@ -351,20 +351,20 @@ class CORE_EXPORT QgsGml : public QObject
      *  @return 0 in case of success
      *  @note available in python as getFeaturesUri
      */
-    int getFeatures( const QString& uri,
-                     QgsWkbTypes::Type* wkbType,
-                     QgsRectangle* extent = nullptr,
-                     const QString& userName = QString(),
-                     const QString& password = QString(),
-                     const QString& authcfg = QString() );
+    int getFeatures( const QString &uri,
+                     QgsWkbTypes::Type *wkbType,
+                     QgsRectangle *extent = nullptr,
+                     const QString &userName = QString(),
+                     const QString &password = QString(),
+                     const QString &authcfg = QString() );
 
     /** Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
-    int getFeatures( const QByteArray &data, QgsWkbTypes::Type* wkbType, QgsRectangle* extent = nullptr );
+    int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = nullptr );
 
     //! Get parsed features for given type name
-    QMap<QgsFeatureId, QgsFeature* > featuresMap() const { return mFeatures; }
+    QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }
 
     //! Get feature ids map
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
@@ -407,7 +407,7 @@ class CORE_EXPORT QgsGml : public QObject
 
     //! The features of the layer, map of feature maps for each feature type
     //QMap<QgsFeatureId, QgsFeature* > &mFeatures;
-    QMap<QgsFeatureId, QgsFeature* > mFeatures;
+    QMap<QgsFeatureId, QgsFeature * > mFeatures;
     //QMap<QString, QMap<QgsFeatureId, QgsFeature* > > mFeatures;
 
     //! Stores the relation between provider ids and WFS server ids

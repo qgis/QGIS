@@ -23,8 +23,8 @@
 
 #include <QMouseEvent>
 
-QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
+QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
 }
 
@@ -32,7 +32,7 @@ QgsMapToolReshape::~QgsMapToolReshape()
 {
 }
 
-void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer //todo: move this to a function in parent class to avoid duplication
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -106,7 +106,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
           if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
           {
             //ignore all current layer features as they should be reshaped too
-            QHash<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures;
+            QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
             ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
             if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )

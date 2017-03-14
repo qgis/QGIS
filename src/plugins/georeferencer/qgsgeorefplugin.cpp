@@ -78,11 +78,11 @@ static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.p
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * qgisInterface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( qgisInterface )
-    , mActionRunGeoref( nullptr )
-    , mPluginGui( nullptr )
+QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mQGisIface( qgisInterface )
+  , mActionRunGeoref( nullptr )
+  , mPluginGui( nullptr )
 {
 }
 
@@ -136,7 +136,7 @@ void QgsGeorefPlugin::unload()
 }
 
 //! Set icons to the current theme
-void QgsGeorefPlugin::setCurrentTheme( const QString& )
+void QgsGeorefPlugin::setCurrentTheme( const QString & )
 {
   if ( mActionRunGeoref )
     mActionRunGeoref->setIcon( getThemeIcon( QStringLiteral( "/mGeorefRun.png" ) ) );
@@ -182,7 +182,7 @@ QIcon QgsGeorefPlugin::getThemeIcon( const QString &name )
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * qgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
   return new QgsGeorefPlugin( qgisInterfacePointer );
 }
@@ -223,7 +223,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * pluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
   delete pluginPointer;
 }

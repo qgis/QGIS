@@ -39,7 +39,7 @@ class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetW
      * @param fieldIdx index of associated field
      * @param parent parent widget
      */
-    explicit QgsTextEditSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsTextEditSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     bool applyDirectly() override;
 

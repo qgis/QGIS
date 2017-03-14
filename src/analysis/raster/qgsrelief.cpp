@@ -28,15 +28,15 @@
 #include <QFile>
 #include <QTextStream>
 
-QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : mInputFile( inputFile )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mCellSizeX( 0.0 )
-    , mCellSizeY( 0.0 )
-    , mInputNodataValue( -1 )
-    , mOutputNodataValue( -1 )
-    , mZFactor( 1.0 )
+QgsRelief::QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
+  : mInputFile( inputFile )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mCellSizeX( 0.0 )
+  , mCellSizeY( 0.0 )
+  , mInputNodataValue( -1 )
+  , mOutputNodataValue( -1 )
+  , mZFactor( 1.0 )
 {
   mSlopeFilter = new QgsSlopeFilter( inputFile, outputFile, outputFormat );
   mAspectFilter = new QgsAspectFilter( inputFile, outputFile, outputFormat );
@@ -62,7 +62,7 @@ void QgsRelief::clearReliefColors()
   mReliefColors.clear();
 }
 
-void QgsRelief::addReliefColorClass( const ReliefColor& color )
+void QgsRelief::addReliefColorClass( const ReliefColor &color )
 {
   mReliefColors.push_back( color );
 }
@@ -78,7 +78,7 @@ void QgsRelief::setDefaultReliefColors()
   addReliefColorClass( ReliefColor( QColor( 255, 255, 255 ), 4000, 9000 ) );
 }
 
-int QgsRelief::processRaster( QProgressDialog* p )
+int QgsRelief::processRaster( QProgressDialog *p )
 {
   //open input file
   int xSize, ySize;
@@ -162,13 +162,13 @@ int QgsRelief::processRaster( QProgressDialog* p )
   }
 
   //keep only three scanlines in memory at a time
-  float* scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  unsigned char* resultRedLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-  unsigned char* resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-  unsigned char* resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char *resultRedLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char *resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char *resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
 
   if ( p )
   {
@@ -230,20 +230,20 @@ int QgsRelief::processRaster( QProgressDialog* p )
     {
       if ( j == 0 )
       {
-        resultOk = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j+1], &mInputNodataValue, &scanLine2[j], \
-                                          &scanLine2[j+1], &mInputNodataValue, &scanLine3[j], &scanLine3[j+1], \
+        resultOk = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j + 1], &mInputNodataValue, &scanLine2[j], \
+                                          &scanLine2[j + 1], &mInputNodataValue, &scanLine3[j], &scanLine3[j + 1], \
                                           &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
       }
       else if ( j == xSize - 1 )
       {
-        resultOk = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &mInputNodataValue, &scanLine2[j-1], &scanLine2[j], \
-                                          &mInputNodataValue, &scanLine3[j-1], &scanLine3[j], &mInputNodataValue, \
+        resultOk = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &mInputNodataValue, &scanLine2[j - 1], &scanLine2[j], \
+                                          &mInputNodataValue, &scanLine3[j - 1], &scanLine3[j], &mInputNodataValue, \
                                           &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
       }
       else
       {
-        resultOk = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &scanLine1[j+1], &scanLine2[j-1], &scanLine2[j], \
-                                          &scanLine2[j+1], &scanLine3[j-1], &scanLine3[j], &scanLine3[j+1], \
+        resultOk = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &scanLine1[j + 1], &scanLine2[j - 1], &scanLine2[j], \
+                                          &scanLine2[j + 1], &scanLine3[j - 1], &scanLine3[j], &scanLine3[j + 1], \
                                           &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
       }
 
@@ -294,8 +294,8 @@ int QgsRelief::processRaster( QProgressDialog* p )
   return 0;
 }
 
-bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
-                                       unsigned char* red, unsigned char* green, unsigned char* blue )
+bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9,
+                                       unsigned char *red, unsigned char *green, unsigned char *blue )
 {
   //1. component: color and hillshade from 300 degrees
   int r = 0;
@@ -388,14 +388,14 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
   return true;
 }
 
-bool QgsRelief::setElevationColor( double elevation, int* red, int* green, int* blue )
+bool QgsRelief::setElevationColor( double elevation, int *red, int *green, int *blue )
 {
   QList< ReliefColor >::const_iterator reliefColorIt =  mReliefColors.constBegin();
   for ( ; reliefColorIt != mReliefColors.constEnd(); ++reliefColorIt )
   {
     if ( elevation >= reliefColorIt->minElevation && elevation <= reliefColorIt->maxElevation )
     {
-      const QColor& c = reliefColorIt->color;
+      const QColor &c = reliefColorIt->color;
       *red = c.red();
       *green = c.green();
       *blue = c.blue();
@@ -407,7 +407,7 @@ bool QgsRelief::setElevationColor( double elevation, int* red, int* green, int* 
 }
 
 //duplicated from QgsNineCellFilter. Todo: make common base class
-GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
+GDALDatasetH QgsRelief::openInputFile( int &nCellsX, int &nCellsY )
 {
   GDALDatasetH inputDataset = GDALOpen( mInputFile.toUtf8().constData(), GA_ReadOnly );
   if ( inputDataset )
@@ -490,14 +490,14 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
     mCellSizeY = -mCellSizeY;
   }
 
-  const char* projection = GDALGetProjectionRef( inputDataset );
+  const char *projection = GDALGetProjectionRef( inputDataset );
   GDALSetProjection( outputDataset, projection );
 
   return outputDataset;
 }
 
 //this function is mainly there for debugging
-bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
+bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
 {
   int nCellsX, nCellsY;
   GDALDatasetH inputDataset = openInputFile( nCellsX, nCellsY );
@@ -536,7 +536,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
     frequency[i] = 0;
   }
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
+  float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
 
   for ( int i = 0; i < nCellsY; ++i )
@@ -623,7 +623,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
     frequency[i] = 0;
   }
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
+  float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
 
   for ( int i = 0; i < nCellsY; ++i )
@@ -704,11 +704,11 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   return resultList;
 }
 
-void QgsRelief::optimiseClassBreaks( QList<int>& breaks, double* frequencies )
+void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
 {
   int nClasses = breaks.size() - 1;
-  double* a = new double[nClasses]; //slopes
-  double* b = new double[nClasses]; //y-offsets
+  double *a = new double[nClasses]; //slopes
+  double *b = new double[nClasses]; //y-offsets
 
   for ( int i = 0; i < nClasses; ++i )
   {
@@ -779,7 +779,7 @@ int QgsRelief::frequencyClassForElevation( double elevation, double minElevation
   return ( elevation - minElevation ) / elevationClassRange;
 }
 
-bool QgsRelief::calculateRegression( const QList< QPair < int, double > >& input, double& a, double& b )
+bool QgsRelief::calculateRegression( const QList< QPair < int, double > > &input, double &a, double &b )
 {
   double xMean, yMean;
   double xSum = 0;
@@ -798,8 +798,8 @@ bool QgsRelief::calculateRegression( const QList< QPair < int, double > >& input
   inputIt = input.constBegin();
   for ( ; inputIt != input.constEnd(); ++inputIt )
   {
-    sumCounter += (( inputIt->first - xMean ) * ( inputIt->second - yMean ) );
-    sumDenominator += (( inputIt->first - xMean ) * ( inputIt->first - xMean ) );
+    sumCounter += ( ( inputIt->first - xMean ) * ( inputIt->second - yMean ) );
+    sumDenominator += ( ( inputIt->first - xMean ) * ( inputIt->first - xMean ) );
   }
 
   a = sumCounter / sumDenominator;

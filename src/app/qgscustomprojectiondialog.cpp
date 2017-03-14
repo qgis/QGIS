@@ -23,14 +23,14 @@
 #include "qgisapp.h" //<--theme icons
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
+#include "qgssettings.h"
 
 //qt includes
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
-#include <QSettings>
 
 //stdc++ includes
 #include <fstream>
@@ -44,12 +44,12 @@ extern "C"
 
 
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/CustomProjection/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/CustomProjection/geometry" ) ).toByteArray() );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -74,8 +74,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/CustomProjection/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/CustomProjection/geometry" ), saveGeometry() );
 }
 
 
@@ -106,9 +106,9 @@ void QgsCustomProjectionDialog::populateList()
     QgsCoordinateReferenceSystem crs;
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      id = QString::fromUtf8(( char* ) sqlite3_column_text( myPreparedStatement, 0 ) );
-      name = QString::fromUtf8(( char* ) sqlite3_column_text( myPreparedStatement, 1 ) );
-      parameters = QString::fromUtf8(( char* ) sqlite3_column_text( myPreparedStatement, 2 ) );
+      id = QString::fromUtf8( ( char * ) sqlite3_column_text( myPreparedStatement, 0 ) );
+      name = QString::fromUtf8( ( char * ) sqlite3_column_text( myPreparedStatement, 1 ) );
+      parameters = QString::fromUtf8( ( char * ) sqlite3_column_text( myPreparedStatement, 2 ) );
 
       crs.createFromProj4( parameters );
       existingCRSnames[id] = name;
@@ -140,7 +140,7 @@ void QgsCustomProjectionDialog::populateList()
   }
 }
 
-bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
+bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
 {
   sqlite3      *myDatabase = nullptr;
   const char   *myTail = nullptr;
@@ -172,7 +172,7 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString& id )
   return myResult == SQLITE_OK;
 }
 
-void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAcronym )
+void  QgsCustomProjectionDialog::insertProjection( const QString &myProjectionAcronym )
 {
   sqlite3      *myDatabase = nullptr;
   sqlite3_stmt *myPreparedStatement = nullptr;
@@ -209,10 +209,10 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
         QgsDebugMsg( "Trying to insert projection" );
         // We have the result from system srs.db. Now insert into user db.
         mySql = "insert into tbl_projection(acronym,name,notes,parameters) values ("
-                + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 0 ) ) )
-                + ',' + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 1 ) ) )
-                + ',' + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 2 ) ) )
-                + ',' + quotedValue( QString::fromUtf8(( char * )sqlite3_column_text( srsPreparedStatement, 3 ) ) )
+                + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 0 ) ) )
+                + ',' + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 1 ) ) )
+                + ',' + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 2 ) ) )
+                + ',' + quotedValue( QString::fromUtf8( ( char * )sqlite3_column_text( srsPreparedStatement, 3 ) ) )
                 + ')'
                 ;
         myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
@@ -237,7 +237,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString& myProjectionAc
   sqlite3_close( myDatabase );
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, const QString& myName, QString myId, bool newEntry )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, const QString &myName, QString myId, bool newEntry )
 {
   QString mySql;
   int return_id;
@@ -310,7 +310,7 @@ void QgsCustomProjectionDialog::on_pbnAdd_clicked()
   QString id = QLatin1String( "" );
   QgsCoordinateReferenceSystem parameters;
 
-  QTreeWidgetItem* newItem = new QTreeWidgetItem( leNameList, QStringList() );
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
   newItem->setText( QgisCrsNameColumn, name );
   newItem->setText( QgisCrsIdColumn, id );
@@ -328,7 +328,7 @@ void QgsCustomProjectionDialog::on_pbnRemove_clicked()
   {
     return;
   }
-  QTreeWidgetItem* item = leNameList->takeTopLevelItem( i );
+  QTreeWidgetItem *item = leNameList->takeTopLevelItem( i );
   delete item;
   if ( customCRSids[i] != QLatin1String( "" ) )
   {
@@ -339,7 +339,7 @@ void QgsCustomProjectionDialog::on_pbnRemove_clicked()
   customCRSparameters.erase( customCRSparameters.begin() + i );
 }
 
-void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * previous )
+void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   //Store the modifications made to the current element before moving on
   int currentIndex, previousIndex;
@@ -369,12 +369,10 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
 {
-  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs;
-    QString id = mySelector->selectedAuthId();
-    srs.createFromOgcWmsCrs( id );
+    QgsCoordinateReferenceSystem srs = mySelector->crs();
     if ( leNameList->topLevelItemCount() == 0 )
     {
       on_pbnAdd_clicked();

@@ -40,7 +40,7 @@ class CORE_EXPORT QgsProviderMetadata
 {
   public:
 
-    QgsProviderMetadata( const QString & _key, const QString & _description, const QString & _library );
+    QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
 
     /** This returns the unique key associated with the provider
 

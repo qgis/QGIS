@@ -19,6 +19,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
+#include "qgssettings.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -26,25 +27,24 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegExp>
-#include <QSettings>
 #include <QTextStream>
 #include <QTextCodec>
 #include <QUrl>
 
 const int MAX_SAMPLE_LENGTH = 200;
 
-QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded )
-    : QDialog( parent, fl )
-    , mFile( new QgsDelimitedTextFile() )
-    , mExampleRowCount( 20 )
-    , mBadRowCount( 0 )
-    , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-    , mLastFileType( QLatin1String( "" ) )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded )
+  : QDialog( parent, fl )
+  , mFile( new QgsDelimitedTextFile() )
+  , mExampleRowCount( 20 )
+  , mBadRowCount( 0 )
+  , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
+  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
 
-  QSettings settings;
+  QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
 
   if ( embedded )
@@ -103,7 +103,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
 
 QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( mPluginKey + "/geometry", saveGeometry() );
   delete mFile;
 }
@@ -224,7 +224,7 @@ QString QgsDelimitedTextSourceSelect::selectedChars()
   chars.append( txtDelimiterOther->text() );
   return chars;
 }
-void QgsDelimitedTextSourceSelect::setSelectedChars( const QString& delimiters )
+void QgsDelimitedTextSourceSelect::setSelectedChars( const QString &delimiters )
 {
   QString chars = QgsDelimitedTextFile::decodeChars( delimiters );
   cbxDelimComma->setChecked( chars.contains( ',' ) );
@@ -237,9 +237,9 @@ void QgsDelimitedTextSourceSelect::setSelectedChars( const QString& delimiters )
   txtDelimiterOther->setText( chars );
 }
 
-void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loadGeomSettings )
+void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loadGeomSettings )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   // at startup, fetch the last used delimiter and directory from
   // settings
@@ -294,9 +294,9 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString& subkey, bool loa
 
 }
 
-void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool saveGeomSettings )
+void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool saveGeomSettings )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString key = mPluginKey;
   if ( ! subkey.isEmpty() ) key.append( '/' ).append( subkey );
   settings.setValue( key + "/encoding", cmbEncoding->currentText() );
@@ -331,7 +331,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString& subkey, bool sav
 
 }
 
-void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString& filename )
+void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString &filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
@@ -341,7 +341,7 @@ void QgsDelimitedTextSourceSelect::loadSettingsForFile( const QString& filename 
   mLastFileType = filetype;
 }
 
-void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString& filename )
+void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
@@ -424,7 +424,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     // Look at count of non-blank fields
 
     int nv = values.size();
-    while ( nv > 0 && values[nv-1].isEmpty() ) nv--;
+    while ( nv > 0 && values[nv - 1].isEmpty() ) nv--;
 
     if ( isEmpty.size() < nv )
     {
@@ -567,7 +567,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
 }
 
-bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString& xname, const QString& yname )
+bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname )
 {
   // If fields already set, then nothing to do
   if ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) return true;
@@ -621,7 +621,7 @@ void QgsDelimitedTextSourceSelect::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
   // Set initial dir to last used
-  QSettings settings;
+  QgsSettings settings;
   QString selectedFilter = settings.value( mPluginKey + "/file_filter", "" ).toString();
 
   QString s = QFileDialog::getOpenFileName(
@@ -645,7 +645,7 @@ void QgsDelimitedTextSourceSelect::updateFileName()
   QFileInfo finfo( filename );
   if ( finfo.exists() )
   {
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( mPluginKey + "/text_path", finfo.path() );
   }
   txtLayerName->setText( finfo.completeBaseName() );

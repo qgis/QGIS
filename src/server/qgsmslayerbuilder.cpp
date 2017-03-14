@@ -31,7 +31,7 @@ QgsMSLayerBuilder::QgsMSLayerBuilder()
 
 }
 
-QString QgsMSLayerBuilder::layerNameFromUri( const QString& uri ) const
+QString QgsMSLayerBuilder::layerNameFromUri( const QString &uri ) const
 {
   //file based?
   QFileInfo f( uri );
@@ -50,7 +50,7 @@ QString QgsMSLayerBuilder::layerNameFromUri( const QString& uri ) const
   if ( uri.contains( QLatin1String( "dbname" ) ) )
   {
     //take tablename
-    Q_FOREACH ( const QString& token, uri.split( " " ) )
+    Q_FOREACH ( const QString &token, uri.split( " " ) )
     {
       if ( token.startsWith( QLatin1String( "table" ) ) )
       {
@@ -83,7 +83,7 @@ QString QgsMSLayerBuilder::createTempFile() const
   return tempFilePath;
 }
 
-void QgsMSLayerBuilder::clearRasterSymbology( QgsRasterLayer* rl ) const
+void QgsMSLayerBuilder::clearRasterSymbology( QgsRasterLayer *rl ) const
 {
   if ( rl )
   {

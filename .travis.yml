@@ -5,15 +5,15 @@ matrix:
     - os: linux
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - BUILD=qt5
-        - QT_VERSION=5
         - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
       sudo: false
       cache:
         apt: true
+        pip: true
         directories:
           - $HOME/.ccache
+          - $HOME/depcache
         timeout: 1000
       compiler: clang
       python: "3.3"
@@ -32,6 +32,7 @@ matrix:
             - libpq-dev
             - libfcgi-dev
             - libfftw3-3
+            - libgsl0-dev
             - pkg-config
             - poppler-utils
             - txt2tags

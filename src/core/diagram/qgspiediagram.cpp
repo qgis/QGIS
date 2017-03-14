@@ -26,12 +26,12 @@ QgsPieDiagram::QgsPieDiagram()
   mPen.setStyle( Qt::SolidLine );
 }
 
-QgsPieDiagram* QgsPieDiagram::clone() const
+QgsPieDiagram *QgsPieDiagram::clone() const
 {
   return new QgsPieDiagram( *this );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   Q_UNUSED( c );
 
@@ -43,7 +43,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature& feature, const QgsRenderCon
       expressionContext.setFields( feature.fields() );
     expressionContext.setFeature( feature );
 
-    QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    QgsExpression *expression = getExpression( is.classificationAttributeExpression, expressionContext );
     attrVal = expression->evaluate( &expressionContext );
   }
   else
@@ -67,16 +67,16 @@ double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, con
   return qMax( size.width(), size.height() );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );
   Q_UNUSED( attributes );
   return s.size;
 }
 
-void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
+void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position )
 {
-  QPainter* p = c.painter();
+  QPainter *p = c.painter();
   if ( !p )
   {
     return;
@@ -96,7 +96,7 @@ void QgsPieDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& 
   QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
   for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )
   {
-    QgsExpression* expression = getExpression( *catIt, expressionContext );
+    QgsExpression *expression = getExpression( *catIt, expressionContext );
     currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;

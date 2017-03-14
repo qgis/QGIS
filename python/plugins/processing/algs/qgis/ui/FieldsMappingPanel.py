@@ -136,9 +136,9 @@ class FieldsMappingModel(QAbstractTableModel):
                 return section
 
     def flags(self, index):
-        flags = (Qt.ItemIsSelectable
-                 + Qt.ItemIsEditable
-                 + Qt.ItemIsEnabled)
+        flags = (Qt.ItemIsSelectable |
+                 Qt.ItemIsEditable |
+                 Qt.ItemIsEnabled)
 
         return Qt.ItemFlags(flags)
 

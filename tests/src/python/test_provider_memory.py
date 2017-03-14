@@ -14,11 +14,9 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.core import (
-    Qgis,
     QgsField,
     QgsLayerDefinition,
     QgsPoint,
-    QgsMapLayer,
     QgsPathResolver,
     QgsVectorLayer,
     QgsFeatureRequest,
@@ -410,6 +408,7 @@ class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

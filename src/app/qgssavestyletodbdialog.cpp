@@ -15,14 +15,15 @@
 
 #include "qgssavestyletodbdialog.h"
 
+#include "qgssettings.h"
+
 #include <QFileDialog>
-#include <QSettings>
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDateTime>
 
 QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Save style in database" ) );
@@ -31,14 +32,14 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
   setTabOrder( mDescriptionEdit, mUseAsDefault );
   setTabOrder( mUseAsDefault, buttonBox );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/saveStyleToDb/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/saveStyleToDb/geometry" ) ).toByteArray() );
 }
 
 QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/saveStyleToDb/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/saveStyleToDb/geometry" ), saveGeometry() );
 }
 
 QString QgsSaveStyleToDbDialog::getName()
@@ -73,7 +74,7 @@ void QgsSaveStyleToDbDialog::accept()
 
 void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Designer UI file" ), myLastUsedDir, tr( "Qt Designer UI file .ui" ) + " (*.ui)" );

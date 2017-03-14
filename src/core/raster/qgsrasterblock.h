@@ -278,7 +278,7 @@ class CORE_EXPORT QgsRasterBlock
      * overwrite data somewhere in the middle of the internal buffer.
      * @note added in QGIS 3.0
      */
-    void setData( const QByteArray& data, int offset = 0 );
+    void setData( const QByteArray &data, int offset = 0 );
 
     /** \brief Get pointer to data
      *  @param row row index
@@ -286,20 +286,20 @@ class CORE_EXPORT QgsRasterBlock
      *  @return pointer to data
      *  @note not available in python bindings
      */
-    char * bits( int row, int column );
+    char *bits( int row, int column );
 
     /** \brief Get pointer to data
      *  @param index data matrix index (long type in Python)
      *  @return pointer to data
      *  @note not available in python bindings
      */
-    char * bits( qgssize index );
+    char *bits( qgssize index );
 
     /** \brief Get pointer to data
      *  @return pointer to data
      *  @note not available in python bindings
      */
-    char * bits();
+    char *bits();
 
     /** \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
@@ -328,7 +328,7 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief set image.
      *  @param image image
      *  @return true on success */
-    bool setImage( const QImage * image );
+    bool setImage( const QImage *image );
 
     //! @note not available in python bindings
     inline static double readValue( void *data, Qgis::DataType type, qgssize index );
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsRasterBlock
     //! @note not available in python bindings
     inline static void writeValue( void *data, Qgis::DataType type, qgssize index, double value );
 
-    void applyNoDataValues( const QgsRasterRangeList & rangeList );
+    void applyNoDataValues( const QgsRasterRangeList &rangeList );
 
     /** Apply band scale and offset to raster block values
      * @@note added in 2.3 */
@@ -346,7 +346,7 @@ class CORE_EXPORT QgsRasterBlock
     QgsError error() const { return mError; }
 
     //! \brief Set error
-    void setError( const QgsError & error ) { mError = error;}
+    void setError( const QgsError &error ) { mError = error;}
 
     QString toString() const;
 
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param destDataType dest data type
      *  @param size block size (width * height)
      *  @return block of data in destDataType */
-    static void * convert( void *srcData, Qgis::DataType srcDataType, Qgis::DataType destDataType, qgssize size );
+    static void *convert( void *srcData, Qgis::DataType srcDataType, Qgis::DataType destDataType, qgssize size );
 
     // Valid
     bool mValid;
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsRasterBlock
 
     // Data block for numerical data types, not used with image data types
     // QByteArray does not seem to be intended for large data blocks, does it?
-    void * mData = nullptr;
+    void *mData = nullptr;
 
     // Image for image data types, not used with numerical data types
     QImage *mImage = nullptr;
@@ -456,25 +456,25 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
   switch ( type )
   {
     case Qgis::Byte:
-      return static_cast< double >(( static_cast< quint8 * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< quint8 * >( data ) )[index] );
       break;
     case Qgis::UInt16:
-      return static_cast< double >(( static_cast< quint16 * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< quint16 * >( data ) )[index] );
       break;
     case Qgis::Int16:
-      return static_cast< double >(( static_cast< qint16 * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< qint16 * >( data ) )[index] );
       break;
     case Qgis::UInt32:
-      return static_cast< double >(( static_cast< quint32 * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< quint32 * >( data ) )[index] );
       break;
     case Qgis::Int32:
-      return static_cast< double >(( static_cast< qint32 * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< qint32 * >( data ) )[index] );
       break;
     case Qgis::Float32:
-      return static_cast< double >(( static_cast< float * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< float * >( data ) )[index] );
       break;
     case Qgis::Float64:
-      return static_cast< double >(( static_cast< double * >( data ) )[index] );
+      return static_cast< double >( ( static_cast< double * >( data ) )[index] );
       break;
     default:
       QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );

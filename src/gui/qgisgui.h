@@ -89,7 +89,7 @@ namespace QgisGui
   */
 
   bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+      QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll = false );
 
   /** A helper function to get an image name from the user. It will nicely
@@ -100,7 +100,7 @@ namespace QgisGui
    * @return QPair<QString, QString> where first is the file name and second is
    * the file type
    */
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * parent, const QString& message, const QString& defaultFilename = QString::null );
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *parent, const QString &message, const QString &defaultFilename = QString::null );
 
   /**
     Convenience function for readily creating file filters.

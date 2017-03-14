@@ -21,8 +21,8 @@
 #include "qgsapplication.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
+  : QStandardItemModel()
+  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Owner" );
@@ -108,9 +108,9 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
-    QStandardItem* sqlItem = new QStandardItem( layerProperty.sql );
+    QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
-    QList<QStandardItem*> childItemList;
+    QList<QStandardItem *> childItemList;
     childItemList << ownerNameItem;
     childItemList << tableItem;
     childItemList << typeItem;
@@ -141,7 +141,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
     if ( !ownerItem )
     {
-      QList<QStandardItem*> ownerItems = findItems( layerProperty.ownerName, Qt::MatchExactly, DbtmOwner );
+      QList<QStandardItem *> ownerItems = findItems( layerProperty.ownerName, Qt::MatchExactly, DbtmOwner );
 
       // there is already an item for this schema
       if ( ownerItems.size() > 0 )
@@ -184,13 +184,13 @@ void QgsOracleTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> ownerItems = findItems( ownerName, Qt::MatchExactly, DbtmOwner );
+  QList<QStandardItem *> ownerItems = findItems( ownerName, Qt::MatchExactly, DbtmOwner );
   if ( ownerItems.size() < 1 )
   {
     return;
   }
 
-  QStandardItem* ownerItem = ownerItems.at( DbtmOwner );
+  QStandardItem *ownerItem = ownerItems.at( DbtmOwner );
 
   int n = ownerItem->rowCount();
   for ( int i = 0; i < n; i++ )

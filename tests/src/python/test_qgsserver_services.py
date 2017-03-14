@@ -57,15 +57,12 @@ class MyService(QgsService):
         return self._version
 
     def executeRequest(self, request, response):
-
-        url = request.url()
-
         response.setReturnCode(201)
         response.write(self._response)
 
 
 class TestServices(unittest.TestCase):
-    """ 
+    """
     """
 
     @classmethod

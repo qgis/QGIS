@@ -17,17 +17,17 @@
 #include "Point3D.h"
 #include "qgslogger.h"
 
-bool Point3D::operator==( const Point3D& p ) const
+bool Point3D::operator==( const Point3D &p ) const
 {
   return ( mX == p.getX() && mY == p.getY() && mZ == p.getZ() );
 }
 
-bool Point3D::operator!=( const Point3D& p ) const
+bool Point3D::operator!=( const Point3D &p ) const
 {
-  return ( !(( *this ) == p ) );
+  return ( !( ( *this ) == p ) );
 }
 
-double Point3D::dist3D( Point3D* p ) const
+double Point3D::dist3D( Point3D *p ) const
 {
   if ( p )
   {
@@ -35,7 +35,7 @@ double Point3D::dist3D( Point3D* p ) const
     dx = p->getX() - getX();
     dy = p->getY() - getY();
     dz = p->getZ() - getZ();
-    return sqrt( dx*dx + dy*dy + dz*dz );
+    return sqrt( dx * dx + dy * dy + dz * dz );
   }
   else
   {

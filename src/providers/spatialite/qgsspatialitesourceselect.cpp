@@ -25,10 +25,10 @@ email                : a.furieri@lqt.it
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -39,14 +39,14 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
-QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool embedded ):
-    QDialog( parent, fl )
+QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embedded ):
+  QDialog( parent, fl )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   setWindowTitle( tr( "Add SpatiaLite Layer(s)" ) );
   btnEdit->hide();  // hide the edit button
@@ -95,7 +95,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
   mTablesTreeView->setModel( &mProxyModel );
   mTablesTreeView->setSortingEnabled( true );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
@@ -116,9 +116,9 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::Wind
 
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SpatiaLiteSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 }
 
 // Slot for performing action when the Add button is clicked
@@ -192,7 +192,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -204,7 +204,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchTableEdit_textChanged( const QString &
   }
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -228,13 +228,13 @@ void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( co
   }
 }
 
-void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsSpatiaLiteSourceSelect::setLayerType( const QString& table, const QString& column, const QString& type )
+void QgsSpatiaLiteSourceSelect::setLayerType( const QString &table, const QString &column, const QString &type )
 {
   mTableModel.setGeometryTypesForTable( table, column, type );
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
@@ -244,7 +244,7 @@ void QgsSpatiaLiteSourceSelect::setLayerType( const QString& table, const QStrin
 void QgsSpatiaLiteSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
-  Q_FOREACH ( const QString& name, QgsSpatiaLiteConnection::connectionList() )
+  Q_FOREACH ( const QString &name, QgsSpatiaLiteConnection::connectionList() )
   {
     // retrieving the SQLite DB name and full path
     QString text = name + tr( "@" ) + QgsSpatiaLiteConnection::connectionPath( name );
@@ -266,11 +266,11 @@ void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
   emit connectionsChanged();
 }
 
-bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
+bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
 {
   // Retrieve last used project dir from persistent settings
-  QSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSpatiaLiteDir" ), QDir::homePath() ).toString();
 
   QString myFile = QFileDialog::getOpenFileName( parent,
                    tr( "Choose a SpatiaLite/SQLite DB to open" ),
@@ -296,7 +296,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
   while ( ! settings.value( baseKey + savedName + "/sqlitepath", "" ).toString().isEmpty() )
   {
     bool ok;
-    savedName = QInputDialog::getText( nullptr , tr( "Cannot add connection '%1'" ).arg( myName ) ,
+    savedName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( myName ),
                                        tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
                                        QLatin1String( "" ), &ok );
     if ( !ok || savedName.isEmpty() )
@@ -306,7 +306,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
   }
 
   // Persist last used SpatiaLite dir
-  settings.setValue( QStringLiteral( "/UI/lastSpatiaLiteDir" ), myPath );
+  settings.setValue( QStringLiteral( "UI/lastSpatiaLiteDir" ), myPath );
   // inserting this SQLite DB path
   settings.setValue( baseKey + "selected", savedName );
   settings.setValue( baseKey + savedName + "/sqlitepath", myFI.canonicalFilePath() );
@@ -482,7 +482,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   mTableModel.setSqliteDb( subKey );
 
   QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
-  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry& table, tables )
+  Q_FOREACH ( const QgsSpatiaLiteConnection::TableEntry &table, tables )
   {
     mTableModel.addTableEntry( table.type, table.tableName, table.column, QLatin1String( "" ) );
   }
@@ -540,7 +540,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-QString QgsSpatiaLiteSourceSelect::fullDescription( const QString& table, const QString& column, const QString& type )
+QString QgsSpatiaLiteSourceSelect::fullDescription( const QString &table, const QString &column, const QString &type )
 {
   QString full_desc = QLatin1String( "" );
   full_desc += table + "\" (" + column + ") " + type;
@@ -550,15 +550,15 @@ QString QgsSpatiaLiteSourceSelect::fullDescription( const QString& table, const 
 void QgsSpatiaLiteSourceSelect::dbChanged()
 {
   // Remember which database was selected.
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/SpatiaLite/connections/selected" ), cmbConnections->currentText() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), cmbConnections->currentText() );
 }
 
 void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 {
-  QSettings settings;
+  QgsSettings settings;
   // If possible, set the item currently displayed database
-  QString toSelect = settings.value( QStringLiteral( "/SpatiaLite/connections/selected" ) ).toString();
+  QString toSelect = settings.value( QStringLiteral( "SpatiaLite/connections/selected" ) ).toString();
 
   toSelect += '@' + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
 
@@ -573,7 +573,7 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString & regexp )
+void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString &regexp )
 {
   Q_UNUSED( regexp );
 }

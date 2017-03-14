@@ -50,7 +50,7 @@ class TestQgsComposerMultiFrame : public QObject
 };
 
 TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
-    : mComposition( 0 )
+  : mComposition( 0 )
 {
 }
 
@@ -93,8 +93,8 @@ void TestQgsComposerMultiFrame::cleanup()
 
 void TestQgsComposerMultiFrame::addFrame()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlItem->addFrame( frame1 );
 
   //should not be inherited
@@ -111,7 +111,7 @@ void TestQgsComposerMultiFrame::addFrame()
   frame1->setBlendMode( QPainter::CompositionMode_ColorBurn );
   frame1->setTransparency( 50 );
 
-  QgsComposerFrame* frame2 = htmlItem->createNewFrame( frame1, QPointF( 50, 55 ), QSizeF( 70, 120 ) );
+  QgsComposerFrame *frame2 = htmlItem->createNewFrame( frame1, QPointF( 50, 55 ), QSizeF( 70, 120 ) );
 
   //check frame created in correct place
   QCOMPARE( frame2->rect().height(), 120.0 );
@@ -137,9 +137,9 @@ void TestQgsComposerMultiFrame::addFrame()
 
 void TestQgsComposerMultiFrame::frameIsEmpty()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
-  QgsComposerFrame* frame2 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerFrame *frame2 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlItem->addFrame( frame1 );
   htmlItem->addFrame( frame2 );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
@@ -170,8 +170,8 @@ void TestQgsComposerMultiFrame::frameIsEmpty()
 
 void TestQgsComposerMultiFrame::addRemovePage()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlItem->addFrame( frame1 );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
@@ -200,7 +200,7 @@ void TestQgsComposerMultiFrame::addRemovePage()
 
 
   //get a bit more complicated - add another item to page 3
-  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label1 );
   label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
 
@@ -224,8 +224,8 @@ void TestQgsComposerMultiFrame::addRemovePage()
 
 void TestQgsComposerMultiFrame::undoRedo()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlItem->addFrame( frame1 );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
@@ -300,8 +300,8 @@ void TestQgsComposerMultiFrame::undoRedo()
 
 void TestQgsComposerMultiFrame::undoRedoRemovedFrame()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlItem->addFrame( frame1 );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );

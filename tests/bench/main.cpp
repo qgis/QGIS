@@ -63,7 +63,7 @@ typedef SInt32 SRefCon;
 
 /** Print usage text
  */
-void usage( std::string const & appName )
+void usage( std::string const &appName )
 {
   std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
@@ -413,9 +413,9 @@ int main( int argc, char *argv[] )
     QStringList gdalShares;
     QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
-    << appResources.append( "/share/gdal" )
-    << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString& gdalShare, gdalShares )
+               << appResources.append( "/share/gdal" )
+               << appResources.append( "/gdal" );
+    Q_FOREACH ( const QString &gdalShare, gdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -499,7 +499,7 @@ int main( int argc, char *argv[] )
   {
     QPainter::RenderHints hints;
     QStringList list = myQuality.split( ',' );
-    Q_FOREACH ( const QString& q, list )
+    Q_FOREACH ( const QString &q, list )
     {
       if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
       else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
@@ -523,7 +523,7 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
   for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
     if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )

@@ -27,12 +27,12 @@
 #include <QStringListModel>
 #include <QCompleter>
 
-QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
-    , mListWidget( nullptr )
-    , mLineEdit( nullptr )
-    , mLayer( nullptr )
+QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
+  , mListWidget( nullptr )
+  , mLineEdit( nullptr )
+  , mLayer( nullptr )
 {
 }
 
@@ -55,7 +55,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     QStringList selection;
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
-      QListWidgetItem* item = mListWidget->item( i );
+      QListWidgetItem *item = mListWidget->item( i );
       if ( item->checkState() == Qt::Checked )
         selection << item->data( Qt::UserRole ).toString();
     }
@@ -65,7 +65,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
 
   if ( mLineEdit )
   {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item , mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &item, mCache )
     {
       if ( item.value == mLineEdit->text() )
       {
@@ -78,7 +78,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
   return v;
 }
 
-QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsValueRelationWidgetWrapper::createWidget( QWidget *parent )
 {
   if ( config( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
@@ -93,13 +93,13 @@ QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
   }
 }
 
-void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
+void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 {
   mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
-  mComboBox = qobject_cast<QComboBox*>( editor );
-  mListWidget = qobject_cast<QListWidget*>( editor );
-  mLineEdit = qobject_cast<QLineEdit*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
+  mListWidget = qobject_cast<QListWidget *>( editor );
+  mLineEdit = qobject_cast<QLineEdit *>( editor );
 
   if ( mComboBox )
   {
@@ -108,7 +108,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
       mComboBox->addItem( tr( "(no selection)" ), QVariant( field().type() ) );
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
     {
       mComboBox->addItem( element.value, element.key );
     }
@@ -117,7 +117,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   }
   else if ( mListWidget )
   {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& element, mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
     {
       QListWidgetItem *item = nullptr;
       item = new QListWidgetItem( element.value );
@@ -125,19 +125,19 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( valueChanged() ) );
+    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( valueChanged() ) );
   }
   else if ( mLineEdit )
   {
     QStringList values;
     values.reserve( mCache.size() );
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &i,  mCache )
     {
       values << i.value;
     }
 
-    QStringListModel* m = new QStringListModel( values, mLineEdit );
-    QCompleter* completer = new QCompleter( m, mLineEdit );
+    QStringListModel *m = new QStringListModel( values, mLineEdit );
+    QCompleter *completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
   }
@@ -148,7 +148,7 @@ bool QgsValueRelationWidgetWrapper::valid() const
   return mListWidget || mLineEdit || mComboBox;
 }
 
-void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
+void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mListWidget )
   {
@@ -156,7 +156,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
-      QListWidgetItem* item = mListWidget->item( i );
+      QListWidgetItem *item = mListWidget->item( i );
       item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
     }
   }

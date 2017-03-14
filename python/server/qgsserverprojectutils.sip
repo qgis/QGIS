@@ -26,6 +26,79 @@
  */
 namespace QgsServerProjectUtils
 {
+
+    /** Returns if owsService capabilities are enabled.
+      * @param project the QGIS project
+      * @return if owsService capabilities are enabled.
+      */
+    bool owsServiceCapabilities( const QgsProject& project );
+
+    /** Returns the owsService title defined in project.
+      * @param project the QGIS project
+      * @return the owsService title if defined in project.
+      */
+    QString owsServiceTitle( const QgsProject& project );
+
+    /** Returns the owsService abstract defined in project.
+      * @param project the QGIS project
+      * @return the owsService abstract if defined in project.
+      */
+    QString owsServiceAbstract( const QgsProject& project );
+
+    /** Returns the owsService keywords defined in project.
+      * @param project the QGIS project
+      * @return the owsService keywords if defined in project.
+      */
+    QStringList owsServiceKeywords( const QgsProject& project );
+
+    /** Returns the owsService online resource defined in project.
+      * @param project the QGIS project
+      * @return the owsService online resource if defined in project.
+      */
+    QString owsServiceOnlineResource( const QgsProject& project );
+
+    /** Returns the owsService contact organization defined in project.
+      * @param project the QGIS project
+      * @return the owsService contact organization if defined in project.
+      */
+    QString owsServiceContactOrganization( const QgsProject& project );
+
+    /** Returns the owsService contact position defined in project.
+      * @param project the QGIS project
+      * @return the owsService contact position if defined in project.
+      */
+    QString owsServiceContactPosition( const QgsProject& project );
+
+    /** Returns the owsService contact person defined in project.
+      * @param project the QGIS project
+      * @return the owsService contact person if defined in project.
+      */
+    QString owsServiceContactPerson( const QgsProject& project );
+
+    /** Returns the owsService contact mail defined in project.
+      * @param project the QGIS project
+      * @return the owsService contact mail if defined in project.
+      */
+    QString owsServiceContactMail( const QgsProject& project );
+
+    /** Returns the owsService contact phone defined in project.
+      * @param project the QGIS project
+      * @return the owsService contact phone if defined in project.
+      */
+    QString owsServiceContactPhone( const QgsProject& project );
+
+    /** Returns the owsService fees defined in project.
+      * @param project the QGIS project
+      * @return the owsService fees if defined in project.
+      */
+    QString owsServiceFees( const QgsProject& project );
+
+    /** Returns the owsService access constraints defined in project.
+      * @param project the QGIS project
+      * @return the owsService access constraints if defined in project.
+      */
+    QString owsServiceAccessConstraints( const QgsProject& project );
+
     /** Returns the maximum width for WMS images defined in a QGIS project.
       * @param project the QGIS project
       * @return width if defined in project, -1 otherwise.
@@ -38,7 +111,7 @@ namespace QgsServerProjectUtils
       */
     int wmsMaxHeight( const QgsProject& project );
 
-    /** Returns the WMS service url defined in a QGIS project.
+    /** Returns the WMS ervice url defined in a QGIS project.
       * @param project the QGIS project
       * @return url if defined in project, an empty string otherwise.
       */
@@ -55,4 +128,10 @@ namespace QgsServerProjectUtils
       * @return url if defined in project, an empty string otherwise.
       */
     QString wcsServiceUrl( const QgsProject& project );
+
+    /** Returns the Layer ids list defined in a QGIS project as published in WCS.
+      * @param project the QGIS project
+      * @return the Layer ids list.
+      */
+    QStringList wcsLayers( const QgsProject& project );
 };

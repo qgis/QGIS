@@ -23,8 +23,8 @@ email                : jpalmer at linz dot govt dot nz
 #include <QMouseEvent>
 
 
-QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolSelectPolygon::QgsMapToolSelectPolygon( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
@@ -37,7 +37,7 @@ QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand )
   {
@@ -62,7 +62,7 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand )
     return;

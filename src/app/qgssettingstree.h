@@ -45,7 +45,7 @@
 #include <QTimer>
 #include <QTreeWidget>
 
-class QSettings;
+class QgsSettings;
 
 class QgsSettingsTree : public QTreeWidget
 {
@@ -54,15 +54,14 @@ class QgsSettingsTree : public QTreeWidget
   public:
     explicit QgsSettingsTree( QWidget *parent = nullptr );
 
-    void setSettingsObject( QSettings *settings );
+    void setSettingsObject( QgsSettings *settings );
     QSize sizeHint() const override;
 
-    void setSettingsMap( QMap< QString, QStringList > & map ) { settingsMap = map; }
+    void setSettingsMap( QMap< QString, QStringList > &map ) { settingsMap = map; }
     QString itemKey( QTreeWidgetItem *item );
 
   public slots:
     void setAutoRefresh( bool autoRefresh );
-    void setFallbacksEnabled( bool enabled );
     void maybeRefresh();
     void refresh();
 
@@ -81,7 +80,7 @@ class QgsSettingsTree : public QTreeWidget
     int findChild( QTreeWidgetItem *parent, const QString &text, int startIndex );
     void moveItemForward( QTreeWidgetItem *parent, int oldIndex, int newIndex );
 
-    QSettings *settings = nullptr;
+    QgsSettings *settings = nullptr;
     QTimer refreshTimer;
     bool autoRefresh;
     QIcon groupIcon;

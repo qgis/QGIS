@@ -33,21 +33,21 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     Q_OBJECT
 
   public:
-    QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas );
+    QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas );
     ~QgsMapToolRotatePointSymbols();
 
-    void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     /** Returns true if the symbols of a maplayer can be rotated. This means the layer
       is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/
-    static bool layerIsRotatable( QgsMapLayer* ml );
+    static bool layerIsRotatable( QgsMapLayer *ml );
 
   protected:
 
-    virtual void canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint ) override;
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& context ) override;
+    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint ) override;
+    virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
     virtual void noCompatibleSymbols() override;
 
   private:
@@ -59,7 +59,7 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     bool mRotating;
     QSet<int> mCurrentRotationAttributes;
     //! Item that displays rotation during mouse move
-    QgsPointRotationItem* mRotationItem = nullptr;
+    QgsPointRotationItem *mRotationItem = nullptr;
     //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;
     //! Clone of first found marker symbol for feature with rotation attribute set

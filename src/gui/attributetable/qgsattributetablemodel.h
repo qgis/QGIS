@@ -163,22 +163,22 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
+    inline QgsVectorLayer *layer() const { return mLayerCache ? mLayerCache->layer() : nullptr; }
 
     /**
      * Returns the layer cache this model uses as backend.
      */
-    inline QgsVectorLayerCache* layerCache() const { return mLayerCache; }
+    inline QgsVectorLayerCache *layerCache() const { return mLayerCache; }
 
     /**
      * Execute an action
      */
-    void executeAction( const QUuid& action, const QModelIndex &idx ) const;
+    void executeAction( const QUuid &action, const QModelIndex &idx ) const;
 
     /**
      * Execute a QgsMapLayerAction
      */
-    void executeMapLayerAction( QgsMapLayerAction* action, const QModelIndex &idx ) const;
+    void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const;
 
     /**
      * Return the feature attributes at given model index
@@ -201,7 +201,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * @param expression The expression to cache
      */
-    void prefetchSortData( const QString& expression );
+    void prefetchSortData( const QString &expression );
 
     /**
      * The expression which was used to fill the sorting cache
@@ -215,13 +215,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * @param request The request to use to fill this table model.
      */
-    void setRequest( const QgsFeatureRequest& request );
+    void setRequest( const QgsFeatureRequest &request );
 
     /**
      * Get the the feature request
      */
     // TODO QGIS 3: return copy instead of reference
-    const QgsFeatureRequest& request() const;
+    const QgsFeatureRequest &request() const;
 
     /**
      * Sets the context in which this table is shown.
@@ -229,7 +229,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * @param context The context
      */
-    void setEditorContext( const QgsAttributeEditorContext& context ) { mEditorContext = context; }
+    void setEditorContext( const QgsAttributeEditorContext &context ) { mEditorContext = context; }
 
     /**
      * Returns the context in which this table is shown.
@@ -237,7 +237,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      *
      * @return The context
      */
-    const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+    const QgsAttributeEditorContext &editorContext() const { return mEditorContext; }
 
     /**
      * Empty extra columns to announce from this model.
@@ -263,7 +263,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param fieldName name of field whose conditional style has changed
      * @note added in QGIS 2.12
      */
-    void fieldConditionalStyleChanged( const QString& fieldName );
+    void fieldConditionalStyleChanged( const QString &fieldName );
 
   signals:
 
@@ -307,7 +307,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Launched when eatures have been deleted
      * @param fids feature ids
      */
-    virtual void featuresDeleted( const QgsFeatureIds& fids );
+    virtual void featuresDeleted( const QgsFeatureIds &fids );
 
     /**
      * Launched when a feature has been added
@@ -320,7 +320,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void layerDeleted();
 
-    virtual void fieldFormatterRemoved( QgsFieldFormatter* fieldFormatter );
+    virtual void fieldFormatterRemoved( QgsFieldFormatter *fieldFormatter );
 
   private:
     QgsVectorLayerCache *mLayerCache = nullptr;
@@ -329,8 +329,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     mutable QgsFeature mFeat;
 
     QgsAttributeList mAttributes;
-    QVector<QgsEditorWidgetFactory*> mWidgetFactories;
-    QVector<QgsFieldFormatter*> mFieldFormatters;
+    QVector<QgsEditorWidgetFactory *> mWidgetFactories;
+    QVector<QgsFieldFormatter *> mFieldFormatters;
     QVector<QVariant> mAttributeWidgetCaches;
     QVector<QVariantMap> mWidgetConfigs;
 

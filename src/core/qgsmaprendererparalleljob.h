@@ -31,16 +31,17 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererParallelJob( const QgsMapSettings& settings );
+    QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob();
 
     virtual void start() override;
     virtual void cancel() override;
+    virtual void cancelWithoutBlocking() override;
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
 
     virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    virtual QgsLabelingResults *takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;
@@ -54,9 +55,9 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
   private:
 
     //! @note not available in Python bindings
-    static void renderLayerStatic( LayerRenderJob& job );
+    static void renderLayerStatic( LayerRenderJob &job );
     //! @note not available in Python bindings
-    static void renderLabelsStatic( QgsMapRendererParallelJob* self );
+    static void renderLabelsStatic( QgsMapRendererParallelJob *self );
 
     QImage mFinalImage;
 

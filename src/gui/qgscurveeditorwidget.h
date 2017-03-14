@@ -90,22 +90,22 @@ class QgsHistogramValuesGatherer: public QThread
     //! Returns true if collection was canceled before completion
     bool wasCanceled() const { return mWasCanceled; }
 
-    const QgsHistogram& histogram() const { return mHistogram; }
+    const QgsHistogram &histogram() const { return mHistogram; }
 
-    const QgsVectorLayer* layer() const
+    const QgsVectorLayer *layer() const
     {
       return mLayer;
     }
-    void setLayer( const QgsVectorLayer* layer )
+    void setLayer( const QgsVectorLayer *layer )
     {
-      mLayer = const_cast< QgsVectorLayer* >( layer );
+      mLayer = const_cast< QgsVectorLayer * >( layer );
     }
 
     QString expression() const
     {
       return mExpression;
     }
-    void setExpression( const QString& expression )
+    void setExpression( const QString &expression )
     {
       mExpression = expression;
     }
@@ -122,7 +122,7 @@ class QgsHistogramValuesGatherer: public QThread
     QPointer< const QgsVectorLayer > mLayer = nullptr;
     QString mExpression;
     QgsHistogram mHistogram;
-    QgsFeedback* mFeedback = nullptr;
+    QgsFeedback *mFeedback = nullptr;
     QMutex mFeedbackMutex;
     bool mWasCanceled = false;
 };
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget* parent = nullptr, const QgsCurveTransform& curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
 
     ~QgsCurveEditorWidget();
 
@@ -157,7 +157,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * Sets the \a curve to show in the widget.
      * @see curve()
      */
-    void setCurve( const QgsCurveTransform& curve );
+    void setCurve( const QgsCurveTransform &curve );
 
     /**
      * Sets a \a layer and \a expression source for values to show in a histogram
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
      * @see minHistogramValueRange()
      * @see maxHistogramValueRange()
      */
-    void setHistogramSource( const QgsVectorLayer* layer, const QString& expression );
+    void setHistogramSource( const QgsVectorLayer *layer, const QString &expression );
 
     /**
      * Returns the minimum expected value for the range of values shown in the histogram.
@@ -217,12 +217,12 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     QgsCurveTransform mCurve;
 
-    QwtPlot* mPlot = nullptr;
+    QwtPlot *mPlot = nullptr;
 
-    QwtPlotCurve* mPlotCurve = nullptr;
+    QwtPlotCurve *mPlotCurve = nullptr;
 
-    QList< QwtPlotMarker* > mMarkers;
-    QgsCurveEditorPlotEventFilter* mPlotFilter = nullptr;
+    QList< QwtPlotMarker * > mMarkers;
+    QgsCurveEditorPlotEventFilter *mPlotFilter = nullptr;
     int mCurrentPlotMarkerIndex;
     //! Background histogram gatherer thread
     std::unique_ptr< QgsHistogramValuesGatherer > mGatherer;
@@ -243,9 +243,9 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     int findNearestControlPoint( QPointF point ) const;
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QwtPlotHistogram* createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
+    QwtPlotHistogram *createPlotHistogram( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
 #else
-    HistogramItem* createHistoItem( const QBrush& brush, const QPen& pen = Qt::NoPen ) const;
+    HistogramItem *createHistoItem( const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
 #endif
 
 };
@@ -264,7 +264,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
     QgsCurveEditorPlotEventFilter( QwtPlot *plot );
 
-    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+    virtual bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
@@ -274,7 +274,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot* mPlot;
+    QwtPlot *mPlot;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond

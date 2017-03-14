@@ -29,11 +29,11 @@
 // Filter Model //
 //////////////////
 
-QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent )
-    : QSortFilterProxyModel( parent )
-    , mCanvas( canvas )
-    , mFilterMode( ShowAll )
-    , mSelectedOnTop( false )
+QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mCanvas( canvas )
+  , mFilterMode( ShowAll )
+  , mSelectedOnTop( false )
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
@@ -70,7 +70,7 @@ void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
   emit sortColumnChanged( column, order );
 }
 
-QVariant QgsAttributeTableFilterModel::data( const QModelIndex& index, int role ) const
+QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role ) const
 {
   if ( mapColumnToSource( index.column() ) == -1 ) // actions
   {
@@ -114,20 +114,20 @@ int QgsAttributeTableFilterModel::actionColumnIndex() const
   return mColumnMapping.indexOf( -1 );
 }
 
-int QgsAttributeTableFilterModel::columnCount( const QModelIndex& parent ) const
+int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return mColumnMapping.count();
 }
 
-void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig& config )
+void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
   mConfig = config;
   mConfig.update( layer()->fields() );
 
   QVector<int> newColumnMapping;
 
-  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
+  Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
   {
     // Hidden? Forget about this column
     if ( columnConfig.hidden )
@@ -235,7 +235,7 @@ void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
   }
 }
 
-void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourceModel )
+void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel *sourceModel )
 {
   mTableModel = sourceModel;
 
@@ -261,7 +261,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
   return mSelectedOnTop;
 }
 
-void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds& ids )
+void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds &ids )
 {
   mFilteredFeatures = ids;
   setFilterMode( ShowFilteredList );
@@ -311,14 +311,14 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowSelected:
-      return layer()->selectedFeatureIds().isEmpty() || layer()->selectedFeatureIds().contains( masterModel()->rowToId( sourceRow ) );
+      return layer()->selectedFeatureIds().contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowVisible:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowEdited:
     {
-      QgsVectorLayerEditBuffer* editBuffer = layer()->editBuffer();
+      QgsVectorLayerEditBuffer *editBuffer = layer()->editBuffer();
       if ( editBuffer )
       {
         QgsFeatureId fid = masterModel()->rowToId( sourceRow );
@@ -387,7 +387,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
   renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer() ) );
-  QgsFeatureRenderer* renderer = layer()->renderer();
+  QgsFeatureRenderer *renderer = layer()->renderer();
 
   mFilteredFeatures.clear();
 
@@ -397,7 +397,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     return;
   }
 
-  const QgsMapSettings& ms = mCanvas->mapSettings();
+  const QgsMapSettings &ms = mCanvas->mapSettings();
   if ( !layer()->isInScaleRange( ms.scale() ) )
   {
     QgsDebugMsg( "Out of scale limits" );
@@ -461,7 +461,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
 }
 
-QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex& row )
+QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex &row )
 {
   return masterModel()->rowToId( mapToSource( row ).row() );
 }
@@ -474,7 +474,7 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  Q_FOREACH ( const QModelIndex& idx, masterModel()->idToIndexList( fid ) )
+  Q_FOREACH ( const QModelIndex &idx, masterModel()->idToIndexList( fid ) )
   {
     indexes.append( mapFromMaster( idx ) );
   }
@@ -482,7 +482,7 @@ QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
   return indexes;
 }
 
-QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex& proxyIndex ) const
+QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex &proxyIndex ) const
 {
   if ( !proxyIndex.isValid() )
     return QModelIndex();
@@ -497,7 +497,7 @@ QModelIndex QgsAttributeTableFilterModel::mapToSource( const QModelIndex& proxyI
   return QSortFilterProxyModel::mapToSource( index( proxyIndex.row(), sourceColumn, proxyIndex.parent() ) );
 }
 
-QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex& sourceIndex ) const
+QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex &sourceIndex ) const
 {
   QModelIndex proxyIndex = QSortFilterProxyModel::mapFromSource( sourceIndex );
 
@@ -508,10 +508,10 @@ QModelIndex QgsAttributeTableFilterModel::mapFromSource( const QModelIndex& sour
   if ( col == -1 )
     col = 0;
 
-  return index( proxyIndex.row(), col , proxyIndex.parent() );
+  return index( proxyIndex.row(), col, proxyIndex.parent() );
 }
 
-Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsAttributeTableFilterModel::flags( const QModelIndex &index ) const
 {
   // Handle the action column flags here, the master model doesn't know it
   if ( mapColumnToSource( index.column() ) == -1 )

@@ -34,24 +34,24 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
   public:
 
     //! Renderer owns color array
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString>& labels = QVector<QString>() );
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, QColor *colorArray, int nColors, const QVector<QString> &labels = QVector<QString>() );
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, QRgb *colorArray, int nColors, const QVector<QString> &labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
 
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
-    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer& ) = delete;
+    QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & ) = delete;
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
-    const QgsPalettedRasterRenderer& operator=( const QgsPalettedRasterRenderer& ) = delete;
+    const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & ) = delete;
 
-    QgsPalettedRasterRenderer * clone() const override;
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
+    QgsPalettedRasterRenderer *clone() const override;
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Returns number of colors
     int nColors() const { return mNColors; }
     //! Returns copy of color array (caller takes ownership)
-    QColor* colors() const;
+    QColor *colors() const;
 
     /** Return optional category label
      *  @note added in 2.1 */
@@ -59,11 +59,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /** Set category label
      *  @note added in 2.1 */
-    void setLabel( int idx, const QString& label );
+    void setLabel( int idx, const QString &label );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const override;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const override;
 
     QList<int> usesBands() const override;
 
@@ -71,11 +71,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /** Returns copy of premultiplied rgb array (caller takes ownership)
      */
-    QRgb* rgbArray() const;
+    QRgb *rgbArray() const;
 
     int mBand;
     //! Premultiplied color array
-    QRgb* mColors = nullptr;
+    QRgb *mColors = nullptr;
     //! Number of colors
     int mNColors;
     //! Optional category labels, size of vector may be < mNColors

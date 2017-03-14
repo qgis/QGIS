@@ -34,17 +34,17 @@ namespace QgsWms
   namespace
   {
 
-    void imageColors( QHash<QRgb, int>& colors, const QImage& image )
+    void imageColors( QHash<QRgb, int> &colors, const QImage &image )
     {
       colors.clear();
       int width = image.width();
       int height = image.height();
 
-      const QRgb* currentScanLine = nullptr;
+      const QRgb *currentScanLine = nullptr;
       QHash<QRgb, int>::iterator colorIt;
       for ( int i = 0; i < height; ++i )
       {
-        currentScanLine = ( const QRgb* )( image.scanLine( i ) );
+        currentScanLine = ( const QRgb * )( image.scanLine( i ) );
         for ( int j = 0; j < width; ++j )
         {
           colorIt = colors.find( currentScanLine[j] );
@@ -60,7 +60,7 @@ namespace QgsWms
       }
     }
 
-    bool minMaxRange( const QgsColorBox& colorBox, int& redRange, int& greenRange, int& blueRange, int& alphaRange )
+    bool minMaxRange( const QgsColorBox &colorBox, int &redRange, int &greenRange, int &blueRange, int &alphaRange )
     {
       if ( colorBox.size() < 1 )
       {
@@ -151,7 +151,7 @@ namespace QgsWms
       return qAlpha( c1.first ) < qAlpha( c2.first );
     }
 
-    QRgb boxColor( const QgsColorBox& box, int boxPixels )
+    QRgb boxColor( const QgsColorBox &box, int boxPixels )
     {
       double avRed = 0;
       double avGreen = 0;
@@ -177,7 +177,7 @@ namespace QgsWms
     }
 
 
-    void splitColorBox( QgsColorBox& colorBox, QgsColorBoxMap& colorBoxMap,
+    void splitColorBox( QgsColorBox &colorBox, QgsColorBoxMap &colorBoxMap,
                         QMap<int, QgsColorBox>::iterator colorBoxMapIt )
     {
 
@@ -253,7 +253,7 @@ namespace QgsWms
 
   } // namespace
 
-  void medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage )
+  void medianCut( QVector<QRgb> &colorTable, int nColors, const QImage &inputImage )
   {
     QHash<QRgb, int> inputColors;
     imageColors( inputColors, inputImage );

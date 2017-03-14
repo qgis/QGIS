@@ -70,7 +70,7 @@ class Topol: public QObject, public QgisPlugin
     * QGIS when it attempts to instantiate the plugin.
     * @param interface Pointer to the QgisInterface object.
      */
-    explicit Topol( QgisInterface * interface );
+    explicit Topol( QgisInterface *interface );
 
     virtual ~Topol();
 
@@ -97,8 +97,8 @@ class Topol: public QObject, public QgisPlugin
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer = nullptr;
-    checkDock* mDock = nullptr;
+    QAction *mQActionPointer = nullptr;
+    checkDock *mDock = nullptr;
 
     ////////////////////////////////////////////////////////////////////
     //

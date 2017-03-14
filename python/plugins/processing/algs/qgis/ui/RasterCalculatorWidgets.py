@@ -1,8 +1,8 @@
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.tools import dataobjects
-from processing.tools.system import userFolder, mkdir
+from processing.tools.system import userFolder
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
-from qgis.PyQt.QtWidgets import (QListWidget, QLineEdit, QPushButton, QLabel,
+from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
                                  QComboBox, QSpacerItem, QSizePolicy)
 from qgis.PyQt.QtGui import QTextCursor
 from processing.core.outputs import OutputRaster
@@ -38,6 +38,7 @@ class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
         self.name = self.txtName.text()
         self.expression = self.txtExpression.toPlainText()
         self.close()
+
 
 WIDGET_DLG, BASE_DLG = uic.loadUiType(
     os.path.join(pluginPath, 'PredefinedExpressionDialog.ui'))
@@ -78,6 +79,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
             self.filledExpression = self.filledExpression.replace(name,
                                                                   self.options[combo.currentText()])
         self.close()
+
 
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ExpressionWidget.ui'))

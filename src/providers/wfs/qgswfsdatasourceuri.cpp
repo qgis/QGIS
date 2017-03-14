@@ -19,8 +19,8 @@
 #include "qgswfsdatasourceuri.h"
 #include "qgsmessagelog.h"
 
-QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
-    : mURI( uri )
+QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
+  : mURI( uri )
 {
   // Compatibility with QGIS < 2.16 layer URI of the format
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
@@ -30,7 +30,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString& uri )
     // Transform all param keys to lowercase
     typedef QPair<QString, QString> queryItem;
     QList<queryItem> items( url.queryItems() );
-    Q_FOREACH ( const queryItem& item, items )
+    Q_FOREACH ( const queryItem &item, items )
     {
       url.removeQueryItem( item.first );
       url.addQueryItem( item.first.toLower(), item.second );
@@ -144,10 +144,10 @@ int QgsWFSDataSourceURI::maxNumFeatures() const
 void QgsWFSDataSourceURI::setMaxNumFeatures( int maxNumFeatures )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES );
-  mURI.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES , QString( maxNumFeatures ) );
+  mURI.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, QString( maxNumFeatures ) );
 }
 
-void QgsWFSDataSourceURI::setTypeName( const QString& typeName )
+void QgsWFSDataSourceURI::setTypeName( const QString &typeName )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_TYPENAME );
   mURI.setParam( QgsWFSConstants::URI_PARAM_TYPENAME, typeName );
@@ -158,14 +158,14 @@ QString QgsWFSDataSourceURI::typeName() const
   return mURI.param( QgsWFSConstants::URI_PARAM_TYPENAME );
 }
 
-void QgsWFSDataSourceURI::setSRSName( const QString& crsString )
+void QgsWFSDataSourceURI::setSRSName( const QString &crsString )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_SRSNAME );
   if ( !crsString.isEmpty() )
     mURI.setParam( QgsWFSConstants::URI_PARAM_SRSNAME, crsString );
 }
 
-void QgsWFSDataSourceURI::setVersion( const QString& versionString )
+void QgsWFSDataSourceURI::setVersion( const QString &versionString )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_VERSION );
   if ( !versionString.isEmpty() )
@@ -182,7 +182,7 @@ QString QgsWFSDataSourceURI::filter() const
   return mURI.param( QgsWFSConstants::URI_PARAM_FILTER );
 }
 
-void QgsWFSDataSourceURI::setFilter( const QString& filter )
+void QgsWFSDataSourceURI::setFilter( const QString &filter )
 {
   mURI.removeParam( QgsWFSConstants::URI_PARAM_FILTER );
   if ( !filter.isEmpty() )
@@ -196,7 +196,7 @@ QString QgsWFSDataSourceURI::sql() const
   return mURI.sql();
 }
 
-void QgsWFSDataSourceURI::setSql( const QString& sql )
+void QgsWFSDataSourceURI::setSql( const QString &sql )
 {
   mURI.setSql( sql );
 }
@@ -234,10 +234,10 @@ bool QgsWFSDataSourceURI::hideDownloadProgressDialog() const
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG );
 }
 
-QString QgsWFSDataSourceURI::build( const QString& baseUri,
-                                    const QString& typeName,
-                                    const QString& crsString,
-                                    const QString& sql,
+QString QgsWFSDataSourceURI::build( const QString &baseUri,
+                                    const QString &typeName,
+                                    const QString &crsString,
+                                    const QString &sql,
                                     bool restrictToCurrentViewExtent )
 {
   QgsWFSDataSourceURI uri( baseUri );

@@ -92,7 +92,7 @@ namespace pal
                      FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
       //! Copy constructor
-      LabelPosition( const LabelPosition& other );
+      LabelPosition( const LabelPosition &other );
 
       ~LabelPosition() { delete nextPart; }
 
@@ -132,19 +132,19 @@ namespace pal
       double getDistanceToPoint( double xp, double yp ) const;
 
       //! Returns true if this label crosses the specified line
-      bool crossesLine( PointSet* line ) const;
+      bool crossesLine( PointSet *line ) const;
 
       //! Returns true if this label crosses the boundary of the specified polygon
-      bool crossesBoundary( PointSet* polygon ) const;
+      bool crossesBoundary( PointSet *polygon ) const;
 
       /** Returns cost of position intersection with polygon (testing area of intersection and center).
        * Cost ranges between 0 and 12, with extra cost if center of label position is covered.
        */
-      int polygonIntersectionCost( PointSet* polygon ) const;
+      int polygonIntersectionCost( PointSet *polygon ) const;
 
       /** Returns true if if any intersection between polygon and position exists.
       */
-      bool intersectsWithPolygon( PointSet* polygon ) const;
+      bool intersectsWithPolygon( PointSet *polygon ) const;
 
       //! Shift the label by specified offset
       void offsetPosition( double xOffset, double yOffset );
@@ -158,7 +158,7 @@ namespace pal
       /** \brief return the feature corresponding to this labelposition
        * \return the feature
        */
-      FeaturePart * getFeaturePart();
+      FeaturePart *getFeaturePart();
 
       int getNumOverlaps() const { return nbOverlap; }
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
@@ -224,8 +224,8 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition* getNextPart() const { return nextPart; }
-      void setNextPart( LabelPosition* next ) { nextPart = next; }
+      LabelPosition *getNextPart() const { return nextPart; }
+      void setNextPart( LabelPosition *next ) { nextPart = next; }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -237,12 +237,12 @@ namespace pal
       //! Returns the number of upside down characters for this label position
       int upsideDownCharCount() const { return mUpsideDownCharCount; }
 
-      void removeFromIndex( RTree<LabelPosition*, double, 2, double> *index );
-      void insertIntoIndex( RTree<LabelPosition*, double, 2, double> *index );
+      void removeFromIndex( RTree<LabelPosition *, double, 2, double> *index );
+      void insertIntoIndex( RTree<LabelPosition *, double, 2, double> *index );
 
       typedef struct
       {
-        Pal* pal = nullptr;
+        Pal *pal = nullptr;
         FeaturePart *obstacle = nullptr;
       } PruneCtx;
 
@@ -286,7 +286,7 @@ namespace pal
       double w;
       double h;
 
-      LabelPosition* nextPart = nullptr;
+      LabelPosition *nextPart = nullptr;
       int partId;
 
       //True if label direction is the same as line / polygon ring direction.
@@ -298,8 +298,8 @@ namespace pal
 
       LabelPosition::Quadrant quadrant;
 
-      bool isInConflictSinglePart( LabelPosition* lp );
-      bool isInConflictMultiPart( LabelPosition* lp );
+      bool isInConflictSinglePart( LabelPosition *lp );
+      bool isInConflictMultiPart( LabelPosition *lp );
 
     private:
       double mCost;
@@ -313,7 +313,7 @@ namespace pal
       /** Calculates the polygon intersection cost for a single label position part
        * @returns double between 0 - 12
        */
-      double polygonIntersectionCostForParts( PointSet* polygon ) const;
+      double polygonIntersectionCostForParts( PointSet *polygon ) const;
 
   };
 

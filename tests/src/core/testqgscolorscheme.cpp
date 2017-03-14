@@ -48,7 +48,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    virtual QgsColorScheme* clone() const override
+    virtual QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
     }

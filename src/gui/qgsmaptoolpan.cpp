@@ -22,9 +22,9 @@
 #include <QMouseEvent>
 
 
-QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mToolName = tr( "Pan" );
   // set cursor
@@ -48,18 +48,18 @@ void QgsMapToolPan::deactivate()
   QgsMapTool::deactivate();
 }
 
-void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolPan::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() == Qt::LeftButton )
     mCanvas->setCursor( QCursor( Qt::ClosedHandCursor ) );
 }
 
 
-void QgsMapToolPan::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolPan::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mPinching )
   {
-    if (( e->buttons() & Qt::LeftButton ) )
+    if ( ( e->buttons() & Qt::LeftButton ) )
     {
       mDragging = true;
       // move map and other canvas items
@@ -68,7 +68,7 @@ void QgsMapToolPan::canvasMoveEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mPinching )
   {
@@ -91,7 +91,7 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent* e )
   mCanvas->setCursor( mCursor );
 }
 
-void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent* e )
+void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
   if ( !QTouchDevice::devices().isEmpty() && !mPinching )
   {
@@ -99,7 +99,7 @@ void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent* e )
   }
 }
 
-bool QgsMapToolPan::gestureEvent( QGestureEvent* event )
+bool QgsMapToolPan::gestureEvent( QGestureEvent *event )
 {
   if ( QTouchDevice::devices().isEmpty() )
     return true; // no touch support
@@ -113,7 +113,7 @@ bool QgsMapToolPan::gestureEvent( QGestureEvent* event )
   return true;
 }
 
-void QgsMapToolPan::pinchTriggered( QPinchGesture* gesture )
+void QgsMapToolPan::pinchTriggered( QPinchGesture *gesture )
 {
   if ( gesture->state() == Qt::GestureFinished )
   {

@@ -74,13 +74,12 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             algList.reloadProvider('preconfigured')
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox.accepted.connect(lambda:
-                                                e.widget.setPalette(QPalette()))
+                self.buttonBox.accepted.connect(lambda: e.widget.setPalette(QPalette()))
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.parent.bar.pushMessage("", self.tr('Missing parameter value: %s')
-                                            % e.parameter.description,
+                self.parent.bar.pushMessage("", self.tr('Missing parameter value: {0}').format(
+                                            e.parameter.description),
                                             level=QgsMessageBar.WARNING, duration=5)
                 return
             except:

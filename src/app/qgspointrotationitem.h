@@ -32,20 +32,20 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
       Counterclockwise
     };
 
-    QgsPointRotationItem( QgsMapCanvas* canvas );
+    QgsPointRotationItem( QgsMapCanvas *canvas );
     ~QgsPointRotationItem();
 
-    void paint( QPainter * painter ) override;
+    void paint( QPainter *painter ) override;
 
     //! Sets the center point of the rotation symbol (in map coordinates)
-    void setPointLocation( const QgsPoint& p );
+    void setPointLocation( const QgsPoint &p );
 
     /** Sets the rotation of the symbol and displays the new rotation number.
     Units are degrees, starting from north direction, clockwise direction*/
     void setSymbolRotation( int r ) {mRotation = r;}
 
     //! Sets rotation symbol from image (takes ownership)
-    void setSymbol( const QImage& symbolImage );
+    void setSymbol( const QImage &symbolImage );
 
     void setOrientation( Orientation o ) { mOrientation = o; }
     Orientation orientation() const { return mOrientation; }

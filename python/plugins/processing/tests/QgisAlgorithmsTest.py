@@ -30,10 +30,7 @@ import AlgorithmsTestBase
 import nose2
 import shutil
 
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 
 
 class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):

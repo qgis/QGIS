@@ -31,14 +31,14 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject
+from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject, QgsSettings
 
 
 def _expressionContext(alg):
@@ -180,9 +180,9 @@ class OutputFile(Output):
 
     def getFileFilter(self, alg):
         if self.ext is None:
-            return self.tr('All files(*.*)', 'OutputFile')
+            return self.tr('All files (*.*)', 'OutputFile')
         else:
-            return self.tr('%s files(*.%s)', 'OutputFile') % (self.ext, self.ext)
+            return self.tr('{0} files (*.{1})', 'OutputFile').format(self.ext, self.ext)
 
     def getDefaultFileExtension(self):
         return self.ext or 'file'
@@ -191,7 +191,7 @@ class OutputFile(Output):
 class OutputHTML(Output):
 
     def getFileFilter(self, alg):
-        return self.tr('HTML files(*.html)', 'OutputHTML')
+        return self.tr('HTML files (*.html)', 'OutputHTML')
 
     def getDefaultFileExtension(self):
         return 'html'
@@ -210,7 +210,7 @@ class OutputRaster(Output):
     def getFileFilter(self, alg):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'OutputVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
@@ -252,7 +252,7 @@ class OutputTable(Output):
     def getFileFilter(self, alg):
         exts = ['dbf']
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr("{0} files (*.{1})").format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
@@ -289,7 +289,7 @@ class OutputTable(Output):
         """
 
         if self.encoding is None:
-            settings = QSettings()
+            settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System')
 
         return TableWriter(self.value, self.encoding, fields)
@@ -324,7 +324,7 @@ class OutputVector(Output):
     def getFileFilter(self, alg):
         exts = self.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'OutputVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
@@ -374,7 +374,7 @@ class OutputVector(Output):
         """
 
         if self.encoding is None:
-            settings = QSettings()
+            settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
         w = VectorWriter(self.value, self.encoding, fields, geomType,

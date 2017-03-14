@@ -21,8 +21,8 @@
 
 #include <QSettings>
 
-QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsDateTimeEditFactory::QgsDateTimeEditFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
@@ -31,7 +31,7 @@ QgsEditorWidgetWrapper *QgsDateTimeEditFactory::create( QgsVectorLayer *vl, int 
   return new QgsDateTimeEditWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsSearchWidgetWrapper* QgsDateTimeEditFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper *QgsDateTimeEditFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsDateTimeSearchWidgetWrapper( vl, fieldIdx, parent );
 }
@@ -41,15 +41,15 @@ QgsEditorConfigWidget *QgsDateTimeEditFactory::configWidget( QgsVectorLayer *vl,
   return new QgsDateTimeEditConfig( vl, fieldIdx, parent );
 }
 
-QHash<const char*, int> QgsDateTimeEditFactory::supportedWidgetTypes()
+QHash<const char *, int> QgsDateTimeEditFactory::supportedWidgetTypes()
 {
-  QHash<const char*, int> map = QHash<const char*, int>();
+  QHash<const char *, int> map = QHash<const char *, int>();
   map.insert( QDateTimeEdit::staticMetaObject.className(), 10 );
   map.insert( QgsDateTimeEdit::staticMetaObject.className(), 10 );
   return map;
 }
 
-unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsDateTimeEditFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
   const QVariant::Type type = field.type();

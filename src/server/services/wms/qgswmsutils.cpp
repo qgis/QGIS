@@ -33,11 +33,11 @@ namespace QgsWms
   }
 
   // Return the wms config parser (Transitional)
-  QgsWmsConfigParser* getConfigParser( QgsServerInterface* serverIface )
+  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface )
   {
     QString configFilePath = serverIface->configFilePath();
 
-    QgsWmsConfigParser* parser  = QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
+    QgsWmsConfigParser *parser  = QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
     if ( !parser )
     {
       throw QgsServiceException(
@@ -47,7 +47,7 @@ namespace QgsWms
     return parser;
   }
 
-  QUrl serviceUrl( const QgsServerRequest& request, const QgsProject* project )
+  QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
     QUrl href;
     if ( project )
@@ -75,14 +75,14 @@ namespace QgsWms
   }
 
 
-  ImageOutputFormat parseImageFormat( const QString& format )
+  ImageOutputFormat parseImageFormat( const QString &format )
   {
     if ( format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 ||
          format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 )
     {
       return PNG;
     }
-    else if ( format.compare( QLatin1String( "jpg " ) , Qt::CaseInsensitive ) == 0  ||
+    else if ( format.compare( QLatin1String( "jpg " ), Qt::CaseInsensitive ) == 0  ||
               format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
     {
       return JPEG;
@@ -106,7 +106,7 @@ namespace QgsWms
     return UNKN;
   }
 
-  void readLayersAndStyles( const QgsServerRequest::Parameters& parameters, QStringList& layersList, QStringList& stylesList )
+  void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList )
   {
     //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
     layersList = parameters.value( QStringLiteral( "LAYER" ) ).split( QStringLiteral( "," ), QString::SkipEmptyParts );
@@ -117,7 +117,7 @@ namespace QgsWms
 
 
   // Write image response
-  void writeImage( QgsServerResponse& response, QImage& img, const QString& formatStr,
+  void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
                    int imageQuality )
   {
     ImageOutputFormat outputFormat = parseImageFormat( formatStr );
@@ -177,7 +177,7 @@ namespace QgsWms
     }
   }
 
-  QgsRectangle parseBbox( const QString& bboxStr )
+  QgsRectangle parseBbox( const QString &bboxStr )
   {
     QStringList lst = bboxStr.split( QStringLiteral( "," ) );
     if ( lst.count() != 4 )

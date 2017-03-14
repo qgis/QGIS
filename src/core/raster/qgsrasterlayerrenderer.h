@@ -41,21 +41,21 @@ class QgsRasterLayerRenderer;
 class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-    QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext );
+    QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext );
     ~QgsRasterLayerRenderer();
 
     virtual bool render() override;
 
-    virtual QgsFeedback* feedback() const override;
+    virtual QgsFeedback *feedback() const override;
 
   protected:
 
-    QPainter* mPainter = nullptr;
-    const QgsMapToPixel* mMapToPixel = nullptr;
-    QgsRasterViewPort* mRasterViewPort = nullptr;
+    QPainter *mPainter = nullptr;
+    const QgsMapToPixel *mMapToPixel = nullptr;
+    QgsRasterViewPort *mRasterViewPort = nullptr;
 
-    QgsRasterPipe* mPipe = nullptr;
-    QgsRenderContext& mContext;
+    QgsRasterPipe *mPipe = nullptr;
+    QgsRenderContext &mContext;
 
     /** \ingroup core
      * Specific internal feedback class to provide preview of raster layer rendering.
@@ -66,18 +66,18 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     {
       public:
         //! Create feedback object based on our layer renderer
-        explicit Feedback( QgsRasterLayerRenderer* r );
+        explicit Feedback( QgsRasterLayerRenderer *r );
 
         //! when notified of new data in data provider it launches a preview draw of the raster
         virtual void onNewData() override;
       private:
-        QgsRasterLayerRenderer* mR;   //!< Parent renderer instance
+        QgsRasterLayerRenderer *mR;   //!< Parent renderer instance
         int mMinimalPreviewInterval;  //!< In milliseconds
         QTime mLastPreview;           //!< When last preview has been generated
     };
 
     //! feedback class for cancelation and preview generation
-    Feedback* mFeedback = nullptr;
+    Feedback *mFeedback = nullptr;
 };
 
 

@@ -39,9 +39,9 @@
 #include <QtConcurrentMap>
 
 
-QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , QWidget *parent )
-    : QWidget( parent )
-    , mIface( iface )
+QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QWidget *parent )
+  : QWidget( parent )
+  , mIface( iface )
 
 {
   ui.setupUi( this );
@@ -54,7 +54,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
 
   connect( mRunButton, SIGNAL( clicked() ), this, SLOT( runChecks() ) );
   connect( ui.comboBoxInputLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( validateInput() ) );
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( updateLayers() ) );
+  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( updateLayers() ) );
   connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( updateLayers() ) );
   connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.lineEditOutput, SLOT( setEnabled( bool ) ) );
   connect( ui.radioButtonOutputNew, SIGNAL( toggled( bool ) ), ui.pushButtonOutputBrowse, SLOT( setEnabled( bool ) ) );
@@ -66,7 +66,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface* iface , Q
 
   updateLayers();
 
-  Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  Q_FOREACH ( const QgsGeometryCheckFactory *factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
     factory->restorePrevious( ui );
   }
@@ -84,10 +84,10 @@ void QgsGeometryCheckerSetupTab::updateLayers()
 
   // Collect layers
   // Don't switch current layer if dialog is visible to avoid confusing the user
-  QgsMapLayer* currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
+  QgsMapLayer *currentLayer = isVisible() ? 0 : mIface->mapCanvas()->currentLayer();
   int currIdx = -1;
   int idx = 0;
-  Q_FOREACH ( QgsVectorLayer* layer, QgsProject::instance()->layers<QgsVectorLayer*>() )
+  Q_FOREACH ( QgsVectorLayer *layer, QgsProject::instance()->layers<QgsVectorLayer *>() )
   {
     ui.comboBoxInputLayer->addItem( layer->name(), layer->id() );
     if ( layer->name() == prevLayer )
@@ -103,23 +103,23 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   ui.comboBoxInputLayer->setCurrentIndex( qMax( 0, currIdx ) );
 }
 
-QgsVectorLayer* QgsGeometryCheckerSetupTab::getSelectedLayer()
+QgsVectorLayer *QgsGeometryCheckerSetupTab::getSelectedLayer()
 {
   int inputIdx = ui.comboBoxInputLayer->currentIndex();
   if ( inputIdx < 0 )
     return nullptr;
 
-  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer*>( ui.comboBoxInputLayer->currentLayer() );
+  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( ui.comboBoxInputLayer->currentLayer() );
   return layer;
 }
 
 void QgsGeometryCheckerSetupTab::validateInput()
 {
-  QgsVectorLayer* layer = getSelectedLayer();
+  QgsVectorLayer *layer = getSelectedLayer();
   int nApplicable = 0;
   if ( layer )
   {
-    Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+    Q_FOREACH ( const QgsGeometryCheckFactory *factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
     {
       nApplicable += factory->checkApplicability( ui, layer->geometryType() );
     }
@@ -132,7 +132,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "ESRI Shapefile" ) );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  Q_FOREACH ( const QString& filter, filterFormatMap.keys() )
+  Q_FOREACH ( const QString &filter, filterFormatMap.keys() )
   {
     QString driverName = filterFormatMap.value( filter );
     if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
@@ -141,7 +141,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
     }
   }
   QString initialdir;
-  QgsVectorLayer* layer = getSelectedLayer();
+  QgsVectorLayer *layer = getSelectedLayer();
   if ( layer )
   {
     QDir dir = QFileInfo( layer->dataProvider()->dataSourceUri() ).dir();
@@ -170,7 +170,7 @@ void QgsGeometryCheckerSetupTab::selectOutputFile()
 void QgsGeometryCheckerSetupTab::runChecks()
 {
   //! Get selected layer *
-  QgsVectorLayer* layer = getSelectedLayer();
+  QgsVectorLayer *layer = getSelectedLayer();
   if ( !layer )
     return;
 
@@ -203,10 +203,10 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
     // Remove existing layer with same uri
     QStringList toRemove;
-    Q_FOREACH ( QgsMapLayer* maplayer, QgsProject::instance()->mapLayers() )
+    Q_FOREACH ( QgsMapLayer *maplayer, QgsProject::instance()->mapLayers() )
     {
-      if ( dynamic_cast<QgsVectorLayer*>( maplayer ) &&
-           static_cast<QgsVectorLayer*>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
+      if ( dynamic_cast<QgsVectorLayer *>( maplayer ) &&
+           static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri().startsWith( filename ) )
       {
         toRemove.append( maplayer->id() );
       }
@@ -226,7 +226,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       unsetCursor();
       return;
     }
-    QgsVectorLayer* newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), QStringLiteral( "ogr" ) );
+    QgsVectorLayer *newlayer = new QgsVectorLayer( filename, QFileInfo( filename ).completeBaseName(), QStringLiteral( "ogr" ) );
 
     if ( selectedOnly )
     {
@@ -252,7 +252,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     }
     layer = newlayer;
   }
-  if (( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+  if ( ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
   {
     if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Non-editable Output Format" ), tr( "The output file format does not support editing features. The geometry check can be performed, but it will not be possible to fix any errors. Do you want to continue?" ), QMessageBox::Yes, QMessageBox::No ) )
     {
@@ -275,20 +275,20 @@ void QgsGeometryCheckerSetupTab::runChecks()
   //! Setup checker *
   ui.labelStatus->setText( tr( "<b>Building spatial index...</b>" ) );
   QApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-  QgsFeaturePool* featurePool = new QgsFeaturePool( layer, selectedOnly );
+  QgsFeaturePool *featurePool = new QgsFeaturePool( layer, selectedOnly );
 
-  QList<QgsGeometryCheck*> checks;
+  QList<QgsGeometryCheck *> checks;
   double mapToLayer = 1. / mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-  Q_FOREACH ( const QgsGeometryCheckFactory* factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
+  Q_FOREACH ( const QgsGeometryCheckFactory *factory, QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
-    QgsGeometryCheck* check = factory->createInstance( featurePool, ui, mapToLayer );
+    QgsGeometryCheck *check = factory->createInstance( featurePool, ui, mapToLayer );
     if ( check )
     {
       checks.append( check );
     }
   }
   QgsGeometryCheckPrecision::setPrecision( ui.spinBoxTolerance->value() );
-  QgsGeometryChecker* checker = new QgsGeometryChecker( checks, featurePool );
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, featurePool );
 
   emit checkerStarted( checker, featurePool );
 
@@ -296,7 +296,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   layer->setReadOnly( true );
   if ( ui.radioButtonOutputNew->isChecked() )
   {
-    QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << layer );
+    QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
   }
 
   //! Run *

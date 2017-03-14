@@ -25,8 +25,8 @@ from .connector import VLayerRegistry, getQueryGeometryName
 from .plugin import LVectorTable
 from ..plugin import DbError
 
-from qgis.PyQt.QtCore import QUrl, QTime, QTemporaryFile
-from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsWkbTypes, QgsVirtualLayerDefinition
+from qgis.PyQt.QtCore import QTime, QTemporaryFile
+from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition
 
 
 class LTableDataModel(TableDataModel):

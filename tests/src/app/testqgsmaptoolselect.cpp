@@ -33,7 +33,7 @@ class TestQgsMapToolSelect : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolSelect()
-        : canvas( 0 )
+      : canvas( 0 )
     {}
 
   private slots:
@@ -45,9 +45,9 @@ class TestQgsMapToolSelect : public QObject
     void selectInvalidPolygons(); // test selecting invalid polygons
 
   private:
-    QgsMapCanvas* canvas = nullptr;
+    QgsMapCanvas *canvas = nullptr;
 
-    QgsFeatureList testSelectVector( QgsVectorLayer* layer, double xGeoref, double yGeoref );
+    QgsFeatureList testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
 
     // Release return with delete []
     unsigned char *
@@ -77,7 +77,7 @@ void TestQgsMapToolSelect::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -106,7 +106,7 @@ void TestQgsMapToolSelect::cleanup()
 
 // private
 QgsFeatureList
-TestQgsMapToolSelect::testSelectVector( QgsVectorLayer* layer, double xGeoref, double yGeoref )
+TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolSelect > tool( new QgsMapToolSelect( canvas ) );
   QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );

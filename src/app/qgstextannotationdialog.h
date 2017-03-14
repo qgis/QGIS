@@ -29,28 +29,28 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
 {
     Q_OBJECT
   public:
-    QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
   protected:
 
-    virtual void showEvent( QShowEvent * event ) override;
+    virtual void showEvent( QShowEvent *event ) override;
 
   private:
-    QgsMapCanvasAnnotationItem* mItem = nullptr;
+    QgsMapCanvasAnnotationItem *mItem = nullptr;
     //! Text document (a clone of the annotation items document)
     std::unique_ptr< QTextDocument > mTextDocument;
-    QgsAnnotationWidget* mEmbeddedWidget = nullptr;
+    QgsAnnotationWidget *mEmbeddedWidget = nullptr;
 
     void blockAllSignals( bool block );
 
   private slots:
     void applyTextToItem();
     void changeCurrentFormat();
-    void on_mFontColorButton_colorChanged( const QColor& color );
+    void on_mFontColorButton_colorChanged( const QColor &color );
     void setCurrentFontPropertiesToGui();
     void deleteItem();
-    void on_mButtonBox_clicked( QAbstractButton* button );
-    void backgroundColorChanged( const QColor& color );
+    void on_mButtonBox_clicked( QAbstractButton *button );
+    void backgroundColorChanged( const QColor &color );
 };
 
 #endif // QGSTEXTANNOTATIONDIALOG_H

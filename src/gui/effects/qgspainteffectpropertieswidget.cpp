@@ -27,17 +27,17 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-static bool _initWidgetFunction( const QString& name, QgsPaintEffectWidgetFunc f )
+static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f )
 {
-  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
 
-  QgsPaintEffectAbstractMetadata* abstractMetadata = registry->effectMetadata( name );
+  QgsPaintEffectAbstractMetadata *abstractMetadata = registry->effectMetadata( name );
   if ( !abstractMetadata )
   {
     QgsDebugMsg( QString( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
     return false;
   }
-  QgsPaintEffectMetadata* metadata = dynamic_cast<QgsPaintEffectMetadata*>( abstractMetadata );
+  QgsPaintEffectMetadata *metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
   if ( !metadata )
   {
     QgsDebugMsg( QString( "Failed to cast paint effect's metadata: " ) .arg( name ) );
@@ -66,9 +66,9 @@ static void _initWidgetFunctions()
 }
 
 
-QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget *parent )
-    : QWidget( parent )
-    , mEffect( effect )
+QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent )
+  : QWidget( parent )
+  , mEffect( effect )
 {
   setupUi( this );
   _initWidgetFunctions();
@@ -88,10 +88,10 @@ QgsPaintEffectPropertiesWidget::QgsPaintEffectPropertiesWidget( QgsPaintEffect* 
 
 void QgsPaintEffectPropertiesWidget::populateEffectTypes()
 {
-  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   QStringList types = registry->effects();
 
-  Q_FOREACH ( const QString& type, types )
+  Q_FOREACH ( const QString &type, types )
   {
     //don't show stack effect
     if ( type == QLatin1String( "effectStack" ) )
@@ -101,7 +101,7 @@ void QgsPaintEffectPropertiesWidget::populateEffectTypes()
   }
 }
 
-void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect* effect )
+void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect )
 {
   if ( !effect )
   {
@@ -116,11 +116,11 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect* effect 
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
 
-  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
-  QgsPaintEffectAbstractMetadata* am = registry->effectMetadata( effect->type() );
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
+  QgsPaintEffectAbstractMetadata *am = registry->effectMetadata( effect->type() );
   if ( am )
   {
-    QgsPaintEffectWidget* w = am->createWidget();
+    QgsPaintEffectWidget *w = am->createWidget();
     if ( w )
     {
       w->setPaintEffect( effect );
@@ -137,7 +137,7 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect* effect 
 
 void QgsPaintEffectPropertiesWidget::effectTypeChanged()
 {
-  QgsPaintEffect* effect = mEffect;
+  QgsPaintEffect *effect = mEffect;
   if ( !effect )
     return;
 
@@ -146,14 +146,14 @@ void QgsPaintEffectPropertiesWidget::effectTypeChanged()
     return;
 
   // get creation function for new effect from registry
-  QgsPaintEffectRegistry* registry = QgsApplication::paintEffectRegistry();
-  QgsPaintEffectAbstractMetadata* am = registry->effectMetadata( newEffectType );
+  QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
+  QgsPaintEffectAbstractMetadata *am = registry->effectMetadata( newEffectType );
   if ( !am ) // check whether the metadata is assigned
     return;
 
   // change effect to a new (with different type)
   // base new effect on existing effect's properties
-  QgsPaintEffect* newEffect = am->createPaintEffect( effect->properties() );
+  QgsPaintEffect *newEffect = am->createPaintEffect( effect->properties() );
   if ( !newEffect )
     return;
 

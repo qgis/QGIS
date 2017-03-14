@@ -22,10 +22,6 @@ email                : brush.tyler@gmail.com
 from builtins import str
 from builtins import range
 
-import sys
-if sys.version_info < (3,):
-    memoryview = buffer
-
 from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
 from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
 from qgis.PyQt.QtWidgets import QApplication

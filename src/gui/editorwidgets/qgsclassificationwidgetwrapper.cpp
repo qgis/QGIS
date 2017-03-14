@@ -18,9 +18,9 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
-QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mComboBox( nullptr )
+QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+  , mComboBox( nullptr )
 {
 }
 
@@ -34,14 +34,14 @@ void QgsClassificationWidgetWrapper::showIndeterminateState()
   whileBlocking( mComboBox )->setCurrentIndex( -1 );
 }
 
-QWidget*QgsClassificationWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsClassificationWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QComboBox( parent );
 }
 
-void QgsClassificationWidgetWrapper::initWidget( QWidget* editor )
+void QgsClassificationWidgetWrapper::initWidget( QWidget *editor )
 {
-  mComboBox = qobject_cast<QComboBox*>( editor );
+  mComboBox = qobject_cast<QComboBox *>( editor );
 
   if ( mComboBox )
   {
@@ -69,7 +69,7 @@ bool QgsClassificationWidgetWrapper::valid() const
   return mComboBox;
 }
 
-void QgsClassificationWidgetWrapper::setValue( const QVariant& value )
+void QgsClassificationWidgetWrapper::setValue( const QVariant &value )
 {
   mComboBox->setCurrentIndex( mComboBox->findData( value ) );
 }

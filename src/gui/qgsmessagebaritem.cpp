@@ -24,53 +24,53 @@
 #include <QTextEdit>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( QLatin1String( "" ) )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( QLatin1String( "" ) )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( nullptr )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( nullptr )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( QLatin1String( "" ) )
-    , mText( QLatin1String( "" ) )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( QLatin1String( "" ) )
+  , mText( QLatin1String( "" ) )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+  , mLayout( nullptr )
 {
   writeContent();
 }
@@ -189,14 +189,14 @@ void QgsMessageBarItem::writeContent()
   mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )
+QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
 {
   mText = text;
   writeContent();
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString& title )
+QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
 {
   mTitle = title;
   writeContent();
@@ -227,14 +227,14 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setIcon( const QIcon &icon )
+QgsMessageBarItem *QgsMessageBarItem::setIcon( const QIcon &icon )
 {
   mUserIcon = icon;
   return this;
 }
 
 
-QgsMessageBarItem* QgsMessageBarItem::setDuration( int duration )
+QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
 {
   mDuration = duration;
   return this;

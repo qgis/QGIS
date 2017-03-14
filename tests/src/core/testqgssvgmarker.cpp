@@ -44,11 +44,11 @@ class TestQgsSvgMarkerSymbol : public QObject
 
   public:
     TestQgsSvgMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mSvgMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
+      : mTestHasError( false )
+      , mpPointsLayer( 0 )
+      , mSvgMarkerLayer( 0 )
+      , mMarkerSymbol( 0 )
+      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -63,12 +63,12 @@ class TestQgsSvgMarkerSymbol : public QObject
   private:
     bool mTestHasError;
 
-    bool imageCheck( const QString& type );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer = nullptr;
-    QgsSvgMarkerSymbolLayer* mSvgMarkerLayer = nullptr;
-    QgsMarkerSymbol* mMarkerSymbol = nullptr;
-    QgsSingleSymbolRenderer* mSymbolRenderer = nullptr;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsSvgMarkerSymbolLayer *mSvgMarkerLayer = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -109,7 +109,7 @@ void TestQgsSvgMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>SVG Marker Tests</h1>\n" );
 
 }
@@ -159,7 +159,7 @@ void TestQgsSvgMarkerSymbol::bounds()
 //
 
 
-bool TestQgsSvgMarkerSymbol::imageCheck( const QString& testType )
+bool TestQgsSvgMarkerSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

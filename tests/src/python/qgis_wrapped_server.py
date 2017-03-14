@@ -85,8 +85,8 @@ if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
             request = self.serverInterface().requestHandler()
             if self.serverInterface().getEnv('HTTP_AUTHORIZATION'):
                 username, password = base64.b64decode(self.serverInterface().getEnv('HTTP_AUTHORIZATION')[6:]).split(b':')
-                if (username.decode('utf-8') == os.environ.get('QGIS_SERVER_USERNAME', 'username')
-                        and password.decode('utf-8') == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
+                if (username.decode('utf-8') == os.environ.get('QGIS_SERVER_USERNAME', 'username') and
+                        password.decode('utf-8') == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
                     return
             # No auth ...
             request.clear()

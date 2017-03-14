@@ -84,7 +84,7 @@ namespace pal
       int featureCount() { return mHashtable.size(); }
 
       //! Returns pointer to the associated provider
-      QgsAbstractLabelProvider* provider() const { return mProvider; }
+      QgsAbstractLabelProvider *provider() const { return mProvider; }
 
       /** Returns the layer's name.
        */
@@ -227,7 +227,7 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( QgsLabelFeature* label );
+      bool registerFeature( QgsLabelFeature *label );
 
       //! Join connected features with the same label text
       void joinConnectedFeatures();
@@ -242,14 +242,14 @@ namespace pal
       void chopFeaturesAtRepeatDistance();
 
     protected:
-      QgsAbstractLabelProvider* mProvider; // not owned
+      QgsAbstractLabelProvider *mProvider; // not owned
       QString mName;
 
       //! List of feature parts
-      QLinkedList<FeaturePart*> mFeatureParts;
+      QLinkedList<FeaturePart *> mFeatureParts;
 
       //! List of obstacle parts
-      QList<FeaturePart*> mObstacleParts;
+      QList<FeaturePart *> mObstacleParts;
 
       Pal *pal = nullptr;
 
@@ -270,14 +270,14 @@ namespace pal
       UpsideDownLabels mUpsidedownLabels;
 
       // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *mFeatureIndex;
+      RTree<FeaturePart *, double, 2, double, 8, 4> *mFeatureIndex;
       //! Lookup table of label features (owned by the label feature provider that created them)
-      QHash< QgsFeatureId, QgsLabelFeature*> mHashtable;
+      QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
 
       //obstacle r-tree
-      RTree<FeaturePart*, double, 2, double, 8, 4> *mObstacleIndex;
+      RTree<FeaturePart *, double, 2, double, 8, 4> *mObstacleIndex;
 
-      QHash< QString, QLinkedList<FeaturePart*>* > mConnectedHashtable;
+      QHash< QString, QLinkedList<FeaturePart *>* > mConnectedHashtable;
       QStringList mConnectedTexts;
       QHash< QgsFeatureId, int > mConnectedFeaturesIds;
 
@@ -296,13 +296,13 @@ namespace pal
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( QgsAbstractLabelProvider* provider, const QString& name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       //! Add newly created feature part into r tree and to the list
-      void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
+      void addFeaturePart( FeaturePart *fpart, const QString &labelText = QString() );
 
       //! Add newly created obstacle part into r tree and to the list
-      void addObstaclePart( FeaturePart* fpart );
+      void addObstaclePart( FeaturePart *fpart );
 
   };
 

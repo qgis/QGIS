@@ -27,13 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import QgsApplication
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -62,8 +59,3 @@ class CreateNewScriptAction(ToolboxAction):
         if self.scriptType == self.SCRIPT_R:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.show()
-        if dlg.update:
-            if self.scriptType == self.SCRIPT_PYTHON:
-                algList.reloadProvider('script')
-            elif self.scriptType == self.SCRIPT_R:
-                algList.reloadProvider('r')

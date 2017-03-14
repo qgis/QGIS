@@ -14,26 +14,27 @@
  ***************************************************************************/
 #include "qgsquerybuilder.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+
 #include <QListView>
 #include <QMessageBox>
 #include <QRegExp>
 #include <QPushButton>
-#include <QSettings>
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 
 // constructor used when the query builder must make its own
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
                                   QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mPreviousFieldRow( -1 )
-    , mLayer( layer )
+  : QDialog( parent, fl )
+  , mPreviousFieldRow( -1 )
+  , mLayer( layer )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QueryBuilder/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QueryBuilder/geometry" ) ).toByteArray() );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -57,8 +58,8 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
 QgsQueryBuilder::~QgsQueryBuilder()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QueryBuilder/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/QueryBuilder/geometry" ), saveGeometry() );
 }
 
 void QgsQueryBuilder::showEvent( QShowEvent *event )
@@ -69,7 +70,7 @@ void QgsQueryBuilder::showEvent( QShowEvent *event )
 
 void QgsQueryBuilder::populateFields()
 {
-  const QgsFields& fields = mLayer->fields();
+  const QgsFields &fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
@@ -119,7 +120,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   QList<QVariant> values;
   mLayer->uniqueValues( idx, values, limit );
 
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
 
   QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
@@ -305,7 +306,7 @@ QString QgsQueryBuilder::sql()
   return txtSQL->text();
 }
 
-void QgsQueryBuilder::setSql( const QString& sqlStatement )
+void QgsQueryBuilder::setSql( const QString &sqlStatement )
 {
   txtSQL->setText( sqlStatement );
 }
@@ -393,7 +394,7 @@ void QgsQueryBuilder::on_btnILike_clicked()
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::setDatasourceDescription( const QString& uri )
+void QgsQueryBuilder::setDatasourceDescription( const QString &uri )
 {
   lblDataUri->setText( uri );
 }

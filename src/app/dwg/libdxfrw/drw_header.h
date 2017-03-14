@@ -39,25 +39,25 @@ class DRW_Header
       clearVars();
     }
 
-    DRW_Header( const DRW_Header& h )
-        : comments( h.comments )
-        , curr( nullptr )
-        , version( h.version )
+    DRW_Header( const DRW_Header &h )
+      : comments( h.comments )
+      , curr( nullptr )
+      , version( h.version )
     {
-      for ( std::map<std::string, DRW_Variant*>::const_iterator it = h.vars.begin(); it != h.vars.end(); ++it )
+      for ( std::map<std::string, DRW_Variant *>::const_iterator it = h.vars.begin(); it != h.vars.end(); ++it )
       {
         vars[it->first] = new DRW_Variant( *( it->second ) );
       }
     }
 
-    DRW_Header& operator=( const DRW_Header &h )
+    DRW_Header &operator=( const DRW_Header &h )
     {
       if ( this != &h )
       {
         clearVars();
         version = h.version;
         comments = h.comments;
-        for ( std::map<std::string, DRW_Variant*>::const_iterator it = h.vars.begin(); it != h.vars.end(); ++it )
+        for ( std::map<std::string, DRW_Variant *>::const_iterator it = h.vars.begin(); it != h.vars.end(); ++it )
         {
           vars[it->first] = new DRW_Variant( *( it->second ) );
         }
@@ -83,18 +83,18 @@ class DRW_Header
     bool getCoord( std::string key, DRW_Coord *varStr );
     void clearVars()
     {
-      for ( std::map<std::string, DRW_Variant*>::iterator it = vars.begin(); it != vars.end(); ++it )
+      for ( std::map<std::string, DRW_Variant *>::iterator it = vars.begin(); it != vars.end(); ++it )
         delete it->second;
 
       vars.clear();
     }
 
   public:
-    std::map<std::string, DRW_Variant*> vars;
+    std::map<std::string, DRW_Variant *> vars;
   private:
     std::string comments;
     std::string name;
-    DRW_Variant* curr = nullptr;
+    DRW_Variant *curr = nullptr;
     int version; //to use on read
 
     duint32 linetypeCtrl;

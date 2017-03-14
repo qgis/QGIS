@@ -15,18 +15,19 @@
 #include <QCoreApplication>
 
 #include "qgstest.h"
-#include <qgisgui.h>
-#include <qgsmaptooledit.h>
-#include <qgsapplication.h>
-#include <qgsmapcanvas.h>
-#include <qgslogger.h>
+#include "qgisgui.h"
+#include "qgsmaptooledit.h"
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 class TestQgsMapToolEdit : public QObject
 {
     Q_OBJECT
   public:
     TestQgsMapToolEdit()
-        : mCanvas( 0 )
+      : mCanvas( 0 )
     {}
 
   private slots:
@@ -38,7 +39,7 @@ class TestQgsMapToolEdit : public QObject
     void checkDefaultZValue();
 
   private:
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
 };
 
@@ -66,15 +67,14 @@ void TestQgsMapToolEdit::cleanup()
 
 void TestQgsMapToolEdit::checkDefaultZValue()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( "/qgis/digitizing/default_z_value" );
 
-  QgsMapToolEdit* tool = new QgsMapToolEdit( mCanvas );
+  QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );
 
   double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
   settings.setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), z_value_for_test );
-
 
   QCOMPARE( tool->defaultZValue(), z_value_for_test );
 }

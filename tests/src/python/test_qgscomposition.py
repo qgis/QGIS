@@ -23,9 +23,7 @@ from qgis.core import (QgsComposition,
                        QgsPoint,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsProject,
-                       QgsMapSettings
-                       )
+                       QgsProject)
 
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
@@ -95,7 +93,7 @@ class TestQgsComposition(unittest.TestCase):
         myRenderer = QgsMultiBandColorRenderer(
             myRasterLayer.dataProvider(), 2, 3, 4
         )
-        #mRasterLayer.setRenderer( rasterRenderer )
+        # mRasterLayer.setRenderer( rasterRenderer )
         myPipe = myRasterLayer.pipe()
         assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
@@ -134,6 +132,7 @@ class TestQgsComposition(unittest.TestCase):
                      ' for %s' %
                      (myExpectedFileSize, myFileSize, myImagePath))
         assert myFileSize > myExpectedFileSize, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -28,9 +28,8 @@ from qgis.core import (QgsVectorLayer,
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
-import osgeo.gdal
+import osgeo.gdal  # NOQA
 from osgeo import gdal, ogr
-import platform
 from qgis.testing import start_app, unittest
 from utilities import writeShape, compareWkt
 
@@ -126,9 +125,9 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         fields = created_layer.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_f')).type(), QVariant.Date)
-        #shapefiles do not support time types, result should be string
+        # shapefiles do not support time types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('time_f')).type(), QVariant.String)
-        #shapefiles do not support datetime types, result should be string
+        # shapefiles do not support datetime types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('dt_f')).type(), QVariant.String)
 
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
@@ -137,10 +136,10 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fields().lookupField('time_f')
-        #shapefiles do not support time types
+        # shapefiles do not support time types
         self.assertIsInstance(f.attributes()[time_idx], str)
         self.assertEqual(f.attributes()[time_idx], '13:45:22')
-        #shapefiles do not support datetime types
+        # shapefiles do not support datetime types
         datetime_idx = created_layer.fields().lookupField('dt_f')
         self.assertIsInstance(f.attributes()[datetime_idx], str)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
@@ -199,7 +198,7 @@ class TestQgsVectorLayer(unittest.TestCase):
     def testWriteShapefileWithZ(self):
         """Check writing geometries with Z dimension to an ESRI shapefile."""
 
-        #start by saving a memory layer and forcing z
+        # start by saving a memory layer and forcing z
         ml = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=id:int'),
             'test',
@@ -239,9 +238,9 @@ class TestQgsVectorLayer(unittest.TestCase):
             expWkt = 'PointZ (1 2 3)'
             self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
-            #also try saving out the shapefile version again, as an extra test
-            #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
-            #will stay retain the z values
+            # also try saving out the shapefile version again, as an extra test
+            # this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
+            # will stay retain the z values
             dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
@@ -318,7 +317,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertTrue(res)
         self.assertTrue(features)
 
-        #first write out with all attributes
+        # first write out with all attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'all_attributes.shp')
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
@@ -340,7 +339,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f['field2'], 12)
         self.assertEqual(f['field3'], 13)
 
-        #now test writing out only a subset of attributes
+        # now test writing out only a subset of attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'subset_attributes.shp')
         write_result = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
@@ -358,7 +357,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f['field1'], 11)
         self.assertEqual(f['field3'], 13)
 
-        #finally test writing no attributes
+        # finally test writing no attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'no_attributes.shp')
         write_result = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
@@ -656,6 +655,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         del ds
 
         gdal.Unlink(filename)
+
 
 if __name__ == '__main__':
     unittest.main()

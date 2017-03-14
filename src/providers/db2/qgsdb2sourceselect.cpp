@@ -19,27 +19,23 @@
 
 #include "qgsdb2sourceselect.h"
 #include "qgsdb2dataitems.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgsdb2provider.h"
 #include "qgsdb2newconnection.h"
 #include "qgsdb2geometrycolumns.h"
 
+#include "qgslogger.h"
+#include "qgsapplication.h"
+#include "qgscontexthelp.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
-#include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
-#include <QTextStream>
-#include <QHeaderView>
 #include <QStringList>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
+#include <QSqlDatabase>
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -121,11 +117,11 @@ void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMod
 }
 
 QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( NULL )
-    , mUseEstimatedMetadata( false )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( NULL )
+  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -176,10 +172,10 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsDb2SourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
-  QSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() ?
+  QgsSettings settings;
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -188,12 +184,12 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/Db2SourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/Db2SourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/Db2SourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/Db2SourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   //hide the search options by default
@@ -234,10 +230,10 @@ void QgsDb2SourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsDb2SourceSelect::deleteConnection( const QString& name )
+void QgsDb2SourceSelect::deleteConnection( const QString &name )
 {
   QString key = "/Db2/connections/" + name;
-  QSettings settings;
+  QgsSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/driver" );
   settings.remove( key + "/port" );
@@ -291,8 +287,8 @@ void QgsDb2SourceSelect::on_btnEdit_clicked()
 void QgsDb2SourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which database was selected.
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Db2/connections/selected" ), cmbConnections->currentText() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Db2/connections/selected" ), cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
   cbxAllowGeometrylessTables->setChecked( settings.value( "/Db2/connections/" + cmbConnections->currentText() + "/allowGeometrylessTables", false ).toBool() );
@@ -316,8 +312,8 @@ void QgsDb2SourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
   {
     addTables();
   }
@@ -335,7 +331,7 @@ void QgsDb2SourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsDb2SourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsDb2SourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -347,7 +343,7 @@ void QgsDb2SourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
   }
 }
 
-void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -383,13 +379,13 @@ void QgsDb2SourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QSt
   }
 }
 
-void QgsDb2SourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsDb2SourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsDb2SourceSelect::setLayerType( const QgsDb2LayerProperty& layerProperty )
+void QgsDb2SourceSelect::setLayerType( const QgsDb2LayerProperty &layerProperty )
 {
   mTableModel.setGeometryTypesForTable( layerProperty );
 }
@@ -402,20 +398,20 @@ QgsDb2SourceSelect::~QgsDb2SourceSelect()
     mColumnTypeThread->wait();
   }
 
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
 void QgsDb2SourceSelect::populateConnectionList()
 {
-  QSettings settings;
-  settings.beginGroup( QStringLiteral( "/Db2/connections" ) );
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "Db2/connections" ) );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -439,7 +435,7 @@ void QgsDb2SourceSelect::addTables()
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
 
-  Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  Q_FOREACH ( const QModelIndex &idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsDb2TableModel::DbtmTable )
       continue;
@@ -612,7 +608,7 @@ void QgsDb2SourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-void QgsDb2SourceSelect::addSearchGeometryColumn( const QString& connectionName, const QgsDb2LayerProperty& layerProperty, bool estimateMetadata )
+void QgsDb2SourceSelect::addSearchGeometryColumn( const QString &connectionName, const QgsDb2LayerProperty &layerProperty, bool estimateMetadata )
 {
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
@@ -631,7 +627,7 @@ void QgsDb2SourceSelect::addSearchGeometryColumn( const QString& connectionName,
   emit addGeometryColumn( layerProperty );
 }
 
-QString QgsDb2SourceSelect::fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type )
+QString QgsDb2SourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
   QString full_desc = QLatin1String( "" );
   if ( !schema.isEmpty() )
@@ -643,8 +639,8 @@ QString QgsDb2SourceSelect::fullDescription( const QString& schema, const QStrin
 void QgsDb2SourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
-  QSettings settings;
-  QString toSelect = settings.value( QStringLiteral( "/Db2/connections/selected" ) ).toString();
+  QgsSettings settings;
+  QString toSelect = settings.value( QStringLiteral( "Db2/connections/selected" ) ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )
@@ -656,7 +652,7 @@ void QgsDb2SourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsDb2SourceSelect::setSearchExpression( const QString& regexp )
+void QgsDb2SourceSelect::setSearchExpression( const QString &regexp )
 {
   Q_UNUSED( regexp );
 }
@@ -668,16 +664,16 @@ void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selec
 }
 
 
-QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( const QString& connectionName, bool useEstimatedMetadata )
-    : QThread()
-    , mConnectionName( connectionName )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mStopped( false )
+QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
+  : QThread()
+  , mConnectionName( connectionName )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsDb2LayerProperty>( "QgsDb2LayerProperty" );
 }
 
-void QgsDb2GeomColumnTypeThread::addGeometryColumn( const QgsDb2LayerProperty& layerProperty )
+void QgsDb2GeomColumnTypeThread::addGeometryColumn( const QgsDb2LayerProperty &layerProperty )
 {
   layerProperties << layerProperty;
 }

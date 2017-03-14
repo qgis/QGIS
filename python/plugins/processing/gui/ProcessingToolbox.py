@@ -33,8 +33,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
-from qgis.core import (QgsApplication,
-                       QgsProcessingRegistry)
+from qgis.core import QgsApplication
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
@@ -251,7 +250,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.setTitle(self.tr('Error executing algorithm'))
                 dlg.setMessage(
                     self.tr('<h3>This algorithm cannot '
-                            'be run :-( </h3>\n%s') % message)
+                            'be run :-( </h3>\n{0}').format(message))
                 dlg.exec_()
                 return
             alg = alg.getCopy()
@@ -297,9 +296,10 @@ class ProcessingToolbox(BASE, WIDGET):
                 found = False
                 if updating:
                     recentItem = self.algorithmTree.topLevelItem(0)
-                    treeWidget = recentItem.treeWidget()
-                    treeWidget.takeTopLevelItem(
-                        treeWidget.indexOfTopLevelItem(recentItem))
+                    if recentItem.text(0) == self.tr('Recently used algorithms'):
+                        treeWidget = recentItem.treeWidget()
+                        treeWidget.takeTopLevelItem(
+                            treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr('Recently used algorithms'))
@@ -384,7 +384,7 @@ class TreeProviderItem(QTreeWidgetItem):
 
     def refresh(self):
         self.takeChildren()
-        Processing.updateAlgsList()
+        #Processing.updateAlgsList()
         self.populate()
 
     def populate(self):

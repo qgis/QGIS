@@ -25,9 +25,9 @@
 #include <cstring>
 
 
-QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>( source, ownSource, request )
-    , mFetchedFid( false )
+QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>( source, ownSource, request )
+  , mFetchedFid( false )
 {
   rewind();
 }
@@ -70,7 +70,7 @@ bool QgsGPXFeatureIterator::close()
   return true;
 }
 
-bool QgsGPXFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsGPXFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   feature.setValid( false );
 
@@ -129,7 +129,7 @@ bool QgsGPXFeatureIterator::fetchFeature( QgsFeature& feature )
 }
 
 
-bool QgsGPXFeatureIterator::readFid( QgsFeature& feature )
+bool QgsGPXFeatureIterator::readFid( QgsFeature &feature )
 {
   if ( mFetchedFid )
     return false;
@@ -175,11 +175,11 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature& feature )
 }
 
 
-bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& feature )
+bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint &wpt, QgsFeature &feature )
 {
   if ( !mRequest.filterRect().isNull() )
   {
-    const QgsRectangle& rect = mRequest.filterRect();
+    const QgsRectangle &rect = mRequest.filterRect();
     if ( ! rect.contains( QgsPoint( wpt.lon, wpt.lat ) ) )
       return false;
   }
@@ -187,7 +187,7 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& fe
   // some wkb voodoo
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    QgsGeometry* g = readWaypointGeometry( wpt );
+    QgsGeometry *g = readWaypointGeometry( wpt );
     feature.setGeometry( *g );
     delete g;
   }
@@ -202,18 +202,18 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& fe
 }
 
 
-bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature )
+bool QgsGPXFeatureIterator::readRoute( const QgsRoute &rte, QgsFeature &feature )
 {
   if ( rte.points.isEmpty() )
     return false;
 
-  QgsGeometry* geometry = readRouteGeometry( rte );
+  QgsGeometry *geometry = readRouteGeometry( rte );
 
   if ( !mRequest.filterRect().isNull() )
   {
-    const QgsRectangle& rect = mRequest.filterRect();
-    if (( rte.xMax < rect.xMinimum() ) || ( rte.xMin > rect.xMaximum() ) ||
-        ( rte.yMax < rect.yMinimum() ) || ( rte.yMin > rect.yMaximum() ) )
+    const QgsRectangle &rect = mRequest.filterRect();
+    if ( ( rte.xMax < rect.xMinimum() ) || ( rte.xMin > rect.xMaximum() ) ||
+         ( rte.yMax < rect.yMinimum() ) || ( rte.yMin > rect.yMaximum() ) )
     {
       delete geometry;
       return false;
@@ -246,17 +246,17 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
 }
 
 
-bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature )
+bool QgsGPXFeatureIterator::readTrack( const QgsTrack &trk, QgsFeature &feature )
 {
   //QgsDebugMsg( QString( "GPX feature track segments: %1" ).arg( trk.segments.size() ) );
 
-  QgsGeometry* geometry = readTrackGeometry( trk );
+  QgsGeometry *geometry = readTrackGeometry( trk );
 
   if ( !mRequest.filterRect().isNull() )
   {
-    const QgsRectangle& rect = mRequest.filterRect();
-    if (( trk.xMax < rect.xMinimum() ) || ( trk.xMin > rect.xMaximum() ) ||
-        ( trk.yMax < rect.yMinimum() ) || ( trk.yMin > rect.yMaximum() ) )
+    const QgsRectangle &rect = mRequest.filterRect();
+    if ( ( trk.xMax < rect.xMinimum() ) || ( trk.xMin > rect.xMaximum() ) ||
+         ( trk.yMax < rect.yMinimum() ) || ( trk.yMin > rect.yMaximum() ) )
     {
       delete geometry;
       return false;
@@ -289,7 +289,7 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
 }
 
 
-void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsWaypoint& wpt )
+void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsWaypoint &wpt )
 {
   // add attributes if they are wanted
   for ( int i = 0; i < mSource->mFields.count(); ++i )
@@ -325,7 +325,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsWaypoi
   }
 }
 
-void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsRoute& rte )
+void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsRoute &rte )
 {
   // add attributes if they are wanted
   for ( int i = 0; i < mSource->mFields.count(); ++i )
@@ -359,7 +359,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsRoute&
 }
 
 
-void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsTrack& trk )
+void QgsGPXFeatureIterator::readAttributes( QgsFeature &feature, const QgsTrack &trk )
 {
   // add attributes if they are wanted
   for ( int i = 0; i < mSource->mFields.count(); ++i )
@@ -393,7 +393,7 @@ void QgsGPXFeatureIterator::readAttributes( QgsFeature& feature, const QgsTrack&
 }
 
 
-QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint& wpt )
+QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint &wpt )
 {
   int size = 1 + sizeof( int ) + 2 * sizeof( double );
   unsigned char *geo = new unsigned char[size];
@@ -407,7 +407,7 @@ QgsGeometry *QgsGPXFeatureIterator::readWaypointGeometry( const QgsWaypoint& wpt
 }
 
 
-QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
+QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute &rte )
 {
   // some wkb voodoo
   int size = 1 + 2 * sizeof( int ) + 2 * sizeof( double ) * rte.points.size();
@@ -428,7 +428,7 @@ QgsGeometry *QgsGPXFeatureIterator::readRouteGeometry( const QgsRoute& rte )
   return g;
 }
 
-QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
+QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack &trk )
 {
   // TODO: support multi line string for segments
   if ( trk.segments.isEmpty() )
@@ -477,11 +477,11 @@ QgsGeometry *QgsGPXFeatureIterator::readTrackGeometry( const QgsTrack& trk )
 
 // ------------
 
-QgsGPXFeatureSource::QgsGPXFeatureSource( const QgsGPXProvider* p )
-    : mFileName( p->mFileName )
-    , mFeatureType( p->mFeatureType )
-    , indexToAttr( p->indexToAttr )
-    , mFields( p->attributeFields )
+QgsGPXFeatureSource::QgsGPXFeatureSource( const QgsGPXProvider *p )
+  : mFileName( p->mFileName )
+  , mFeatureType( p->mFeatureType )
+  , indexToAttr( p->indexToAttr )
+  , mFields( p->attributeFields )
 {
   data = QgsGPSData::getData( mFileName );
 }
@@ -491,7 +491,7 @@ QgsGPXFeatureSource::~QgsGPXFeatureSource()
   QgsGPSData::releaseData( mFileName );
 }
 
-QgsFeatureIterator QgsGPXFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsGPXFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsGPXFeatureIterator( this, false, request ) );
 }

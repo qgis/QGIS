@@ -67,7 +67,7 @@ class ClipByMask(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Clip raster by mask layer')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
+        self.group, self.i18n_group = self.trAlgorithm('Raster extraction')
 
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterVector(self.MASK, self.tr('Mask layer'),

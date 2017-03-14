@@ -34,27 +34,27 @@ class QgsDwgImporter : public DRW_Interface
     bool import( const QString &drawing, QString &error, bool expandInserts, bool useCurves );
 
     //! Called when header is parsed.
-    void addHeader( const DRW_Header* data ) override;
+    void addHeader( const DRW_Header *data ) override;
 
     //! Called for every line Type.
-    void addLType( const DRW_LType& data ) override;
+    void addLType( const DRW_LType &data ) override;
 
     //! Called for every layer.
-    void addLayer( const DRW_Layer& data ) override;
+    void addLayer( const DRW_Layer &data ) override;
 
     //! Called for every dim style.
-    void addDimStyle( const DRW_Dimstyle& data ) override;
+    void addDimStyle( const DRW_Dimstyle &data ) override;
 
     //! Called for every VPORT table.
-    void addVport( const DRW_Vport& data ) override;
+    void addVport( const DRW_Vport &data ) override;
 
     //! Called for every text style.
-    void addTextStyle( const DRW_Textstyle& data ) override;
+    void addTextStyle( const DRW_Textstyle &data ) override;
 
     //! Called for every AppId entry.
-    void addAppId( const DRW_AppId& data ) override;
+    void addAppId( const DRW_AppId &data ) override;
 
-    void addBlock( const DRW_Block& data ) override;
+    void addBlock( const DRW_Block &data ) override;
 
     void setBlock( const int handle ) override;
 
@@ -62,55 +62,55 @@ class QgsDwgImporter : public DRW_Interface
     void endBlock() override;
 
     //! Called for every point
-    void addPoint( const DRW_Point& data ) override;
+    void addPoint( const DRW_Point &data ) override;
 
     //! Called for every line
-    void addLine( const DRW_Line& data ) override;
+    void addLine( const DRW_Line &data ) override;
 
     //! Called for every ray
-    void addRay( const DRW_Ray& data ) override;
+    void addRay( const DRW_Ray &data ) override;
 
     //! Called for every xline
-    void addXline( const DRW_Xline& data ) override;
+    void addXline( const DRW_Xline &data ) override;
 
     //! Called for every arc
-    void addArc( const DRW_Arc& data ) override;
+    void addArc( const DRW_Arc &data ) override;
 
     //! Called for every circle
-    void addCircle( const DRW_Circle& data ) override;
+    void addCircle( const DRW_Circle &data ) override;
 
     //! Called for every ellipse
-    void addEllipse( const DRW_Ellipse& data ) override;
+    void addEllipse( const DRW_Ellipse &data ) override;
 
     //! Called for every lwpolyline
-    void addLWPolyline( const DRW_LWPolyline& data ) override;
+    void addLWPolyline( const DRW_LWPolyline &data ) override;
 
     //! Called for every polyline start
-    void addPolyline( const DRW_Polyline& data ) override;
+    void addPolyline( const DRW_Polyline &data ) override;
 
     //! Called for every spline
-    void addSpline( const DRW_Spline* data ) override;
+    void addSpline( const DRW_Spline *data ) override;
 
     //! Called for every spline knot value
-    void addKnot( const DRW_Entity& data ) override;
+    void addKnot( const DRW_Entity &data ) override;
 
     //! Called for every insert.
-    void addInsert( const DRW_Insert& data ) override;
+    void addInsert( const DRW_Insert &data ) override;
 
     //! Called for every trace start
-    void addTrace( const DRW_Trace& data ) override;
+    void addTrace( const DRW_Trace &data ) override;
 
     //! Called for every 3dface start
-    void add3dFace( const DRW_3Dface& data ) override;
+    void add3dFace( const DRW_3Dface &data ) override;
 
     //! Called for every solid start
-    void addSolid( const DRW_Solid& data ) override;
+    void addSolid( const DRW_Solid &data ) override;
 
     //! Called for every Multi Text entity.
-    void addMText( const DRW_MText& data ) override;
+    void addMText( const DRW_MText &data ) override;
 
     //! Called for every Text entity.
-    void addText( const DRW_Text& data ) override;
+    void addText( const DRW_Text &data ) override;
 
     //! Called for every dimension entity.
     void addDim( const DRW_Dimension *data );
@@ -143,7 +143,7 @@ class QgsDwgImporter : public DRW_Interface
     void addHatch( const DRW_Hatch *data ) override;
 
     //! Called for every viewport entity.
-    void addViewport( const DRW_Viewport& data ) override;
+    void addViewport( const DRW_Viewport &data ) override;
 
     //! Called for every image entity.
     void addImage( const DRW_Image *data ) override;
@@ -152,9 +152,9 @@ class QgsDwgImporter : public DRW_Interface
     void linkImage( const DRW_ImageDef *data ) override;
 
     //! Called for every comment in the DXF file (code 999).
-    void addComment( const char* comment ) override;
+    void addComment( const char *comment ) override;
 
-    void writeHeader( DRW_Header& data ) override;
+    void writeHeader( DRW_Header &data ) override;
     void writeBlocks() override;
     void writeBlockRecords() override;
     void writeEntities() override;
@@ -180,7 +180,7 @@ class QgsDwgImporter : public DRW_Interface
     void setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, int value ) const;
     void setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, const DRW_Coord &value ) const;
 
-    bool curveFromLWPolyline( const DRW_LWPolyline& data, QgsCompoundCurve &cc );
+    bool curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoundCurve &cc );
 
     bool expandInserts( QString &error );
 

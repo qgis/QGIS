@@ -61,8 +61,8 @@ class QgsSpatialQuery
 
     ~QgsSpatialQuery();
 
-    QgsSpatialQuery( const QgsSpatialQuery& rh ) = delete;
-    QgsSpatialQuery& operator=( const QgsSpatialQuery& rh ) = delete;
+    QgsSpatialQuery( const QgsSpatialQuery &rh ) = delete;
+    QgsSpatialQuery &operator=( const QgsSpatialQuery &rh ) = delete;
 
     /**
      * \brief Sets if using selected features in Target layer
@@ -86,7 +86,7 @@ class QgsSpatialQuery
     void runQuery( QgsFeatureIds &qsetIndexResult,
                    QgsFeatureIds &qsetIndexInvalidTarget,
                    QgsFeatureIds &qsetIndexInvalidReference,
-                   int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
+                   int relation, QgsVectorLayer *lyrTarget, QgsVectorLayer *lyrReference );
 
     /**
      * \brief Gets the possible topologic relations
@@ -94,7 +94,7 @@ class QgsSpatialQuery
      * \param lyrReference       Pointer to Reference Layer
      * \returns QMap<QString, int> Nome inteligível and Topologic Relation
      */
-    static QMap<QString, int> * getTypesOperations( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
+    static QMap<QString, int> *getTypesOperations( QgsVectorLayer *lyrTarget, QgsVectorLayer *lyrReference );
 
     /**
      * \brief Gets the topologic dimension
@@ -137,8 +137,8 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
-                              bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry&, QString* ) const );
+    void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry &geomTarget,
+                              bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry &, QString * ) const );
 
     /**
      * \brief Populate index Result Disjoint
@@ -147,16 +147,16 @@ class QgsSpatialQuery
      * \param geomTarget         Geometry the feature Target
      * \param operation          Pointer to function of GEOS operation
      */
-    void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry& geomTarget,
-                                      bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry&, QString* ) const );
+    void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry &geomTarget,
+                                      bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry &, QString * ) const );
 
     MngProgressBar *mPb = nullptr;
     bool mUseReferenceSelection;
     bool mUseTargetSelection;
 
-    QgsReaderFeatures * mReaderFeaturesTarget = nullptr;
-    QgsVectorLayer * mLayerTarget = nullptr;
-    QgsVectorLayer * mLayerReference = nullptr;
+    QgsReaderFeatures *mReaderFeaturesTarget = nullptr;
+    QgsVectorLayer *mLayerTarget = nullptr;
+    QgsVectorLayer *mLayerReference = nullptr;
     QgsSpatialIndex  mIndexReference;
 
 };

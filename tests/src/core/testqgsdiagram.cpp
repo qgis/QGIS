@@ -48,9 +48,9 @@ class TestQgsDiagram : public QObject
 
   public:
     TestQgsDiagram()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mPointsLayer( 0 )
+      : mTestHasError( false )
+      , mMapSettings( 0 )
+      , mPointsLayer( 0 )
     {}
 
   private:
@@ -60,7 +60,7 @@ class TestQgsDiagram : public QObject
     QString mTestDataDir;
     QString mReport;
 
-    bool imageCheck( const QString& testType );
+    bool imageCheck( const QString &testType );
 
   private slots:
     // will be called before the first testfunction is executed.
@@ -93,13 +93,13 @@ class TestQgsDiagram : public QObject
       QgsStringMap symbolProps;
       symbolProps.insert( "color", "0,0,0,0" );
       symbolProps.insert( "outline_style", "no" );
-      QgsMarkerSymbol* symbol = QgsMarkerSymbol::createSimple( symbolProps );
-      QgsSingleSymbolRenderer* symbolRenderer = new QgsSingleSymbolRenderer( symbol );
+      QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( symbolProps );
+      QgsSingleSymbolRenderer *symbolRenderer = new QgsSingleSymbolRenderer( symbol );
       mPointsLayer->setRenderer( symbolRenderer );
 
       // Create map composition to draw on
       QgsProject::instance()->addMapLayer( mPointsLayer );
-      mMapSettings->setLayers( QList<QgsMapLayer*>() << mPointsLayer );
+      mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
       mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
@@ -546,7 +546,7 @@ class TestQgsDiagram : public QObject
 
 };
 
-bool TestQgsDiagram::imageCheck( const QString& testType )
+bool TestQgsDiagram::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image

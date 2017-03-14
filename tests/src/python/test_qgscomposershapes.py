@@ -18,9 +18,7 @@ from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (QgsComposerShape,
                        QgsComposition,
-                       QgsMapSettings,
-                       QgsProject
-                       )
+                       QgsProject)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgscompositionchecker import QgsCompositionChecker
@@ -88,6 +86,7 @@ class TestQgsComposerShapes(unittest.TestCase):
 
         self.mComposerShape.setCornerRadius(0)
         assert myTestResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

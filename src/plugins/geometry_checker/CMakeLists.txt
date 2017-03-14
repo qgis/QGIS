@@ -18,6 +18,7 @@ SET (geometrychecker_SRCS
     checks/qgsgeometrycontainedcheck.cpp
     checks/qgsgeometryoverlapcheck.cpp
     checks/qgsgeometrysegmentlengthcheck.cpp
+    checks/qgsgeometryselfcontactcheck.cpp
     checks/qgsgeometryselfintersectioncheck.cpp
     checks/qgsgeometrytypecheck.cpp
     ui/qgsgeometrycheckerdialog.cpp
@@ -52,6 +53,7 @@ SET (geometrychecker_MOC_HDRS
     checks/qgsgeometrycontainedcheck.h
     checks/qgsgeometryoverlapcheck.h
     checks/qgsgeometrysegmentlengthcheck.h
+    checks/qgsgeometryselfcontactcheck.h
     checks/qgsgeometryselfintersectioncheck.h
     checks/qgsgeometrysliverpolygoncheck.h
     checks/qgsgeometrytypecheck.h

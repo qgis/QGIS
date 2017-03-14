@@ -42,21 +42,21 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 {
     Q_OBJECT
   public:
-    explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl,
+    explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl,
         int fieldIdx,
-        QWidget* editor,
-        QgsMapCanvas* canvas,
-        QgsMessageBar* messageBar,
-        QWidget* parent = nullptr );
+        QWidget *editor,
+        QgsMapCanvas *canvas,
+        QgsMessageBar *messageBar,
+        QWidget *parent = nullptr );
 
-    virtual QWidget* createWidget( QWidget* parent ) override;
-    virtual void initWidget( QWidget* editor ) override;
+    virtual QWidget *createWidget( QWidget *parent ) override;
+    virtual void initWidget( QWidget *editor ) override;
     virtual QVariant value() const override;
     bool valid() const override;
     void showIndeterminateState() override;
 
   public slots:
-    virtual void setValue( const QVariant& value ) override;
+    virtual void setValue( const QVariant &value ) override;
     virtual void setEnabled( bool enabled ) override;
 
   private slots:
@@ -67,9 +67,9 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
   private:
-    QgsRelationReferenceWidget* mWidget = nullptr;
-    QgsMapCanvas* mCanvas = nullptr;
-    QgsMessageBar* mMessageBar = nullptr;
+    QgsRelationReferenceWidget *mWidget = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
     bool mIndeterminateState;
 };
 

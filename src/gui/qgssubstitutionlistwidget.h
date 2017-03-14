@@ -41,13 +41,13 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
     /** Constructor for QgsSubstitutionListWidget.
      * @param parent parent widget
      */
-    QgsSubstitutionListWidget( QWidget* parent = nullptr );
+    QgsSubstitutionListWidget( QWidget *parent = nullptr );
 
     /** Sets the list of substitutions to show in the widget.
      * @param substitutions substitution list
      * @see substitutions()
      */
-    void setSubstitutions( const QgsStringReplacementCollection& substitutions );
+    void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
     /** Returns the list of substitutions currently defined by the widget.
      * @see setSubstitutions()
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
   signals:
 
     //! Emitted when the substitution definitions change.
-    void substitutionsChanged( const QgsStringReplacementCollection& substitutions );
+    void substitutionsChanged( const QgsStringReplacementCollection &substitutions );
 
   private slots:
 
@@ -69,7 +69,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 
   private:
 
-    void addSubstitution( const QgsStringReplacement& substitution );
+    void addSubstitution( const QgsStringReplacement &substitution );
 
 };
 
@@ -90,13 +90,13 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
     /** Constructor for QgsSubstitutionListDialog.
      * @param parent parent widget
      */
-    QgsSubstitutionListDialog( QWidget* parent = nullptr );
+    QgsSubstitutionListDialog( QWidget *parent = nullptr );
 
     /** Sets the list of substitutions to show in the dialog.
      * @param substitutions substitution list
      * @see substitutions()
      */
-    void setSubstitutions( const QgsStringReplacementCollection& substitutions );
+    void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
     /** Returns the list of substitutions currently defined by the dialog.
      * @see setSubstitutions()
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
 
   private:
 
-    QgsSubstitutionListWidget* mWidget = nullptr;
+    QgsSubstitutionListWidget *mWidget = nullptr;
 
 };
 

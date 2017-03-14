@@ -32,37 +32,37 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
 
     QgsPointClusterRenderer();
 
-    QgsPointClusterRenderer* clone() const override;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-    void stopRender( QgsRenderContext& context ) override;
-    QDomElement save( QDomDocument& doc ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    QgsPointClusterRenderer *clone() const override;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    QDomElement save( QDomDocument &doc ) override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Creates a renderer from XML element
-    static QgsFeatureRenderer* create( QDomElement& symbologyElem );
+    static QgsFeatureRenderer *create( QDomElement &symbologyElem );
 
     /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
      * @see setClusterSymbol()
     */
-    QgsMarkerSymbol* clusterSymbol();
+    QgsMarkerSymbol *clusterSymbol();
 
     /** Sets the symbol for rendering clustered groups.
      * @param symbol new cluster symbol. Ownership is transferred to the renderer.
      * @see clusterSymbol()
     */
-    void setClusterSymbol( QgsMarkerSymbol* symbol );
+    void setClusterSymbol( QgsMarkerSymbol *symbol );
 
     /** Creates a QgsPointClusterRenderer from an existing renderer.
      * @returns a new renderer if the conversion was possible, otherwise nullptr.
      */
-    static QgsPointClusterRenderer* convertFromRenderer( const QgsFeatureRenderer* renderer );
+    static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 
   private:
 
     //! Symbol for point clusters
     std::unique_ptr< QgsMarkerSymbol > mClusterSymbol;
 
-    void drawGroup( QPointF centerPoint, QgsRenderContext& context, const QgsPointDistanceRenderer::ClusteredGroup& group ) override;
+    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override;
 
 };
 

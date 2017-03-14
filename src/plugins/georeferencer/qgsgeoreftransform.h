@@ -42,7 +42,7 @@ class QgsGeorefTransformInterface
      * Used by GDALwarp.
      */
     virtual GDALTransformerFunc  GDALTransformer()     const = 0;
-    virtual void*                GDALTransformerArgs() const = 0;
+    virtual void                *GDALTransformerArgs() const = 0;
 };
 
 /**
@@ -122,7 +122,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      * in \ref QgsImageWarper::warpFile.
      */
     GDALTransformerFunc  GDALTransformer()     const override;
-    void*                GDALTransformerArgs() const override;
+    void                *GDALTransformerArgs() const override;
 
     /**
      * \brief Transform from pixel coordinates to georeferenced coordinates.
@@ -150,7 +150,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     bool getLinearOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
 
     //! \brief Returns origin, scale and rotation for linear and helmert transform, fails otherwise.
-    bool getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const;
+    bool getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double &rotation ) const;
 
   private:
     // shallow copy constructor

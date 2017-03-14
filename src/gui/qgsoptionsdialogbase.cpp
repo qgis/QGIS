@@ -37,19 +37,19 @@
 
 #include "qgslogger.h"
 
-QgsOptionsDialogBase::QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent, Qt::WindowFlags fl, QSettings* settings )
-    : QDialog( parent, fl )
-    , mOptsKey( settingsKey )
-    , mInit( false )
-    , mOptListWidget( nullptr )
-    , mOptStackedWidget( nullptr )
-    , mOptSplitter( nullptr )
-    , mOptButtonBox( nullptr )
-    , mSearchLineEdit( nullptr )
-    , mDialogTitle( QLatin1String( "" ) )
-    , mIconOnly( false )
-    , mSettings( settings )
-    , mDelSettings( false )
+QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
+  : QDialog( parent, fl )
+  , mOptsKey( settingsKey )
+  , mInit( false )
+  , mOptListWidget( nullptr )
+  , mOptStackedWidget( nullptr )
+  , mOptSplitter( nullptr )
+  , mOptButtonBox( nullptr )
+  , mSearchLineEdit( nullptr )
+  , mDialogTitle( QLatin1String( "" ) )
+  , mIconOnly( false )
+  , mSettings( settings )
+  , mDelSettings( false )
 {
 }
 
@@ -70,15 +70,15 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
   mSettings = nullptr; // null the pointer (in case of outside settings obj)
 }
 
-void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title )
+void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title )
 {
-  // use pointer to app QSettings if no custom QSettings specified
-  // custom QSettings object may be from Python plugin
+  // use pointer to app QgsSettings if no custom QgsSettings specified
+  // custom QgsSettings object may be from Python plugin
   mDelSettings = false;
 
   if ( !mSettings )
   {
-    mSettings = new QSettings();
+    mSettings = new QgsSettings();
     mDelSettings = true; // only delete obj created by class
   }
 
@@ -97,13 +97,13 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title
   }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
-  mOptListWidget = findChild<QListWidget*>( QStringLiteral( "mOptionsListWidget" ) );
-  QFrame* optionsFrame = findChild<QFrame*>( QStringLiteral( "mOptionsFrame" ) );
-  mOptStackedWidget = findChild<QStackedWidget*>( QStringLiteral( "mOptionsStackedWidget" ) );
-  mOptSplitter = findChild<QSplitter*>( QStringLiteral( "mOptionsSplitter" ) );
-  mOptButtonBox = findChild<QDialogButtonBox*>( QStringLiteral( "buttonBox" ) );
-  QFrame* buttonBoxFrame = findChild<QFrame*>( QStringLiteral( "mButtonBoxFrame" ) );
-  mSearchLineEdit = findChild<QgsFilterLineEdit*>( "mSearchLineEdit" );
+  mOptListWidget = findChild<QListWidget *>( QStringLiteral( "mOptionsListWidget" ) );
+  QFrame *optionsFrame = findChild<QFrame *>( QStringLiteral( "mOptionsFrame" ) );
+  mOptStackedWidget = findChild<QStackedWidget *>( QStringLiteral( "mOptionsStackedWidget" ) );
+  mOptSplitter = findChild<QSplitter *>( QStringLiteral( "mOptionsSplitter" ) );
+  mOptButtonBox = findChild<QDialogButtonBox *>( QStringLiteral( "buttonBox" ) );
+  QFrame *buttonBoxFrame = findChild<QFrame *>( QStringLiteral( "mButtonBoxFrame" ) );
+  mSearchLineEdit = findChild<QgsFilterLineEdit *>( "mSearchLineEdit" );
 
   if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
@@ -118,7 +118,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title
   mOptListWidget->setFrameStyle( QFrame::NoFrame );
 
   optionsFrame->layout()->setContentsMargins( 0, 3, 3, 3 );
-  QVBoxLayout* layout = static_cast<QVBoxLayout*>( optionsFrame->layout() );
+  QVBoxLayout *layout = static_cast<QVBoxLayout *>( optionsFrame->layout() );
 
   if ( buttonBoxFrame )
   {
@@ -154,7 +154,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString& title
     restoreOptionsBaseUi( mDialogTitle );
 }
 
-void QgsOptionsDialogBase::setSettings( QSettings* settings )
+void QgsOptionsDialogBase::setSettings( QgsSettings *settings )
 {
   if ( mDelSettings ) // local settings obj to delete
   {
@@ -165,7 +165,7 @@ void QgsOptionsDialogBase::setSettings( QSettings* settings )
   mDelSettings = false; // don't delete outside obj
 }
 
-void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
+void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 {
   if ( !mInit )
   {
@@ -214,7 +214,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString& title )
   mOptListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 }
 
-void QgsOptionsDialogBase::searchText( const QString& text )
+void QgsOptionsDialogBase::searchText( const QString &text )
 {
   mSearchLineEdit->setMinimumWidth( text.isEmpty() ? 0 : 70 );
 
@@ -231,7 +231,7 @@ void QgsOptionsDialogBase::searchText( const QString& text )
     mOptListWidget->setRowHidden( r, !text.isEmpty() );
   }
 
-for ( QPair< QgsSearchHighlightOptionWidget*, int > rsw : mRegisteredSearchWidgets )
+  for ( QPair< QgsSearchHighlightOptionWidget *, int > rsw : mRegisteredSearchWidgets )
   {
     rsw.first->reset();
     if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )
@@ -268,9 +268,9 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-    Q_FOREACH ( QWidget* w, mOptStackedWidget->widget( i )->findChildren<QWidget*>() )
+    Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
     {
-      QgsSearchHighlightOptionWidget* shw = new QgsSearchHighlightOptionWidget( w );
+      QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
       if ( shw->isValid() )
       {
         QgsDebugMsg( QString( "Registering: %1" ).arg( w->objectName() ) );
@@ -280,7 +280,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
   }
 }
 
-void QgsOptionsDialogBase::showEvent( QShowEvent* e )
+void QgsOptionsDialogBase::showEvent( QShowEvent *e )
 {
   if ( mInit )
   {
@@ -300,7 +300,7 @@ void QgsOptionsDialogBase::showEvent( QShowEvent* e )
   QDialog::showEvent( e );
 }
 
-void QgsOptionsDialogBase::paintEvent( QPaintEvent* e )
+void QgsOptionsDialogBase::paintEvent( QPaintEvent *e )
 {
   if ( mInit )
     QTimer::singleShot( 0, this, SLOT( updateOptionsListVerticalTabs() ) );
@@ -371,10 +371,10 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
   // will need to take item first, if widgets are set for item in future
   delete mOptListWidget->item( indx );
 
-  QList<QPair< QgsSearchHighlightOptionWidget*, int > >::iterator it = mRegisteredSearchWidgets.begin();
+  QList<QPair< QgsSearchHighlightOptionWidget *, int > >::iterator it = mRegisteredSearchWidgets.begin();
   while ( it != mRegisteredSearchWidgets.end() )
   {
-    if (( *it ).second == indx )
+    if ( ( *it ).second == indx )
       it = mRegisteredSearchWidgets.erase( it );
     else
       ++it;
@@ -392,32 +392,32 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
 }
 
 
-QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget* widget )
-    : mWidget( widget )
-    , mStyleSheet( QString() )
-    , mValid( true )
-    , mChangedStyle( false )
-    , mText( [=]() {return QString();} )
+QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget )
+  : mWidget( widget )
+  , mStyleSheet( QString() )
+  , mValid( true )
+  , mChangedStyle( false )
+  , mText( [ = ]() {return QString();} )
 {
-  if ( qobject_cast<QLabel*>( widget ) )
+  if ( qobject_cast<QLabel *>( widget ) )
   {
     mStyleSheet = "QLabel { background-color: yellow; color: blue;}";
-    mText = [=]() {return qobject_cast<QLabel*>( mWidget )->text();};
+    mText = [ = ]() {return qobject_cast<QLabel *>( mWidget )->text();};
   }
-  else if ( qobject_cast<QCheckBox*>( widget ) )
+  else if ( qobject_cast<QCheckBox *>( widget ) )
   {
     mStyleSheet = "QCheckBox { background-color: yellow; color: blue;}";
-    mText = [=]() {return qobject_cast<QCheckBox*>( mWidget )->text();};
+    mText = [ = ]() {return qobject_cast<QCheckBox *>( mWidget )->text();};
   }
-  else if ( qobject_cast<QAbstractButton*>( widget ) )
+  else if ( qobject_cast<QAbstractButton *>( widget ) )
   {
     mStyleSheet = "QAbstractButton { background-color: yellow; color: blue;}";
-    mText = [=]() {return qobject_cast<QAbstractButton*>( mWidget )->text();};
+    mText = [ = ]() {return qobject_cast<QAbstractButton *>( mWidget )->text();};
   }
-  else if ( qobject_cast<QGroupBox*>( widget ) )
+  else if ( qobject_cast<QGroupBox *>( widget ) )
   {
     mStyleSheet = "QGroupBox::title { background-color: yellow; color: blue;}";
-    mText = [=]() {return qobject_cast<QGroupBox*>( mWidget )->title();};
+    mText = [ = ]() {return qobject_cast<QGroupBox *>( mWidget )->title();};
   }
   else
   {
@@ -431,7 +431,7 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget* widget 
   }
 }
 
-bool QgsSearchHighlightOptionWidget::searchHighlight( const QString& searchText )
+bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText )
 {
   bool found = false;
   if ( !mWidget )

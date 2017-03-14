@@ -60,7 +60,7 @@ class SERVER_EXPORT QgsServerRequest
      * @param url the url string
      * @param method the request method
      */
-    QgsServerRequest( const QString& url, Method method = GetMethod );
+    QgsServerRequest( const QString &url, Method method = GetMethod );
 
     /**
      * Constructor
@@ -68,7 +68,7 @@ class SERVER_EXPORT QgsServerRequest
      * @param url QUrl
      * @param method the request method
      */
-    QgsServerRequest( const QUrl& url, Method method = GetMethod );
+    QgsServerRequest( const QUrl &url, Method method = GetMethod );
 
     //! destructor
     virtual ~QgsServerRequest() = default;
@@ -92,17 +92,17 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Set a parameter
      */
-    void setParameter( const QString& key, const QString& value );
+    void setParameter( const QString &key, const QString &value );
 
     /**
      * Get a parameter value
      */
-    QString getParameter( const QString& key ) const;
+    QString getParameter( const QString &key ) const;
 
     /**
      * Remove a parameter
      */
-    void removeParameter( const QString& key );
+    void removeParameter( const QString &key );
 
     /**
      * Return post/put data
@@ -114,12 +114,12 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * @return the value of the header field for that request
      */
-    virtual QString getHeader( const QString& name ) const;
+    virtual QString getHeader( const QString &name ) const;
 
     /**
      * Set the request url
      */
-    void setUrl( const QUrl& url );
+    void setUrl( const QUrl &url );
 
     /**
      * Set the request method

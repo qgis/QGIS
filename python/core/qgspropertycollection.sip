@@ -53,10 +53,10 @@ class QgsAbstractPropertyCollection
 
     virtual bool hasDynamicProperties() const = 0;
 
-    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const = 0;
-
-    virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition &definitions ) = 0;
-
+    virtual bool writeXml( QDomElement& collectionElem, const QgsPropertiesDefinition& definitions ) const = 0;
+    virtual bool readXml( const QDomElement& collectionElem, const QgsPropertiesDefinition &definitions ) = 0;
+    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
+    virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 };
 
 
@@ -88,9 +88,9 @@ class QgsPropertyCollection : QgsAbstractPropertyCollection
     bool isActive( int key ) const;
     bool hasActiveProperties() const;
     bool hasDynamicProperties() const;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions );
 
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const;
+    bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions );
     void setProperty( int key, const QgsProperty& property );
 
     void setProperty( int key, const QVariant& value );
@@ -137,7 +137,7 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 
     QSet<int> propertyKeys() const;
     bool hasProperty( int key ) const;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition &definitions );
+    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const;
+    virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions );
 };
 

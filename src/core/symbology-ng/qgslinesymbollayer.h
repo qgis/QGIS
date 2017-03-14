@@ -36,33 +36,33 @@ class QgsExpression;
 class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-    QgsSimpleLineSymbolLayer( const QColor& color = DEFAULT_SIMPLELINE_COLOR,
+    QgsSimpleLineSymbolLayer( const QColor &color = DEFAULT_SIMPLELINE_COLOR,
                               double width = DEFAULT_SIMPLELINE_WIDTH,
                               Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
     // static stuff
 
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
+    static QgsSymbolLayer *createFromSld( QDomElement &element );
 
     // implemented from base classes
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolRenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext &context ) override;
 
-    void stopRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
 
     //overridden so that clip path can be set when using draw inside polygon option
-    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
+    void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
-    QgsSimpleLineSymbolLayer* clone() const override;
+    QgsSimpleLineSymbolLayer *clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     // new stuff
 
@@ -99,22 +99,22 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     */
     QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
 
-    const QgsMapUnitScale& customDashPatternMapUnitScale() const { return mCustomDashPatternMapUnitScale; }
-    void setCustomDashPatternMapUnitScale( const QgsMapUnitScale& scale ) { mCustomDashPatternMapUnitScale = scale; }
+    const QgsMapUnitScale &customDashPatternMapUnitScale() const { return mCustomDashPatternMapUnitScale; }
+    void setCustomDashPatternMapUnitScale( const QgsMapUnitScale &scale ) { mCustomDashPatternMapUnitScale = scale; }
 
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
-    void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
+    void setCustomDashVector( const QVector<qreal> &vector ) { mCustomDashVector = vector; }
 
     //Returns true if the line should only be drawn inside the polygon
     bool drawInsidePolygon() const { return mDrawInsidePolygon; }
     //Set to true if the line should only be drawn inside the polygon
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
-    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit& unit ) const override;
+    QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const override;
     Qt::PenStyle dxfPenStyle() const override;
 
-    double dxfWidth( const QgsDxfExport& e, QgsSymbolRenderContext &context ) const override;
-    double dxfOffset( const QgsDxfExport& e, QgsSymbolRenderContext& context ) const override;
+    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
 
   protected:
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
   private:
     //helper functions for data defined symbology
-    void applyDataDefinedSymbology( QgsSymbolRenderContext& context, QPen& pen, QPen& selPen, double& offset );
+    void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QPen &pen, QPen &selPen, double &offset );
 };
 
 /////////
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * @return A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
     /**
      * Create a new MarkerLineSymbolLayerV2 from SLD
@@ -184,36 +184,36 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      *
      * @return A new MarkerLineSymbolLayerV2
      */
-    static QgsSymbolLayer* createFromSld( QDomElement &element );
+    static QgsSymbolLayer *createFromSld( QDomElement &element );
 
     // implemented from base classes
 
     QString layerType() const override;
 
-    void startRender( QgsSymbolRenderContext& context ) override;
+    void startRender( QgsSymbolRenderContext &context ) override;
 
-    void stopRender( QgsSymbolRenderContext& context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
 
-    void renderPolygonStroke( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolRenderContext& context ) override;
+    void renderPolygonStroke( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
     QgsStringMap properties() const override;
 
-    QgsMarkerLineSymbolLayer* clone() const override;
+    QgsMarkerLineSymbolLayer *clone() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap& props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
-    void setColor( const QColor& color ) override;
+    void setColor( const QColor &color ) override;
     virtual QColor color() const override;
 
-    QgsSymbol* subSymbol() override;
-    bool setSubSymbol( QgsSymbol* symbol ) override;
+    QgsSymbol *subSymbol() override;
+    bool setSubSymbol( QgsSymbol *symbol ) override;
 
     virtual void setWidth( double width ) override;
     virtual double width() const override;
 
-    double estimateMaxBleed( const QgsRenderContext& context ) const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     // new stuff
 
@@ -296,12 +296,12 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     /** Returns the map unit scale used for calculating the offset in map units along line for markers.
      * @returns Offset along line map unit scale.
      */
-    const QgsMapUnitScale& offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
+    const QgsMapUnitScale &offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 
     /** Sets the map unit scale used for calculating the offset in map units along line for markers.
      * @param scale Offset along line map unit scale.
      */
-    void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetAlongLineMapUnitScale = scale; }
+    void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetAlongLineMapUnitScale = scale; }
 
     /** Sets the units for the interval between markers.
      * @param unit interval units
@@ -316,26 +316,26 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     */
     QgsUnitTypes::RenderUnit intervalUnit() const { return mIntervalUnit; }
 
-    void setIntervalMapUnitScale( const QgsMapUnitScale& scale ) { mIntervalMapUnitScale = scale; }
-    const QgsMapUnitScale& intervalMapUnitScale() const { return mIntervalMapUnitScale; }
+    void setIntervalMapUnitScale( const QgsMapUnitScale &scale ) { mIntervalMapUnitScale = scale; }
+    const QgsMapUnitScale &intervalMapUnitScale() const { return mIntervalMapUnitScale; }
 
     void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     QgsUnitTypes::RenderUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    void setDataDefinedProperty( Property key, const QgsProperty& property ) override;
+    void setDataDefinedProperty( Property key, const QgsProperty &property ) override;
 
 
   protected:
 
-    void renderPolylineInterval( const QPolygonF& points, QgsSymbolRenderContext& context );
-    void renderPolylineVertex( const QPolygonF& points, QgsSymbolRenderContext& context, Placement placement = Vertex );
-    void renderPolylineCentral( const QPolygonF& points, QgsSymbolRenderContext& context );
-    double markerAngle( const QPolygonF& points, bool isRing, int vertex );
+    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Placement placement = Vertex );
+    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context );
+    double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
     bool mRotateMarker;
     double mInterval;
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      * @see setoffsetAlongLine
      * @see setOffsetAlongLineUnit
      */
-    void renderOffsetVertexAlongLine( const QPolygonF& points, int vertex, double distance, QgsSymbolRenderContext &context );
+    void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context );
 };
 
 #endif

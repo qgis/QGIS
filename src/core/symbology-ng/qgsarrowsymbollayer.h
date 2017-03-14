@@ -39,12 +39,12 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      *
      * @return A new QgsArrowSymbolLayer
      */
-    static QgsSymbolLayer* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 
-    virtual QgsArrowSymbolLayer* clone() const override;
-    virtual QgsSymbol* subSymbol() override { return mSymbol.get(); }
-    virtual bool setSubSymbol( QgsSymbol* symbol ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    virtual QgsArrowSymbolLayer *clone() const override;
+    virtual QgsSymbol *subSymbol() override { return mSymbol.get(); }
+    virtual bool setSubSymbol( QgsSymbol *symbol ) override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Get current arrow width
     double arrowWidth() const { return mArrowWidth; }
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Get the scale for the arrow width
     QgsMapUnitScale arrowWidthUnitScale() const { return mArrowWidthUnitScale; }
     //! Set the scale for the arrow width
-    void setArrowWidthUnitScale( const QgsMapUnitScale& scale ) { mArrowWidthUnitScale = scale; }
+    void setArrowWidthUnitScale( const QgsMapUnitScale &scale ) { mArrowWidthUnitScale = scale; }
 
     //! Get current arrow start width. Only meaningfull for single headed arrows
     double arrowStartWidth() const { return mArrowStartWidth; }
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Get the scale for the arrow start width
     QgsMapUnitScale arrowStartWidthUnitScale() const { return mArrowStartWidthUnitScale; }
     //! Set the scale for the arrow start width
-    void setArrowStartWidthUnitScale( const QgsMapUnitScale& scale ) { mArrowStartWidthUnitScale = scale; }
+    void setArrowStartWidthUnitScale( const QgsMapUnitScale &scale ) { mArrowStartWidthUnitScale = scale; }
 
     //! Get the current arrow head length
     double headLength() const { return mHeadLength; }
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Get the scale for the head length
     QgsMapUnitScale headLengthUnitScale() const { return mHeadLengthUnitScale; }
     //! Set the scale for the head length
-    void setHeadLengthUnitScale( const QgsMapUnitScale& scale ) { mHeadLengthUnitScale = scale; }
+    void setHeadLengthUnitScale( const QgsMapUnitScale &scale ) { mHeadLengthUnitScale = scale; }
 
     //! Get the current arrow head height
     double headThickness() const { return mHeadThickness; }
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Get the scale for the head height
     QgsMapUnitScale headThicknessUnitScale() const { return mHeadThicknessUnitScale; }
     //! Set the scale for the head height
-    void setHeadThicknessUnitScale( const QgsMapUnitScale& scale ) { mHeadThicknessUnitScale = scale; }
+    void setHeadThicknessUnitScale( const QgsMapUnitScale &scale ) { mHeadThicknessUnitScale = scale; }
 
     //! Return whether it is a curved arrow or a straight one
     bool isCurved() const { return mIsCurved; }
@@ -136,10 +136,10 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
 
     QgsStringMap properties() const override;
     QString layerType() const override;
-    void startRender( QgsSymbolRenderContext& context ) override;
-    void stopRender( QgsSymbolRenderContext& context ) override;
-    void renderPolyline( const QPolygonF& points, QgsSymbolRenderContext& context ) override;
-    void setColor( const QColor& c ) override;
+    void startRender( QgsSymbolRenderContext &context ) override;
+    void stopRender( QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    void setColor( const QColor &c ) override;
     virtual QColor color() const override;
 
   private:
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
 
     std::unique_ptr<QgsExpressionContextScope> mExpressionScope;
 
-    void _resolveDataDefined( QgsSymbolRenderContext& );
+    void _resolveDataDefined( QgsSymbolRenderContext & );
 };
 
 #endif

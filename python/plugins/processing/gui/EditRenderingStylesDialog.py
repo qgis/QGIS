@@ -69,8 +69,8 @@ class EditRenderingStylesDialog(BASE, WIDGET):
         for output in self.alg.outputs:
             if isinstance(output, (OutputVector, OutputRaster)):
                 if not output.hidden:
-                    item = QTableWidgetItem(output.description + '<'
-                                            + output.__class__.__name__ + '>')
+                    item = QTableWidgetItem(output.description + '<' +
+                                            output.__class__.__name__ + '>')
                     item.setFlags(Qt.ItemIsEnabled)
                     self.tblStyles.setItem(i, 0, item)
                     item = RenderingStyleFilePanel()

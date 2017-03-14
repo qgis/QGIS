@@ -17,7 +17,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswcsutils.h"
+#include "qgsserverprojectutils.h"
 #include "qgswcsdescribecoverage.h"
+
+#include "qgsproject.h"
+#include "qgscsexception.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsmapserviceexception.h"
+#include "qgscoordinatereferencesystem.h"
 
 namespace QgsWcs
 {
@@ -25,18 +33,18 @@ namespace QgsWcs
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeDescribeCoverage( QgsServerInterface* serverIface, const QString& version,
-                              const QgsServerRequest& request, QgsServerResponse& response )
+  void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                              const QgsServerRequest &request, QgsServerResponse &response )
   {
-    QDomDocument doc = createDescribeCoverageDocument( serverIface, version, request );
+    QDomDocument doc = createDescribeCoverageDocument( serverIface, project, version, request );
 
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( doc.toByteArray() );
   }
 
 
-  QDomDocument createDescribeCoverageDocument( QgsServerInterface* serverIface, const QString& version,
-      const QgsServerRequest& request )
+  QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+      const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
@@ -44,7 +52,9 @@ namespace QgsWcs
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
-    QgsWCSProjectParser* configParser = getConfigParser( serverIface );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
 
     //wcs:WCS_Capabilities element
     QDomElement coveDescElement = doc.createElement( QStringLiteral( "CoverageDescription" )/*wcs:CoverageDescription*/ );
@@ -58,22 +68,57 @@ namespace QgsWcs
     doc.appendChild( coveDescElement );
 
     //defining coverage name
-    QString coveName;
+    QString coveNames;
     //read COVERAGE
     QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "COVERAGE" ) );
     if ( cove_name_it != parameters.constEnd() )
     {
-      coveName = cove_name_it.value();
+      coveNames = cove_name_it.value();
     }
-    if ( coveName.isEmpty() )
+    if ( coveNames.isEmpty() )
     {
       QMap<QString, QString>::const_iterator cove_name_it = parameters.constFind( QStringLiteral( "IDENTIFIER" ) );
       if ( cove_name_it != parameters.constEnd() )
       {
-        coveName = cove_name_it.value();
+        coveNames = cove_name_it.value();
       }
     }
-    configParser->describeCoverage( coveName, coveDescElement, doc );
+
+    QStringList coveNameList;
+    if ( !coveNames.isEmpty() )
+    {
+      coveNameList = coveNames.split( QStringLiteral( "," ) );
+      for ( int i = 0; i < coveNameList.size(); ++i )
+      {
+        coveNameList.replace( i, coveNameList.at( i ).trimmed() );
+      }
+    }
+
+    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayers( *project );
+    for ( int i = 0; i < wcsLayersId.size(); ++i )
+    {
+      QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );
+      if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
+      {
+        continue;
+      }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      if ( !accessControl->layerReadPermission( layer ) )
+      {
+        continue;
+      }
+#endif
+      QString name = layer->name();
+      if ( !layer->shortName().isEmpty() )
+        name = layer->shortName();
+      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+
+      if ( coveNameList.size() == 0 || coveNameList.contains( name ) )
+      {
+        QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
+        coveDescElement.appendChild( getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ) ) );
+      }
+    }
     return doc;
   }
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>508</height>
+    <height>513</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,16 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
     <number>9</number>
    </property>
    <property name="spacing">
@@ -205,7 +214,7 @@
        <widget class="QLineEdit" name="txtHost"/>
       </item>
       <item row="5" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtPassword">
+       <widget class="QgsPasswordLineEdit" name="txtPassword">
         <property name="echoMode">
          <enum>QLineEdit::Password</enum>
         </property>
@@ -271,6 +280,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtDatabase</tabstop>

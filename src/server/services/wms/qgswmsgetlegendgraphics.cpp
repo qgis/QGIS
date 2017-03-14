@@ -25,9 +25,9 @@
 namespace QgsWms
 {
 
-  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QgsProject* project,
-                               const QString& version, const QgsServerRequest& request,
-                               QgsServerResponse& response )
+  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
+                               const QString &version, const QgsServerRequest &request,
+                               QgsServerResponse &response )
   {
     Q_UNUSED( version );
 

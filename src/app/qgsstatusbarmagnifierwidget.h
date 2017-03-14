@@ -39,7 +39,7 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
     /** Constructor
       * @param parent is the parent widget
       */
-    QgsStatusBarMagnifierWidget( QWidget* parent = nullptr );
+    QgsStatusBarMagnifierWidget( QWidget *parent = nullptr );
 
 
     virtual ~QgsStatusBarMagnifierWidget();
@@ -49,7 +49,7 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
     /** Set the font of the text
       * @param font the font to use
       */
-    void setFont( const QFont& font );
+    void setFont( const QFont &font );
 
 
   public slots:

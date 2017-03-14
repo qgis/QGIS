@@ -22,11 +22,11 @@
 #include "qgsvectorlayer.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
-    : QWidget( parent )
-    , mLayer( nullptr )
-    , mEditIndex( 0 )
-    , mEditing( false )
-    , mSymbol( nullptr )
+  : QWidget( parent )
+  , mLayer( nullptr )
+  , mEditIndex( 0 )
+  , mEditing( false )
+  , mSymbol( nullptr )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -38,9 +38,9 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( mCancelButton, SIGNAL( clicked() ), SLOT( cancelRule() ) );
   connect( mDeleteButton, SIGNAL( clicked() ), SLOT( deleteRule() ) );
   connect( listView, SIGNAL( clicked( QModelIndex ) ), SLOT( ruleClicked( QModelIndex ) ) );
-  connect( btnChangeIcon , SIGNAL( clicked() ), SLOT( updateIcon() ) );
-  connect( btnBuildExpression , SIGNAL( clicked() ), SLOT( setExpression() ) );
-  connect( mPresetsList , SIGNAL( currentIndexChanged( int ) ), SLOT( presetSet( int ) ) );
+  connect( btnChangeIcon, SIGNAL( clicked() ), SLOT( updateIcon() ) );
+  connect( btnBuildExpression, SIGNAL( clicked() ), SLOT( setExpression() ) );
+  connect( mPresetsList, SIGNAL( currentIndexChanged( int ) ), SLOT( presetSet( int ) ) );
   btnBackgroundColor->setAllowAlpha( true );
   btnBackgroundColor->setShowNoColor( true );
   btnTextColor->setAllowAlpha( true );
@@ -104,14 +104,14 @@ void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *layer )
   mFieldCombo->setCurrentIndex( 0 );
 }
 
-void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex& index )
+void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex &index )
 {
   QList<QgsConditionalStyle> styles = getStyles();
   QgsConditionalStyle style = styles.at( index.row() );
   editStyle( index.row(), style );
 }
 
-void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditionalStyle& style )
+void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditionalStyle &style )
 {
   pages->setCurrentIndex( 1 );
   mEditIndex = editIndex;
@@ -120,13 +120,13 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
   loadStyle( style );
 }
 
-void QgsFieldConditionalFormatWidget::loadStyle( const QgsConditionalStyle& style )
+void QgsFieldConditionalFormatWidget::loadStyle( const QgsConditionalStyle &style )
 {
   mRuleEdit->setText( style.rule() );
   mNameEdit->setText( style.name() );
   setFormattingFromStyle( style );
 }
-void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsConditionalStyle& style )
+void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsConditionalStyle &style )
 {
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
@@ -230,15 +230,15 @@ void QgsFieldConditionalFormatWidget::reset()
 }
 
 
-void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyle>& styles )
+void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyle> &styles )
 {
   mPresets.clear();
   mPresetsModel->clear();
-  Q_FOREACH ( const QgsConditionalStyle& style, styles )
+  Q_FOREACH ( const QgsConditionalStyle &style, styles )
   {
     if ( style.isValid() )
     {
-      QStandardItem* item = new QStandardItem( QStringLiteral( "abc - 123" ) );
+      QStandardItem *item = new QStandardItem( QStringLiteral( "abc - 123" ) );
       if ( style.backgroundColor().isValid() )
         item->setBackground( style.backgroundColor() );
       if ( style.textColor().isValid() )
@@ -334,15 +334,15 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 {
   mModel->clear();
 
-  Q_FOREACH ( const QgsConditionalStyle& style, getStyles() )
+  Q_FOREACH ( const QgsConditionalStyle &style, getStyles() )
   {
-    QStandardItem* item = new QStandardItem( style.displayText() );
+    QStandardItem *item = new QStandardItem( style.displayText() );
     item->setIcon( QIcon( style.renderPreview() ) );
     mModel->appendRow( item );
   }
 }
 
-void QgsFieldConditionalFormatWidget::fieldChanged( const QString& fieldName )
+void QgsFieldConditionalFormatWidget::fieldChanged( const QString &fieldName )
 {
   Q_UNUSED( fieldName );
   reloadStyles();

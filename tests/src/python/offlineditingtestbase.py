@@ -19,8 +19,8 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import str
 from builtins import object
+
 __author__ = 'Alessandro Pasotti'
 __date__ = '2016-06-30'
 __copyright__ = 'Copyright 2016, The QGIS Project'
@@ -28,7 +28,6 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from time import sleep
-import os
 
 from qgis.core import (
     QgsFeature,

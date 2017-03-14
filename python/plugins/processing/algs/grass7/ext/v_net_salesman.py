@@ -33,7 +33,7 @@ def processCommand(alg):
     # We temporary remove the output 'sequence'
     sequence = alg.getOutputFromName(u'sequence')
     sequenceFile = alg.getOutputValue(u'sequence')
-    alg.exportedLayers[sequence.value] = sequence.name + alg.uniqueSufix
+    alg.exportedLayers[sequence.value] = sequence.name + alg.uniqueSuffix
     alg.removeOutputFromName(u'sequence')
 
     # We create a new parameter with the same name

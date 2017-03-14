@@ -21,15 +21,15 @@
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 
-QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon ):
-    QgsComposerItemBaseWidget( nullptr, composerPolygon )
-    , mComposerPolygon( composerPolygon )
+QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composerPolygon ):
+  QgsComposerItemBaseWidget( nullptr, composerPolygon )
+  , mComposerPolygon( composerPolygon )
 {
   setupUi( this );
   setPanelTitle( tr( "Polygon properties" ) );
 
   //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerPolygon );
+  QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, composerPolygon );
 
   //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorWidget
   itemPropertiesWidget->showBackgroundGroup( false );
@@ -57,18 +57,18 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   }
 
   // use the atlas coverage layer, if any
-  QgsVectorLayer* coverageLayer = atlasCoverageLayer();
+  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
 
-  QgsFillSymbol* newSymbol = mComposerPolygon->polygonStyleSymbol()->clone();
+  QgsFillSymbol *newSymbol = mComposerPolygon->polygonStyleSymbol()->clone();
   QgsExpressionContext context = mComposerPolygon->createExpressionContext();
 
-  QgsSymbolSelectorWidget* d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
+  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
   QgsSymbolWidgetContext symbolContext;
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget* ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget* ) ) );
+  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
   openPanel( d );
   mComposerPolygon->beginCommand( tr( "Polygon style changed" ) );
 }
@@ -85,16 +85,16 @@ void QgsComposerPolygonWidget::setGuiElementValues()
 
 void QgsComposerPolygonWidget::updateStyleFromWidget()
 {
-  if ( QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( sender() ) )
+  if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol* >( w->symbol() ) );
+    mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
     mComposerPolygon->update();
   }
 }
 
-void QgsComposerPolygonWidget::cleanUpStyleSelector( QgsPanelWidget* container )
+void QgsComposerPolygonWidget::cleanUpStyleSelector( QgsPanelWidget *container )
 {
-  QgsSymbolSelectorWidget* w = qobject_cast<QgsSymbolSelectorWidget*>( container );
+  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
   if ( !w )
     return;
 

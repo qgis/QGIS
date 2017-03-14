@@ -39,8 +39,8 @@ class TestQgsZonalStatistics : public QObject
     void testStatistics();
 
   private:
-    QgsVectorLayer* mVectorLayer = nullptr;
-    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
 };
 
 void TestQgsZonalStatistics::initTestCase()

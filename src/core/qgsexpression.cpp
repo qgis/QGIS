@@ -3822,55 +3822,55 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
                               << Parameter( QStringLiteral( "filter" ), true );
 
     sFunctions
-    << new StaticFunction( QStringLiteral( "sqrt" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnSqrt, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "radians" ), ParameterList() << Parameter( QStringLiteral( "degrees" ) ), fcnRadians, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "degrees" ), ParameterList() << Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "azimuth" ), ParameterList() << Parameter( QStringLiteral( "point_a" ) ) << Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
-    << new StaticFunction( QStringLiteral( "project" ), ParameterList() << Parameter( QStringLiteral( "point" ) ) << Parameter( QStringLiteral( "distance" ) ) << Parameter( QStringLiteral( "azimuth" ) ) << Parameter( QStringLiteral( "elevation" ), true, M_PI / 2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
-    << new StaticFunction( QStringLiteral( "abs" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "cos" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnCos, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "sin" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnSin, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "tan" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnTan, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "asin" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAsin, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "acos" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAcos, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "atan" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAtan, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "atan2" ), ParameterList() << Parameter( QStringLiteral( "dx" ) ) << Parameter( QStringLiteral( "dy" ) ), fcnAtan2, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "exp" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnExp, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "ln" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnLn, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "log10" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnLog10, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "log" ), ParameterList() << Parameter( QStringLiteral( "base" ) ) << Parameter( QStringLiteral( "value" ) ), fcnLog, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "round" ), ParameterList() << Parameter( QStringLiteral( "value" ) ) << Parameter( QStringLiteral( "places" ), true, 0 ), fcnRound, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "rand" ), ParameterList() << Parameter( QStringLiteral( "min" ) ) << Parameter( QStringLiteral( "max" ) ), fcnRnd, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "randf" ), ParameterList() << Parameter( QStringLiteral( "min" ), true, 0.0 ) << Parameter( QStringLiteral( "max" ), true, 1.0 ), fcnRndF, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "clamp" ), ParameterList() << Parameter( QStringLiteral( "min" ) ) << Parameter( QStringLiteral( "value" ) ) << Parameter( QStringLiteral( "max" ) ), fcnClamp, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "scale_linear" ), 5, fcnLinearScale, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "scale_exp" ), 6, fcnExpScale, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "floor" ), 1, fcnFloor, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "ceil" ), 1, fcnCeil, QStringLiteral( "Math" ) )
-    << new StaticFunction( QStringLiteral( "pi" ), 0, fcnPi, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$pi" ) )
-    << new StaticFunction( QStringLiteral( "to_int" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToInt, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toint" ) )
-    << new StaticFunction( QStringLiteral( "to_real" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToReal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toreal" ) )
-    << new StaticFunction( QStringLiteral( "to_string" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToString, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tostring" ) )
-    << new StaticFunction( QStringLiteral( "to_datetime" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToDateTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todatetime" ) )
-    << new StaticFunction( QStringLiteral( "to_date" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToDate, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todate" ) )
-    << new StaticFunction( QStringLiteral( "to_time" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "totime" ) )
-    << new StaticFunction( QStringLiteral( "to_interval" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToInterval, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tointerval" ) )
-    << new StaticFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
-    << new StaticFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), False, QSet<QString>(), true )
+        << new StaticFunction( QStringLiteral( "sqrt" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnSqrt, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "radians" ), ParameterList() << Parameter( QStringLiteral( "degrees" ) ), fcnRadians, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "degrees" ), ParameterList() << Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "azimuth" ), ParameterList() << Parameter( QStringLiteral( "point_a" ) ) << Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "project" ), ParameterList() << Parameter( QStringLiteral( "point" ) ) << Parameter( QStringLiteral( "distance" ) ) << Parameter( QStringLiteral( "azimuth" ) ) << Parameter( QStringLiteral( "elevation" ), true, M_PI / 2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "abs" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "cos" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnCos, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "sin" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnSin, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "tan" ), ParameterList() << Parameter( QStringLiteral( "angle" ) ), fcnTan, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "asin" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAsin, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "acos" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAcos, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "atan" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnAtan, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "atan2" ), ParameterList() << Parameter( QStringLiteral( "dx" ) ) << Parameter( QStringLiteral( "dy" ) ), fcnAtan2, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "exp" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnExp, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "ln" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnLn, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "log10" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnLog10, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "log" ), ParameterList() << Parameter( QStringLiteral( "base" ) ) << Parameter( QStringLiteral( "value" ) ), fcnLog, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "round" ), ParameterList() << Parameter( QStringLiteral( "value" ) ) << Parameter( QStringLiteral( "places" ), true, 0 ), fcnRound, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "rand" ), ParameterList() << Parameter( QStringLiteral( "min" ) ) << Parameter( QStringLiteral( "max" ) ), fcnRnd, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "randf" ), ParameterList() << Parameter( QStringLiteral( "min" ), true, 0.0 ) << Parameter( QStringLiteral( "max" ), true, 1.0 ), fcnRndF, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "clamp" ), ParameterList() << Parameter( QStringLiteral( "min" ) ) << Parameter( QStringLiteral( "value" ) ) << Parameter( QStringLiteral( "max" ) ), fcnClamp, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "scale_linear" ), 5, fcnLinearScale, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "scale_exp" ), 6, fcnExpScale, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "floor" ), 1, fcnFloor, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "ceil" ), 1, fcnCeil, QStringLiteral( "Math" ) )
+        << new StaticFunction( QStringLiteral( "pi" ), 0, fcnPi, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$pi" ) )
+        << new StaticFunction( QStringLiteral( "to_int" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToInt, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toint" ) )
+        << new StaticFunction( QStringLiteral( "to_real" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToReal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toreal" ) )
+        << new StaticFunction( QStringLiteral( "to_string" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToString, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tostring" ) )
+        << new StaticFunction( QStringLiteral( "to_datetime" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToDateTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todatetime" ) )
+        << new StaticFunction( QStringLiteral( "to_date" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToDate, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "todate" ) )
+        << new StaticFunction( QStringLiteral( "to_time" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToTime, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "totime" ) )
+        << new StaticFunction( QStringLiteral( "to_interval" ), ParameterList() << Parameter( QStringLiteral( "value" ) ), fcnToInterval, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "Date and Time" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tointerval" ) )
+        << new StaticFunction( QStringLiteral( "coalesce" ), -1, fcnCoalesce, QStringLiteral( "Conditionals" ), QString(), false, QSet<QString>(), false, QStringList(), true )
+        << new StaticFunction( QStringLiteral( "if" ), 3, fcnIf, QStringLiteral( "Conditionals" ), QString(), False, QSet<QString>(), true )
 
-    << new StaticFunction( QStringLiteral( "aggregate" ),
-                           ParameterList()
-                           << Parameter( QStringLiteral( "layer" ) )
-                           << Parameter( QStringLiteral( "aggregate" ) )
-                           << Parameter( QStringLiteral( "expression" ) )
-                           << Parameter( QStringLiteral( "filter" ), true )
-                           << Parameter( QStringLiteral( "concatenator" ), true ),
-                           fcnAggregate,
-                           QStringLiteral( "Aggregates" ),
-                           QString(),
-                           []( const QgsExpression::NodeFunction * node )
+        << new StaticFunction( QStringLiteral( "aggregate" ),
+                               ParameterList()
+                               << Parameter( QStringLiteral( "layer" ) )
+                               << Parameter( QStringLiteral( "aggregate" ) )
+                               << Parameter( QStringLiteral( "expression" ) )
+                               << Parameter( QStringLiteral( "filter" ), true )
+                               << Parameter( QStringLiteral( "concatenator" ), true ),
+                               fcnAggregate,
+                               QStringLiteral( "Aggregates" ),
+                               QString(),
+                               []( const QgsExpression::NodeFunction * node )
     {
       // usesGeometry callback: return true if @parent variable is referenced
 
@@ -4297,12 +4297,12 @@ QgsExpression::QgsExpression( const QString &expr )
 }
 
 QgsExpression::QgsExpression( const QgsExpression &other )
-    : d( other.d )
+  : d( other.d )
 {
   d->ref.ref();
 }
 
-QgsExpression &QgsExpression::operator=( const QgsExpression & other )
+QgsExpression &QgsExpression::operator=( const QgsExpression &other )
 {
   if ( !d->ref.deref() )
   {
@@ -4372,7 +4372,7 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) c
   const QSet<QString> referencedFields = d->mRootNode->referencedColumns();
   QSet<int> referencedIndexes;
 
-for ( const QString &fieldName : referencedFields )
+  for ( const QString &fieldName : referencedFields )
   {
     if ( fieldName == QgsFeatureRequest::ALL_ATTRIBUTES )
     {
@@ -5292,7 +5292,7 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression *parent, const QgsExpr
 }
 
 QgsExpression::NodeFunction::NodeFunction( int fnIndex, QgsExpression::NodeList *args )
-    : mFnIndex( fnIndex )
+  : mFnIndex( fnIndex )
 {
   const ParameterList &functionParams = Functions()[mFnIndex]->parameters();
   if ( !args || functionParams.isEmpty() )
@@ -6099,12 +6099,12 @@ bool QgsExpression::Function::operator==( const QgsExpression::Function &other )
 }
 
 QgsExpression::StaticFunction::StaticFunction( const QString &fnname, const QgsExpression::ParameterList &params, QgsExpression::FcnEval fcn, const QString &group, const QString &helpText, std::function < bool ( const NodeFunction *node ) > usesGeometry, std::function < QSet<QString>( const NodeFunction *node ) > referencedColumns, bool lazyEval, const QStringList &aliases, bool handlesNull )
-    : Function( fnname, params, group, helpText, lazyEval, handlesNull )
-    , mFnc( fcn )
-    , mAliases( aliases )
-    , mUsesGeometry( false )
-    , mUsesGeometryFunc( usesGeometry )
-    , mReferencedColumnsFunc( referencedColumns )
+  : Function( fnname, params, group, helpText, lazyEval, handlesNull )
+  , mFnc( fcn )
+  , mAliases( aliases )
+  , mUsesGeometry( false )
+  , mUsesGeometryFunc( usesGeometry )
+  , mReferencedColumnsFunc( referencedColumns )
 {
 }
 

@@ -49,13 +49,13 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     };
 
     //! base class constructor - stores the iteration parameters
-    QgsAbstractFeatureIterator( const QgsFeatureRequest& request );
+    QgsAbstractFeatureIterator( const QgsFeatureRequest &request );
 
     //! destructor makes sure that the iterator is closed properly
     virtual ~QgsAbstractFeatureIterator() = default;
 
     //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& f );
+    virtual bool nextFeature( QgsFeature &f );
 
     //! reset the iterator to the starting position
     virtual bool rewind() = 0;
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * @note added in QGIS 2.16
      * @note not available in Python bindings
      */
-    virtual void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
+    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
     /** Returns the status of expression compilation for filter expression requests.
      * @note added in QGIS 2.16
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * @param f The feature to write to
      * @return  true if a feature was written to f
      */
-    virtual bool fetchFeature( QgsFeature& f ) = 0;
+    virtual bool fetchFeature( QgsFeature &f ) = 0;
 
     /**
      * By default, the iterator will fetch all features and check if the feature
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * @param f The feature to write to
      * @return  true if a feature was written to f
      */
-    virtual bool nextFeatureFilterFids( QgsFeature & f );
+    virtual bool nextFeatureFilterFids( QgsFeature &f );
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     CompileStatus mCompileStatus;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 
   private:
     bool mUseCachedFeatures;
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      *
      * @note added in QGIS 2.14
      */
-    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys );
+    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 
     /**
      * Setup the orderby. Internally calls prepareOrderBy and if false is returned will
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      *
      * @note added in QGIS 2.14
      */
-    void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause>& orderBys );
+    void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 };
 
 
@@ -181,10 +181,10 @@ template<typename T>
 class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 {
   public:
-    QgsAbstractFeatureIteratorFromSource( T* source, bool ownSource, const QgsFeatureRequest& request )
-        : QgsAbstractFeatureIterator( request )
-        , mSource( source )
-        , mOwnSource( ownSource )
+    QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request )
+      : QgsAbstractFeatureIterator( request )
+      , mSource( source )
+      , mOwnSource( ownSource )
     {
       mSource->iteratorOpened( this );
     }
@@ -199,7 +199,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
     //! to be called by from subclass in close()
     void iteratorClosed() { mSource->iteratorClosed( this ); }
 
-    T* mSource = nullptr;
+    T *mSource = nullptr;
     bool mOwnSource;
 };
 
@@ -213,15 +213,15 @@ class CORE_EXPORT QgsFeatureIterator
     //! construct invalid iterator
     QgsFeatureIterator();
     //! construct a valid iterator
-    QgsFeatureIterator( QgsAbstractFeatureIterator* iter );
+    QgsFeatureIterator( QgsAbstractFeatureIterator *iter );
     //! copy constructor copies the iterator, increases ref.count
-    QgsFeatureIterator( const QgsFeatureIterator& fi );
+    QgsFeatureIterator( const QgsFeatureIterator &fi );
     //! destructor deletes the iterator if it has no more references
     ~QgsFeatureIterator();
 
-    QgsFeatureIterator& operator=( const QgsFeatureIterator& other );
+    QgsFeatureIterator &operator=( const QgsFeatureIterator &other );
 
-    bool nextFeature( QgsFeature& f );
+    bool nextFeature( QgsFeature &f );
     bool rewind();
     bool close();
 
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsFeatureIterator
      * @note added in QGIS 2.16
      * @note not available in Python bindings
      */
-    void setInterruptionChecker( QgsInterruptionChecker* interruptionChecker );
+    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
     /** Returns the status of expression compilation for filter expression requests.
      * @note added in QGIS 2.16
@@ -246,25 +246,25 @@ class CORE_EXPORT QgsFeatureIterator
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 );
 
   protected:
-    QgsAbstractFeatureIterator* mIter = nullptr;
+    QgsAbstractFeatureIterator *mIter = nullptr;
 };
 
 ////////
 
 inline QgsFeatureIterator::QgsFeatureIterator()
-    : mIter( nullptr )
+  : mIter( nullptr )
 {
 }
 
-inline QgsFeatureIterator::QgsFeatureIterator( QgsAbstractFeatureIterator* iter )
-    : mIter( iter )
+inline QgsFeatureIterator::QgsFeatureIterator( QgsAbstractFeatureIterator *iter )
+  : mIter( iter )
 {
   if ( iter )
     iter->ref();
 }
 
-inline QgsFeatureIterator::QgsFeatureIterator( const QgsFeatureIterator& fi )
-    : mIter( fi.mIter )
+inline QgsFeatureIterator::QgsFeatureIterator( const QgsFeatureIterator &fi )
+  : mIter( fi.mIter )
 {
   if ( mIter )
     mIter->ref();
@@ -276,7 +276,7 @@ inline QgsFeatureIterator::~QgsFeatureIterator()
     mIter->deref();
 }
 
-inline bool QgsFeatureIterator::nextFeature( QgsFeature& f )
+inline bool QgsFeatureIterator::nextFeature( QgsFeature &f )
 {
   return mIter ? mIter->nextFeature( f ) : false;
 }
@@ -312,7 +312,7 @@ inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator
   return !( fi1 == fi2 );
 }
 
-inline void QgsFeatureIterator::setInterruptionChecker( QgsInterruptionChecker* interruptionChecker )
+inline void QgsFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
 {
   if ( mIter )
     mIter->setInterruptionChecker( interruptionChecker );

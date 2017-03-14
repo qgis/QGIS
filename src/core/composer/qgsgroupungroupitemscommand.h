@@ -52,7 +52,7 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
      * @param parent parent command, if any
      *
      */
-    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
     ~QgsGroupUngroupItemsCommand();
 
     void redo() override;
@@ -60,14 +60,14 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
 
   signals:
     //! Signals addition of an item (the group)
-    void itemAdded( QgsComposerItem* item );
+    void itemAdded( QgsComposerItem *item );
     //! Signals removal of an item (the group)
-    void itemRemoved( QgsComposerItem* item );
+    void itemRemoved( QgsComposerItem *item );
 
   private:
-    QgsComposerItemGroup* mGroup = nullptr;
-    QSet<QgsComposerItem*> mItems;
-    QgsComposition* mComposition = nullptr;
+    QgsComposerItemGroup *mGroup = nullptr;
+    QSet<QgsComposerItem *> mItems;
+    QgsComposition *mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

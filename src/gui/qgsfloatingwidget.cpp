@@ -23,12 +23,12 @@
 //
 
 QgsFloatingWidget::QgsFloatingWidget( QWidget *parent )
-    : QWidget( parent )
-    , mAnchorWidget( nullptr )
-    , mParentEventFilter( nullptr )
-    , mAnchorEventFilter( nullptr )
-    , mFloatAnchorPoint( BottomMiddle )
-    , mAnchorWidgetAnchorPoint( TopMiddle )
+  : QWidget( parent )
+  , mAnchorWidget( nullptr )
+  , mParentEventFilter( nullptr )
+  , mAnchorEventFilter( nullptr )
+  , mFloatAnchorPoint( BottomMiddle )
+  , mAnchorWidgetAnchorPoint( TopMiddle )
 {
   if ( parent )
   {
@@ -94,7 +94,7 @@ void QgsFloatingWidget::showEvent( QShowEvent *e )
   QWidget::showEvent( e );
 }
 
-void QgsFloatingWidget::paintEvent( QPaintEvent* e )
+void QgsFloatingWidget::paintEvent( QPaintEvent *e )
 {
   Q_UNUSED( e );
   QStyleOption opt;
@@ -194,7 +194,7 @@ void QgsFloatingWidget::onAnchorPointChanged()
 
 /// @cond PRIVATE
 QgsFloatingWidgetEventFilter::QgsFloatingWidgetEventFilter( QWidget *parent )
-    : QObject( parent )
+  : QObject( parent )
 {
 
 }

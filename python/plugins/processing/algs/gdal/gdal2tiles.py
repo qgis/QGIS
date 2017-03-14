@@ -65,7 +65,7 @@ class gdal2tiles(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('gdal2tiles')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
+        self.group, self.i18n_group = self.trAlgorithm('Raster miscellaneous')
 
         # Required parameters
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))

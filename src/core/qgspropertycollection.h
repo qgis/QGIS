@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Constructor for QgsAbstractPropertyCollection. The name
      * parameter should be set to a descriptive name for the collection.
      */
-    QgsAbstractPropertyCollection( const QString& name = QString() );
+    QgsAbstractPropertyCollection( const QString &name = QString() );
 
     virtual ~QgsAbstractPropertyCollection() = default;
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * Sets the descriptive name for the property collection.
      * @see name()
      */
-    void setName( const QString& name ) { mName = name; }
+    void setName( const QString &name ) { mName = name; }
 
     /**
      * Returns a list of property keys contained within the collection.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    virtual QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const = 0;
+    virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a string.
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    QString valueAsString( int key, const QgsExpressionContext& context, const QString& defaultString = QString(), bool* ok = nullptr ) const;
+    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    QColor valueAsColor( int key, const QgsExpressionContext& context, const QColor& defaultColor = QColor(), bool* ok = nullptr ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsInt()
      * @see valueAsBool()
      */
-    double valueAsDouble( int key, const QgsExpressionContext& context, double defaultValue = 0.0, bool* ok = nullptr ) const;
+    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsDouble()
      * @see valueAsBool()
      */
-    int valueAsInt( int key, const QgsExpressionContext& context, int defaultValue = 0, bool* ok = nullptr ) const;
+    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
@@ -180,20 +180,20 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * @see valueAsDouble()
      * @see valueAsInt()
      */
-    bool valueAsBool( int key, const QgsExpressionContext& context, bool defaultValue = false, bool* ok = nullptr ) const;
+    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
 
     /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the
      * collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
      * Returns true if preparation was successful.
      */
-    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const = 0;
+    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
      * @param context expression context the properties will be evaluated against.
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const = 0;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 
     /**
      * Returns true if the collection contains an active property with the specified key.
@@ -219,20 +219,34 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Writes the current state of the property collection into an XML element
      * @param collectionElem destination element for the property collection's state
-     * @param doc DOM document
      * @param definitions property definitions
      * @see readXml()
     */
-    virtual bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const = 0;
+    virtual bool writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const;
 
     /**
      * Reads property collection state from an XML element.
      * @param collectionElem source DOM element for property collection's state
-     * @param doc DOM document
      * @param definitions property definitions
      * @see writeXml()
     */
-    virtual bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) = 0;
+    virtual bool readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions );
+
+    /**
+     * Saves this property collection to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadVariant()
+     */
+    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const = 0;
+
+    /**
+     * Loads this property collection from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to save it to an XML document.
+     *
+     * @see toVariant()
+     */
+    virtual bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) = 0;
 
   private:
 
@@ -258,7 +272,14 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * Constructor for QgsPropertyCollection
      * @param name collection name
      */
-    QgsPropertyCollection( const QString& name = QString() );
+    QgsPropertyCollection( const QString &name = QString() );
+
+    /**
+     * Copy constructor.
+     */
+    QgsPropertyCollection( const QgsPropertyCollection &other );
+
+    QgsPropertyCollection &operator=( const QgsPropertyCollection &other );
 
     /**
      * Returns the number of properties contained within the collection.
@@ -278,15 +299,16 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * @see hasProperty()
      */
 
-    virtual QgsProperty& property( int key );
-    QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const override;
-    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
+    virtual QgsProperty &property( int key );
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
+    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
     bool hasDynamicProperties() const override;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const override;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) override;
+
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+    bool loadVariant( const QVariant &configuration, const QgsPropertiesDefinition &definitions ) override;
 
     /**
      * Adds a property to the collection and takes ownership of it.
@@ -296,7 +318,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * @param property property to add. Ownership is transferred to the collection. Setting an invalid property
      * will remove the property from the collection.
      */
-    void setProperty( int key, const QgsProperty& property );
+    void setProperty( int key, const QgsProperty &property );
 
     /**
      * Convience method, creates a QgsStaticProperty and stores it within the collection.
@@ -305,7 +327,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * int and used for the key value.
      * @param value static value for property
      */
-    void setProperty( int key, const QVariant& value );
+    void setProperty( int key, const QVariant &value );
 
   private:
 
@@ -338,9 +360,9 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     ~QgsPropertyCollectionStack();
 
     //! Copy constructor
-    QgsPropertyCollectionStack( const QgsPropertyCollectionStack& other );
+    QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
 
-    QgsPropertyCollectionStack& operator=( const QgsPropertyCollectionStack& other );
+    QgsPropertyCollectionStack &operator=( const QgsPropertyCollectionStack &other );
 
     /**
      * Returns the number of collections contained within the stack.
@@ -357,28 +379,28 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * from the newly added collection will take priority over any existing properties with the same name.
      * @param collection collection to append. Ownership is transferred to the stack.
      */
-    void appendCollection( QgsPropertyCollection* collection );
+    void appendCollection( QgsPropertyCollection *collection );
 
     /**
      * Returns the collection at the corresponding index from the stack.
      * @param index position of collection, 0 based
      * @returns collection if one exists at the specified index
      */
-    QgsPropertyCollection* at( int index );
+    QgsPropertyCollection *at( int index );
 
     /**
      * Returns the collection at the corresponding index from the stack.
      * @param index position of collection, 0 based
      * @returns collection if one exists at the specified index
      */
-    const QgsPropertyCollection* at( int index ) const;
+    const QgsPropertyCollection *at( int index ) const;
 
     /**
      * Returns the first collection with a matching name from the stack.
      * @param name name of collection to find
      * @returns collection if one exists with the specified name
      */
-    QgsPropertyCollection* collection( const QString& name );
+    QgsPropertyCollection *collection( const QString &name );
 
     /**
      * Returns true if the collection has any active properties, or false if all properties
@@ -421,23 +443,25 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * cannot be calculated
      * @returns calculated property value, or default value if property could not be evaluated
      */
-    QVariant value( int key, const QgsExpressionContext& context, const QVariant& defaultValue = QVariant() ) const override;
+    QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
 
     /**
      * Returns the set of any fields referenced by the active properties from the stack.
      * @param context expression context the properties will be evaluated against.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
-    virtual bool prepare( const QgsExpressionContext& context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
-    bool writeXml( QDomElement& collectionElem, QDomDocument& doc, const QgsPropertiesDefinition& definitions ) const override;
-    bool readXml( const QDomElement& collectionElem, const QDomDocument& doc, const QgsPropertiesDefinition& definitions ) override;
+
+    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+
+    virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
 
-    QList< QgsPropertyCollection* > mStack;
+    QList< QgsPropertyCollection * > mStack;
 
 };
 

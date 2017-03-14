@@ -31,9 +31,9 @@ class CORE_EXPORT QgsEditorWidgetSetup
     /**
      * Constructor
      */
-    QgsEditorWidgetSetup( const QString& type, const QVariantMap& config )
-        : mType( type )
-        , mConfig( config )
+    QgsEditorWidgetSetup( const QString &type, const QVariantMap &config )
+      : mType( type )
+      , mConfig( config )
     {}
 
     QgsEditorWidgetSetup() {}

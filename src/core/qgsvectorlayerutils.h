@@ -37,21 +37,21 @@ class CORE_EXPORT QgsVectorLayerUtils
      * with IDs within this list are ignored when testing for existence of the value.
      * @see createUniqueValue()
      */
-    static bool valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds = QgsFeatureIds() );
+    static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 
     /**
      * Returns a new attribute value for the specified field index which is guaranteed to be unique. The optional seed
      * value can be used as a basis for generated values.
      * @see valueExists()
      */
-    static QVariant createUniqueValue( const QgsVectorLayer* layer, int fieldIndex, const QVariant& seed = QVariant() );
+    static QVariant createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed = QVariant() );
 
     /**
      * Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
      * Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
      * If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
      */
-    static bool validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors,
+    static bool validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
                                    QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthNotSet,
                                    QgsFieldConstraints::ConstraintOrigin origin = QgsFieldConstraints::ConstraintOriginNotSet );
 
@@ -62,10 +62,10 @@ class CORE_EXPORT QgsVectorLayerUtils
      * assuming that they respect the layer's constraints. Note that the created feature is not
      * automatically inserted into the layer.
      */
-    static QgsFeature createFeature( QgsVectorLayer* layer,
-                                     const QgsGeometry& geometry = QgsGeometry(),
-                                     const QgsAttributeMap& attributes = QgsAttributeMap(),
-                                     QgsExpressionContext* context = nullptr );
+    static QgsFeature createFeature( QgsVectorLayer *layer,
+                                     const QgsGeometry &geometry = QgsGeometry(),
+                                     const QgsAttributeMap &attributes = QgsAttributeMap(),
+                                     QgsExpressionContext *context = nullptr );
 
 };
 

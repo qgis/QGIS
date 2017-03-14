@@ -42,11 +42,11 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
      * @param composition composition to show items from. If not set, no items will be shown
      * until setComposition() is called
      */
-    explicit QgsComposerItemComboBox( QWidget* parent = nullptr, QgsComposition* composition = nullptr );
+    explicit QgsComposerItemComboBox( QWidget *parent = nullptr, QgsComposition *composition = nullptr );
 
     /** Sets the composition containing the items to list in the combo box.
      */
-    void setComposition( QgsComposition* composition );
+    void setComposition( QgsComposition *composition );
 
     /** Sets a filter for the item type to show in the combo box.
      * @param itemType type of items to show. Set to QgsComposerItem::ComposerItem to
@@ -64,41 +64,41 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
      * @param exceptList list of items to exclude
      * @see exceptedItemList()
      */
-    void setExceptedItemList( const QList< QgsComposerItem* >& exceptList );
+    void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 
     /** Returns the list of specific items excluded from the combo box.
      * @see setExceptedItemList()
      */
-    QList< QgsComposerItem* > exceptedItemList() const;
+    QList< QgsComposerItem * > exceptedItemList() const;
 
     /** Return the item currently shown at the specified index within the combo box.
      * @param index position of item to return
      * @see currentItem()
      */
-    QgsComposerItem* item( int index ) const;
+    QgsComposerItem *item( int index ) const;
 
     /** Returns the item currently selected in the combo box.
      */
-    QgsComposerItem* currentItem() const;
+    QgsComposerItem *currentItem() const;
 
   public slots:
 
     /** Sets the currently selected item in the combo box.
      * @param item selected item
      */
-    void setItem( const QgsComposerItem* item );
+    void setItem( const QgsComposerItem *item );
 
   signals:
 
     //! Emitted whenever the currently selected item changes
-    void itemChanged( QgsComposerItem* item );
+    void itemChanged( QgsComposerItem *item );
 
   private slots:
     void indexChanged( int i );
     void rowsChanged();
 
   private:
-    QgsComposerProxyModel* mProxyModel = nullptr;
+    QgsComposerProxyModel *mProxyModel = nullptr;
 
 };
 

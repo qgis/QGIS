@@ -20,31 +20,31 @@
 #include <QToolButton>
 #include <QLabel>
 #include <QFileDialog>
-#include <QSettings>
 #include <QGridLayout>
 #include <QUrl>
 
+#include "qgssettings.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
-    : QWidget( parent )
-    , mFilePath( QString() )
-    , mButtonVisible( true )
-    , mUseLink( false )
-    , mFullUrl( false )
-    , mDialogTitle( QString() )
-    , mFilter( QString() )
-    , mDefaultRoot( QString() )
-    , mStorageMode( GetFile )
-    , mRelativeStorage( Absolute )
+  : QWidget( parent )
+  , mFilePath( QString() )
+  , mButtonVisible( true )
+  , mUseLink( false )
+  , mFullUrl( false )
+  , mDialogTitle( QString() )
+  , mFilter( QString() )
+  , mDefaultRoot( QString() )
+  , mStorageMode( GetFile )
+  , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
-  QGridLayout* layout = new QGridLayout();
+  QGridLayout *layout = new QGridLayout();
   layout->setMargin( 0 );
 
   // If displaying a hyperlink, use a QLabel
@@ -99,7 +99,7 @@ QString QgsFileWidget::dialogTitle() const
   return mDialogTitle;
 }
 
-void QgsFileWidget::setDialogTitle( const QString& title )
+void QgsFileWidget::setDialogTitle( const QString &title )
 {
   mDialogTitle = title;
 }
@@ -109,7 +109,7 @@ QString QgsFileWidget::filter() const
   return mFilter;
 }
 
-void QgsFileWidget::setFilter( const QString& filters )
+void QgsFileWidget::setFilter( const QString &filters )
 {
   mFilter = filters;
 }
@@ -125,7 +125,7 @@ void QgsFileWidget::setFileWidgetButtonVisible( bool visible )
   mFileWidgetButton->setVisible( visible );
 }
 
-void QgsFileWidget::textEdited( const QString& path )
+void QgsFileWidget::textEdited( const QString &path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
@@ -159,7 +159,7 @@ QString QgsFileWidget::defaultRoot() const
   return mDefaultRoot;
 }
 
-void QgsFileWidget::setDefaultRoot( const QString& defaultRoot )
+void QgsFileWidget::setDefaultRoot( const QString &defaultRoot )
 {
   mDefaultRoot = defaultRoot;
 }
@@ -186,7 +186,7 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
 
 void QgsFileWidget::openFileDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString oldPath;
 
   // If we use fixed default path
@@ -209,7 +209,7 @@ void QgsFileWidget::openFileDialog()
     {
       defPath = QDir::homePath();
     }
-    oldPath = settings.value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
+    oldPath = settings.value( QStringLiteral( "UI/lastExternalResourceWidgetDefaultPath" ), defPath ).toString();
   }
 
   // Handle Storage
@@ -235,11 +235,11 @@ void QgsFileWidget::openFileDialog()
 
   if ( mStorageMode == GetFile )
   {
-    settings.setValue( QStringLiteral( "/UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
   }
   else if ( mStorageMode == GetDirectory )
   {
-    settings.setValue( QStringLiteral( "/UI/lastFileNameWidgetDir" ), fileName );
+    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
   }
 
   // Handle relative Path storage
@@ -250,7 +250,7 @@ void QgsFileWidget::openFileDialog()
 }
 
 
-QString QgsFileWidget::relativePath( const QString& filePath, bool removeRelative ) const
+QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelative ) const
 {
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )
@@ -278,7 +278,7 @@ QString QgsFileWidget::relativePath( const QString& filePath, bool removeRelativ
 }
 
 
-QString QgsFileWidget::toUrl( const QString& path ) const
+QString QgsFileWidget::toUrl( const QString &path ) const
 {
   QString rep;
   if ( path.isEmpty() )

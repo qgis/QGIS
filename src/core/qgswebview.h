@@ -33,8 +33,8 @@ class CORE_EXPORT QgsWebView : public QWebView
     Q_OBJECT
 
   public:
-    explicit QgsWebView( QWidget* parent = nullptr )
-        : QWebView( parent )
+    explicit QgsWebView( QWidget *parent = nullptr )
+      : QWebView( parent )
     {
       QDesktopWidget desktop;
       // Apply zoom factor for HiDPI screens
@@ -65,9 +65,9 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = 0 )
-        : QTextBrowser( parent )
-        , mSettings( new QWebSettings() )
-        , mPage( new QWebPage( this ) )
+      : QTextBrowser( parent )
+      , mSettings( new QWebSettings() )
+      , mPage( new QWebPage( this ) )
     {
       connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
       connect( this, SIGNAL( pageLoadFinished( bool ) ), mPage, SIGNAL( loadFinished( bool ) ) );
@@ -79,32 +79,32 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       delete mPage;
     }
 
-    void setUrl( const QUrl& url )
+    void setUrl( const QUrl &url )
     {
       setSource( url );
     }
 
-    void load( const QUrl& url )
+    void load( const QUrl &url )
     {
       setSource( url );
     }
 
-    QWebPage* page() const
+    QWebPage *page() const
     {
       return mPage;
     }
 
-    QWebSettings* settings() const
+    QWebSettings *settings() const
     {
       return mSettings;
     }
 
-    virtual QgsWebView* createWindow( QWebPage::WebWindowType )
+    virtual QgsWebView *createWindow( QWebPage::WebWindowType )
     {
       return new QgsWebView();
     }
 
-    void setContent( const QByteArray& data, const QString& contentType, const QUrl& )
+    void setContent( const QByteArray &data, const QString &contentType, const QUrl & )
     {
       QString text = QString::fromUtf8( data );
       if ( contentType == "text/html" )
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       emit pageLoadFinished( true );
     }
 
-    void print( QPrinter* )
+    void print( QPrinter * )
     {
     }
 

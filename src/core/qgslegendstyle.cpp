@@ -18,9 +18,10 @@
 #include "qgslegendstyle.h"
 #include "qgscomposition.h"
 #include "qgsfontutils.h"
+#include "qgssettings.h"
+
 #include <QFont>
 #include <QMap>
-#include <QSettings>
 #include <QString>
 #include <QDomElement>
 #include <QDomDocument>
@@ -29,8 +30,8 @@
 QgsLegendStyle::QgsLegendStyle()
 {
   //get default composer font from settings
-  QSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QgsSettings settings;
+  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -45,7 +46,7 @@ void QgsLegendStyle::setMargin( double margin )
   mMarginMap[Right] = margin;
 }
 
-void QgsLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocument & doc ) const
+void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() ) return;
 
@@ -63,7 +64,7 @@ void QgsLegendStyle::writeXml( const QString& name, QDomElement& elem, QDomDocum
   elem.appendChild( styleElem );
 }
 
-void QgsLegendStyle::readXml( const QDomElement& elem, const QDomDocument& doc )
+void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc )
 {
   Q_UNUSED( doc );
   if ( elem.isNull() ) return;
@@ -101,7 +102,7 @@ QString QgsLegendStyle::styleName( Style s )
   return QLatin1String( "" );
 }
 
-QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString& styleName )
+QgsLegendStyle::Style QgsLegendStyle::styleFromName( const QString &styleName )
 {
   if ( styleName == QLatin1String( "hidden" ) ) return Hidden;
   else if ( styleName == QLatin1String( "title" ) ) return Title;

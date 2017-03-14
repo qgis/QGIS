@@ -34,18 +34,18 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
      * @param layer the layer where this symbol layer is applied
      * @param parent the parent widget
      */
-    QgsArrowSymbolLayerWidget( const QgsVectorLayer* layer, QWidget* parent = nullptr );
+    QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     /** Static creation method
      * @param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerWidget* create( const QgsVectorLayer* layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
+    static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) { return new QgsArrowSymbolLayerWidget( layer ); }
 
-    virtual void setSymbolLayer( QgsSymbolLayer* layer ) override;
-    virtual QgsSymbolLayer* symbolLayer() override;
+    virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    virtual QgsSymbolLayer *symbolLayer() override;
 
   private:
-    QgsArrowSymbolLayer* mLayer = nullptr;
+    QgsArrowSymbolLayer *mLayer = nullptr;
 
   private slots:
     void on_mArrowWidthSpin_valueChanged( double d );

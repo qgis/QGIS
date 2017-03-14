@@ -40,8 +40,8 @@
 #include "qgseditorwidgetregistry.h"
 
 
-QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer* vl, QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
+QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
 {
   setupUi( this );
 
@@ -55,9 +55,9 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 
     mFieldsList->clear();
 
-    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig& columnConfig, mConfig.columns() )
+    Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
     {
-      QListWidgetItem* item = nullptr;
+      QListWidgetItem *item = nullptr;
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
@@ -95,15 +95,14 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
     mHideAllButton->hide();
   }
 
-
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
 }
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
@@ -113,7 +112,7 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 
   for ( int i = 0 ; i < mFieldsList->count() ; i++ )
   {
-    const QListWidgetItem* item = mFieldsList->item( i );
+    const QListWidgetItem *item = mFieldsList->item( i );
     QgsAttributeTableConfig::ColumnConfig columnConfig = item->data( Qt::UserRole ).value<QgsAttributeTableConfig::ColumnConfig>();
 
     columnConfig.hidden = item->checkState() == Qt::Unchecked;

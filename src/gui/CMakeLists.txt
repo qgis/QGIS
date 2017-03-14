@@ -223,7 +223,6 @@ SET(QGIS_GUI_SRCS
   qgsfloatingwidget.cpp
   qgsfocuswatcher.cpp
   qgsformannotation.cpp
-  qgsgenericprojectionselector.cpp
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
@@ -277,12 +276,14 @@ SET(QGIS_GUI_SRCS
   qgssourceselectdialog.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
+  qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
   qgsprevieweffect.cpp
+  qgsprojectionselectiondialog.cpp
   qgsprojectionselectionwidget.cpp
-  qgsprojectionselector.cpp
+  qgsprojectionselectiontreewidget.cpp
   qgspropertyassistantwidget.cpp
   qgspropertyoverridebutton.cpp
   qgsquerybuilder.cpp
@@ -375,7 +376,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfloatingwidget.h
   qgsfocuswatcher.h
   qgsformannotation.h
-  qgsgenericprojectionselector.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
@@ -417,17 +417,20 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewvectorlayerdialog.h
   qgsnewgeopackagelayerdialog.h
   qgsoptionsdialogbase.h
+  qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
   qgssourceselectdialog.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
+  qgspasswordlineedit.h
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
+  qgsprojectionselectiondialog.h
   qgsprojectionselectionwidget.h
-  qgsprojectionselector.h
+  qgsprojectionselectiontreewidget.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsquerybuilder.h
@@ -804,6 +807,14 @@ ELSE(NOT APPLE)
     BUILD_WITH_INSTALL_RPATH TRUE
     PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
+  )
+  # generated export header does not get copied with PUBLIC_HEADER files
+  ADD_CUSTOM_COMMAND(TARGET qgis_gui
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy qgis_gui.h
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_gui.framework/Headers"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS qgis_gui.h
   )
 ENDIF(NOT APPLE)
 

@@ -27,7 +27,6 @@ __copyright__ = '(C) 2014, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -88,11 +87,11 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                     else:
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
-                            self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))
+                            self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile))
                 except Exception as e:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
-                        self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s') % (descriptionFile, str(e)))
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)))
         self.preloadedAlgs.append(nviz7())
 
     def _loadAlgorithms(self):

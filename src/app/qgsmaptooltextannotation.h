@@ -26,11 +26,11 @@ class APP_EXPORT QgsMapToolTextAnnotation: public QgsMapToolAnnotation
     Q_OBJECT
 
   public:
-    QgsMapToolTextAnnotation( QgsMapCanvas* canvas );
+    QgsMapToolTextAnnotation( QgsMapCanvas *canvas );
     ~QgsMapToolTextAnnotation();
 
   protected:
-    QgsAnnotation* createItem() const override;
+    QgsAnnotation *createItem() const override;
 };
 
 #endif // QGSMAPTOOLTEXTANNOTATION_H

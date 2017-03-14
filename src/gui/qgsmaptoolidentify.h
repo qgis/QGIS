@@ -70,16 +70,16 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     {
       IdentifyResult() : mLayer( nullptr ) {}
 
-      IdentifyResult( QgsMapLayer * layer, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes ):
-          mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes ):
+        mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer * layer, const QString& label, const QMap< QString, QString >& attributes, const QMap< QString, QString >& derivedAttributes ):
-          mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes ):
+        mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer * layer, const QString& label, const QgsFields& fields, const QgsFeature& feature, const QMap< QString, QString >& derivedAttributes ):
-          mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes ):
+        mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      QgsMapLayer* mLayer = nullptr;
+      QgsMapLayer *mLayer = nullptr;
       QString mLabel;
       QgsFields mFields;
       QgsFeature mFeature;
@@ -89,14 +89,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     };
 
     //! constructor
-    QgsMapToolIdentify( QgsMapCanvas * canvas );
+    QgsMapToolIdentify( QgsMapCanvas *canvas );
 
     virtual ~QgsMapToolIdentify();
 
     virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     virtual void activate() override;
     virtual void deactivate() override;
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
     @param mode Identification mode. Can use Qgis default settings or a defined mode. Default mode is DefaultQgsSetting.
     @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer*>& layerList = QList<QgsMapLayer*>(), IdentifyMode mode = DefaultQgsSetting );
+    QList<IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
     /** Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
@@ -120,15 +120,15 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     //! return a pointer to the identify menu which will be used in layer selection mode
     //! this menu can also be customized
-    QgsIdentifyMenu* identifyMenu() {return mIdentifyMenu;}
+    QgsIdentifyMenu *identifyMenu() {return mIdentifyMenu;}
 
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 
   signals:
     void identifyProgress( int, int );
-    void identifyMessage( const QString& );
-    void changedRasterResults( QList<IdentifyResult>& );
+    void identifyMessage( const QString & );
+    void changedRasterResults( QList<IdentifyResult> & );
 
   protected:
 
@@ -141,15 +141,15 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     @param layerList Performs the identification within the given list of layers.
     @param layerType Only performs identification in a certain type of layers (raster, vector).
     @return a list of IdentifyResult*/
-    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer*>& layerList, LayerType layerType = AllLayers );
+    QList<IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers );
 
-    QgsIdentifyMenu* mIdentifyMenu = nullptr;
+    QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
     //! Call the right method depending on layer type
-    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint& point, const QgsRectangle& viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyLayer( QList<IdentifyResult> *results, QgsMapLayer *layer, const QgsPoint &point, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
 
-    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle& viewExtent, double mapUnitsPerPixel );
-    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint& point );
+    bool identifyRasterLayer( QList<IdentifyResult> *results, QgsRasterLayer *layer, QgsPoint point, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<IdentifyResult> *results, QgsVectorLayer *layer, const QgsPoint &point );
 
   private:
 
@@ -177,15 +177,15 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      */
     QString formatArea( double area ) const;
 
-    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint& layerPoint = QgsPoint() );
+    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPoint &layerPoint = QgsPoint() );
 
     /** Adds details of the closest vertex to derived attributes
      */
-    void closestVertexAttributes( const QgsAbstractGeometry& geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString >& derivedAttributes );
+    void closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes );
 
-    QString formatCoordinate( const QgsPoint& canvasPoint ) const;
-    QString formatXCoordinate( const QgsPoint& canvasPoint ) const;
-    QString formatYCoordinate( const QgsPoint& canvasPoint ) const;
+    QString formatCoordinate( const QgsPoint &canvasPoint ) const;
+    QString formatXCoordinate( const QgsPoint &canvasPoint ) const;
+    QString formatYCoordinate( const QgsPoint &canvasPoint ) const;
 
     // Last point in canvas CRS
     QgsPoint mLastPoint;

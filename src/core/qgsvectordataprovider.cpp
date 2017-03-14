@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QTextCodec>
 
 #include <cfloat> // for DBL_MAX
@@ -33,13 +32,14 @@
 #include "qgsgeometryfactory.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgssettings.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider( const QString& uri )
-    : QgsDataProvider( uri )
-    , mCacheMinMaxDirty( true )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri )
+  : QgsDataProvider( uri )
+  , mCacheMinMaxDirty( true )
 {
-  QSettings settings;
-  setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
+  QgsSettings settings;
+  setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );
 }
 
 QString QgsVectorDataProvider::storageType() const
@@ -90,7 +90,7 @@ bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes 
   return false;
 }
 
-bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap& renamedAttributes )
+bool QgsVectorDataProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
 {
   Q_UNUSED( renamedAttributes );
   return false;
@@ -123,7 +123,7 @@ QgsFieldConstraints::Constraints QgsVectorDataProvider::fieldConstraints( int fi
   return f.at( fieldIndex ).constraints().constraints();
 }
 
-bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Constraint, const QVariant& ) const
+bool QgsVectorDataProvider::skipConstraintCheck( int, QgsFieldConstraints::Constraint, const QVariant & ) const
 {
   return false;
 }
@@ -163,7 +163,7 @@ QgsVectorDataProvider::Capabilities QgsVectorDataProvider::capabilities() const
 }
 
 
-void QgsVectorDataProvider::setEncoding( const QString& e )
+void QgsVectorDataProvider::setEncoding( const QString &e )
 {
   mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
 
@@ -290,7 +290,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 }
 
 
-int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
+int QgsVectorDataProvider::fieldNameIndex( const QString &fieldName ) const
 {
   return fields().lookupField( fieldName );
 }
@@ -336,7 +336,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
 
-  Q_FOREACH ( const NativeType& nativeType, mNativeTypes )
+  Q_FOREACH ( const NativeType &nativeType, mNativeTypes )
   {
     QgsDebugMsgLevel( QString( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
                       .arg( QVariant::typeToName( nativeType.mType ) )
@@ -451,7 +451,7 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
   }
 }
 
-QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QString& substring, int limit, QgsFeedback* feedback ) const
+QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
 {
   QgsFeature f;
   QgsAttributeList keys;
@@ -476,14 +476,14 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
       set.insert( value );
     }
 
-    if (( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
+    if ( ( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
       break;
   }
   return results;
 }
 
 QVariant QgsVectorDataProvider::aggregate( QgsAggregateCalculator::Aggregate aggregate, int index,
-    const QgsAggregateCalculator::AggregateParameters& parameters, QgsExpressionContext* context, bool& ok ) const
+    const QgsAggregateCalculator::AggregateParameters &parameters, QgsExpressionContext *context, bool &ok ) const
 {
   //base implementation does nothing
   Q_UNUSED( aggregate );
@@ -540,7 +540,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
     QgsAttributes attrs = f.attributes();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
-      const QVariant& varValue = attrs.at( *it );
+      const QVariant &varValue = attrs.at( *it );
 
       if ( varValue.isNull() )
         continue;
@@ -587,7 +587,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
   mCacheMinMaxDirty = false;
 }
 
-QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString& value )
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString &value )
 {
   QVariant v( value );
 
@@ -597,7 +597,7 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString
   return v;
 }
 
-QgsTransaction* QgsVectorDataProvider::transaction() const
+QgsTransaction *QgsVectorDataProvider::transaction() const
 {
   return nullptr;
 }
@@ -607,7 +607,7 @@ void QgsVectorDataProvider::forceReload()
   emit dataChanged();
 }
 
-static bool _compareEncodings( const QString& s1, const QString& s2 )
+static bool _compareEncodings( const QString &s1, const QString &s2 )
 {
   return s1.toLower() < s2.toLower();
 }
@@ -616,7 +616,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
 {
   if ( sEncodings.isEmpty() )
   {
-    Q_FOREACH ( const QString& codec, QTextCodec::availableCodecs() )
+    Q_FOREACH ( const QString &codec, QTextCodec::availableCodecs() )
     {
       sEncodings << codec;
     }
@@ -700,7 +700,7 @@ bool QgsVectorDataProvider::isDeleteStyleFromDatabaseSupported() const
   return false;
 }
 
-void QgsVectorDataProvider::pushError( const QString& msg ) const
+void QgsVectorDataProvider::pushError( const QString &msg ) const
 {
   QgsDebugMsg( msg );
   mErrors << msg;
@@ -712,14 +712,14 @@ QSet<QgsMapLayerDependency> QgsVectorDataProvider::dependencies() const
   return QSet<QgsMapLayerDependency>();
 }
 
-QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& geom ) const
+QgsGeometry *QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geom ) const
 {
   if ( geom.isNull() )
   {
     return nullptr;
   }
 
-  QgsAbstractGeometry* geometry = geom.geometry();
+  QgsAbstractGeometry *geometry = geom.geometry();
   if ( !geometry )
   {
     return nullptr;
@@ -733,17 +733,17 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
     return nullptr;
   }
 
-  QgsAbstractGeometry* outputGeom = nullptr;
+  QgsAbstractGeometry *outputGeom = nullptr;
 
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
   if ( QgsWkbTypes::flatType( providerGeomType ) == QgsWkbTypes::CircularString && QgsWkbTypes::flatType( geometry->wkbType() ) == QgsWkbTypes::CompoundCurve )
   {
-    QgsCompoundCurve* compoundCurve = static_cast<QgsCompoundCurve*>( geometry );
+    QgsCompoundCurve *compoundCurve = static_cast<QgsCompoundCurve *>( geometry );
     if ( compoundCurve )
     {
       if ( compoundCurve->nCurves() == 1 )
       {
-        const QgsCircularString* circularString = dynamic_cast<const QgsCircularString*>( compoundCurve->curveAt( 0 ) );
+        const QgsCircularString *circularString = dynamic_cast<const QgsCircularString *>( compoundCurve->curveAt( 0 ) );
         if ( circularString )
         {
           outputGeom = circularString->clone();
@@ -756,7 +756,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
   {
     outputGeom = QgsGeometryFactory::geomFromWkbType( providerGeomType );
-    QgsGeometryCollection* geomCollection = dynamic_cast<QgsGeometryCollection*>( outputGeom );
+    QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( outputGeom );
     if ( geomCollection )
     {
       geomCollection->addGeometry( geometry->clone() );
@@ -766,7 +766,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   //convert to curved type if necessary
   if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
-    QgsAbstractGeometry* curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
+    QgsAbstractGeometry *curveGeom = outputGeom ? outputGeom->toCurveType() : geometry->toCurveType();
     if ( curveGeom )
     {
       delete outputGeom;
@@ -777,7 +777,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   //convert to linear type from curved type
   if ( QgsWkbTypes::isCurvedType( geometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
-    QgsAbstractGeometry* segmentizedGeom = nullptr;
+    QgsAbstractGeometry *segmentizedGeom = nullptr;
     segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
     if ( segmentizedGeom )
     {
@@ -811,19 +811,19 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry& ge
   return nullptr;
 }
 
-void QgsVectorDataProvider::setNativeTypes( const QList<NativeType>& nativeTypes )
+void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes )
 {
   mNativeTypes = nativeTypes;
 }
 
-QTextCodec* QgsVectorDataProvider::textEncoding() const
+QTextCodec *QgsVectorDataProvider::textEncoding() const
 {
   return mEncoding;
 }
 
 QStringList QgsVectorDataProvider::sEncodings;
 
-QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer*, const QList<QgsVectorLayer*>& ) const
+QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLayer *, const QList<QgsVectorLayer *> & ) const
 {
   return QList<QgsRelation>();
 }

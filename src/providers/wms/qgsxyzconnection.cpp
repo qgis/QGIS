@@ -16,8 +16,7 @@
 #include "qgsxyzconnection.h"
 
 #include "qgsdatasourceuri.h"
-
-#include <QSettings>
+#include "qgssettings.h"
 
 QString QgsXyzConnection::encodedUri() const
 {
@@ -33,15 +32,15 @@ QString QgsXyzConnection::encodedUri() const
 
 QStringList QgsXyzConnectionUtils::connectionList()
 {
-  QSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-xyz" ) );
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
   return settings.childGroups();
 }
 
 QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 {
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-xyz/" + name );
+  QgsSettings settings;
+  settings.beginGroup( "qgis/connections-xyz/" + name );
 
   QgsXyzConnection conn;
   conn.name = name;
@@ -51,16 +50,16 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
   return conn;
 }
 
-void QgsXyzConnectionUtils::deleteConnection( const QString& name )
+void QgsXyzConnectionUtils::deleteConnection( const QString &name )
 {
-  QSettings settings;
-  settings.remove( "/Qgis/connections-xyz/" + name );
+  QgsSettings settings;
+  settings.remove( "qgis/connections-xyz/" + name );
 }
 
 void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
 {
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-xyz/" + conn.name );
+  QgsSettings settings;
+  settings.beginGroup( "qgis/connections-xyz/" + conn.name );
   settings.setValue( QStringLiteral( "url" ), conn.url );
   settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
   settings.setValue( QStringLiteral( "zmax" ), conn.zMax );

@@ -70,7 +70,7 @@ class rasterize(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Rasterize (vector to raster)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
+        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,

@@ -28,13 +28,13 @@
 class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 {
   public:
-    QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
+    QgsPaperGrid( double x, double y, double width, double height, QgsComposition *composition );
 
     //! \brief Reimplementation of QCanvasItem::paint
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
   private:
-    QgsComposition* mComposition = nullptr;
+    QgsComposition *mComposition = nullptr;
 };
 
 /** \ingroup core
@@ -44,29 +44,29 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     Q_OBJECT
 
   public:
-    QgsPaperItem( QgsComposition* c );
-    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
+    QgsPaperItem( QgsComposition *c );
+    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition );
     ~QgsPaperItem();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerPaper; }
 
     //! \brief Reimplementation of QCanvasItem::paint
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     /** Stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is the Dom document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    virtual void setSceneRect( const QRectF& rectangle ) override;
+    virtual void setSceneRect( const QRectF &rectangle ) override;
 
   private:
     QgsPaperItem();
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 
     void calculatePageMargin();
 
-    QgsPaperGrid* mPageGrid = nullptr;
+    QgsPaperGrid *mPageGrid = nullptr;
     double mPageMargin;
 };
 

@@ -21,21 +21,21 @@
 class QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
   public:
-    QgsGeometryContainedCheckError( const QgsGeometryCheck* check,
+    QgsGeometryContainedCheckError( const QgsGeometryCheck *check,
                                     QgsFeatureId featureId,
-                                    const QgsPointV2& errorLocation,
+                                    const QgsPointV2 &errorLocation,
                                     QgsFeatureId otherId
                                   )
-        : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
-        , mOtherId( otherId )
+      : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
+      , mOtherId( otherId )
     { }
     QgsFeatureId otherId() const { return mOtherId; }
 
-    bool isEqual( QgsGeometryCheckError* other ) const override
+    bool isEqual( QgsGeometryCheckError *other ) const override
     {
       return other->check() == check() &&
              other->featureId() == featureId() &&
-             static_cast<QgsGeometryContainedCheckError*>( other )->otherId() == otherId();
+             static_cast<QgsGeometryContainedCheckError *>( other )->otherId() == otherId();
     }
 
     virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within %1" ).arg( otherId() ); }
@@ -49,9 +49,9 @@ class QgsGeometryContainedCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    explicit QgsGeometryContainedCheck( QgsFeaturePool* featurePool ) : QgsGeometryCheck( FeatureCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError*>& errors, QStringList& messages, QAtomicInt* progressCounter = nullptr, const QgsFeatureIds& ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError* error, int method, int mergeAttributeIndex, Changes& changes ) const override;
+    explicit QgsGeometryContainedCheck( QgsFeaturePool *featurePool ) : QgsGeometryCheck( FeatureCheck, featurePool ) {}
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Within" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }

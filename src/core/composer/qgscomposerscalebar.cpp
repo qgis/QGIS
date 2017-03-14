@@ -30,27 +30,29 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfontutils.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
-#include <QSettings>
+
 #include <cmath>
 
-QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mComposerMap( nullptr )
-    , mNumUnitsPerSegment( 0 )
-    , mSegmentSizeMode( SegmentSizeFixed )
-    , mMinBarWidth( 50 )
-    , mMaxBarWidth( 150 )
-    , mFontColor( QColor( 0, 0, 0 ) )
-    , mStyle( nullptr )
-    , mSegmentMillimeters( 0.0 )
-    , mAlignment( Left )
-    , mUnits( MapUnits )
-    , mLineJoinStyle( Qt::MiterJoin )
-    , mLineCapStyle( Qt::SquareCap )
+QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition *composition )
+  : QgsComposerItem( composition )
+  , mComposerMap( nullptr )
+  , mNumUnitsPerSegment( 0 )
+  , mSegmentSizeMode( SegmentSizeFixed )
+  , mMinBarWidth( 50 )
+  , mMaxBarWidth( 150 )
+  , mFontColor( QColor( 0, 0, 0 ) )
+  , mStyle( nullptr )
+  , mSegmentMillimeters( 0.0 )
+  , mAlignment( Left )
+  , mUnits( MapUnits )
+  , mLineJoinStyle( Qt::MiterJoin )
+  , mLineCapStyle( Qt::SquareCap )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -61,7 +63,7 @@ QgsComposerScaleBar::~QgsComposerScaleBar()
   delete mStyle;
 }
 
-void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerScaleBar::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -192,12 +194,12 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
+void QgsComposerScaleBar::setComposerMap( const QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
     disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
   }
   mComposerMap = map;
 
@@ -207,7 +209,7 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
   }
 
   connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  connect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
 
   refreshSegmentMillimeters();
   emit itemChanged();
@@ -221,14 +223,14 @@ void QgsComposerScaleBar::invalidateCurrentMap()
   }
 
   disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
   mComposerMap = nullptr;
 }
 
-void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
+void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
 {
   QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   bool forceUpdate = false;
   //updates data defined properties and redraws item to match
@@ -432,8 +434,8 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush2.setStyle( Qt::SolidPattern );
 
   //get default composer font from settings
-  QSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QgsSettings settings;
+  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -503,7 +505,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
     int segmentMagnitude = floor( log10( segmentWidth ) );
     double unitsPerSegment = upperMagnitudeMultiplier * ( qPow( 10.0, segmentMagnitude ) );
-    double multiplier = floor(( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
+    double multiplier = floor( ( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
 
     if ( multiplier > 0 )
     {
@@ -551,7 +553,7 @@ void QgsComposerScaleBar::adjustBoxSize()
   QgsComposerItem::setSceneRect( newRect );
 }
 
-void QgsComposerScaleBar::setSceneRect( const QRectF& rectangle )
+void QgsComposerScaleBar::setSceneRect( const QRectF &rectangle )
 {
   QRectF box = mStyle->calculateBoxSize();
   if ( rectangle.height() > box.height() )
@@ -601,7 +603,7 @@ void QgsComposerScaleBar::updateSegmentSize()
   emit itemChanged();
 }
 
-void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWidthList ) const
+void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> > &posWidthList ) const
 {
   posWidthList.clear();
   double mCurrentXCoord = mPen.widthF() + mBoxContentSpace;
@@ -622,7 +624,7 @@ void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWi
   }
 }
 
-void QgsComposerScaleBar::setStyle( const QString& styleName )
+void QgsComposerScaleBar::setStyle( const QString &styleName )
 {
   delete mStyle;
   mStyle = nullptr;
@@ -638,7 +640,7 @@ void QgsComposerScaleBar::setStyle( const QString& styleName )
   }
   else if ( styleName == QLatin1String( "Line Ticks Middle" )  || styleName == QLatin1String( "Line Ticks Down" ) || styleName == QLatin1String( "Line Ticks Up" ) )
   {
-    QgsTicksScaleBarStyle* tickStyle = new QgsTicksScaleBarStyle( this );
+    QgsTicksScaleBarStyle *tickStyle = new QgsTicksScaleBarStyle( this );
     if ( styleName == QLatin1String( "Line Ticks Middle" ) )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksMiddle );
@@ -689,14 +691,14 @@ QFont QgsComposerScaleBar::font() const
   return mFont;
 }
 
-void QgsComposerScaleBar::setFont( const QFont& font )
+void QgsComposerScaleBar::setFont( const QFont &font )
 {
   mFont = font;
   update();
   emit itemChanged();
 }
 
-bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerScaleBar::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
@@ -775,7 +777,7 @@ bool QgsComposerScaleBar::writeXml( QDomElement& elem, QDomDocument & doc ) cons
   return _writeXml( composerScaleBarElem, doc );
 }
 
-bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
   {
@@ -917,12 +919,12 @@ bool QgsComposerScaleBar::readXml( const QDomElement& itemElem, const QDomDocume
   int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
   if ( mapId >= 0 )
   {
-    const QgsComposerMap* composerMap = mComposition->getComposerMapById( mapId );
+    const QgsComposerMap *composerMap = mComposition->getComposerMapById( mapId );
     mComposerMap = composerMap;
     if ( mComposerMap )
     {
       connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-      connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+      connect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
     }
   }
 

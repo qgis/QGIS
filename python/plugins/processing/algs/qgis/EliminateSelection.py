@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 from builtins import range
 
 __author__ = 'Bernhard Ströbl'
@@ -39,7 +38,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -79,7 +78,7 @@ class EliminateSelection(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
+                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.commandLineName(), self.getParameterValue(self.INPUT)))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()
@@ -183,7 +182,7 @@ class EliminateSelection(GeoAlgorithm):
                         madeProgress = True
                     else:
                         raise GeoAlgorithmExecutionException(
-                            self.tr('Could not replace geometry of feature with id %s' % mergeWithFid))
+                            self.tr('Could not replace geometry of feature with id {0}').format(mergeWithFid))
 
                     start = start + add
                     feedback.setProgress(start)

@@ -19,18 +19,18 @@
 #include "qgsscalewidget.h"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
+  : QWidget( parent )
+  , mCanvas( nullptr )
 {
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  QLabel* minLbl = new QLabel( tr( "Minimum (exclusive)" ), this );
+  QLabel *minLbl = new QLabel( tr( "Minimum (exclusive)" ), this );
   minLbl->setWordWrap( true );
   minLbl->setAlignment( Qt::AlignTop );
   minLbl->setToolTip( tr( "Minimum scale, i.e. maximum scale denominator. "
                           "This limit is exclusive, that means the layer will not be displayed on this scale." ) );
-  QLabel* maxLbl = new QLabel( tr( "Maximum (inclusive)" ), this );
+  QLabel *maxLbl = new QLabel( tr( "Maximum (inclusive)" ), this );
   maxLbl->setWordWrap( true );
   maxLbl->setAlignment( Qt::AlignTop );
   maxLbl->setToolTip( tr( "Maximum scale, i.e. minimum scale denominator. "

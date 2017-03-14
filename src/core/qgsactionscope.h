@@ -59,12 +59,12 @@ class CORE_EXPORT QgsActionScope
      * For details concerning the parameters check the documentation
      * of the corresponding properties.
      */
-    explicit QgsActionScope( const QString& id, const QString& title, const QString& description, const QgsExpressionContextScope& expressionContextScope = QgsExpressionContextScope() );
+    explicit QgsActionScope( const QString &id, const QString &title, const QString &description, const QgsExpressionContextScope &expressionContextScope = QgsExpressionContextScope() );
 
     /**
      * Compares two action scopes
      */
-    bool operator==( const QgsActionScope& other ) const;
+    bool operator==( const QgsActionScope &other ) const;
 
     /**
      * An expression scope may offer additional variables for an action scope.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsActionScope
     /**
      * \copydoc expressionContextScope()
      */
-    void setExpressionContextScope( const QgsExpressionContextScope& expressionContextScope );
+    void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
 
     /**
      * A unique identifier for this action scope.
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsActionScope
     QString id() const;
 
     //! \copydoc id()
-    void setId( const QString& id );
+    void setId( const QString &id );
 
     /**
      * The title is a human readable and translated string that will be
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsActionScope
      */
     QString title() const;
     //! \copydoc title()
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /**
      * The description should be a longer description of where actions in this scope
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsActionScope
      */
     QString description() const;
     //! \copydoc description()
-    void setDescription( const QString& description );
+    void setDescription( const QString &description );
 
     /**
      * Returns if this scope is valid.
@@ -125,6 +125,6 @@ class CORE_EXPORT QgsActionScope
     QgsExpressionContextScope mExpressionContextScope;
 };
 
-CORE_EXPORT uint qHash( const QgsActionScope& key, uint seed = 0 );
+CORE_EXPORT uint qHash( const QgsActionScope &key, uint seed = 0 );
 
 #endif // QGSACTIONSCOPE_H

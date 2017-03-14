@@ -60,8 +60,8 @@ class TestQgsAuthManager(unittest.TestCase):
             format(testid[1], testid[2])
         qDebug(testheader)
 
-        if (not self.authm.masterPasswordIsSet()
-                or not self.authm.masterPasswordHashInDatabase()):
+        if (not self.authm.masterPasswordIsSet() or
+                not self.authm.masterPasswordHashInDatabase()):
             self.set_master_password()
 
     def widget_dialog(self, widget):
@@ -555,8 +555,8 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertTrue(backup != self.authm.authenticationDatabasePath(), msg)
 
         msg = 'Master password not erased from auth db'
-        self.assertTrue(not self.authm.masterPasswordIsSet()
-                        and not self.authm.masterPasswordHashInDatabase(), msg)
+        self.assertTrue(not self.authm.masterPasswordIsSet() and
+                        not self.authm.masterPasswordHashInDatabase(), msg)
 
         self.set_master_password()
 

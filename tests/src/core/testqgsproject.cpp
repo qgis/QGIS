@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
 #include <QObject>
 
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include <qgsproject.h>
+#include "qgsproject.h"
 #include "qgsunittypes.h"
+#include "qgssettings.h"
 
 
 class TestQgsProject : public QObject
@@ -49,7 +51,7 @@ void TestQgsProject::initTestCase()
 {
   // Runs once before any tests are run
 
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -63,7 +65,7 @@ void TestQgsProject::cleanupTestCase()
 
 void TestQgsProject::testReadPath()
 {
-  QgsProject* prj = new QgsProject;
+  QgsProject *prj = new QgsProject;
   // this is a bit hacky as we do not really load such project
   QString prefix;
 #if defined(Q_OS_WIN)
@@ -111,10 +113,10 @@ void TestQgsProject::testProjectUnits()
   // DISTANCE
 
   //first set a default QGIS distance unit
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/qgis/measure/displayunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::DistanceFeet ) );
 
-  QgsProject* prj = new QgsProject;
+  QgsProject *prj = new QgsProject;
   // new project should inherit QGIS default distance unit
   prj->clear();
   QCOMPARE( prj->distanceUnits(), QgsUnitTypes::DistanceFeet );
@@ -149,7 +151,7 @@ void TestQgsProject::testProjectUnits()
 
 void TestQgsProject::variablesChanged()
 {
-  QgsProject* prj = new QgsProject;
+  QgsProject *prj = new QgsProject;
   QSignalSpy spyVariablesChanged( prj, &QgsProject::customVariablesChanged );
   QVariantMap vars;
   vars.insert( QStringLiteral( "variable" ), QStringLiteral( "1" ) );

@@ -18,23 +18,38 @@
 
 #include <QWidget>
 
-QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer* vl, QWidget* editor, QWidget* parent )
-    : QObject( parent )
-    , mWidget( editor )
-    , mParent( parent )
-    , mLayer( vl )
-    , mInitialized( false )
+
+const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
+{
+  static QgsPropertiesDefinition properties;
+
+  if ( properties.isEmpty() )
+  {
+    properties =
+    {
+      { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QObject::tr( "string of variable length representing root path to attachment" ) ) }
+    };
+  }
+  return properties;
+}
+
+QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget *parent )
+  : QObject( parent )
+  , mWidget( editor )
+  , mParent( parent )
+  , mLayer( vl )
+  , mInitialized( false )
 {
 }
 
-QWidget* QgsWidgetWrapper::widget()
+QWidget *QgsWidgetWrapper::widget()
 {
   if ( !mWidget )
     mWidget = createWidget( mParent );
 
   if ( !mInitialized )
   {
-    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper*>( this ) );
+    mWidget->setProperty( "EWV2Wrapper", QVariant::fromValue<QgsWidgetWrapper *>( this ) );
     initWidget( mWidget );
     mInitialized = true;
   }
@@ -42,7 +57,7 @@ QWidget* QgsWidgetWrapper::widget()
   return mWidget;
 }
 
-void QgsWidgetWrapper::setConfig( const QVariantMap& config )
+void QgsWidgetWrapper::setConfig( const QVariantMap &config )
 {
   mConfig = config;
 }
@@ -52,7 +67,7 @@ void QgsWidgetWrapper::setContext( const QgsAttributeEditorContext &context )
   mContext = context;
 }
 
-QVariant QgsWidgetWrapper::config( const QString& key, const QVariant& defaultVal ) const
+QVariant QgsWidgetWrapper::config( const QString &key, const QVariant &defaultVal ) const
 {
   if ( mConfig.contains( key ) )
   {
@@ -66,22 +81,22 @@ QVariantMap QgsWidgetWrapper::config() const
   return mConfig;
 }
 
-const QgsAttributeEditorContext& QgsWidgetWrapper::context() const
+const QgsAttributeEditorContext &QgsWidgetWrapper::context() const
 {
   return mContext;
 }
 
-QgsVectorLayer* QgsWidgetWrapper::layer() const
+QgsVectorLayer *QgsWidgetWrapper::layer() const
 {
   return mLayer;
 }
 
-QgsWidgetWrapper* QgsWidgetWrapper::fromWidget( QWidget* widget )
+QgsWidgetWrapper *QgsWidgetWrapper::fromWidget( QWidget *widget )
 {
-  return widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>();
+  return widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper *>();
 }
 
-void QgsWidgetWrapper::initWidget( QWidget* editor )
+void QgsWidgetWrapper::initWidget( QWidget *editor )
 {
   Q_UNUSED( editor )
 }

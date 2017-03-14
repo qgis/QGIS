@@ -126,7 +126,7 @@ namespace DRW
   //! Shadow mode
   enum ShadowMode
   {
-    CastAndReceieveShadows = 0,
+    CastAndReceiveShadows = 0,
     CastShadows = 1,
     ReceiveShadows = 2,
     IgnoreShadows = 3
@@ -164,7 +164,7 @@ class DRW_Coord
     DRW_Coord(): x( 0 ), y( 0 ), z( 0 ) {}
     DRW_Coord( double ix, double iy, double iz ): x( ix ), y( iy ), z( iz ) {}
 
-    DRW_Coord& operator = ( const DRW_Coord& data )
+    DRW_Coord &operator = ( const DRW_Coord &data )
     {
       x = data.x;
       y = data.y;
@@ -241,7 +241,7 @@ class DRW_Variant
 
     DRW_Variant( int c, DRW_Coord crd ): sdata( std::string() ), vdata( crd ), content( &vdata ), vType( COORD ), vCode( c ) {}
 
-    DRW_Variant( const DRW_Variant& d ): sdata( d.sdata ), vdata( d.vdata ), content( d.content ), vType( d.vType ), vCode( d.vCode )
+    DRW_Variant( const DRW_Variant &d ): sdata( d.sdata ), vdata( d.vdata ), content( d.content ), vType( d.vType ), vCode( d.vCode )
     {
       if ( d.vType == COORD )
         content.v = &vdata;
@@ -528,7 +528,7 @@ class DRW_LW_Conv
 
     static enum lineWidth dwgInt2lineWidth( int i )
     {
-      if (( i > -1 && i < 24 ) || ( i > 28 && i < 32 ) )
+      if ( ( i > -1 && i < 24 ) || ( i > 28 && i < 32 ) )
       {
         return static_cast<lineWidth>( i );
       }

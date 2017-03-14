@@ -23,7 +23,7 @@ QString QgsKeyValueFieldFormatter::id() const
   return QStringLiteral( "KeyValue" );
 }
 
-QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsKeyValueFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( layer );
   Q_UNUSED( fieldIndex );

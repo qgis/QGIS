@@ -34,13 +34,13 @@ class QPaintEngine;
 class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 {
   public:
-    QgsDxfPaintDevice( QgsDxfExport* dxf );
+    QgsDxfPaintDevice( QgsDxfExport *dxf );
     ~QgsDxfPaintDevice();
 
-    QPaintEngine* paintEngine() const override;
+    QPaintEngine *paintEngine() const override;
 
     void setDrawingSize( QSizeF size ) { mDrawingSize = size; }
-    void setOutputSize( const QRectF& r ) { mRectangle = r; }
+    void setOutputSize( const QRectF &r ) { mRectangle = r; }
 
     //! Returns scale factor for line width
     double widthScaleFactor() const;
@@ -53,13 +53,13 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 
     int metric( PaintDeviceMetric metric ) const override;
 
-    void setLayer( const QString& layer );
+    void setLayer( const QString &layer );
 
     void setShift( QPointF shift );
 
 
   private:
-    QgsDxfPaintEngine* mPaintEngine = nullptr;
+    QgsDxfPaintEngine *mPaintEngine = nullptr;
 
     QSizeF mDrawingSize; //size (in source coordinates)
     QRectF mRectangle; //size (in dxf coordinates)

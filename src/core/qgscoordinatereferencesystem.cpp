@@ -28,13 +28,13 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QFile>
-#include <QSettings>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
 #include "qgslocalec.h"
+#include "qgssettings.h"
 
 #include <sqlite3.h>
 #include <proj_api.h>
@@ -67,7 +67,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
   d = new QgsCoordinateReferenceSystemPrivate();
 }
 
-QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QString& definition )
+QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QString &definition )
 {
   d = new QgsCoordinateReferenceSystemPrivate();
   createFromString( definition );
@@ -80,11 +80,11 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long id, CrsTy
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs ) //NOLINT
-    : d( srs.d )
+  : d( srs.d )
 {
 }
 
-QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem & srs ) //NOLINT
+QgsCoordinateReferenceSystem &QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem &srs )  //NOLINT
 {
   d = srs.d;
   return *this;
@@ -96,7 +96,7 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
   // check both standard & user defined projection databases
   QStringList dbs = QStringList() <<  QgsApplication::srsDatabaseFilePath() << QgsApplication::qgisUserDatabaseFilePath();
 
-  Q_FOREACH ( const QString& db, dbs )
+  Q_FOREACH ( const QString &db, dbs )
   {
     QFileInfo myInfo( db );
     if ( !myInfo.exists() )
@@ -150,7 +150,7 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
   return results;
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromOgcWmsCrs( const QString& ogcCrs )
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromOgcWmsCrs( const QString &ogcCrs )
 {
   QgsCoordinateReferenceSystem crs;
   crs.createFromOgcWmsCrs( ogcCrs );
@@ -162,14 +162,14 @@ QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromEpsgId( long epsg
   return fromOgcWmsCrs( "EPSG:" + QString::number( epsg ) );
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString& proj4 )
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromProj4( const QString &proj4 )
 {
   QgsCoordinateReferenceSystem crs;
   crs.createFromProj4( proj4 );
   return crs;
 }
 
-QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromWkt( const QString& wkt )
+QgsCoordinateReferenceSystem QgsCoordinateReferenceSystem::fromWkt( const QString &wkt )
 {
   QgsCoordinateReferenceSystem crs;
   crs.createFromWkt( wkt );
@@ -296,8 +296,8 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
 {
   // make sure towgs84 parameter is loaded if gdal >= 1.9
   // this requires setting GDAL_FIX_ESRI_WKT=GEOGCS (see qgis bug #5598 and gdal bug #4673)
-  const char* configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
-  const char* configNew = "GEOGCS";
+  const char *configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
+  const char *configNew = "GEOGCS";
   // only set if it was not set, to let user change the value if needed
   if ( strcmp( configOld, "" ) == 0 )
   {
@@ -313,7 +313,7 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix()
   }
 }
 
-bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString& crs )
+bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 {
   sOgcLock.lockForRead();
   QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = sOgcCache.constFind( crs );
@@ -458,7 +458,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( const long id )
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString& db, const QString& expression, const QString& value )
+bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QString &expression, const QString &value )
 {
   d.detach();
 
@@ -595,7 +595,6 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     QgsDebugMsg( "theWkt is uninitialized, operation failed" );
     return d->mIsValid;
   }
-  QgsDebugMsg( "wkt: " + wkt );
   QByteArray ba = wkt.toLatin1();
   const char *pWkt = ba.data();
 
@@ -620,7 +619,6 @@ bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
     QString authid = QStringLiteral( "%1:%2" )
                      .arg( OSRGetAuthorityName( d->mCRS, nullptr ),
                            OSRGetAuthorityCode( d->mCRS, nullptr ) );
-    QgsDebugMsg( "authid recognized as " + authid );
     bool result = createFromOgcWmsCrs( authid );
     sCRSWktLock.lockForWrite();
     sWktCache.insert( wkt, *this );
@@ -701,7 +699,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
   QString myProj4String = proj4String.trimmed();
-  QgsDebugMsg( "proj4: " + myProj4String );
   d->mIsValid = false;
   d->mWkt.clear();
 
@@ -709,8 +706,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
-    QgsDebugMsg( "proj string supplied has no +proj argument" );
-
     sProj4CacheLock.lockForWrite();
     sProj4Cache.insert( proj4String, *this );
     sProj4CacheLock.unlock();
@@ -724,7 +719,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
-    QgsDebugMsg( "proj string supplied has no +ellps argument" );
     d->mEllipsoidAcronym.clear();
   }
   else
@@ -734,10 +728,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
 
   QRegExp myAxisRegExp( "\\+a=(\\S+)" );
   myStart = myAxisRegExp.indexIn( myProj4String );
-  if ( myStart == -1 )
-  {
-    QgsDebugMsg( "proj string supplied has no +a argument" );
-  }
 
   long mySrsId = 0;
   QgsCoordinateReferenceSystem::RecordMap myRecord;
@@ -758,8 +748,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     int myLength1 = 0;
     int myStart2 = 0;
     int myLength2 = 0;
-    QString lat1Str = QLatin1String( "" );
-    QString lat2Str = QLatin1String( "" );
+    QString lat1Str;
+    QString lat2Str;
     myStart1 = myLat1RegExp.indexIn( myProj4String, myStart1 );
     myStart2 = myLat2RegExp.indexIn( myProj4String, myStart2 );
     if ( myStart1 != -1 && myStart2 != -1 )
@@ -770,7 +760,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
       lat2Str = myProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
     }
     // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
-    if ( lat1Str != QLatin1String( "" ) && lat2Str != QLatin1String( "" ) )
+    if ( !lat1Str.isEmpty() && !lat2Str.isEmpty() )
     {
       // Make our new string to check...
       QString proj4StringModified = myProj4String;
@@ -793,14 +783,14 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     // - retry without datum, if no match is found (looks like +datum<>WGS84 was dropped in GDAL)
 
     QString sql = QStringLiteral( "SELECT * FROM tbl_srs WHERE " );
-    QString delim = QLatin1String( "" );
+    QString delim;
     QString datum;
 
     // split on spaces followed by a plus sign (+) to deal
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    Q_FOREACH ( const QString& param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    Q_FOREACH ( const QString &param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( QLatin1String( "+datum=" ) ) )
@@ -830,7 +820,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      Q_FOREACH ( const QString& param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+      Q_FOREACH ( const QString &param, myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
       {
         if ( !param.startsWith( QLatin1String( "+datum=" ) ) )
           foundParams << param.trimmed();
@@ -849,7 +839,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   if ( !myRecord.empty() )
   {
     mySrsId = myRecord[QStringLiteral( "srs_id" )].toLong();
-    QgsDebugMsg( "proj4string param match search for srsid returned srsid: " + QString::number( mySrsId ) );
     if ( mySrsId > 0 )
     {
       createFromSrsId( mySrsId );
@@ -858,10 +847,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
   else
   {
     // Last ditch attempt to piece together what we know of the projection to find a match...
-    QgsDebugMsg( "globbing search for srsid from this proj string" );
     setProj4String( myProj4String );
     mySrsId = findMatchingProj();
-    QgsDebugMsg( "globbing search for srsid returned srsid: " + QString::number( mySrsId ) );
     if ( mySrsId > 0 )
     {
       createFromSrsId( mySrsId );
@@ -888,7 +875,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString &proj4String )
 }
 
 //private method meant for internal use by this class only
-QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord( const QString& sql )
+QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord( const QString &sql )
 {
   QString myDatabaseFileName;
   QgsCoordinateReferenceSystem::RecordMap myMap;
@@ -899,7 +886,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   sqlite3_stmt *myPreparedStatement = nullptr;
   int           myResult;
 
-  QgsDebugMsg( "running query: " + sql );
   // Get the full path name to the sqlite3 spatial reference database.
   myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
   QFileInfo myInfo( myDatabaseFileName );
@@ -920,7 +906,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
   {
-    QgsDebugMsg( "trying system srs.db" );
     int myColumnCount = sqlite3_column_count( myPreparedStatement );
     //loop through each column in the record adding its expression name and value to the map
     for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
@@ -942,7 +927,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
   if ( myMap.empty() )
   {
-    QgsDebugMsg( "trying user qgis.db" );
     sqlite3_finalize( myPreparedStatement );
     sqlite3_close( myDatabase );
 
@@ -989,15 +973,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
 
-#ifdef QGISDEBUG
-  QgsDebugMsg( "retrieved:  " + sql );
-  RecordMap::Iterator it;
-  for ( it = myMap.begin(); it != myMap.end(); ++it )
-  {
-    QgsDebugMsgLevel( it.key() + " => " + it.value(), 2 );
-  }
-#endif
-
   return myMap;
 }
 
@@ -1022,7 +997,7 @@ QString QgsCoordinateReferenceSystem::description() const
 {
   if ( d->mDescription.isNull() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1034,7 +1009,7 @@ QString QgsCoordinateReferenceSystem::projectionAcronym() const
 {
   if ( d->mProjectionAcronym.isNull() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1046,7 +1021,7 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 {
   if ( d->mEllipsoidAcronym.isNull() )
   {
-    return QLatin1String( "" );
+    return QString();
   }
   else
   {
@@ -1057,7 +1032,7 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 QString QgsCoordinateReferenceSystem::toProj4() const
 {
   if ( !d->mIsValid )
-    return QLatin1String( "" );
+    return QString();
 
   if ( d->mProj4.isEmpty() )
   {
@@ -1077,6 +1052,9 @@ bool QgsCoordinateReferenceSystem::isGeographic() const
 
 QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
 {
+  if ( !d->mIsValid )
+    return QgsUnitTypes::DistanceUnknownUnit;
+
   return d->mMapUnits;
 }
 
@@ -1089,7 +1067,7 @@ void QgsCoordinateReferenceSystem::setInternalId( long srsId )
   d.detach();
   d->mSrsId = srsId;
 }
-void QgsCoordinateReferenceSystem::setAuthId( const QString& authId )
+void QgsCoordinateReferenceSystem::setAuthId( const QString &authId )
 {
   d.detach();
   d->mAuthId = authId;
@@ -1099,12 +1077,12 @@ void QgsCoordinateReferenceSystem::setSrid( long srid )
   d.detach();
   d->mSRID = srid;
 }
-void QgsCoordinateReferenceSystem::setDescription( const QString& description )
+void QgsCoordinateReferenceSystem::setDescription( const QString &description )
 {
   d.detach();
   d->mDescription = description;
 }
-void QgsCoordinateReferenceSystem::setProj4String( const QString& proj4String )
+void QgsCoordinateReferenceSystem::setProj4String( const QString &proj4String )
 {
   d.detach();
   d->mProj4 = proj4String;
@@ -1130,11 +1108,8 @@ void QgsCoordinateReferenceSystem::setProj4String( const QString& proj4String )
   }
   d->mWkt.clear();
   setMapUnits();
-
-#if defined(QGISDEBUG) && QGISDEBUG>=3
-  debugPrint();
-#endif
 }
+
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool geoFlag )
 {
   d.detach();
@@ -1145,12 +1120,12 @@ void QgsCoordinateReferenceSystem::setEpsg( long epsg )
   d.detach();
   d->mAuthId = QStringLiteral( "EPSG:%1" ).arg( epsg );
 }
-void  QgsCoordinateReferenceSystem::setProjectionAcronym( const QString& projectionAcronym )
+void  QgsCoordinateReferenceSystem::setProjectionAcronym( const QString &projectionAcronym )
 {
   d.detach();
   d->mProjectionAcronym = projectionAcronym;
 }
-void  QgsCoordinateReferenceSystem::setEllipsoidAcronym( const QString& ellipsoidAcronym )
+void  QgsCoordinateReferenceSystem::setEllipsoidAcronym( const QString &ellipsoidAcronym )
 {
   d.detach();
   d->mEllipsoidAcronym = ellipsoidAcronym;
@@ -1187,15 +1162,12 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     if ( qAbs( toMeter - FEET_TO_METER ) < SMALL_NUM )
       unit = QStringLiteral( "Foot" );
 
-    QgsDebugMsg( "Projection has linear units of " + unit );
-
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
       d->mMapUnits = QgsUnitTypes::DistanceMeters;
     else if ( unit == QLatin1String( "Foot" ) )
       d->mMapUnits = QgsUnitTypes::DistanceFeet;
     else
     {
-      QgsDebugMsg( "Unsupported map units of " + unit );
       d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
   }
@@ -1207,10 +1179,8 @@ void QgsCoordinateReferenceSystem::setMapUnits()
       d->mMapUnits = QgsUnitTypes::DistanceDegrees;
     else
     {
-      QgsDebugMsg( "Unsupported map units of " + unit );
       d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     }
-    QgsDebugMsgLevel( "Projection has angular units of " + unit, 3 );
   }
 }
 
@@ -1258,19 +1228,13 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
       QString myProj4String = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
       if ( toProj4() == myProj4String.trimmed() )
       {
-        QgsDebugMsg( "-------> MATCH FOUND in srs.db srsid: " + mySrsId );
         // close the sqlite3 statement
         sqlite3_finalize( myPreparedStatement );
         sqlite3_close( myDatabase );
         return mySrsId.toLong();
       }
-      else
-      {
-// QgsDebugMsg(QString(" Not matched : %1").arg(myProj4String));
-      }
     }
   }
-  QgsDebugMsg( "no match found in srs.db, trying user db now!" );
   // close the sqlite3 statement
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
@@ -1297,19 +1261,13 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
       QString myProj4String = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
       if ( toProj4() == myProj4String.trimmed() )
       {
-        QgsDebugMsg( "-------> MATCH FOUND in user qgis.db srsid: " + mySrsId );
         // close the sqlite3 statement
         sqlite3_finalize( myPreparedStatement );
         sqlite3_close( myDatabase );
         return mySrsId.toLong();
       }
-      else
-      {
-// QgsDebugMsg(QString(" Not matched : %1").arg(myProj4String));
-      }
     }
   }
-  QgsDebugMsg( "no match found in user db" );
 
   // close the sqlite3 statement
   sqlite3_finalize( myPreparedStatement );
@@ -1342,10 +1300,9 @@ QString QgsCoordinateReferenceSystem::toWkt() const
   return d->mWkt;
 }
 
-bool QgsCoordinateReferenceSystem::readXml( const QDomNode & node )
+bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 {
   d.detach();
-  QgsDebugMsg( "Reading Spatial Ref Sys from xml ------------------------!" );
   bool result = true;
   QDomNode srsNode  = node.namedItem( QStringLiteral( "spatialrefsys" ) );
 
@@ -1382,27 +1339,14 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode & node )
         }
       }
     }
-    else
-    {
-      QgsDebugMsg( "Ignoring authid/epsg for user crs." );
-    }
 
-    if ( initialized )
-    {
-      QgsDebugMsg( "Set from auth id" );
-    }
-    else
+    if ( !initialized )
     {
       myNode = srsNode.namedItem( QStringLiteral( "proj4" ) );
 
-      if ( createFromProj4( myNode.toElement().text() ) )
+      if ( !createFromProj4( myNode.toElement().text() ) )
       {
-        // createFromProj4() sets everything, including map units
-        QgsDebugMsg( "Setting from proj4 string" );
-      }
-      else
-      {
-        QgsDebugMsg( "Setting from elements one by one" );
+        // Setting from elements one by one
 
         myNode = srsNode.namedItem( QStringLiteral( "proj4" ) );
         setProj4String( myNode.toElement().text() );
@@ -1464,7 +1408,7 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode & node )
   return result;
 }
 
-bool QgsCoordinateReferenceSystem::writeXml( QDomNode & node, QDomDocument & doc ) const
+bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
 
   QDomElement myLayerNode = node.toElement();
@@ -1529,10 +1473,6 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
   QString myProjString;
   QString mySql = QStringLiteral( "select parameters from tbl_srs where srs_id = %1 order by deprecated" ).arg( srsId );
 
-  QgsDebugMsg( "mySrsId = " + QString::number( srsId ) );
-  QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
-  QgsDebugMsg( "Selection sql : " + mySql );
-
   //
   // Determine if this is a user projection or a system on
   // user projection defs all have srs_id >= 100000
@@ -1552,7 +1492,6 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
   {
     myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
   }
-  QgsDebugMsg( "db = " + myDatabaseFileName );
 
   sqlite3 *db = nullptr;
   int rc;
@@ -1584,9 +1523,8 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
   return myProjString;
 }
 
-int QgsCoordinateReferenceSystem::openDatabase( const QString& path, sqlite3 **db, bool readonly )
+int QgsCoordinateReferenceSystem::openDatabase( const QString &path, sqlite3 **db, bool readonly )
 {
-  QgsDebugMsgLevel( "path = " + path, 3 );
   int myResult = readonly
                  ? sqlite3_open_v2( path.toUtf8().data(), db, SQLITE_OPEN_READONLY, nullptr )
                  : sqlite3_open( path.toUtf8().data(), db );
@@ -1637,7 +1575,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   }
 }
 
-void QgsCoordinateReferenceSystem::setValidationHint( const QString& html )
+void QgsCoordinateReferenceSystem::setValidationHint( const QString &html )
 {
   d.detach();
   d->mValidationHint = html;
@@ -1651,7 +1589,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
+bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
@@ -1703,7 +1641,6 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
                        sqlite3_errmsg( myDatabase ) ) );
     return false;
   }
-  QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
 
   qint64 return_id;
@@ -1715,16 +1652,16 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString& name )
     setInternalId( return_id );
 
     //We add the just created user CRS to the list of recently used CRS
-    QSettings settings;
+    QgsSettings settings;
     //QStringList recentProjections = settings.value( "/UI/recentProjections" ).toStringList();
-    QStringList projectionsProj4 = settings.value( QStringLiteral( "/UI/recentProjectionsProj4" ) ).toStringList();
-    QStringList projectionsAuthId = settings.value( QStringLiteral( "/UI/recentProjectionsAuthId" ) ).toStringList();
+    QStringList projectionsProj4 = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
+    QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
     //recentProjections.append();
     //settings.setValue( "/UI/recentProjections", recentProjections );
     projectionsProj4.append( toProj4() );
     projectionsAuthId.append( authid() );
-    settings.setValue( QStringLiteral( "/UI/recentProjectionsProj4" ), projectionsProj4 );
-    settings.setValue( QStringLiteral( "/UI/recentProjectionsAuthId" ), projectionsAuthId );
+    settings.setValue( QStringLiteral( "UI/recentProjectionsProj4" ), projectionsProj4 );
+    settings.setValue( QStringLiteral( "UI/recentProjectionsAuthId" ), projectionsAuthId );
 
   }
   else
@@ -1823,7 +1760,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 {
   OGRSpatialReferenceH crs = OSRNewSpatialReference( nullptr );
 
-  Q_FOREACH ( const QString& csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  Q_FOREACH ( const QString &csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
   {
     QString filename = CPLFindFile( "gdal", csv.toUtf8() );
 
@@ -1988,7 +1925,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         else
         {
           updated++;
-          QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql, srsProj4, proj4 ), 3 );
         }
       }
     }
@@ -2104,7 +2040,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
             if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
             {
               updated++;
-              QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql, params, proj4 ), 3 );
             }
             else
             {
@@ -2156,7 +2091,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return updated + inserted;
 }
 
-bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
+bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
 {
   const char *filename = CSVFilename( "datum_shift.csv" );
   FILE *fp = VSIFOpen( filename, "rb" );
@@ -2252,9 +2187,6 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString& dbPath )
   }
 
   insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ')';
-
-  QgsDebugMsgLevel( QString( "insert:%1" ).arg( insert ), 4 );
-  QgsDebugMsgLevel( QString( "update:%1" ).arg( update ), 4 );
 
   CSLDestroy( fieldnames );
 
@@ -2363,7 +2295,7 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
   }
   else
   {
-    return QLatin1String( "" );
+    return QString();
   }
 }
 
@@ -2372,13 +2304,13 @@ QStringList QgsCoordinateReferenceSystem::recentProjections()
   QStringList projections;
 
   // Read settings from persistent storage
-  QSettings settings;
-  projections = settings.value( QStringLiteral( "/UI/recentProjections" ) ).toStringList();
+  QgsSettings settings;
+  projections = settings.value( QStringLiteral( "UI/recentProjections" ) ).toStringList();
   /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
   /*** This is kept now for backwards compatibility */
 
-  QStringList projectionsProj4  = settings.value( QStringLiteral( "/UI/recentProjectionsProj4" ) ).toStringList();
-  QStringList projectionsAuthId = settings.value( QStringLiteral( "/UI/recentProjectionsAuthId" ) ).toStringList();
+  QStringList projectionsProj4  = settings.value( QStringLiteral( "UI/recentProjectionsProj4" ) ).toStringList();
+  QStringList projectionsAuthId = settings.value( QStringLiteral( "UI/recentProjectionsAuthId" ) ).toStringList();
   if ( projectionsAuthId.size() >= projections.size() )
   {
     // We had saved state with AuthId and Proj4. Use that instead

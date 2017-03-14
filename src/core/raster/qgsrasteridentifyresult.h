@@ -35,12 +35,12 @@ class CORE_EXPORT QgsRasterIdentifyResult
      *  @param format the result format
      *  @param results the results
      */
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant>& results );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 
     /** \brief Constructor. Creates invalid result with error.
      *  @param error the error
      */
-    QgsRasterIdentifyResult( const QgsError& error );
+    QgsRasterIdentifyResult( const QgsError &error );
 
     virtual ~QgsRasterIdentifyResult() = default;
 
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     QMap<int, QVariant> results() const { return mResults; }
 
     //! Set map of optional parameters
-    void setParams( const QMap<QString, QVariant> & params ) { mParams = params; }
+    void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
     //! Get map of optional parameters
     QMap<QString, QVariant> params() const { return mParams; }
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     QgsError error() const { return mError; }
 
     //! \brief Set error
-    void setError( const QgsError & error ) { mError = error;}
+    void setError( const QgsError &error ) { mError = error;}
 
   private:
     //! \brief Is valid

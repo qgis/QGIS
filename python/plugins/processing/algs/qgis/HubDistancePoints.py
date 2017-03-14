@@ -27,7 +27,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
+from qgis.core import QgsField, QgsGeometry, QgsDistanceArea, QgsFeature, QgsFeatureRequest, QgsWkbTypes
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -82,7 +82,6 @@ class HubDistancePoints(GeoAlgorithm):
             self.getParameterValue(self.HUBS))
         fieldName = self.getParameterValue(self.FIELD)
 
-        addLines = self.getParameterValue(self.GEOMETRY)
         units = self.UNITS[self.getParameterValue(self.UNIT)]
 
         if layerPoints.source() == layerHubs.source():

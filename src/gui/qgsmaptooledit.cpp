@@ -19,61 +19,61 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
 #include <QKeyEvent>
-#include <QSettings>
 
 
-QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
 }
 
 double QgsMapToolEdit::defaultZValue() const
 {
-  return QSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
+  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
 }
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
 {
-  QSettings settings;
+  QgsSettings settings;
   QColor color(
-    settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
-    settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
-    settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
+    settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
+    settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
+    settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
   color.setAlphaF( myAlpha );
   return color;
 }
 
 int QgsMapToolEdit::digitizingStrokeWidth()
 {
-  QSettings settings;
-  return settings.value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt();
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/digitizing/line_width" ), 1 ).toInt();
 }
 
 QColor QgsMapToolEdit::digitizingFillColor()
 {
-  QSettings settings;
+  QgsSettings settings;
   QColor fillColor(
-    settings.value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt(),
-    settings.value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt(),
-    settings.value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
+    settings.value( QStringLiteral( "qgis/digitizing/fill_color_red" ), 255 ).toInt(),
+    settings.value( QStringLiteral( "qgis/digitizing/fill_color_green" ), 0 ).toInt(),
+    settings.value( QStringLiteral( "qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
   fillColor.setAlphaF( myAlpha );
   return fillColor;
 }
 
 
-QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
+QgsRubberBand *QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand )
 {
-  QSettings settings;
-  QgsRubberBand* rb = new QgsRubberBand( mCanvas, geometryType );
+  QgsSettings settings;
+  QgsRubberBand *rb = new QgsRubberBand( mCanvas, geometryType );
   rb->setWidth( digitizingStrokeWidth() );
   QColor color = digitizingStrokeColor();
   if ( alternativeBand )
   {
-    double alphaScale = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
+    double alphaScale = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
     color.setAlphaF( color.alphaF() * alphaScale );
     rb->setLineStyle( Qt::DotLine );
   }
@@ -86,13 +86,13 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand( QgsWkbTypes::GeometryType geome
   return rb;
 }
 
-QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
+QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 {
   return qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
+int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint> &geom )
 {
   if ( !mCanvas )
   {
@@ -115,17 +115,17 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
   return 0;
 }
 
-QgsGeometryRubberBand* QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
+QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType, bool alternativeBand ) const
 {
-  QSettings settings;
-  QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, geometryType );
-  QColor color( settings.value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt(),
-                settings.value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt(),
-                settings.value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0 ;
+  QgsSettings settings;
+  QgsGeometryRubberBand *rb = new QgsGeometryRubberBand( mCanvas, geometryType );
+  QColor color( settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
+                settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
+                settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0 ;
   if ( alternativeBand )
   {
-    myAlpha = myAlpha * settings.value( QStringLiteral( "/qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
+    myAlpha = myAlpha * settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
     rb->setLineStyle( Qt::DotLine );
   }
   color.setAlphaF( myAlpha );

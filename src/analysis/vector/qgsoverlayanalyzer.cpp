@@ -30,9 +30,9 @@
 #include "qgsdistancearea.h"
 #include <QProgressDialog>
 
-bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
-                                       const QString& shapefileName, bool onlySelectedFeatures,
-                                       QProgressDialog* p )
+bool QgsOverlayAnalyzer::intersection( QgsVectorLayer *layerA, QgsVectorLayer *layerB,
+                                       const QString &shapefileName, bool onlySelectedFeatures,
+                                       QProgressDialog *p )
 {
   if ( !layerA || !layerB )
   {
@@ -130,8 +130,8 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
   return true;
 }
 
-void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw,
-    QgsVectorLayer* vl, QgsSpatialIndex* index )
+void QgsOverlayAnalyzer::intersectFeature( QgsFeature &f, QgsVectorFileWriter *vfw,
+    QgsVectorLayer *vl, QgsSpatialIndex *index )
 {
   if ( !f.hasGeometry() )
   {
@@ -167,10 +167,10 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 }
 
-void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFields& fieldListB )
+void QgsOverlayAnalyzer::combineFieldLists( QgsFields &fieldListA, const QgsFields &fieldListB )
 {
   QList<QString> names;
-  Q_FOREACH ( const QgsField& field, fieldListA )
+  Q_FOREACH ( const QgsField &field, fieldListA )
     names.append( field.name() );
 
   for ( int idx = 0; idx < fieldListB.count(); ++idx )
@@ -188,7 +188,7 @@ void QgsOverlayAnalyzer::combineFieldLists( QgsFields& fieldListA, const QgsFiel
   }
 }
 
-void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributes& attributesA, const QgsAttributes& attributesB )
+void QgsOverlayAnalyzer::combineAttributeMaps( QgsAttributes &attributesA, const QgsAttributes &attributesB )
 {
   attributesA += attributesB;
 }

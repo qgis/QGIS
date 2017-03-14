@@ -52,12 +52,12 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! @note added in 2.16
     typedef QList<LayerDefinition> LayerDefinitionList;
 
-    QgsSublayersDialog( ProviderType providerType, const QString& name, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsSublayersDialog();
 
     //! Populate the table with layers
     //! @note added in 2.16
-    void populateLayerTable( const LayerDefinitionList& list );
+    void populateLayerTable( const LayerDefinitionList &list );
 
     //! Returns list of selected layers
     //! @note added in 2.16

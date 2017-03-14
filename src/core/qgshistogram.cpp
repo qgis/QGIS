@@ -22,9 +22,9 @@
 #include <qmath.h>
 
 QgsHistogram::QgsHistogram()
-    : mMax( 0 )
-    , mMin( 0 )
-    , mIQR( 0 )
+  : mMax( 0 )
+  , mMin( 0 )
+  , mIQR( 0 )
 {
 
 }
@@ -47,7 +47,7 @@ void QgsHistogram::setValues( const QList<double> &values )
   prepareValues();
 }
 
-bool QgsHistogram::setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback* feedback )
+bool QgsHistogram::setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback )
 {
   mValues.clear();
   if ( !layer )
@@ -70,7 +70,7 @@ double QgsHistogram::optimalBinWidth() const
 
 int QgsHistogram::optimalNumberBins() const
 {
-  return ceil(( mMax - mMin ) / optimalBinWidth() );
+  return ceil( ( mMax - mMin ) / optimalBinWidth() );
 }
 
 QList<double> QgsHistogram::binEdges( int bins ) const

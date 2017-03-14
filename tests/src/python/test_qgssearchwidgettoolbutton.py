@@ -12,13 +12,11 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -102,7 +100,7 @@ class TestQgsSearchWidgetToolButton(unittest.TestCase):
         self.assertFalse(flags & QgsSearchWidgetWrapper.NotEqualTo)
         self.assertFalse(flags & QgsSearchWidgetWrapper.CaseInsensitive)
 
-        #toggling non-available flag should be ignored
+        # toggling non-available flag should be ignored
         w.setAvailableFlags(QgsSearchWidgetWrapper.Between |
                             QgsSearchWidgetWrapper.NotEqualTo)
         w.setActiveFlags(QgsSearchWidgetWrapper.Between)
@@ -159,6 +157,7 @@ class TestQgsSearchWidgetToolButton(unittest.TestCase):
         self.assertTrue(flags & QgsSearchWidgetWrapper.NotEqualTo)
         self.assertTrue(flags & QgsSearchWidgetWrapper.CaseInsensitive)
         self.assertTrue(w.isActive())
+
 
 if __name__ == '__main__':
     unittest.main()

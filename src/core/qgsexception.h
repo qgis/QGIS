@@ -27,8 +27,8 @@
 class CORE_EXPORT QgsException
 {
   public:
-    QgsException( QString const & what )
-        : what_( what )
+    QgsException( QString const &what )
+      : what_( what )
     {}
 
     virtual ~QgsException() throw()

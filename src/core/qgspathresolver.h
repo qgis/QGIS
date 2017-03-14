@@ -30,17 +30,17 @@ class CORE_EXPORT QgsPathResolver
 {
   public:
     //! Initialize path resolver with a base filename. Null filename means no conversion between relative/absolute path
-    explicit QgsPathResolver( const QString& baseFileName = QString() );
+    explicit QgsPathResolver( const QString &baseFileName = QString() );
 
     /**
      * Prepare a filename to save it to the project file.
      * Creates an absolute or relative path according to the project settings.
      * Paths written to the project file should be prepared with this method.
     */
-    QString writePath( const QString& filename ) const;
+    QString writePath( const QString &filename ) const;
 
     //! Turn filename read from the project file to an absolute path
-    QString readPath( const QString& filename ) const;
+    QString readPath( const QString &filename ) const;
 
   private:
     //! path to a file that is the base for relative path resolution

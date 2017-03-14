@@ -25,8 +25,8 @@
 #include "qgsfallbackfieldformatter.h"
 
 
-QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject* parent )
-    : QObject( parent )
+QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
+  : QObject( parent )
 {
   addFieldFormatter( new QgsValueRelationFieldFormatter() );
   addFieldFormatter( new QgsValueMapFieldFormatter() );
@@ -44,32 +44,32 @@ QgsFieldFormatterRegistry::~QgsFieldFormatterRegistry()
   delete mFallbackFieldFormatter;
 }
 
-void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter* formatter )
+void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter *formatter )
 {
   mFieldFormatters.insert( formatter->id(), formatter );
   emit fieldFormatterAdded( formatter );
 }
 
-void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter* formatter )
+void QgsFieldFormatterRegistry::removeFieldFormatter( QgsFieldFormatter *formatter )
 {
   removeFieldFormatter( formatter->id() );
 }
 
-void QgsFieldFormatterRegistry::removeFieldFormatter( const QString& id )
+void QgsFieldFormatterRegistry::removeFieldFormatter( const QString &id )
 {
-  if ( QgsFieldFormatter* formatter = mFieldFormatters.take( id ) )
+  if ( QgsFieldFormatter *formatter = mFieldFormatters.take( id ) )
   {
     emit fieldFormatterRemoved( formatter );
     delete formatter;
   }
 }
 
-QgsFieldFormatter* QgsFieldFormatterRegistry::fieldFormatter( const QString& id ) const
+QgsFieldFormatter *QgsFieldFormatterRegistry::fieldFormatter( const QString &id ) const
 {
   return mFieldFormatters.value( id, mFallbackFieldFormatter );
 }
 
-QgsFieldFormatter* QgsFieldFormatterRegistry::fallbackFieldFormatter() const
+QgsFieldFormatter *QgsFieldFormatterRegistry::fallbackFieldFormatter() const
 {
   return mFallbackFieldFormatter;
 }

@@ -26,16 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
 import math
 
-from qgis.PyQt.QtGui import QIcon
-
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
@@ -95,10 +90,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
                 QgsWkbTypes.Polygon,
                 layer.crs())
 
-        outFeat = QgsFeature()
-
         features = vector.features(layer)
-        total = 100.0 / len(features)
 
         if shape == 0:
             self.rectangles(writer, features, width, height, rotation)

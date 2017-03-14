@@ -48,15 +48,15 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     /** Constructor for QgsTextPreview
      * @param parent parent widget
      */
-    QgsTextPreview( QWidget* parent = nullptr );
+    QgsTextPreview( QWidget *parent = nullptr );
 
-    void paintEvent( QPaintEvent* e ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
     /** Sets the text format for previewing in the widget.
      * @param format text format
      * @see format()
      */
-    void setFormat( const QgsTextFormat& format );
+    void setFormat( const QgsTextFormat &format );
 
     /** Returns the text format used for previewing text in the widget.
      * @see setFormat()

@@ -25,7 +25,7 @@
 #include <QInputDialog>
 #include <QMenu>
 
-QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
+QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 
@@ -36,12 +36,12 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, con
   mTreeWidget->setColumnWidth( ColorColumn, 50 );
   mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  connect( mTreeWidget, &QTreeView::customContextMenuRequested,  [=]( const QPoint& ) { contextMenu->exec( QCursor::pos() ); }
+  connect( mTreeWidget, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
          );
 
   if ( mRasterLayer )
   {
-    QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
     if ( !provider )
     {
       return;
@@ -59,10 +59,10 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, con
   }
 }
 
-QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
+QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 {
   int nColors = mTreeWidget->topLevelItemCount();
-  QColor* colorArray = new QColor[nColors];
+  QColor *colorArray = new QColor[nColors];
   QVector<QString> labels;
   for ( int i = 0; i < nColors; ++i )
   {
@@ -78,7 +78,7 @@ QgsRasterRenderer* QgsPalettedRendererWidget::renderer()
   return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors, labels );
 }
 
-void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
+void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   if ( column == ColorColumn && item ) //change item color
   {
@@ -96,7 +96,7 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
   }
 }
 
-void QgsPalettedRendererWidget::on_mTreeWidget_itemChanged( QTreeWidgetItem * item, int column )
+void QgsPalettedRendererWidget::on_mTreeWidget_itemChanged( QTreeWidgetItem *item, int column )
 {
   if ( column == LabelColumn && item ) //palette label modified
   {
@@ -104,17 +104,17 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemChanged( QTreeWidgetItem * it
   }
 }
 
-void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
+void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
 {
-  const QgsPalettedRasterRenderer* pr = dynamic_cast<const QgsPalettedRasterRenderer*>( r );
+  const QgsPalettedRasterRenderer *pr = dynamic_cast<const QgsPalettedRasterRenderer *>( r );
   if ( pr )
   {
     //read values and colors and fill into tree widget
     int nColors = pr->nColors();
-    QColor* colors = pr->colors();
+    QColor *colors = pr->colors();
     for ( int i = 0; i < nColors; ++i )
     {
-      QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
+      QTreeWidgetItem *item = new QTreeWidgetItem( mTreeWidget );
       item->setText( 0, QString::number( i ) );
       item->setBackground( 1, QBrush( colors[i] ) );
       item->setText( 2, pr->label( i ) );
@@ -132,7 +132,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
       int index = 0;
       for ( ; itemIt != itemList.constEnd(); ++itemIt )
       {
-        QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
+        QTreeWidgetItem *item = new QTreeWidgetItem( mTreeWidget );
         item->setText( 0, QString::number( index ) );
         item->setBackground( 1, QBrush( itemIt->color ) );
         item->setText( 2, itemIt->label );
@@ -150,7 +150,7 @@ void QgsPalettedRendererWidget::changeColor()
   {
     return;
   }
-  QTreeWidgetItem* firstItem = itemList.first();
+  QTreeWidgetItem *firstItem = itemList.first();
 
   QColor newColor = QgsColorDialog::getColor( firstItem->background( ColorColumn ).color(), this, QStringLiteral( "Change color" ), true );
   if ( newColor.isValid() )
@@ -172,7 +172,7 @@ void QgsPalettedRendererWidget::changeTransparency()
   {
     return;
   }
-  QTreeWidgetItem* firstItem = itemList.first();
+  QTreeWidgetItem *firstItem = itemList.first();
 
   bool ok;
   double oldTransparency = ( firstItem->background( ColorColumn ).color().alpha() / 255.0 ) * 100.0;

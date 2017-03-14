@@ -29,7 +29,7 @@ QgsFtpTransaction::~QgsFtpTransaction()
   delete mFtp;
 }
 
-int QgsFtpTransaction::get( const QString& ftpUrl, QByteArray& ba )
+int QgsFtpTransaction::get( const QString &ftpUrl, QByteArray &ba )
 {
   if ( !mFtp )
   {

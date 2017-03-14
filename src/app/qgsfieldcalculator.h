@@ -28,7 +28,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 {
     Q_OBJECT
   public:
-    QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr );
     ~QgsFieldCalculator();
 
     int changedAttributeId() const { return mAttributeId; }
@@ -39,7 +39,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void on_mNewFieldGroupBox_toggled( bool on );
     void on_mUpdateExistingGroupBox_toggled( bool on );
     void on_mCreateVirtualFieldCheckbox_stateChanged( int state );
-    void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
+    void on_mOutputFieldNameLineEdit_textChanged( const QString &text );
     void on_mOutputFieldTypeComboBox_activated( int index );
 
     void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
@@ -57,7 +57,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
-    QgsVectorLayer* mVectorLayer = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
     //! Key: field name, Value: field index
     QMap<QString, int> mFieldMap;
 

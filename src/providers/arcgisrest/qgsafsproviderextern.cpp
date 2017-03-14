@@ -25,7 +25,7 @@ const QString AFS_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString AFS_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
 
 
-QGISEXTERN QgsAfsProvider * classFactory( const QString *uri )
+QGISEXTERN QgsAfsProvider *classFactory( const QString *uri )
 {
   return new QgsAfsProvider( *uri );
 }
@@ -66,9 +66,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   if ( path.startsWith( QLatin1String( "afs:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( QStringLiteral( "ArcGisFeatureServer" ) ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgisfeatureserver" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( QStringLiteral( "ArcGisFeatureServer" ), connectionName );
+      QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), connectionName );
       return new QgsAfsConnectionItem( parentItem, QStringLiteral( "ArcGisFeatureServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
     }
   }

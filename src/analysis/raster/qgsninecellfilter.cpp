@@ -21,29 +21,29 @@
 #include <QProgressDialog>
 #include <QFile>
 
-QgsNineCellFilter::QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : mInputFile( inputFile )
-    , mOutputFile( outputFile )
-    , mOutputFormat( outputFormat )
-    , mCellSizeX( -1.0 )
-    , mCellSizeY( -1.0 )
-    , mInputNodataValue( -1.0 )
-    , mOutputNodataValue( -1.0 )
-    , mZFactor( 1.0 )
+QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
+  : mInputFile( inputFile )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mCellSizeX( -1.0 )
+  , mCellSizeY( -1.0 )
+  , mInputNodataValue( -1.0 )
+  , mOutputNodataValue( -1.0 )
+  , mZFactor( 1.0 )
 {
 
 }
 
 QgsNineCellFilter::QgsNineCellFilter()
-    : mCellSizeX( -1.0 )
-    , mCellSizeY( -1.0 )
-    , mInputNodataValue( -1.0 )
-    , mOutputNodataValue( -1.0 )
-    , mZFactor( 1.0 )
+  : mCellSizeX( -1.0 )
+  , mCellSizeY( -1.0 )
+  , mInputNodataValue( -1.0 )
+  , mOutputNodataValue( -1.0 )
+  , mZFactor( 1.0 )
 {
 }
 
-int QgsNineCellFilter::processRaster( QProgressDialog* p )
+int QgsNineCellFilter::processRaster( QProgressDialog *p )
 {
   GDALAllRegister();
 
@@ -97,11 +97,11 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
   }
 
   //keep only three scanlines in memory at a time
-  float* scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  float* resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
   if ( p )
   {
@@ -161,18 +161,18 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
     {
       if ( j == 0 )
       {
-        resultLine[j] = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j+1], &mInputNodataValue, &scanLine2[j],
-                                               &scanLine2[j+1], &mInputNodataValue, &scanLine3[j], &scanLine3[j+1] );
+        resultLine[j] = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j + 1], &mInputNodataValue, &scanLine2[j],
+                                               &scanLine2[j + 1], &mInputNodataValue, &scanLine3[j], &scanLine3[j + 1] );
       }
       else if ( j == xSize - 1 )
       {
-        resultLine[j] = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &mInputNodataValue, &scanLine2[j-1], &scanLine2[j],
-                                               &mInputNodataValue, &scanLine3[j-1], &scanLine3[j], &mInputNodataValue );
+        resultLine[j] = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &mInputNodataValue, &scanLine2[j - 1], &scanLine2[j],
+                                               &mInputNodataValue, &scanLine3[j - 1], &scanLine3[j], &mInputNodataValue );
       }
       else
       {
-        resultLine[j] = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &scanLine1[j+1], &scanLine2[j-1], &scanLine2[j],
-                                               &scanLine2[j+1], &scanLine3[j-1], &scanLine3[j], &scanLine3[j+1] );
+        resultLine[j] = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &scanLine1[j + 1], &scanLine2[j - 1], &scanLine2[j],
+                                               &scanLine2[j + 1], &scanLine3[j - 1], &scanLine3[j], &scanLine3[j + 1] );
       }
     }
 
@@ -205,7 +205,7 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
   return 0;
 }
 
-GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
+GDALDatasetH QgsNineCellFilter::openInputFile( int &nCellsX, int &nCellsY )
 {
   GDALDatasetH inputDataset = GDALOpen( mInputFile.toUtf8().constData(), GA_ReadOnly );
   if ( inputDataset )
@@ -283,7 +283,7 @@ GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALD
     mCellSizeY = -mCellSizeY;
   }
 
-  const char* projection = GDALGetProjectionRef( inputDataset );
+  const char *projection = GDALGetProjectionRef( inputDataset );
   GDALSetProjection( outputDataset, projection );
 
   return outputDataset;

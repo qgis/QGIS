@@ -40,7 +40,7 @@ QgsUnitTypes::RenderUnit convertFromOldLabelUnit( int val )
     return QgsUnitTypes::RenderMillimeters;
 }
 
-static void _fixQPictureDPI( QPainter* p )
+static void _fixQPictureDPI( QPainter *p )
 {
   // QPicture makes an assumption that we drawing to it with system DPI.
   // Then when being drawn, it scales the painter. The following call
@@ -50,7 +50,7 @@ static void _fixQPictureDPI( QPainter* p )
             static_cast< double >( qt_defaultDpiY() ) / p->device()->logicalDpiY() );
 }
 
-static QColor _readColor( QgsVectorLayer* layer, const QString& property, const QColor& defaultColor = Qt::black, bool withAlpha = true )
+static QColor _readColor( QgsVectorLayer *layer, const QString &property, const QColor &defaultColor = Qt::black, bool withAlpha = true )
 {
   int r = layer->customProperty( property + 'R', QVariant( defaultColor.red() ) ).toInt();
   int g = layer->customProperty( property + 'G', QVariant( defaultColor.green() ) ).toInt();
@@ -59,7 +59,7 @@ static QColor _readColor( QgsVectorLayer* layer, const QString& property, const 
   return QColor( r, g, b, a );
 }
 
-static void _writeColor( QgsVectorLayer* layer, const QString& property, const QColor& color, bool withAlpha = true )
+static void _writeColor( QgsVectorLayer *layer, const QString &property, const QColor &color, bool withAlpha = true )
 {
   layer->setCustomProperty( property + 'R', color.red() );
   layer->setCustomProperty( property + 'G', color.green() );
@@ -74,11 +74,11 @@ QgsTextBufferSettings::QgsTextBufferSettings()
 }
 
 QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other ) //NOLINT
-    : d( other.d )
+  : d( other.d )
 {
 }
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings & other ) //NOLINT
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other )  //NOLINT
 {
   d = other.d;
   return *this;
@@ -179,7 +179,7 @@ void QgsTextBufferSettings::setBlendMode( QPainter::CompositionMode mode )
   d->blendMode = mode;
 }
 
-void QgsTextBufferSettings::readFromLayer( QgsVectorLayer* layer )
+void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
 {
   // text buffer
   double bufSize = layer->customProperty( QStringLiteral( "labeling/bufferSize" ), QVariant( 0.0 ) ).toDouble();
@@ -238,7 +238,7 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer* layer )
   d->fillBufferInterior = !layer->customProperty( QStringLiteral( "labeling/bufferNoFill" ), QVariant( false ) ).toBool();
 }
 
-void QgsTextBufferSettings::writeToLayer( QgsVectorLayer* layer ) const
+void QgsTextBufferSettings::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/bufferDraw" ), d->enabled );
   layer->setCustomProperty( QStringLiteral( "labeling/bufferSize" ), d->size );
@@ -251,7 +251,7 @@ void QgsTextBufferSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( QStringLiteral( "labeling/bufferBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
-void QgsTextBufferSettings::readXml( const QDomElement& elem )
+void QgsTextBufferSettings::readXml( const QDomElement &elem )
 {
   QDomElement textBufferElem = elem.firstChildElement( QStringLiteral( "text-buffer" ) );
   double bufSize = textBufferElem.attribute( QStringLiteral( "bufferSize" ), QStringLiteral( "0" ) ).toDouble();
@@ -311,7 +311,7 @@ void QgsTextBufferSettings::readXml( const QDomElement& elem )
   d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
 }
 
-QDomElement QgsTextBufferSettings::writeXml( QDomDocument& doc ) const
+QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
 {
   // text buffer
   QDomElement textBufferElem = doc.createElement( QStringLiteral( "text-buffer" ) );
@@ -338,12 +338,12 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 }
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other ) //NOLINT
-    : d( other.d )
+  : d( other.d )
 {
 
 }
 
-QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings & other ) //NOLINT
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other )  //NOLINT
 {
   d = other.d;
   return *this;
@@ -584,7 +584,7 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   d->joinStyle = style;
 }
 
-void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
+void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
 {
   d->enabled = layer->customProperty( QStringLiteral( "labeling/shapeDraw" ), QVariant( false ) ).toBool();
   d->type = static_cast< ShapeType >( layer->customProperty( QStringLiteral( "labeling/shapeType" ), QVariant( ShapeRectangle ) ).toUInt() );
@@ -694,7 +694,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer* layer )
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( QgsPainting::BlendNormal ) ).toUInt() ) );
 }
 
-void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer* layer ) const
+void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/shapeDraw" ), d->enabled );
   layer->setCustomProperty( QStringLiteral( "labeling/shapeType" ), static_cast< unsigned int >( d->type ) );
@@ -724,7 +724,7 @@ void QgsTextBackgroundSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( QStringLiteral( "labeling/shapeBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
-void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
+void QgsTextBackgroundSettings::readXml( const QDomElement &elem )
 {
   QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
   d->enabled = backgroundElem.attribute( QStringLiteral( "shapeDraw" ), QStringLiteral( "0" ) ).toInt();
@@ -836,7 +836,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement& elem )
 
 }
 
-QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument& doc ) const
+QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement backgroundElem = doc.createElement( QStringLiteral( "background" ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeDraw" ), d->enabled );
@@ -879,12 +879,12 @@ QgsTextShadowSettings::QgsTextShadowSettings()
 }
 
 QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings &other ) //NOLINT
-    : d( other.d )
+  : d( other.d )
 {
 
 }
 
-QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings & other ) //NOLINT
+QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings &other )  //NOLINT
 {
   d = other.d;
   return *this;
@@ -1045,7 +1045,7 @@ void QgsTextShadowSettings::setBlendMode( QPainter::CompositionMode mode )
   d->blendMode = mode;
 }
 
-void QgsTextShadowSettings::readFromLayer( QgsVectorLayer* layer )
+void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
 {
   d->enabled = layer->customProperty( QStringLiteral( "labeling/shadowDraw" ), QVariant( false ) ).toBool();
   d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( QStringLiteral( "labeling/shadowUnder" ), QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
@@ -1107,7 +1107,7 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer* layer )
                    static_cast< QgsPainting::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( QgsPainting::BlendMultiply ) ).toUInt() ) );
 }
 
-void QgsTextShadowSettings::writeToLayer( QgsVectorLayer* layer ) const
+void QgsTextShadowSettings::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/shadowDraw" ), d->enabled );
   layer->setCustomProperty( QStringLiteral( "labeling/shadowUnder" ), static_cast< unsigned int >( d->shadowUnder ) );
@@ -1126,7 +1126,7 @@ void QgsTextShadowSettings::writeToLayer( QgsVectorLayer* layer ) const
   layer->setCustomProperty( QStringLiteral( "labeling/shadowBlendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
 }
 
-void QgsTextShadowSettings::readXml( const QDomElement& elem )
+void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
   QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
   d->enabled = shadowElem.attribute( QStringLiteral( "shadowDraw" ), QStringLiteral( "0" ) ).toInt();
@@ -1190,7 +1190,7 @@ void QgsTextShadowSettings::readXml( const QDomElement& elem )
                    static_cast< QgsPainting::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( QgsPainting::BlendMultiply ) ).toUInt() ) );
 }
 
-QDomElement QgsTextShadowSettings::writeXml( QDomDocument& doc ) const
+QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement shadowElem = doc.createElement( QStringLiteral( "shadow" ) );
   shadowElem.setAttribute( QStringLiteral( "shadowDraw" ), d->enabled );
@@ -1216,23 +1216,23 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument& doc ) const
 //
 
 QgsTextFormat::QgsTextFormat()
-    : mTextFontFound( true )
+  : mTextFontFound( true )
 {
   d = new QgsTextSettingsPrivate();
 }
 
 QgsTextFormat::QgsTextFormat( const QgsTextFormat &other ) //NOLINT
-    : mBufferSettings( other.mBufferSettings )
-    , mBackgroundSettings( other.mBackgroundSettings )
-    , mShadowSettings( other.mShadowSettings )
-    , mTextFontFamily( other.mTextFontFamily )
-    , mTextFontFound( other.mTextFontFound )
-    , d( other.d )
+  : mBufferSettings( other.mBufferSettings )
+  , mBackgroundSettings( other.mBackgroundSettings )
+  , mShadowSettings( other.mShadowSettings )
+  , mTextFontFamily( other.mTextFontFamily )
+  , mTextFontFound( other.mTextFontFound )
+  , d( other.d )
 {
 
 }
 
-QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat & other ) //NOLINT
+QgsTextFormat &QgsTextFormat::operator=( const QgsTextFormat &other )  //NOLINT
 {
   d = other.d;
   mBufferSettings = other.mBufferSettings;
@@ -1253,7 +1253,7 @@ QFont QgsTextFormat::font() const
   return d->textFont;
 }
 
-QFont QgsTextFormat::scaledFont( const QgsRenderContext& context ) const
+QFont QgsTextFormat::scaledFont( const QgsRenderContext &context ) const
 {
   QFont font = d->textFont;
   int fontPixelSize = QgsTextRenderer::sizeToPixel( d->fontSize, context, d->fontSizeUnits,
@@ -1352,7 +1352,7 @@ void QgsTextFormat::setLineHeight( double height )
   d->multilineHeight = height;
 }
 
-void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
+void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 {
   QFont appFont = QApplication::font();
   mTextFontFamily = layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString();
@@ -1432,7 +1432,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer* layer )
   mBackgroundSettings.readFromLayer( layer );
 }
 
-void QgsTextFormat::writeToLayer( QgsVectorLayer* layer ) const
+void QgsTextFormat::writeToLayer( QgsVectorLayer *layer ) const
 {
   layer->setCustomProperty( QStringLiteral( "labeling/fontFamily" ), d->textFont.family() );
   layer->setCustomProperty( QStringLiteral( "labeling/namedStyle" ), QgsFontUtils::untranslateNamedStyle( d->textNamedStyle ) );
@@ -1457,7 +1457,7 @@ void QgsTextFormat::writeToLayer( QgsVectorLayer* layer ) const
   mBackgroundSettings.writeToLayer( layer );
 }
 
-void QgsTextFormat::readXml( const QDomElement& elem )
+void QgsTextFormat::readXml( const QDomElement &elem )
 {
   QDomElement textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
@@ -1567,7 +1567,7 @@ void QgsTextFormat::readXml( const QDomElement& elem )
   }
 }
 
-QDomElement QgsTextFormat::writeXml( QDomDocument& doc ) const
+QDomElement QgsTextFormat::writeXml( QDomDocument &doc ) const
 {
   // text style
   QDomElement textStyleElem = doc.createElement( QStringLiteral( "text-style" ) );
@@ -1612,12 +1612,12 @@ bool QgsTextFormat::containsAdvancedEffects() const
 }
 
 
-int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext& c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale& mapUnitScale )
+int QgsTextRenderer::sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale )
 {
   return static_cast< int >( c.convertToPainterUnits( size, unit, mapUnitScale ) + 0.5 ); //NOLINT
 }
 
-void QgsTextRenderer::drawText( const QRectF& rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, bool drawAsOutlines )
+void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
 {
   QgsTextFormat tmpFormat = updateShadowPosition( format );
 
@@ -1634,7 +1634,7 @@ void QgsTextRenderer::drawText( const QRectF& rect, double rotation, QgsTextRend
   drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Text, drawAsOutlines );
 }
 
-void QgsTextRenderer::drawText( const QPointF& point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, bool drawAsOutlines )
+void QgsTextRenderer::drawText( const QPointF &point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
 {
   QgsTextFormat tmpFormat = updateShadowPosition( format );
 
@@ -1651,7 +1651,7 @@ void QgsTextRenderer::drawText( const QPointF& point, double rotation, QgsTextRe
   drawPart( point, rotation, alignment, textLines, context, tmpFormat, Text, drawAsOutlines );
 }
 
-QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat& format )
+QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format )
 {
   if ( !format.shadow().enabled() || format.shadow().shadowPlacement() != QgsTextShadowSettings::ShadowLowest )
     return format;
@@ -1672,8 +1672,8 @@ QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat& format
   return tmpFormat;
 }
 
-void QgsTextRenderer::drawPart( const QRectF& rect, double rotation, HAlignment alignment,
-                                const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment alignment,
+                                const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
 {
   if ( !context.painter() )
   {
@@ -1737,7 +1737,7 @@ void QgsTextRenderer::drawPart( const QRectF& rect, double rotation, HAlignment 
   }
 }
 
-void QgsTextRenderer::drawPart( const QPointF& origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList& textLines, QgsRenderContext& context, const QgsTextFormat& format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
+void QgsTextRenderer::drawPart( const QPointF &origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
 {
   if ( !context.painter() )
   {
@@ -1782,9 +1782,9 @@ void QgsTextRenderer::drawPart( const QPointF& origin, double rotation, QgsTextR
   }
 }
 
-void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRenderer::Component& component, const QgsTextFormat& format )
+void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
 {
-  QPainter* p = context.painter();
+  QPainter *p = context.painter();
 
   QgsTextBufferSettings buffer = format.buffer();
 
@@ -1840,7 +1840,7 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext& context, const QgsTextRender
   p->restore();
 }
 
-double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList &textLines, QFontMetricsF* fm )
+double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF *fm )
 {
   //calculate max width of text lines
   std::unique_ptr< QFontMetricsF > newFm;
@@ -1851,14 +1851,14 @@ double QgsTextRenderer::textWidth( const QgsRenderContext& context, const QgsTex
   }
 
   double maxWidth = 0;
-  Q_FOREACH ( const QString& line, textLines )
+  Q_FOREACH ( const QString &line, textLines )
   {
     maxWidth = qMax( maxWidth, fm->width( line ) );
   }
   return maxWidth;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext& context, const QgsTextFormat& format, const QStringList& textLines, DrawMode mode, QFontMetricsF* fm )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *fm )
 {
   //calculate max width of text lines
   std::unique_ptr< QFontMetricsF > newFm;
@@ -1887,12 +1887,12 @@ double QgsTextRenderer::textHeight( const QgsRenderContext& context, const QgsTe
   return 0;
 }
 
-void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer::Component component, const QgsTextFormat& format,
-                                      const QStringList& textLines, DrawMode mode )
+void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer::Component component, const QgsTextFormat &format,
+                                      const QStringList &textLines, DrawMode mode )
 {
   QgsTextBackgroundSettings background = format.background();
 
-  QPainter* p = context.painter();
+  QPainter *p = context.painter();
   //QgsDebugMsgLevel( QString( "Background label rotation: %1" ).arg( component.rotation() ), 4 );
 
   // shared calculations between shapes and SVG
@@ -2040,8 +2040,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
       shdwContext.setScaleFactor( context.scaleFactor() );
       shdwContext.setPainter( &svgp );
 
-      QgsSymbolLayer* symShdwL = QgsSvgMarkerSymbolLayer::create( shdwmap );
-      QgsSvgMarkerSymbolLayer* svgShdwM = static_cast<QgsSvgMarkerSymbolLayer*>( symShdwL );
+      QgsSymbolLayer *symShdwL = QgsSvgMarkerSymbolLayer::create( shdwmap );
+      QgsSvgMarkerSymbolLayer *svgShdwM = static_cast<QgsSvgMarkerSymbolLayer *>( symShdwL );
       QgsSymbolRenderContext svgShdwContext( shdwContext, QgsUnitTypes::RenderUnknownUnit, background.opacity() );
 
       svgShdwM->renderPoint( QPointF( sizeOut / 2, -sizeOut / 2 ), svgShdwContext );
@@ -2076,8 +2076,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
     }
 
     // draw the actual symbol
-    QgsSymbolLayer* symL = QgsSvgMarkerSymbolLayer::create( map );
-    QgsSvgMarkerSymbolLayer* svgM = static_cast<QgsSvgMarkerSymbolLayer*>( symL );
+    QgsSymbolLayer *symL = QgsSvgMarkerSymbolLayer::create( map );
+    QgsSvgMarkerSymbolLayer *svgM = static_cast<QgsSvgMarkerSymbolLayer *>( symL );
     QgsSymbolRenderContext svgContext( context, QgsUnitTypes::RenderUnknownUnit, background.opacity() );
 
     p->save();
@@ -2231,7 +2231,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext& context, QgsTextRenderer
   }
 }
 
-void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRenderer::Component& component, const QgsTextFormat& format )
+void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
 {
   QgsTextShadowSettings shadow = format.shadow();
 
@@ -2239,7 +2239,7 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
   // this allows shadows to be created at paint device dpi (e.g. high resolution),
   // then scale device painter by 1.0 / rasterCompressFactor for output
 
-  QPainter* p = context.painter();
+  QPainter *p = context.painter();
   double componentWidth = component.size.width(), componentHeight = component.size.height();
   double xOffset = component.offset.x(), yOffset = component.offset.y();
   double pictbuffer = component.pictureBuffer;
@@ -2382,10 +2382,10 @@ void QgsTextRenderer::drawShadow( QgsRenderContext& context, const QgsTextRender
 }
 
 void QgsTextRenderer::drawTextInternal( TextPart drawType,
-                                        QgsRenderContext& context,
-                                        const QgsTextFormat& format,
-                                        const Component& component,
-                                        const QStringList& textLines,
+                                        QgsRenderContext &context,
+                                        const QgsTextFormat &format,
+                                        const Component &component,
+                                        const QStringList &textLines,
                                         const QFontMetricsF *fontMetrics,
                                         HAlignment alignment,
                                         bool drawAsOutlines
@@ -2401,7 +2401,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   {
     case Label:
     case Point:
-      Q_FOREACH ( const QString& line, textLines )
+      Q_FOREACH ( const QString &line, textLines )
       {
         double labelWidth = fontMetrics->width( line );
         if ( labelWidth > labelWidest )
@@ -2426,7 +2426,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
   bool adjustForAlignment = alignment != AlignLeft && ( mode != Label || textLines.size() > 1 );
 
-  Q_FOREACH ( const QString& line, textLines )
+  Q_FOREACH ( const QString &line, textLines )
   {
     context.painter()->save();
     if ( context.flags() & QgsRenderContext::Antialiasing )

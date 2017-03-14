@@ -32,13 +32,13 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 
   public:
     //! constructor
-    QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
+    QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
     ~QgsMapToolZoom();
 
     virtual Flags flags() const override { return QgsMapTool::Transient; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     virtual void deactivate() override;
 
   protected:
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
-    QgsRubberBand* mRubberBand = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
 };
 
 #endif

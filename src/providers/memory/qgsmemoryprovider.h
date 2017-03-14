@@ -28,29 +28,29 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMemoryProvider( const QString& uri = QString() );
+    explicit QgsMemoryProvider( const QString &uri = QString() );
 
     virtual ~QgsMemoryProvider();
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
     virtual QString dataSourceUri( bool expandAuthConfig = true ) const override;
     virtual QString storageType() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     virtual QgsWkbTypes::Type wkbType() const override;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
-    virtual bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
-    virtual bool deleteAttributes( const QgsAttributeIds& attributes ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
-    virtual bool changeGeometryValues( const QgsGeometryMap & geometry_map ) override;
+    virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     QString subsetString() const override;
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     virtual bool supportsSubsetString() const override { return true; }
     virtual bool createSpatialIndex() override;
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -82,7 +82,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     QgsFeatureId mNextFeatureId;
 
     // indexing
-    QgsSpatialIndex* mSpatialIndex = nullptr;
+    QgsSpatialIndex *mSpatialIndex = nullptr;
 
     QString mSubsetString;
 

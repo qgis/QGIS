@@ -25,12 +25,12 @@ class QgsOptionsDialogBase : QDialog
 %End
   public:
     /** Constructor
-     * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+     * @param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
      * @param parent parent object (owner)
      * @param fl widget flags
-     * @param settings custom QSettings pointer
+     * @param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& fl = 0, QSettings* settings = 0 );
+    QgsOptionsDialogBase( const QString& settingsKey, QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& fl = 0, QgsSettings* settings = 0 );
     ~QgsOptionsDialogBase();
 
     /** Set up the base ui connections for vertical tabs.
@@ -39,8 +39,8 @@ class QgsOptionsDialogBase : QDialog
      */
     void initOptionsBase( bool restoreUi = true, const QString& title = QString() );
 
-    // set custom QSettings pointer if dialog used outside QGIS (in plugin)
-    void setSettings( QSettings* settings );
+    // set custom QgsSettings pointer if dialog used outside QGIS (in plugin)
+    void setSettings( QgsSettings* settings );
 
     /** Restore the base ui.
      * Sometimes useful to do at end of subclass's constructor.

@@ -51,7 +51,7 @@ class AssignProjection(GdalAlgorithm):
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Assign projection')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+        self.group, self.i18n_group = self.trAlgorithm('Raster projections')
 
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.CRS,

@@ -13,9 +13,6 @@
 #                                                                         #
 ###########################################################################
 
-export DEBIAN_FRONTEND=noninteractive
-export CORES=2
-
 ##################################################
 #
 # Get precompiled dependencies
@@ -24,12 +21,25 @@ export CORES=2
 
 pushd ${HOME}
 
-curl -L https://github.com/opengisch/osgeo4travis/archive/qt5bin.tar.gz | tar -xzC /home/travis --strip-components=1
-curl -L https://cmake.org/files/v3.5/cmake-3.5.0-Linux-x86_64.tar.gz | tar --strip-components=1 -zxC /home/travis/osgeo4travis
+# fetching data from github should be just as fast as S3
+curl -s -S -L https://github.com/opengisch/osgeo4travis/archive/qt5bin.tar.gz | tar --strip-components=1 -xz -C /home/travis &
+SETUP_OSGEO4W_PID=$!
+
+mkdir /home/travis/osgeo4travis
+
+# other dependencies live in a cached folder
+pushd depcache
+# Download newer version of cmake than in the repository
+[[ -f cmake-3.5.0-Linux-x86_64.tar.gz ]] || curl -s -S -O https://cmake.org/files/v3.5/cmake-3.5.0-Linux-x86_64.tar.gz
+tar --strip-components=1 -zx -f cmake-3.5.0-Linux-x86_64.tar.gz -C /home/travis/osgeo4travis 
 
 # Download OTB package for Processing tests
-wget https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-5.6.0-Linux64.run -O /home/travis/OTB-5.6.0-Linux64.run && sh /home/travis/OTB-5.6.0-Linux64.run
+[[ -f OTB-5.6.0-Linux64.run ]] || curl -s -S -O https://www.orfeo-toolbox.org/packages/archives/OTB/OTB-5.6.0-Linux64.run
+sh ./OTB-5.6.0-Linux64.run
 
+wait $SETUP_OSGEO4W_PID
+
+popd
 popd
 
 pip install psycopg2 numpy nose2 pyyaml mock future termcolor

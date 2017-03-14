@@ -28,40 +28,40 @@
 
 dwgReader::~dwgReader()
 {
-  for ( std::map<duint32, DRW_LType*>::iterator it = ltypemap.begin(); it != ltypemap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Layer*>::iterator it = layermap.begin(); it != layermap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Block*>::iterator it = blockmap.begin(); it != blockmap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Textstyle*>::iterator it = stylemap.begin(); it != stylemap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Dimstyle*>::iterator it = dimstylemap.begin(); it != dimstylemap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Vport*>::iterator it = vportmap.begin(); it != vportmap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Class*>::iterator it = classesmap.begin(); it != classesmap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_Block_Record*>::iterator it = blockRecordmap.begin(); it != blockRecordmap.end(); ++it )
-    delete( it->second );
-  for ( std::map<duint32, DRW_AppId*>::iterator it = appIdmap.begin(); it != appIdmap.end(); ++it )
-    delete( it->second );
+  for ( std::map<duint32, DRW_LType *>::iterator it = ltypemap.begin(); it != ltypemap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Layer *>::iterator it = layermap.begin(); it != layermap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Block *>::iterator it = blockmap.begin(); it != blockmap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Textstyle *>::iterator it = stylemap.begin(); it != stylemap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Dimstyle *>::iterator it = dimstylemap.begin(); it != dimstylemap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Vport *>::iterator it = vportmap.begin(); it != vportmap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Class *>::iterator it = classesmap.begin(); it != classesmap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_Block_Record *>::iterator it = blockRecordmap.begin(); it != blockRecordmap.end(); ++it )
+    delete ( it->second );
+  for ( std::map<duint32, DRW_AppId *>::iterator it = appIdmap.begin(); it != appIdmap.end(); ++it )
+    delete ( it->second );
 
   delete fileBuf;
 }
 
-void dwgReader::parseAttribs( DRW_Entity* e )
+void dwgReader::parseAttribs( DRW_Entity *e )
 {
   if ( e )
   {
     duint32 ltref = e->lTypeH.ref;
     duint32 lyref = e->layerH.ref;
-    std::map<duint32, DRW_LType*>::iterator lt_it = ltypemap.find( ltref );
+    std::map<duint32, DRW_LType *>::iterator lt_it = ltypemap.find( ltref );
     if ( lt_it != ltypemap.end() )
     {
       e->lineType = ( lt_it->second )->name;
     }
-    std::map<duint32, DRW_Layer*>::iterator ly_it = layermap.find( lyref );
+    std::map<duint32, DRW_Layer *>::iterator ly_it = layermap.find( lyref );
     if ( ly_it != layermap.end() )
     {
       e->layer = ( ly_it->second )->name;
@@ -76,14 +76,14 @@ std::string dwgReader::findTableName( DRW::TTYPE table, dint32 handle )
   {
     case DRW::STYLE:
     {
-      std::map<duint32, DRW_Textstyle*>::iterator st_it = stylemap.find( handle );
+      std::map<duint32, DRW_Textstyle *>::iterator st_it = stylemap.find( handle );
       if ( st_it != stylemap.end() )
         name = ( st_it->second )->name;
       break;
     }
     case DRW::DIMSTYLE:
     {
-      std::map<duint32, DRW_Dimstyle*>::iterator ds_it = dimstylemap.find( handle );
+      std::map<duint32, DRW_Dimstyle *>::iterator ds_it = dimstylemap.find( handle );
       if ( ds_it != dimstylemap.end() )
         name = ( ds_it->second )->name;
       break;
@@ -92,7 +92,7 @@ std::string dwgReader::findTableName( DRW::TTYPE table, dint32 handle )
     {
 //        std::map<duint32, DRW_Block*>::iterator bk_it = blockmap.find(handle);
 //        if (bk_it != blockmap.end())
-      std::map<duint32, DRW_Block_Record*>::iterator bk_it = blockRecordmap.find( handle );
+      std::map<duint32, DRW_Block_Record *>::iterator bk_it = blockRecordmap.find( handle );
       if ( bk_it != blockRecordmap.end() )
         name = ( bk_it->second )->name;
       break;
@@ -100,7 +100,7 @@ std::string dwgReader::findTableName( DRW::TTYPE table, dint32 handle )
 #if 0
     case DRW::VPORT:
     {
-      std::map<duint32, DRW_Vport*>::iterator vp_it = vportmap.find( handle );
+      std::map<duint32, DRW_Vport *>::iterator vp_it = vportmap.find( handle );
       if ( vp_it != vportmap.end() )
         name = ( vp_it->second )->name;
       break;
@@ -108,14 +108,14 @@ std::string dwgReader::findTableName( DRW::TTYPE table, dint32 handle )
 #endif
     case DRW::LAYER:
     {
-      std::map<duint32, DRW_Layer*>::iterator ly_it = layermap.find( handle );
+      std::map<duint32, DRW_Layer *>::iterator ly_it = layermap.find( handle );
       if ( ly_it != layermap.end() )
         name = ( ly_it->second )->name;
       break;
     }
     case DRW::LTYPE:
     {
-      std::map<duint32, DRW_LType*>::iterator lt_it = ltypemap.find( handle );
+      std::map<duint32, DRW_LType *>::iterator lt_it = ltypemap.find( handle );
       if ( lt_it != ltypemap.end() )
         name = ( lt_it->second )->name;
       break;
@@ -126,7 +126,7 @@ std::string dwgReader::findTableName( DRW::TTYPE table, dint32 handle )
   return name;
 }
 
-bool dwgReader::readDwgHeader( DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf )
+bool dwgReader::readDwgHeader( DRW_Header &hdr, dwgBuffer *buf, dwgBuffer *hBuf )
 {
   bool ret = hdr.parseDwg( version, buf, hBuf, maintenanceVersion );
   //RLZ: copy objectControl handles
@@ -138,7 +138,7 @@ bool dwgReader::checkSentinel( dwgBuffer *buf, enum secEnum::DWGSection, bool st
 {
   DRW_UNUSED( start );
   QStringList l;
-  for ( int i = 0; i < 16;i++ )
+  for ( int i = 0; i < 16; i++ )
   {
     int t = buf->getRawChar8();
     l << QString( "0x%1" ).arg( t, 0, 16 );
@@ -218,7 +218,7 @@ bool dwgReader::readDwgHandles( dwgBuffer *dbuf, duint32 offset, duint32 size )
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)
  */
-bool dwgReader::readDwgTables( DRW_Header& hdr, dwgBuffer *dbuf )
+bool dwgReader::readDwgTables( DRW_Header &hdr, dwgBuffer *dbuf )
 {
   QgsDebugMsg( "Entering." );
 
@@ -377,11 +377,11 @@ bool dwgReader::readDwgTables( DRW_Header& hdr, dwgBuffer *dbuf )
   }
 
   //set linetype in layer
-  for ( std::map<duint32, DRW_Layer*>::iterator it = layermap.begin(); it != layermap.end(); ++it )
+  for ( std::map<duint32, DRW_Layer *>::iterator it = layermap.begin(); it != layermap.end(); ++it )
   {
     DRW_Layer *ly = it->second;
     duint32 ref = ly->lTypeH.ref;
-    std::map<duint32, DRW_LType*>::iterator lt_it = ltypemap.find( ref );
+    std::map<duint32, DRW_LType *>::iterator lt_it = ltypemap.find( ref );
     if ( lt_it != ltypemap.end() )
     {
       ly->lineType = ( lt_it->second )->name;
@@ -872,7 +872,7 @@ bool dwgReader::readDwgTables( DRW_Header& hdr, dwgBuffer *dbuf )
   return ret;
 }
 
-bool dwgReader::readDwgBlocks( DRW_Interface& intfa, dwgBuffer *dbuf )
+bool dwgReader::readDwgBlocks( DRW_Interface &intfa, dwgBuffer *dbuf )
 {
   bool ret = true;
   bool ret2 = true;
@@ -882,9 +882,9 @@ bool dwgReader::readDwgBlocks( DRW_Interface& intfa, dwgBuffer *dbuf )
 
   QgsDebugMsg( QString( "object map total size=%1" ).arg( ObjectMap.size() ) );
 
-  for ( std::map<duint32, DRW_Block_Record*>::iterator it = blockRecordmap.begin(); it != blockRecordmap.end(); ++it )
+  for ( std::map<duint32, DRW_Block_Record *>::iterator it = blockRecordmap.begin(); it != blockRecordmap.end(); ++it )
   {
-    DRW_Block_Record* bkr = it->second;
+    DRW_Block_Record *bkr = it->second;
     QgsDebugMsg( QString( "Parsing Block, record handle=0x%1 Name=%2 - finding block, handle=0x%3" )
                  .arg( it->first, 0, 16 ).arg( bkr->name.c_str() ).arg( bkr->block, 0, 16 )
                );
@@ -1020,7 +1020,7 @@ bool dwgReader::readDwgBlocks( DRW_Interface& intfa, dwgBuffer *dbuf )
   return ret;
 }
 
-bool dwgReader::readPlineVertex( DRW_Polyline& pline, dwgBuffer *dbuf )
+bool dwgReader::readPlineVertex( DRW_Polyline &pline, dwgBuffer *dbuf )
 {
   bool ret = true;
   bool ret2 = true;
@@ -1127,7 +1127,7 @@ bool dwgReader::readPlineVertex( DRW_Polyline& pline, dwgBuffer *dbuf )
   return ret;
 }
 
-bool dwgReader::readDwgEntities( DRW_Interface& intfa, dwgBuffer *dbuf )
+bool dwgReader::readDwgEntities( DRW_Interface &intfa, dwgBuffer *dbuf )
 {
   bool ret = true;
   bool ret2 = true;
@@ -1150,7 +1150,7 @@ bool dwgReader::readDwgEntities( DRW_Interface& intfa, dwgBuffer *dbuf )
 /**
  * Reads a dwg drawing entity (dwg object entity) given its offset in the file
  */
-bool dwgReader::readDwgEntity( dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa )
+bool dwgReader::readDwgEntity( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa )
 {
   bool ret = true;
   duint32 bs = 0;
@@ -1189,7 +1189,7 @@ bool dwgReader::readDwgEntity( dwgBuffer *dbuf, objHandle& obj, DRW_Interface& i
 
   if ( oType > 499 )
   {
-    std::map<duint32, DRW_Class*>::iterator it = classesmap.find( oType );
+    std::map<duint32, DRW_Class *>::iterator it = classesmap.find( oType );
     if ( it == classesmap.end() ) //fail, not found in classes set error
     {
       QgsMessageLog::logMessage( QObject::tr( "Class 0x%1 not found, handle 0x%2" ).arg( oType, 0, 16 ).arg( obj.handle, 0, 16 ), QObject::tr( "DWG/DXF import" ) );
@@ -1430,7 +1430,7 @@ bool dwgReader::readDwgEntity( dwgBuffer *dbuf, objHandle& obj, DRW_Interface& i
   return ret;
 }
 
-bool dwgReader::readDwgObjects( DRW_Interface& intfa, dwgBuffer *dbuf )
+bool dwgReader::readDwgObjects( DRW_Interface &intfa, dwgBuffer *dbuf )
 {
   bool ret = true;
   bool ret2 = true;
@@ -1465,7 +1465,7 @@ bool dwgReader::readDwgObjects( DRW_Interface& intfa, dwgBuffer *dbuf )
 /**
  * Reads a dwg drawing object (dwg object object) given its offset in the file
  */
-bool dwgReader::readDwgObject( dwgBuffer *dbuf, objHandle& obj, DRW_Interface& intfa )
+bool dwgReader::readDwgObject( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &intfa )
 {
   bool ret = true;
   duint32 bs = 0;
@@ -1561,7 +1561,7 @@ bool DRW_ObjControl::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs 
                );
   }
 //add 2 for modelspace, paperspace blocks & bylayer, byblock linetypes
-  numEntries = (( oType == 48 ) || ( oType == 56 ) ) ? ( numEntries + 2 ) : numEntries;
+  numEntries = ( ( oType == 48 ) || ( oType == 56 ) ) ? ( numEntries + 2 ) : numEntries;
 
   for ( int i = 0; i < numEntries; i++ )
   {

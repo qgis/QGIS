@@ -68,16 +68,16 @@ class CORE_EXPORT QgsCurveTransform
      * Behavior is undefined if duplicate x values exist in the control points
      * list.
      */
-    QgsCurveTransform( const QList< QgsPoint >& controlPoints );
+    QgsCurveTransform( const QList< QgsPoint > &controlPoints );
 
     ~QgsCurveTransform();
 
     /**
      * Copy constructor
      */
-    QgsCurveTransform( const QgsCurveTransform& other );
+    QgsCurveTransform( const QgsCurveTransform &other );
 
-    QgsCurveTransform& operator=( const QgsCurveTransform& other );
+    QgsCurveTransform &operator=( const QgsCurveTransform &other );
 
     /**
      * Returns a list of the control points for the transform.
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsCurveTransform
      * points are removed.
      * @see controlPoints()
      */
-    void setControlPoints( const QList< QgsPoint >& points );
+    void setControlPoints( const QList< QgsPoint > &points );
 
     /**
      * Adds a control point to the transform. Behavior is undefined if duplicate
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsCurveTransform
      * Calling this method is faster then calling the double variant multiple
      * times.
      */
-    QVector< double > y( const QVector< double >& x ) const;
+    QVector< double > y( const QVector< double > &x ) const;
 
     /**
      * Reads the curve's state from an XML element.
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsCurveTransform
      * @param doc DOM document
      * @see writeXml()
     */
-    bool readXml( const QDomElement& elem, const QDomDocument& doc );
+    bool readXml( const QDomElement &elem, const QDomDocument &doc );
 
     /**
      * Writes the current state of the transform into an XML element
@@ -132,7 +132,23 @@ class CORE_EXPORT QgsCurveTransform
      * @param doc DOM document
      * @see readXml()
     */
-    bool writeXml( QDomElement& transformElem, QDomDocument& doc ) const;
+    bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
+
+    /**
+     * Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadVariant()
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Load this curve transformer from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to load it from an XML document.
+     *
+     * @see toVariant()
+     */
+    bool loadVariant( const QVariant &transformer );
 
   private:
 
@@ -140,7 +156,7 @@ class CORE_EXPORT QgsCurveTransform
 
     QList< QgsPoint > mControlPoints;
 
-    double* mSecondDerivativeArray = nullptr;
+    double *mSecondDerivativeArray = nullptr;
 };
 
 
@@ -168,7 +184,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * Factory method for creating a new property transformer of the specified type.
      * @param type transformer type to create
      */
-    static QgsPropertyTransformer* create( Type type );
+    static QgsPropertyTransformer *create( Type type );
 
     /**
      * Constructor for QgsPropertyTransformer
@@ -180,8 +196,8 @@ class CORE_EXPORT QgsPropertyTransformer
     /**
      * Copy constructor.
      */
-    QgsPropertyTransformer( const QgsPropertyTransformer& other );
-    QgsPropertyTransformer& operator=( const QgsPropertyTransformer& other );
+    QgsPropertyTransformer( const QgsPropertyTransformer &other );
+    QgsPropertyTransformer &operator=( const QgsPropertyTransformer &other );
 
     virtual ~QgsPropertyTransformer() = default;
 
@@ -193,23 +209,23 @@ class CORE_EXPORT QgsPropertyTransformer
     /**
      * Returns a clone of the transformer.
      */
-    virtual QgsPropertyTransformer* clone() = 0;
+    virtual QgsPropertyTransformer *clone() = 0;
 
     /**
-     * Reads transformer's state from an XML element.
-     * @param transformerElem source DOM element for transformer's state
-     * @param doc DOM document
-     * @see writeXml()
-    */
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc );
+     * Loads this transformer from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadVariant()
+     */
+    virtual bool loadVariant( const QVariant &transformer );
 
     /**
-     * Writes the current state of the transformer into an XML element
-     * @param transformerElem destination element for the transformer's state
-     * @param doc DOM document
-     * @see readXml()
-    */
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const;
+     * Saves this transformer to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see toVariant()
+     */
+    virtual QVariant toVariant() const;
 
     /**
      * Returns the minimum value expected by the transformer.
@@ -246,7 +262,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * by the individual transform subclasses.
      * @see setCurveTransform()
      */
-    QgsCurveTransform* curveTransform() const { return mCurveTransform.get(); }
+    QgsCurveTransform *curveTransform() const { return mCurveTransform.get(); }
 
     /**
      * Sets a curve transform to apply to input values before they are transformed
@@ -254,7 +270,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * to the property transformer.
      * @see curveTransform()
      */
-    void setCurveTransform( QgsCurveTransform* transform ) { mCurveTransform.reset( transform ); }
+    void setCurveTransform( QgsCurveTransform *transform ) { mCurveTransform.reset( transform ); }
 
     /**
      * Calculates the transform of a value. Derived classes must implement this to perform their transformations
@@ -262,13 +278,13 @@ class CORE_EXPORT QgsPropertyTransformer
      * @param context expression context
      * @param value input value to transform
      */
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const = 0;
 
     /**
      * Converts the transformer to a QGIS expression string. The \a baseExpression string consists
      * of a sub-expression reflecting the parent property's state.
      */
-    virtual QString toExpression( const QString& baseExpression ) const = 0;
+    virtual QString toExpression( const QString &baseExpression ) const = 0;
 
     /**
      * Attempts to parse an expression into a corresponding property transformer.
@@ -282,7 +298,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * @returns corresponding property transformer, or nullptr if expression could not
      * be parsed to a transformer.
      */
-    static QgsPropertyTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
+    static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression, QString &fieldName );
 
   protected:
 
@@ -333,15 +349,15 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     /**
      * Copy constructor.
      */
-    QgsGenericNumericTransformer( const QgsGenericNumericTransformer& other );
-    QgsGenericNumericTransformer& operator=( const QgsGenericNumericTransformer& other );
+    QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other );
+    QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
     virtual Type transformerType() const override { return GenericNumericTransformer; }
-    virtual QgsGenericNumericTransformer* clone() override;
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
-    virtual QString toExpression( const QString& baseExpression ) const override;
+    virtual QgsGenericNumericTransformer *clone() override;
+    virtual QVariant toVariant() const override;
+    virtual bool loadVariant( const QVariant &definition ) override;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    virtual QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
@@ -355,7 +371,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
      * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsGenericNumericTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
+    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression, QString &fieldName );
 
     /**
      * Calculates the size corresponding to a specific \a input value.
@@ -469,15 +485,15 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     /**
      * Copy constructor.
      */
-    QgsSizeScaleTransformer( const QgsSizeScaleTransformer& other );
-    QgsSizeScaleTransformer& operator=( const QgsSizeScaleTransformer& other );
+    QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other );
+    QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
     virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual QgsSizeScaleTransformer* clone() override;
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
-    virtual QString toExpression( const QString& baseExpression ) const override;
+    virtual QgsSizeScaleTransformer *clone() override;
+    virtual QVariant toVariant() const override;
+    virtual bool loadVariant( const QVariant &definition ) override;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    virtual QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
@@ -491,7 +507,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
      * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsSizeScaleTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName );
+    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression, QString &fieldName );
 
     /**
      * Calculates the size corresponding to a specific value.
@@ -601,20 +617,20 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      */
     QgsColorRampTransformer( double minValue = 0.0,
                              double maxValue = 1.0,
-                             QgsColorRamp* ramp = nullptr,
-                             const QColor& nullColor = QColor( 0, 0, 0, 0 ) );
+                             QgsColorRamp *ramp = nullptr,
+                             const QColor &nullColor = QColor( 0, 0, 0, 0 ) );
 
     //! Copy constructor
-    QgsColorRampTransformer( const QgsColorRampTransformer& other );
+    QgsColorRampTransformer( const QgsColorRampTransformer &other );
 
-    QgsColorRampTransformer& operator=( const QgsColorRampTransformer& other );
+    QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     virtual Type transformerType() const override { return ColorRampTransformer; }
-    virtual QgsColorRampTransformer* clone() override;
-    virtual bool writeXml( QDomElement& transformerElem, QDomDocument& doc ) const override;
-    virtual bool readXml( const QDomElement& transformerElem, const QDomDocument& doc ) override;
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const override;
-    virtual QString toExpression( const QString& baseExpression ) const override;
+    virtual QgsColorRampTransformer *clone() override;
+    virtual QVariant toVariant() const override;
+    virtual bool loadVariant( const QVariant &definition ) override;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    virtual QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Calculates the color corresponding to a specific value.
@@ -628,14 +644,14 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * @returns color ramp
      * @see setColorRamp()
      */
-    QgsColorRamp* colorRamp() const;
+    QgsColorRamp *colorRamp() const;
 
     /**
      * Sets the color ramp to use for calculating property colors.
      * @param ramp color ramp, ownership of ramp is transferred to the transformer.
      * @see colorRamp()
      */
-    void setColorRamp( QgsColorRamp* ramp );
+    void setColorRamp( QgsColorRamp *ramp );
 
     /**
      * Returns the color corresponding to a null value.
@@ -648,7 +664,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * @param color null color
      * @see nullSize()
      */
-    void setNullColor( const QColor& color ) { mNullColor = color; }
+    void setNullColor( const QColor &color ) { mNullColor = color; }
 
     /**
      * Returns the color ramp's name.
@@ -662,7 +678,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * to work correctly.
      * @see rampName()
      */
-    void setRampName( const QString& name ) { mRampName = name; }
+    void setRampName( const QString &name ) { mRampName = name; }
 
   private:
 

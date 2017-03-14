@@ -21,7 +21,7 @@
 #include <QTextCodec>
 #include <QUuid>
 
-QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fields, QTextCodec* encoding )
+QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;
   if ( !ogrFet )
@@ -46,7 +46,7 @@ QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields& fie
   return feature;
 }
 
-QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
+QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
 {
   QgsFields fields;
 
@@ -94,7 +94,7 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec* encoding )
   return fields;
 }
 
-QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields& fields, int attIndex, QTextCodec* encoding , bool* ok )
+QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok )
 {
   if ( !ogrFet || attIndex < 0 || attIndex >= fields.count() )
   {
@@ -169,7 +169,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   return value;
 }
 
-bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields& fields, QgsFeature& feature, QTextCodec* encoding )
+bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding )
 {
   // read all attributes
   feature.initAttributes( fields.count() );
@@ -190,7 +190,7 @@ bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields&
   return true;
 }
 
-bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature& feature )
+bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &feature )
 {
   if ( !ogrFet )
     return false;
@@ -219,7 +219,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   return g;
 }
 
-QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const QgsFields& fields, QTextCodec* encoding )
+QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeatureList features;
   if ( string.isEmpty() )
@@ -229,7 +229,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
 
   // create memory file system object from string buffer
   QByteArray ba = string.toUtf8();
-  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte* >( ba.data() ),
+  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte * >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
   OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
@@ -248,7 +248,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   }
 
   OGRFeatureH oFeat;
-  while (( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
+  while ( ( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     QgsFeature feat = readOgrFeature( oFeat, fields, encoding );
     if ( feat.isValid() )
@@ -263,7 +263,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString& string, const Qg
   return features;
 }
 
-QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encoding )
+QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encoding )
 {
   QgsFields fields;
   if ( string.isEmpty() )
@@ -273,7 +273,7 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
 
   // create memory file system object from buffer
   QByteArray ba = string.toUtf8();
-  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte* >( ba.data() ),
+  VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte * >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
   OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
@@ -293,7 +293,7 @@ QgsFields QgsOgrUtils::stringToFields( const QString& string, QTextCodec* encodi
 
   OGRFeatureH oFeat;
   //read in the first feature only
-  if (( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
+  if ( ( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     fields = readOgrFields( oFeat, encoding );
     OGR_F_Destroy( oFeat );

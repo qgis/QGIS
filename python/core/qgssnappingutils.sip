@@ -89,16 +89,22 @@ class QgsSnappingUtils : QObject
      */
     QgsSnappingConfig config() const;
 
+  public slots:
     /**
      * The snapping configuration controls the behavior of this object
      */
     void setConfig( const QgsSnappingConfig& snappingConfig );
 
+    /**
+     * Toggles the state of snapping
+     */
+    void toggleEnabled();
+
   signals:
     /**
      * Emitted when the snapping settings object changes.
      */
-    void configChanged();
+    void configChanged( const QgsSnappingConfig& snappingConfig );
 
   protected:
     //! Called when starting to index - can be overridden and e.g. progress dialog can be provided

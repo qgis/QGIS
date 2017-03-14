@@ -47,18 +47,18 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
       * @param isSelected set to true if feature is selected and should be rendered in a selected state
       * @param label optional label text, or empty string for no label
       */
-      GroupedFeature( const QgsFeature& feature, QgsMarkerSymbol* symbol, bool isSelected, const QString& label = QString() )
-          : feature( feature )
-          , symbol( symbol )
-          , isSelected( isSelected )
-          , label( label )
+      GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label = QString() )
+        : feature( feature )
+        , symbol( symbol )
+        , isSelected( isSelected )
+        , label( label )
       {}
 
       //! Feature
       QgsFeature feature;
 
       //! Base symbol for rendering feature
-      QgsMarkerSymbol* symbol = nullptr;
+      QgsMarkerSymbol *symbol = nullptr;
 
       //! True if feature is selected and should be rendered in a selected state
       bool isSelected;
@@ -74,30 +74,30 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @param rendererName name of renderer for registry
      * @param labelAttributeName optional attribute for labeling points
      */
-    QgsPointDistanceRenderer( const QString& rendererName, const QString& labelAttributeName = QString() );
+    QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element, const QgsStringMap& props = QgsStringMap() ) const override;
-    bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext& context ) const override;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     virtual Capabilities capabilities() override;
-    virtual QgsSymbolList symbols( QgsRenderContext& context ) override;
-    virtual QgsSymbol* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual QgsSymbol* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    virtual QgsSymbolList symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    virtual QSet< QString > legendKeysForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
-    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
-    void stopRender( QgsRenderContext& context ) override;
+    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
-    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString& rule = "" ) override;
-    void setEmbeddedRenderer( QgsFeatureRenderer* r ) override;
-    const QgsFeatureRenderer* embeddedRenderer() const override;
-    void setLegendSymbolItem( const QString& key, QgsSymbol* symbol ) override;
+    QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) override;
+    void setEmbeddedRenderer( QgsFeatureRenderer *r ) override;
+    const QgsFeatureRenderer *embeddedRenderer() const override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol ) override;
     bool legendSymbolItemsCheckable() const override;
-    bool legendSymbolItemChecked( const QString& key ) override;
-    void checkLegendSymbolItem( const QString& key, bool state ) override;
-    virtual QString filter( const QgsFields& fields = QgsFields() ) override;
+    bool legendSymbolItemChecked( const QString &key ) override;
+    void checkLegendSymbolItem( const QString &key, bool state ) override;
+    virtual QString filter( const QgsFields &fields = QgsFields() ) override;
 
     /** Sets the attribute name for labeling points.
      * @param name attribute name, or empty string to avoid labeling features by the renderer
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see setLabelColor()
      * @see setMaxLabelScaleDenominator()
      */
-    void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
+    void setLabelAttributeName( const QString &name ) { mLabelAttributeName = name; }
 
     /** Returns the attribute name used for labeling points, or an empty string if no labeling
      * will be done by the renderer.
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see setLabelAttributeName()
      * @see setLabelColor()
      */
-    void setLabelFont( const QFont& font ) { mLabelFont = font; }
+    void setLabelFont( const QFont &font ) { mLabelFont = font; }
 
     /** Returns the font used for labeling points.
      * @see setLabelFont()
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see setLabelAttributeName()
      * @see setLabelFont()
      */
-    void setLabelColor( const QColor& color ) { mLabelColor = color;}
+    void setLabelColor( const QColor &color ) { mLabelColor = color;}
 
     /** Returns the color used for for labeling points.
      * @see setLabelColor()
@@ -196,14 +196,14 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @see toleranceMapUnitScale()
      * @see setToleranceUnit()
      */
-    void setToleranceMapUnitScale( const QgsMapUnitScale& scale ) { mToleranceMapUnitScale = scale; }
+    void setToleranceMapUnitScale( const QgsMapUnitScale &scale ) { mToleranceMapUnitScale = scale; }
 
     /** Returns the map unit scale object for the distance tolerance. This is only used if the
      * toleranceUnit() is set to QgsUnitTypes::RenderMapUnits.
      * @see setToleranceMapUnitScale()
      * @see toleranceUnit()
      */
-    const QgsMapUnitScale& toleranceMapUnitScale() const { return mToleranceMapUnitScale; }
+    const QgsMapUnitScale &toleranceMapUnitScale() const { return mToleranceMapUnitScale; }
 
   protected:
 
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     QMap<QgsFeatureId, QgsPoint > mGroupLocations;
 
     //! Spatial index for fast lookup of nearby points.
-    QgsSpatialIndex* mSpatialIndex = nullptr;
+    QgsSpatialIndex *mSpatialIndex = nullptr;
 
     /** Renders the labels for a group.
      * @param centerPoint center point of group
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @param group group of clustered features to label
      * @note may not be available in Python bindings on some platforms
      */
-    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext& context, const QList<QPointF>& labelShifts, const ClusteredGroup& group );
+    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group );
 
   private:
 
@@ -260,31 +260,31 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @param context destination render context
      * @param group contents of group
      */
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext& context, const ClusteredGroup& group ) = 0;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0;
 
     //! Creates a search rectangle with specified distance tolerance.
-    QgsRectangle searchRect( const QgsPoint& p, double distance ) const;
+    QgsRectangle searchRect( const QgsPoint &p, double distance ) const;
 
     //! Debugging function to check the entries in the clustered groups
     void printGroupInfo() const;
 
     //! Returns the label text for a feature (using mLabelAttributeName as attribute field)
-    QString getLabel( const QgsFeature& feature ) const;
+    QString getLabel( const QgsFeature &feature ) const;
 
     //! Internal group rendering helper
-    void drawGroup( const ClusteredGroup& group, QgsRenderContext& context );
+    void drawGroup( const ClusteredGroup &group, QgsRenderContext &context );
 
     /** Returns first symbol from the embedded renderer for a feature or nullptr if none
      * @param feature source feature
      * @param context target render context
     */
-    QgsMarkerSymbol* firstSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    QgsMarkerSymbol *firstSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     /** Creates an expression context scope for a clustered group, with variables reflecting the group's properties.
      * @param group clustered group
      * @returns new expression context scope
      */
-    QgsExpressionContextScope* createGroupScope( const ClusteredGroup& group ) const;
+    QgsExpressionContextScope *createGroupScope( const ClusteredGroup &group ) const;
 
 };
 

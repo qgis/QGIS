@@ -87,7 +87,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * @param fieldIdx  The field which will be controlled
      * @param parent    A parent widget for this widget wrapper and the created widget.
      */
-    explicit QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     /** Returns filter flags supported by the search widget.
      * @note added in QGIS 2.16
@@ -145,7 +145,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Emitted whenever the expression changes
      * @param exp The new search expression
      */
-    void expressionChanged( const QString& exp );
+    void expressionChanged( const QString &exp );
 
     /** Emitted when a user changes the value of the search widget.
      * @note added in QGIS 2.16
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
   protected slots:
 
     virtual void setExpression( QString value ) = 0;
-    void setFeature( const QgsFeature& feature ) override;
+    void setFeature( const QgsFeature &feature ) override;
 
   protected:
     //! clears the expression to search for all features
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
 };
 // We'll use this class inside a QVariant in the widgets properties
-Q_DECLARE_METATYPE( QgsSearchWidgetWrapper* )
+Q_DECLARE_METATYPE( QgsSearchWidgetWrapper * )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSearchWidgetWrapper::FilterFlags )
 

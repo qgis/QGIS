@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
-#include <QSettings>
+#include "qgssettings.h"
 
-QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText, QWidget* parent, const QString& key, const QgsExpressionContext &context )
-    : QDialog( parent )
-    , mRecentKey( key )
+QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
+  : QDialog( parent )
+  , mRecentKey( key )
 {
   setupUi( this );
 
-  QPushButton* okButton = buttonBox->button( QDialogButtonBox::Ok );
+  QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
   connect( builder, SIGNAL( expressionParsed( bool ) ), okButton, SLOT( setEnabled( bool ) ) );
 
   builder->setExpressionContext( context );
@@ -31,16 +31,16 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, c
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
 }
 
-QgsExpressionBuilderWidget* QgsExpressionBuilderDialog::expressionBuilder()
+QgsExpressionBuilderWidget *QgsExpressionBuilderDialog::expressionBuilder()
 {
   return builder;
 }
 
-void QgsExpressionBuilderDialog::setExpressionText( const QString& text )
+void QgsExpressionBuilderDialog::setExpressionText( const QString &text )
 {
   builder->setExpressionText( text );
 }
@@ -64,8 +64,8 @@ void QgsExpressionBuilderDialog::done( int r )
 {
   QDialog::done( r );
 
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionBuilderDialog::accept()
@@ -74,7 +74,7 @@ void QgsExpressionBuilderDialog::accept()
   QDialog::accept();
 }
 
-void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea & da )
+void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea &da )
 {
   // Store in child widget only.
   builder->setGeomCalculator( da );

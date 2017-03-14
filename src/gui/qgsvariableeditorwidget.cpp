@@ -17,6 +17,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
+
 #include <QVBoxLayout>
 #include <QTreeWidget>
 #include <QPainter>
@@ -26,7 +28,6 @@
 #include <QPushButton>
 #include <QHeaderView>
 #include <QMessageBox>
-#include <QSettings>
 
 
 //
@@ -34,20 +35,20 @@
 //
 
 QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
-    : QWidget( parent )
-    , mContext( nullptr )
-    , mEditableScopeIndex( -1 )
-    , mShown( false )
+  : QWidget( parent )
+  , mContext( nullptr )
+  , mEditableScopeIndex( -1 )
+  , mShown( false )
 {
-  QVBoxLayout* verticalLayout = new QVBoxLayout( this );
+  QVBoxLayout *verticalLayout = new QVBoxLayout( this );
   verticalLayout->setSpacing( 3 );
   verticalLayout->setContentsMargins( 3, 3, 3, 3 );
   mTreeWidget = new QgsVariableEditorTree( this );
   mTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
   verticalLayout->addWidget( mTreeWidget );
-  QHBoxLayout* horizontalLayout = new QHBoxLayout();
+  QHBoxLayout *horizontalLayout = new QHBoxLayout();
   horizontalLayout->setSpacing( 6 );
-  QSpacerItem* horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+  QSpacerItem *horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   horizontalLayout->addItem( horizontalSpacer );
   mAddButton = new QPushButton();
   mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
@@ -66,18 +67,18 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   connect( mTreeWidget, SIGNAL( scopeChanged() ), this, SIGNAL( scopeChanged() ) );
 
   //setContext clones context
-  QgsExpressionContext* context = new QgsExpressionContext();
+  QgsExpressionContext *context = new QgsExpressionContext();
   setContext( context );
   delete context;
 }
 
 QgsVariableEditorWidget::~QgsVariableEditorWidget()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( saveKey() + "column0width", mTreeWidget->header()->sectionSize( 0 ) );
 }
 
-void QgsVariableEditorWidget::showEvent( QShowEvent * event )
+void QgsVariableEditorWidget::showEvent( QShowEvent *event )
 {
   // initialize widget on first show event only
   if ( mShown )
@@ -87,7 +88,7 @@ void QgsVariableEditorWidget::showEvent( QShowEvent * event )
   }
 
   //restore split size
-  QSettings settings;
+  QgsSettings settings;
   QVariant val;
   val = settings.value( saveKey() + "column0width" );
   bool ok;
@@ -101,7 +102,7 @@ void QgsVariableEditorWidget::showEvent( QShowEvent * event )
   QWidget::showEvent( event );
 }
 
-void QgsVariableEditorWidget::setContext( QgsExpressionContext* context )
+void QgsVariableEditorWidget::setContext( QgsExpressionContext *context )
 {
   mContext.reset( new QgsExpressionContext( *context ) );
   reloadContext();
@@ -125,7 +126,7 @@ void QgsVariableEditorWidget::setEditableScopeIndex( int scopeIndex )
   mTreeWidget->refreshTree();
 }
 
-QgsExpressionContextScope* QgsVariableEditorWidget::editableScope() const
+QgsExpressionContextScope *QgsVariableEditorWidget::editableScope() const
 {
   if ( !mContext || mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
   {
@@ -142,8 +143,8 @@ QVariantMap QgsVariableEditorWidget::variablesInActiveScope() const
     return variables;
   }
 
-  QgsExpressionContextScope* scope = mContext->scope( mEditableScopeIndex );
-  Q_FOREACH ( const QString& variable, scope->variableNames() )
+  QgsExpressionContextScope *scope = mContext->scope( mEditableScopeIndex );
+  Q_FOREACH ( const QString &variable, scope->variableNames() )
   {
     if ( scope->isReadOnly( variable ) )
       continue;
@@ -168,10 +169,10 @@ void QgsVariableEditorWidget::on_mAddButton_clicked()
   if ( mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
     return;
 
-  QgsExpressionContextScope* scope = mContext->scope( mEditableScopeIndex );
+  QgsExpressionContextScope *scope = mContext->scope( mEditableScopeIndex );
   scope->setVariable( QStringLiteral( "new_variable" ), QVariant() );
   mTreeWidget->refreshTree();
-  QTreeWidgetItem* item = mTreeWidget->itemFromVariable( scope, QStringLiteral( "new_variable" ) );
+  QTreeWidgetItem *item = mTreeWidget->itemFromVariable( scope, QStringLiteral( "new_variable" ) );
   QModelIndex index = mTreeWidget->itemToIndex( item );
   mTreeWidget->selectionModel()->select( index, QItemSelectionModel::ClearAndSelect );
   mTreeWidget->editItem( item, 0 );
@@ -184,16 +185,16 @@ void QgsVariableEditorWidget::on_mRemoveButton_clicked()
   if ( mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
     return;
 
-  QgsExpressionContextScope* editableScope = mContext->scope( mEditableScopeIndex );
-  QList<QTreeWidgetItem*> selectedItems = mTreeWidget->selectedItems();
+  QgsExpressionContextScope *editableScope = mContext->scope( mEditableScopeIndex );
+  QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
-  Q_FOREACH ( QTreeWidgetItem* item, selectedItems )
+  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
       continue;
 
     QString name = item->text( 0 );
-    QgsExpressionContextScope* itemScope = mTreeWidget->scopeFromItem( item );
+    QgsExpressionContextScope *itemScope = mTreeWidget->scopeFromItem( item );
     if ( itemScope != editableScope )
       continue;
 
@@ -214,11 +215,11 @@ void QgsVariableEditorWidget::selectionChanged()
     return;
   }
 
-  QgsExpressionContextScope* editableScope = mContext->scope( mEditableScopeIndex );
-  QList<QTreeWidgetItem*> selectedItems = mTreeWidget->selectedItems();
+  QgsExpressionContextScope *editableScope = mContext->scope( mEditableScopeIndex );
+  QList<QTreeWidgetItem *> selectedItems = mTreeWidget->selectedItems();
 
   bool removeEnabled = true;
-  Q_FOREACH ( QTreeWidgetItem* item, selectedItems )
+  Q_FOREACH ( QTreeWidgetItem *item, selectedItems )
   {
     if ( !( item->flags() & Qt::ItemIsEditable ) )
     {
@@ -227,7 +228,7 @@ void QgsVariableEditorWidget::selectionChanged()
     }
 
     QString name = item->text( 0 );
-    QgsExpressionContextScope* itemScope = mTreeWidget->scopeFromItem( item );
+    QgsExpressionContextScope *itemScope = mTreeWidget->scopeFromItem( item );
     if ( itemScope != editableScope )
     {
       removeEnabled = false;
@@ -250,10 +251,10 @@ void QgsVariableEditorWidget::selectionChanged()
 //
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
-    : QTreeWidget( parent )
-    , mEditorDelegate( nullptr )
-    , mEditableScopeIndex( -1 )
-    , mContext( nullptr )
+  : QTreeWidget( parent )
+  , mEditorDelegate( nullptr )
+  , mEditableScopeIndex( -1 )
+  , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )
@@ -279,7 +280,7 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setItemDelegate( mEditorDelegate );
 }
 
-QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem *item ) const
+QgsExpressionContextScope *QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem *item ) const
 {
   if ( !item )
     return nullptr;
@@ -303,7 +304,7 @@ QgsExpressionContextScope* QgsVariableEditorTree::scopeFromItem( QTreeWidgetItem
   }
 }
 
-QTreeWidgetItem* QgsVariableEditorTree::itemFromVariable( QgsExpressionContextScope *scope, const QString &name ) const
+QTreeWidgetItem *QgsVariableEditorTree::itemFromVariable( QgsExpressionContextScope *scope, const QString &name ) const
 {
   int contextIndex = mContext ? mContext->indexOfScope( scope ) : 0;
   if ( contextIndex < 0 )
@@ -311,7 +312,7 @@ QTreeWidgetItem* QgsVariableEditorTree::itemFromVariable( QgsExpressionContextSc
   return mVariableToItem.value( qMakePair( contextIndex, name ) );
 }
 
-QgsExpressionContextScope* QgsVariableEditorTree::editableScope()
+QgsExpressionContextScope *QgsVariableEditorTree::editableScope()
 {
   if ( !mContext || mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
   {
@@ -331,22 +332,22 @@ void QgsVariableEditorTree::refreshTree()
 
   //add all scopes from the context
   int scopeIndex = 0;
-  Q_FOREACH ( QgsExpressionContextScope* scope, mContext->scopes() )
+  Q_FOREACH ( QgsExpressionContextScope *scope, mContext->scopes() )
   {
     refreshScopeItems( scope, scopeIndex );
     scopeIndex++;
   }
 }
 
-void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* scope, int scopeIndex )
+void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope *scope, int scopeIndex )
 {
   QColor baseColor = rowColor( scopeIndex );
   bool isCurrent = scopeIndex == mEditableScopeIndex;
-  QTreeWidgetItem* scopeItem = mScopeToItem.value( scopeIndex );
+  QTreeWidgetItem *scopeItem = mScopeToItem.value( scopeIndex );
 
-  Q_FOREACH ( const QString& name, scope->filteredVariableNames() )
+  Q_FOREACH ( const QString &name, scope->filteredVariableNames() )
   {
-    QTreeWidgetItem* item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
+    QTreeWidgetItem *item = mVariableToItem.value( qMakePair( scopeIndex, name ) );
     if ( !item )
     {
       item = new QTreeWidgetItem( scopeItem );
@@ -355,7 +356,7 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
 
     bool readOnly = scope->isReadOnly( name );
     bool isActive = true;
-    QgsExpressionContextScope* activeScope = nullptr;
+    QgsExpressionContextScope *activeScope = nullptr;
     if ( mContext )
     {
       activeScope = mContext->activeScopeForVariable( name );
@@ -399,14 +400,14 @@ void QgsVariableEditorTree::refreshScopeVariables( QgsExpressionContextScope* sc
   }
 }
 
-void QgsVariableEditorTree::refreshScopeItems( QgsExpressionContextScope* scope, int scopeIndex )
+void QgsVariableEditorTree::refreshScopeItems( QgsExpressionContextScope *scope, int scopeIndex )
 {
-  QSettings settings;
+  QgsSettings settings;
 
   //add top level item
   bool isCurrent = scopeIndex == mEditableScopeIndex;
 
-  QTreeWidgetItem* scopeItem = nullptr;
+  QTreeWidgetItem *scopeItem = nullptr;
   if ( mScopeToItem.contains( scopeIndex ) )
   {
     //retrieve existing item
@@ -449,7 +450,7 @@ void QgsVariableEditorTree::removeItem( QTreeWidgetItem *item )
   emit scopeChanged();
 }
 
-void QgsVariableEditorTree::renameItem( QTreeWidgetItem *item, const QString& name )
+void QgsVariableEditorTree::renameItem( QTreeWidgetItem *item, const QString &name )
 {
   if ( !item )
     return;
@@ -474,11 +475,11 @@ void QgsVariableEditorTree::emitChanged()
   emit scopeChanged();
 }
 
-void QgsVariableEditorTree::drawRow( QPainter* painter, const QStyleOptionViewItem& option,
-                                     const QModelIndex& index ) const
+void QgsVariableEditorTree::drawRow( QPainter *painter, const QStyleOptionViewItem &option,
+                                     const QModelIndex &index ) const
 {
   QStyleOptionViewItem opt = option;
-  QTreeWidgetItem* item = itemFromIndex( index );
+  QTreeWidgetItem *item = itemFromIndex( index );
   if ( index.parent().isValid() )
   {
     //not a top-level item, so shade row background by context
@@ -516,7 +517,7 @@ QColor QgsVariableEditorTree::rowColor( int index ) const
   }
 }
 
-void QgsVariableEditorTree::toggleContextExpanded( QTreeWidgetItem* item )
+void QgsVariableEditorTree::toggleContextExpanded( QTreeWidgetItem *item )
 {
   if ( !item )
     return;
@@ -524,11 +525,11 @@ void QgsVariableEditorTree::toggleContextExpanded( QTreeWidgetItem* item )
   item->setExpanded( !item->isExpanded() );
 
   //save expanded state
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( "QgsVariableEditor/" + item->text( 0 ) + "/expanded", item->isExpanded() );
 }
 
-void QgsVariableEditorTree::editNext( const QModelIndex& index )
+void QgsVariableEditorTree::editNext( const QModelIndex &index )
 {
   if ( !index.isValid() )
     return;
@@ -623,7 +624,7 @@ void QgsVariableEditorTree::keyPressEvent( QKeyEvent *event )
 void QgsVariableEditorTree::mousePressEvent( QMouseEvent *event )
 {
   QTreeWidget::mousePressEvent( event );
-  QTreeWidgetItem* item = itemAt( event->pos() );
+  QTreeWidgetItem *item = itemAt( event->pos() );
   if ( !item )
     return;
 
@@ -661,8 +662,8 @@ void QgsVariableEditorTree::mousePressEvent( QMouseEvent *event )
 // VariableEditorDelegate
 //
 
-QWidget* VariableEditorDelegate::createEditor( QWidget *parent,
-    const QStyleOptionViewItem&,
+QWidget *VariableEditorDelegate::createEditor( QWidget *parent,
+    const QStyleOptionViewItem &,
     const QModelIndex &index ) const
 {
   if ( !mParentTree )
@@ -673,7 +674,7 @@ QWidget* VariableEditorDelegate::createEditor( QWidget *parent,
     return nullptr;
 
   QTreeWidgetItem *item = mParentTree->indexToItem( index );
-  QgsExpressionContextScope* scope = mParentTree->scopeFromItem( item );
+  QgsExpressionContextScope *scope = mParentTree->scopeFromItem( item );
   if ( !item || !scope )
     return nullptr;
 
@@ -702,8 +703,8 @@ QSize VariableEditorDelegate::sizeHint( const QStyleOptionViewItem &option,
   return QItemDelegate::sizeHint( option, index ) + QSize( 3, 4 );
 }
 
-void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel *model,
-    const QModelIndex& index ) const
+void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *model,
+    const QModelIndex &index ) const
 {
   Q_UNUSED( model );
 
@@ -715,7 +716,7 @@ void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel *
   if ( !item || !scope )
     return;
 
-  QLineEdit* lineEdit = qobject_cast< QLineEdit* >( widget );
+  QLineEdit *lineEdit = qobject_cast< QLineEdit * >( widget );
   if ( !lineEdit )
     return;
 

@@ -30,8 +30,8 @@
 
 
 QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
-    : QgsAuthMethodEdit( parent )
-    , mValid( 0 )
+  : QgsAuthMethodEdit( parent )
+  , mValid( 0 )
 {
   setupUi( this );
 }
@@ -200,12 +200,12 @@ void QgsAuthPkcs12Edit::on_lePkcs12KeyPass_textChanged( const QString &pass )
 
 void QgsAuthPkcs12Edit::on_chkPkcs12PassShow_stateChanged( int state )
 {
-  lePkcs12KeyPass->setEchoMode(( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
+  lePkcs12KeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
 void QgsAuthPkcs12Edit::on_btnPkcs12Bundle_clicked()
 {
-  const QString& fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open PKCS#12 Certificate Bundle" ),
+  const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open PKCS#12 Certificate Bundle" ),
                       tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )
   {

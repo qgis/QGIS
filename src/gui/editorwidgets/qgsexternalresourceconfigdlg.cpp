@@ -16,34 +16,39 @@
 #include "qgsexternalresourceconfigdlg.h"
 #include "qgsexternalresourcewidget.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+#include "qgspropertyoverridebutton.h"
+#include "qgseditorwidgetwrapper.h"
 
 #include <QFileDialog>
-#include <QSettings>
 
 class QgsExternalResourceWidgetWrapper;
 
-QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
   // By default, uncheck some options
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
-  mDocumentViewerGroupBox->setChecked( false );
 
   QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QgsProject::instance()->fileInfo().absolutePath();
 
-  mRootPath->setPlaceholderText( QSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
+  mRootPath->setPlaceholderText( QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
-  // Add connection to button for choosing default path
-  connect( mRootPathButton, SIGNAL( clicked() ), this, SLOT( chooseDefaultPath() ) );
+  connect( mRootPathButton, &QToolButton::clicked, this, &QgsExternalResourceConfigDlg::chooseDefaultPath );
+
+  initializeDataDefinedButton( mRootPathPropertyOverrideButton, QgsEditorWidgetWrapper::RootPath );
+  connect( mRootPathPropertyOverrideButton, &QgsPropertyOverrideButton::changed, this, &QgsExternalResourceConfigDlg::rootPathPropertyChanged );
 
   // Activate Relative Default Path option only if Default Path is set
-  connect( mRootPath, SIGNAL( textChanged( const QString & ) ), this, SLOT( enableRelativeDefault() ) );
-
-  // Dynamic GroupBox for relative paths option
-  connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( enableRelative( bool ) ) );
+  connect( mRootPath, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
+  connect( mRootPathExpression, &QLineEdit::textChanged, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
+  connect( mRelativeGroupBox, &QGroupBox::toggled, this, &QgsExternalResourceConfigDlg::enableRelativeDefault );
 
   // set ids for StorageTypeButtons
   mStorageButtonGroup->setId( mStoreFilesButton, QgsFileWidget::GetFile );
@@ -55,22 +60,23 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer* vl, 
   mRelativeButtonGroup->setId( mRelativeDefault, QgsFileWidget::RelativeDefaultPath );
   mRelativeProject->setChecked( true );
 
+  connect( mFileWidgetGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFileWidgetButtonGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFileWidgetFilterLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mUseLink, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFullUrl, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mRootPath, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mStorageButtonGroup, SIGNAL( buttonClicked( int ) ), this, SIGNAL( changed() ) );
+  connect( mRelativeGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mDocumentViewerGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mDocumentViewerContentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),  this, [ = ]( int idx )
+  { mDocumentViewerContentSettingsWidget->setEnabled( ( QgsExternalResourceWidget::DocumentViewerContent )idx != QgsExternalResourceWidget::NoContent ); } );
+  connect( mDocumentViewerHeight, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mDocumentViewerWidth, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+
+  mDocumentViewerContentComboBox->addItem( tr( "No content" ), QgsExternalResourceWidget::NoContent );
   mDocumentViewerContentComboBox->addItem( tr( "Image" ), QgsExternalResourceWidget::Image );
   mDocumentViewerContentComboBox->addItem( tr( "Web view" ), QgsExternalResourceWidget::Web );
-
-
-  connect( mFileWidgetGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFileWidgetButtonGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFileWidgetFilterLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
-  connect( mUseLink, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFullUrl, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mRootPath, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
-  connect( mStorageButtonGroup, SIGNAL( buttonClicked( int ) ), this, SIGNAL( changed() ) );
-  connect( mRelativeGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mDocumentViewerGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mDocumentViewerContentComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mDocumentViewerHeight, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mDocumentViewerWidth, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
 }
 
 void QgsExternalResourceConfigDlg::chooseDefaultPath()
@@ -82,45 +88,48 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
   }
   else
   {
-    dir = QSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString();
+    dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) ) ).toString();
   }
 
   QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), dir, QFileDialog::ShowDirsOnly );
 
-  if ( rootName.isNull() )
-    return;
+  if ( !rootName.isNull() )
+    mRootPath->setText( rootName );
+}
 
-  mRootPath->setText( rootName );
+void QgsExternalResourceConfigDlg::rootPathPropertyChanged()
+{
+  QgsProperty prop = mRootPathPropertyOverrideButton->toProperty();
+  setRootPathExpression( prop );
+
+  mRootPathExpression->setVisible( prop.isActive() );
+  mRootPath->setVisible( !prop.isActive() );
+  mRootPathButton->setEnabled( !prop.isActive() );
 }
 
 void QgsExternalResourceConfigDlg::enableRelativeDefault()
 {
-  // Activate (or not) the RelativeDefault button if default path
-  if ( mRelativeGroupBox->isChecked() )
-    mRelativeDefault->setEnabled( !mRootPath->text().isEmpty() );
+  bool relativePathActive = false;
 
-  // If no default path, RelativeProj button enabled by default
-  if ( mRootPath->text().isEmpty() )
-    mRelativeProject->toggle();
-}
-
-void QgsExternalResourceConfigDlg::enableRelative( bool state )
-{
-  if ( state )
+  if ( mRootPathPropertyOverrideButton->isActive() )
   {
-    mRelativeProject->setEnabled( true );
-    if ( mRootPath->text().isEmpty() )
-      mRelativeDefault->setEnabled( false );
-    else
-      mRelativeDefault->setEnabled( true );
+    if ( !mRootPathExpression->text().isEmpty() )
+      relativePathActive = true;
   }
   else
   {
-    mRelativeProject->setEnabled( false );
-    mRelativeDefault->setEnabled( false );
+    if ( !mRootPath->text().isEmpty() )
+      relativePathActive = true;
   }
-}
 
+  // Activate (or not) the RelativeDefault button if default path
+  if ( mRelativeGroupBox->isChecked() )
+    mRelativeDefault->setEnabled( relativePathActive );
+
+  // If no default path, RelativeProj button enabled by default
+  if ( !relativePathActive )
+    mRelativeProject->toggle();
+}
 
 QVariantMap QgsExternalResourceConfigDlg::config()
 {
@@ -137,10 +146,10 @@ QVariantMap QgsExternalResourceConfigDlg::config()
       cfg.insert( QStringLiteral( "FullUrl" ), mFullUrl->isChecked() );
   }
 
+  cfg.insert( QStringLiteral( "PropertyCollection" ), mPropertyCollection.toVariant( QgsWidgetWrapper::propertyDefinitions() ) );
+
   if ( !mRootPath->text().isEmpty() )
-  {
     cfg.insert( QStringLiteral( "DefaultRoot" ), mRootPath->text() );
-  }
 
   // Save Storage Mode
   cfg.insert( QStringLiteral( "StorageMode" ), mStorageButtonGroup->checkedId() );
@@ -155,22 +164,15 @@ QVariantMap QgsExternalResourceConfigDlg::config()
     cfg.insert( QStringLiteral( "RelativeStorage" ), ( int )QgsFileWidget::Absolute );
   }
 
-  if ( mDocumentViewerGroupBox->isChecked() )
-  {
-    cfg.insert( QStringLiteral( "DocumentViewer" ), mDocumentViewerContentComboBox->currentData().toInt() );
-    cfg.insert( QStringLiteral( "DocumentViewerHeight" ), mDocumentViewerHeight->value() );
-    cfg.insert( QStringLiteral( "DocumentViewerWidth" ), mDocumentViewerWidth->value() );
-  }
-  else
-  {
-    cfg.insert( QStringLiteral( "DocumentViewer" ), ( int )QgsExternalResourceWidget::NoContent );
-  }
+  cfg.insert( QStringLiteral( "DocumentViewer" ), mDocumentViewerContentComboBox->currentData().toInt() );
+  cfg.insert( QStringLiteral( "DocumentViewerHeight" ), mDocumentViewerHeight->value() );
+  cfg.insert( QStringLiteral( "DocumentViewerWidth" ), mDocumentViewerWidth->value() );
 
   return cfg;
 }
 
 
-void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
+void QgsExternalResourceConfigDlg::setConfig( const QVariantMap &config )
 {
   if ( config.contains( QStringLiteral( "FileWidget" ) ) )
   {
@@ -192,16 +194,19 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
       mFullUrl->setChecked( true );
   }
 
-  if ( config.contains( QStringLiteral( "DefaultRoot" ) ) )
-  {
-    mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
-  }
+  mPropertyCollection.loadVariant( config.value( QStringLiteral( "PropertyCollection" ) ), QgsWidgetWrapper::propertyDefinitions() );
+  updateDataDefinedButtons();
+
+  setRootPathExpression( mPropertyCollection.property( QgsWidgetWrapper::RootPath ) );
+  mRootPath->setText( config.value( QStringLiteral( "DefaultRoot" ) ).toString() );
+
+  rootPathPropertyChanged();
 
   // relative storage
   if ( config.contains( QStringLiteral( "RelativeStorage" ) ) )
   {
     int relative = config.value( QStringLiteral( "RelativeStorage" ) ).toInt();
-    if (( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::Absolute )
+    if ( ( QgsFileWidget::RelativeStorage )relative == QgsFileWidget::Absolute )
     {
       mRelativeGroupBox->setChecked( false );
     }
@@ -223,7 +228,6 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
   if ( config.contains( QStringLiteral( "DocumentViewer" ) ) )
   {
     QgsExternalResourceWidget::DocumentViewerContent content = ( QgsExternalResourceWidget::DocumentViewerContent )config.value( QStringLiteral( "DocumentViewer" ) ).toInt();
-    mDocumentViewerGroupBox->setChecked( content != QgsExternalResourceWidget::NoContent );
     int idx = mDocumentViewerContentComboBox->findData( content );
     if ( idx >= 0 )
     {
@@ -238,4 +242,14 @@ void QgsExternalResourceConfigDlg::setConfig( const QVariantMap& config )
       mDocumentViewerWidth->setValue( config.value( QStringLiteral( "DocumentViewerWidth" ) ).toInt() );
     }
   }
+}
+
+void QgsExternalResourceConfigDlg::setRootPathExpression( const QgsProperty &property )
+{
+  mRootPathExpression->setToolTip( property.asExpression() );
+
+  QgsExpressionContext ctx = layer()->createExpressionContext();
+
+  mRootPathExpression->setText( property.valueAsString( ctx ) );
+  enableRelativeDefault();
 }

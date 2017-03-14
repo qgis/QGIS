@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * @param message The message
      */
-    void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
+    void setEditCommandMessage( const QString &message ) { mAttributeForm->setEditCommandMessage( message ); }
 
     /**
      * Intercept window activate/deactive events to show/hide the highlighted feature.
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void show();
 
   private:
-    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, bool showDialogButtons );
+    void init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     int mFormNr;
     bool mShowDialogButtons;
     QString mReturnvarname;
-    QgsAttributeForm* mAttributeForm = nullptr;
+    QgsAttributeForm *mAttributeForm = nullptr;
     QgsFeature *mOwnedFeature = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;

@@ -28,8 +28,8 @@
 #include <memory>
 #include <queue>
 
-QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometry )
-    : mGeometry( geometry.geometry() )
+QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
+  : mGeometry( geometry.geometry() )
 {
 
 }
@@ -42,21 +42,21 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry& geometr
 
 QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
-  QList<QgsLineString*> linesToProcess;
+  QList<QgsLineString *> linesToProcess;
 
-  const QgsMultiCurve* multiCurve = dynamic_cast< const QgsMultiCurve* >( mGeometry );
+  const QgsMultiCurve *multiCurve = dynamic_cast< const QgsMultiCurve * >( mGeometry );
   if ( multiCurve )
   {
     for ( int i = 0; i < multiCurve->partCount(); ++i )
     {
-      linesToProcess << static_cast<QgsLineString*>( multiCurve->geometryN( i )->clone() );
+      linesToProcess << static_cast<QgsLineString *>( multiCurve->geometryN( i )->clone() );
     }
   }
 
-  const QgsCurve* curve = dynamic_cast< const QgsCurve* >( mGeometry );
+  const QgsCurve *curve = dynamic_cast< const QgsCurve * >( mGeometry );
   if ( curve )
   {
-    linesToProcess << static_cast<QgsLineString*>( curve->segmentize() );
+    linesToProcess << static_cast<QgsLineString *>( curve->segmentize() );
   }
 
   std::unique_ptr<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr );
@@ -64,11 +64,11 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 
   if ( !linesToProcess.empty() )
   {
-    Q_FOREACH ( QgsLineString* line, linesToProcess )
+    Q_FOREACH ( QgsLineString *line, linesToProcess )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
-      QgsLineString* secondline = line->reversed();
+      QgsLineString *secondline = line->reversed();
       secondline->transform( transform );
 
       line->append( secondline );
@@ -102,12 +102,12 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 class Cell
 {
   public:
-    Cell( double x, double y, double h, const QgsPolygonV2* polygon )
-        : x( x )
-        , y( y )
-        , h( h )
-        , d( polygon->pointDistanceToBoundary( x, y ) )
-        , max( d + h * M_SQRT2 )
+    Cell( double x, double y, double h, const QgsPolygonV2 *polygon )
+      : x( x )
+      , y( y )
+      , h( h )
+      , d( polygon->pointDistanceToBoundary( x, y ) )
+      , max( d + h * M_SQRT2 )
     {}
 
     //! Cell center x
@@ -124,19 +124,19 @@ class Cell
 
 struct GreaterThanByMax
 {
-  bool operator()( const Cell* lhs, const Cell* rhs )
+  bool operator()( const Cell *lhs, const Cell *rhs )
   {
     return rhs->max > lhs->max;
   }
 };
 
-Cell* getCentroidCell( const QgsPolygonV2* polygon )
+Cell *getCentroidCell( const QgsPolygonV2 *polygon )
 {
   double area = 0;
   double x = 0;
   double y = 0;
 
-  const QgsLineString* exterior = static_cast< const QgsLineString*>( polygon->exteriorRing() );
+  const QgsLineString *exterior = static_cast< const QgsLineString *>( polygon->exteriorRing() );
   int len = exterior->numPoints() - 1; //assume closed
   for ( int i = 0, j = len - 1; i < len; j = i++ )
   {
@@ -157,7 +157,7 @@ Cell* getCentroidCell( const QgsPolygonV2* polygon )
 
 ///@endcond
 
-QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision , double* distanceFromBoundary ) const
+QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, double *distanceFromBoundary ) const
 {
   if ( distanceFromBoundary )
     *distanceFromBoundary = DBL_MAX;
@@ -168,15 +168,15 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
   if ( precision <= 0 )
     return QgsGeometry();
 
-  const QgsSurface* surface = dynamic_cast< const QgsSurface* >( mGeometry );
+  const QgsSurface *surface = dynamic_cast< const QgsSurface * >( mGeometry );
   if ( !surface )
     return QgsGeometry();
 
   std::unique_ptr< QgsPolygonV2 > segmentizedPoly;
-  const QgsPolygonV2* polygon = dynamic_cast< const QgsPolygonV2* >( mGeometry );
+  const QgsPolygonV2 *polygon = dynamic_cast< const QgsPolygonV2 * >( mGeometry );
   if ( !polygon )
   {
-    segmentizedPoly.reset( static_cast< QgsPolygonV2*>( surface->segmentize() ) );
+    segmentizedPoly.reset( static_cast< QgsPolygonV2 *>( surface->segmentize() ) );
     polygon = segmentizedPoly.get();
   }
 
@@ -190,7 +190,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
     return QgsGeometry( new QgsPointV2( bounds.xMinimum(), bounds.yMinimum() ) );
 
   double h = cellSize / 2.0;
-  std::priority_queue< Cell*, std::vector<Cell*>, GreaterThanByMax > cellQueue;
+  std::priority_queue< Cell *, std::vector<Cell *>, GreaterThanByMax > cellQueue;
 
   // cover polygon with initial cells
   for ( double x = bounds.xMinimum(); x < bounds.xMaximum(); x += cellSize )
@@ -218,7 +218,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision ,
     // pick the most promising cell from the queue
     std::unique_ptr< Cell > cell( cellQueue.top() );
     cellQueue.pop();
-    Cell* currentCell = cell.get();
+    Cell *currentCell = cell.get();
 
     // update the best cell if we found a better one
     if ( currentCell->d > bestCell->d )
@@ -253,7 +253,7 @@ bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, d
   return lowerThreshold > qAbs( dotProduct ) || qAbs( dotProduct ) > upperThreshold;
 }
 
-double normalizedDotProduct( const QgsPointV2& a, const QgsPointV2& b, const QgsPointV2& c )
+double normalizedDotProduct( const QgsPointV2 &a, const QgsPointV2 &b, const QgsPointV2 &c )
 {
   QgsVector p = a - b;
   QgsVector q = c - b;
@@ -266,7 +266,7 @@ double normalizedDotProduct( const QgsPointV2& a, const QgsPointV2& b, const Qgs
   return p * q;
 }
 
-double squareness( QgsLineString* ring, double lowerThreshold, double upperThreshold )
+double squareness( QgsLineString *ring, double lowerThreshold, double upperThreshold )
 {
   double sum = 0.0;
 
@@ -310,7 +310,7 @@ double squareness( QgsLineString* ring, double lowerThreshold, double upperThres
   return sum;
 }
 
-QgsVector calcMotion( const QgsPointV2& a, const QgsPointV2& b, const QgsPointV2& c,
+QgsVector calcMotion( const QgsPointV2 &a, const QgsPointV2 &b, const QgsPointV2 &c,
                       double lowerThreshold, double upperThreshold )
 {
   QgsVector p = a - b;
@@ -341,7 +341,7 @@ QgsVector calcMotion( const QgsPointV2& a, const QgsPointV2& b, const QgsPointV2
   return new_v.normalized() * ( 0.1 * dotProduct * scale );
 }
 
-QgsLineString* doOrthogonalize( QgsLineString* ring, int iterations, double tolerance, double lowerThreshold, double upperThreshold )
+QgsLineString *doOrthogonalize( QgsLineString *ring, int iterations, double tolerance, double lowerThreshold, double upperThreshold )
 {
   double minScore = DBL_MAX;
 
@@ -411,7 +411,7 @@ QgsLineString* doOrthogonalize( QgsLineString* ring, int iterations, double tole
 }
 
 
-QgsAbstractGeometry* orthogonalizeGeom( const QgsAbstractGeometry* geom, int maxIterations, double tolerance, double lowerThreshold, double upperThreshold )
+QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int maxIterations, double tolerance, double lowerThreshold, double upperThreshold )
 {
   std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
@@ -422,20 +422,20 @@ QgsAbstractGeometry* orthogonalizeGeom( const QgsAbstractGeometry* geom, int max
 
   if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
   {
-    return doOrthogonalize( static_cast< QgsLineString* >( geom->clone() ),
+    return doOrthogonalize( static_cast< QgsLineString * >( geom->clone() ),
                             maxIterations, tolerance, lowerThreshold, upperThreshold );
   }
   else
   {
     // polygon
-    const QgsPolygonV2* polygon = static_cast< const QgsPolygonV2* >( geom );
-    QgsPolygonV2* result = new QgsPolygonV2();
+    const QgsPolygonV2 *polygon = static_cast< const QgsPolygonV2 * >( geom );
+    QgsPolygonV2 *result = new QgsPolygonV2();
 
-    result->setExteriorRing( doOrthogonalize( static_cast< QgsLineString* >( polygon->exteriorRing()->clone() ),
+    result->setExteriorRing( doOrthogonalize( static_cast< QgsLineString * >( polygon->exteriorRing()->clone() ),
                              maxIterations, tolerance, lowerThreshold, upperThreshold ) );
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
-      result->addInteriorRing( doOrthogonalize( static_cast< QgsLineString* >( polygon->interiorRing( i )->clone() ),
+      result->addInteriorRing( doOrthogonalize( static_cast< QgsLineString * >( polygon->interiorRing( i )->clone() ),
                                maxIterations, tolerance, lowerThreshold, upperThreshold ) );
     }
 
@@ -451,13 +451,13 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     return QgsGeometry();
   }
 
-  double lowerThreshold = cos(( 90 - angleThreshold ) * M_PI / 180.00 );
+  double lowerThreshold = cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
   double upperThreshold = cos( angleThreshold * M_PI / 180.0 );
 
-  if ( const QgsGeometryCollection* gc = dynamic_cast< const QgsGeometryCollection*>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
-    QList< QgsAbstractGeometry* > geometryList;
+    QList< QgsAbstractGeometry * > geometryList;
     geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {
@@ -465,7 +465,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry* g, geometryList )
+    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
     {
       first.addPart( g );
     }

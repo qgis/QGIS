@@ -35,7 +35,7 @@ import difflib
 import functools
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest, QgsVectorLayer
+from qgis.core import QgsApplication, QgsFeatureRequest
 from nose2.compat import unittest
 
 # Get a backup, we will patch this one later
@@ -225,6 +225,7 @@ def expectedFailure(*args):
             return wrapper
 
         return realExpectedFailure
+
 
 # Patch unittest
 unittest.TestCase = TestCase

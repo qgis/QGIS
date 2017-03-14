@@ -28,7 +28,7 @@
 #include "qgsidwinterpolator.h"
 #include "qgstininterpolator.h"
 
-QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder( QgsVectorLayer* vl ): mVectorLayer( vl )
+QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder( QgsVectorLayer *vl ): mVectorLayer( vl )
 {
 
 }
@@ -38,10 +38,10 @@ QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder(): mVectorLayer( null
 
 }
 
-QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
+QgsMapLayer *QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
-    QList<QTemporaryFile*> &filesToRemove,
-    QList<QgsMapLayer*> &layersToRemove,
+    QList<QTemporaryFile *> &filesToRemove,
+    QList<QgsMapLayer *> &layersToRemove,
     bool allowCaching ) const
 {
   Q_UNUSED( layerName );
@@ -63,7 +63,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QDomNodeList tinList = interpolationElem.elementsByTagName( QStringLiteral( "TINMethod" ) );
   QDomNodeList idwList = interpolationElem.elementsByTagName( QStringLiteral( "IDWMethod" ) );
 
-  QgsInterpolator* interpolator = nullptr;
+  QgsInterpolator *interpolator = nullptr;
   QList<QgsInterpolator::LayerData> layerDataList;
   QgsInterpolator::LayerData currentLayerData;
   currentLayerData.vectorLayer = mVectorLayer;
@@ -78,7 +78,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
 
     //set attribute field interpolation or z-Coordinate interpolation
     QString attributeName = propertyNameList.at( 0 ).toElement().text();
-    QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
+    QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
     if ( !provider )
     {
       return nullptr;
@@ -129,7 +129,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
     }
   }
 
-  QTemporaryFile* tmpFile = new QTemporaryFile();
+  QTemporaryFile *tmpFile = new QTemporaryFile();
   if ( !tmpFile->open() )
   {
     QgsDebugMsg( "Opening temporary file failed" );
@@ -147,7 +147,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   }
 
   filesToRemove.push_back( tmpFile ); //store raster in temporary file and remove after request
-  QgsRasterLayer* raster = new QgsRasterLayer( tmpFile->fileName() );
+  QgsRasterLayer *raster = new QgsRasterLayer( tmpFile->fileName() );
   layersToRemove.push_back( raster );
   return raster;
 }

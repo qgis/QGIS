@@ -19,10 +19,10 @@
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgspallabeling.h"
 
-QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings& settings )
-    : QgsMapRendererQImageJob( settings )
-    , mInternalJob( nullptr )
-    , mPainter( nullptr )
+QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
+  : QgsMapRendererQImageJob( settings )
+  , mInternalJob( nullptr )
+  , mPainter( nullptr )
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 
@@ -83,6 +83,15 @@ void QgsMapRendererSequentialJob::cancel()
   Q_ASSERT( !mInternalJob && !mPainter );
 }
 
+void QgsMapRendererSequentialJob::cancelWithoutBlocking()
+{
+  if ( !isActive() )
+    return;
+
+  QgsDebugMsg( "sequential - cancel internal" );
+  mInternalJob->cancelWithoutBlocking();
+}
+
 void QgsMapRendererSequentialJob::waitForFinished()
 {
   if ( !isActive() )
@@ -101,7 +110,7 @@ bool QgsMapRendererSequentialJob::usedCachedLabels() const
   return mUsedCachedLabels;
 }
 
-QgsLabelingResults* QgsMapRendererSequentialJob::takeLabelingResults()
+QgsLabelingResults *QgsMapRendererSequentialJob::takeLabelingResults()
 {
   return mLabelingResults.release();
 }

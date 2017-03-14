@@ -66,7 +66,7 @@ class TestQgsComposition : public QObject
 };
 
 TestQgsComposition::TestQgsComposition()
-    : mComposition( 0 )
+  : mComposition( 0 )
 {
 }
 
@@ -110,30 +110,30 @@ void TestQgsComposition::cleanup()
 void TestQgsComposition::itemsOnPage()
 {
   //add some items to the composition
-  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label1 );
   label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label2 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label2 );
   label2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label3 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label3 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label3 );
   label3->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerShape* shape1 = new QgsComposerShape( mComposition );
+  QgsComposerShape *shape1 = new QgsComposerShape( mComposition );
   mComposition->addComposerShape( shape1 );
   shape1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape2 = new QgsComposerShape( mComposition );
+  QgsComposerShape *shape2 = new QgsComposerShape( mComposition );
   mComposition->addComposerShape( shape2 );
   shape2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerArrow* arrow1 = new QgsComposerArrow( mComposition );
+  QgsComposerArrow *arrow1 = new QgsComposerArrow( mComposition );
   mComposition->addComposerArrow( arrow1 );
   arrow1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
-  QgsComposerArrow* arrow2 = new QgsComposerArrow( mComposition );
+  QgsComposerArrow *arrow2 = new QgsComposerArrow( mComposition );
   mComposition->addComposerArrow( arrow2 );
   arrow2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
 
   //fetch items - remember that these numbers include the paper item!
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   mComposition->composerItemsOnPage( items, 0 );
   //should be 4 items on page 1
   QCOMPARE( items.length(), 4 );
@@ -145,7 +145,7 @@ void TestQgsComposition::itemsOnPage()
   QCOMPARE( items.length(), 3 );
 
   //check fetching specific item types
-  QList<QgsComposerLabel*> labels;
+  QList<QgsComposerLabel *> labels;
   mComposition->composerItemsOnPage( labels, 0 );
   //should be 2 labels on page 1
   QCOMPARE( labels.length(), 2 );
@@ -156,7 +156,7 @@ void TestQgsComposition::itemsOnPage()
   //should be no label on page 3
   QCOMPARE( labels.length(), 0 );
 
-  QList<QgsComposerShape*> shapes;
+  QList<QgsComposerShape *> shapes;
   mComposition->composerItemsOnPage( shapes, 0 );
   //should be 1 shapes on page 1
   QCOMPARE( shapes.length(), 1 );
@@ -167,7 +167,7 @@ void TestQgsComposition::itemsOnPage()
   //should be no shapes on page 3
   QCOMPARE( shapes.length(), 0 );
 
-  QList<QgsComposerArrow*> arrows;
+  QList<QgsComposerArrow *> arrows;
   mComposition->composerItemsOnPage( arrows, 0 );
   //should be no arrows on page 1
   QCOMPARE( arrows.length(), 0 );
@@ -200,11 +200,11 @@ void TestQgsComposition::shouldExportPage()
   mComposition->setPaperSize( 297, 200 );
   mComposition->setNumPages( 2 );
 
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
   //frame on page 1
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 100 );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 100 );
   //frame on page 2
-  QgsComposerFrame* frame2 = new QgsComposerFrame( mComposition, htmlItem, 0, 320, 100, 100 );
+  QgsComposerFrame *frame2 = new QgsComposerFrame( mComposition, htmlItem, 0, 320, 100, 100 );
   frame2->setHidePageIfEmpty( true );
   htmlItem->addFrame( frame1 );
   htmlItem->addFrame( frame2 );
@@ -237,13 +237,13 @@ void TestQgsComposition::shouldExportPage()
 void TestQgsComposition::pageIsEmpty()
 {
   //add some items to the composition
-  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label1 );
   label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label2 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label2 );
   label2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label3 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label3 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label3 );
   label3->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
 
@@ -266,7 +266,7 @@ void TestQgsComposition::pageIsEmpty()
 
 void TestQgsComposition::customProperties()
 {
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
   QVERIFY( composition->customProperties().isEmpty() );
@@ -294,7 +294,7 @@ void TestQgsComposition::customProperties()
 
 void TestQgsComposition::writeRetrieveCustomProperties()
 {
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
   composition->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   composition->setCustomProperty( QStringLiteral( "testprop2" ), 5 );
 
@@ -313,7 +313,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
   QDomElement compositionElem = evalNodeList.at( 0 ).toElement();
 
   //test reading node containing custom properties
-  QgsComposition* readComposition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *readComposition = new QgsComposition( QgsProject::instance() );
   QVERIFY( readComposition->readXml( compositionElem, doc ) );
 
   //test retrieved custom properties
@@ -330,21 +330,21 @@ void TestQgsComposition::writeRetrieveCustomProperties()
 void TestQgsComposition::bounds()
 {
   //add some items to a composition
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape3 );
   shape3->setItemPosition( 210, 30, 50, 100, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerShape* shape4 = new QgsComposerShape( composition );
+  QgsComposerShape *shape4 = new QgsComposerShape( composition );
   shape4->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape4 );
   shape4->setItemPosition( 10, 120, 50, 30, QgsComposerItem::UpperLeft, false, 2 );
@@ -388,27 +388,27 @@ void TestQgsComposition::bounds()
 void TestQgsComposition::resizeToContents()
 {
   //add some items to a composition
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
   simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   shape2->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   shape3->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape3 );
@@ -429,27 +429,27 @@ void TestQgsComposition::resizeToContentsMargin()
 {
   //resize to contents, with margin
 
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
   simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   shape2->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   shape3->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape3 );
@@ -470,9 +470,9 @@ void TestQgsComposition::resizeToContentsMultiPage()
 {
   //resize to contents with multi-page composition, should result in a single page
 
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
   simpleFill->setStrokeColor( Qt::transparent );
@@ -481,18 +481,18 @@ void TestQgsComposition::resizeToContentsMultiPage()
 
   composition->setNumPages( 3 );
 
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   shape2->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   shape3->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape3 );
@@ -514,13 +514,13 @@ void TestQgsComposition::resizeToContentsMultiPage()
 void TestQgsComposition::georeference()
 {
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   // no map
-  double* t = composition->computeGeoTransform( nullptr );
+  double *t = composition->computeGeoTransform( nullptr );
   QVERIFY( !t );
 
-  QgsComposerMap* map = new QgsComposerMap( composition );
+  QgsComposerMap *map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   composition->addComposerMap( map );
@@ -595,7 +595,7 @@ void TestQgsComposition::variablesEdited()
 void TestQgsComposition::itemVariablesFunction()
 {
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   QgsExpression e( "map_get( item_variables( 'map_id' ), 'map_scale' )" );
   // no map
@@ -603,7 +603,7 @@ void TestQgsComposition::itemVariablesFunction()
   QVariant r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
-  QgsComposerMap* map = new QgsComposerMap( composition );
+  QgsComposerMap *map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
@@ -632,12 +632,12 @@ void TestQgsComposition::itemVariablesFunction()
 void TestQgsComposition::referenceMap()
 {
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   // no maps
   QVERIFY( !composition->referenceMap() );
 
-  QgsComposerMap* map = new QgsComposerMap( composition );
+  QgsComposerMap *map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   composition->addComposerMap( map );
@@ -645,7 +645,7 @@ void TestQgsComposition::referenceMap()
   QCOMPARE( composition->referenceMap(), map );
 
   // add a larger map
-  QgsComposerMap* map2 = new QgsComposerMap( composition );
+  QgsComposerMap *map2 = new QgsComposerMap( composition );
   map2->setNewExtent( extent );
   map2->setSceneRect( QRectF( 30, 60, 250, 150 ) );
   composition->addComposerMap( map2 );

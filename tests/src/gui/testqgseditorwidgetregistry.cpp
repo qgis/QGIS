@@ -27,7 +27,7 @@ class TestQgsEditorWidgetRegistry: public QObject
     class DummyPlugin: public QgsEditorWidgetAutoConfPlugin
     {
       public:
-        QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer* vl, const QString& fieldName, int& score ) const override
+        QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
         {
           Q_UNUSED( vl )
           if ( fieldName == QLatin1String( "special" ) )
@@ -144,7 +144,7 @@ class TestQgsEditorWidgetRegistry: public QObject
 
   private:
 
-    static void checkSimple( const QString& dataType, const QString& widgetType )
+    static void checkSimple( const QString &dataType, const QString &widgetType )
     {
       const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:" + dataType, QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
       const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( &vl, QStringLiteral( "col1" ) );

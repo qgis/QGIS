@@ -21,25 +21,25 @@
 #include <QPicture>
 #include <QTransform>
 
-QgsPaintEffect* QgsTransformEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsTransformEffect::create( const QgsStringMap &map )
 {
-  QgsTransformEffect* newEffect = new QgsTransformEffect();
+  QgsTransformEffect *newEffect = new QgsTransformEffect();
   newEffect->readProperties( map );
   return newEffect;
 }
 
 QgsTransformEffect::QgsTransformEffect()
-    : QgsPaintEffect()
-    , mTranslateX( 0.0 )
-    , mTranslateY( 0.0 )
-    , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
-    , mScaleX( 1.0 )
-    , mScaleY( 1.0 )
-    , mRotation( 0.0 )
-    , mShearX( 0.0 )
-    , mShearY( 0.0 )
-    , mReflectX( false )
-    , mReflectY( false )
+  : QgsPaintEffect()
+  , mTranslateX( 0.0 )
+  , mTranslateY( 0.0 )
+  , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
+  , mScaleX( 1.0 )
+  , mScaleY( 1.0 )
+  , mRotation( 0.0 )
+  , mShearX( 0.0 )
+  , mShearY( 0.0 )
+  , mReflectX( false )
+  , mReflectY( false )
 {
 
 }
@@ -49,7 +49,7 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
   if ( !source() || !enabled() || !context.painter() )
     return;
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
 
   //apply transformations
   painter->save();
@@ -95,19 +95,19 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "translate_unit_scale" ) ) );
 }
 
-QgsTransformEffect* QgsTransformEffect::clone() const
+QgsTransformEffect *QgsTransformEffect::clone() const
 {
-  QgsTransformEffect* newEffect = new QgsTransformEffect( *this );
+  QgsTransformEffect *newEffect = new QgsTransformEffect( *this );
   return newEffect;
 }
 
-QRectF QgsTransformEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsTransformEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   QTransform t = createTransform( context );
   return t.mapRect( rect );
 }
 
-QTransform QgsTransformEffect::createTransform( const QgsRenderContext& context ) const
+QTransform QgsTransformEffect::createTransform( const QgsRenderContext &context ) const
 {
   QTransform t;
 

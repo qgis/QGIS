@@ -16,26 +16,25 @@
  ***************************************************************************/
 
 #include "qgscollapsiblegroupbox.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QToolButton>
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QStyleOptionGroupBox>
-#include <QSettings>
 #include <QScrollArea>
 
 QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( QWidget *parent )
-    : QGroupBox( parent )
+  : QGroupBox( parent )
 {
   init();
 }
 
 QgsCollapsibleGroupBoxBasic::QgsCollapsibleGroupBoxBasic( const QString &title,
     QWidget *parent )
-    : QGroupBox( title, parent )
+  : QGroupBox( title, parent )
 {
   init();
 }
@@ -75,7 +74,7 @@ void QgsCollapsibleGroupBoxBasic::init()
   connect( this, SIGNAL( clicked( bool ) ), this, SLOT( checkClicked( bool ) ) );
 }
 
-void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
+void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent *event )
 {
   // initialize widget on first show event only
   if ( mShown )
@@ -93,7 +92,7 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 
   // find parent QScrollArea - this might not work in complex layouts - should we look deeper?
   if ( parent() && parent()->parent() )
-    mParentScrollArea = dynamic_cast<QScrollArea*>( parent()->parent()->parent() );
+    mParentScrollArea = dynamic_cast<QScrollArea *>( parent()->parent()->parent() );
   else
     mParentScrollArea = nullptr;
   if ( mParentScrollArea )
@@ -174,7 +173,7 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
     mCollapseButton->setEnabled( true );
 }
 
-void QgsCollapsibleGroupBoxBasic::setSyncGroup( const QString& grp )
+void QgsCollapsibleGroupBoxBasic::setSyncGroup( const QString &grp )
 {
   mSyncGroup = grp;
   QString tipTxt;
@@ -222,16 +221,16 @@ void QgsCollapsibleGroupBoxBasic::checkClicked( bool chkd )
 void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 {
   // verify if sender is this group box's collapse button
-  QgsGroupBoxCollapseButton *collBtn = qobject_cast<QgsGroupBoxCollapseButton*>( QObject::sender() );
+  QgsGroupBoxCollapseButton *collBtn = qobject_cast<QgsGroupBoxCollapseButton *>( QObject::sender() );
   bool senderCollBtn = ( collBtn && collBtn == mCollapseButton );
 
   mAltDown = ( mAltDown || mCollapseButton->altDown() );
   mShiftDown = ( mShiftDown || mCollapseButton->shiftDown() );
 
   // find any sync group siblings and toggle them
-  if (( senderCollBtn || mTitleClicked )
-      && ( mAltDown || mShiftDown )
-      && !mSyncGroup.isEmpty() )
+  if ( ( senderCollBtn || mTitleClicked )
+       && ( mAltDown || mShiftDown )
+       && !mSyncGroup.isEmpty() )
   {
     QgsDebugMsg( "Alt or Shift key down, syncing group" );
     // get pointer to parent or grandparent widget
@@ -257,7 +256,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
       QgsDebugMsg( "found sync parent: " + mSyncParent->objectName() );
 
       bool thisCollapsed = mCollapsed; // get state of current box before its changed
-      Q_FOREACH ( QgsCollapsibleGroupBoxBasic *grpbox, mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic*>() )
+      Q_FOREACH ( QgsCollapsibleGroupBoxBasic *grpbox, mSyncParent->findChildren<QgsCollapsibleGroupBoxBasic *>() )
       {
         if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
         {
@@ -299,7 +298,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
 {
   setUpdatesEnabled( false );
 
-  QSettings settings;
+  QgsSettings settings;
   // NOTE: QGIS-Style groupbox styled in app stylesheet
   bool usingQgsStyle = settings.value( QStringLiteral( "qgis/stylesheet/groupBoxCustom" ), QVariant( false ) ).toBool();
 
@@ -439,13 +438,13 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
 void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 {
   // handle child widgets so they don't paint while hidden
-  const char* hideKey = "CollGrpBxHide";
+  const char *hideKey = "CollGrpBxHide";
 
   if ( mCollapsed )
   {
-    Q_FOREACH ( QObject* child, children() )
+    Q_FOREACH ( QObject *child, children() )
     {
-      QWidget* w = qobject_cast<QWidget*>( child );
+      QWidget *w = qobject_cast<QWidget *>( child );
       if ( w && w != mCollapseButton )
       {
         w->setProperty( hideKey, true );
@@ -455,9 +454,9 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
   }
   else // on expand
   {
-    Q_FOREACH ( QObject* child, children() )
+    Q_FOREACH ( QObject *child, children() )
     {
-      QWidget* w = qobject_cast<QWidget*>( child );
+      QWidget *w = qobject_cast<QWidget *>( child );
       if ( w && w != mCollapseButton )
       {
         if ( w->property( hideKey ).toBool() )
@@ -470,17 +469,17 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
 
 // ----
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QSettings* settings )
-    : QgsCollapsibleGroupBoxBasic( parent )
-    , mSettings( settings )
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent, QgsSettings *settings )
+  : QgsCollapsibleGroupBoxBasic( parent )
+  , mSettings( settings )
 {
   init();
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
-    QWidget *parent, QSettings* settings )
-    : QgsCollapsibleGroupBoxBasic( title, parent )
-    , mSettings( settings )
+    QWidget *parent, QgsSettings *settings )
+  : QgsCollapsibleGroupBoxBasic( title, parent )
+  , mSettings( settings )
 {
   init();
 }
@@ -493,7 +492,7 @@ QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
   mSettings = nullptr; // null the pointer (in case of outside settings obj)
 }
 
-void QgsCollapsibleGroupBox::setSettings( QSettings* settings )
+void QgsCollapsibleGroupBox::setSettings( QgsSettings *settings )
 {
   if ( mDelSettings ) // local settings obj to delete
     delete mSettings;
@@ -509,7 +508,7 @@ void QgsCollapsibleGroupBox::init()
   mDelSettings = false;
   if ( !mSettings )
   {
-    mSettings = new QSettings();
+    mSettings = new QgsSettings();
     mDelSettings = true; // only delete obj created by class
   }
   // variables
@@ -522,7 +521,7 @@ void QgsCollapsibleGroupBox::init()
   connect( this, &QObject::objectNameChanged, this, &QgsCollapsibleGroupBox::loadState );
 }
 
-void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
+void QgsCollapsibleGroupBox::showEvent( QShowEvent *event )
 {
   // initialize widget on first show event only
   if ( mShown )

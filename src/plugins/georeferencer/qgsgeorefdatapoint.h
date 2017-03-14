@@ -27,7 +27,7 @@ class QgsGeorefDataPoint : public QObject
   public:
     //! constructor
     QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
-                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+                        const QgsPoint &pixelCoords, const QgsPoint &mapCoords,
                         bool enable );
     QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
     ~QgsGeorefDataPoint();

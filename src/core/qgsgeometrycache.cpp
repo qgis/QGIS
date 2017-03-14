@@ -20,7 +20,7 @@ QgsGeometryCache::QgsGeometryCache()
 {
 }
 
-bool QgsGeometryCache::geometry( QgsFeatureId fid, QgsGeometry& geometry )
+bool QgsGeometryCache::geometry( QgsFeatureId fid, QgsGeometry &geometry )
 {
   // no need to check changed geometries because all changed geometries are also cached
 
@@ -32,7 +32,7 @@ bool QgsGeometryCache::geometry( QgsFeatureId fid, QgsGeometry& geometry )
   return true;
 }
 
-void QgsGeometryCache::cacheGeometry( QgsFeatureId fid, const QgsGeometry& geom )
+void QgsGeometryCache::cacheGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 {
   mCachedGeometries[fid] = geom;
 }

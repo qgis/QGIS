@@ -24,7 +24,7 @@
 #include "qgsserversettings.h"
 #include <QFile>
 
-QgsMSLayerCache* QgsMSLayerCache::instance()
+QgsMSLayerCache *QgsMSLayerCache::instance()
 {
   static QgsMSLayerCache *sInstance = nullptr;
   if ( !sInstance )
@@ -34,7 +34,7 @@ QgsMSLayerCache* QgsMSLayerCache::instance()
 
 QgsMSLayerCache::QgsMSLayerCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeProjectFileLayers( const QString& ) ) );
+  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeProjectFileLayers( const QString & ) ) );
 }
 
 QgsMSLayerCache::~QgsMSLayerCache()
@@ -52,7 +52,7 @@ void QgsMSLayerCache::setMaxCacheLayers( int maxCacheLayers )
   mDefaultMaxLayers = maxCacheLayers;
 }
 
-void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
+void QgsMSLayerCache::insertLayer( const QString &url, const QString &layerName, QgsMapLayer *layer, const QString &configFile, const QList<QString> &tempFiles )
 {
   QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' configFile: " + configFile, QStringLiteral( "Server" ), QgsMessageLog::INFO );
   if ( mEntries.size() > qMax( mDefaultMaxLayers, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
@@ -88,7 +88,7 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   }
 }
 
-QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName, const QString& configFile )
+QgsMapLayer *QgsMSLayerCache::searchLayer( const QString &url, const QString &layerName, const QString &configFile )
 {
   QPair<QString, QString> urlNamePair = qMakePair( url, layerName );
   if ( !mEntries.contains( urlNamePair ) )
@@ -114,7 +114,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   }
 }
 
-void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
+void QgsMSLayerCache::removeProjectFileLayers( const QString &project )
 {
   QgsMessageLog::logMessage( "Removing cache entries for project file: " + project, QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QVector< QPair< QString, QString > > removeEntries;
@@ -133,7 +133,7 @@ void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
 
   for ( int i = 0; i < removeEntries.size(); ++i )
   {
-    const QgsMSLayerCacheEntry& removeEntry = removeEntriesValues.at( i );
+    const QgsMSLayerCacheEntry &removeEntry = removeEntriesValues.at( i );
     const QPair< QString, QString > removeKey = removeEntries.at( i );
     QgsMessageLog::logMessage( "Removing cache entry for url:" +  removeKey.first + " layerName:" + removeKey.second + " project file:" + project, QStringLiteral( "Server" ), QgsMessageLog::INFO );
     mEntries.remove( removeKey, removeEntry );
@@ -175,12 +175,12 @@ void QgsMSLayerCache::removeLeastUsedEntry()
     }
   }
 
-  QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache" , QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Removing last accessed layer '" + lowest_it.value().layerPointer->name() + "' project file " + lowest_it.value().configFile + " from cache", QStringLiteral( "Server" ), QgsMessageLog::INFO );
   freeEntryResources( *lowest_it );
   mEntries.erase( lowest_it );
 }
 
-void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry& entry )
+void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry &entry )
 {
   // remove layer from QgsProject before delete it
   if ( QgsProject::instance()->mapLayer( entry.layerPointer->id() ) )
@@ -189,7 +189,7 @@ void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry& entry )
   delete entry.layerPointer;
 
   //remove the temporary files of a layer
-  Q_FOREACH ( const QString& file, entry.temporaryFiles )
+  Q_FOREACH ( const QString &file, entry.temporaryFiles )
   {
     //remove the temporary file
     QFile removeFile( file );
@@ -218,7 +218,7 @@ void QgsMSLayerCache::freeEntryResources( QgsMSLayerCacheEntry& entry )
 
 void QgsMSLayerCache::logCacheContents() const
 {
-  QgsMessageLog::logMessage( QStringLiteral( "Layer cache contents:" ) , QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "Layer cache contents:" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::const_iterator it = mEntries.constBegin();
   for ( ; it != mEntries.constEnd(); ++it )
   {
@@ -227,7 +227,7 @@ void QgsMSLayerCache::logCacheContents() const
 }
 
 
-void QgsMSLayerCache::removeProjectLayers( const QString& path )
+void QgsMSLayerCache::removeProjectLayers( const QString &path )
 {
   removeProjectFileLayers( path );
 }

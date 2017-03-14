@@ -76,5 +76,6 @@ class TestQgsComposerEffects(unittest.TestCase):
 
         assert myTestResult, myMessage
 
+
 if __name__ == '__main__':
     unittest.main()

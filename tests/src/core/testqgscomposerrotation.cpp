@@ -37,11 +37,11 @@ class TestQgsComposerRotation : public QObject
 
   public:
     TestQgsComposerRotation()
-        : mComposition( 0 )
-        , mComposerRect( 0 )
-        , mComposerLabel( 0 )
-        , mComposerMap( 0 )
-        , mRasterLayer( 0 )
+      : mComposition( 0 )
+      , mComposerRect( 0 )
+      , mComposerLabel( 0 )
+      , mComposerMap( 0 )
+      , mRasterLayer( 0 )
     {}
 
   private slots:
@@ -56,11 +56,11 @@ class TestQgsComposerRotation : public QObject
     void mapItemRotation(); //test if composer map item rotation is functioning
 
   private:
-    QgsComposition* mComposition = nullptr;
-    QgsComposerShape* mComposerRect = nullptr;
-    QgsComposerLabel* mComposerLabel = nullptr;
-    QgsComposerMap* mComposerMap = nullptr;
-    QgsRasterLayer* mRasterLayer = nullptr;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerShape *mComposerRect = nullptr;
+    QgsComposerLabel *mComposerLabel = nullptr;
+    QgsComposerMap *mComposerMap = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
     QString mReport;
 };
 
@@ -73,7 +73,7 @@ void TestQgsComposerRotation::initTestCase()
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   mComposition = new QgsComposition( QgsProject::instance() );
@@ -165,7 +165,7 @@ void TestQgsComposerRotation::mapRotation()
   mComposition->addItem( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   mComposerMap->setMapRotation( 90 );
-  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
 
   QgsCompositionChecker checker( QStringLiteral( "composerrotation_maprotation" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
@@ -184,7 +184,7 @@ void TestQgsComposerRotation::mapItemRotation()
   mComposition->addItem( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   mComposerMap->setItemRotation( 90, true );
-  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
 
   QgsCompositionChecker checker( QStringLiteral( "composerrotation_mapitemrotation" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );

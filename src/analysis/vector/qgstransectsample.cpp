@@ -27,39 +27,39 @@
 #include "mersenne-twister.h"
 #include <limits>
 
-QgsTransectSample::QgsTransectSample( QgsVectorLayer* strataLayer, const QString& strataIdAttribute, const QString& minDistanceAttribute, const QString& nPointsAttribute, DistanceUnits minDistUnits,
-                                      QgsVectorLayer* baselineLayer, bool shareBaseline, const QString& baselineStrataId, const QString& outputPointLayer,
-                                      const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength,
+QgsTransectSample::QgsTransectSample( QgsVectorLayer *strataLayer, const QString &strataIdAttribute, const QString &minDistanceAttribute, const QString &nPointsAttribute, DistanceUnits minDistUnits,
+                                      QgsVectorLayer *baselineLayer, bool shareBaseline, const QString &baselineStrataId, const QString &outputPointLayer,
+                                      const QString &outputLineLayer, const QString &usedBaselineLayer, double minTransectLength,
                                       double baselineBufferDistance, double baselineSimplificationTolerance )
-    : mStrataLayer( strataLayer )
-    , mStrataIdAttribute( strataIdAttribute )
-    , mMinDistanceAttribute( minDistanceAttribute )
-    , mNPointsAttribute( nPointsAttribute )
-    , mBaselineLayer( baselineLayer )
-    , mShareBaseline( shareBaseline )
-    , mBaselineStrataId( baselineStrataId )
-    , mOutputPointLayer( outputPointLayer )
-    , mOutputLineLayer( outputLineLayer )
-    , mUsedBaselineLayer( usedBaselineLayer )
-    , mMinDistanceUnits( minDistUnits )
-    , mMinTransectLength( minTransectLength )
-    , mBaselineBufferDistance( baselineBufferDistance )
-    , mBaselineSimplificationTolerance( baselineSimplificationTolerance )
+  : mStrataLayer( strataLayer )
+  , mStrataIdAttribute( strataIdAttribute )
+  , mMinDistanceAttribute( minDistanceAttribute )
+  , mNPointsAttribute( nPointsAttribute )
+  , mBaselineLayer( baselineLayer )
+  , mShareBaseline( shareBaseline )
+  , mBaselineStrataId( baselineStrataId )
+  , mOutputPointLayer( outputPointLayer )
+  , mOutputLineLayer( outputLineLayer )
+  , mUsedBaselineLayer( usedBaselineLayer )
+  , mMinDistanceUnits( minDistUnits )
+  , mMinTransectLength( minTransectLength )
+  , mBaselineBufferDistance( baselineBufferDistance )
+  , mBaselineSimplificationTolerance( baselineSimplificationTolerance )
 {
 }
 
 QgsTransectSample::QgsTransectSample()
-    : mStrataLayer( nullptr )
-    , mBaselineLayer( nullptr )
-    , mShareBaseline( false )
-    , mMinDistanceUnits( Meters )
-    , mMinTransectLength( 0.0 )
-    , mBaselineBufferDistance( -1.0 )
-    , mBaselineSimplificationTolerance( -1.0 )
+  : mStrataLayer( nullptr )
+  , mBaselineLayer( nullptr )
+  , mShareBaseline( false )
+  , mMinDistanceUnits( Meters )
+  , mMinTransectLength( 0.0 )
+  , mBaselineBufferDistance( -1.0 )
+  , mBaselineSimplificationTolerance( -1.0 )
 {
 }
 
-int QgsTransectSample::createSample( QProgressDialog* pd )
+int QgsTransectSample::createSample( QProgressDialog *pd )
 {
   Q_UNUSED( pd );
 
@@ -191,7 +191,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     {
       continue;
     }
-    QgsGeometry* bufferLineClipped = clipBufferLine( strataGeom, &clippedBaseline, bufferDist );
+    QgsGeometry *bufferLineClipped = clipBufferLine( strataGeom, &clippedBaseline, bufferDist );
     if ( !bufferLineClipped )
     {
       continue;
@@ -215,7 +215,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
     while ( nCreatedTransects < nTransects && nIterations < nMaxIterations )
     {
-      double randomPosition = (( double )mt_rand() / MD_RAND_MAX ) * clippedBaseline.length();
+      double randomPosition = ( ( double )mt_rand() / MD_RAND_MAX ) * clippedBaseline.length();
       QgsGeometry samplePoint = clippedBaseline.interpolate( randomPosition );
       ++nIterations;
       if ( samplePoint.isNull() )
@@ -328,7 +328,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   return 0;
 }
 
-QgsGeometry QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
+QgsGeometry QgsTransectSample::findBaselineGeometry( const QVariant &strataId )
 {
   if ( !mBaselineLayer )
   {
@@ -348,8 +348,8 @@ QgsGeometry QgsTransectSample::findBaselineGeometry( const QVariant& strataId )
   return QgsGeometry();
 }
 
-bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry& geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex& sIndex,
-    const QMap< QgsFeatureId, QgsGeometry >& lineFeatureMap, QgsDistanceArea& da )
+bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry &geom, double minDistLayerUnit, double minDistance, QgsSpatialIndex &sIndex,
+    const QMap< QgsFeatureId, QgsGeometry > &lineFeatureMap, QgsDistanceArea &da )
 {
   if ( geom.isNull() )
   {
@@ -385,7 +385,7 @@ bool QgsTransectSample::otherTransectWithinDistance( const QgsGeometry& geom, do
   return false;
 }
 
-bool QgsTransectSample::closestSegmentPoints( const QgsGeometry& g1, const QgsGeometry& g2, double& dist, QgsPoint& pt1, QgsPoint& pt2 )
+bool QgsTransectSample::closestSegmentPoints( const QgsGeometry &g1, const QgsGeometry &g2, double &dist, QgsPoint &pt1, QgsPoint &pt2 )
 {
   QgsWkbTypes::Type t1 = g1.wkbType();
   if ( t1 != QgsWkbTypes::LineString && t1 != QgsWkbTypes::LineString25D )
@@ -515,7 +515,7 @@ bool QgsTransectSample::closestSegmentPoints( const QgsGeometry& g1, const QgsGe
   return true;
 }
 
-QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint& pt, const QgsGeometry& multiLine )
+QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint &pt, const QgsGeometry &multiLine )
 {
   if ( !multiLine || ( multiLine.wkbType() != QgsWkbTypes::MultiLineString
                        && multiLine.wkbType() != QgsWkbTypes::MultiLineString25D ) )
@@ -545,7 +545,7 @@ QgsGeometry QgsTransectSample::closestMultilineElement( const QgsPoint& pt, cons
   return closestLine;
 }
 
-QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry& stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
+QgsGeometry *QgsTransectSample::clipBufferLine( const QgsGeometry &stratumGeom, QgsGeometry *clippedBaseline, double tolerance )
 {
   if ( !stratumGeom || !clippedBaseline || clippedBaseline->wkbType() == QgsWkbTypes::Unknown )
   {

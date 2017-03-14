@@ -26,10 +26,10 @@
 #include <QtAlgorithms>
 #include <QTextStream>
 
-QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
-    , mNextId( 0 )
-    , mTestGeometryExact( false )
+QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
+  , mNextId( 0 )
+  , mTestGeometryExact( false )
 {
 
   // Determine mode to use based on request...
@@ -165,7 +165,7 @@ QgsDelimitedTextFeatureIterator::~QgsDelimitedTextFeatureIterator()
   close();
 }
 
-bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   // before we do anything else, assume that there's something wrong with
   // the feature
@@ -252,7 +252,7 @@ bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsPoint &pt ) const
 /**
  * Check to see if the geometry is within the selection rectangle
  */
-bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsGeometry& geom ) const
+bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsGeometry &geom ) const
 {
   if ( ! mTestGeometry ) return true;
 
@@ -267,7 +267,7 @@ bool QgsDelimitedTextFeatureIterator::wantGeometry( const QgsGeometry& geom ) co
 
 
 
-bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
+bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
 {
   QStringList tokens;
 
@@ -318,7 +318,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
         geom = loadGeometryXY( tokens, nullGeom );
       }
 
-      if (( geom.isNull() && !nullGeom ) || ( nullGeom && mTestGeometry ) )
+      if ( ( geom.isNull() && !nullGeom ) || ( nullGeom && mTestGeometry ) )
       {
         // if we didn't get a geom and not because it's null, or we got a null
         // geom and we are testing for intersecting geometries then ignore this
@@ -373,12 +373,12 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
 bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 {
-  return mSource->mFile->setNextRecordId(( long ) fid );
+  return mSource->mFile->setNextRecordId( ( long ) fid );
 }
 
 
 
-QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
+QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList &tokens, bool &isNull )
 {
   QgsGeometry geom;
   QString sWkt = tokens[mSource->mWktFieldIndex];
@@ -402,7 +402,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList&
   return geom;
 }
 
-QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
+QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &tokens, bool &isNull )
 {
   QString sX = tokens[mSource->mXFieldIndex];
   QString sY = tokens[mSource->mYFieldIndex];
@@ -424,7 +424,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& 
 
 
 
-void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens )
+void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int fieldIdx, const QStringList &tokens )
 {
   if ( fieldIdx < 0 || fieldIdx >= mSource->attributeColumns.count() ) return;
   int column = mSource->attributeColumns.at( fieldIdx );
@@ -478,25 +478,25 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 // ------------
 
-QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
-    : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( *p->mSubsetExpression ) : nullptr )
-    , mExtent( p->mExtent )
-    , mUseSpatialIndex( p->mUseSpatialIndex )
-    , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )
-    , mUseSubsetIndex( p->mUseSubsetIndex )
-    , mSubsetIndex( p->mSubsetIndex )
-    , mFile( nullptr )
-    , mFields( p->attributeFields )
-    , mFieldCount( p->mFieldCount )
-    , mXFieldIndex( p->mXFieldIndex )
-    , mYFieldIndex( p->mYFieldIndex )
-    , mWktFieldIndex( p->mWktFieldIndex )
-    , mWktHasPrefix( p->mWktHasPrefix )
-    , mGeometryType( p->mGeometryType )
-    , mDecimalPoint( p->mDecimalPoint )
-    , mXyDms( p->mXyDms )
-    , attributeColumns( p->attributeColumns )
+QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p )
+  : mGeomRep( p->mGeomRep )
+  , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( *p->mSubsetExpression ) : nullptr )
+  , mExtent( p->mExtent )
+  , mUseSpatialIndex( p->mUseSpatialIndex )
+  , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )
+  , mUseSubsetIndex( p->mUseSubsetIndex )
+  , mSubsetIndex( p->mSubsetIndex )
+  , mFile( nullptr )
+  , mFields( p->attributeFields )
+  , mFieldCount( p->mFieldCount )
+  , mXFieldIndex( p->mXFieldIndex )
+  , mYFieldIndex( p->mYFieldIndex )
+  , mWktFieldIndex( p->mWktFieldIndex )
+  , mWktHasPrefix( p->mWktHasPrefix )
+  , mGeometryType( p->mGeometryType )
+  , mDecimalPoint( p->mDecimalPoint )
+  , mXyDms( p->mXyDms )
+  , attributeColumns( p->attributeColumns )
 {
   QUrl url = p->mFile->url();
 
@@ -510,7 +510,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
 }
 
@@ -521,7 +521,7 @@ QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
   delete mFile;
 }
 
-QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, false, request ) );
 }

@@ -42,9 +42,9 @@ class CORE_EXPORT QgsProcessingProvider
     virtual ~QgsProcessingProvider() = default;
 
     //! Providers cannot be copied
-    QgsProcessingProvider( const QgsProcessingProvider& other ) = delete;
+    QgsProcessingProvider( const QgsProcessingProvider &other ) = delete;
     //! Providers cannot be copied
-    QgsProcessingProvider& operator=( const QgsProcessingProvider& other ) = delete;
+    QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
 
     /**
      * Returns an icon for the provider.

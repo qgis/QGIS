@@ -41,13 +41,13 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
      * @param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
-    QgsConfigureShortcutsDialog( QWidget* parent = nullptr, QgsShortcutsManager* manager = nullptr );
+    QgsConfigureShortcutsDialog( QWidget *parent = nullptr, QgsShortcutsManager *manager = nullptr );
 
     ~QgsConfigureShortcutsDialog();
 
   protected:
-    void keyPressEvent( QKeyEvent * event ) override;
-    void keyReleaseEvent( QKeyEvent * event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
 
   private slots:
     void changeShortcut();
@@ -55,9 +55,9 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setNoShortcut();
     void saveShortcuts();
     void loadShortcuts();
-    void on_mLeFilter_textChanged( const QString& text );
+    void on_mLeFilter_textChanged( const QString &text );
 
-    void actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
+    void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
   private:
 
@@ -71,19 +71,19 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void populateActions();
 
     //! Returns the currently selected shortcut object (QAction or QShortcut)
-    QObject* currentObject();
+    QObject *currentObject();
 
     //! Returns the currently selected action, or null if no action selected
-    QAction* currentAction();
+    QAction *currentAction();
 
     //! Returns the currently selected QShortcut, or null if no shortcut selected
-    QShortcut* currentShortcut();
+    QShortcut *currentShortcut();
 
     void setGettingShortcut( bool getting );
-    void setCurrentActionShortcut( const QKeySequence& s );
+    void setCurrentActionShortcut( const QKeySequence &s );
     void updateShortcutText();
 
-    QgsShortcutsManager* mManager = nullptr;
+    QgsShortcutsManager *mManager = nullptr;
 
     bool mGettingShortcut;
     int mModifiers, mKey;

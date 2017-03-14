@@ -22,7 +22,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-    QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent = nullptr );
+    QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent = nullptr );
     ~QgsDecorationNorthArrowDialog();
 
   private:
@@ -38,7 +38,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     void apply();
 
   protected:
-    QgsDecorationNorthArrow& mDeco;
+    QgsDecorationNorthArrow &mDeco;
 };
 
 #endif

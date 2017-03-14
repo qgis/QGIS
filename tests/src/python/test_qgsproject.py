@@ -18,12 +18,19 @@ import os
 
 import qgis  # NOQA
 
-from qgis.core import QgsProject, QgsApplication, QgsUnitTypes, QgsCoordinateReferenceSystem
-
+from qgis.core import (QgsProject,
+                       QgsApplication,
+                       QgsUnitTypes,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayer)
+from qgis.gui import (QgsLayerTreeMapCanvasBridge,
+                      QgsMapCanvas)
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtTest import QSignalSpy
 
-start_app()
+app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -61,7 +68,7 @@ class TestQgsProject(unittest.TestCase):
             (0x3001, 0xD7FF),
             (0xF900, 0xFDCF),
             (0xFDF0, 0xFFFD),
-            #(0x10000, 0xEFFFF),   while actually valid, these are not yet accepted by makeKeyTokens_()
+            # (0x10000, 0xEFFFF),   while actually valid, these are not yet accepted by makeKeyTokens_()
         ]
         for r in charRanges:
             for c in range(r[0], r[1]):
@@ -127,8 +134,13 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.clear()
 
+        prj.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3111'))
         prj.setEllipsoid('WGS84')
         self.assertEqual(prj.ellipsoid(), 'WGS84')
+
+        # if project has NO crs, then ellipsoid should always be none
+        prj.setCrs(QgsCoordinateReferenceSystem())
+        self.assertEqual(prj.ellipsoid(), 'NONE')
 
     def testDistanceUnits(self):
         prj = QgsProject.instance()
@@ -148,10 +160,71 @@ class TestQgsProject(unittest.TestCase):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, 'labeling/test-labeling.qgs'))
 
-        #valid key, valid int value
+        # valid key, valid int value
         self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
-        #invalid key
+        # invalid key
         self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+
+    def testEmbeddedGroup(self):
+        testdata_path = unitTestDataPath('embedded_groups') + '/'
+
+        prj_path = os.path.join(testdata_path, "project2.qgs")
+        prj = QgsProject()
+        prj.read(prj_path)
+
+        layer_tree_group = prj.layerTreeRoot()
+        layers_ids = layer_tree_group.findLayerIds()
+
+        layers_names = []
+        for layer_id in layers_ids:
+            name = prj.mapLayer(layer_id).name()
+            layers_names.append(name)
+
+        expected = ['polys', 'lines']
+        self.assertEqual(sorted(layers_names), sorted(expected))
+
+    def testLayerOrder(self):
+        """ test project layer order"""
+        prj = QgsProject()
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        prj.addMapLayers([layer, layer2, layer3])
+
+        layer_order_changed_spy = QSignalSpy(prj.layerOrderChanged)
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(len(layer_order_changed_spy), 1)
+        prj.setLayerOrder([layer2, layer])
+        self.assertEqual(len(layer_order_changed_spy), 1) # no signal, order not changed
+
+        self.assertEqual(prj.layerOrder(), [layer2, layer])
+        prj.setLayerOrder([layer])
+        self.assertEqual(prj.layerOrder(), [layer])
+        self.assertEqual(len(layer_order_changed_spy), 2)
+
+        # remove a layer
+        prj.setLayerOrder([layer2, layer, layer3])
+        self.assertEqual(len(layer_order_changed_spy), 3)
+        prj.removeMapLayer(layer)
+        self.assertEqual(prj.layerOrder(), [layer2, layer3])
+        self.assertEqual(len(layer_order_changed_spy), 4)
+
+        # save and restore
+        file_name = os.path.join(str(QDir.tempPath()), 'proj.qgs')
+        prj.setFileName(file_name)
+        prj.write()
+        prj2 = QgsProject()
+        prj2.setFileName(file_name)
+        prj2.read()
+        self.assertEqual([l.id() for l in prj2.layerOrder()], [layer2.id(), layer3.id()])
+
+        # clear project
+        prj.clear()
+        self.assertEqual(prj.layerOrder(), [])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -19,19 +19,19 @@
 
 #include <QAction>
 #include <QMenu>
-#include <QSettings>
 #include <QWidget>
 #include <QTableWidget>
 
+#include "qgssettings.h"
 #include "qgsauthcertificatemanager.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
-    : QDialog( parent )
-    , mAuthNotifyLayout( nullptr )
-    , mAuthNotify( nullptr )
+  : QDialog( parent )
+  , mAuthNotifyLayout( nullptr )
+  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -99,14 +99,14 @@ void QgsAuthMethodPlugins::populateTable()
 
 
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
-    : QWidget( parent )
-    , mAuthUtilitiesMenu( nullptr )
-    , mActionSetMasterPassword( nullptr )
-    , mActionClearCachedMasterPassword( nullptr )
-    , mActionResetMasterPassword( nullptr )
-    , mActionClearCachedAuthConfigs( nullptr )
-    , mActionRemoveAuthConfigs( nullptr )
-    , mActionEraseAuthDatabase( nullptr )
+  : QWidget( parent )
+  , mAuthUtilitiesMenu( nullptr )
+  , mActionSetMasterPassword( nullptr )
+  , mActionClearCachedMasterPassword( nullptr )
+  , mActionResetMasterPassword( nullptr )
+  , mActionClearCachedAuthConfigs( nullptr )
+  , mActionRemoveAuthConfigs( nullptr )
+  , mActionEraseAuthDatabase( nullptr )
 {
   setupUi( this );
   if ( !QgsAuthManager::instance()->isDisabled() )
@@ -141,8 +141,8 @@ void QgsAuthEditorWidgets::on_btnAuthPlugins_clicked()
 
 void QgsAuthEditorWidgets::setupUtilitiesMenu()
 {
-  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
-           this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
+           this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
 
   // set up utility actions menu
   mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
@@ -202,7 +202,7 @@ void QgsAuthEditorWidgets::eraseAuthenticationDatabase()
   QgsAuthGuiUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
 }
 
-void QgsAuthEditorWidgets::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+void QgsAuthEditorWidgets::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = ( int )level;
   messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
@@ -215,6 +215,6 @@ QgsMessageBar *QgsAuthEditorWidgets::messageBar()
 
 int QgsAuthEditorWidgets::messageTimeout()
 {
-  QSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

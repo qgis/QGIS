@@ -22,27 +22,27 @@
 
 #include <QRegExp>
 
-QgsErrorMessage::QgsErrorMessage( const QString & message, const QString & tag, const QString & file, const QString & function, int line )
-    : mMessage( message )
-    , mTag( tag )
-    , mFile( file )
-    , mFunction( function )
-    , mLine( line )
-    , mFormat( Text )
+QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, const QString &file, const QString &function, int line )
+  : mMessage( message )
+  , mTag( tag )
+  , mFile( file )
+  , mFunction( function )
+  , mLine( line )
+  , mFormat( Text )
 {
 }
 
-QgsError::QgsError( const QString & message, const QString & tag )
+QgsError::QgsError( const QString &message, const QString &tag )
 {
   append( message, tag );
 }
 
-void QgsError::append( const QString & message, const QString & tag )
+void QgsError::append( const QString &message, const QString &tag )
 {
   mMessageList.append( QgsErrorMessage( message, tag ) );
 }
 
-void QgsError::append( const QgsErrorMessage & message )
+void QgsError::append( const QgsErrorMessage &message )
 {
   mMessageList.append( message );
 }
@@ -67,7 +67,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   }
 #endif
 
-  Q_FOREACH ( const QgsErrorMessage& m, mMessageList )
+  Q_FOREACH ( const QgsErrorMessage &m, mMessageList )
   {
 #ifdef QGISDEBUG
     QString file;

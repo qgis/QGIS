@@ -24,12 +24,12 @@
 
 namespace QgsWms
 {
-  void writeGetCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
-                             const QString& version, const QgsServerRequest& request,
-                             QgsServerResponse& response, bool projectSettings )
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                             const QString &version, const QgsServerRequest &request,
+                             QgsServerResponse &response, bool projectSettings )
   {
     QString configFilePath = serverIface->configFilePath();
-    QgsCapabilitiesCache* capabilitiesCache = serverIface->capabilitiesCache();
+    QgsCapabilitiesCache *capabilitiesCache = serverIface->capabilitiesCache();
 
     QStringList cacheKeyList;
     cacheKeyList << ( projectSettings ? QStringLiteral( "projectSettings" ) : version );
@@ -37,13 +37,13 @@ namespace QgsWms
     bool cache = true;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    QgsAccessControl* accessControl = serverIface->accessControls();
+    QgsAccessControl *accessControl = serverIface->accessControls();
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
 #endif
 
     QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
-    const QDomDocument* capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+    const QDomDocument *capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
     if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
     {
       QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
@@ -71,14 +71,14 @@ namespace QgsWms
     response.write( capabilitiesDocument->toByteArray() );
   }
 
-  QDomDocument getCapabilities( QgsServerInterface* serverIface, const QgsProject* project,
-                                const QString& version, const QgsServerRequest& request,
+  QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                                const QString &version, const QgsServerRequest &request,
                                 bool projectSettings )
   {
     QDomDocument doc;
     QDomElement wmsCapabilitiesElement;
 
-    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
 
     QgsServerRequest::Parameters parameters = request.parameters();
 
@@ -94,7 +94,7 @@ namespace QgsWms
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
 
     // Append format helper
-    std::function < void ( QDomElement&, const QString& ) > appendFormat = [&doc]( QDomElement & elem, const QString & format )
+    std::function < void ( QDomElement &, const QString & ) > appendFormat = [&doc]( QDomElement & elem, const QString & format )
     {
       QDomElement formatElem = doc.createElement( QStringLiteral( "Format" )/*wms:Format*/ );
       formatElem.appendChild( doc.createTextNode( format ) );
@@ -200,20 +200,20 @@ namespace QgsWms
     requestElement.appendChild( elem );
 
     //wms:GetLegendGraphic
-    elem = doc.createElement(( version == QLatin1String( "1.1.1" ) ? "GetLegendGraphic" : "sld:GetLegendGraphic" )/*wms:GetLegendGraphic*/ );
+    elem = doc.createElement( ( version == QLatin1String( "1.1.1" ) ? "GetLegendGraphic" : "sld:GetLegendGraphic" )/*wms:GetLegendGraphic*/ );
     appendFormat( elem, QStringLiteral( "image/jpeg" ) );
     appendFormat( elem, QStringLiteral( "image/png" ) );
     elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
     requestElement.appendChild( elem );
 
     //wms:DescribeLayer
-    elem = doc.createElement(( version == QLatin1String( "1.1.1" ) ? "DescribeLayer" : "sld:DescribeLayer" )/*wms:GetLegendGraphic*/ );
+    elem = doc.createElement( ( version == QLatin1String( "1.1.1" ) ? "DescribeLayer" : "sld:DescribeLayer" )/*wms:GetLegendGraphic*/ );
     appendFormat( elem, QStringLiteral( "text/xml" ) );
     elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
     requestElement.appendChild( elem );
 
     //wms:GetStyles
-    elem = doc.createElement(( version == QLatin1String( "1.1.1" ) ? "GetStyles" : "qgs:GetStyles" )/*wms:GetStyles*/ );
+    elem = doc.createElement( ( version == QLatin1String( "1.1.1" ) ? "GetStyles" : "qgs:GetStyles" )/*wms:GetStyles*/ );
     appendFormat( elem, QStringLiteral( "text/xml" ) );
     elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
     requestElement.appendChild( elem );

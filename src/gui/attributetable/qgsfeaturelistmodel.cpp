@@ -23,29 +23,29 @@
 #include <QSettings>
 
 QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent )
-    : QAbstractProxyModel( parent )
-    , mInjectNull( false )
+  : QAbstractProxyModel( parent )
+  , mInjectNull( false )
 {
   setSourceModel( sourceModel );
-  mExpression = new QgsExpression( QLatin1String( "" ) );
 }
 
 QgsFeatureListModel::~QgsFeatureListModel()
 {
-  delete mExpression;
 }
 
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
   QAbstractProxyModel::setSourceModel( sourceModel );
+  mExpressionContext = sourceModel->layer()->createExpressionContext();
   mFilterModel = sourceModel;
+
   if ( mFilterModel )
   {
     // rewire (filter-)change events in the source model so this proxy reflects the changes
-    connect( mFilterModel, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), SLOT( onBeginRemoveRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex&, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex&, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( onEndInsertRows( const QModelIndex&, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ), SLOT( onBeginRemoveRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex &, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ), SLOT( onEndInsertRows( const QModelIndex &, int, int ) ) );
     // propagate sort order changes from source model to views connected to this model
     connect( mFilterModel, SIGNAL( layoutAboutToBeChanged() ), this, SIGNAL( layoutAboutToBeChanged() ) );
     connect( mFilterModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
@@ -91,9 +91,8 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
-    context.setFeature( feat );
-    return mExpression->evaluate( &context );
+    mExpressionContext.setFeature( feat );
+    return mDisplayExpression.evaluate( &mExpressionContext );
   }
 
   if ( role == FeatureInfoRole )
@@ -104,7 +103,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    QgsVectorLayerEditBuffer* editBuffer = mFilterModel->layer()->editBuffer();
+    QgsVectorLayerEditBuffer *editBuffer = mFilterModel->layer()->editBuffer();
 
     if ( editBuffer )
     {
@@ -131,6 +130,57 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::TextAlignmentRole )
   {
     return Qt::AlignLeft;
+  }
+
+
+  if ( role == Qt::BackgroundColorRole
+       || Qt::TextColorRole
+       || Qt::DecorationRole
+       || Qt::FontRole )
+  {
+    QgsVectorLayer *layer = mFilterModel->layer();
+    QgsFeature feat;
+    QgsFeatureId fid = idxToFid( index );
+    mFilterModel->layerCache()->featureAtId( fid, feat );
+    mExpressionContext.setFeature( feat );
+    QList<QgsConditionalStyle> styles;
+
+    if ( mRowStylesMap.contains( fid ) )
+    {
+      styles = mRowStylesMap.value( fid );
+    }
+    else
+    {
+      styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+      mRowStylesMap.insert( fid, styles );
+    }
+
+    QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
+
+    if ( mDisplayExpression.isField() )
+    {
+      QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+      styles = layer->conditionalStyles()->fieldStyles( fieldName );
+      styles = QgsConditionalStyle::matchingConditionalStyles( styles, feat.attribute( fieldName ),  mExpressionContext );
+    }
+
+    styles.insert( 0, rowstyle );
+
+    QgsConditionalStyle style = QgsConditionalStyle::compressStyles( styles );
+
+    if ( style.isValid() )
+    {
+      if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+        return style.backgroundColor();
+      if ( role == Qt::TextColorRole && style.validTextColor() )
+        return style.textColor();
+      if ( role == Qt::DecorationRole )
+        return style.icon();
+      if ( role == Qt::FontRole )
+        return style.font();
+    }
+
+    return QVariant();
   }
 
   return sourceModel()->data( mapToSource( index ), role );
@@ -163,28 +213,24 @@ bool QgsFeatureListModel::injectNull()
   return mInjectNull;
 }
 
-QgsAttributeTableModel* QgsFeatureListModel::masterModel()
+QgsAttributeTableModel *QgsFeatureListModel::masterModel()
 {
   return mFilterModel->masterModel();
 }
 
-bool QgsFeatureListModel::setDisplayExpression( const QString& expression )
+bool QgsFeatureListModel::setDisplayExpression( const QString &expression )
 {
-  QgsExpression* exp = new QgsExpression( expression );
+  QgsExpression exp = QgsExpression( expression );
 
-  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mFilterModel->layer() ) );
+  exp.prepare( &mExpressionContext );
 
-  exp->prepare( &context );
-
-  if ( exp->hasParserError() )
+  if ( exp.hasParserError() )
   {
-    mParserErrorString = exp->parserErrorString();
-    delete exp;
+    mParserErrorString = exp.parserErrorString();
     return false;
   }
 
-  delete mExpression;
-  mExpression = exp;
+  mDisplayExpression = exp;
 
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
   return true;
@@ -197,7 +243,7 @@ QString QgsFeatureListModel::parserErrorString()
 
 QString QgsFeatureListModel::displayExpression() const
 {
-  return mExpression->expression();
+  return mDisplayExpression.expression();
 }
 
 bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &feat )
@@ -205,12 +251,12 @@ bool QgsFeatureListModel::featureByIndex( const QModelIndex &index, QgsFeature &
   return mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 }
 
-void QgsFeatureListModel::onBeginRemoveRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onBeginRemoveRows( const QModelIndex &parent, int first, int last )
 {
   beginRemoveRows( parent, first, last );
 }
 
-void QgsFeatureListModel::onEndRemoveRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onEndRemoveRows( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
   Q_UNUSED( first )
@@ -218,12 +264,12 @@ void QgsFeatureListModel::onEndRemoveRows( const QModelIndex& parent, int first,
   endRemoveRows();
 }
 
-void QgsFeatureListModel::onBeginInsertRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onBeginInsertRows( const QModelIndex &parent, int first, int last )
 {
   beginInsertRows( parent, first, last );
 }
 
-void QgsFeatureListModel::onEndInsertRows( const QModelIndex& parent, int first, int last )
+void QgsFeatureListModel::onEndInsertRows( const QModelIndex &parent, int first, int last )
 {
   Q_UNUSED( parent )
   Q_UNUSED( first )
@@ -251,12 +297,12 @@ QModelIndex QgsFeatureListModel::mapFromMaster( const QModelIndex &sourceIndex )
   return createIndex( mFilterModel->mapFromMaster( sourceIndex ).row() + offset, 0 );
 }
 
-QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection& selection ) const
+QItemSelection QgsFeatureListModel::mapSelectionFromMaster( const QItemSelection &selection ) const
 {
   return mapSelectionFromSource( mFilterModel->mapSelectionFromSource( selection ) );
 }
 
-QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection& selection ) const
+QItemSelection QgsFeatureListModel::mapSelectionToMaster( const QItemSelection &selection ) const
 {
   return mFilterModel->mapSelectionToSource( mapSelectionToSource( selection ) );
 }
@@ -281,26 +327,26 @@ QModelIndex QgsFeatureListModel::mapFromSource( const QModelIndex &sourceIndex )
   return createIndex( sourceIndex.row(), 0 );
 }
 
-QModelIndex QgsFeatureListModel::index( int row, int column, const QModelIndex& parent ) const
+QModelIndex QgsFeatureListModel::index( int row, int column, const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 
   return createIndex( row, column );
 }
 
-QModelIndex QgsFeatureListModel::parent( const QModelIndex& child ) const
+QModelIndex QgsFeatureListModel::parent( const QModelIndex &child ) const
 {
   Q_UNUSED( child )
   return QModelIndex();
 }
 
-int QgsFeatureListModel::columnCount( const QModelIndex&parent ) const
+int QgsFeatureListModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return 1;
 }
 
-int QgsFeatureListModel::rowCount( const QModelIndex& parent ) const
+int QgsFeatureListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
 

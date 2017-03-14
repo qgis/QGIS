@@ -199,7 +199,7 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     /**
      * Key value accessors
      *
-     * keys would be the familiar QSettings-like '/' delimited entries,
+     * keys would be the familiar QgsSettings-like '/' delimited entries,
      * implying a hierarchy of keys and corresponding values
      */
     QStringList readListEntry( const QString& scope, const QString& key, const QStringList& def = QStringList(), bool *ok = 0 ) const;
@@ -215,13 +215,13 @@ class QgsProject : QObject, QgsExpressionContextGenerator
 
     /** Return keys with values -- do not return keys that contain other keys
      *
-     * @note equivalent to QSettings entryList()
+     * @note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString& scope, const QString& key ) const;
 
     /** Return keys with keys -- do not return keys that contain only values
      *
-     * @note equivalent to QSettings subkeyList()
+     * @note equivalent to QgsSettings subkeyList()
      */
     QStringList subkeyList( const QString& scope, const QString& key ) const;
 
@@ -487,6 +487,9 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     void reloadAllLayers();
 
+    QList< QgsMapLayer * > layerOrder() const;
+    void setLayerOrder( const QList< QgsMapLayer * > &order );
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument& );
@@ -539,12 +542,14 @@ class QgsProject : QObject, QgsExpressionContextGenerator
     void homePathChanged();
 
     //! emitted whenever the configuration for snapping has changed
-    void snappingConfigChanged();
+    void snappingConfigChanged( const QgsSnappingConfig& config );
 
     /** Emitted whenever the expression variables stored in the project have been changed.
      * @note added in QGIS 3.0
      */
     void customVariablesChanged();
+
+    void crsChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a
@@ -621,12 +626,12 @@ class QgsProject : QObject, QgsExpressionContextGenerator
      */
     //TODO QGIS 3.0 - rename to past tense
     void removeAll();
+    void layersAdded( const QList<QgsMapLayer *> &layers );
 
-    void layersAdded( const QList<QgsMapLayer *>& layers );
+    void layerWasAdded( QgsMapLayer *layer );
+    void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
-    void layerWasAdded( QgsMapLayer* layer );
-
-    void legendLayersAdded( const QList<QgsMapLayer*>& layers );
+    void layerOrderChanged();
 
   public slots:
     /**

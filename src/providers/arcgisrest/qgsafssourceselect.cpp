@@ -26,8 +26,8 @@
 #include <QMessageBox>
 
 
-QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
-    : QgsSourceSelectDialog( QStringLiteral( "ArcGisFeatureServer" ), QgsSourceSelectDialog::FeatureService, parent, fl )
+QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
+  : QgsSourceSelectDialog( QStringLiteral( "ArcGisFeatureServer" ), QgsSourceSelectDialog::FeatureService, parent, fl )
 {
   if ( embeddedMode )
   {
@@ -50,7 +50,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   }
 
   QStringList layerErrors;
-  foreach ( const QVariant& layerInfo, serviceInfoMap["layers"].toList() )
+  foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
@@ -66,12 +66,12 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
       continue;
     }
     // insert the typenames, titles and abstracts into the tree view
-    QStandardItem* idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
-    QStandardItem* nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
-    QStandardItem* abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
+    QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
+    QStandardItem *nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
+    QStandardItem *abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
     abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );
-    QStandardItem* cachedItem = new QStandardItem();
-    QStandardItem* filterItem = new QStandardItem();
+    QStandardItem *cachedItem = new QStandardItem();
+    QStandardItem *filterItem = new QStandardItem();
     cachedItem->setCheckable( true );
     cachedItem->setCheckState( Qt::Checked );
 
@@ -83,7 +83,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
     }
     mAvailableCRS[layerData[QStringLiteral( "name" )].toString()] = QList<QString>()  << crs.authid();
 
-    mModel->appendRow( QList<QStandardItem*>() << idItem << nameItem << abstractItem << cachedItem << filterItem );
+    mModel->appendRow( QList<QStandardItem *>() << idItem << nameItem << abstractItem << cachedItem << filterItem );
   }
   if ( !layerErrors.isEmpty() )
   {
@@ -92,7 +92,7 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   return true;
 }
 
-void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const QModelIndex& index )
+void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const QModelIndex &index )
 {
   if ( !index.isValid() )
   {
@@ -116,7 +116,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
 
   //add available attributes to expression builder
-  QgsExpressionBuilderWidget* w = d.expressionBuilder();
+  QgsExpressionBuilderWidget *w = d.expressionBuilder();
   w->loadFieldNames( provider.fields() );
 
   if ( d.exec() == QDialog::Accepted )
@@ -126,11 +126,11 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   }
 }
 
-QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection& connection,
-    const QString& layerTitle, const QString& /*layerName*/,
-    const QString& crs,
-    const QString& filter,
-    const QgsRectangle& bBox ) const
+QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
+    const QString &layerTitle, const QString & /*layerName*/,
+    const QString &crs,
+    const QString &filter,
+    const QgsRectangle &bBox ) const
 {
   QgsDataSourceUri ds = connection.uri();
   QString url = ds.param( QStringLiteral( "url" ) ) + "/" + layerTitle;

@@ -44,9 +44,9 @@ static QList<QgsFeature> _pointFeatures()
 
   QList<QgsFeature> feats;
   feats << _pointFeature( 1,  1,  1 )
-  << _pointFeature( 2, -1,  1 )
-  << _pointFeature( 3, -1, -1 )
-  << _pointFeature( 4,  1, -1 );
+        << _pointFeature( 2, -1,  1 )
+        << _pointFeature( 3, -1, -1 )
+        << _pointFeature( 4,  1, -1 );
   return feats;
 }
 
@@ -69,7 +69,7 @@ class TestQgsSpatialIndex : public QObject
     void testQuery()
     {
       QgsSpatialIndex index;
-      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
+      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
         index.insertFeature( f );
 
       QList<QgsFeatureId> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
@@ -84,8 +84,8 @@ class TestQgsSpatialIndex : public QObject
 
     void testCopy()
     {
-      QgsSpatialIndex* index = new QgsSpatialIndex;
-      Q_FOREACH ( const QgsFeature& f, _pointFeatures() )
+      QgsSpatialIndex *index = new QgsSpatialIndex;
+      Q_FOREACH ( const QgsFeature &f, _pointFeatures() )
         index->insertFeature( f );
 
       // create copy of the index
@@ -127,7 +127,7 @@ class TestQgsSpatialIndex : public QObject
       {
         for ( int k = 0; k < 500; ++k )
         {
-          QgsFeature f( i*1000 + k );
+          QgsFeature f( i * 1000 + k );
           QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
           f.setGeometry( g );
           index.insertFeature( f );
@@ -143,13 +143,13 @@ class TestQgsSpatialIndex : public QObject
 
     void benchmarkBulkLoad()
     {
-      QgsVectorLayer* vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       for ( int i = 0; i < 100; ++i )
       {
         QgsFeatureList flist;
         for ( int k = 0; k < 500; ++k )
         {
-          QgsFeature f( i*1000 + k );
+          QgsFeature f( i * 1000 + k );
           QgsGeometry g = QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) );
           f.setGeometry( g );
           flist << f;
@@ -158,8 +158,8 @@ class TestQgsSpatialIndex : public QObject
       }
 
       QTime t;
-      QgsSpatialIndex* indexBulk = nullptr;
-      QgsSpatialIndex* indexInsert = nullptr;
+      QgsSpatialIndex *indexBulk = nullptr;
+      QgsSpatialIndex *indexInsert = nullptr;
 
       t.start();
       {

@@ -20,15 +20,15 @@
 #include <QApplication>
 #include <QProgressDialog>
 
-QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
-    : QgsSnappingUtils( parent )
-    , mCanvas( canvas )
-    , mProgress( nullptr )
+QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent )
+  : QgsSnappingUtils( parent )
+  , mCanvas( canvas )
+  , mProgress( nullptr )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( layersChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
-  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( canvasCurrentLayerChanged() ) );
+  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( canvasCurrentLayerChanged() ) );
   canvasMapSettingsChanged();
   canvasCurrentLayerChanged();
 }
@@ -40,7 +40,7 @@ void QgsMapCanvasSnappingUtils::canvasMapSettingsChanged()
 
 void QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged()
 {
-  setCurrentLayer( qobject_cast<QgsVectorLayer*>( mCanvas->currentLayer() ) );
+  setCurrentLayer( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ) );
 }
 
 void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )

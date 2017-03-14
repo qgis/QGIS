@@ -28,11 +28,11 @@ email                : sherman at mrcc.com
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgscolumntypethread.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QHeaderView>
 #include <QStringList>
@@ -82,7 +82,7 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
       QStandardItemModel *model = new QStandardItemModel( values.size(), 1, cb );
 
       int row = 0;
-      Q_FOREACH ( const QString& value, values )
+      Q_FOREACH ( const QString &value, values )
       {
         QStandardItem *item = new QStandardItem( value );
         item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled );
@@ -111,7 +111,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
 {
   QString value( index.data( Qt::DisplayRole ).toString() );
 
-  QComboBox *cb = qobject_cast<QComboBox* >( editor );
+  QComboBox *cb = qobject_cast<QComboBox * >( editor );
   if ( cb )
   {
     if ( index.column() == QgsPgTableModel::DbtmType )
@@ -121,9 +121,9 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     {
       QStringList cols = index.data( Qt::UserRole + 2 ).toStringList();
 
-      Q_FOREACH ( const QString& col, cols )
+      Q_FOREACH ( const QString &col, cols )
       {
-        QStandardItemModel *cbm = qobject_cast<QStandardItemModel*>( cb->model() );
+        QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
         for ( int idx = 0; idx < cbm->rowCount(); idx++ )
         {
           QStandardItem *item = cbm->item( idx, 0 );
@@ -138,7 +138,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     }
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit*>( editor );
+  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
   if ( le )
   {
     bool ok;
@@ -165,7 +165,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
     }
     else if ( index.column() == QgsPgTableModel::DbtmPkCol )
     {
-      QStandardItemModel *cbm = qobject_cast<QStandardItemModel*>( cb->model() );
+      QStandardItemModel *cbm = qobject_cast<QStandardItemModel *>( cb->model() );
       QStringList cols;
       for ( int idx = 0; idx < cbm->rowCount(); idx++ )
       {
@@ -194,11 +194,11 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
 }
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( nullptr )
-    , mUseEstimatedMetadata( false )
+  : QDialog( parent, fl )
+  , mManagerMode( managerMode )
+  , mEmbeddedMode( embeddedMode )
+  , mColumnTypeThread( nullptr )
+  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -252,10 +252,10 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( new QgsPgSourceSelectDelegate( this ) );
 
-  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection&, const QItemSelection& ) ) );
+  connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
-  QSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() ?
+  QgsSettings settings;
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -263,12 +263,12 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/PgSourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/PgSourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   //hide the search options by default
@@ -342,7 +342,7 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 //! End Autoconnected SLOTS *
 
 // Remember which database is selected
-void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )
+void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
 {
   // Remember which database was selected.
   QgsPostgresConn::setSelectedConnection( text );
@@ -369,8 +369,8 @@ void QgsPgSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 
 void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
   {
     addTables();
   }
@@ -388,7 +388,7 @@ void QgsPgSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsPgSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsPgSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -400,7 +400,7 @@ void QgsPgSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
   }
 }
 
-void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -440,13 +440,13 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   }
 }
 
-void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty& layerProperty )
+void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty &layerProperty )
 {
   mTableModel.addTableEntry( layerProperty );
 }
@@ -460,13 +460,13 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
     finishList();
   }
 
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/PgSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/PgSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -490,7 +490,7 @@ void QgsPgSourceSelect::addTables()
 {
   mSelectedTables.clear();
 
-  Q_FOREACH ( const QModelIndex& idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  Q_FOREACH ( const QModelIndex &idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsPgTableModel::DbtmTable )
       continue;
@@ -541,14 +541,14 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   mColumnTypeThread = new QgsGeomColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata, cbxAllowGeometrylessTables->isChecked() );
 
-  connect( mColumnTypeThread, SIGNAL( setLayerType( const QgsPostgresLayerProperty& ) ),
-           this, SLOT( setLayerType( const QgsPostgresLayerProperty& ) ) );
+  connect( mColumnTypeThread, SIGNAL( setLayerType( const QgsPostgresLayerProperty & ) ),
+           this, SLOT( setLayerType( const QgsPostgresLayerProperty & ) ) );
   connect( mColumnTypeThread, SIGNAL( finished() ),
            this, SLOT( columnThreadFinished() ) );
   connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
            this, SIGNAL( progress( int, int ) ) );
-  connect( mColumnTypeThread, SIGNAL( progressMessage( const QString& ) ),
-           this, SIGNAL( progressMessage( const QString& ) ) );
+  connect( mColumnTypeThread, SIGNAL( progressMessage( const QString & ) ),
+           this, SIGNAL( progressMessage( const QString & ) ) );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();
@@ -627,7 +627,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-QString QgsPgSourceSelect::fullDescription( const QString& schema, const QString& table, const QString& column, const QString& type )
+QString QgsPgSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
   QString full_desc = QLatin1String( "" );
   if ( !schema.isEmpty() )
@@ -652,7 +652,7 @@ void QgsPgSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsPgSourceSelect::setSearchExpression( const QString& regexp )
+void QgsPgSourceSelect::setSearchExpression( const QString &regexp )
 {
   Q_UNUSED( regexp );
 }

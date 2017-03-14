@@ -20,19 +20,16 @@ from qgis.core import (QgsProject,
                        QgsMapSettings,
                        QgsSnappingUtils,
                        QgsSnappingConfig,
-                       QgsPointLocator,
                        QgsTolerance,
                        QgsRectangle,
                        QgsPoint,
                        QgsFeature,
                        QgsGeometry,
-                       QgsProject,
                        QgsLayerDefinition,
                        QgsMapLayerDependency
                        )
 
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 from qgis.PyQt.QtCore import QSize, QPoint
 

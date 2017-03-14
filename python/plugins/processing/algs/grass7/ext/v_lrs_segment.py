@@ -61,7 +61,7 @@ def processCommand(alg):
         ruleFile = alg.getParameterValue('file')
 
     output = alg.getOutputFromName(u'output')
-    alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
+    alg.exportedLayers[output.value] = output.name + alg.uniqueSuffix
 
     command = 'v.lrs.segment input={} file={} rstable={} output={} --overwrite'.format(
         alg.exportedLayers[alg.getParameterValue('input')],

@@ -39,15 +39,15 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     Q_OBJECT
 
   public:
-    explicit QgsAuthCertInfo( const QSslCertificate& cert,
+    explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
                               QWidget *parent = nullptr,
-                              const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
+                              const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
 
   private slots:
-    void setupError( const QString& msg );
+    void setupError( const QString &msg );
 
     void currentCertItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
@@ -57,9 +57,9 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void currentPolicyIndexChanged( int indx );
 
-    void decorateCertTreeItem( const QSslCertificate& cert,
+    void decorateCertTreeItem( const QSslCertificate &cert,
                                QgsAuthCertUtils::CertTrustPolicy trustpolicy,
-                               QTreeWidgetItem * item = nullptr );
+                               QTreeWidgetItem *item = nullptr );
 
   private:
     enum DetailsType
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     bool populateQcaCertCollection();
 
-    bool setQcaCertificate( const QSslCertificate& cert );
+    bool setQcaCertificate( const QSslCertificate &cert );
 
     bool populateCertChain();
 
@@ -92,10 +92,10 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void populateCertInfo();
 
-    QTreeWidgetItem *addGroupItem( QTreeWidgetItem *parent, const QString& group );
+    QTreeWidgetItem *addGroupItem( QTreeWidgetItem *parent, const QString &group );
 
-    void addFieldItem( QTreeWidgetItem *parent, const QString& field, const QString& value, FieldWidget wdgt = NoWidget ,
-                       const QColor& color = QColor() );
+    void addFieldItem( QTreeWidgetItem *parent, const QString &field, const QString &value, FieldWidget wdgt = NoWidget,
+                       const QColor &color = QColor() );
 
     void populateInfoGeneralSection();
 
@@ -150,10 +150,10 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
      * @param parent Parent widget
      * @param connectionCAs List of hierarchical certificates in a connection
      */
-    explicit QgsAuthCertInfoDialog( const QSslCertificate& cert,
+    explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
                                     bool manageCertTrust,
                                     QWidget *parent = nullptr,
-                                    const QList<QSslCertificate>& connectionCAs = QList<QSslCertificate>() );
+                                    const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Get access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }

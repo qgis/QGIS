@@ -26,7 +26,7 @@ NormVecDecorator::~NormVecDecorator()
   {
     for ( int i = 0; i < mNormVec->count(); i++ )
     {
-      delete( *mNormVec )[i];
+      delete ( *mNormVec )[i];
     }
   }
 
@@ -39,7 +39,7 @@ NormVecDecorator::~NormVecDecorator()
   }
 }
 
-int NormVecDecorator::addPoint( Point3D* p )
+int NormVecDecorator::addPoint( Point3D *p )
 {
   if ( mTIN )
   {
@@ -57,7 +57,7 @@ int NormVecDecorator::addPoint( Point3D* p )
     {
       estimateFirstDerivative( pointno );
       //update also the neighbours of the new point
-      QList<int>* list = mTIN->getSurroundingTriangles( pointno );
+      QList<int> *list = mTIN->getSurroundingTriangles( pointno );
       QList<int>::iterator it = list->begin();//iterate through the list and analize it
       while ( it != list->end() )
       {
@@ -80,7 +80,7 @@ int NormVecDecorator::addPoint( Point3D* p )
   return -1;
 }
 
-bool NormVecDecorator::calcNormal( double x, double y, Vector3D* result )
+bool NormVecDecorator::calcNormal( double x, double y, Vector3D *result )
 {
   if ( !alreadyestimated )
   {
@@ -100,7 +100,7 @@ bool NormVecDecorator::calcNormal( double x, double y, Vector3D* result )
   }
 }
 
-bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector3D* result )
+bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector3D *result )
 {
   if ( !alreadyestimated )
   {
@@ -121,14 +121,14 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
     result->setY( 0 );
     result->setZ( 0 );
 
-    QList<int>* vlist = getSurroundingTriangles( point );//get the value list
+    QList<int> *vlist = getSurroundingTriangles( point );//get the value list
 
     if ( !vlist )//an error occurred in 'getSurroundingTriangles'
     {
       return false;
     }
 
-    if ((( vlist->count() ) % 4 ) != 0 )//number of items in vlist has to be a multiple of 4
+    if ( ( ( vlist->count() ) % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
     {
       QgsDebugMsg( "warning, wrong number of items in vlist" );
       return false;
@@ -212,7 +212,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
       ++it;
       if ( it == vlist->end() )//restart at the beginning of the loop
-        {it = vlist->begin();}
+      {it = vlist->begin();}
 
 
     }
@@ -231,7 +231,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
 }
 
-bool NormVecDecorator::calcPoint( double x, double y, Point3D* result )
+bool NormVecDecorator::calcPoint( double x, double y, Point3D *result )
 {
 
   if ( !alreadyestimated )
@@ -252,29 +252,29 @@ bool NormVecDecorator::calcPoint( double x, double y, Point3D* result )
   }
 }
 
-bool NormVecDecorator::getTriangle( double x, double y, Point3D* p1, Vector3D* v1, Point3D* p2, Vector3D* v2, Point3D* p3, Vector3D* v3 )
+bool NormVecDecorator::getTriangle( double x, double y, Point3D *p1, Vector3D *v1, Point3D *p2, Vector3D *v2, Point3D *p3, Vector3D *v3 )
 {
   if ( p1 && p2 && p3 && v1 && v2 && v3 )
   {
-    int* nr1 = new int();
-    int* nr2 = new int();
-    int* nr3 = new int();
+    int *nr1 = new int();
+    int *nr2 = new int();
+    int *nr3 = new int();
 
     if ( TriDecorator::getTriangle( x, y, p1, nr1, p2, nr2, p3, nr3 ) )//everything allright
     {
-      if (( *mNormVec )[( *nr1 )] && ( *mNormVec )[( *nr2 )] && ( *mNormVec )[( *nr3 )] )
+      if ( ( *mNormVec )[( *nr1 )] && ( *mNormVec )[( *nr2 )] && ( *mNormVec )[( *nr3 )] )
       {
-        v1->setX(( *mNormVec )[( *nr1 )]->getX() );
-        v1->setY(( *mNormVec )[( *nr1 )]->getY() );
-        v1->setZ(( *mNormVec )[( *nr1 )]->getZ() );
+        v1->setX( ( *mNormVec )[( *nr1 )]->getX() );
+        v1->setY( ( *mNormVec )[( *nr1 )]->getY() );
+        v1->setZ( ( *mNormVec )[( *nr1 )]->getZ() );
 
-        v2->setX(( *mNormVec )[( *nr2 )]->getX() );
-        v2->setY(( *mNormVec )[( *nr2 )]->getY() );
-        v2->setZ(( *mNormVec )[( *nr2 )]->getZ() );
+        v2->setX( ( *mNormVec )[( *nr2 )]->getX() );
+        v2->setY( ( *mNormVec )[( *nr2 )]->getY() );
+        v2->setZ( ( *mNormVec )[( *nr2 )]->getZ() );
 
-        v3->setX(( *mNormVec )[( *nr3 )]->getX() );
-        v3->setY(( *mNormVec )[( *nr3 )]->getY() );
-        v3->setZ(( *mNormVec )[( *nr3 )]->getZ() );
+        v3->setX( ( *mNormVec )[( *nr3 )]->getX() );
+        v3->setY( ( *mNormVec )[( *nr3 )]->getY() );
+        v3->setZ( ( *mNormVec )[( *nr3 )]->getZ() );
       }
       else
       {
@@ -322,27 +322,27 @@ NormVecDecorator::PointState NormVecDecorator::getState( int pointno ) const
 }
 
 
-bool NormVecDecorator::getTriangle( double x, double y, Point3D* p1, int* ptn1, Vector3D* v1, PointState* state1, Point3D* p2, int* ptn2, Vector3D* v2, PointState* state2, Point3D* p3, int* ptn3, Vector3D* v3, PointState* state3 )
+bool NormVecDecorator::getTriangle( double x, double y, Point3D *p1, int *ptn1, Vector3D *v1, PointState *state1, Point3D *p2, int *ptn2, Vector3D *v2, PointState *state2, Point3D *p3, int *ptn3, Vector3D *v3, PointState *state3 )
 {
   if ( p1 && p2 && p3 && v1 && v2 && v3 && ptn1 && ptn2 && ptn3 && state1 && state2 && state3 )
   {
     if ( TriDecorator::getTriangle( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) )//everything allright
     {
-      v1->setX(( *mNormVec )[( *ptn1 )]->getX() );
-      v1->setY(( *mNormVec )[( *ptn1 )]->getY() );
-      v1->setZ(( *mNormVec )[( *ptn1 )]->getZ() );
+      v1->setX( ( *mNormVec )[( *ptn1 )]->getX() );
+      v1->setY( ( *mNormVec )[( *ptn1 )]->getY() );
+      v1->setZ( ( *mNormVec )[( *ptn1 )]->getZ() );
 
       ( *state1 ) = ( *mPointState )[( *ptn1 )];
 
-      v2->setX(( *mNormVec )[( *ptn2 )]->getX() );
-      v2->setY(( *mNormVec )[( *ptn2 )]->getY() );
-      v2->setZ(( *mNormVec )[( *ptn2 )]->getZ() );
+      v2->setX( ( *mNormVec )[( *ptn2 )]->getX() );
+      v2->setY( ( *mNormVec )[( *ptn2 )]->getY() );
+      v2->setZ( ( *mNormVec )[( *ptn2 )]->getZ() );
 
       ( *state2 ) = ( *mPointState )[( *ptn2 )];
 
-      v3->setX(( *mNormVec )[( *ptn3 )]->getX() );
-      v3->setY(( *mNormVec )[( *ptn3 )]->getY() );
-      v3->setZ(( *mNormVec )[( *ptn3 )]->getZ() );
+      v3->setX( ( *mNormVec )[( *ptn3 )]->getX() );
+      v3->setY( ( *mNormVec )[( *ptn3 )]->getY() );
+      v3->setZ( ( *mNormVec )[( *ptn3 )]->getZ() );
 
       ( *state3 ) = ( *mPointState )[( *ptn3 )];
 
@@ -379,7 +379,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   double currentweight = 0;//current weight
   PointState status;
 
-  QList<int>* vlist = getSurroundingTriangles( pointno );//get the value list
+  QList<int> *vlist = getSurroundingTriangles( pointno );//get the value list
 
   if ( !vlist )
   {
@@ -392,9 +392,9 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 
     //todo:resize mNormVec if necessary
 
-    if ( !(( *mNormVec )[pointno] ) )//insert a pointer to a Vector3D, if there is none at this position
+    if ( !( ( *mNormVec )[pointno] ) ) //insert a pointer to a Vector3D, if there is none at this position
     {
-      Vector3D* vec = new Vector3D( total.getX(), total.getY(), total.getZ() );
+      Vector3D *vec = new Vector3D( total.getX(), total.getY(), total.getZ() );
       mNormVec->insert( pointno, vec );
     }
     else
@@ -406,7 +406,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     return false;
   }
 
-  if (( vlist->count() % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
+  if ( ( vlist->count() % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
   {
     QgsDebugMsg( "warning, wrong number of items in vlist" );
     return false;
@@ -441,7 +441,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
       double dist1 = getPoint( p3 )->dist3D( getPoint( p1 ) );
       double dist2 = getPoint( p3 )->dist3D( getPoint( p2 ) );
       //don't add the normal if the triangle is horizontal
-      if (( getPoint( p1 )->getZ() != getPoint( p2 )->getZ() ) || ( getPoint( p1 )->getZ() != getPoint( p3 )->getZ() ) )
+      if ( ( getPoint( p1 )->getZ() != getPoint( p2 )->getZ() ) || ( getPoint( p1 )->getZ() != getPoint( p3 )->getZ() ) )
       {
         currentweight = 1 / ( dist1 * dist1 * dist2 * dist2 );
         total.setX( total.getX() + part.getX()*currentweight );
@@ -487,9 +487,9 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     mNormVec->resize( mNormVec->size() + 1 );
   }
 
-  if ( !(( *mNormVec )[pointno] ) )//insert a pointer to a Vector3D, if there is none at this position
+  if ( !( ( *mNormVec )[pointno] ) ) //insert a pointer to a Vector3D, if there is none at this position
   {
-    Vector3D* vec = new Vector3D( total.getX(), total.getY(), total.getZ() );
+    Vector3D *vec = new Vector3D( total.getX(), total.getY(), total.getZ() );
     mNormVec->insert( pointno, vec );
   }
   else
@@ -512,7 +512,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 }
 
 //weighted method of little
-bool NormVecDecorator::estimateFirstDerivatives( QProgressDialog* d )
+bool NormVecDecorator::estimateFirstDerivatives( QProgressDialog *d )
 {
   if ( d )
   {
@@ -577,14 +577,14 @@ bool NormVecDecorator::swapEdge( double x, double y )
     bool b = false;
     if ( alreadyestimated )
     {
-      QList<int>* list = getPointsAroundEdge( x, y );
+      QList<int> *list = getPointsAroundEdge( x, y );
       if ( list )
       {
         b = mTIN->swapEdge( x, y );
         QList<int>::iterator it;
         for ( it = list->begin(); it != list->end(); ++it )
         {
-          estimateFirstDerivative(( *it ) );
+          estimateFirstDerivative( ( *it ) );
         }
         delete list;
       }
@@ -602,7 +602,7 @@ bool NormVecDecorator::swapEdge( double x, double y )
   }
 }
 
-bool NormVecDecorator::saveAsShapefile( const QString& fileName ) const
+bool NormVecDecorator::saveAsShapefile( const QString &fileName ) const
 {
   if ( !mTIN )
   {

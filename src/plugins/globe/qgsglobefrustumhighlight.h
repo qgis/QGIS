@@ -29,16 +29,16 @@ namespace osgEarth
 class QgsGlobeFrustumHighlightCallback : public osg::NodeCallback
 {
   public:
-    QgsGlobeFrustumHighlightCallback( osg::View* view, osgEarth::Terrain* terrain, QgsMapCanvas* mapCanvas, QColor color );
+    QgsGlobeFrustumHighlightCallback( osg::View *view, osgEarth::Terrain *terrain, QgsMapCanvas *mapCanvas, QColor color );
     ~QgsGlobeFrustumHighlightCallback();
 
-    void operator()( osg::Node*, osg::NodeVisitor* ) override;
+    void operator()( osg::Node *, osg::NodeVisitor * ) override;
 
   private:
-    osg::View* mView = nullptr;
-    osgEarth::Terrain* mTerrain = nullptr;
-    QgsRubberBand* mRubberBand = nullptr;
-    osgEarth::SpatialReference* mSrs = nullptr;
+    osg::View *mView = nullptr;
+    osgEarth::Terrain *mTerrain = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
+    osgEarth::SpatialReference *mSrs = nullptr;
 };
 
 #endif // QGSGLOBEFRUSTUMHIGHLIGHT_H

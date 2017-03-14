@@ -17,7 +17,6 @@ import qgis  # NOQA
 from qgis.core import (QgsAggregateCalculator,
                        QgsVectorLayer,
                        QgsFeature,
-                       QgsVectorDataProvider,
                        QgsInterval,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
@@ -27,9 +26,7 @@ from qgis.core import (QgsAggregateCalculator,
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest, start_app
 
-from utilities import(
-    compareWkt
-)
+from utilities import compareWkt
 
 start_app()
 
@@ -328,7 +325,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        #int
+        # int
         agg = QgsAggregateCalculator(layer)
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 2')
         self.assertTrue(ok)

@@ -48,7 +48,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return The one and only instance of the editor widget registry
      */
-    static QgsEditorWidgetRegistry* instance();
+    static QgsEditorWidgetRegistry *instance();
 
     /**
      * Registers all the default widgets.
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @note Added in QGIS 2.8
      * @note Not required for plugins, the QGIS application does that already
      */
-    static void initEditors( QgsMapCanvas* mapCanvas = nullptr, QgsMessageBar* messageBar = nullptr );
+    static void initEditors( QgsMapCanvas *mapCanvas = nullptr, QgsMessageBar *messageBar = nullptr );
 
     /**
      * Destructor
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return The id of the widget type to use and its config
      */
-    QgsEditorWidgetSetup findBest( const QgsVectorLayer* vl, const QString& fieldName ) const;
+    QgsEditorWidgetSetup findBest( const QgsVectorLayer *vl, const QString &fieldName ) const;
 
     /**
      * Create an attribute editor widget wrapper of a given type for a given field.
@@ -93,13 +93,13 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( const QString& widgetId,
-                                    QgsVectorLayer* vl,
+    QgsEditorWidgetWrapper *create( const QString &widgetId,
+                                    QgsVectorLayer *vl,
                                     int fieldIdx,
-                                    const QVariantMap& config,
-                                    QWidget* editor,
-                                    QWidget* parent,
-                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+                                    const QVariantMap &config,
+                                    QWidget *editor,
+                                    QWidget *parent,
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /**
      * Create an attribute editor widget wrapper of the best type for a given field.
@@ -113,18 +113,18 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new widget wrapper
      */
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl,
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl,
                                     int fieldIdx,
-                                    QWidget* editor,
-                                    QWidget* parent,
-                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+                                    QWidget *editor,
+                                    QWidget *parent,
+                                    const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
-    QgsSearchWidgetWrapper* createSearchWidget( const QString& widgetId,
-        QgsVectorLayer* vl,
+    QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId,
+        QgsVectorLayer *vl,
         int fieldIdx,
-        const QVariantMap& config,
-        QWidget* parent,
-        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+        const QVariantMap &config,
+        QWidget *parent,
+        const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget
@@ -136,7 +136,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A new configuration widget
      */
-    QgsEditorConfigWidget* createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
     /**
      * Get the human readable name for a widget type
@@ -145,21 +145,21 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return A human readable name
      */
-    QString name( const QString& widgetId );
+    QString name( const QString &widgetId );
 
     /**
      * Get access to all registered factories
      *
      * @return All ids and factories
      */
-    QMap<QString, QgsEditorWidgetFactory*> factories();
+    QMap<QString, QgsEditorWidgetFactory *> factories();
 
     /**
      * Get a factory for the given widget type id.
      *
      * @return A factory or Null if not existent
      */
-    QgsEditorWidgetFactory* factory( const QString& widgetId );
+    QgsEditorWidgetFactory *factory( const QString &widgetId );
 
     /**
      * Register a new widget factory with the given id
@@ -169,23 +169,23 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * @return true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
      */
-    bool registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory );
+    bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory );
 
     /**
      * Register a new auto-conf plugin.
      *
      * @param plugin The plugin (ownership is transferred)
      */
-    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin* plugin ) { mAutoConf.registerPlugin( plugin ); }
+    void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin ) { mAutoConf.registerPlugin( plugin ); }
 
   protected:
     QgsEditorWidgetRegistry();
 
   private:
-    QString findSuitableWrapper( QWidget* editor , const QString& defaultWidget );
+    QString findSuitableWrapper( QWidget *editor, const QString &defaultWidget );
 
-    QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
-    QMap<const char*, QPair<int, QString> > mFactoriesByType;
+    QMap<QString, QgsEditorWidgetFactory *> mWidgetFactories;
+    QMap<const char *, QPair<int, QString> > mFactoriesByType;
     QgsEditorWidgetAutoConf mAutoConf;
 };
 

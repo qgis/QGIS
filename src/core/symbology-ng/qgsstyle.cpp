@@ -17,18 +17,16 @@
 
 #include "qgssymbol.h"
 #include "qgscolorramp.h"
-
 #include "qgssymbollayerregistry.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QDomNodeList>
 #include <QFile>
-#include <QSettings>
 #include <QTextStream>
 #include <QByteArray>
 
@@ -49,7 +47,7 @@ QgsStyle::~QgsStyle()
   clear();
 }
 
-QgsStyle* QgsStyle::defaultStyle() // static
+QgsStyle *QgsStyle::defaultStyle() // static
 {
   if ( !sDefaultStyle )
   {
@@ -86,7 +84,7 @@ void QgsStyle::clear()
     sqlite3_close( mCurrentDB );
 }
 
-bool QgsStyle::addSymbol( const QString& name, QgsSymbol* symbol, bool update )
+bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
 {
   if ( !symbol || name.isEmpty() )
     return false;
@@ -110,7 +108,7 @@ bool QgsStyle::addSymbol( const QString& name, QgsSymbol* symbol, bool update )
   return true;
 }
 
-bool QgsStyle::saveSymbol( const QString& name, QgsSymbol* symbol, bool favorite, const QStringList& tags )
+bool QgsStyle::saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags )
 {
   // TODO add support for groups
   QDomDocument doc( QStringLiteral( "dummy" ) );
@@ -141,7 +139,7 @@ bool QgsStyle::saveSymbol( const QString& name, QgsSymbol* symbol, bool favorite
   return true;
 }
 
-bool QgsStyle::removeSymbol( const QString& name )
+bool QgsStyle::removeSymbol( const QString &name )
 {
   QgsSymbol *symbol = mSymbols.take( name );
   if ( !symbol )
@@ -169,13 +167,13 @@ bool QgsStyle::removeSymbol( const QString& name )
   return true;
 }
 
-QgsSymbol* QgsStyle::symbol( const QString& name )
+QgsSymbol *QgsStyle::symbol( const QString &name )
 {
   const QgsSymbol *symbol = symbolRef( name );
   return symbol ? symbol->clone() : nullptr;
 }
 
-const QgsSymbol *QgsStyle::symbolRef( const QString& name ) const
+const QgsSymbol *QgsStyle::symbolRef( const QString &name ) const
 {
   return mSymbols.value( name );
 }
@@ -191,7 +189,7 @@ QStringList QgsStyle::symbolNames()
 }
 
 
-bool QgsStyle::addColorRamp( const QString& name, QgsColorRamp* colorRamp, bool update )
+bool QgsStyle::addColorRamp( const QString &name, QgsColorRamp *colorRamp, bool update )
 {
   if ( !colorRamp || name.isEmpty() )
     return false;
@@ -215,7 +213,7 @@ bool QgsStyle::addColorRamp( const QString& name, QgsColorRamp* colorRamp, bool 
   return true;
 }
 
-bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, bool favorite, const QStringList& tags )
+bool QgsStyle::saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags )
 {
   // insert it into the database
   QDomDocument doc( QStringLiteral( "dummy" ) );
@@ -244,7 +242,7 @@ bool QgsStyle::saveColorRamp( const QString& name, QgsColorRamp* ramp, bool favo
   return true;
 }
 
-bool QgsStyle::removeColorRamp( const QString& name )
+bool QgsStyle::removeColorRamp( const QString &name )
 {
   QgsColorRamp *ramp = mColorRamps.take( name );
   if ( !ramp )
@@ -262,13 +260,13 @@ bool QgsStyle::removeColorRamp( const QString& name )
   return true;
 }
 
-QgsColorRamp* QgsStyle::colorRamp( const QString& name ) const
+QgsColorRamp *QgsStyle::colorRamp( const QString &name ) const
 {
   const QgsColorRamp *ramp = colorRampRef( name );
   return ramp ? ramp->clone() : nullptr;
 }
 
-const QgsColorRamp* QgsStyle::colorRampRef( const QString& name ) const
+const QgsColorRamp *QgsStyle::colorRampRef( const QString &name ) const
 {
   return mColorRamps.value( name );
 }
@@ -283,7 +281,7 @@ QStringList QgsStyle::colorRampNames()
   return mColorRamps.keys();
 }
 
-bool QgsStyle::openDatabase( const QString& filename )
+bool QgsStyle::openDatabase( const QString &filename )
 {
   int rc = sqlite3_open( filename.toUtf8(), &mCurrentDB );
   if ( rc )
@@ -296,7 +294,7 @@ bool QgsStyle::openDatabase( const QString& filename )
   return true;
 }
 
-bool QgsStyle::createDatabase( const QString& filename )
+bool QgsStyle::createDatabase( const QString &filename )
 {
   mErrorString.clear();
   if ( !openDatabase( filename ) )
@@ -354,7 +352,7 @@ void QgsStyle::createTables()
   runEmptyQuery( query );
 }
 
-bool QgsStyle::load( const QString& filename )
+bool QgsStyle::load( const QString &filename )
 {
   mErrorString.clear();
 
@@ -440,7 +438,7 @@ bool QgsStyle::save( QString filename )
   QDomElement rampsElem = doc.createElement( "colorramps" );
 
   // save color ramps
-  for ( QMap<QString, QgsColorRamp*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
+  for ( QMap<QString, QgsColorRamp *>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
   {
     QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
     rampsElem.appendChild( rampEl );
@@ -466,7 +464,7 @@ bool QgsStyle::save( QString filename )
   return true;
 }
 
-bool QgsStyle::renameSymbol( const QString& oldName, const QString& newName )
+bool QgsStyle::renameSymbol( const QString &oldName, const QString &newName )
 {
   if ( mSymbols.contains( newName ) )
   {
@@ -498,7 +496,7 @@ bool QgsStyle::renameSymbol( const QString& oldName, const QString& newName )
   return true;
 }
 
-bool QgsStyle::renameColorRamp( const QString& oldName, const QString& newName )
+bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
 {
   if ( mColorRamps.contains( newName ) )
   {
@@ -612,7 +610,7 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
   return symbols;
 }
 
-int QgsStyle::addTag( const QString& tagname )
+int QgsStyle::addTag( const QString &tagname )
 {
   if ( !mCurrentDB )
     return 0;
@@ -624,7 +622,7 @@ int QgsStyle::addTag( const QString& tagname )
     ( void )sqlite3_step( ppStmt );
   sqlite3_finalize( ppStmt );
 
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
   emit groupsModified();
@@ -653,7 +651,7 @@ QStringList QgsStyle::tags() const
   return tagList;
 }
 
-void QgsStyle::rename( StyleEntity type, int id, const QString& newName )
+void QgsStyle::rename( StyleEntity type, int id, const QString &newName )
 {
   bool groupRenamed = false;
   char *query = nullptr;
@@ -723,7 +721,7 @@ void QgsStyle::remove( StyleEntity type, int id )
   {
     if ( groupRemoved )
     {
-      QSettings settings;
+      QgsSettings settings;
       settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
       emit groupsModified();
@@ -752,7 +750,7 @@ bool QgsStyle::runEmptyQuery( char *query, bool freeQuery )
   return zErr == SQLITE_OK;
 }
 
-bool QgsStyle::addFavorite( StyleEntity type, const QString& name )
+bool QgsStyle::addFavorite( StyleEntity type, const QString &name )
 {
   char *query = nullptr;
 
@@ -773,7 +771,7 @@ bool QgsStyle::addFavorite( StyleEntity type, const QString& name )
   return runEmptyQuery( query );
 }
 
-bool QgsStyle::removeFavorite( StyleEntity type, const QString& name )
+bool QgsStyle::removeFavorite( StyleEntity type, const QString &name )
 {
   char *query = nullptr;
 
@@ -794,7 +792,7 @@ bool QgsStyle::removeFavorite( StyleEntity type, const QString& name )
   return runEmptyQuery( query );
 }
 
-QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
+QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
 {
   if ( !mCurrentDB )
   {
@@ -825,7 +823,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
   QStringList tagids;
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    tagids << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    tagids << QString::fromUtf8( ( const char * ) sqlite3_column_text( ppStmt, 0 ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -848,7 +846,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
   QStringList symbolids;
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    symbolids << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    symbolids << QString::fromUtf8( ( const char * ) sqlite3_column_text( ppStmt, 0 ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -860,7 +858,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
   nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    symbols << QString::fromUtf8( ( const char * ) sqlite3_column_text( ppStmt, 0 ) );
   }
 
   sqlite3_finalize( ppStmt );
@@ -868,7 +866,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString& qword )
   return symbols.toList();
 }
 
-bool QgsStyle::tagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags )
+bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags )
 {
   if ( !mCurrentDB )
   {
@@ -927,7 +925,7 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString& symbol, const QString
   return true;
 }
 
-bool QgsStyle::detagSymbol( StyleEntity type, const QString& symbol, const QStringList& tags )
+bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags )
 {
   if ( !mCurrentDB )
   {
@@ -985,7 +983,7 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString& symbol, const QStri
   return true;
 }
 
-bool QgsStyle::detagSymbol( StyleEntity type, const QString& symbol )
+bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
 {
   if ( !mCurrentDB )
   {
@@ -1024,7 +1022,7 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString& symbol )
   return true;
 }
 
-QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString& symbol )
+QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
 {
   if ( !mCurrentDB )
   {
@@ -1063,7 +1061,7 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString& symbol )
   return tagList;
 }
 
-bool QgsStyle::symbolHasTag( StyleEntity type, const QString& symbol, const QString& tag )
+bool QgsStyle::symbolHasTag( StyleEntity type, const QString &symbol, const QString &tag )
 {
   if ( !mCurrentDB )
   {
@@ -1114,7 +1112,7 @@ QString QgsStyle::tag( int id ) const
   return tag;
 }
 
-int QgsStyle::getId( const QString& table, const QString& name )
+int QgsStyle::getId( const QString &table, const QString &name )
 {
   char *query = sqlite3_mprintf( "SELECT id FROM %q WHERE LOWER(name)='%q'", table.toUtf8().constData(), name.toUtf8().toLower().constData() );
 
@@ -1132,7 +1130,7 @@ int QgsStyle::getId( const QString& table, const QString& name )
   return id;
 }
 
-QString QgsStyle::getName( const QString& table, int id ) const
+QString QgsStyle::getName( const QString &table, int id ) const
 {
   char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE id='%q'", table.toUtf8().constData(), QString::number( id ).toUtf8().constData() );
 
@@ -1150,27 +1148,27 @@ QString QgsStyle::getName( const QString& table, int id ) const
   return name;
 }
 
-int QgsStyle::symbolId( const QString& name )
+int QgsStyle::symbolId( const QString &name )
 {
   return getId( QStringLiteral( "symbol" ), name );
 }
 
-int QgsStyle::colorrampId( const QString& name )
+int QgsStyle::colorrampId( const QString &name )
 {
   return getId( QStringLiteral( "colorramp" ), name );
 }
 
-int QgsStyle::tagId( const QString& name )
+int QgsStyle::tagId( const QString &name )
 {
   return getId( QStringLiteral( "tag" ), name );
 }
 
-int QgsStyle::smartgroupId( const QString& name )
+int QgsStyle::smartgroupId( const QString &name )
 {
   return getId( QStringLiteral( "smartgroup" ), name );
 }
 
-int QgsStyle::addSmartgroup( const QString& name, const QString& op, const QgsSmartConditionMap& conditions )
+int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QgsSmartConditionMap &conditions )
 {
   QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement smartEl = doc.createElement( QStringLiteral( "smartgroup" ) );
@@ -1201,7 +1199,7 @@ int QgsStyle::addSmartgroup( const QString& name, const QString& op, const QgsSm
 
   if ( runEmptyQuery( query ) )
   {
-    QSettings settings;
+    QgsSettings settings;
     settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
     emit groupsModified();
@@ -1318,7 +1316,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
       {
         resultNames = type == SymbolEntity ? symbolNames() : colorRampNames();
         QStringList unwanted = symbolsWithTag( type, tagId( param ) );
-        Q_FOREACH ( const QString& name, unwanted )
+        Q_FOREACH ( const QString &name, unwanted )
         {
           resultNames.removeAll( name );
         }
@@ -1436,7 +1434,7 @@ QString QgsStyle::smartgroupOperator( int id )
   return op;
 }
 
-bool QgsStyle::exportXml( const QString& filename )
+bool QgsStyle::exportXml( const QString &filename )
 {
   if ( filename.isEmpty() )
   {
@@ -1473,7 +1471,7 @@ bool QgsStyle::exportXml( const QString& filename )
 
   // save color ramps
   QDomElement rampsElem = doc.createElement( QStringLiteral( "colorramps" ) );
-  for ( QMap<QString, QgsColorRamp*>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
+  for ( QMap<QString, QgsColorRamp *>::const_iterator itr = mColorRamps.constBegin(); itr != mColorRamps.constEnd(); ++itr )
   {
     QDomElement rampEl = QgsSymbolLayerUtils::saveColorRamp( itr.key(), itr.value(), doc );
     QStringList tags = tagsOfSymbol( ColorrampEntity, itr.key() );
@@ -1508,7 +1506,7 @@ bool QgsStyle::exportXml( const QString& filename )
   return true;
 }
 
-bool QgsStyle::importXml( const QString& filename )
+bool QgsStyle::importXml( const QString &filename )
 {
   mErrorString = QString();
   QDomDocument doc( QStringLiteral( "style" ) );
@@ -1549,7 +1547,7 @@ bool QgsStyle::importXml( const QString& filename )
   QDomElement e = symbolsElement.firstChildElement();
 
   // gain speed by re-grouping the INSERT statements in a transaction
-  char* query = nullptr;
+  char *query = nullptr;
   query = sqlite3_mprintf( "BEGIN TRANSACTION;" );
   runEmptyQuery( query );
 
@@ -1572,7 +1570,7 @@ bool QgsStyle::importXml( const QString& filename )
           favorite = true;
         }
 
-        QgsSymbol* symbol = QgsSymbolLayerUtils::loadSymbol( e );
+        QgsSymbol *symbol = QgsSymbolLayerUtils::loadSymbol( e );
         if ( symbol )
         {
           addSymbol( name, symbol );
@@ -1595,7 +1593,7 @@ bool QgsStyle::importXml( const QString& filename )
     symbols = QgsSymbolLayerUtils::loadSymbols( symbolsElement );
 
     // save the symbols with proper name
-    for ( QMap<QString, QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it )
+    for ( QMap<QString, QgsSymbol *>::iterator it = symbols.begin(); it != symbols.end(); ++it )
     {
       addSymbol( it.key(), it.value() );
     }
@@ -1620,7 +1618,7 @@ bool QgsStyle::importXml( const QString& filename )
         favorite = true;
       }
 
-      QgsColorRamp* ramp = QgsSymbolLayerUtils::loadColorRamp( e );
+      QgsColorRamp *ramp = QgsSymbolLayerUtils::loadColorRamp( e );
       if ( ramp )
       {
         addColorRamp( name, ramp );
@@ -1644,7 +1642,7 @@ bool QgsStyle::importXml( const QString& filename )
   return true;
 }
 
-bool QgsStyle::updateSymbol( StyleEntity type, const QString& name )
+bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 {
   QDomDocument doc( QStringLiteral( "dummy" ) );
   QDomElement symEl;

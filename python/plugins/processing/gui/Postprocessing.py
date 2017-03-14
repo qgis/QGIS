@@ -50,7 +50,6 @@ from processing.tools import dataobjects
 
 def handleAlgorithmResults(alg, feedback=None, showResults=True):
     wrongLayers = []
-    htmlResults = False
     if feedback is None:
         feedback = QgsProcessingFeedback()
     feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
@@ -79,7 +78,6 @@ def handleAlgorithmResults(alg, feedback=None, showResults=True):
                 wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
             resultsList.addResult(alg.getIcon(), out.description, out.value)
-            htmlResults = True
         i += 1
 
     QApplication.restoreOverrideCursor()

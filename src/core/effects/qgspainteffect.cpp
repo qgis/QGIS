@@ -25,29 +25,29 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
 QgsPaintEffect::QgsPaintEffect()
-    : mEnabled( true )
-    , mDrawMode( ModifyAndRender )
-    , requiresQPainterDpiFix( true )
-    , mPicture( nullptr )
-    , mSourceImage( nullptr )
-    , mOwnsImage( false )
-    , mPrevPainter( nullptr )
-    , mEffectPainter( nullptr )
-    , mTempPicture( nullptr )
+  : mEnabled( true )
+  , mDrawMode( ModifyAndRender )
+  , requiresQPainterDpiFix( true )
+  , mPicture( nullptr )
+  , mSourceImage( nullptr )
+  , mOwnsImage( false )
+  , mPrevPainter( nullptr )
+  , mEffectPainter( nullptr )
+  , mTempPicture( nullptr )
 {
 
 }
 
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
-    : mEnabled( other.enabled() )
-    , mDrawMode( other.drawMode() )
-    , requiresQPainterDpiFix( true )
-    , mPicture( nullptr )
-    , mSourceImage( nullptr )
-    , mOwnsImage( false )
-    , mPrevPainter( nullptr )
-    , mEffectPainter( nullptr )
-    , mTempPicture( nullptr )
+  : mEnabled( other.enabled() )
+  , mDrawMode( other.drawMode() )
+  , requiresQPainterDpiFix( true )
+  , mPicture( nullptr )
+  , mSourceImage( nullptr )
+  , mOwnsImage( false )
+  , mPrevPainter( nullptr )
+  , mEffectPainter( nullptr )
+  , mTempPicture( nullptr )
 {
 
 }
@@ -191,7 +191,7 @@ void QgsPaintEffect::drawSource( QPainter &painter )
   }
 }
 
-QImage* QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
+QImage *QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
 {
   //have we already created a source image? if so, return it
   if ( mSourceImage )
@@ -216,7 +216,7 @@ QImage* QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
   return mSourceImage;
 }
 
-QPointF QgsPaintEffect::imageOffset( const QgsRenderContext& context ) const
+QPointF QgsPaintEffect::imageOffset( const QgsRenderContext &context ) const
 {
   return imageBoundingRect( context ).topLeft();
 }
@@ -248,16 +248,16 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 //
 
 QgsDrawSourceEffect::QgsDrawSourceEffect()
-    : QgsPaintEffect()
-    , mTransparency( 0.0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
+  : QgsPaintEffect()
+  , mTransparency( 0.0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
 {
 
 }
 
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )
 {
-  QgsDrawSourceEffect* effect = new QgsDrawSourceEffect();
+  QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();
   effect->readProperties( map );
   return effect;
 }
@@ -267,7 +267,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   if ( !enabled() || !context.painter() )
     return;
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
 
   if ( mBlendMode == QPainter::CompositionMode_SourceOver && qgsDoubleNear( mTransparency, 0.0 ) )
   {
@@ -286,7 +286,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   }
 }
 
-QgsDrawSourceEffect* QgsDrawSourceEffect::clone() const
+QgsDrawSourceEffect *QgsDrawSourceEffect::clone() const
 {
   return new QgsDrawSourceEffect( *this );
 }
@@ -323,24 +323,24 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 // QgsEffectPainter
 //
 
-QgsEffectPainter::QgsEffectPainter( QgsRenderContext& renderContext )
-    : mRenderContext( renderContext )
-    , mEffect( nullptr )
+QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext )
+  : mRenderContext( renderContext )
+  , mEffect( nullptr )
 {
   mPainter = renderContext.painter();
   mPainter->save();
 }
 
-QgsEffectPainter::QgsEffectPainter( QgsRenderContext& renderContext, QgsPaintEffect* effect )
-    : mRenderContext( renderContext )
-    , mEffect( effect )
+QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect )
+  : mRenderContext( renderContext )
+  , mEffect( effect )
 {
   mPainter = mRenderContext.painter();
   mPainter->save();
   mEffect->begin( mRenderContext );
 }
 
-void QgsEffectPainter::setEffect( QgsPaintEffect* effect )
+void QgsEffectPainter::setEffect( QgsPaintEffect *effect )
 {
   Q_ASSERT( !mEffect );
 

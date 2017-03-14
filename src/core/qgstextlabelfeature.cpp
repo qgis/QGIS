@@ -21,9 +21,9 @@
 #include <pal/feature.h>
 
 
-QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry* geometry, QSizeF size )
-    : QgsLabelFeature( id, geometry, size )
-    , mFontMetrics( nullptr )
+QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
+  : QgsLabelFeature( id, geometry, size )
+  , mFontMetrics( nullptr )
 {
   mDefinedFont = QFont();
 }
@@ -44,7 +44,7 @@ QString QgsTextLabelFeature::text( int partId ) const
 }
 
 
-void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF* fm, const QgsMapToPixel* xform, double maxinangle, double maxoutangle )
+void QgsTextLabelFeature::calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle )
 {
   if ( mInfo )
     return;

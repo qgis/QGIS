@@ -53,7 +53,7 @@ namespace QgsWms
 
   /** Return WMS service URL
    */
-  QUrl serviceUrl( const QgsServerRequest& request, const QgsProject* project );
+  QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
   /**
    * Return the wms config parser (Transitional)
@@ -61,16 +61,16 @@ namespace QgsWms
    * XXX This is needed in the current implementation.
    * This should disappear as soon we get rid of singleton.
    */
-  QgsWmsConfigParser* getConfigParser( QgsServerInterface* serverIface );
+  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface );
 
   /** Parse image format parameter
    *  @return OutputFormat
    */
-  ImageOutputFormat parseImageFormat( const QString& format );
+  ImageOutputFormat parseImageFormat( const QString &format );
 
   /** Write image response
    */
-  void writeImage( QgsServerResponse& response, QImage& img, const QString& formatStr,
+  void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
                    int imageQuality = -1 );
 
   /**
@@ -80,11 +80,11 @@ namespace QgsWms
    *
    * If the parsing fail then an empty bbox is returned
    */
-  QgsRectangle parseBbox( const QString& bboxstr );
+  QgsRectangle parseBbox( const QString &bboxstr );
 
   /** Reads the layers and style lists from the parameters LAYERS and STYLES
    */
-  void readLayersAndStyles( const QgsServerRequest::Parameters& parameters, QStringList& layersList, QStringList& stylesList );
+  void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList );
 
 } // namespace QgsWms
 

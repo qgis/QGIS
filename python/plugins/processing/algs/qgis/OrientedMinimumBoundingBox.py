@@ -25,9 +25,8 @@ __copyright__ = '(C) 2015, Loïc BARTOLETTI'
 
 __revision__ = '$Format:%H$'
 
-from math import degrees, atan2
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import Qgis, QgsField, QgsFields, QgsPoint, QgsGeometry, QgsFeature, QgsWkbTypes, QgsFeatureRequest
+from qgis.core import QgsField, QgsFields, QgsGeometry, QgsFeature, QgsWkbTypes, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector

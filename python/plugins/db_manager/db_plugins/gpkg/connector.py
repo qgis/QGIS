@@ -286,7 +286,7 @@ class GPKGDBConnector(DBConnector):
             pass
 
         for i, tbl in enumerate(items):
-            tbl.insert(3, False) # not system table
+            tbl.insert(3, False)  # not system table
 
         return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
@@ -351,12 +351,12 @@ class GPKGDBConnector(DBConnector):
             if geomtype == ogr.wkbNone:
                 item = list([Table.TableType,
                              lyr.GetName(),
-                             False, # is_view
+                             False,  # is_view
                              ])
             else:
                 item = list([Table.VectorType,
                              lyr.GetName(),
-                             False, # is_view
+                             False,  # is_view
                              lyr.GetName(),
                              lyr.GetGeometryColumn(),
                              geomname,
@@ -776,7 +776,7 @@ class GPKGDBConnector(DBConnector):
         return True
 
     def deleteGeometryColumn(self, table, geom_column):
-        return False # not supported
+        return False  # not supported
 
     def addTableUniqueConstraint(self, table, column):
         """ add a unique constraint to a table """

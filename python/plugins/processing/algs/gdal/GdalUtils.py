@@ -34,16 +34,16 @@ import platform
 
 from osgeo import gdal
 
-from qgis.PyQt.QtCore import QSettings
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsSettings)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal
+    from osgeo import gdal  # NOQA
     gdalAvailable = True
 except:
     gdalAvailable = False
@@ -64,7 +64,7 @@ class GdalUtils(object):
         isDarwin = False
         try:
             isDarwin = platform.system() == 'Darwin'
-        except IOError: # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
+        except IOError:  # https://travis-ci.org/m-kuhn/QGIS#L1493-L1526
             pass
         if isDarwin and os.path.isfile(os.path.join(QgsApplication.prefixPath(), "bin", "gdalinfo")):
             # Looks like there's a bundled gdal. Let's use it.
@@ -72,7 +72,7 @@ class GdalUtils(object):
             os.environ['DYLD_LIBRARY_PATH'] = os.path.join(QgsApplication.prefixPath(), "lib")
         else:
             # Other platforms should use default gdal finder codepath
-            settings = QSettings()
+            settings = QgsSettings()
             path = settings.value('/GdalTools/gdalPath', '')
             if not path.lower() in envval.lower().split(os.pathsep):
                 envval += '{}{}'.format(os.pathsep, path)
@@ -85,7 +85,7 @@ class GdalUtils(object):
         feedback.pushInfo('GDAL command output:')
         success = False
         retry_count = 0
-        while success == False:
+        while not success:
             loglines = []
             loglines.append('GDAL execution console output')
             try:
@@ -133,11 +133,11 @@ class GdalUtils(object):
                 continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
-            #===================================================================
+            # ===================================================================
             # if gdal.DCAP_CREATE not in metadata \
             #         or metadata[gdal.DCAP_CREATE] != 'YES':
             #     continue
-            #===================================================================
+            # ===================================================================
             if gdal.DMD_EXTENSION in metadata:
                 extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:

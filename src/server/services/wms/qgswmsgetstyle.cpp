@@ -24,20 +24,20 @@
 namespace QgsWms
 {
   //GetStyle for compatibility with earlier QGIS versions
-  void writeGetStyle( QgsServerInterface* serverIface, const QString& version,
-                      const QgsServerRequest& request, QgsServerResponse& response )
+  void writeGetStyle( QgsServerInterface *serverIface, const QString &version,
+                      const QgsServerRequest &request, QgsServerResponse &response )
   {
     QDomDocument doc = getStyle( serverIface, version, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( doc.toByteArray() );
   }
 
-  QDomDocument getStyle( QgsServerInterface* serverIface, const QString& version,
-                         const QgsServerRequest& request )
+  QDomDocument getStyle( QgsServerInterface *serverIface, const QString &version,
+                         const QgsServerRequest &request )
   {
     Q_UNUSED( version );
 
-    QgsWmsConfigParser* configParser = getConfigParser( serverIface );
+    QgsWmsConfigParser *configParser = getConfigParser( serverIface );
     QgsServerRequest::Parameters parameters = request.parameters();
 
     QDomDocument doc;

@@ -40,7 +40,6 @@ class TestQgsTabWidget(unittest.TestCase):
         wdg1 = QWidget()
         wdg2 = QWidget()
         wdg3 = QWidget()
-        wdg4 = QWidget()
 
         tabWidget.addTab(wdg1, '1')
         tabWidget.addTab(wdg2, '2')
@@ -83,6 +82,7 @@ class TestQgsTabWidget(unittest.TestCase):
         self.assertEqual(tabWidget.count(), 1)
         tabWidget.hideTab(wdg2)
         self.assertEqual(tabWidget.count(), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -21,22 +21,22 @@
 
 QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
 {
-  QgsColorEffect* newEffect = new QgsColorEffect();
+  QgsColorEffect *newEffect = new QgsColorEffect();
   newEffect->readProperties( map );
   return newEffect;
 }
 
 QgsColorEffect::QgsColorEffect()
-    : QgsPaintEffect()
-    , mTransparency( 0.0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mBrightness( 0 )
-    , mContrast( 0 )
-    , mSaturation( 1.0 )
-    , mGrayscaleMode( QgsImageOperation::GrayscaleOff )
-    , mColorizeOn( false )
-    , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-    , mColorizeStrength( 100 )
+  : QgsPaintEffect()
+  , mTransparency( 0.0 )
+  , mBlendMode( QPainter::CompositionMode_SourceOver )
+  , mBrightness( 0 )
+  , mContrast( 0 )
+  , mSaturation( 1.0 )
+  , mGrayscaleMode( QgsImageOperation::GrayscaleOff )
+  , mColorizeOn( false )
+  , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
+  , mColorizeStrength( 100 )
 {
 
 }
@@ -46,7 +46,7 @@ void QgsColorEffect::draw( QgsRenderContext &context )
   if ( !source() || !enabled() || !context.painter() )
     return;
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
 
   //rasterize source and apply modifications
   QImage image = sourceAsImage( context )->copy();
@@ -112,13 +112,13 @@ void QgsColorEffect::readProperties( const QgsStringMap &props )
   mColorizeStrength = props.value( QStringLiteral( "colorize_strength" ), QStringLiteral( "100" ) ).toInt();
 }
 
-QgsColorEffect* QgsColorEffect::clone() const
+QgsColorEffect *QgsColorEffect::clone() const
 {
-  QgsColorEffect* newEffect = new QgsColorEffect( *this );
+  QgsColorEffect *newEffect = new QgsColorEffect( *this );
   return newEffect;
 }
 
-void QgsColorEffect::setColorizeColor( const QColor& colorizeColor )
+void QgsColorEffect::setColorizeColor( const QColor &colorizeColor )
 {
   mColorizeColor = colorizeColor;
 }

@@ -50,7 +50,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   public:
     //! returns a pointer to the single instance
     // and creates that instance on the first call.
-    static QgsNetworkAccessManager* instance();
+    static QgsNetworkAccessManager *instance();
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
-    QList<QNetworkProxyFactory*> mProxyFactories;
+    QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;

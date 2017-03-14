@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgswfsutils.h"
 #include "qgsgeometry.h"
+#include "qgssettings.h"
 
 // 1 minute
 #define KEEP_ALIVE_DELAY        (60 * 1000)
@@ -26,17 +27,16 @@
 #include <QTimer>
 #include <QSharedMemory>
 #include <QDateTime>
-#include <QSettings>
 #include <QCryptographicHash>
 
 QMutex QgsWFSUtils::sMutex;
-QThread* QgsWFSUtils::sThread = nullptr;
+QThread *QgsWFSUtils::sThread = nullptr;
 bool QgsWFSUtils::sKeepAliveWorks = false;
 int QgsWFSUtils::sCounter = 0;
 
 QString QgsWFSUtils::getBaseCacheDirectory( bool createIfNotExisting )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QgsApplication::qgisSettingsDirPath() + "cache";
@@ -120,7 +120,7 @@ bool QgsWFSUtils::removeDir( const QString &dirName )
 {
   QDir dir( dirName );
   QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
-  Q_FOREACH ( const QFileInfo& info, fileList )
+  Q_FOREACH ( const QFileInfo &info, fileList )
   {
     bool result;
     if ( info.isDir() )
@@ -144,7 +144,7 @@ bool QgsWFSUtils::removeDir( const QString &dirName )
 // processes can check if the temporary directories of other process correspond
 // to alive or ghost processes.
 QgsWFSUtilsKeepAlive::QgsWFSUtilsKeepAlive()
-    : mSharedMemory( QgsWFSUtils::createAndAttachSHM() )
+  : mSharedMemory( QgsWFSUtils::createAndAttachSHM() )
 {
   updateTimestamp();
 }
@@ -174,9 +174,9 @@ void QgsWFSUtilsKeepAlive::run()
   QThread::exec();
 }
 
-QSharedMemory* QgsWFSUtils::createAndAttachSHM()
+QSharedMemory *QgsWFSUtils::createAndAttachSHM()
 {
-  QSharedMemory* sharedMemory = nullptr;
+  QSharedMemory *sharedMemory = nullptr;
   // For debug purpose. To test in the case where shared memory mechanism doesn't work
   if ( !getenv( "QGIS_USE_SHARED_MEMORY_KEEP_ALIVE" ) )
   {
@@ -203,7 +203,7 @@ QSharedMemory* QgsWFSUtils::createAndAttachSHM()
 
 void QgsWFSUtils::init()
 {
-  QSharedMemory* sharedMemory = createAndAttachSHM();
+  QSharedMemory *sharedMemory = createAndAttachSHM();
   sKeepAliveWorks = sharedMemory != nullptr;
   delete sharedMemory;
 
@@ -223,7 +223,7 @@ void QgsWFSUtils::init()
   {
     const qint64 currentTimestamp = QDateTime::currentMSecsSinceEpoch();
     QFileInfoList fileList( dir.entryInfoList( QDir::NoDotAndDotDot | QDir::AllDirs | QDir::Files ) );
-    Q_FOREACH ( const QFileInfo& info, fileList )
+    Q_FOREACH ( const QFileInfo &info, fileList )
     {
       if ( info.isDir() && info.fileName().startsWith( QLatin1String( "pid_" ) ) )
       {
@@ -296,7 +296,7 @@ void QgsWFSUtils::init()
 }
 
 
-QString QgsWFSUtils::removeNamespacePrefix( const QString& tname )
+QString QgsWFSUtils::removeNamespacePrefix( const QString &tname )
 {
   QString name( tname );
   if ( name.contains( ':' ) )
@@ -310,7 +310,7 @@ QString QgsWFSUtils::removeNamespacePrefix( const QString& tname )
   return name;
 }
 
-QString QgsWFSUtils::nameSpacePrefix( const QString& tname )
+QString QgsWFSUtils::nameSpacePrefix( const QString &tname )
 {
   QStringList splitList = tname.split( ':' );
   if ( splitList.size() < 2 )
@@ -321,14 +321,14 @@ QString QgsWFSUtils::nameSpacePrefix( const QString& tname )
 }
 
 
-QString QgsWFSUtils::getMD5( const QgsFeature& f )
+QString QgsWFSUtils::getMD5( const QgsFeature &f )
 {
   const QgsAttributes attrs = f.attributes();
   QCryptographicHash hash( QCryptographicHash::Md5 );
-  for ( int i = 0;i < attrs.size();i++ )
+  for ( int i = 0; i < attrs.size(); i++ )
   {
     const QVariant &v = attrs[i];
-    hash.addData( QByteArray(( const char * )&i, sizeof( i ) ) );
+    hash.addData( QByteArray( ( const char * )&i, sizeof( i ) ) );
     if ( v.isNull() )
     {
       // nothing to do
@@ -336,17 +336,17 @@ QString QgsWFSUtils::getMD5( const QgsFeature& f )
     else if ( v.type() == QVariant::DateTime )
     {
       qint64 val = v.toDateTime().toMSecsSinceEpoch();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+      hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
     else if ( v.type() == QVariant::Int )
     {
       int val = v.toInt();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+      hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
     else if ( v.type() == QVariant::LongLong )
     {
       qint64 val = v.toLongLong();
-      hash.addData( QByteArray(( const char * )&val, sizeof( val ) ) );
+      hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
     else  if ( v.type() == QVariant::String )
     {
@@ -355,7 +355,7 @@ QString QgsWFSUtils::getMD5( const QgsFeature& f )
   }
 
   const int attrCount = attrs.size();
-  hash.addData( QByteArray(( const char * )&attrCount, sizeof( attrCount ) ) );
+  hash.addData( QByteArray( ( const char * )&attrCount, sizeof( attrCount ) ) );
   QgsGeometry geometry = f.geometry();
   if ( !geometry.isNull() )
   {

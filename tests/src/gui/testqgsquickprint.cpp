@@ -39,10 +39,10 @@ class TestQgsQuickPrint : public QObject
     Q_OBJECT
   public:
     TestQgsQuickPrint()
-        : mpMapRenderer( 0 )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
+      : mpMapRenderer( 0 )
+      , mpPointsLayer( 0 )
+      , mpLinesLayer( 0 )
+      , mpPolysLayer( 0 )
     {}
 
   private slots:
@@ -54,10 +54,10 @@ class TestQgsQuickPrint : public QObject
     void basicMapTest();
   private:
     bool imageCheck( QString type ); //as above
-    QgsMapRenderer * mpMapRenderer = nullptr;
-    QgsMapLayer * mpPointsLayer = nullptr;
-    QgsMapLayer * mpLinesLayer = nullptr;
-    QgsMapLayer * mpPolysLayer = nullptr;
+    QgsMapRenderer *mpMapRenderer = nullptr;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsMapLayer *mpLinesLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };

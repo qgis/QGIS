@@ -16,9 +16,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest
+from qgis.core import QgsSettings, QgsVectorLayer, QgsFeatureRequest
 
-from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -51,10 +51,10 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testDateTimeTypes(self):
@@ -82,6 +82,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         assert isinstance(f.attributes()[datetime_idx], QDateTime)
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(
             QDate(2004, 3, 4), QTime(13, 41, 52)))
+
 
 if __name__ == '__main__':
     unittest.main()

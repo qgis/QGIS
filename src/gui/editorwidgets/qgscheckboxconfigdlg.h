@@ -30,12 +30,12 @@ class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-    explicit QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent = nullptr );
+    explicit QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     // QgsEditorConfigWidget interface
   public:
     QVariantMap config() override;
-    void setConfig( const QVariantMap& config ) override;
+    void setConfig( const QVariantMap &config ) override;
 };
 
 #endif // QGSCHECKBOXCONFIGDLG_H

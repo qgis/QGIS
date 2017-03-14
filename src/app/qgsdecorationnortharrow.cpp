@@ -52,12 +52,12 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mRotationInt( 0 )
-    , mAutomatic( true )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
+  : QgsDecorationItem( parent )
+  , mRotationInt( 0 )
+  , mAutomatic( true )
+  , mMarginHorizontal( 0 )
+  , mMarginVertical( 0 )
 {
   mPlacement = BottomLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -95,7 +95,7 @@ void QgsDecorationNorthArrow::run()
   dlg.exec();
 }
 
-void QgsDecorationNorthArrow::render( QPainter * theQPainter )
+void QgsDecorationNorthArrow::render( QPainter *theQPainter )
 {
 
   //Large IF statement controlled by enable check box
@@ -123,14 +123,14 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
         calculateNorthDirection();
 
       double myRadiansDouble = mRotationInt * M_PI / 180.0;
-      int xShift = static_cast<int>((
-                                      ( centerXDouble * cos( myRadiansDouble ) ) +
-                                      ( centerYDouble * sin( myRadiansDouble ) )
-                                    ) - centerXDouble );
-      int yShift = static_cast<int>((
-                                      ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                      ( centerYDouble * cos( myRadiansDouble ) )
-                                    ) - centerYDouble );
+      int xShift = static_cast<int>( (
+                                       ( centerXDouble * cos( myRadiansDouble ) ) +
+                                       ( centerYDouble * sin( myRadiansDouble ) )
+                                     ) - centerXDouble );
+      int yShift = static_cast<int>( (
+                                       ( -centerXDouble * sin( myRadiansDouble ) ) +
+                                       ( centerYDouble * cos( myRadiansDouble ) )
+                                     ) - centerYDouble );
 
       // need width/height of paint device
       int myHeight = theQPainter->device()->height();
@@ -158,8 +158,8 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
           break;
 
         case QgsUnitTypes::RenderPercentage:
-          myXOffset = (( myWidth - myQPixmap.width() ) / 100. ) * mMarginHorizontal;
-          myYOffset = (( myHeight - myQPixmap.height() ) / 100. ) * mMarginVertical;
+          myXOffset = ( ( myWidth - myQPixmap.width() ) / 100. ) * mMarginHorizontal;
+          myYOffset = ( ( myHeight - myQPixmap.height() ) / 100. ) * mMarginVertical;
           break;
 
         default:  // Use default of top left
@@ -209,7 +209,7 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
 
 bool QgsDecorationNorthArrow::calculateNorthDirection()
 {
-  QgsMapCanvas* mapCanvas = QgisApp::instance()->mapCanvas();
+  QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
 
   bool goodDirn = false;
 

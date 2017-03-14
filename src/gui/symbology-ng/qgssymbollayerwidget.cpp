@@ -36,8 +36,8 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgssvgselectorwidget.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QAbstractButton>
 #include <QColorDialog>
@@ -45,7 +45,6 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QPainter>
-#include <QSettings>
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 #include <QMessageBox>
@@ -57,8 +56,8 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 
   QgsExpressionContext expContext( mContext.globalProjectAtlasMapLayerScopes( vectorLayer() ) );
 
-  QgsExpressionContextScope* symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  if ( const QgsSymbolLayer* symbolLayer = const_cast< QgsSymbolLayerWidget* >( this )->symbolLayer() )
+  QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
+  if ( const QgsSymbolLayer *symbolLayer = const_cast< QgsSymbolLayerWidget * >( this )->symbolLayer() )
   {
     //cheat a bit - set the symbol color variable to match the symbol layer's color (when we should really be using the *symbols*
     //color, but that's not accessible here). 99% of the time these will be the same anyway
@@ -71,7 +70,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
 
   // additional scopes
-  Q_FOREACH ( const QgsExpressionContextScope& scope, mContext.additionalExpressionContextScopes() )
+  Q_FOREACH ( const QgsExpressionContextScope &scope, mContext.additionalExpressionContextScopes() )
   {
     expContext.appendScope( new QgsExpressionContextScope( scope ) );
   }
@@ -87,15 +86,15 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   return expContext;
 }
 
-void QgsSymbolLayerWidget::setContext( const QgsSymbolWidgetContext& context )
+void QgsSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  Q_FOREACH ( QgsUnitSelectionWidget* unitWidget, findChildren<QgsUnitSelectionWidget*>() )
+  Q_FOREACH ( QgsUnitSelectionWidget *unitWidget, findChildren<QgsUnitSelectionWidget *>() )
   {
     unitWidget->setMapCanvas( mContext.mapCanvas() );
   }
 #if 0
-  Q_FOREACH ( QgsPropertyOverrideButton* ddButton, findChildren<QgsPropertyOverrideButton*>() )
+  Q_FOREACH ( QgsPropertyOverrideButton *ddButton, findChildren<QgsPropertyOverrideButton *>() )
   {
     if ( ddButton->assistant() )
       ddButton->assistant()->setMapCanvas( mContext.mapCanvas() );
@@ -108,7 +107,7 @@ QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
   return mContext;
 }
 
-void QgsSymbolLayerWidget::registerDataDefinedButton( QgsPropertyOverrideButton * button, QgsSymbolLayer::Property key )
+void QgsSymbolLayerWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
 {
   button->init( key, symbolLayer()->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsSymbolLayerWidget::updateDataDefinedProperty );
@@ -118,14 +117,14 @@ void QgsSymbolLayerWidget::registerDataDefinedButton( QgsPropertyOverrideButton 
 
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
 {
-  QgsPropertyOverrideButton* button = qobject_cast<QgsPropertyOverrideButton*>( sender() );
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   symbolLayer()->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
 
-QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -156,7 +155,7 @@ QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorL
     mPenWidthDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( penWidthChanged() ) );
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( colorChanged( const QColor & ) ) );
   connect( cboPenStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( cboCapStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
@@ -180,13 +179,13 @@ void QgsSimpleLineSymbolLayerWidget::updateAssistantSymbol()
 }
 
 
-void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer || layer->layerType() != QLatin1String( "SimpleLine" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsSimpleLineSymbolLayer*>( layer );
+  mLayer = static_cast<QgsSimpleLineSymbolLayer *>( layer );
 
   // set units
   mPenWidthUnitWidget->blockSignals( true );
@@ -251,7 +250,7 @@ void QgsSimpleLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayer* QgsSimpleLineSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsSimpleLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -263,7 +262,7 @@ void QgsSimpleLineSymbolLayerWidget::penWidthChanged()
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerWidget::colorChanged( const QColor& color )
+void QgsSimpleLineSymbolLayerWidget::colorChanged( const QColor &color )
 {
   mLayer->setColor( color );
   updatePatternIcon();
@@ -351,7 +350,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
   {
     return;
   }
-  QgsSimpleLineSymbolLayer* layerCopy = mLayer->clone();
+  QgsSimpleLineSymbolLayer *layerCopy = mLayer->clone();
   if ( !layerCopy )
   {
     return;
@@ -366,8 +365,8 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 ///////////
 
 
-QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -377,7 +376,7 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                     << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   btnChangeColorFill->setAllowAlpha( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select fill color" ) );
@@ -403,19 +402,19 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   double markerSize = DEFAULT_POINT_SIZE * 2;
   Q_FOREACH ( QgsSimpleMarkerSymbolLayerBase::Shape shape, QgsSimpleMarkerSymbolLayerBase::availableShapes() )
   {
-    QgsSimpleMarkerSymbolLayer* lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
+    QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
-    QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
+    QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
     delete lyr;
   }
 
   connect( lstNames, SIGNAL( currentRowChanged( int ) ), this, SLOT( setShape() ) );
-  connect( btnChangeColorStroke, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorStroke( const QColor& ) ) );
-  connect( btnChangeColorFill, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorFill( const QColor& ) ) );
+  connect( btnChangeColorStroke, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColorStroke( const QColor & ) ) );
+  connect( btnChangeColorFill, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColorFill( const QColor & ) ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
@@ -424,13 +423,13 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVec
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 }
 
-void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "SimpleMarker" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsSimpleMarkerSymbolLayer*>( layer );
+  mLayer = static_cast<QgsSimpleMarkerSymbolLayer *>( layer );
 
   // set values
   QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
@@ -509,7 +508,7 @@ void QgsSimpleMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayer* QgsSimpleMarkerSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsSimpleMarkerSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -521,13 +520,13 @@ void QgsSimpleMarkerSymbolLayerWidget::setShape()
   emit changed();
 }
 
-void QgsSimpleMarkerSymbolLayerWidget::setColorStroke( const QColor& color )
+void QgsSimpleMarkerSymbolLayerWidget::setColorStroke( const QColor &color )
 {
   mLayer->setStrokeColor( color );
   emit changed();
 }
 
-void QgsSimpleMarkerSymbolLayerWidget::setColorFill( const QColor& color )
+void QgsSimpleMarkerSymbolLayerWidget::setColorFill( const QColor &color )
 {
   mLayer->setColor( color );
   emit changed();
@@ -611,7 +610,7 @@ void QgsSimpleMarkerSymbolLayerWidget::on_mHorizontalAnchorComboBox_currentIndex
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -620,7 +619,7 @@ void QgsSimpleMarkerSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexCh
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -640,8 +639,8 @@ void QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol()
 
 ///////////
 
-QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -665,9 +664,9 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorL
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
   connect( cboFillStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setBrushStyle() ) );
-  connect( btnChangeStrokeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setStrokeColor( const QColor& ) ) );
+  connect( btnChangeStrokeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setStrokeColor( const QColor & ) ) );
   connect( spinStrokeWidth, SIGNAL( valueChanged( double ) ), this, SLOT( strokeWidthChanged() ) );
   connect( cboStrokeStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( strokeStyleChanged() ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( strokeStyleChanged() ) );
@@ -675,13 +674,13 @@ QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorL
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
 }
 
-void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "SimpleFill" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsSimpleFillSymbolLayer*>( layer );
+  mLayer = static_cast<QgsSimpleFillSymbolLayer *>( layer );
 
   // set values
   btnChangeColor->blockSignals( true );
@@ -727,18 +726,18 @@ void QgsSimpleFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
 
 }
 
-QgsSymbolLayer* QgsSimpleFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsSimpleFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsSimpleFillSymbolLayerWidget::setColor( const QColor& color )
+void QgsSimpleFillSymbolLayerWidget::setColor( const QColor &color )
 {
   mLayer->setColor( color );
   emit changed();
 }
 
-void QgsSimpleFillSymbolLayerWidget::setStrokeColor( const QColor& color )
+void QgsSimpleFillSymbolLayerWidget::setStrokeColor( const QColor &color )
 {
   mLayer->setStrokeColor( color );
   emit changed();
@@ -791,8 +790,8 @@ void QgsSimpleFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 
 ///////////
 
-QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -818,11 +817,11 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
     if ( !QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( shape ) )
       continue;
 
-    QgsSimpleMarkerSymbolLayer* lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
+    QgsSimpleMarkerSymbolLayer *lyr = new QgsSimpleMarkerSymbolLayer( shape, markerSize );
     lyr->setColor( QColor( 200, 200, 200 ) );
     lyr->setStrokeColor( QColor( 0, 0, 0 ) );
     QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, QgsUnitTypes::RenderMillimeters, size );
-    QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
+    QListWidgetItem *item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, static_cast< int >( shape ) );
     item->setToolTip( QgsSimpleMarkerSymbolLayerBase::encodeShape( shape ) );
     delete lyr;
@@ -836,13 +835,13 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVec
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 }
 
-void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "FilledMarker" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsFilledMarkerSymbolLayer*>( layer );
+  mLayer = static_cast<QgsFilledMarkerSymbolLayer *>( layer );
 
   // set values
   QgsSimpleMarkerSymbolLayerBase::Shape shape = mLayer->shape();
@@ -882,7 +881,7 @@ void QgsFilledMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayer* QgsFilledMarkerSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsFilledMarkerSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -935,7 +934,7 @@ void QgsFilledMarkerSymbolLayerWidget::on_mHorizontalAnchorComboBox_currentIndex
 {
   if ( mLayer )
   {
-    mLayer->setHorizontalAnchorPoint(( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
+    mLayer->setHorizontalAnchorPoint( ( QgsMarkerSymbolLayer::HorizontalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -944,7 +943,7 @@ void QgsFilledMarkerSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexCh
 {
   if ( mLayer )
   {
-    mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
+    mLayer->setVerticalAnchorPoint( ( QgsMarkerSymbolLayer::VerticalAnchorPoint ) index );
     emit changed();
   }
 }
@@ -964,8 +963,8 @@ void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
 
 ///////////
 
-QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -989,8 +988,8 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
-  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
+  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor2( const QColor & ) ) );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsGradientFillSymbolLayerWidget::applyColorRamp );
   connect( cboGradientType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientType( int ) ) );
   connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
@@ -1006,13 +1005,13 @@ QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVec
   connect( checkRefPoint2Centroid, SIGNAL( toggled( bool ) ), this, SLOT( referencePointChanged() ) );
 }
 
-void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "GradientFill" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsGradientFillSymbolLayer*>( layer );
+  mLayer = static_cast<QgsGradientFillSymbolLayer *>( layer );
 
   // set values
   btnChangeColor->blockSignals( true );
@@ -1145,18 +1144,18 @@ void QgsGradientFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   registerDataDefinedButton( mRefPoint2CentroidDDBtn, QgsSymbolLayer::PropertyGradientReference2IsCentroid );
 }
 
-QgsSymbolLayer* QgsGradientFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsGradientFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsGradientFillSymbolLayerWidget::setColor( const QColor& color )
+void QgsGradientFillSymbolLayerWidget::setColor( const QColor &color )
 {
   mLayer->setColor( color );
   emit changed();
 }
 
-void QgsGradientFillSymbolLayerWidget::setColor2( const QColor& color )
+void QgsGradientFillSymbolLayerWidget::setColor2( const QColor &color )
 {
   mLayer->setColor2( color );
   emit changed();
@@ -1292,8 +1291,8 @@ void QgsGradientFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 
 ///////////
 
-QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1303,10 +1302,10 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
   mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
-  QButtonGroup* group1 = new QButtonGroup( this );
+  QButtonGroup *group1 = new QButtonGroup( this );
   group1->addButton( radioColorRamp );
   group1->addButton( radioTwoColor );
-  QButtonGroup* group2 = new QButtonGroup( this );
+  QButtonGroup *group2 = new QButtonGroup( this );
   group2->addButton( mRadioUseMaxDistance );
   group2->addButton( mRadioUseWholeShape );
   btnChangeColor->setAllowAlpha( true );
@@ -1327,8 +1326,8 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
 
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsShapeburstFillSymbolLayerWidget::applyColorRamp );
 
-  connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
-  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
+  connect( btnChangeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
+  connect( btnChangeColor2, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor2( const QColor & ) ) );
   connect( radioTwoColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
@@ -1337,13 +1336,13 @@ QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const Qg
   connect( mSpinBlurRadius, SIGNAL( valueChanged( int ) ), mBlurSlider, SLOT( setValue( int ) ) );
 }
 
-void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "ShapeburstFill" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsShapeburstFillSymbolLayer*>( layer );
+  mLayer = static_cast<QgsShapeburstFillSymbolLayer *>( layer );
 
   // set values
   btnChangeColor->blockSignals( true );
@@ -1429,12 +1428,12 @@ void QgsShapeburstFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   registerDataDefinedButton( mIgnoreRingsDDBtn, QgsSymbolLayer::PropertyShapeburstIgnoreRings );
 }
 
-QgsSymbolLayer* QgsShapeburstFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsShapeburstFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsShapeburstFillSymbolLayerWidget::setColor( const QColor& color )
+void QgsShapeburstFillSymbolLayerWidget::setColor( const QColor &color )
 {
   if ( mLayer )
   {
@@ -1443,7 +1442,7 @@ void QgsShapeburstFillSymbolLayerWidget::setColor( const QColor& color )
   }
 }
 
-void QgsShapeburstFillSymbolLayerWidget::setColor2( const QColor& color )
+void QgsShapeburstFillSymbolLayerWidget::setColor2( const QColor &color )
 {
   if ( mLayer )
   {
@@ -1510,7 +1509,7 @@ void QgsShapeburstFillSymbolLayerWidget::on_mRadioUseWholeShape_toggled( bool va
 
 void QgsShapeburstFillSymbolLayerWidget::applyColorRamp()
 {
-  QgsColorRamp* ramp = btnColorRamp->colorRamp();
+  QgsColorRamp *ramp = btnColorRamp->colorRamp();
   if ( !ramp )
     return;
 
@@ -1547,8 +1546,8 @@ void QgsShapeburstFillSymbolLayerWidget::on_mIgnoreRingsCheckBox_stateChanged( i
 
 ///////////
 
-QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1574,13 +1573,13 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( const QgsVectorL
   connect( radCurvePoint, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
 }
 
-void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "MarkerLine" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsMarkerLineSymbolLayer*>( layer );
+  mLayer = static_cast<QgsMarkerLineSymbolLayer *>( layer );
 
   // set values
   spinInterval->blockSignals( true );
@@ -1630,7 +1629,7 @@ void QgsMarkerLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   registerDataDefinedButton( mOffsetAlongLineDDBtn, QgsSymbolLayer::PropertyOffsetAlongLine );
 }
 
-QgsSymbolLayer* QgsMarkerLineSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsMarkerLineSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -1714,8 +1713,8 @@ void QgsMarkerLineSymbolLayerWidget::on_mOffsetAlongLineUnitWidget_changed()
 ///////////
 
 
-QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -1739,8 +1738,8 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
 
   populateList();
 
-  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
-  connect( viewGroups->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
+  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setName( const QModelIndex & ) ) );
+  connect( viewGroups->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( populateIcons( const QModelIndex & ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -1762,8 +1761,8 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
 
 void QgsSvgMarkerSymbolLayerWidget::populateList()
 {
-  QAbstractItemModel* oldModel = viewGroups->model();
-  QgsSvgSelectorGroupsModel* g = new QgsSvgSelectorGroupsModel( viewGroups );
+  QAbstractItemModel *oldModel = viewGroups->model();
+  QgsSvgSelectorGroupsModel *g = new QgsSvgSelectorGroupsModel( viewGroups );
   viewGroups->setModel( g );
   delete oldModel;
 
@@ -1776,24 +1775,24 @@ void QgsSvgMarkerSymbolLayerWidget::populateList()
 
   // Initially load the icons in the List view without any grouping
   oldModel = viewImages->model();
-  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( viewImages );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages );
   viewImages->setModel( m );
   delete oldModel;
 }
 
-void QgsSvgMarkerSymbolLayerWidget::populateIcons( const QModelIndex& idx )
+void QgsSvgMarkerSymbolLayerWidget::populateIcons( const QModelIndex &idx )
 {
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
-  QAbstractItemModel* oldModel = viewImages->model();
-  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( viewImages, path );
+  QAbstractItemModel *oldModel = viewImages->model();
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, path );
   viewImages->setModel( m );
   delete oldModel;
 
-  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
+  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setName( const QModelIndex & ) ) );
 }
 
-void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer* layer )
+void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer )
 {
   if ( !layer )
   {
@@ -1861,7 +1860,7 @@ void QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol()
 }
 
 
-void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer )
   {
@@ -1872,12 +1871,12 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsSvgMarkerSymbolLayer*>( layer );
+  mLayer = static_cast<QgsSvgMarkerSymbolLayer *>( layer );
 
   // set values
 
-  QAbstractItemModel* m = viewImages->model();
-  QItemSelectionModel* selModel = viewImages->selectionModel();
+  QAbstractItemModel *m = viewImages->model();
+  QItemSelectionModel *selModel = viewImages->selectionModel();
   for ( int i = 0; i < m->rowCount(); i++ )
   {
     QModelIndex idx( m->index( i, 0 ) );
@@ -1941,12 +1940,12 @@ void QgsSvgMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayer* QgsSvgMarkerSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsSvgMarkerSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsSvgMarkerSymbolLayerWidget::setName( const QModelIndex& idx )
+void QgsSvgMarkerSymbolLayerWidget::setName( const QModelIndex &idx )
 {
   QString name = idx.data( Qt::UserRole ).toString();
   mLayer->setPath( name );
@@ -1976,7 +1975,7 @@ void QgsSvgMarkerSymbolLayerWidget::setOffset()
 
 void QgsSvgMarkerSymbolLayerWidget::on_mFileToolButton_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString file = QFileDialog::getOpenFileName( nullptr,
                  tr( "Select SVG file" ),
                  s.value( QStringLiteral( "/UI/lastSVGMarkerDir" ), QDir::homePath() ).toString(),
@@ -1993,7 +1992,7 @@ void QgsSvgMarkerSymbolLayerWidget::on_mFileToolButton_clicked()
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerWidget::on_mFileLineEdit_textEdited( const QString& text )
+void QgsSvgMarkerSymbolLayerWidget::on_mFileLineEdit_textEdited( const QString &text )
 {
   if ( !QFileInfo::exists( text ) )
   {
@@ -2023,7 +2022,7 @@ void QgsSvgMarkerSymbolLayerWidget::on_mFileLineEdit_editingFinished()
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QColor& color )
+void QgsSvgMarkerSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QColor &color )
 {
   if ( !mLayer )
   {
@@ -2034,7 +2033,7 @@ void QgsSvgMarkerSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QC
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerWidget::on_mChangeStrokeColorButton_colorChanged( const QColor& color )
+void QgsSvgMarkerSymbolLayerWidget::on_mChangeStrokeColorButton_colorChanged( const QColor &color )
 {
   if ( !mLayer )
   {
@@ -2104,14 +2103,14 @@ void QgsSvgMarkerSymbolLayerWidget::on_mVerticalAnchorComboBox_currentIndexChang
 
 /////////////
 
-QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerWidget( parent, vl )
+QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
   setupUi( this );
   mTextureWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                      << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSvgStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
-                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+                                       << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSvgTreeView->setHeaderHidden( true );
   insertIcons();
 
@@ -2120,11 +2119,11 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* 
   mChangeStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
   mChangeStrokeColorButton->setContext( QStringLiteral( "symbology" ) );
 
-  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
-  connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
+  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setFile( const QModelIndex & ) ) );
+  connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( populateIcons( const QModelIndex & ) ) );
 }
 
-void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer )
   {
@@ -2136,7 +2135,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
     return;
   }
 
-  mLayer = dynamic_cast<QgsSVGFillSymbolLayer*>( layer );
+  mLayer = dynamic_cast<QgsSVGFillSymbolLayer *>( layer );
   if ( mLayer )
   {
     double width = mLayer->patternWidth();
@@ -2175,7 +2174,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsSymbolLayer::PropertyStrokeWidth );
 }
 
-QgsSymbolLayer* QgsSVGFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsSVGFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2199,7 +2198,7 @@ void QgsSVGFillSymbolLayerWidget::on_mTextureWidthSpinBox_valueChanged( double d
   }
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textEdited( const QString & text )
+void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textEdited( const QString &text )
 {
   if ( !mLayer )
   {
@@ -2241,7 +2240,7 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_editingFinished()
   emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
+void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex &item )
 {
   QString file = item.data( Qt::UserRole ).toString();
   mLayer->setSvgFilePath( file );
@@ -2253,8 +2252,8 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
 {
-  QAbstractItemModel* oldModel = mSvgTreeView->model();
-  QgsSvgSelectorGroupsModel* g = new QgsSvgSelectorGroupsModel( mSvgTreeView );
+  QAbstractItemModel *oldModel = mSvgTreeView->model();
+  QgsSvgSelectorGroupsModel *g = new QgsSvgSelectorGroupsModel( mSvgTreeView );
   mSvgTreeView->setModel( g );
   delete oldModel;
 
@@ -2266,21 +2265,21 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
   }
 
   oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mSvgListView );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView );
   mSvgListView->setModel( m );
   delete oldModel;
 }
 
-void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex& idx )
+void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex &idx )
 {
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
-  QAbstractItemModel* oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel* m = new QgsSvgSelectorListModel( mSvgListView, path );
+  QAbstractItemModel *oldModel = mSvgListView->model();
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, path );
   mSvgListView->setModel( m );
   delete oldModel;
 
-  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
+  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setFile( const QModelIndex & ) ) );
 }
 
 
@@ -2338,7 +2337,7 @@ void QgsSVGFillSymbolLayerWidget::updateParamGui( bool resetValues )
   mStrokeWidthSpinBox->setEnabled( hasStrokeWidthParam );
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QColor& color )
+void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QColor &color )
 {
   if ( !mLayer )
   {
@@ -2349,7 +2348,7 @@ void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_colorChanged( const QCol
   emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mChangeStrokeColorButton_colorChanged( const QColor& color )
+void QgsSVGFillSymbolLayerWidget::on_mChangeStrokeColorButton_colorChanged( const QColor &color )
 {
   if ( !mLayer )
   {
@@ -2391,8 +2390,8 @@ void QgsSVGFillSymbolLayerWidget::on_mSvgStrokeWidthUnitWidget_changed()
 
 /////////////
 
-QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
-    QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
+QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ):
+  QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -2402,14 +2401,14 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const 
   mOffsetSpinBox->setClearValue( 0 );
 }
 
-void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "LinePatternFill" ) )
   {
     return;
   }
 
-  QgsLinePatternFillSymbolLayer* patternLayer = static_cast<QgsLinePatternFillSymbolLayer*>( layer );
+  QgsLinePatternFillSymbolLayer *patternLayer = static_cast<QgsLinePatternFillSymbolLayer *>( layer );
   if ( patternLayer )
   {
     mLayer = patternLayer;
@@ -2438,7 +2437,7 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer 
   registerDataDefinedButton( mDistanceDDBtn, QgsSymbolLayer::PropertyLineDistance );
 }
 
-QgsSymbolLayer* QgsLinePatternFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsLinePatternFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2492,8 +2491,8 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 
 /////////////
 
-QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
-    QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
+QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ):
+  QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
 {
   setupUi( this );
   mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -2507,14 +2506,14 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( cons
 }
 
 
-void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( !layer || layer->layerType() != QLatin1String( "PointPatternFill" ) )
   {
     return;
   }
 
-  mLayer = static_cast<QgsPointPatternFillSymbolLayer*>( layer );
+  mLayer = static_cast<QgsPointPatternFillSymbolLayer *>( layer );
   mHorizontalDistanceSpinBox->blockSignals( true );
   mHorizontalDistanceSpinBox->setValue( mLayer->distanceX() );
   mHorizontalDistanceSpinBox->blockSignals( false );
@@ -2551,7 +2550,7 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer
   registerDataDefinedButton( mVerticalDisplacementDDBtn, QgsSymbolLayer::PropertyDisplacementY );
 }
 
-QgsSymbolLayer* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsPointPatternFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2634,8 +2633,8 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementUnitWidget_ch
 
 /////////////
 
-QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
@@ -2665,11 +2664,11 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   if ( vectorLayer() )
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
-  connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
+  connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont & ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
-  connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
-  connect( btnStrokeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColorStroke( const QColor& ) ) );
+  connect( btnColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColor( const QColor & ) ) );
+  connect( btnStrokeColor, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setColorStroke( const QColor & ) ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penJoinStyleChanged() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle( double ) ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -2678,13 +2677,13 @@ QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorL
   connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
 }
 
-void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "FontMarker" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsFontMarkerSymbolLayer*>( layer );
+  mLayer = static_cast<QgsFontMarkerSymbolLayer *>( layer );
 
   QFont layerFont( mLayer->fontFamily() );
   // set values
@@ -2739,25 +2738,25 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
   updateAssistantSymbol();
 }
 
-QgsSymbolLayer* QgsFontMarkerSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsFontMarkerSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont& font )
+void QgsFontMarkerSymbolLayerWidget::setFontFamily( const QFont &font )
 {
   mLayer->setFontFamily( font.family() );
   widgetChar->updateFont( font );
   emit changed();
 }
 
-void QgsFontMarkerSymbolLayerWidget::setColor( const QColor& color )
+void QgsFontMarkerSymbolLayerWidget::setColor( const QColor &color )
 {
   mLayer->setColor( color );
   emit changed();
 }
 
-void QgsFontMarkerSymbolLayerWidget::setColorStroke( const QColor& color )
+void QgsFontMarkerSymbolLayerWidget::setColorStroke( const QColor &color )
 {
   mLayer->setStrokeColor( color );
   emit changed();
@@ -2866,28 +2865,28 @@ void QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol()
 ///////////////
 
 
-QgsCentroidFillSymbolLayerWidget::QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
+QgsCentroidFillSymbolLayerWidget::QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
 
   setupUi( this );
 }
 
-void QgsCentroidFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* layer )
+void QgsCentroidFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
   if ( layer->layerType() != QLatin1String( "CentroidFill" ) )
     return;
 
   // layer type is correct, we can do the cast
-  mLayer = static_cast<QgsCentroidFillSymbolLayer*>( layer );
+  mLayer = static_cast<QgsCentroidFillSymbolLayer *>( layer );
 
   // set values
   whileBlocking( mDrawInsideCheckBox )->setChecked( mLayer->pointOnSurface() );
   whileBlocking( mDrawAllPartsCheckBox )->setChecked( mLayer->pointOnAllParts() );
 }
 
-QgsSymbolLayer* QgsCentroidFillSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsCentroidFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
@@ -2907,7 +2906,7 @@ void QgsCentroidFillSymbolLayerWidget::on_mDrawAllPartsCheckBox_stateChanged( in
 ///////////////
 
 QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
-    : QgsSymbolLayerWidget( parent, vl )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
   setupUi( this );
@@ -2937,7 +2936,7 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     return;
   }
 
-  mLayer = dynamic_cast<QgsRasterFillSymbolLayer*>( layer );
+  mLayer = dynamic_cast<QgsRasterFillSymbolLayer *>( layer );
   if ( !mLayer )
   {
     return;
@@ -3002,7 +3001,7 @@ QgsSymbolLayer *QgsRasterFillSymbolLayerWidget::symbolLayer()
 
 void QgsRasterFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
 {
-  QSettings s;
+  QgsSettings s;
   QString openDir;
   QString lineEditText = mImageLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -3157,7 +3156,7 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 
   QImage previewImage( 150, 150, QImage::Format_ARGB32 );
   previewImage.fill( Qt::transparent );
-  QRect imageRect(( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  QRect imageRect( ( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
   QPainter p;
   p.begin( &previewImage );
   //draw a checkerboard background
@@ -3183,13 +3182,13 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 }
 
 
-QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent )
-    : QgsSymbolLayerWidget( parent, vl )
-    , mLayer( nullptr )
+QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+  , mLayer( nullptr )
 {
   setupUi( this );
   modificationExpressionSelector->setMultiLine( true );
-  modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer*>( vl ) );
+  modificationExpressionSelector->setLayer( const_cast<QgsVectorLayer *>( vl ) );
   modificationExpressionSelector->registerExpressionContextGenerator( this );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / MultiPolygon" ), QgsSymbol::Fill );
   cbxGeometryType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsSymbol::Line );
@@ -3198,19 +3197,19 @@ QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( co
   connect( cbxGeometryType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateSymbolType() ) );
 }
 
-void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer* l )
+void QgsGeometryGeneratorSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *l )
 {
-  mLayer = static_cast<QgsGeometryGeneratorSymbolLayer*>( l );
+  mLayer = static_cast<QgsGeometryGeneratorSymbolLayer *>( l );
   modificationExpressionSelector->setExpression( mLayer->geometryExpression() );
   cbxGeometryType->setCurrentIndex( cbxGeometryType->findData( mLayer->symbolType() ) );
 }
 
-QgsSymbolLayer* QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
+QgsSymbolLayer *QgsGeometryGeneratorSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
 }
 
-void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString& string )
+void QgsGeometryGeneratorSymbolLayerWidget::updateExpression( const QString &string )
 {
   mLayer->setGeometryExpression( string );
 

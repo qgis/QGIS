@@ -40,14 +40,14 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = nullptr );
+    explicit QgsDateTimeEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent = nullptr );
 
   private slots:
     void dateTimeChanged( const QDateTime &dateTime );
 
   private:
-    QDateTimeEdit* mQDateTimeEdit = nullptr;
-    QgsDateTimeEdit* mQgsDateTimeEdit = nullptr;
+    QDateTimeEdit *mQDateTimeEdit = nullptr;
+    QgsDateTimeEdit *mQgsDateTimeEdit = nullptr;
 
 
     // QgsEditorWidgetWrapper interface

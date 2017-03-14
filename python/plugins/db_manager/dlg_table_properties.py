@@ -171,7 +171,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewFields.model()
         fld = m.getObject(index)
 
-        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete column '%s'?") % fld.name,
+        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("Really delete column '{0}'?").format(fld.name),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -226,7 +226,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         constr = m.getObject(index)
 
         res = QMessageBox.question(self, self.tr("Are you sure"),
-                                   self.tr("really delete constraint '%s'?") % constr.name,
+                                   self.tr("Really delete constraint '{0}'?").format(constr.name),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -247,7 +247,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         sel = self.viewConstraints.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
             return -1
         return indexes[0].row()
 
@@ -285,7 +285,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             return
 
         res = QMessageBox.question(self, self.tr("Create?"),
-                                   self.tr("Create spatial index for field %s?") % self.table.geomColumn,
+                                   self.tr("Create spatial index for field {0}?").format(self.table.geomColumn),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return
@@ -321,7 +321,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewIndexes.model()
         idx = m.getObject(index)
 
-        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete index '%s'?") % idx.name,
+        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("Really delete index '{0}'?").format(idx.name),
                                    QMessageBox.Yes | QMessageBox.No)
         if res != QMessageBox.Yes:
             return

@@ -68,10 +68,10 @@ class CORE_EXPORT QgsVectorLayerImport
      * @param progress optional progress dialog to show progress of export
      * @returns NoError for a successful export, or encountered error
      */
-    static ImportError importLayer( QgsVectorLayer* layer,
-                                    const QString& uri,
-                                    const QString& providerKey,
-                                    const QgsCoordinateReferenceSystem& destCRS,
+    static ImportError importLayer( QgsVectorLayer *layer,
+                                    const QString &uri,
+                                    const QString &providerKey,
+                                    const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
                                     QString *errorMessage = nullptr,
                                     bool skipAttributeCreation = false,
@@ -94,16 +94,16 @@ class CORE_EXPORT QgsVectorLayerImport
                           const QString &provider,
                           const QgsFields &fields,
                           QgsWkbTypes::Type geometryType,
-                          const QgsCoordinateReferenceSystem& crs,
+                          const QgsCoordinateReferenceSystem &crs,
                           bool overwrite = false,
                           const QMap<QString, QVariant> *options = nullptr,
                           QProgressDialog *progress = nullptr
                         );
 
     //! QgsVectorLayerImport cannot be copied
-    QgsVectorLayerImport( const QgsVectorLayerImport& rh ) = delete;
+    QgsVectorLayerImport( const QgsVectorLayerImport &rh ) = delete;
     //! QgsVectorLayerImport cannot be copied
-    QgsVectorLayerImport& operator=( const QgsVectorLayerImport& rh ) = delete;
+    QgsVectorLayerImport &operator=( const QgsVectorLayerImport &rh ) = delete;
 
     //! Checks whether there were any errors
     ImportError hasError();
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsVectorLayerImport
     int errorCount() const { return mErrorCount; }
 
     //! Add feature to the new created layer
-    bool addFeature( QgsFeature& feature );
+    bool addFeature( QgsFeature &feature );
 
     //! Close the new created layer
     ~QgsVectorLayerImport();

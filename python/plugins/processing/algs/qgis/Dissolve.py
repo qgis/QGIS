@@ -103,8 +103,8 @@ class Dissolve(GeoAlgorithm):
                                                self.tr('ValidateGeometry()'
                                                        'error: One or more '
                                                        'input features have '
-                                                       'invalid geometry: ')
-                                               + error.what())
+                                                       'invalid geometry: ') +
+                                               error.what())
                     continue
 
                 geom_queue.append(tmpInGeom)
@@ -146,10 +146,10 @@ class Dissolve(GeoAlgorithm):
                                                self.tr('ValidateGeometry() '
                                                        'error: One or more input'
                                                        'features have invalid '
-                                                       'geometry: ')
-                                               + error.what())
+                                                       'geometry: ') +
+                                               error.what())
 
-                if not index_attrs in attribute_dict:
+                if index_attrs not in attribute_dict:
                     # keep attributes of first feature
                     attribute_dict[index_attrs] = attrs
 

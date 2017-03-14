@@ -27,15 +27,15 @@ class QgsAmsSourceSelect: public QgsSourceSelectDialog
     Q_OBJECT
 
   public:
-    QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
 
   protected:
-    bool connectToService( const QgsOwsConnection& connection ) override;
+    bool connectToService( const QgsOwsConnection &connection ) override;
     QString getLayerURI( const QgsOwsConnection &connection,
-                         const QString& layerTitle, const QString& layerName,
-                         const QString& crs = QString(),
-                         const QString& filter = QString(),
-                         const QgsRectangle& bBox = QgsRectangle() ) const override;
+                         const QString &layerTitle, const QString &layerName,
+                         const QString &crs = QString(),
+                         const QString &filter = QString(),
+                         const QgsRectangle &bBox = QgsRectangle() ) const override;
 };
 
 #endif // QGSAMSSOURCESELECT_H

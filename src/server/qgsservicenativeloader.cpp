@@ -29,18 +29,18 @@
 #include "qgis.h"
 
 
-typedef void unloadHook_t( QgsServiceModule* );
+typedef void unloadHook_t( QgsServiceModule * );
 
 class QgsServiceNativeModuleEntry
 {
   public:
-    QgsServiceNativeModuleEntry( const QString& location )
-        : mLocation( location )
+    QgsServiceNativeModuleEntry( const QString &location )
+      : mLocation( location )
     {}
 
     QString mLocation;
-    QgsServiceModule* mModule = nullptr;
-    unloadHook_t* mUnloadHook = nullptr;
+    QgsServiceModule *mModule = nullptr;
+    unloadHook_t *mUnloadHook = nullptr;
 };
 
 //! Constructor
@@ -54,8 +54,8 @@ QgsServiceNativeLoader::~QgsServiceNativeLoader()
 
 }
 
-void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
-    QgsServerInterface* serverIface )
+void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
+    QgsServerInterface *serverIface )
 {
   QDir moduleDir( modulePath );
   moduleDir.setSorting( QDir::Name | QDir::IgnoreCase );
@@ -70,9 +70,9 @@ void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceR
   qDebug() << QString( "Checking %1 for native services modules" ).arg( moduleDir.path() );
   //QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
 
-  Q_FOREACH ( const QFileInfo& fi, moduleDir.entryInfoList() )
+  Q_FOREACH ( const QFileInfo &fi, moduleDir.entryInfoList() )
   {
-    QgsServiceModule* module = loadNativeModule( fi.filePath() );
+    QgsServiceModule *module = loadNativeModule( fi.filePath() );
     if ( module )
     {
       // Register services
@@ -82,11 +82,11 @@ void QgsServiceNativeLoader::loadModules( const QString& modulePath, QgsServiceR
 }
 
 
-typedef QgsServiceModule* serviceEntryPoint_t();
+typedef QgsServiceModule *serviceEntryPoint_t();
 
-QgsServiceModule* QgsServiceNativeLoader::loadNativeModule( const QString& location )
+QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &location )
 {
-  QgsServiceNativeModuleEntry* entry = findModuleEntry( location );
+  QgsServiceNativeModuleEntry *entry = findModuleEntry( location );
   if ( entry )
   {
     return entry->mModule;
@@ -101,17 +101,17 @@ QgsServiceModule* QgsServiceNativeLoader::loadNativeModule( const QString& locat
     return nullptr;
   }
   // Load entry point
-  serviceEntryPoint_t*
-  entryPointFunc = reinterpret_cast<serviceEntryPoint_t*>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
+  serviceEntryPoint_t *
+  entryPointFunc = reinterpret_cast<serviceEntryPoint_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
 
   if ( entryPointFunc )
   {
-    QgsServiceModule* module = entryPointFunc();
+    QgsServiceModule *module = entryPointFunc();
     if ( module )
     {
       entry = new QgsServiceNativeModuleEntry( location );
       entry->mModule     = module;
-      entry->mUnloadHook = reinterpret_cast<unloadHook_t*>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Exit" ) ) );
+      entry->mUnloadHook = reinterpret_cast<unloadHook_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Exit" ) ) );
 
       // Add entry
       mModules.insert( location, ModuleTable::mapped_type( entry ) );
@@ -146,9 +146,9 @@ void QgsServiceNativeLoader::unloadModules()
   mModules.clear();
 }
 
-QgsServiceNativeModuleEntry* QgsServiceNativeLoader::findModuleEntry( const QString& location )
+QgsServiceNativeModuleEntry *QgsServiceNativeLoader::findModuleEntry( const QString &location )
 {
-  QgsServiceNativeModuleEntry* entry = nullptr;
+  QgsServiceNativeModuleEntry *entry = nullptr;
   ModuleTable::iterator item = mModules.find( location );
   if ( item != mModules.end() )
   {
@@ -157,7 +157,7 @@ QgsServiceNativeModuleEntry* QgsServiceNativeLoader::findModuleEntry( const QStr
   return entry;
 }
 
-void QgsServiceNativeLoader::unloadModuleEntry( QgsServiceNativeModuleEntry* entry )
+void QgsServiceNativeLoader::unloadModuleEntry( QgsServiceNativeModuleEntry *entry )
 {
   // Call cleanup function if it exists
   if ( entry->mUnloadHook )

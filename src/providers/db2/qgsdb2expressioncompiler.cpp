@@ -19,14 +19,14 @@
 #include "qgsdb2expressioncompiler.h"
 #include "qgslogger.h"
 
-QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields
-                              )
+QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields
+                            )
 {
 
 }
 
-QString nodeType( const QgsExpression::Node* node )
+QString nodeType( const QgsExpression::Node *node )
 {
   QString opString = QStringLiteral( "?" );
   if ( node->nodeType() == QgsExpression::ntUnaryOperator ) opString =  QStringLiteral( "ntUnaryOperator" );
@@ -51,12 +51,12 @@ QString resultType( QgsSqlExpressionCompiler::Result result )
 
 }
 
-QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const QgsExpression::Node *node, QString &result )
 {
   QgsDebugMsg( QString( "nodeType: %1" ).arg( nodeType( node ) ) );
   if ( node->nodeType() == QgsExpression::ntColumnRef )
   {
-    const QgsExpression::NodeColumnRef *n( static_cast<const QgsExpression::NodeColumnRef*>( node ) );
+    const QgsExpression::NodeColumnRef *n( static_cast<const QgsExpression::NodeColumnRef *>( node ) );
     QgsDebugMsg( QString( "column ref node: " ) + n->dump() );
     // TODO - consider escaped names - not sure how to handle
     QString upperName = n->name().toUpper();
@@ -75,7 +75,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
 #if 0
   if ( node->nodeType() == QgsExpression::ntLiteral )
   {
-    const QgsExpression::NodeLiteral* n = static_cast<const QgsExpression::NodeLiteral*>( node );
+    const QgsExpression::NodeLiteral *n = static_cast<const QgsExpression::NodeLiteral *>( node );
 
     bool ok = false;
     if ( n->dump().toUpper() == "NULL" ) // expression compiler doesn't handle this correctly
@@ -105,7 +105,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
 #endif
   if ( node->nodeType() == QgsExpression::ntUnaryOperator )
   {
-    const QgsExpression::NodeUnaryOperator* n = static_cast<const QgsExpression::NodeUnaryOperator*>( node );
+    const QgsExpression::NodeUnaryOperator *n = static_cast<const QgsExpression::NodeUnaryOperator *>( node );
     Result rr = Fail;
     switch ( n->op() )
     {
@@ -128,7 +128,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
 
   if ( node->nodeType() == QgsExpression::ntBinaryOperator )
   {
-    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator*>( node ) );
+    const QgsExpression::NodeBinaryOperator *bin( static_cast<const QgsExpression::NodeBinaryOperator *>( node ) );
     QString left, right;
 
     Result lr = compileNode( bin->opLeft(), left );
@@ -170,22 +170,22 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
       case QgsExpression::boILike:
         QgsDebugMsg( "ILIKE is not supported by DB2" );
         return Fail;
-        /*
-          result = QString( "%1 LIKE %2" ).arg( left, right );
-          compileResult = (lr == Partial || rr == Partial) ? Partial : Complete;
-          QgsDebugMsg(QString("ILIKE compile status:  %1").arg(compileResult) + "; " + result);
-          return compileResult;
-          */
+      /*
+        result = QString( "%1 LIKE %2" ).arg( left, right );
+        compileResult = (lr == Partial || rr == Partial) ? Partial : Complete;
+        QgsDebugMsg(QString("ILIKE compile status:  %1").arg(compileResult) + "; " + result);
+        return compileResult;
+        */
 
       case QgsExpression::boNotILike:
         QgsDebugMsg( "NOT ILIKE is not supported by DB2" );
         return Fail;
-        /*
-          result = QString( "%1 NOT LIKE %2" ).arg( left, right );
-          compileResult = (lr == Partial || rr == Partial) ? Partial : Complete;
-          QgsDebugMsg(QString("NOT ILIKE compile status:  %1").arg(compileResult) + "; " + result);
-          return compileResult;
-          */
+      /*
+        result = QString( "%1 NOT LIKE %2" ).arg( left, right );
+        compileResult = (lr == Partial || rr == Partial) ? Partial : Complete;
+        QgsDebugMsg(QString("NOT ILIKE compile status:  %1").arg(compileResult) + "; " + result);
+        return compileResult;
+        */
 
 // We only support IS NULL if the operand on the left is a column
       case QgsExpression::boIs:
@@ -222,7 +222,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
   return rc;
 }
 
-QString QgsDb2ExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsDb2ExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 // Seemed necessary in initial Python testing but can't identify failing case now
