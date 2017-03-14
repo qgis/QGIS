@@ -328,6 +328,31 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     getFeatureUrl.addQueryItem( QStringLiteral( "SORTBY" ), mShared->mSortBy );
   }
 
+  if ( !forHits && !mShared->mURI.outputFormat().isEmpty() )
+  {
+    getFeatureUrl.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ), mShared->mURI.outputFormat() );
+  }
+  else if ( !forHits && mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    QStringList list;
+    list << QLatin1String( "text/xml; subtype=gml/3.2.1" );
+    list << QLatin1String( "application/gml+xml; version=3.2" );
+    list << QLatin1String( "text/xml; subtype=gml/3.1.1" );
+    list << QLatin1String( "application/gml+xml; version=3.1" );
+    list << QLatin1String( "text/xml; subtype=gml/3.0.1" );
+    list << QLatin1String( "application/gml+xml; version=3.0" );
+    list << QLatin1String( "GML3" );
+    Q_FOREACH ( const QString &format, list )
+    {
+      if ( mShared->mCaps.outputFormats.contains( format ) )
+      {
+        getFeatureUrl.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ),
+                                    format );
+        break;
+      }
+    }
+  }
+
   return getFeatureUrl;
 }
 
