@@ -1153,9 +1153,9 @@ QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
 - `writeConfig` has been removed. The configuration is read and written
   from and to a QVariantMap automatically.
 - `representValue` has been removed. Use QgsFieldFormatter::representValue() instead
-- `sortValue` has been removed. Use QgsFieldFormatter::representValue() instead
-- `alignmentFlag` has been removed. Use QgsFieldFormatter::representValue() instead
-- `createCache` has been removed. Use QgsFieldFormatter::representValue() instead
+- `sortValue` has been removed. Use QgsFieldFormatter::sortValue() instead
+- `alignmentFlag` has been removed. Use QgsFieldFormatter::alignmentFlag() instead
+- `createCache` has been removed. Use QgsFieldFormatter::createCache() instead
 
 
 QgsFeedback            {#qgis_api_break_3_0_QgsFeedback}
