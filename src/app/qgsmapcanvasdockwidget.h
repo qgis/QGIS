@@ -20,6 +20,7 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 #include <QWidgetAction>
+#include <QTimer>
 #include <memory>
 
 class QgsMapCanvas;
@@ -60,6 +61,10 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 
     void renameTriggered();
 
+  protected:
+
+    void resizeEvent( QResizeEvent *e ) override;
+
   private slots:
 
     void setMapCrs();
@@ -81,7 +86,9 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     bool mBlockScaleUpdate = false;
     bool mBlockRotationUpdate = false;
     bool mBlockMagnificationUpdate = false;
+    bool mBlockExtentSync = false;
     QgsMapToolPan *mPanTool = nullptr;
+    QTimer mResizeTimer;
     void syncViewExtent( QgsMapCanvas *sourceCanvas );
 };
 

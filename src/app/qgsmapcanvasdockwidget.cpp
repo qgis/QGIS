@@ -163,6 +163,13 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
       mBlockMagnificationUpdate = false;
     }
   } );
+
+  mResizeTimer.setSingleShot( true );
+  connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
+  {
+    mBlockExtentSync = false;
+    syncViewExtent( mMainCanvas );
+  } );
 }
 
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
@@ -178,6 +185,12 @@ void QgsMapCanvasDockWidget::setViewExtentSynchronized( bool enabled )
 bool QgsMapCanvasDockWidget::isViewExtentSynchronized() const
 {
   return mActionSyncView->isChecked();
+}
+
+void QgsMapCanvasDockWidget::resizeEvent( QResizeEvent * )
+{
+  mBlockExtentSync = true;
+  mResizeTimer.start( 500 );
 }
 
 void QgsMapCanvasDockWidget::setMapCrs()
@@ -209,7 +222,7 @@ void QgsMapCanvasDockWidget::syncView( bool enabled )
 void QgsMapCanvasDockWidget::syncViewExtent( QgsMapCanvas *sourceCanvas )
 {
   // avoid infinite recursion
-  syncView( false );
+  mBlockExtentSync = true;
 
   QgsMapCanvas *destCanvas = sourceCanvas == mMapCanvas ? mMainCanvas : mMapCanvas;
 
@@ -226,11 +239,14 @@ void QgsMapCanvasDockWidget::syncViewExtent( QgsMapCanvas *sourceCanvas )
   }
   destCanvas->refresh();
 
-  syncView( true );
+  mBlockExtentSync = false;
 }
 
 void QgsMapCanvasDockWidget::mapExtentChanged()
 {
+  if ( mBlockExtentSync )
+    return;
+
   QgsMapCanvas *sourceCanvas = qobject_cast< QgsMapCanvas * >( sender() );
   if ( !sourceCanvas )
     return;
