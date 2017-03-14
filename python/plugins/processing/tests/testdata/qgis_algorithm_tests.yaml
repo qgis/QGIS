@@ -2404,3 +2404,17 @@ tests:
       OUTPUT_LAYER:
         name: expected/buffer_ovals.gml
         type: vector
+
+  - algorithm: qgis:creategridlines
+    name: Lines grid 0.1 degree spacing
+    params:
+      CRS: EPSG:4326
+      EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
+      HOVERLAY: 0.0
+      HSPACING: 0.1
+      VOVERLAY: 0.0
+      VSPACING: 0.1
+    results:
+      OUTPUT:
+        name: expected/create_grid_lines.gml
+        type: vector
