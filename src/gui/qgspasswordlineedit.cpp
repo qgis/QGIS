@@ -35,7 +35,7 @@ QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent )
     mActionLock = addAction( QgsApplication::getThemeIcon( "/lockedGray.svg" ), QLineEdit::LeadingPosition );
   }
 
-  connect( mActionShowHidePassword, SIGNAL( triggered( bool ) ), this, SLOT( togglePasswordVisibility( bool ) ) );
+  connect( mActionShowHidePassword, &QAction::triggered, this, &QgsPasswordLineEdit::togglePasswordVisibility );
 }
 
 void QgsPasswordLineEdit::togglePasswordVisibility( bool toggled )
