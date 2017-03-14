@@ -32,6 +32,7 @@
 class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 {
     Q_OBJECT
+    Q_PROPERTY( bool showLockIcon READ showLockIcon WRITE setShowLockIcon )
 
   public:
 
