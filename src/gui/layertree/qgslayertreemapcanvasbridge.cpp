@@ -170,7 +170,6 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mFirstCRS.isValid() && firstLayers )
   {
-    mCanvas->setDestinationCrs( mFirstCRS );
     QgsProject::instance()->setCrs( mFirstCRS );
   }
 

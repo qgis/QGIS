@@ -2840,9 +2840,14 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, &QgsMapCanvas::keyPressed,
            this, &QgisApp::mapCanvas_keyPressed );
 
-  // connect renderer
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged,
-           this, &QgisApp::destinationCrsChanged );
+  // project crs connections
+  connect( QgsProject::instance(), &QgsProject::crsChanged,
+           this, &QgisApp::updateCrsStatusBar );
+  connect( QgsProject::instance(), &QgsProject::crsChanged,
+           this, [ = ]
+  {
+    mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
+  } );
 
   // connect legend signals
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -4626,12 +4631,9 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   // set project CRS
   QString defCrs = settings.value( QStringLiteral( "Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrs );
-  mMapCanvas->setDestinationCrs( srs );
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
   prj->setDirty( false );
-
-  updateCrsStatusBar();
 
   /** New Empty Project Created
       (before attempting to load custom project templates/filepaths) */
@@ -8791,7 +8793,6 @@ void QgisApp::setProjectCrsFromLayer()
 
   QgsCoordinateReferenceSystem crs = mLayerTreeView->currentLayer()->crs();
   mMapCanvas->freeze();
-  mMapCanvas->setDestinationCrs( crs );
   QgsProject::instance()->setCrs( crs );
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
@@ -10314,11 +10315,6 @@ void QgisApp::updateCrsStatusBar()
     mOnTheFlyProjectionStatusButton->setToolTip( tr( "No projection" ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionDisabled.svg" ) ) );
   }
-}
-
-void QgisApp::destinationCrsChanged()
-{
-  updateCrsStatusBar();
 }
 
 // slot to update the progress bar in the status bar

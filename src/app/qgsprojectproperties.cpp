@@ -734,7 +734,6 @@ void QgsProjectProperties::apply()
   {
     QgsCoordinateReferenceSystem srs = projectionSelector->crs();
     QgsProject::instance()->setCrs( srs );
-    mMapCanvas->setDestinationCrs( srs );
     if ( srs.isValid() )
     {
       QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );

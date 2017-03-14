@@ -1204,7 +1204,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void displayMessage( const QString &title, const QString &message, QgsMessageBar::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
-    void destinationCrsChanged();
     //    void debugHook();
     //! Add a Layer Definition file
     void addLayerDefinition();
@@ -1396,6 +1395,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void annotationCreated( QgsAnnotation *annotation );
 
+    void updateCrsStatusBar();
+
   signals:
 
     /** Emitted when a key is pressed and we want non widget sublasses to be able
@@ -1531,7 +1532,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createOverview();
     void createCanvasTools();
     void createMapTips();
-    void updateCrsStatusBar();
     void createDecorations();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
