@@ -2486,3 +2486,18 @@ tests:
       OUTPUT:
         name: expected/extract_by_location_within.gml
         type: vector
+
+  - algorithm: qgis:addfieldtoattributestable
+    name: add float field
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: field
+      FIELD_PRECISION: 2
+      FIELD_TYPE: '1'
+      INPUT_LAYER:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/add_field.gml
+        type: vector
