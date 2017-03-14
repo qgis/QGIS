@@ -35,7 +35,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     enum Placement
     {
       Ring, //!< Place points in a single ring around group
-      ConcentricRings //!< Place points in concentric rings around group
+      ConcentricRings, //!< Place points in concentric rings around group
+      Grid //!< Place points in a grid around group
     };
 
     /** Constructor for QgsPointDisplacementRenderer.
@@ -141,9 +142,13 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
     //helper functions
-    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius ) const;
+    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius,
+                                           double &gridRadius, int &gridSize ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols );
     void drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions );
+    void drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context,
+                   QList<QPointF> pointSymbolPositions, int nSymbols );
+    void centralizeGrid( QList<QPointF> &pointSymbolPositions, double radius, int size ) const;
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERER_H
