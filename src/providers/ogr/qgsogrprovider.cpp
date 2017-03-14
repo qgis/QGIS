@@ -1533,6 +1533,12 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
+  bool hasTransaction = OGR_L_TestCapability( ogrLayer, OLCTransactions ) == TRUE;
+  if ( hasTransaction && OGR_L_StartTransaction( ogrLayer ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error starting transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
+
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
     QgsFeatureId fid = it.key();
@@ -1644,6 +1650,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     }
 
     OGR_F_Destroy( of );
+  }
+
+  if ( hasTransaction && OGR_L_CommitTransaction( ogrLayer ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error committing transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
