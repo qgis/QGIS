@@ -1319,6 +1319,8 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
+  const bool inTransaction = startTransaction();
+
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -1326,6 +1328,11 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
     {
       returnvalue = false;
     }
+  }
+
+  if ( inTransaction )
+  {
+    commitTransaction();
   }
 
   if ( !syncToDisc() )
@@ -1818,6 +1825,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
   if ( !doInitialActionsForEdition() )
     return false;
 
+  const bool inTransaction = startTransaction();
+
   bool returnvalue = true;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
@@ -1825,6 +1834,11 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       returnvalue = false;
     }
+  }
+
+  if ( inTransaction )
+  {
+    commitTransaction();
   }
 
   if ( !syncToDisc() )
