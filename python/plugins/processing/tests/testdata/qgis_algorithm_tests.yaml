@@ -2454,3 +2454,35 @@ tests:
       OUTPUT:
         name: expected/convert_poly_nodes.gml
         type: vector
+
+  - algorithm: qgis:extractbylocation
+    name: polygon intersecting points
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      INTERSECT:
+        name: custom/points.shp
+        type: vector
+      PRECISION: 0.0
+      PREDICATE: '[''intersects'']'
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_intersection.gml
+        type: vector
+
+  - algorithm: qgis:extractbylocation
+    name: points within polygons
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      INTERSECT:
+        name: polys.gml
+        type: vector
+      PRECISION: 0.0
+      PREDICATE: '[''within'']'
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_within.gml
+        type: vector
