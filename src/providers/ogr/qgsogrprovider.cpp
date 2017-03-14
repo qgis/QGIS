@@ -56,6 +56,13 @@ email                : sherman at mrcc.com
 #include <sys/vfs.h>
 #endif
 
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For QGIS purposes, both
+// states (unset/null) are equivalent.
+#ifndef OGRNullMarker
+#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
+#endif
+
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
 static const QString TEXT_PROVIDER_DESCRIPTION =
   QStringLiteral( "OGR data provider" )
@@ -2867,7 +2874,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   OGRFeatureH f;
   while ( ( f = OGR_L_GetNextFeature( l ) ) )
   {
-    uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
+    uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
 
     if ( limit >= 0 && uniqueValues.size() >= limit )
@@ -2913,7 +2920,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   OGRFeatureH f;
   while ( ( f = OGR_L_GetNextFeature( l ) ) )
   {
-    if ( OGR_F_IsFieldSet( f, 0 ) )
+    if ( OGR_F_IsFieldSetAndNotNull( f, 0 ) )
       results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
     OGR_F_Destroy( f );
 
@@ -2956,7 +2963,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
+  QVariant value = OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -2995,7 +3002,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
+  QVariant value = OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
