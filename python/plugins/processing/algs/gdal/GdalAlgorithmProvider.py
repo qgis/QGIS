@@ -27,7 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
+try:
+    from osgeo import gnm
+    hasGnm = True
+except:
+    hasGnm = False
+
 from qgis.core import QgsApplication
+
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .GdalUtils import GdalUtils
@@ -98,7 +105,35 @@ class GdalAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         super().__init__()
-        self.createAlgsList()
+
+        self.alglist =  [nearblack(), information(), warp(), translate(),
+                         rgb2pct(), pct2rgb(), merge(), buildvrt(),
+                         polygonize(), gdaladdo(), ClipByExtent(),
+                         ClipByMask(), contour(), rasterize(), proximity(),
+                         sieve(), fillnodata(), ExtractProjection(),
+                         gdal2xyz(), hillshade(), slope(), aspect(),
+                         tri(), tpi(), roughness(), ColorRelief(),
+                         GridInvDist(), GridAverage(), GridNearest(),
+                         GridDataMetrics(), gdaltindex(), gdalcalc(),
+                         rasterize_over(), retile(), gdal2tiles(),
+                         AssignProjection(),
+                         # ----- OGR tools -----
+                         OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(),
+                         Ogr2OgrClipExtent(), Ogr2OgrToPostGis(),
+                         Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+                         Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
+                         OffsetCurve(), Ogr2OgrTableToPostGisList(),
+                         OgrSql()]
+
+        if hasGnm:
+            from .createnetwork import CreateNetwork
+            from .removenetwork import RemoveNetwork
+            from .shortestpathpointtopoint import ShortestPathPointToPoint
+            from .connectivitytreepoint import ConnectivityTreePoint
+
+            self.alglist.extend([CreateNetwork(), DeleteNetwor(),
+                                 ShortestPathPointToPoint(),
+                                 ConnectivityTreePoint()])
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -126,26 +161,7 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         return QgsApplication.iconPath("providerGdal.svg")
 
     def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
-
-    def createAlgsList(self):
-        # First we populate the list of algorithms with those created
-        # extending GeoAlgorithm directly (those that execute GDAL
-        # using the console)
-        self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-                              rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
-                              ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
-                              sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
-                              hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
-                              ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-                              GridDataMetrics(), gdaltindex(), gdalcalc(), rasterize_over(),
-                              retile(), gdal2tiles(), AssignProjection(),
-                              # ----- OGR tools -----
-                              OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
-                              Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-                              Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
-                              OffsetCurve(), Ogr2OgrTableToPostGisList(), OgrSql(),
-                              ]
+        self.algs = list(self.alglist)
 
     def getSupportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
