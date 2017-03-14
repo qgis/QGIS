@@ -30,6 +30,7 @@ class QgsDoubleSpinBox;
 class QgsStatusBarMagnifierWidget;
 class QgsMapToolPan;
 class QgsVertexMarker;
+class QCheckBox;
 
 /**
  * \class QgsMapCanvasDockWidget
@@ -53,16 +54,16 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mapCanvas();
 
     /**
-     * Sets whether the view extent should be synchronized with the main canvas extent.
-     * @see isViewExtentSynchronized()
+     * Sets whether the view center should be synchronized with the main canvas center.
+     * @see isViewCenterSynchronized()
      */
-    void setViewExtentSynchronized( bool enabled );
+    void setViewCenterSynchronized( bool enabled );
 
     /**
      * Returns true if the view extent is synchronized with the main canvas extent.
-     * @see setViewExtentSynchronized()
+     * @see setViewCenterSynchronized()
      */
-    bool isViewExtentSynchronized() const;
+    bool isViewCenterSynchronized() const;
 
     /**
      * Sets whether the cursor position marker is visible.
@@ -76,6 +77,34 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      */
     bool isCursorMarkerVisible() const;
 
+    /**
+     * Returns the scaling factor for main canvas scale to view scale.
+     * @see setScaleFactor()
+     * @see isViewScaleSynchronized()
+     */
+    double scaleFactor() const;
+
+    /**
+     * Sets the scaling \a factor for main canvas scale to view scale.
+     * @see scaleFactor()
+     * @see setViewScaleSynchronized()
+     */
+    void setScaleFactor( double factor );
+
+    /**
+     * Sets whether the view scale should be synchronized with the main canvas center.
+     * @see isViewScaleSynchronized()
+     * @see setScaleFactor()
+     */
+    void setViewScaleSynchronized( bool enabled );
+
+    /**
+     * Returns true if the view scale is synchronized with the main canvas extent.
+     * @see setViewScaleSynchronized()
+     * @see scaleFactor()
+     */
+    bool isViewScaleSynchronized() const;
+
   signals:
 
     void renameTriggered();
@@ -87,12 +116,12 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
   private slots:
 
     void setMapCrs();
-    void syncView( bool enabled );
     void mapExtentChanged();
     void mapCrsChanged();
     void menuAboutToShow();
     void settingsMenuAboutToShow();
     void syncMarker( const QgsPoint &p );
+    void mapScaleChanged();
 
   private:
 
@@ -103,6 +132,8 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
+    QgsDoubleSpinBox *mScaleFactorWidget = nullptr;
+    QCheckBox *mSyncScaleCheckBox = nullptr;
     bool mBlockScaleUpdate = false;
     bool mBlockRotationUpdate = false;
     bool mBlockMagnificationUpdate = false;
@@ -110,7 +141,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapToolPan *mPanTool = nullptr;
     QTimer mResizeTimer;
     QgsVertexMarker *mXyMarker = nullptr;
-    void syncViewExtent( QgsMapCanvas *sourceCanvas );
+    void syncViewCenter( QgsMapCanvas *sourceCanvas );
 };
 
 /**
@@ -130,11 +161,15 @@ class QgsMapSettingsAction: public QWidgetAction
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
     QgsDoubleSpinBox *rotationSpinBox() { return mRotationWidget; }
     QgsDoubleSpinBox *magnifierSpinBox() { return mMagnifierWidget; }
+    QgsDoubleSpinBox *scaleFactorSpinBox() { return mScaleFactorWidget; }
+    QCheckBox *syncScaleCheckBox() { return mSyncScaleCheckBox; }
 
   private:
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationWidget = nullptr;
     QgsDoubleSpinBox *mMagnifierWidget = nullptr;
+    QCheckBox *mSyncScaleCheckBox = nullptr;
+    QgsDoubleSpinBox *mScaleFactorWidget = nullptr;
 };
 
 

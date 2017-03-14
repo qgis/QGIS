@@ -57,10 +57,9 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mMainWidget->layout()->addWidget( mMapCanvas );
 
-  connect( mActionSyncView, &QAction::toggled, this, [ = ]( bool active )
+  connect( mActionSyncView, &QAction::toggled, this, [ = ]
   {
-    syncViewExtent( mMainCanvas );
-    syncView( active );
+    syncViewCenter( mMainCanvas );
   } );
 
   mMenu = new QMenu();
@@ -110,6 +109,9 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
   mMagnificationEdit = settingsAction->magnifierSpinBox();
+  mSyncScaleCheckBox = settingsAction->syncScaleCheckBox();
+  mScaleFactorWidget = settingsAction->scaleFactorSpinBox();
+
   connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [ = ]( double scale )
   {
     if ( !mBlockScaleUpdate )
@@ -171,11 +173,19 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
+  connect( mScaleFactorWidget, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapCanvasDockWidget::mapScaleChanged );
+  connect( mSyncScaleCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( checked )
+      mapScaleChanged();
+  }
+         );
+
   mResizeTimer.setSingleShot( true );
   connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
   {
     mBlockExtentSync = false;
-    syncViewExtent( mMainCanvas );
+    syncViewCenter( mMainCanvas );
   } );
 }
 
@@ -184,10 +194,15 @@ void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
   if ( mMainCanvas )
   {
     disconnect( mMainCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsMapCanvasDockWidget::syncMarker );
+    disconnect( mMainCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapCanvasDockWidget::mapScaleChanged );
+    disconnect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
   }
 
   mMainCanvas = canvas;
   connect( mMainCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsMapCanvasDockWidget::syncMarker );
+  connect( mMainCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapCanvasDockWidget::mapScaleChanged );
+  connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
+  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged, Qt::UniqueConnection );
 }
 
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
@@ -195,12 +210,12 @@ QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
   return mMapCanvas;
 }
 
-void QgsMapCanvasDockWidget::setViewExtentSynchronized( bool enabled )
+void QgsMapCanvasDockWidget::setViewCenterSynchronized( bool enabled )
 {
   mActionSyncView->setChecked( enabled );
 }
 
-bool QgsMapCanvasDockWidget::isViewExtentSynchronized() const
+bool QgsMapCanvasDockWidget::isViewCenterSynchronized() const
 {
   return mActionSyncView->isChecked();
 }
@@ -213,6 +228,26 @@ void QgsMapCanvasDockWidget::setCursorMarkerVisible( bool visible )
 bool QgsMapCanvasDockWidget::isCursorMarkerVisible() const
 {
   return mXyMarker->isVisible();
+}
+
+void QgsMapCanvasDockWidget::setScaleFactor( double factor )
+{
+  mScaleFactorWidget->setValue( factor );
+}
+
+void QgsMapCanvasDockWidget::setViewScaleSynchronized( bool enabled )
+{
+  mSyncScaleCheckBox->setChecked( enabled );
+}
+
+bool QgsMapCanvasDockWidget::isViewScaleSynchronized() const
+{
+  return mSyncScaleCheckBox->isChecked();
+}
+
+double QgsMapCanvasDockWidget::scaleFactor() const
+{
+  return mScaleFactorWidget->value();
 }
 
 void QgsMapCanvasDockWidget::resizeEvent( QResizeEvent * )
@@ -233,21 +268,7 @@ void QgsMapCanvasDockWidget::setMapCrs()
   }
 }
 
-void QgsMapCanvasDockWidget::syncView( bool enabled )
-{
-  if ( enabled )
-  {
-    connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged, Qt::UniqueConnection );
-    connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged, Qt::UniqueConnection );
-  }
-  else
-  {
-    disconnect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
-    disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
-  }
-}
-
-void QgsMapCanvasDockWidget::syncViewExtent( QgsMapCanvas *sourceCanvas )
+void QgsMapCanvasDockWidget::syncViewCenter( QgsMapCanvas *sourceCanvas )
 {
   // avoid infinite recursion
   mBlockExtentSync = true;
@@ -259,11 +280,11 @@ void QgsMapCanvasDockWidget::syncViewExtent( QgsMapCanvas *sourceCanvas )
                              destCanvas->mapSettings().destinationCrs() );
   try
   {
-    destCanvas->setExtent( ct.transformBoundingBox( sourceCanvas->extent() ) );
+    destCanvas->setCenter( ct.transform( sourceCanvas->center() ) );
   }
   catch ( QgsCsException & )
   {
-    destCanvas->setExtent( sourceCanvas->extent() );
+    destCanvas->setCenter( sourceCanvas->center() );
   }
   destCanvas->refresh();
 
@@ -279,7 +300,14 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   if ( !sourceCanvas )
     return;
 
-  syncViewExtent( sourceCanvas );
+  if ( sourceCanvas == mMapCanvas && mSyncScaleCheckBox->isChecked() )
+  {
+    double newScaleFactor = mMainCanvas->scale() / mMapCanvas->scale();
+    mScaleFactorWidget->setValue( newScaleFactor );
+  }
+
+  if ( mActionSyncView->isChecked() )
+    syncViewCenter( sourceCanvas );
 }
 
 void QgsMapCanvasDockWidget::mapCrsChanged()
@@ -351,6 +379,18 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPoint &p )
   mXyMarker->setCenter( t );
 }
 
+void QgsMapCanvasDockWidget::mapScaleChanged()
+{
+  if ( !mSyncScaleCheckBox->isChecked() )
+    return;
+
+  double newScale = mMainCanvas->scale() / mScaleFactorWidget->value();
+  bool prev = mBlockExtentSync;
+  mBlockExtentSync = true;
+  mMapCanvas->zoomScale( newScale );
+  mBlockExtentSync = prev;
+}
+
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   : QWidgetAction( parent )
 {
@@ -396,6 +436,27 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   label = new QLabel( tr( "Magnification" ) );
   gLayout->addWidget( label, 2, 0 );
   gLayout->addWidget( mMagnifierWidget, 2, 1 );
+
+  mSyncScaleCheckBox = new QCheckBox( tr( "Synchronize scale" ) );
+  gLayout->addWidget( mSyncScaleCheckBox, 3, 0, 1, 2 );
+
+  mScaleFactorWidget = new QgsDoubleSpinBox();
+  mScaleFactorWidget->setSuffix( QStringLiteral( "×" ) );
+  mScaleFactorWidget->setDecimals( 2 );
+  mScaleFactorWidget->setRange( 0.01, 100000 );
+  mScaleFactorWidget->setWrapping( false );
+  mScaleFactorWidget->setSingleStep( 0.1 );
+  mScaleFactorWidget->setToolTip( tr( "Multiplication factor for main canvas scale to view scale" ) );
+  mScaleFactorWidget->setClearValueMode( QgsDoubleSpinBox::CustomValue );
+  mScaleFactorWidget->setClearValue( 1.0 );
+  mScaleFactorWidget->setValue( 1.0 );
+  mScaleFactorWidget->setEnabled( false );
+
+  connect( mSyncScaleCheckBox, &QCheckBox::toggled, mScaleFactorWidget, &QgsDoubleSpinBox::setEnabled );
+
+  label = new QLabel( tr( "Scale factor" ) );
+  gLayout->addWidget( label, 4, 0 );
+  gLayout->addWidget( mScaleFactorWidget, 4, 1 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );

@@ -3113,7 +3113,7 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
-QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced, bool showCursor )
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced, bool showCursor, bool scaleSynced, double scaleFactor )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3168,8 +3168,10 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
 
-  mapCanvasWidget->setViewExtentSynchronized( synced );
+  mapCanvasWidget->setViewCenterSynchronized( synced );
   mapCanvasWidget->setCursorMarkerVisible( showCursor );
+  mapCanvasWidget->setScaleFactor( scaleFactor );
+  mapCanvasWidget->setViewScaleSynchronized( scaleSynced );
 
   return mapCanvas;
 }
@@ -11753,8 +11755,10 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "width" ), w->width() );
     node.setAttribute( QStringLiteral( "height" ), w->height() );
     node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
-    node.setAttribute( QStringLiteral( "synced" ), w->isViewExtentSynchronized() );
+    node.setAttribute( QStringLiteral( "synced" ), w->isViewCenterSynchronized() );
     node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
+    node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
+    node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
@@ -11791,8 +11795,10 @@ void QgisApp::readProject( const QDomDocument &doc )
       bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
       bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
       bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
+      bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
+      double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
 
-      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced, showCursor );
+      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced, showCursor, scaleSynced, scaleFactor );
       mapCanvas->readProject( doc );
     }
   }

@@ -94,7 +94,7 @@
     <string>Synchronize View</string>
    </property>
    <property name="toolTip">
-    <string>Synchronize View with Main Map</string>
+    <string>Synchronize View Center with Main Map</string>
    </property>
   </action>
   <action name="mActionRename">
