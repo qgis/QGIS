@@ -316,7 +316,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param s2 The segment end point
      * @return A line (segment) from p to perpendicular point on segment [s1, s2]
      */
-    static QgsLineString* perpendicularSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 );
+    static QgsLineString perpendicularSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 );
 
     //! @note not available in Python bindings
     enum ComponentType

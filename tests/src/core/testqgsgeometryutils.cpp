@@ -592,48 +592,45 @@ void TestQgsGeometryUtils::testPerpendicularSegment()
   QgsPointV2 s1( 2, 3 );
   QgsPointV2 s2( 7, 11 );
 
-  QgsLineString *line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
+  QgsLineString line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
 
   // default case
-  QgsLineString *line = new QgsLineString;
-  line->addVertex( p1 );
-  line->addVertex( QgsPointV2( 6.7753, 10.6404 ) );
-  QGSCOMPARENEARPOINT( line->pointN( 0 ), line_r->pointN( 0 ), 0.0001 );
-  QGSCOMPARENEARPOINT( line->pointN( 1 ), line_r->pointN( 1 ), 0.0001 );
+  QgsLineString line;
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 6.7753, 10.6404 ) );
+  QGSCOMPARENEARPOINT( line.pointN( 0 ), line_r.pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( line.pointN( 1 ), line_r.pointN( 1 ), 0.0001 );
 
   // perpendicular line don't intersect segment
-  line->clear();
+  line.clear();
   p1 = QgsPointV2( 11, 11 );
   line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
-  line->addVertex( p1 );
-  line->addVertex( QgsPointV2( 8.1236, 12.7978 ) );
-  QGSCOMPARENEARPOINT( line->pointN( 0 ), line_r->pointN( 0 ), 0.0001 );
-  QGSCOMPARENEARPOINT( line->pointN( 1 ), line_r->pointN( 1 ), 0.0001 );
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 8.1236, 12.7978 ) );
+  QGSCOMPARENEARPOINT( line.pointN( 0 ), line_r.pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( line.pointN( 1 ), line_r.pointN( 1 ), 0.0001 );
 
   // horizontal
   s1 = QgsPointV2( -3, 3 );
   s2 = QgsPointV2( 2, 3 );
-  line->clear();
+  line.clear();
   p1 = QgsPointV2( 3, 13 );
   line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
-  line->addVertex( p1 );
-  line->addVertex( QgsPointV2( 3, 3 ) );
-  QCOMPARE( line->pointN( 0 ), line_r->pointN( 0 ) );
-  QCOMPARE( line->pointN( 1 ), line_r->pointN( 1 ) );
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 3, 3 ) );
+  QCOMPARE( line.pointN( 0 ), line_r.pointN( 0 ) );
+  QCOMPARE( line.pointN( 1 ), line_r.pointN( 1 ) );
 
   // vertical
   s1 = QgsPointV2( 3, 13 );
   s2 = QgsPointV2( 3, 3 );
-  line->clear();
+  line.clear();
   p1 = QgsPointV2( -7, 8 );
   line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
-  line->addVertex( p1 );
-  line->addVertex( QgsPointV2( 3, 8 ) );
-  QCOMPARE( line->pointN( 0 ), line_r->pointN( 0 ) );
-  QCOMPARE( line->pointN( 1 ), line_r->pointN( 1 ) );
-
-  delete line;
-  delete line_r;
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 3, 8 ) );
+  QCOMPARE( line.pointN( 0 ), line_r.pointN( 0 ) );
+  QCOMPARE( line.pointN( 1 ), line_r.pointN( 1 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

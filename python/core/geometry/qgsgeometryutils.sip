@@ -71,6 +71,6 @@ class QgsGeometryUtils
 
     static void coefficients(const QgsPointV2 &pt1, const QgsPointV2 &pt2, double& a /Out/, double& b /Out/, double& c /Out/);
 
-    static QgsLineString* perpendicularSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 ) /Factory/;
+    static QgsLineString perpendicularSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 );
 
 };

@@ -869,14 +869,14 @@ void QgsGeometryUtils::coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt
 
 }
 
-QgsLineString* QgsGeometryUtils::perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
+QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
 {
-  std::unique_ptr<QgsLineString> line( new QgsLineString() );
+  QgsLineString line;
   QgsPointV2 p2;
 
   if (( p == s1 ) || ( p == s2 ) )
   {
-    return line.release();
+    return line;
   }
 
   double a, b, c;
@@ -901,10 +901,10 @@ QgsLineString* QgsGeometryUtils::perpendicularSegment( const QgsPointV2 &p, cons
     p2 = QgsPointV2( p.x() + dx, y + dy );
   }
 
-  line->addVertex( p );
-  line->addVertex( p2 );
+  line.addVertex( p );
+  line.addVertex( p2 );
 
-  return line.release();
+  return line;
 }
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
