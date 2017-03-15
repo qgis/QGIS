@@ -2510,9 +2510,9 @@ tests:
     name: Random point in extent
     params:
       CRS: EPSG:4326
-      EXTENT: 0.1876923076923074,8.15153846153846,-3.8188461538461533,2.5457692307692303
+      EXTENT: 3.76062708785859,4.2289078918157665,0.7918637077719453,1.2601445117291217
       MIN_DISTANCE: 0.0
-      POINT_NUMBER: 10
+      POINT_NUMBER: 5
     results:
       OUTPUT:
         name: expected/random_point_extent.gml
