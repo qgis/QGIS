@@ -334,7 +334,6 @@
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionSaveProjectAs"/>
-   <addaction name="mActionNewMapCanvas"/>
    <addaction name="mActionNewPrintComposer"/>
    <addaction name="mActionShowComposerManager"/>
   </widget>
@@ -435,6 +434,7 @@
    <addaction name="mActionZoomToLayer"/>
    <addaction name="mActionZoomLast"/>
    <addaction name="mActionZoomNext"/>
+   <addaction name="mActionNewMapCanvas"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
    <addaction name="mActionDraw"/>
