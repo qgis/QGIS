@@ -1874,7 +1874,11 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
 
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
-    setDestinationCrs( tmpSettings.destinationCrs() );
+    if ( objectName() != QStringLiteral( "theMapCanvas" ) )
+    {
+      // never manually set the crs for the main canvas - this is instead connected to the project CRS
+      setDestinationCrs( tmpSettings.destinationCrs() );
+    }
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );
     mSettings.datumTransformStore() = tmpSettings.datumTransformStore();
