@@ -104,7 +104,7 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! @see layerLegendNodes()
     QList<QgsLayerTreeModelLegendNode*> layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
-    //! Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon).
+    //! Return legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
     //! @note added in 2.18
     QgsLayerTreeModelLegendNode* legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
 
