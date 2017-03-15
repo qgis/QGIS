@@ -58,8 +58,8 @@ class ConnectivityTreePoint(GeoAlgorithm):
     CONNECTIVITY_TREE = 'CONNECTIVITY_TREE'
 
     def defineCharacteristics(self):
-        self.name = 'Connectivity tree (from point)'
-        self.group = 'Network analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Connectivity tree (from point)')
+        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterFile(
             self.NETWORK,

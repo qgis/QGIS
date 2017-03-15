@@ -36,8 +36,8 @@ class RemoveNetwork(GeoAlgorithm):
     NETWORK = 'NETWORK'
 
     def defineCharacteristics(self):
-        self.name = 'Remove network'
-        self.group = 'Network analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Remove network')
+        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterFile(
             self.NETWORK,

@@ -59,8 +59,8 @@ class ShortestPathPointToPoint(GeoAlgorithm):
     SHORTEST_PATHS = 'SHORTEST_PATHS'
 
     def defineCharacteristics(self):
-        self.name = 'Shortest paths (point to point)'
-        self.group = 'Network analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Shortest paths (point to point)')
+        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterFile(
             self.NETWORK,
