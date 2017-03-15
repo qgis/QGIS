@@ -792,7 +792,7 @@ void QgsComposer::connectCompositionSlots()
     return;
   }
 
-  connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setWindowTitle );
+  connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setTitle );
   connect( mComposition, SIGNAL( selectedItemChanged( QgsComposerItem * ) ), this, SLOT( showItemOptions( QgsComposerItem * ) ) );
   connect( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow * ) ), this, SLOT( addComposerArrow( QgsComposerArrow * ) ) );
   connect( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon * ) ), this, SLOT( addComposerPolygon( QgsComposerPolygon * ) ) );
