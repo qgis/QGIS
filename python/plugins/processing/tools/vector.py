@@ -120,6 +120,10 @@ def features(layer):
             else:
                 return int(self.layer.featureCount())
 
+        def next(self):
+            '''Iterator next method in python 2'''
+            return next(self.iter)
+
     return Features(layer)
 
 
