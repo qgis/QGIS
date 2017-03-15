@@ -2355,11 +2355,11 @@ tests:
       IS_SPACING: false
       RANDOMIZE: false
       SPACING: 100
+      CRS: EPSG:4326
     results:
       OUTPUT:
         name: expected/regular_points.gml
         type: vector
-        CRS: EPSG:4326
         compare:
           geometry:
             precision: 5
