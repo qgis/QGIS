@@ -51,7 +51,7 @@ class CreateNetwork(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = 'Create network'
-        self.group = 'Network management'
+        self.group = 'Network analysis'
 
         self.addParameter(ParameterMultipleInput(
             self.INPUT_LAYERS,
