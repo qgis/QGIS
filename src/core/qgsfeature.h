@@ -196,6 +196,7 @@ class CORE_EXPORT QgsFeature
     QgsAttributes attributes() const;
 
     /** Sets the feature's attributes.
+     * The feature will be valid after.
      * @param attrs attribute list
      * @see setAttribute
      * @see attributes
@@ -203,6 +204,7 @@ class CORE_EXPORT QgsFeature
     void setAttributes( const QgsAttributes &attrs );
 
     /** Set an attribute's value by field index.
+     * The feature will be valid if it was successful.
      * @param field the index of the field to set
      * @param attr the value of the attribute
      * @return false, if the field index does not exist
@@ -251,7 +253,7 @@ class CORE_EXPORT QgsFeature
      */
     QgsGeometry geometry() const;
 
-    /** Set the feature's geometry.
+    /** Set the feature's geometry. The feature will be valid after.
      * @param geometry new feature geometry
      * @see geometry()
      * @see clearGeometry()
@@ -282,6 +284,7 @@ class CORE_EXPORT QgsFeature
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated using @link setFields @endlink before this method can be used.
+     *  The feature will be valid if it was successful
      *  @param name The name of the field to set
      *  @param value The value to set
      *  @return false if attribute name could not be converted to index (C++ only)

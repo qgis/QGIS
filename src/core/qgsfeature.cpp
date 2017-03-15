@@ -142,12 +142,14 @@ void QgsFeature::setAttributes( const QgsAttributes &attrs )
 
   d.detach();
   d->attributes = attrs;
+  d->valid = true;
 }
 
 void QgsFeature::setGeometry( const QgsGeometry &geometry )
 {
   d.detach();
   d->geometry = geometry;
+  d->valid = true;
 }
 
 void QgsFeature::clearGeometry()
@@ -220,6 +222,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
 
   d.detach();
   d->attributes[idx] = value;
+  d->valid = true;
   return true;
 }
 
@@ -237,6 +240,7 @@ bool QgsFeature::setAttribute( const QString &name, const QVariant &value )
 
   d.detach();
   d->attributes[fieldIdx] = value;
+  d->valid = true;
   return true;
 }
 

@@ -46,6 +46,27 @@ class TestQgsFeature(unittest.TestCase):
         myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
         assert myValidValue, myMessage
 
+    def test_Validity(self):
+        f = QgsFeature()
+        self.assertFalse(f.isValid())
+        f.setGeometry(QgsGeometry())
+        self.assertTrue(f.isValid())
+        f.setValid(False)
+        self.assertFalse(f.isValid())
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+        f.setFields(fields)
+        f.setAttribute(0, 0)
+        self.assertTrue(f.isValid())
+        f.setValid(False)
+        self.assertFalse(f.isValid())
+
+        f.setValid(False)
+        self.assertFalse(f.isValid())
+
     def test_Attributes(self):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
         myLayer = QgsVectorLayer(myPath, 'Lines', 'ogr')
