@@ -428,9 +428,9 @@ void TestQgsFeature::equality()
   feature5.setAttribute( 0, QStringLiteral( "attr1" ) );
   feature5.setAttribute( 1, QStringLiteral( "attr2" ) );
   feature5.setAttribute( 2, QStringLiteral( "attr3" ) );
-  feature5.setValid( false );
   feature5.setId( 1 );
   feature5.setGeometry( QgsGeometry( new QgsPointV2( 1, 2 ) ) );
+  feature5.setValid( false );
 
   QVERIFY( feature != feature5 );
 
