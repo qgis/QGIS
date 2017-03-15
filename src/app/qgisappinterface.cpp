@@ -55,12 +55,9 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
            this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
   connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
            this, SIGNAL( currentThemeChanged( QString ) ) );
-  connect( qgis, SIGNAL( composerAdded( QgsComposerView * ) ),
-           this, SIGNAL( composerAdded( QgsComposerView * ) ) );
-  connect( qgis, SIGNAL( composerWillBeRemoved( QgsComposerView * ) ),
-           this, SIGNAL( composerWillBeRemoved( QgsComposerView * ) ) );
-  connect( qgis, SIGNAL( composerRemoved( QgsComposerView * ) ),
-           this, SIGNAL( composerRemoved( QgsComposerView * ) ) );
+  connect( qgis, &QgisApp::composerAdded, this, &QgisAppInterface::composerAdded );
+  connect( qgis, &QgisApp::composerWillBeRemoved, this, &QgisAppInterface::composerWillBeRemoved );
+  connect( qgis, &QgisApp::composerRemoved, this, &QgisAppInterface::composerRemoved );
   connect( qgis, SIGNAL( initializationCompleted() ),
            this, SIGNAL( initializationCompleted() ) );
   connect( qgis, SIGNAL( newProject() ),

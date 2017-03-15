@@ -56,7 +56,7 @@ class QgsTolerance;
 class QgsTransactionGroup;
 class QgsVectorLayer;
 class QgsAnnotationManager;
-
+class QgsLayoutManager;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -377,6 +377,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QString homePath() const;
 
     QgsRelationManager *relationManager() const;
+
+    /**
+     * Returns the project's layout manager, which manages compositions within
+     * the project.
+     * @note added in QGIS 3.0
+     */
+    const QgsLayoutManager *layoutManager() const;
+
+    /**
+     * Returns the project's layout manager, which manages compositions within
+     * the project.
+     * @note added in QGIS 3.0
+     */
+    QgsLayoutManager *layoutManager();
 
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
@@ -992,6 +1006,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsRelationManager *mRelationManager = nullptr;
 
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
+    std::unique_ptr<QgsLayoutManager> mLayoutManager;
 
     QgsLayerTreeGroup *mRootGroup = nullptr;
 

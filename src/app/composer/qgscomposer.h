@@ -143,10 +143,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Is emitted every time the view zoom has changed
     void zoomLevelChanged();
 
-    void composerAdded( QgsComposerView *v );
-    //!Composer deletes the old composerview when loading a template
-    void composerWillBeRemoved( QgsComposerView *v );
-
     //! Is emitted when the atlas preview feature changes
     void atlasPreviewFeatureChanged();
 

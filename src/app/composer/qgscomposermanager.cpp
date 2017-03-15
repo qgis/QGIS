@@ -22,6 +22,7 @@
 #include "qgscomposition.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgscomposerview.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -42,8 +43,8 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
   mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
 
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-  connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView * ) ), this, SLOT( refreshComposers() ) );
-  connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView * ) ), this, SLOT( refreshComposers() ) );
+  connect( QgisApp::instance(), &QgisApp::composerAdded, this, &QgsComposerManager::refreshComposers );
+  connect( QgisApp::instance(), &QgisApp::composerRemoved, this, &QgsComposerManager::refreshComposers );
 
   connect( mComposerListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleButtons() ) );
 
