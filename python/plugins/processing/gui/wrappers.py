@@ -38,7 +38,8 @@ from qgis.core import (
     QgsExpression,
     QgsMapLayerProxyModel,
     QgsWkbTypes,
-    QgsSettings
+    QgsSettings,
+    QgsProject
 )
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -304,7 +305,10 @@ class CrsWidgetWrapper(WidgetWrapper):
                 widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
 
             if self.param.default:
-                crs = QgsCoordinateReferenceSystem(self.param.default)
+                if self.param.default == 'ProjectCrs':
+                    crs = QgsProject.instance().crs()
+                else:
+                    crs = QgsCoordinateReferenceSystem(self.param.default)
                 widget.setCrs(crs)
             else:
                 widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
@@ -323,6 +327,8 @@ class CrsWidgetWrapper(WidgetWrapper):
     def setValue(self, value):
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value, self.combo)
+        elif value == 'ProjectCrs':
+            self.widget.setCrs(QgsProject.instance().crs())
         else:
             self.widget.setCrs(QgsCoordinateReferenceSystem(value))
 
