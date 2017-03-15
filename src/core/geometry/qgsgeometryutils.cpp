@@ -843,10 +843,11 @@ double QgsGeometryUtils::gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 
   {
     return INFINITY;
   }
+
   return delta_y / delta_x;
 }
 
-void QgsGeometryUtils::coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2 , double &a, double &b, double &c )
+void QgsGeometryUtils::coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c )
 {
   if ( qgsDoubleNear( pt1.x(), pt2.x() ) )
   {
@@ -874,7 +875,7 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPointV2 &p, const
   QgsLineString line;
   QgsPointV2 p2;
 
-  if (( p == s1 ) || ( p == s2 ) )
+  if ( ( p == s1 ) || ( p == s2 ) )
   {
     return line;
   }

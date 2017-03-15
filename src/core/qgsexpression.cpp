@@ -2191,13 +2191,13 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   return QVariant::fromValue( QgsGeometry( polygon ) );
 }
 
-static QVariant fcnMakeTriangle( const QVariantList& values, const QgsExpressionContext*, QgsExpression* parent )
+static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   std::unique_ptr<QgsTriangle> tr( new QgsTriangle() );
   std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
   lineString->clear();
 
-  Q_FOREACH ( const QVariant& value, values )
+  Q_FOREACH ( const QVariant &value, values )
   {
     QgsGeometry geom = getGeometry( value, parent );
     if ( geom.isNull() )
@@ -2206,7 +2206,7 @@ static QVariant fcnMakeTriangle( const QVariantList& values, const QgsExpression
     if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
       return QVariant();
 
-    QgsPointV2* point = dynamic_cast< QgsPointV2* >( geom.geometry() );
+    QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
     if ( !point )
       return QVariant();
 
@@ -4292,7 +4292,7 @@ int QgsExpression::functionCount()
 
 
 QgsExpression::QgsExpression( const QString &expr )
-    : d( new QgsExpressionPrivate )
+  : d( new QgsExpressionPrivate )
 {
   d->mRootNode = ::parseExpression( expr, d->mParserErrorString );
   d->mExp = expr;

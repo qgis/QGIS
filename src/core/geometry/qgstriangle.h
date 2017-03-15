@@ -60,10 +60,10 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: bool operator!=( const QgsTriangle& other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
-    virtual QgsTriangle* clone() const override;
+    virtual QgsTriangle *clone() const override;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr& wkbPtr ) override;
+    virtual bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -72,12 +72,12 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2* surfaceToPolygon() const override;
+    QgsPolygonV2 *surfaceToPolygon() const override;
 
-    QgsAbstractGeometry* toCurveType() const override;
+    QgsAbstractGeometry *toCurveType() const override;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
-    void addInteriorRing( QgsCurve* ring ) override;
+    void addInteriorRing( QgsCurve *ring ) override;
 
     /** Inherited method not used. You cannot add an interior ring into a triangle.
      * @note not available in Python bindings
@@ -87,11 +87,11 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool deleteVertex( QgsVertexId position ) override;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
     bool insertVertex( QgsVertexId position, const QgsPointV2 &vertex ) override;
-    bool moveVertex( QgsVertexId vId, const QgsPointV2& newPos ) override;
+    bool moveVertex( QgsVertexId vId, const QgsPointV2 &newPos ) override;
 
-    virtual void setExteriorRing( QgsCurve* ring ) override;
+    virtual void setExteriorRing( QgsCurve *ring ) override;
 
-    virtual QgsAbstractGeometry* boundary() const override;
+    virtual QgsAbstractGeometry *boundary() const override;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 

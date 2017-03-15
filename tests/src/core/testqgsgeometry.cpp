@@ -3207,7 +3207,7 @@ void TestQgsGeometry::triangle()
   //set exterior ring
 
   //try with no ring
-  QgsLineString* ext = 0;
+  QgsLineString *ext = 0;
   t1.setExteriorRing( ext );
   QVERIFY( t1.isEmpty() );
   QCOMPARE( t1.numInteriorRings(), 0 );
@@ -3242,7 +3242,7 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t1.interiorRing( 0 ) );
 
   //retrieve exterior ring and check
-  QCOMPARE( *( static_cast< const QgsLineString* >( t1.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
 
   //set new ExteriorRing
   ext = new QgsLineString();
@@ -3266,7 +3266,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( t1.perimeter(), 24.1421, 0.001 );
   QVERIFY( t1.exteriorRing() );
   QVERIFY( !t1.interiorRing( 0 ) );
-  QCOMPARE( *( static_cast< const QgsLineString* >( t1.exteriorRing() ) ), *ext );
+  QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
 
   //test that a non closed exterior ring will be automatically closed
   QgsTriangle t2;
@@ -3299,7 +3299,7 @@ void TestQgsGeometry::triangle()
   QVERIFY( t2.isEmpty() );
 
   // circular ring
-  QgsCircularString* circularRing = new QgsCircularString();
+  QgsCircularString *circularRing = new QgsCircularString();
   t2.clear();
   circularRing->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) );
   QVERIFY( circularRing->hasCurvedSegments() );
@@ -3441,7 +3441,7 @@ void TestQgsGeometry::triangle()
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
   l_tested.append( 5 );
-  l_tested.append( sqrt( 5*5 + 5*5 ) );
+  l_tested.append( sqrt( 5 * 5 + 5 * 5 ) );
   QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );

@@ -23,7 +23,7 @@
 #include <memory>
 
 QgsTriangle::QgsTriangle()
-    : QgsPolygonV2()
+  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
 }
@@ -43,7 +43,7 @@ QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsP
 }
 
 QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
-    : QgsPolygonV2()
+  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
   QgsPointV2 pt1( p1 );
@@ -60,7 +60,7 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
 }
 
 QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
-    : QgsPolygonV2()
+  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
   QgsPointV2 pt1( p1 );
@@ -126,7 +126,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
   }
 
-  QgsLineString* line = new QgsLineString();
+  QgsLineString *line = new QgsLineString();
   line->fromWkbPoints( ringType, wkbPtr );
   if ( !mExteriorRing )
   {
@@ -150,7 +150,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : QString(), isMeasure() ? "M" : QString() );
 
-  Q_FOREACH ( const QString& childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
+  Q_FOREACH ( const QString &childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
   {
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
@@ -247,7 +247,7 @@ bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPointV2 &newPos )
     return false;
   }
 
-  QgsCurve* ring = mExteriorRing;
+  QgsCurve *ring = mExteriorRing;
   int n = ring->numPoints();
   bool success = ring->moveVertex( vId, newPos );
   if ( success )
@@ -270,12 +270,12 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
   if ( ring->hasCurvedSegments() )
   {
     //need to segmentize ring as polygon does not support curves
-    QgsCurve* line = ring->segmentize();
+    QgsCurve *line = ring->segmentize();
     delete ring;
     ring = line;
   }
 
-  if (( ring->numPoints() > 4 ) || ( ring->numPoints() < 3 ) )
+  if ( ( ring->numPoints() > 4 ) || ( ring->numPoints() < 3 ) )
   {
     return;
   }
@@ -292,7 +292,7 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
     {
       return;
     }
-    QgsLineString* lineString = dynamic_cast< QgsLineString*>( ring );
+    QgsLineString *lineString = dynamic_cast< QgsLineString *>( ring );
     if ( lineString && !lineString->isClosed() )
     {
       lineString->close();
@@ -355,9 +355,9 @@ QVector<double> QgsTriangle::angles() const
   double a2 = fmod( QgsGeometryUtils::angleBetweenThreePoints( ax, ay, bx, by, cx, cy ), M_PI );
   double a3 = fmod( QgsGeometryUtils::angleBetweenThreePoints( bx, by, cx, cy, ax, ay ), M_PI );
 
-  angles.append(( a1 > M_PI / 2 ? a1 - M_PI / 2 : a1 ) );
-  angles.append(( a2 > M_PI / 2 ? a2 - M_PI / 2 : a2 ) );
-  angles.append(( a3 > M_PI / 2 ? a3 - M_PI / 2 : a3 ) );
+  angles.append( ( a1 > M_PI / 2 ? a1 - M_PI / 2 : a1 ) );
+  angles.append( ( a2 > M_PI / 2 ? a2 - M_PI / 2 : a2 ) );
+  angles.append( ( a3 > M_PI / 2 ? a3 - M_PI / 2 : a3 ) );
 
   return angles;
 }
@@ -511,7 +511,7 @@ double QgsTriangle::inscribedRadius() const
 
 bool QgsTriangle::validateGeom( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3 )
 {
-  if ((( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
+  if ( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
   {
     return false;
   }
