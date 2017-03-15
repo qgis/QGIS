@@ -185,6 +185,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvasdockwidget.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmaplayer.h"
@@ -266,6 +267,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgshelp.h"
 #include "qgsvectorfilewritertask.h"
+#include "qgsnewnamedialog.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -493,8 +495,8 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex &index )
 
 void QgisApp::activeLayerChanged( QgsMapLayer *layer )
 {
-  if ( mMapCanvas )
-    mMapCanvas->setCurrentLayer( layer );
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    canvas->setCurrentLayer( layer );
 
   if ( mUndoWidget )
   {
@@ -786,7 +788,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createToolBars, this, QStringLiteral( "Toolbars" ) );
   functionProfile( &QgisApp::createStatusBar, this, QStringLiteral( "Status bar" ) );
   functionProfile( &QgisApp::createCanvasTools, this, QStringLiteral( "Create canvas tools" ) );
+
   mMapCanvas->freeze();
+  applyDefaultSettingsToCanvas( mMapCanvas );
+
   functionProfile( &QgisApp::initLayerTreeView, this, QStringLiteral( "Init Layer tree view" ) );
   functionProfile( &QgisApp::createOverview, this, QStringLiteral( "Create overview" ) );
   functionProfile( &QgisApp::createMapTips, this, QStringLiteral( "Create map tips" ) );
@@ -1294,7 +1299,7 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
-  mMapCanvas->stopRendering();
+  stopRendering();
 
   delete mInternalClipboard;
   delete mQgisInterface;
@@ -1465,7 +1470,7 @@ void QgisApp::dropEvent( QDropEvent *event )
 
 void QgisApp::dropEventTimeout()
 {
-  mMapCanvas->freeze();
+  freezeCanvases();
   QStringList files = sender()->property( "files" ).toStringList();
   sender()->deleteLater();
 
@@ -1480,15 +1485,18 @@ void QgisApp::dropEventTimeout()
     handleDropUriList( lst );
   }
 
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  freezeCanvases( false );
+  refreshMapCanvas();
 }
 
 void QgisApp::annotationCreated( QgsAnnotation *annotation )
 {
   // create canvas annotation item for annotation
-  QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mMapCanvas );
-  Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  {
+    QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, canvas );
+    Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+  }
 }
 
 void QgisApp::registerCustomDropHandler( QgsCustomDropHandler *handler )
@@ -1627,6 +1635,19 @@ void QgisApp::applyProjectSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->setSelectionColor( myColor );
 }
 
+void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
+{
+  QgsSettings settings;
+  canvas->enableAntiAliasing( settings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
+  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+  canvas->setWheelFactor( zoomFactor );
+  canvas->setCachingEnabled( settings.value( QStringLiteral( "qgis/enable_render_caching" ), true ).toBool() );
+  canvas->setParallelRenderingEnabled( settings.value( QStringLiteral( "qgis/parallel_rendering" ), true ).toBool() );
+  canvas->setMapUpdateInterval( settings.value( QStringLiteral( "qgis/map_update_interval" ), 250 ).toInt() );
+  canvas->setSegmentationTolerance( settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble() );
+  canvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "qgis/segmentationToleranceType" ), "0" ).toInt() ) );
+}
+
 void QgisApp::readSettings()
 {
   QgsSettings settings;
@@ -1663,6 +1684,7 @@ void QgisApp::createActions()
   connect( mActionSaveProject, SIGNAL( triggered() ), this, SLOT( fileSave() ) );
   connect( mActionSaveProjectAs, SIGNAL( triggered() ), this, SLOT( fileSaveAs() ) );
   connect( mActionSaveMapAsImage, SIGNAL( triggered() ), this, SLOT( saveMapAsImage() ) );
+  connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
@@ -2539,7 +2561,7 @@ void QgisApp::createStatusBar()
                                    "the rotation" ) );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
-  connect( mRotationEdit, SIGNAL( valueChanged( double ) ), this, SLOT( userRotation() ) );
+  connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgisApp::userRotation );
 
   showRotation();
 
@@ -2831,7 +2853,12 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, &QgsMapCanvas::zoomNextStatusChanged,
            mActionZoomNext, &QAction::setEnabled );
   connect( mRenderSuppressionCBox, &QAbstractButton::toggled,
-           mMapCanvas, &QgsMapCanvas::setRenderFlag );
+           this, [ = ]( bool flag )
+  {
+    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+      canvas->setRenderFlag( flag );
+  }
+         );
 
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged,
            this, &QgisApp::reprojectAnnotations );
@@ -3032,20 +3059,6 @@ void QgisApp::createOverview()
   mPanelMenu->addAction( mOverviewDock->toggleViewAction() );
 
   mLayerTreeCanvasBridge->setOvervewCanvas( mOverviewCanvas );
-
-  // moved here to set anti aliasing to both map canvas and overview
-  QgsSettings mySettings;
-  // Anti Aliasing enabled by default as of QGIS 1.7
-  mMapCanvas->enableAntiAliasing( mySettings.value( QStringLiteral( "qgis/enable_anti_aliasing" ), true ).toBool() );
-
-  double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  mMapCanvas->setWheelFactor( zoomFactor );
-
-  mMapCanvas->setCachingEnabled( mySettings.value( QStringLiteral( "qgis/enable_render_caching" ), true ).toBool() );
-
-  mMapCanvas->setParallelRenderingEnabled( mySettings.value( QStringLiteral( "qgis/parallel_rendering" ), true ).toBool() );
-
-  mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "qgis/map_update_interval" ), 250 ).toInt() );
 }
 
 void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *thepDockWidget )
@@ -3063,7 +3076,7 @@ void QgisApp::addDockWidget( Qt::DockWidgetArea area, QDockWidget *thepDockWidge
   thepDockWidget->show();
 
   // refresh the map canvas
-  mMapCanvas->refresh();
+  refreshMapCanvas();
 }
 
 void QgisApp::removeDockWidget( QDockWidget *thepDockWidget )
@@ -3103,6 +3116,101 @@ QgsMapCanvas *QgisApp::mapCanvas()
 {
   Q_ASSERT( mMapCanvas );
   return mMapCanvas;
+}
+
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced, bool showCursor, bool scaleSynced, double scaleFactor )
+{
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  {
+    if ( canvas->objectName() == name )
+    {
+      QString errorMessage = tr( "A map canvas with name '%1' already exists!" ).arg( name );
+      QgsDebugMsg( errorMessage );
+      return nullptr;
+    }
+  }
+
+  QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this );
+  mapCanvasWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  mapCanvasWidget->setMainCanvas( mMapCanvas );
+
+  mapCanvasWidget->setFloating( isFloating );
+  if ( dockGeometry.isEmpty() )
+  {
+    // try to guess a nice initial placement for view - about 3/4 along, half way down
+    mapCanvasWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+  }
+  else
+  {
+    mapCanvasWidget->setGeometry( dockGeometry );
+  }
+
+  QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
+  mapCanvas->freeze( true );
+  mapCanvas->setObjectName( name );
+  connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
+  connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
+
+  applyProjectSettingsToCanvas( mapCanvas );
+  applyDefaultSettingsToCanvas( mapCanvas );
+
+  mapCanvas->setLayers( mMapCanvas->layers() );
+  mapCanvas->setExtent( mMapCanvas->extent() );
+
+  mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
+
+
+  // add existing annotations to canvas
+  Q_FOREACH ( QgsAnnotation *annotation, QgsProject::instance()->annotationManager()->annotations() )
+  {
+    QgsMapCanvasAnnotationItem *canvasItem = new QgsMapCanvasAnnotationItem( annotation, mapCanvas );
+    Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
+  }
+
+  addDockWidget( Qt::RightDockWidgetArea, mapCanvasWidget );
+  mapCanvas->freeze( false );
+  markDirty();
+  connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
+  connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
+
+  mapCanvasWidget->setViewCenterSynchronized( synced );
+  mapCanvasWidget->setCursorMarkerVisible( showCursor );
+  mapCanvasWidget->setScaleFactor( scaleFactor );
+  mapCanvasWidget->setViewScaleSynchronized( scaleSynced );
+
+  return mapCanvas;
+}
+
+void QgisApp::closeMapCanvas( const QString &name )
+{
+  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  {
+    if ( w->mapCanvas()->objectName() == name )
+    {
+      w->close();
+      delete w;
+      break;
+    }
+  }
+}
+
+void QgisApp::closeAdditionalMapCanvases()
+{
+  freezeCanvases( true ); // closing docks may cause canvases to resize, and we don't want a map refresh occurring
+  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  {
+    w->close();
+    delete w;
+  }
+  freezeCanvases( false );
+}
+
+void QgisApp::freezeCanvases( bool frozen )
+{
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  {
+    canvas->freeze( frozen );
+  }
 }
 
 QgsMessageBar *QgisApp::messageBar()
@@ -3664,7 +3772,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
   */
 void QgisApp::addVectorLayer()
 {
-  mMapCanvas->freeze();
+  freezeCanvases();
   QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this );
 
   if ( ovl->exec() )
@@ -3677,8 +3785,8 @@ void QgisApp::addVectorLayer()
     }
   }
 
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  freezeCanvases( false );
+  refreshMapCanvas();
 
   delete ovl;
 }
@@ -3729,7 +3837,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
     if ( ! layer )
     {
-      mMapCanvas->freeze( false );
+      freezeCanvases( false );
 
       // Let render() do its own cursor management
       //      QApplication::restoreOverrideCursor();
@@ -3807,8 +3915,8 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
   // Let the caller do it otherwise
   if ( !wasfrozen )
   {
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    freezeCanvases( false );
+    refreshMapCanvas();
   }
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
@@ -4210,11 +4318,11 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
     // no layers to add so bail out, but
     // allow mMapCanvas to handle events
     // first
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
     return;
   }
 
-  mMapCanvas->freeze( true );
+  freezeCanvases( true );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -4228,7 +4336,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
 
     if ( ! layer )
     {
-      mMapCanvas->freeze( false );
+      freezeCanvases( false );
       QApplication::restoreOverrideCursor();
 
       // XXX insert meaningful whine to the user here
@@ -4264,8 +4372,8 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
   }
 
   // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  freezeCanvases( false );
+  refreshMapCanvas();
 
   QApplication::restoreOverrideCursor();
 }
@@ -4474,10 +4582,10 @@ void QgisApp::addAfsLayer()
            this, SLOT( addAfsLayer( QString, QString ) ) );
 
   bool wasFrozen = mapCanvas()->isFrozen();
-  mapCanvas()->freeze( true );
+  freezeCanvases();
   afss->exec();
   if ( !wasFrozen )
-    mapCanvas()->freeze( false );
+    freezeCanvases( false );
   delete afss;
 }
 
@@ -4508,10 +4616,10 @@ void QgisApp::addAmsLayer()
            this, SLOT( addAmsLayer( QString, QString ) ) );
 
   bool wasFrozen = mapCanvas()->isFrozen();
-  mapCanvas()->freeze( true );
+  freezeCanvases();
   amss->exec();
   if ( !wasFrozen )
-    mapCanvas()->freeze( false );
+    freezeCanvases( false );
   delete amss;
 }
 
@@ -5656,11 +5764,11 @@ void QgisApp::toggleFullScreen()
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
       bool wasFrozen = mapCanvas()->isFrozen();
-      mapCanvas()->freeze();
+      freezeCanvases();
       showNormal();
       showMaximized();
       if ( !wasFrozen )
-        mapCanvas()->freeze( false );
+        freezeCanvases( false );
       mPrevScreenModeMaximized = false;
     }
     else
@@ -5798,8 +5906,8 @@ void QgisApp::removeWindow( QAction *action )
 
 void QgisApp::stopRendering()
 {
-  if ( mMapCanvas )
-    mMapCanvas->stopRendering();
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    canvas->stopRendering();
 }
 
 //reimplements method from base (gui) class
@@ -7044,6 +7152,11 @@ QList<QgsMapCanvasAnnotationItem *> QgisApp::annotationItems()
   return itemList;
 }
 
+QList<QgsMapCanvas *> QgisApp::mapCanvases()
+{
+  return findChildren< QgsMapCanvas * >();
+}
+
 void QgisApp::removeAnnotationItems()
 {
   if ( !mMapCanvas )
@@ -7162,10 +7275,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   vl->endEditCommand();
 
-  if ( mapCanvas() )
-  {
-    vl->triggerRepaint();
-  }
+  vl->triggerRepaint();
 }
 
 void QgisApp::modifyAttributesOfSelectedFeatures()
@@ -7341,10 +7451,7 @@ void QgisApp::mergeSelectedFeatures()
 
   vl->endEditCommand();
 
-  if ( mapCanvas() )
-  {
-    vl->triggerRepaint();
-  }
+  vl->triggerRepaint();
 }
 
 void QgisApp::nodeTool()
@@ -7421,7 +7528,7 @@ void QgisApp::deselectAll()
 {
   // Turn off rendering to improve speed.
   bool wasFrozen = mMapCanvas->isFrozen();
-  mMapCanvas->freeze();
+  freezeCanvases();
 
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
@@ -7435,7 +7542,7 @@ void QgisApp::deselectAll()
 
   // Turn on rendering (if it was on previously)
   if ( !wasFrozen )
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
 }
 
 void QgisApp::invertSelection()
@@ -7453,13 +7560,13 @@ void QgisApp::invertSelection()
 
   // Turn off rendering to improve speed.
   bool wasFrozen = mMapCanvas->isFrozen();
-  mMapCanvas->freeze();
+  freezeCanvases();
 
   vlayer->invertSelection();
 
   // Turn on rendering (if it was on previously)
   if ( !wasFrozen )
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
 }
 
 void QgisApp::selectAll()
@@ -7477,13 +7584,13 @@ void QgisApp::selectAll()
 
   // Turn off rendering to improve speed.
   bool wasFrozen = mMapCanvas->isFrozen();
-  mMapCanvas->freeze();
+  freezeCanvases();
 
   vlayer->selectAll();
 
   // Turn on rendering (if it was on previously)
   if ( !wasFrozen )
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
 }
 
 void QgisApp::selectByExpression()
@@ -7723,12 +7830,12 @@ QgsVectorLayer *QgisApp::pasteAsNewMemoryVector( const QString &layerName )
 
   layer->setName( layerNameCopy );
 
-  mMapCanvas->freeze();
+  freezeCanvases();
 
   QgsProject::instance()->addMapLayer( layer );
 
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  freezeCanvases( false );
+  refreshMapCanvas();
 
   return layer;
 }
@@ -7936,10 +8043,12 @@ void QgisApp::copyFeatures( QgsFeatureStore &featureStore )
 
 void QgisApp::refreshMapCanvas()
 {
-  //stop any current rendering
-  mMapCanvas->stopRendering();
-
-  mMapCanvas->refreshAllLayers();
+  Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+  {
+    //stop any current rendering
+    canvas->stopRendering();
+    canvas->refreshAllLayers();
+  }
 }
 
 void QgisApp::canvasRefreshStarted()
@@ -8065,7 +8174,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
       case QMessageBox::Discard:
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
-        mMapCanvas->freeze( true );
+        freezeCanvases();
         if ( !vlayer->rollBack() )
         {
           messageBar()->pushMessage( tr( "Error" ),
@@ -8073,7 +8182,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
                                      QgsMessageBar::CRITICAL );
           res = false;
         }
-        mMapCanvas->freeze( false );
+        freezeCanvases( false );
 
         vlayer->triggerRepaint();
 
@@ -8086,9 +8195,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   }
   else //layer not modified
   {
-    mMapCanvas->freeze( true );
+    freezeCanvases();
     vlayer->rollBack();
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
     res = true;
     vlayer->triggerRepaint();
   }
@@ -8143,7 +8252,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
   if ( vlayer == activeLayer() && leaveEditable )
     mSaveRollbackInProgress = true;
 
-  mMapCanvas->freeze( true );
+  freezeCanvases();
   if ( !vlayer->rollBack( !leaveEditable ) )
   {
     mSaveRollbackInProgress = false;
@@ -8154,7 +8263,7 @@ void QgisApp::cancelEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerR
                                     vlayer->name(),
                                     vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
   }
-  mMapCanvas->freeze( false );
+  freezeCanvases( false );
 
   if ( leaveEditable )
   {
@@ -8172,7 +8281,7 @@ void QgisApp::saveEdits()
   {
     saveEdits( layer, true, false );
   }
-  mMapCanvas->refresh();
+  refreshMapCanvas();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8188,7 +8297,7 @@ void QgisApp::saveAllEdits( bool verifyAction )
   {
     saveEdits( layer, true, false );
   }
-  mMapCanvas->refresh();
+  refreshMapCanvas();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8198,7 +8307,7 @@ void QgisApp::rollbackEdits()
   {
     cancelEdits( layer, true, false );
   }
-  mMapCanvas->refresh();
+  refreshMapCanvas();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8214,7 +8323,7 @@ void QgisApp::rollbackAllEdits( bool verifyAction )
   {
     cancelEdits( layer, true, false );
   }
-  mMapCanvas->refresh();
+  refreshMapCanvas();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8224,7 +8333,7 @@ void QgisApp::cancelEdits()
   {
     cancelEdits( layer, false, false );
   }
-  mMapCanvas->refresh();
+  refreshMapCanvas();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8240,7 +8349,7 @@ void QgisApp::cancelAllEdits( bool verifyAction )
   {
     cancelEdits( layer, false, false );
   }
-  mMapCanvas->refresh();
+  refreshMapCanvas();
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
@@ -8527,7 +8636,7 @@ void QgisApp::removeLayer()
 
   showStatusMessage( tr( "%n legend entries removed.", "number of removed legend entries", selectedNodes.count() ) );
 
-  mMapCanvas->refresh();
+  refreshMapCanvas();
 }
 
 void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
@@ -8543,7 +8652,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
     return;
   }
 
-  mMapCanvas->freeze();
+  freezeCanvases();
   QgsMapLayer *dupLayer = nullptr;
   QString layerDupName, unSppType;
   QList<QgsMessageBarItem *> msgBars;
@@ -8672,7 +8781,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
 
   dupLayer = nullptr;
 
-  mMapCanvas->freeze( false );
+  freezeCanvases( false );
 
   // display errors in message bar after duplication of layers
   Q_FOREACH ( QgsMessageBarItem *msgBar, msgBars )
@@ -8701,15 +8810,15 @@ void QgisApp::setLayerScaleVisibility()
   }
   if ( dlg->exec() )
   {
-    mMapCanvas->freeze();
+    freezeCanvases();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
       layer->setMinimumScale( 1.0 / dlg->maximumScale() );
       layer->setMaximumScale( 1.0 / dlg->minimumScale() );
     }
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    freezeCanvases( false );
+    refreshMapCanvas();
   }
   delete dlg;
 }
@@ -8781,7 +8890,7 @@ void QgisApp::setLayerCrs()
     }
   }
 
-  mMapCanvas->refresh();
+  refreshMapCanvas();
 }
 
 void QgisApp::setProjectCrsFromLayer()
@@ -8849,7 +8958,7 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
     layer->refreshContrastEnhancement( myRectangle );
 
     mLayerTreeView->refreshLayerSymbology( layer->id() );
-    mMapCanvas->refresh();
+    refreshMapCanvas();
   }
 }
 
@@ -9133,16 +9242,10 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
 
     setupLayerTreeViewFromSettings();
 
-    mMapCanvas->enableAntiAliasing( mySettings.value( QStringLiteral( "qgis/enable_anti_aliasing" ) ).toBool() );
-
-    double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-    mMapCanvas->setWheelFactor( zoomFactor );
-
-    mMapCanvas->setCachingEnabled( mySettings.value( QStringLiteral( "qgis/enable_render_caching" ), true ).toBool() );
-
-    mMapCanvas->setParallelRenderingEnabled( mySettings.value( QStringLiteral( "qgis/parallel_rendering" ), true ).toBool() );
-
-    mMapCanvas->setMapUpdateInterval( mySettings.value( QStringLiteral( "qgis/map_update_interval" ), 250 ).toInt() );
+    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    {
+      applyDefaultSettingsToCanvas( canvas );
+    }
 
     if ( oldCapitalize != mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
     {
@@ -9163,7 +9266,10 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     }
 
     //do we need this? TS
-    mMapCanvas->refresh();
+    Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
+    {
+      canvas->refresh();
+    }
 
     mRasterFileFilter = QgsProviderRegistry::instance()->fileRasterFilters();
 
@@ -9175,9 +9281,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureDist )->updateSettings();
     qobject_cast<QgsMeasureTool *>( mMapTools.mMeasureArea )->updateSettings();
     qobject_cast<QgsMapToolMeasureAngle *>( mMapTools.mMeasureAngle )->updateSettings();
-
-    mMapCanvas->setSegmentationTolerance( mySettings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble() );
-    mMapCanvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( mySettings.value( QStringLiteral( "qgis/segmentationToleranceType" ), "0" ).toInt() ) );
 
     double factor = mySettings.value( QStringLiteral( "qgis/magnifier_factor_default" ), 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );
@@ -9439,7 +9542,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 {
   bool wasfrozen = mMapCanvas->isFrozen();
 
-  mMapCanvas->freeze();
+  freezeCanvases();
 
 // Let render() do its own cursor management
 //  QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -9499,7 +9602,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
     messageBar()->pushMessage( tr( "Layer is not valid" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
     delete layer;
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
     return nullptr;
   }
 
@@ -9507,8 +9610,8 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
   // Let the caller do it otherwise
   if ( !wasfrozen )
   {
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    freezeCanvases( false );
+    refreshMapCanvas();
   }
 
 // Let render() do its own cursor management
@@ -9522,7 +9625,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
 void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
 {
-  mMapCanvas->freeze();
+  freezeCanvases();
 
 // Let render() do its own cursor management
 //  QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -9543,8 +9646,8 @@ void QgisApp::addMapLayer( QgsMapLayer *mapLayer )
   }
 
   // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  freezeCanvases( false );
+  refreshMapCanvas();
 
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
@@ -9557,7 +9660,7 @@ void QgisApp::embedLayers()
   QgsProjectLayerGroupDialog d( this );
   if ( d.exec() == QDialog::Accepted && d.isValid() )
   {
-    mMapCanvas->freeze( true );
+    freezeCanvases();
 
     QString projectFile = d.selectedProjectFile();
 
@@ -9588,12 +9691,36 @@ void QgisApp::embedLayers()
       }
     }
 
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );
     if ( !groups.isEmpty() || !layerIds.isEmpty() )
     {
-      mMapCanvas->refresh();
+      refreshMapCanvas();
     }
   }
+}
+
+void QgisApp::newMapCanvas()
+{
+  int i = 1;
+
+  bool existing = true;
+  QList< QgsMapCanvas * > existingCanvases = mapCanvases();
+  QString name;
+  while ( existing )
+  {
+    name = tr( "Map %1" ).arg( i++ );
+    existing = false;
+    Q_FOREACH ( QgsMapCanvas *canvas, existingCanvases )
+    {
+      if ( canvas->objectName() == name )
+      {
+        existing = true;
+        break;
+      }
+    }
+  }
+
+  createNewMapCanvas( name, true );
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
@@ -9639,7 +9766,7 @@ bool QgisApp::saveDirty()
   }
 
   QMessageBox::StandardButton answer( QMessageBox::Discard );
-  mMapCanvas->freeze( true );
+  freezeCanvases();
 
   //QgsDebugMsg(QString("Layer count is %1").arg(mMapCanvas->layerCount()));
   //QgsDebugMsg(QString("Project is %1dirty").arg( QgsProject::instance()->isDirty() ? "" : "not "));
@@ -9669,7 +9796,7 @@ bool QgisApp::saveDirty()
     }
   }
 
-  mMapCanvas->freeze( false );
+  freezeCanvases( false );
 
   return answer != QMessageBox::Cancel;
 }
@@ -9714,6 +9841,8 @@ void QgisApp::closeProject()
   mLegendExpressionFilterButton->setExpressionText( QLatin1String( "" ) );
   mLegendExpressionFilterButton->setChecked( false );
   mActionFilterLegend->setChecked( false );
+
+  closeAdditionalMapCanvases();
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -10433,7 +10562,7 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
     if ( provider )
     {
       connect( provider, &QgsDataProvider::dataChanged, layer, [layer] { layer->triggerRepaint(); } );
-      connect( provider, &QgsDataProvider::dataChanged, mMapCanvas, &QgsMapCanvas::refresh );
+      connect( provider, &QgsDataProvider::dataChanged, this, &QgisApp::refreshMapCanvas );
     }
   }
 }
@@ -10536,11 +10665,6 @@ void QgisApp::projectProperties()
            &QgsStatusBarScaleWidget::updateScales );
   QApplication::restoreOverrideCursor();
 
-  //pass any refresh signals off to canvases
-  // Line below was commented out by wonder three years ago (r4949).
-  // It is needed to refresh scale bar after changing display units.
-  connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
-
   // Display the modal dialog box.
   pp->exec();
 
@@ -10553,7 +10677,7 @@ void QgisApp::projectProperties()
 
   // delete the property sheet object
   delete pp;
-} // QgisApp::projectProperties
+}
 
 
 QgsClipboard *QgisApp::clipboard()
@@ -11068,6 +11192,37 @@ void QgisApp::refreshActionFeatureAction()
   mActionFeatureAction->setEnabled( layerHasActions );
 }
 
+void QgisApp::renameView()
+{
+  QgsMapCanvasDockWidget *view = qobject_cast< QgsMapCanvasDockWidget * >( sender() );
+  if ( !view )
+    return;
+
+  // calculate existing names
+  QStringList names;
+  Q_FOREACH ( QgsMapCanvas *c, mapCanvases() )
+  {
+    if ( c == view->mapCanvas() )
+      continue;
+
+    names << c->objectName();
+  }
+
+  QString currentName = view->mapCanvas()->objectName();
+
+  QgsNewNameDialog renameDlg( currentName, currentName, QStringList(), names, QRegExp(), Qt::CaseSensitive, this );
+  renameDlg.setWindowTitle( tr( "Map Views" ) );
+  //renameDlg.setHintString( tr( "Name of the new view" ) );
+  renameDlg.setOverwriteEnabled( false );
+  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  if ( renameDlg.exec() || renameDlg.name().isEmpty() )
+  {
+    QString newName = renameDlg.name();
+    view->setWindowTitle( newName );
+    view->mapCanvas()->setObjectName( newName );
+  }
+}
+
 /////////////////////////////////////////////////////////////////
 //
 //
@@ -11143,7 +11298,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   {
     // let the user know we're going to possibly be taking a while
     // QApplication::setOverrideCursor( Qt::WaitCursor );
-    mMapCanvas->freeze( true );
+    freezeCanvases();
   }
 
   QgsDebugMsg( "Creating new raster layer using " + uri
@@ -11200,7 +11355,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   if ( !ok )
   {
     if ( guiUpdate )
-      mMapCanvas->freeze( false );
+      freezeCanvases( false );
 
     // don't show the gui warning if we are loading from command line
     if ( guiWarning )
@@ -11219,8 +11374,8 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
   if ( guiUpdate )
   {
     // draw the map
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    freezeCanvases( false );
+    refreshMapCanvas();
     // Let render() do its own cursor management
     //    QApplication::restoreOverrideCursor();
   }
@@ -11262,11 +11417,11 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
     // no files selected so bail out, but
     // allow mMapCanvas to handle events
     // first
-    mMapCanvas->freeze( false );
+    freezeCanvases( false );;
     return false;
   }
 
-  mMapCanvas->freeze( true );
+  freezeCanvases();
 
   // this is messy since some files in the list may be rasters and others may
   // be ogr layers. We'll set returnValue to false if one or more layers fail
@@ -11331,8 +11486,8 @@ bool QgisApp::addRasterLayers( QStringList const &fileNameQStringList, bool guiW
     }
   }
 
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  freezeCanvases( false );
+  refreshMapCanvas();
 
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
@@ -11593,9 +11748,29 @@ void QgisApp::writeProject( QDomDocument &doc )
   QDomElement oldLegendElem = QgsLayerTreeUtils::writeOldLegend( doc, QgsLayerTree::toGroup( clonedRoot ),
                               mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
   delete clonedRoot;
-  doc.firstChildElement( QStringLiteral( "qgis" ) ).appendChild( oldLegendElem );
+  QDomElement qgisNode = doc.firstChildElement( QStringLiteral( "qgis" ) );
+  qgisNode.appendChild( oldLegendElem );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Legend" ), QStringLiteral( "filterByMap" ), static_cast< bool >( layerTreeView()->layerTreeModel()->legendFilterMapSettings() ) );
+
+  // Save the position of the map view docks
+  QDomElement mapViewNode = doc.createElement( QStringLiteral( "mapViewDocks" ) );
+  Q_FOREACH ( QgsMapCanvasDockWidget *w, findChildren< QgsMapCanvasDockWidget * >() )
+  {
+    QDomElement node = doc.createElement( QStringLiteral( "view" ) );
+    node.setAttribute( QStringLiteral( "name" ), w->mapCanvas()->objectName() );
+    node.setAttribute( QStringLiteral( "x" ), w->x() );
+    node.setAttribute( QStringLiteral( "y" ), w->y() );
+    node.setAttribute( QStringLiteral( "width" ), w->width() );
+    node.setAttribute( QStringLiteral( "height" ), w->height() );
+    node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
+    node.setAttribute( QStringLiteral( "synced" ), w->isViewCenterSynchronized() );
+    node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
+    node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
+    node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
+    mapViewNode.appendChild( node );
+  }
+  qgisNode.appendChild( mapViewNode );
 
   projectChanged( doc );
 }
@@ -11612,6 +11787,30 @@ void QgisApp::readProject( const QDomDocument &doc )
 
   if ( autoSetupOnFirstLayer )
     mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
+
+  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapViewDocks" ) );
+  if ( !nodes.isEmpty() )
+  {
+    QDomNode viewNode = nodes.at( 0 );
+    nodes = viewNode.childNodes();
+    for ( int i = 0; i < nodes.size(); ++i )
+    {
+      QDomElement elementNode = nodes.at( i ).toElement();
+      QString mapName = elementNode.attribute( QStringLiteral( "name" ) );
+      int x = elementNode.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
+      int y = elementNode.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
+      int w = elementNode.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
+      int h = elementNode.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
+      bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
+      bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
+      bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
+      bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
+      double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
+
+      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced, showCursor, scaleSynced, scaleFactor );
+      mapCanvas->readProject( doc );
+    }
+  }
 }
 
 void QgisApp::showLayerProperties( QgsMapLayer *ml )

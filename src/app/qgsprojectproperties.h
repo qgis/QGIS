@@ -162,9 +162,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that project scale list may have changed
     void scalesChanged( const QStringList &scales = QStringList() );
 
-    //! let listening canvases know to refresh
-    void refresh();
-
   private:
 
     //! Formats for displaying coordinates

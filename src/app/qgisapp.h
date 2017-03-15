@@ -231,6 +231,36 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Get the mapcanvas object from the app
     QgsMapCanvas *mapCanvas();
 
+    /**
+     * Returns a list of all map canvases open in the app.
+     */
+    QList< QgsMapCanvas * > mapCanvases();
+
+    /**
+     * Create a new map canvas with the specified unique \a name. The \a isFloating
+     * and \a dockGeometry arguments can be used to specify an initial floating state
+     * and widget geometry rect for the dock.
+     */
+    QgsMapCanvas *createNewMapCanvas( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
+                                      bool synced = false, bool showCursor = true, bool scaleSynced = false,
+                                      double scaleFactor = 1.0 );
+
+    /**
+     * Closes the additional map canvas with matching \a name.
+     */
+    void closeMapCanvas( const QString &name );
+
+    /**
+     * Closes any additional map canvases. The main map canvas will not
+     * be affected.
+     */
+    void closeAdditionalMapCanvases();
+
+    /**
+     * Freezes all map canvases (or thaws them if the \a frozen argument is false).
+     */
+    void freezeCanvases( bool frozen = true );
+
     //! Return the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
 
@@ -736,6 +766,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QMenu *panelMenu() { return mPanelMenu; }
 
+    void renameView();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1023,6 +1055,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open dialog to align raster layers
     void showAlignRasterTool();
     void embedLayers();
+
+    //! Creates a new map canvas view
+    void newMapCanvas();
 
     //! Create a new empty vector layer
     void newVectorLayer();
@@ -1514,6 +1549,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns all annotation items in the canvas
     QList<QgsMapCanvasAnnotationItem *> annotationItems();
+
     //! Removes annotation items in the canvas
     void removeAnnotationItems();
 
@@ -1550,6 +1586,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Applies project map canvas settings to the specified canvas
      */
     void applyProjectSettingsToCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Applies global qgis settings to the specified canvas
+     */
+    void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
@@ -1754,6 +1795,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
     QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
+
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer *> mPrintComposers;
     //! QGIS-internal vector feature clipboard
