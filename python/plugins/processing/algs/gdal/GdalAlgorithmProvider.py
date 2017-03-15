@@ -106,24 +106,24 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         super().__init__()
 
-        self.alglist =  [nearblack(), information(), warp(), translate(),
-                         rgb2pct(), pct2rgb(), merge(), buildvrt(),
-                         polygonize(), gdaladdo(), ClipByExtent(),
-                         ClipByMask(), contour(), rasterize(), proximity(),
-                         sieve(), fillnodata(), ExtractProjection(),
-                         gdal2xyz(), hillshade(), slope(), aspect(),
-                         tri(), tpi(), roughness(), ColorRelief(),
-                         GridInvDist(), GridAverage(), GridNearest(),
-                         GridDataMetrics(), gdaltindex(), gdalcalc(),
-                         rasterize_over(), retile(), gdal2tiles(),
-                         AssignProjection(),
-                         # ----- OGR tools -----
-                         OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(),
-                         Ogr2OgrClipExtent(), Ogr2OgrToPostGis(),
-                         Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-                         Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
-                         OffsetCurve(), Ogr2OgrTableToPostGisList(),
-                         OgrSql()]
+        self.alglist = [nearblack(), information(), warp(), translate(),
+                        rgb2pct(), pct2rgb(), merge(), buildvrt(),
+                        polygonize(), gdaladdo(), ClipByExtent(),
+                        ClipByMask(), contour(), rasterize(), proximity(),
+                        sieve(), fillnodata(), ExtractProjection(),
+                        gdal2xyz(), hillshade(), slope(), aspect(),
+                        tri(), tpi(), roughness(), ColorRelief(),
+                        GridInvDist(), GridAverage(), GridNearest(),
+                        GridDataMetrics(), gdaltindex(), gdalcalc(),
+                        rasterize_over(), retile(), gdal2tiles(),
+                        AssignProjection(),
+                        # ----- OGR tools -----
+                        OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(),
+                        Ogr2OgrClipExtent(), Ogr2OgrToPostGis(),
+                        Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+                        Ogr2OgrBuffer(), Ogr2OgrDissolve(), OneSideBuffer(),
+                        OffsetCurve(), Ogr2OgrTableToPostGisList(),
+                        OgrSql()]
 
         if hasGnm:
             from .createnetwork import CreateNetwork

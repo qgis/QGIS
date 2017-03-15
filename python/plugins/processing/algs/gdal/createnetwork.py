@@ -48,7 +48,6 @@ class CreateNetwork(GeoAlgorithm):
     RULES = 'RULES'
     NETWORK = 'NETWORK'
 
-
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create network')
         self.group, self.i18n_group = self.trAlgorithm('Network analysis')
