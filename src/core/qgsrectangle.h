@@ -115,12 +115,13 @@ class CORE_EXPORT QgsRectangle
     QString asWktPolygon() const;
     //! returns a QRectF with same coordinates.
     QRectF toRectF() const;
+
     /**
      * returns a string representation of form xmin,ymin : xmax,ymax
      * Coordinates will be truncated to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
-    QString toString( int thePrecision = 16 ) const;
+    QString toString( int precision = 16 ) const;
     //! returns rectangle as a polygon
     QString asPolygon() const;
 

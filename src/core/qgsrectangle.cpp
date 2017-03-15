@@ -268,19 +268,19 @@ QRectF QgsRectangle::toRectF() const
 // Returns a string representation of form xmin,ymin : xmax,ymax. Coordinates will be truncated
 // to the specified \a precision. If \a precision is less than 0 then a suitable minimum precision
 // will be automatically calculated.
-QString QgsRectangle::toString( int thePrecision ) const
+QString QgsRectangle::toString( int precision ) const
 {
   QString rep;
 
-  if ( thePrecision < 0 )
+  if ( precision < 0 )
   {
-    thePrecision = 0;
-    if (( width() < 10 || height() < 10 ) && ( width() > 0 && height() > 0 ) )
+    precision = 0;
+    if ( ( width() < 10 || height() < 10 ) && ( width() > 0 && height() > 0 ) )
     {
-      thePrecision = static_cast<int>( ceil( -1.0 * log10( qMin( width(), height() ) ) ) ) + 1;
+      precision = static_cast<int>( ceil( -1.0 * log10( qMin( width(), height() ) ) ) ) + 1;
       // sanity check
-      if ( thePrecision > 20 )
-        thePrecision = 20;
+      if ( precision > 20 )
+        precision = 20;
     }
   }
 
@@ -288,10 +288,10 @@ QString QgsRectangle::toString( int thePrecision ) const
     rep = QStringLiteral( "Empty" );
   else
     rep = QStringLiteral( "%1,%2 : %3,%4" )
-          .arg( xmin, 0, 'f', thePrecision )
-          .arg( ymin, 0, 'f', thePrecision )
-          .arg( xmax, 0, 'f', thePrecision )
-          .arg( ymax, 0, 'f', thePrecision );
+          .arg( xmin, 0, 'f', precision )
+          .arg( ymin, 0, 'f', precision )
+          .arg( xmax, 0, 'f', precision )
+          .arg( ymax, 0, 'f', precision );
 
   QgsDebugMsgLevel( QString( "Extents : %1" ).arg( rep ), 4 );
 
