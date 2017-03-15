@@ -113,11 +113,19 @@ def features(layer, request=QgsFeatureRequest()):
         def __iter__(self):
             return self.iter
 
+        def __next__(self):
+            '''Iterator next method in python 3'''
+            return next(self.iter)
+
         def __len__(self):
             if self.selection:
                 return int(self.layer.selectedFeatureCount())
             else:
                 return int(self.layer.featureCount())
+
+        def next(self):
+            '''Iterator next method in python 2'''
+            return self.__next__()
 
     return Features(layer, request)
 
