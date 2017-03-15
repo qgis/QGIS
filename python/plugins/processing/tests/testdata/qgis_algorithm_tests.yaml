@@ -2505,18 +2505,3 @@ tests:
       OUTPUT_LAYER:
         name: expected/add_field.gml
         type: vector
-
-  - algorithm: qgis:randompointsinextent
-    name: Random point in extent
-    params:
-      CRS: EPSG:4326
-      EXTENT: 3.76062708785859,4.2289078918157665,0.7918637077719453,1.2601445117291217
-      MIN_DISTANCE: 0.0
-      POINT_NUMBER: 5
-    results:
-      OUTPUT:
-        name: expected/random_point_extent.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 5
