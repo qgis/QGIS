@@ -20,6 +20,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterdataprovider.h"
 #include "qgssettings.h"
 
@@ -963,7 +964,13 @@ void QgsRasterHistogramWidget::applyHistoMin()
     {
       min = leHistoMin->text();
       if ( mHistoUpdateStyleToMinMax )
+      {
         mRendererWidget->setMin( min, i );
+        if ( mRendererWidget->minMaxWidget() )
+        {
+          mRendererWidget->minMaxWidget()->userHasSetManualMinMaxValues();
+        }
+      }
     }
   }
 
@@ -992,7 +999,13 @@ void QgsRasterHistogramWidget::applyHistoMax()
     {
       max = leHistoMax->text();
       if ( mHistoUpdateStyleToMinMax )
+      {
         mRendererWidget->setMax( max, i );
+        if ( mRendererWidget->minMaxWidget() )
+        {
+          mRendererWidget->minMaxWidget()->userHasSetManualMinMaxValues();
+        }
+      }
     }
   }
 
