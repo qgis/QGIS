@@ -432,13 +432,11 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       {
         if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
         {
-          if ( mRasterStyleWidget )
+          if ( !mRasterStyleWidget )
           {
-            mRasterStyleWidget->deleteLater();
-            delete mRasterStyleWidget;
+            mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+            mRasterStyleWidget->syncToLayer( rlayer );
           }
-          mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
-          mRasterStyleWidget->syncToLayer( rlayer );
           connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
           QgsRasterHistogramWidget *widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
