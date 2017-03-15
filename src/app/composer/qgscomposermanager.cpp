@@ -108,7 +108,7 @@ void QgsComposerManager::refreshComposers()
   QSet<QgsComposer *>::const_iterator it = composers.constBegin();
   for ( ; it != composers.constEnd(); ++it )
   {
-    QListWidgetItem *item = new QListWidgetItem( ( *it )->title(), mComposerListWidget );
+    QListWidgetItem *item = new QListWidgetItem( ( *it )->composition()->name(), mComposerListWidget );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mItemComposerMap.insert( item, *it );
   }
@@ -461,7 +461,7 @@ void QgsComposerManager::duplicate_clicked()
   if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
-    currentTitle = it.value()->title();
+    currentTitle = it.value()->composition()->name();
   }
   else
   {
@@ -512,7 +512,7 @@ void QgsComposerManager::rename_clicked()
   if ( it != mItemComposerMap.constEnd() )
   {
     currentComposer = it.value();
-    currentTitle = it.value()->title();
+    currentTitle = it.value()->composition()->name();
   }
   else
   {
@@ -524,7 +524,7 @@ void QgsComposerManager::rename_clicked()
   {
     return;
   }
-  currentComposer->setTitle( newTitle );
+  currentComposer->composition()->setName( newTitle );
   item->setText( newTitle );
 
   mComposerListWidget->sortItems();
@@ -535,7 +535,7 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem *it
   QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
   if ( it != mItemComposerMap.constEnd() )
   {
-    it.value()->setTitle( item->text() );
+    it.value()->composition()->setName( item->text() );
   }
   mComposerListWidget->sortItems();
 }
@@ -580,7 +580,7 @@ void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel 
   QStringList cNames;
   Q_FOREACH ( QgsComposer *c, QgisApp::instance()->printComposers() )
   {
-    cNames << c->title();
+    cNames << c->composition()->name();
   }
   if ( changed && cNames.contains( value ) )
   {

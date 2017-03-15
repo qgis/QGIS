@@ -28,6 +28,7 @@ from qgis.core import (QgsComposition,
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 from utilities import unitTestDataPath
+from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -132,6 +133,22 @@ class TestQgsComposition(unittest.TestCase):
                      ' for %s' %
                      (myExpectedFileSize, myFileSize, myImagePath))
         assert myFileSize > myExpectedFileSize, myMessage
+
+    def testSaveRestore(self):
+        # test that properties are restored correctly from XML
+        composition = QgsComposition(QgsProject.instance())
+        composition.setName('test composition')
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        elem = doc.createElement("composer")
+        self.assertTrue(composition.writeXml(elem, doc))
+
+        composition2 = QgsComposition(QgsProject.instance())
+        self.assertTrue(composition2.readXml(elem, doc))
+
+        self.assertEqual(composition.name(), 'test composition')
 
 
 if __name__ == '__main__':

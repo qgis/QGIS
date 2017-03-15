@@ -548,6 +548,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString &title )
 
   //init undo/redo buttons
   mComposition = new QgsComposition( QgsProject::instance() );
+  mComposition->setName( title );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -791,6 +792,7 @@ void QgsComposer::connectCompositionSlots()
     return;
   }
 
+  connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setWindowTitle );
   connect( mComposition, SIGNAL( selectedItemChanged( QgsComposerItem * ) ), this, SLOT( showItemOptions( QgsComposerItem * ) ) );
   connect( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow * ) ), this, SLOT( addComposerArrow( QgsComposerArrow * ) ) );
   connect( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon * ) ), this, SLOT( addComposerPolygon( QgsComposerPolygon * ) ) );

@@ -165,6 +165,12 @@ QgsProject *QgsComposition::project() const
   return mProject;
 }
 
+void QgsComposition::setName( const QString &name )
+{
+  mName = name;
+  emit nameChanged( name );
+}
+
 void QgsComposition::loadDefaults()
 {
   QgsSettings settings;
@@ -820,6 +826,7 @@ bool QgsComposition::writeXml( QDomElement &composerElem, QDomDocument &doc )
   }
 
   QDomElement compositionElem = doc.createElement( QStringLiteral( "Composition" ) );
+  compositionElem.setAttribute( QStringLiteral( "name" ), mName );
   compositionElem.setAttribute( QStringLiteral( "paperWidth" ), QString::number( mPageWidth ) );
   compositionElem.setAttribute( QStringLiteral( "paperHeight" ), QString::number( mPageHeight ) );
   compositionElem.setAttribute( QStringLiteral( "numPages" ), mPages.size() );
@@ -921,6 +928,8 @@ bool QgsComposition::readXml( const QDomElement &compositionElem, const QDomDocu
   {
     return false;
   }
+
+  setName( compositionElem.attribute( QStringLiteral( "name" ) ) );
 
   //create pages
   bool widthConversionOk, heightConversionOk;

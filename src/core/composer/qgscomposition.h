@@ -74,6 +74,8 @@ class QgsPaperItem;
 class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionContextGenerator
 {
     Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
+
   public:
 
     //! \brief Plot type
@@ -126,6 +128,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \note Added in QGIS 3.0
      */
     QgsProject *project() const;
+
+    /**
+     * Returns the composition's name.
+     * @see setName()
+     * @note added in QGIS 3.0
+     */
+    QString name() const { return mName; }
+
+    /**
+     * Sets the composition's name.
+     * @see name()
+     * @note added in QGIS 3.0
+     */
+    void setName( const QString &name );
 
     /** Changes size of paper item.
      * @param width page width in mm
@@ -864,6 +880,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Pointer to associated project (not null)
     QgsProject *mProject = nullptr;
 
+    QString mName;
+
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
     double mPageHeight;
@@ -994,6 +1012,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void prepareAllDataDefinedExpressions();
 
   signals:
+
+    /**
+     * Emitted when the composition's name is changed.
+     * @note added in QGIS 3.0
+     * @see setName()
+     */
+    void nameChanged( const QString &name );
+
     void paperSizeChanged();
     void nPagesChanged();
 
