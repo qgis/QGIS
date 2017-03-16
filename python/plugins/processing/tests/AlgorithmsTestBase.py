@@ -45,6 +45,9 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 
 import processing
+
+from processing.script.ScriptAlgorithm import ScriptAlgorithm  # NOQA
+
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
@@ -90,7 +93,11 @@ class AlgorithmsTest(object):
 
         params = self.load_params(defs['params'])
 
-        alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
+        if defs['algorithm'].startswith('scrips:'):
+            filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
+            alg = ScriptAlgorithm(filePath)
+        else:
+            alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
 
         if isinstance(params, list):
             for param in zip(alg.parameters, params):
