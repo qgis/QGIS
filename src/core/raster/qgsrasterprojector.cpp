@@ -751,6 +751,9 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
+  if ( feedback && feedback->isCanceled() )
+    return new QgsRasterBlock();
+
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsgLevel( "No projection necessary", 4 );
@@ -813,6 +816,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
     for ( int j = 0; j < width; ++j )
     {
       bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
@@ -832,12 +837,12 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
       {
-        QgsDebugMsg( QString( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
+        // QgsDebugMsg( QString( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
         continue;
       }
       if ( !destBits )
       {
-        QgsDebugMsg( QString( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
+        // QgsDebugMsg( QString( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );
