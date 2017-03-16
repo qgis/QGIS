@@ -123,7 +123,7 @@ IF (WITH_GLOBE)
   SET(QT_USE_QTOPENGL 1)
   FIND_PACKAGE(OSGEARTH REQUIRED)
   IF (OSGEARTHQT_LIBRARY)
-    # following variable is used in qgsconfig.h
+    # following variable is used in qgisconfig.h
     SET(HAVE_OSGEARTHQT TRUE)
   ENDIF (OSGEARTHQT_LIBRARY)
 ENDIF (WITH_GLOBE)
@@ -145,12 +145,12 @@ SET (GENERATE_COVERAGE_DOCS FALSE CACHE BOOL "Generate coverage docs (requires l
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
 
 IF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
-  # following variable is also used in qgsconfig.h
+  # following variable is also used in qgisconfig.h
   SET (USING_NMAKE TRUE)
 ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
 
 IF (CMAKE_GENERATOR MATCHES "Ninja")
-  # following variable is also used in qgsconfig.h
+  # following variable is also used in qgisconfig.h
   SET (USING_NINJA TRUE)
 ENDIF (CMAKE_GENERATOR MATCHES "Ninja")
 
@@ -233,7 +233,7 @@ IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
 ENDIF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
 
 IF (POSTGRES_FOUND)
-  # following variable is used in qgsconfig.h
+  # following variable is used in qgisconfig.h
   SET (HAVE_POSTGRESQL TRUE)
 ENDIF (POSTGRES_FOUND)
 
@@ -667,10 +667,10 @@ IF (WITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 #############################################################
-# create qgsconfig.h
+# create qgisconfig.h
 # installed with app target
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
+CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgisconfig.h.in ${CMAKE_BINARY_DIR}/qgisconfig.h)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
 # Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
