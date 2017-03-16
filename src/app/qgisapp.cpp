@@ -183,6 +183,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayoutmanager.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasdockwidget.h"
@@ -6925,9 +6926,9 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
 
   QStringList cNames;
   cNames << newTitle;
-  Q_FOREACH ( QgsComposer *c, printComposers() )
+  Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
   {
-    cNames << c->title();
+    cNames << c->name();
   }
 
   while ( !titleValid )
