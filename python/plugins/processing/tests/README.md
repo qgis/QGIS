@@ -54,6 +54,11 @@ The above translates to
       name: expected/polys_densify.gml
 ```
 
+It is also possible to create tests for Processing scripts. Scripts
+should be placed in the `scrips` subdirectory in the test data directory
+`python/plugins/processing/tests/testdata/`. Script file name
+should match script algorithm name.
+
 Params and results
 ------------------
 
@@ -163,7 +168,7 @@ OUTPUT:
   type: rasterhash
   hash: f1fedeb6782f9389cf43590d4c85ada9155ab61fef6dc285aaeb54d6
 ```
-      
+
 #### Files
 
 You can compare the content of an output file by an expected result reference file
