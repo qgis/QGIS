@@ -20,6 +20,7 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 
+#include <QImageReader>
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )

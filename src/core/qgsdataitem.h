@@ -22,7 +22,6 @@
 #include <QFutureWatcher>
 #include <QIcon>
 #include <QLibrary>
-#include <QMovie>
 #include <QObject>
 #include <QPixmap>
 #include <QString>
@@ -33,45 +32,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
 
+
 class QgsDataProvider;
 class QgsDataItem;
+class QgsAnimatedIcon;
 
 typedef QgsDataItem *dataItem_t( QString, QgsDataItem * );
-
-/** \ingroup core
- * Animated icon is keeping an animation running if there are listeners connected to frameChanged
-*/
-class CORE_EXPORT QgsAnimatedIcon : public QObject
-{
-    Q_OBJECT
-  public:
-
-    /** Constructor
-     * @param iconPath path to a movie, e.g. animated GIF */
-    QgsAnimatedIcon( const QString &iconPath = QString::null );
-
-    QString iconPath() const;
-    void setIconPath( const QString &iconPath );
-    QIcon icon() const { return mIcon; }
-
-    //! Connect listener to frameChanged() signal
-    void connectFrameChanged( const QObject *receiver, const char *method );
-    //! Disconnect listener from frameChanged() signal
-    void disconnectFrameChanged( const QObject *receiver, const char *method );
-
-  public slots:
-    void onFrameChanged();
-
-  signals:
-    //! Emitted when icon changed
-    void frameChanged();
-
-  private:
-    void resetMovie();
-    int mCount; // number of listeners
-    QMovie *mMovie = nullptr;
-    QIcon mIcon;
-};
 
 /** \ingroup core
  * Base class for all items in the model.
@@ -293,7 +259,6 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    void emitDataChanged();
     virtual void childrenCreated();
 
   signals:
@@ -303,6 +268,15 @@ class CORE_EXPORT QgsDataItem : public QObject
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+  protected slots:
+
+    /**
+     * Will request a repaint of this icon.
+     *
+     * @note Added in QGIS 3.0
+     */
+    void updateIcon();
 
   private:
     static QVector<QgsDataItem *> runCreateChildren( QgsDataItem *item );
