@@ -112,6 +112,11 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
           mRequest.setSubsetOfAttributes( mRequest.subsetOfAttributes() << attrIdx );
       }
     }
+
+    // Required for local filtering
+    // Also requred with compiler enabled for updateAttributeValues() on fetched features.
+    if ( mRequest.filterExpression()->needsGeometry() )
+      mRequest.setFlags( mRequest.flags() & ~QgsFeatureRequest::NoGeometry );
   }
 
   prepareFields();
