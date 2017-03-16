@@ -410,6 +410,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   mRotationWidget->setRange( -180.0, 180.0 );
   mRotationWidget->setWrapping( true );
   mRotationWidget->setSingleStep( 5.0 );
+  mRotationWidget->setSuffix( trUtf8( " °" ) );
   mRotationWidget->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
 
   label = new QLabel( tr( "Rotation" ) );
@@ -441,7 +442,7 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   gLayout->addWidget( mSyncScaleCheckBox, 3, 0, 1, 2 );
 
   mScaleFactorWidget = new QgsDoubleSpinBox();
-  mScaleFactorWidget->setSuffix( QStringLiteral( "×" ) );
+  mScaleFactorWidget->setSuffix( trUtf8( "×" ) );
   mScaleFactorWidget->setDecimals( 2 );
   mScaleFactorWidget->setRange( 0.01, 100000 );
   mScaleFactorWidget->setWrapping( false );
