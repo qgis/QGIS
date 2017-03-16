@@ -14,3 +14,14 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: script:selectbyattribute
+    name: Select by attribute
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/selected_points.gml
+        type: vector
