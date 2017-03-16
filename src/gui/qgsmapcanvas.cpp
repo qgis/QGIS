@@ -825,8 +825,11 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage& img, const QgsMapSettings& m
 
 void QgsMapCanvas::mapUpdateTimeout()
 {
-  const QImage& img = mJob->renderedImage();
-  mMap->setContent( img, imageRect( img, mSettings ) );
+  if ( mJob )
+  {
+    const QImage& img = mJob->renderedImage();
+    mMap->setContent( img, imageRect( img, mSettings ) );
+  }
 }
 
 void QgsMapCanvas::stopRendering()
