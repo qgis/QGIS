@@ -49,27 +49,27 @@ class CORE_EXPORT QgsFields
       OriginExpression //!< Field is calculated from an expression
     };
 
-    typedef struct Field
+    typedef struct FieldDescription
     {
-      Field()
+      FieldDescription()
         : origin( OriginUnknown )
         , originIndex( -1 )
       {}
-      Field( const QgsField &f, FieldOrigin o, int oi )
+      FieldDescription( const QgsField &f, FieldOrigin o, int oi )
         : field( f )
         , origin( o )
         , originIndex( oi )
       {}
 
       //! @note added in 2.6
-      bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
+      bool operator==( const FieldDescription &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
       //! @note added in 2.6
-      bool operator!=( const Field &other ) const { return !( *this == other ); }
+      bool operator!=( const FieldDescription &other ) const { return !( *this == other ); }
 
       QgsField field;      //!< Field
       FieldOrigin origin;  //!< Origin of the field
       int originIndex;     //!< Index specific to the origin
-    } Field;
+    } FieldDescription;
 
     /** Constructor for an empty field container
      */
@@ -195,14 +195,14 @@ class CORE_EXPORT QgsFields
     class iterator
     {
       public:
-        QgsFields::Field *d = nullptr;
+        QgsFields::FieldDescription *d = nullptr;
         typedef std::random_access_iterator_tag  iterator_category;
         typedef qptrdiff difference_type;
 
         inline iterator()
           : d( nullptr )
         {}
-        inline iterator( QgsFields::Field *n )
+        inline iterator( QgsFields::FieldDescription *n )
           : d( n )
         {}
 
@@ -217,9 +217,9 @@ class CORE_EXPORT QgsFields
         inline bool operator>=( const iterator &other ) const noexcept { return d >= other.d; } // clazy:exclude=function-args-by-value
 
         inline iterator &operator++() { ++d; return *this; }
-        inline iterator operator++( int ) { QgsFields::Field *n = d; ++d; return n; }
+        inline iterator operator++( int ) { QgsFields::FieldDescription *n = d; ++d; return n; }
         inline iterator &operator--() { d--; return *this; }
-        inline iterator operator--( int ) { QgsFields::Field *n = d; d--; return n; }
+        inline iterator operator--( int ) { QgsFields::FieldDescription *n = d; d--; return n; }
         inline iterator &operator+=( difference_type j ) { d += j; return *this; }
         inline iterator &operator-=( difference_type j ) { d -= j; return *this; }
         inline iterator operator+( difference_type j ) const { return iterator( d + j ); }
@@ -231,14 +231,14 @@ class CORE_EXPORT QgsFields
     class const_iterator // clazy:exclude=rule-of-three
     {
       public:
-        const QgsFields::Field *d = nullptr;
+        const QgsFields::FieldDescription *d = nullptr;
 
         typedef std::random_access_iterator_tag  iterator_category;
         typedef qptrdiff difference_type;
 
         inline const_iterator()
           : d( nullptr ) {}
-        inline const_iterator( const QgsFields::Field *f )
+        inline const_iterator( const QgsFields::FieldDescription *f )
           : d( f ) {}
         inline const_iterator( const const_iterator &o )
           : d( o.d ) {}
@@ -254,9 +254,9 @@ class CORE_EXPORT QgsFields
         inline bool operator>( const const_iterator &other ) const noexcept { return d > other.d; }
         inline bool operator>=( const const_iterator &other ) const noexcept { return d >= other.d; }
         inline const_iterator &operator++() { ++d; return *this; }
-        inline const_iterator operator++( int ) { const QgsFields::Field *n = d; ++d; return n; }
+        inline const_iterator operator++( int ) { const QgsFields::FieldDescription *n = d; ++d; return n; }
         inline const_iterator &operator--() { d--; return *this; }
-        inline const_iterator operator--( int ) { const QgsFields::Field *n = d; --d; return n; }
+        inline const_iterator operator--( int ) { const QgsFields::FieldDescription *n = d; --d; return n; }
         inline const_iterator &operator+=( difference_type j ) { d += j; return *this; }
         inline const_iterator &operator-=( difference_type j ) { d -= j; return *this; }
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
