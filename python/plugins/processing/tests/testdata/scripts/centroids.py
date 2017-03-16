@@ -21,11 +21,9 @@ total = 100.0 / len(features)
 
 for count, f in enumerate(features):
     outputFeature = f
-    if f.geometry():
+    if f.hasGeometry():
         outputGeometry = f.geometry().centroid()
         outputFeature.setGeometry(outputGeometry)
 
     writer.addFeature(outputFeature)
     feedback.setProgress(int(count * total))
-
-del writer
