@@ -93,7 +93,7 @@ class AlgorithmsTest(object):
 
         params = self.load_params(defs['params'])
 
-        if defs['algorithm'].startswith('scrips:'):
+        if defs['algorithm'].startswith('script:'):
             filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
             alg = ScriptAlgorithm(filePath)
         else:
