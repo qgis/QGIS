@@ -208,7 +208,10 @@ class ModelerDialog(BASE, WIDGET):
         ctrlEquals = QShortcut(QKeySequence("Ctrl+="), self)
         ctrlEquals.activated.connect(self.zoomIn)
 
-        iconSize = settings.value("iconsize", 24)
+        try:
+            iconSize = int(settings.value("iconsize", 24))
+        except:
+            iconSize = 24
         self.mToolbar.setIconSize(QSize(iconSize, iconSize))
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
