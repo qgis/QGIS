@@ -1,0 +1,26 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>union1</Name>
+    <ElementPath>union1</ElementPath>
+    <SRSName>EPSG:3857</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>12</FeatureCount>
+      <ExtentXMin>0.00000</ExtentXMin>
+      <ExtentXMax>9.00000</ExtentXMax>
+      <ExtentYMin>1.00000</ExtentYMin>
+      <ExtentYMax>11.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>id_a</Name>
+      <ElementPath>id_a</ElementPath>
+      <Type>String</Type>
+      <Width>2</Width>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>id_b</Name>
+      <ElementPath>id_b</ElementPath>
+      <Type>String</Type>
+      <Width>2</Width>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>
