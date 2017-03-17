@@ -1288,6 +1288,16 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
   }
+  else if ( e->button() == Qt::BackButton )
+  {
+    zoomToPreviousExtent();
+    return;
+  }
+  else if ( e->button() == Qt::ForwardButton )
+  {
+    zoomToNextExtent();
+    return;
+  }
   else
   {
     if ( mZoomDragging && e->button() == Qt::LeftButton )
