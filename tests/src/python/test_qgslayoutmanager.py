@@ -195,6 +195,44 @@ class TestQgsLayoutManager(unittest.TestCase):
         names = [c.name() for c in manager2.compositions()]
         self.assertEqual(set(names), {'test composition', 'test composition2', 'test composition3'})
 
+    def testSaveAsTemplate(self):
+        """
+        Test saving composition as template
+        """
+        project = QgsProject()
+        manager = QgsLayoutManager(project)
+        doc = QDomDocument("testdoc")
+        self.assertFalse(manager.saveAsTemplate('not in manager', doc))
+
+        composition = QgsComposition(project)
+        composition.setName('test composition')
+        manager.addComposition(composition)
+        self.assertTrue(manager.saveAsTemplate('test composition', doc))
+
+    def testDuplicateComposition(self):
+        """
+        Test duplicating compositions
+        """
+        project = QgsProject()
+        manager = QgsLayoutManager(project)
+        doc = QDomDocument("testdoc")
+        self.assertFalse(manager.duplicateComposition('not in manager', 'dest'))
+
+        composition = QgsComposition(project)
+        composition.setName('test composition')
+        composition.setPaperSize(100, 200)
+        manager.addComposition(composition)
+        # duplicate name
+        self.assertFalse(manager.duplicateComposition('test composition', 'test composition'))
+
+        result = manager.duplicateComposition('test composition', 'dupe composition')
+        self.assertTrue(result)
+        # make sure result in stored in manager
+        self.assertEqual(result, manager.compositionByName('dupe composition'))
+        self.assertEqual(result.name(), 'dupe composition')
+        self.assertEqual(result.paperHeight(), 200)
+        self.assertEqual(result.paperWidth(), 100)
+
 
 if __name__ == '__main__':
     unittest.main()
