@@ -2016,14 +2016,17 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   QgsSettings mySettings;
   double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
 
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( event->angleDelta().y() );
+
   if ( event->modifiers() & Qt::ControlModifier )
   {
     //holding ctrl while wheel zooming results in a finer zoom
-    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
   }
 
   //calculate zoom scale factor
-  bool zoomIn = event->delta() > 0;
+  bool zoomIn = event->angleDelta().y() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
   //get current visible part of scene
