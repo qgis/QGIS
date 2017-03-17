@@ -7,7 +7,7 @@ typedef QVector<QVariant> QgsAttributes;
 %MappedType QgsAttributes
 {
 %TypeHeaderCode
-#include <qgsfeature.h>
+#include <qgsfeature.h> // NO_SIPIFY
 %End
 
 %ConvertFromTypeCode
@@ -113,6 +113,16 @@ class QgsFeature
 #define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
 #endif
 %End
+%Docstring
+/** \ingroup core
+ The feature class encapsulates a single feature including its id,
+ geometry and a list of field/values attributes.
+ \note QgsFeature objects are implicitly shared.
+ @author Gary E.Sherman
+/
+
+%End
+
 
   public:
 
