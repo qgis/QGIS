@@ -75,7 +75,7 @@ void QgsRasterProjector::setCrs( const QgsCoordinateReferenceSystem &srcCRS, con
 
 ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height, QgsRasterInterface *input, const QgsCoordinateTransform &inverseCt, QgsRasterProjector::Precision precision )
   : mApproximate( false )
-  , mInverseCt( new QgsCoordinateTransform( inverseCt ) )
+  , mInverseCt( inverseCt )
   , mDestExtent( extent )
   , mDestRows( height )
   , mDestCols( width )
@@ -210,7 +210,6 @@ ProjectorData::~ProjectorData()
 {
   delete[] pHelperTop;
   delete[] pHelperBottom;
-  delete mInverseCt;
 }
 
 
@@ -345,7 +344,7 @@ void ProjectorData::calcSrcRowsCols()
     //double
     QgsRectangle srcExtent;
     int srcXSize, srcYSize;
-    if ( QgsRasterProjector::extentSize( *mInverseCt, mDestExtent, mDestCols, mDestRows, srcExtent, srcXSize, srcYSize ) )
+    if ( QgsRasterProjector::extentSize( mInverseCt, mDestExtent, mDestCols, mDestRows, srcExtent, srcXSize, srcYSize ) )
     {
       double srcXRes = srcExtent.width() / srcXSize;
       double srcYRes = srcExtent.height() / srcYSize;
@@ -457,9 +456,9 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
   QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
 #endif
 
-  if ( mInverseCt->isValid() )
+  if ( mInverseCt.isValid() )
   {
-    mInverseCt->transformInPlace( x, y, z );
+    mInverseCt.transformInPlace( x, y, z );
   }
 
 #ifdef QGISDEBUG
@@ -751,6 +750,9 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
+  if ( feedback && feedback->isCanceled() )
+    return new QgsRasterBlock();
+
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsgLevel( "No projection necessary", 4 );
@@ -771,17 +773,16 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return new QgsRasterBlock();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback );
+  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, pd.srcExtent(), pd.srcCols(), pd.srcRows(), feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
     return new QgsRasterBlock();
   }
 
   qgssize pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( inputBlock->hasNoDataValue() )
   {
     outputBlock->setNoDataValue( inputBlock->noDataValue() );
@@ -789,8 +790,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   if ( !outputBlock->isValid() )
   {
     QgsDebugMsg( "Cannot create block" );
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   // set output to no data, it should be fast
@@ -813,6 +813,8 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
     for ( int j = 0; j < width; ++j )
     {
       bool inside = pd.srcRowCol( i, j, &srcRow, &srcCol );
@@ -832,12 +834,12 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
       {
-        QgsDebugMsg( QString( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
+        // QgsDebugMsg( QString( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
         continue;
       }
       if ( !destBits )
       {
-        QgsDebugMsg( QString( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
+        // QgsDebugMsg( QString( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );
@@ -845,9 +847,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     }
   }
 
-  delete inputBlock;
-
-  return outputBlock;
+  return outputBlock.release();
 }
 
 bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcXSize, int srcYSize,

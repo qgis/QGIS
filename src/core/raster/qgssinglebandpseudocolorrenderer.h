@@ -37,7 +37,6 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     //! Note: takes ownership of QgsRasterShader
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader = nullptr );
-    ~QgsSingleBandPseudoColorRenderer();
 
     //! QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & ) = delete;
@@ -54,10 +53,10 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     void setShader( QgsRasterShader *shader );
 
     //! Returns the raster shader
-    QgsRasterShader *shader() { return mShader; }
+    QgsRasterShader *shader() { return mShader.get(); }
 
     //! @note available in python as constShader
-    const QgsRasterShader *shader() const { return mShader; }
+    const QgsRasterShader *shader() const { return mShader.get(); }
 
     /** Creates a color ramp shader
      * @param colorRamp vector color ramp
@@ -93,7 +92,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
   private:
 
-    QgsRasterShader *mShader = nullptr;
+    std::unique_ptr< QgsRasterShader > mShader;
     int mBand;
 
     // Minimum and maximum values used for automatic classification, these

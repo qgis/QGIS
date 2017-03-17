@@ -20,12 +20,11 @@ email                : ersts@amnh.org
 #include "qgsrastershaderfunction.h"
 
 QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double maximumValue )
+  : mMaximumValue( maximumValue )
+  , mMinimumValue( minimumValue )
+  , mMinimumMaximumRange( mMaximumValue - mMinimumValue )
 {
   QgsDebugMsgLevel( "entered.", 4 );
-
-  mMinimumValue = minimumValue;
-  mMaximumValue = maximumValue;
-  mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
 /**

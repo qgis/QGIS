@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsrasterrenderer.h"
+#include <memory>
 
 class QgsContrastEnhancement;
 class QDomElement;
@@ -37,7 +38,6 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     };
 
     QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand );
-    ~QgsSingleBandGrayRenderer();
 
     //! QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & ) = delete;
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     int grayBand() const { return mGrayBand; }
     void setGrayBand( int band ) { mGrayBand = band; }
-    const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement; }
+    const QgsContrastEnhancement *contrastEnhancement() const { return mContrastEnhancement.get(); }
     //! Takes ownership
     void setContrastEnhancement( QgsContrastEnhancement *ce );
 
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
   private:
     int mGrayBand;
     Gradient mGradient;
-    QgsContrastEnhancement *mContrastEnhancement = nullptr;
+    std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;
 
 };
 

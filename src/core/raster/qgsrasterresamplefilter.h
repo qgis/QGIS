@@ -20,8 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsrasterinterface.h"
-
-class QgsRasterResampler;
+#include "qgsrasterresampler.h"
 
 class QDomElement;
 
@@ -32,7 +31,6 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 {
   public:
     QgsRasterResampleFilter( QgsRasterInterface *input = nullptr );
-    ~QgsRasterResampleFilter();
 
     QgsRasterResampleFilter *clone() const override;
 
@@ -46,11 +44,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     //! Set resampler for zoomed in scales. Takes ownership of the object
     void setZoomedInResampler( QgsRasterResampler *r );
-    const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler; }
+    const QgsRasterResampler *zoomedInResampler() const { return mZoomedInResampler.get(); }
 
     //! Set resampler for zoomed out scales. Takes ownership of the object
     void setZoomedOutResampler( QgsRasterResampler *r );
-    const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler; }
+    const QgsRasterResampler *zoomedOutResampler() const { return mZoomedOutResampler.get(); }
 
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
     double maxOversampling() const { return mMaxOversampling; }
@@ -62,9 +60,9 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
   protected:
     //! Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)
-    QgsRasterResampler *mZoomedInResampler = nullptr;
+    std::unique_ptr< QgsRasterResampler > mZoomedInResampler;
     //! Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)
-    QgsRasterResampler *mZoomedOutResampler = nullptr;
+    std::unique_ptr< QgsRasterResampler > mZoomedOutResampler;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling;
