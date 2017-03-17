@@ -550,9 +550,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Pointer to QGIS application
     QgisApp *mQgis = nullptr;
 
-    //! The composer was opened first time (-> set defaults)
-    bool mFirstTime;
-
     //! Layout
     QGridLayout *mItemOptionsLayout = nullptr;
 

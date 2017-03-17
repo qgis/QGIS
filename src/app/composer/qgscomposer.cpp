@@ -465,8 +465,6 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   menuBar()->addMenu( mHelpMenu );
 #endif
 
-  mFirstTime = true;
-
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );
 
@@ -816,23 +814,11 @@ void QgsComposer::connectOtherSlots()
 
 void QgsComposer::open()
 {
-  if ( mFirstTime )
+  show();
+  zoomFull(); // zoomFull() does not work properly until we have called show()
+  if ( mView )
   {
-    //mComposition->createDefault();
-    mFirstTime = false;
-    show();
-    zoomFull(); // zoomFull() does not work properly until we have called show()
-    if ( mView )
-    {
-      mView->updateRulers();
-    }
-  }
-
-  else
-  {
-    show(); //make sure the window is displayed - with a saved project, it's possible to not have already called show()
-    //is that a bug?
-    activate(); //bring the composer window to the front
+    mView->updateRulers();
   }
 }
 
