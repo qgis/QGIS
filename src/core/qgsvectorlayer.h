@@ -657,7 +657,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool diagramsEnabled() const;
 
     //! Sets diagram rendering object (takes ownership)
-    void setDiagramRenderer( QgsDiagramRenderer *r );
+    void setDiagramRenderer( QgsDiagramRenderer *r SIP_TRANSFER );
     const QgsDiagramRenderer *diagramRenderer() const { return mDiagramRenderer; }
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings &s );
@@ -675,7 +675,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Set renderer which will be invoked to represent this layer.
      * Ownership is transferred.
      */
-    void setRenderer( QgsFeatureRenderer *r );
+    void setRenderer( QgsFeatureRenderer *r SIP_TRANSFER );
 
     //! Returns point, line or polygon
     QgsWkbTypes::GeometryType geometryType() const;
@@ -911,7 +911,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      */
-    bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
+    bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
     /** Moves the vertex at the given position number,
      * ring and item (first number is index 0), and feature
@@ -958,7 +958,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @note available in python as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve *ring, QgsFeatureId *featureId = nullptr );
+    int addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /** Adds a new part polygon to a multipart feature
      * @return
@@ -987,10 +987,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @note available in python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequence &ring );
+    int addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
     //! @note available in python as addCurvedPart
-    int addPart( QgsCurve *ring );
+    int addPart( QgsCurve *ring ) SIP_PYNAME( addCurvedPart );
 
     /** Translates feature by dx, dy
      *  @param featureId id of the feature to translate
@@ -1080,7 +1080,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     int snapWithContext( const QgsPoint &startPoint,
                          double snappingTolerance,
-                         QMultiMap < double, QgsSnappingResult > &snappingResults,
+                         QMultiMap < double, QgsSnappingResult > &snappingResults SIP_OUT,
                          QgsSnapper::SnappingType snap_to );
 
     //! Synchronises with changes in the datasource
@@ -1089,7 +1089,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! Return the extent of the layer
     QgsRectangle extent() const override;
