@@ -20,6 +20,7 @@
 
 #include "qgspanelwidget.h"
 #include "qgsvectorlayer.h"
+#include "qgscomposerinterface.h"
 
 class QgisApp;
 class QgsComposerArrow;
@@ -61,6 +62,21 @@ class QComboBox;
 class QLabel;
 class QTreeView;
 class QPrinter;
+class QgsComposer;
+
+class QgsAppComposerInterface : public QgsComposerInterface
+{
+    Q_OBJECT
+
+  public:
+    QgsAppComposerInterface( QgsComposer *composer );
+    QgsComposerView *view() override;
+    QgsComposition *composition() override;
+
+  private:
+
+    QgsComposer *mComposer = nullptr;
+};
 
 /** \ingroup app
  * \brief A gui for composing a printable map.
@@ -79,6 +95,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QgsComposer( QgsComposition *composition );
     ~QgsComposer();
+
+    QgsComposerInterface *interface();
 
     //! Set the pixmap / icons on the toolbar buttons
     void setupTheme();
@@ -514,6 +532,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void loadAtlasPredefinedScalesFromProject();
 
     QPrinter *printer();
+
+    QgsAppComposerInterface *mInterface = nullptr;
 
     //! Composer title
     QString mTitle;

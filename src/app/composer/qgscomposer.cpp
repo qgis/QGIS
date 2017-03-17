@@ -104,6 +104,7 @@
 
 QgsComposer::QgsComposer( QgsComposition *composition )
   : QMainWindow()
+  , mInterface( new QgsAppComposerInterface( this ) )
   , mComposition( composition )
   , mQgis( QgisApp::instance() )
 {
@@ -674,6 +675,11 @@ QgsComposer::~QgsComposer()
 {
   deleteItemWidgets();
   delete mPrinter;
+}
+
+QgsComposerInterface *QgsComposer::interface()
+{
+  return mInterface;
 }
 
 void QgsComposer::setupTheme()
@@ -3898,3 +3904,22 @@ QPrinter *QgsComposer::printer()
   return mPrinter;
 }
 
+
+//
+// QgsAppComposerInterface
+//
+
+QgsAppComposerInterface::QgsAppComposerInterface( QgsComposer *composer )
+  : QgsComposerInterface( composer )
+  , mComposer( composer )
+{}
+
+QgsComposerView *QgsAppComposerInterface::view()
+{
+  return mComposer->view();
+}
+
+QgsComposition *QgsAppComposerInterface::composition()
+{
+  return mComposer->composition();
+}

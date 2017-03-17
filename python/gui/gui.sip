@@ -44,6 +44,7 @@
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip
 %Include qgscolorwidgets.sip
+%Include qgscomposerinterface.sip
 %Include qgscomposeritemcombobox.sip
 %Include qgscomposerruler.sip
 %Include qgscomposerview.sip

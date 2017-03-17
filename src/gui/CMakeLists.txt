@@ -341,6 +341,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
+  qgscomposerinterface.h
   qgscomposeritemcombobox.h
   qgscomposerruler.h
   qgscomposerview.h
