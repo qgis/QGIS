@@ -97,6 +97,7 @@ class QgsWFSCapabilities : public QgsWFSRequest
       QList<Function> spatialPredicatesList;
       QList<Function> functionList;
       bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
+      QList< QString > outputFormats;
 
       QSet< QString > setAllTypenames;
       QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;

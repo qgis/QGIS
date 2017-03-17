@@ -117,7 +117,13 @@ class QgsWFSDataSourceURI
     /** Set SQL query */
     void setSql( const QString& sql );
 
-    /** Returns whether GetFeature request should include the request bounding box. Defaults to false */
+    //! Get GetFeature output format
+    QString outputFormat() const;
+
+    //! Set GetFeature output format
+    void setOutputFormat( const QString &outputFormat );
+
+    //! Returns whether GetFeature request should include the request bounding box. Defaults to false
     bool isRestrictedToRequestBBOX() const;
 
     /** Returns whether axis orientation should be ignored (for WFS >= 1.1). Defaults to false */
