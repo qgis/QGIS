@@ -433,10 +433,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Shows the configuration widget for a composer item
     void showItemOptions( QgsComposerItem *i );
 
-
-    //! Stores only template as base Dom node
-    void templateXml( QDomDocument &doc );
-
     void setSelectionTool();
 
     //! Raise, unminimize and activate this window

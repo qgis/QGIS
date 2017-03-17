@@ -3361,22 +3361,6 @@ void QgsComposer::restoreWindowState()
   }
 }
 
-void  QgsComposer::templateXml( QDomDocument &doc )
-{
-  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
-  composerElem.setAttribute( QStringLiteral( "title" ), mTitle );
-  doc.appendChild( composerElem );
-
-  //store composition
-  if ( mComposition )
-  {
-    mComposition->writeXml( composerElem, doc );
-  }
-
-  // store atlas
-  mComposition->atlasComposition().writeXml( composerElem, doc );
-}
-
 void QgsComposer::createCompositionWidget()
 {
   if ( !mComposition )
