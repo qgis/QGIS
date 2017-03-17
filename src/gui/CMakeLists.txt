@@ -296,6 +296,7 @@ SET(QGIS_GUI_SRCS
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
+  qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
   qgsshortcutsmanager.cpp
   qgsslider.cpp
@@ -442,6 +443,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
+  qgsscrollarea.h
   qgssearchquerybuilder.h
   qgsshortcutsmanager.h
   qgsslider.h
