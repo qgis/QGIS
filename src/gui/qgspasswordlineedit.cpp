@@ -18,7 +18,7 @@
 #include "qgspasswordlineedit.h"
 #include "qgsapplication.h"
 
-QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent )
+QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent, bool passwordVisible )
   : QLineEdit( parent )
   , mActionShowHidePassword( nullptr )
   , mActionLock( nullptr )
@@ -35,7 +35,13 @@ QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent )
     mActionLock = addAction( QgsApplication::getThemeIcon( "/lockedGray.svg" ), QLineEdit::LeadingPosition );
   }
 
+  setPasswordVisibility( passwordVisible );
   connect( mActionShowHidePassword, &QAction::triggered, this, &QgsPasswordLineEdit::togglePasswordVisibility );
+}
+
+void QgsPasswordLineEdit::setPasswordVisibility( bool visible )
+{
+  togglePasswordVisibility( visible );
 }
 
 void QgsPasswordLineEdit::togglePasswordVisibility( bool toggled )
@@ -44,11 +50,13 @@ void QgsPasswordLineEdit::togglePasswordVisibility( bool toggled )
   {
     setEchoMode( QLineEdit::Normal );
     mActionShowHidePassword->setIcon( mHidePasswordIcon );
+    mActionShowHidePassword->setToolTip( tr( "Hide text" ) );
   }
   else
   {
     setEchoMode( QLineEdit::Password );
     mActionShowHidePassword->setIcon( mShowPasswordIcon );
+    mActionShowHidePassword->setToolTip( tr( "Show text" ) );
   }
 }
 
