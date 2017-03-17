@@ -1158,6 +1158,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   if ( useScaleVisibility )
   {
     // data defined min scale?
+    context.expressionContext().setOriginalValueVariable( scaleMin );
     double minScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MinScale, context.expressionContext(), scaleMin );
 
     // scales closer than 1:1
@@ -1172,6 +1173,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     }
 
     // data defined max scale?
+    context.expressionContext().setOriginalValueVariable( scaleMax );
     double maxScale = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::MaxScale, context.expressionContext(), scaleMax );
 
     // scales closer than 1:1
@@ -1205,6 +1207,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   //data defined label size?
+  context.expressionContext().setOriginalValueVariable( mFormat.size() );
   double fontSize = mDataDefinedProperties.valueAsDouble( QgsPalLayerSettings::Size, context.expressionContext(), mFormat.size() );
   if ( fontSize <= 0.0 )
   {
