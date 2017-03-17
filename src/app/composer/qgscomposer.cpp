@@ -115,7 +115,9 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   setupUi( this );
   setWindowTitle( mComposition->name() );
   setAttribute( Qt::WA_DeleteOnClose );
-
+#if QT_VERSION >= 0x050600
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+#endif
   setupTheme();
 
   QgsSettings settings;
@@ -581,7 +583,6 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   Q_FOREACH ( QDockWidget *dock, docks )
   {
-    dock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
     connect( dock, &QDockWidget::visibilityChanged, this, &QgsComposer::dockVisibilityChanged );
   }
 
