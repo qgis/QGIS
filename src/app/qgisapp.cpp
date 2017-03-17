@@ -4061,6 +4061,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   // We initialize a selection dialog and display it.
   QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, QStringLiteral( "gdal" ), this );
+  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
 
   QgsSublayersDialog::LayerDefinitionList layers;
   QStringList names;
@@ -4112,6 +4113,13 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     QRegExp rx( "\"(.*)\"" );
     QString uri, name;
 
+    QgsLayerTreeGroup *group = nullptr;
+    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
+    if ( addToGroup )
+    {
+      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, layer->name() );
+    }
+
     Q_FOREACH ( const QgsSublayersDialog::LayerDefinition &def, chooseSublayersDialog.selection() )
     {
       int i = def.layerId;
@@ -4129,7 +4137,15 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
       QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], name );
       if ( rlayer && rlayer->isValid() )
       {
-        addRasterLayer( rlayer );
+        if ( addToGroup )
+        {
+          QgsProject::instance()->addMapLayer( rlayer, false );
+          group->addLayer( rlayer );
+        }
+        else
+        {
+          addRasterLayer( rlayer );
+        }
       }
     }
   }
@@ -4158,6 +4174,11 @@ void QgisApp::loadGDALSublayers( const QString &uri, const QStringList &list )
 {
   QString path, name;
   QgsRasterLayer *subLayer = nullptr;
+  QgsSettings settings;
+  QgsLayerTreeGroup *group = nullptr;
+  bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
+  if ( addToGroup )
+    group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, QFileInfo( uri ).completeBaseName() );
 
   //add layers in reverse order so they appear in the right order in the layer dock
   for ( int i = list.size() - 1; i >= 0 ; i-- )
@@ -4170,7 +4191,15 @@ void QgisApp::loadGDALSublayers( const QString &uri, const QStringList &list )
     if ( subLayer )
     {
       if ( subLayer->isValid() )
-        addRasterLayer( subLayer );
+        if ( addToGroup )
+        {
+          QgsProject::instance()->addMapLayer( subLayer, false );
+          group->addLayer( subLayer );
+        }
+        else
+        {
+          addRasterLayer( subLayer );
+        }
       else
         delete subLayer;
     }
@@ -4224,12 +4253,14 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
   // We initialize a selection dialog and display it.
   QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this );
+  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
   chooseSublayersDialog.populateLayerTable( list );
 
   if ( !chooseSublayersDialog.exec() )
     return;
 
   QString uri = layer->source();
+  QString name = layer->name();
   //the separator char & was changed to | to be compatible
   //with url for protocol drivers
   if ( uri.contains( '|', Qt::CaseSensitive ) )
@@ -4276,12 +4307,19 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
   if ( ! myList.isEmpty() )
   {
-    // Register layer(s) with the layers registry
-    QgsProject::instance()->addMapLayers( myList );
+    QgsSettings settings;
+    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), true ).toBool();
+    QgsLayerTreeGroup *group = nullptr;
+    if ( addToGroup )
+      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, name );
+
+    QgsProject::instance()->addMapLayers( myList, ! addToGroup );
     Q_FOREACH ( QgsMapLayer *l, myList )
     {
       bool ok;
       l->loadDefaultStyle( ok );
+      if ( addToGroup )
+        group->addLayer( l );
     }
   }
 }
