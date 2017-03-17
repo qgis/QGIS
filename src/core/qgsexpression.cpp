@@ -4225,6 +4225,16 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
     case QVariant::Bool:
       return value.toBool() ? "TRUE" : "FALSE";
 
+    case QVariant::List:
+    {
+      QStringList quotedValues;
+      Q_FOREACH ( const QVariant &v, value.toList() )
+      {
+        quotedValues += quotedValue( v );
+      }
+      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( ", " ) );
+    }
+
     default:
     case QVariant::String:
       return quotedString( value.toString() );
