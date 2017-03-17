@@ -63,6 +63,7 @@ FORMATS = [
     'ODS',
     'XLSX',
     'PDF',
+    'GPKG',
 ]
 
 EXTS = [
@@ -88,6 +89,7 @@ EXTS = [
     '.ods',
     '.xlsx',
     '.pdf',
+    '.gpkg',
 ]
 
 
