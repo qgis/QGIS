@@ -175,6 +175,11 @@ inline bool isNull( const QVariant &v )
   return v.isNull();
 }
 
+inline bool isList( const QVariant &v )
+{
+  return v.type() == QVariant::List;
+}
+
 ///////////////////////////////////////////////
 // evaluation error macros
 
@@ -4812,6 +4817,75 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression *parent, const Q
       if ( isNull( vL ) || isNull( vR ) )
       {
         return TVL_Unknown;
+      }
+      else if ( isList( vL ) || isList( vR ) )
+      {
+        // verify that we have two lists
+        if ( !isList( vL ) || !isList( vR ) )
+          return TVL_Unknown;
+
+        // and search for not equal respective items
+        QVariantList lL = vL.toList();
+        QVariantList lR = vR.toList();
+        for ( int i = 0; i < lL.length() && i < lR.length(); i++ )
+        {
+          if ( isNull( lL.at( i ) ) && isNull( lR.at( i ) ) )
+            continue;  // same behavior as PostgreSQL
+
+          if ( isNull( lL.at( i ) ) || isNull( lR.at( i ) ) )
+          {
+            switch ( mOp )
+            {
+              case boEQ:
+                return false;
+              case boNE:
+                return true;
+              case boLT:
+              case boLE:
+                return isNull( lR.at( i ) );
+              case boGT:
+              case boGE:
+                return isNull( lL.at( i ) );
+              default:
+                Q_ASSERT( false );
+                return TVL_Unknown;
+            }
+          }
+
+          QgsExpression::NodeLiteral nL( lL.at( i ) );
+          QgsExpression::NodeLiteral nR( lR.at( i ) );
+          QgsExpression::NodeBinaryOperator eqNode( boEQ, nL.clone(), nR.clone() );
+          QVariant eq = eqNode.eval( parent, context );
+          ENSURE_NO_EVAL_ERROR;
+          if ( eq == TVL_False )
+          {
+            // return the two items comparison
+            QgsExpression::NodeBinaryOperator node( mOp, nL.clone(), nR.clone() );
+            QVariant v = node.eval( parent, context );
+            ENSURE_NO_EVAL_ERROR;
+            return v;
+          }
+        }
+
+        // default to length comparison
+        switch ( mOp )
+        {
+          case boEQ:
+            return lL.length() == lR.length();
+          case boNE:
+            return lL.length() != lR.length();
+          case boLT:
+            return lL.length() < lR.length();
+          case boGT:
+            return lL.length() > lR.length();
+          case boLE:
+            return lL.length() <= lR.length();
+          case boGE:
+            return lL.length() >= lR.length();
+          default:
+            Q_ASSERT( false );
+            return TVL_Unknown;
+        }
       }
       else if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) &&
                 ( vL.type() != QVariant::String || vR.type() != QVariant::String ) )
