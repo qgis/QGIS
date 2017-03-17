@@ -387,3 +387,48 @@ typedef unsigned long long qgssize;
 #else
 #define FALLTHROUGH
 #endif
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Transfer
+ *
+ * Example QgsVectorLayer::setDiagramRenderer
+ */
+#define SIP_TRANSFER
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
+ */
+#define SIP_TRANSFERBACK
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferThis
+ */
+#define SIP_TRANSFERTHIS
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
+ */
+#define SIP_OUT
+
+/**
+ * Combination of
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
+ * and
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
+ */
+#define SIP_IN_OUT
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Factory
+ */
+#define SIP_FACTORY
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-PyName
+ */
+#define SIP_PYNAME(name)
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-KeepReference
+ */
+#define SIP_KEEPREFERENCE
