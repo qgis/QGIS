@@ -6987,7 +6987,11 @@ QgsComposer *QgisApp::createNewComposer( QString title )
   QgsComposition *composition = new QgsComposition( QgsProject::instance() );
   composition->setName( title );
   QgsProject::instance()->layoutManager()->addComposition( composition );
+  return openComposer( composition );
+}
 
+QgsComposer *QgisApp::openComposer( QgsComposition *composition )
+{
   QgsComposer *newComposerObject = new QgsComposer( composition );
   connect( newComposerObject, &QgsComposer::aboutToClose, this, [this, newComposerObject]
   {
@@ -7016,42 +7020,21 @@ void QgisApp::deleteComposer( QgsComposer *c )
 
 QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString title )
 {
-  QgsComposer *newComposer = nullptr;
-
-  // test that current composer template write is valid
-  QDomDocument currentDoc;
-  currentComposer->templateXml( currentDoc );
-  QDomElement compositionElem = currentDoc.documentElement().firstChildElement( QStringLiteral( "Composition" ) );
-  if ( compositionElem.isNull() )
-  {
-    QgsDebugMsg( "selected composer could not be stored as temporary template" );
-    return newComposer;
-  }
-
   if ( title.isEmpty() )
   {
     // TODO: inject a bit of randomness in auto-titles?
     title = currentComposer->title() + tr( " copy" );
   }
 
-  newComposer = createNewComposer( title );
+  QgsComposition *newComposition = QgsProject::instance()->layoutManager()->duplicateComposition( currentComposer->composition()->name(),
+                                   title );
+  QgsComposer *newComposer = openComposer( newComposition );
   if ( !newComposer )
   {
     QgsDebugMsg( "could not create new composer" );
     return newComposer;
   }
-
-  // hiding composer until template is loaded is much faster, provide feedback to user
-  newComposer->hide();
-  if ( !newComposer->loadFromTemplate( currentDoc, true ) )
-  {
-    deleteComposer( newComposer );
-    newComposer = nullptr;
-    QgsDebugMsg( "Error, composer could not be duplicated" );
-    return newComposer;
-  }
   newComposer->activate();
-
   return newComposer;
 }
 

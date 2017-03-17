@@ -15,6 +15,7 @@
 
 #include "qgslayoutmanager.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
@@ -127,6 +128,51 @@ QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
     c->atlasComposition().writeXml( composerElem, doc );
   }
   return layoutsElem;
+}
+
+bool QgsLayoutManager::saveAsTemplate( const QString &name, QDomDocument &doc ) const
+{
+  QgsComposition *c = compositionByName( name );
+  if ( !c )
+    return false;
+
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c->writeXml( composerElem, doc );
+  c->atlasComposition().writeXml( composerElem, doc );
+  return true;
+}
+
+QgsComposition *QgsLayoutManager::duplicateComposition( const QString &name, const QString &newName )
+{
+  QDomDocument currentDoc;
+  if ( !saveAsTemplate( name, currentDoc ) )
+    return nullptr;
+
+  QDomElement compositionElem = currentDoc.documentElement().firstChildElement( QStringLiteral( "Composition" ) );
+  if ( compositionElem.isNull() )
+  {
+    QgsDebugMsg( "selected composer could not be stored as temporary template" );
+    return nullptr;
+  }
+
+  QgsComposition *newComposition( new QgsComposition( mProject ) );
+  if ( !newComposition->loadFromTemplate( currentDoc, nullptr, false, true ) )
+  {
+    delete newComposition;
+    return nullptr;
+  }
+
+  newComposition->setName( newName );
+  if ( !addComposition( newComposition ) )
+  {
+    delete newComposition;
+    return nullptr;
+  }
+  else
+  {
+    return newComposition;
+  }
 }
 
 QgsComposition *QgsLayoutManager::createCompositionFromXml( const QDomElement &element, const QDomDocument &doc ) const

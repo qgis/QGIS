@@ -13,10 +13,12 @@ class QgsLayoutManager : QObject
     bool removeComposition( QgsComposition* composition );
 
     void clear();
-    QList< QgsComposition* > compositions() const;
-    QgsComposition* compositionByName( const QString& name ) const;
-    bool readXml( const QDomElement& element, const QDomDocument& doc );
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QList< QgsComposition * > compositions() const;
+    QgsComposition *compositionByName( const QString &name ) const;
+    bool readXml( const QDomElement &element, const QDomDocument &doc );
+    QDomElement writeXml( QDomDocument &doc ) const;
+    bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;
+    QgsComposition *duplicateComposition( const QString &name, const QString &newName );
 
   signals:
     void compositionAdded( const QString& name );

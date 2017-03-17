@@ -487,9 +487,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
 
-    //! Writes state under DOM element
-    void writeXml( QDomNode &parentNode, QDomDocument &doc );
-
     //! Removes all the item from the graphics scene and deletes them
     void deleteItemWidgets();
 

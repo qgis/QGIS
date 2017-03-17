@@ -46,6 +46,7 @@ class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
 class QgsComposer;
+class QgsComposition;
 class QgsComposerManager;
 class QgsComposerView;
 class QgsContrastEnhancement;
@@ -332,6 +333,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
     //! Creates a new composer and returns a pointer to it
     QgsComposer *createNewComposer( QString title = QString() );
+
+    /**
+     * Opens a composer window for an existing \a composition.
+     */
+    QgsComposer *openComposer( QgsComposition *composition );
+
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
 

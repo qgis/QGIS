@@ -68,6 +68,7 @@
 #include "ui_qgssvgexportoptions.h"
 #include "qgspanelwidgetstack.h"
 #include "qgssettings.h"
+#include "qgslayoutmanager.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -113,7 +114,7 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   , mQgis( QgisApp::instance() )
 {
   setupUi( this );
-  setWindowTitle( mComposition->name() );
+  setTitle( mComposition->name() );
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
@@ -2951,7 +2952,7 @@ void QgsComposer::on_mActionNewComposer_triggered()
 void QgsComposer::on_mActionDuplicateComposer_triggered()
 {
   QString newTitle;
-  if ( !mQgis->uniqueComposerTitle( this, newTitle, false, title() + tr( " copy" ) ) )
+  if ( !mQgis->uniqueComposerTitle( this, newTitle, false, mComposition->name() + tr( " copy" ) ) )
   {
     return;
   }
@@ -3015,7 +3016,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   }
 
   QDomDocument saveDocument;
-  templateXml( saveDocument );
+  QgsProject::instance()->layoutManager()->saveAsTemplate( mComposition->name(), saveDocument );
 
   if ( templateFile.write( saveDocument.toByteArray() ) == -1 )
   {
@@ -3360,11 +3361,11 @@ void QgsComposer::restoreWindowState()
   }
 }
 
-void QgsComposer::writeXml( QDomNode &parentNode, QDomDocument &doc )
+void  QgsComposer::templateXml( QDomDocument &doc )
 {
   QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   composerElem.setAttribute( QStringLiteral( "title" ), mTitle );
-  parentNode.appendChild( composerElem );
+  doc.appendChild( composerElem );
 
   //store composition
   if ( mComposition )
@@ -3374,11 +3375,6 @@ void QgsComposer::writeXml( QDomNode &parentNode, QDomDocument &doc )
 
   // store atlas
   mComposition->atlasComposition().writeXml( composerElem, doc );
-}
-
-void  QgsComposer::templateXml( QDomDocument &doc )
-{
-  writeXml( doc, doc );
 }
 
 void QgsComposer::createCompositionWidget()

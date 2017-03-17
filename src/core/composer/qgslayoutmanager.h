@@ -100,6 +100,19 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      */
     QDomElement writeXml( QDomDocument &doc ) const;
 
+    /**
+     * Saves the composition with matching \a name in template format.
+     * Returns true if save was successful.
+     */
+    bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;
+
+    /**
+     * Duplicates an existing composition from the manager. The new
+     * composition will automatically be stored in the manager.
+     * Returns new composition if duplication was successful.
+     */
+    QgsComposition *duplicateComposition( const QString &name, const QString &newName );
+
   signals:
 
     //! Emitted when a composition has been added to the manager
