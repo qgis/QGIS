@@ -73,7 +73,7 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
     return new QgsRasterBlock();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height, feedback );
+  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNo, extent, width, height, feedback ) );
   if ( !inputBlock )
   {
     return new QgsRasterBlock();
@@ -82,10 +82,10 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
   // We don't support nuller for color types
   if ( QgsRasterBlock::typeIsColor( inputBlock->dataType() ) )
   {
-    return inputBlock;
+    return inputBlock.release();
   }
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock( inputBlock->dataType(), width, height ) );
   if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )
   {
     double noDataValue;
@@ -122,8 +122,6 @@ QgsRasterBlock *QgsRasterNuller::block( int bandNo, QgsRectangle  const &extent,
       }
     }
   }
-  delete inputBlock;
-
-  return outputBlock;
+  return outputBlock.release();
 }
 

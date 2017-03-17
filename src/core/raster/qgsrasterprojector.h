@@ -29,12 +29,12 @@
 
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsrasterinterface.h"
 
 #include <cmath>
 
 class QgsPoint;
-class QgsCoordinateTransform;
 
 /** \ingroup core
  * \brief QgsRasterProjector implements approximate projection support for
@@ -193,7 +193,7 @@ class ProjectorData
     bool mApproximate;
 
     //! Transformation from destination CRS to source CRS
-    QgsCoordinateTransform *mInverseCt = nullptr;
+    QgsCoordinateTransform mInverseCt;
 
     //! Destination extent
     QgsRectangle mDestExtent;
