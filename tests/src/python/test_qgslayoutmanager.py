@@ -233,6 +233,24 @@ class TestQgsLayoutManager(unittest.TestCase):
         self.assertEqual(result.paperHeight(), 200)
         self.assertEqual(result.paperWidth(), 100)
 
+    def testGenerateUniqueTitle(self):
+        project = QgsProject()
+        manager = QgsLayoutManager(project)
+        self.assertEqual(manager.generateUniqueTitle(), 'Composer 1')
+
+        composition = QgsComposition(project)
+        composition.setName(manager.generateUniqueTitle())
+        manager.addComposition(composition)
+
+        self.assertEqual(manager.generateUniqueTitle(), 'Composer 2')
+        composition2 = QgsComposition(project)
+        composition2.setName(manager.generateUniqueTitle())
+        manager.addComposition(composition2)
+
+        self.assertEqual(manager.generateUniqueTitle(), 'Composer 3')
+        manager.clear()
+        self.assertEqual(manager.generateUniqueTitle(), 'Composer 1')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -19,6 +19,7 @@ class QgsLayoutManager : QObject
     QDomElement writeXml( QDomDocument &doc ) const;
     bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;
     QgsComposition *duplicateComposition( const QString &name, const QString &newName );
+    QString generateUniqueTitle() const;
 
   signals:
     void compositionAdded( const QString& name );

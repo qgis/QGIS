@@ -1884,8 +1884,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsDecorationItem *> mDecorationItems;
 
-    int mLastComposerId;
-
     //! Persistent GPS toolbox
     QgsGPSInformationWidget *mpGpsWidget = nullptr;
 

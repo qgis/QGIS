@@ -175,6 +175,23 @@ QgsComposition *QgsLayoutManager::duplicateComposition( const QString &name, con
   }
 }
 
+QString QgsLayoutManager::generateUniqueTitle() const
+{
+  QStringList names;
+  Q_FOREACH ( QgsComposition *c, mCompositions )
+  {
+    names << c->name();
+  }
+  QString name;
+  int id = 1;
+  while ( name.isEmpty() || names.contains( name ) )
+  {
+    name = tr( "Composer %1" ).arg( id );
+    id++;
+  }
+  return name;
+}
+
 QgsComposition *QgsLayoutManager::createCompositionFromXml( const QDomElement &element, const QDomDocument &doc ) const
 {
   QDomNodeList compositionNodeList = element.elementsByTagName( QStringLiteral( "Composition" ) );

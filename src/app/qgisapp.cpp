@@ -1082,7 +1082,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
-  mLastComposerId = 0;
 
   QShortcut *zoomInShortCut = new QShortcut( QKeySequence( tr( "Ctrl++" ) ), this );
   connect( zoomInShortCut, &QShortcut::activated, mMapCanvas, &QgsMapCanvas::zoomIn );
@@ -1268,7 +1267,6 @@ QgisApp::QgisApp()
   , mMapStyleWidget( nullptr )
   , mComposerManager( nullptr )
   , mpTileScaleWidget( nullptr )
-  , mLastComposerId( 0 )
   , mpGpsWidget( nullptr )
   , mLastMapToolMessage( nullptr )
   , mLogViewer( nullptr )
@@ -6957,6 +6955,7 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
       else
       {
         titleValid = true;
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
       }
     }
     else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
@@ -6977,11 +6976,9 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
 
 QgsComposer *QgisApp::createNewComposer( QString title )
 {
-  //ask user about name
-  mLastComposerId++;
   if ( title.isEmpty() )
   {
-    title = tr( "Composer %1" ).arg( mLastComposerId );
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
   }
   //create new composition object
   QgsComposition *composition = new QgsComposition( QgsProject::instance() );
@@ -7060,7 +7057,6 @@ void QgisApp::deletePrintComposers()
     emit composerRemoved( c->view() );
     delete ( c );
   }
-  mLastComposerId = 0;
 }
 
 void QgisApp::composerMenuAboutToShow()
