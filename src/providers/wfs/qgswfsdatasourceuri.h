@@ -117,6 +117,12 @@ class QgsWFSDataSourceURI
     //! Set SQL query
     void setSql( const QString &sql );
 
+    //! Get GetFeature output format
+    QString outputFormat() const;
+
+    //! Set GetFeature output format
+    void setOutputFormat( const QString &outputFormat );
+
     //! Returns whether GetFeature request should include the request bounding box. Defaults to false
     bool isRestrictedToRequestBBOX() const;
 
