@@ -102,12 +102,6 @@
 #include "modeltest.h"
 #endif
 
-// sort function for QList<QAction*>, e.g. menu listings
-static bool cmpByText_( QAction *a, QAction *b )
-{
-  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
-}
-
 QgsComposer::QgsComposer( QgsComposition *composition )
   : QMainWindow()
   , mComposition( composition )
@@ -817,6 +811,7 @@ void QgsComposer::connectOtherSlots()
 void QgsComposer::open()
 {
   show();
+  activate();
   zoomFull(); // zoomFull() does not work properly until we have called show()
   if ( mView )
   {
@@ -3683,14 +3678,7 @@ void QgsComposer::on_mActionPageSetup_triggered()
 
 void QgsComposer::populatePrintComposersMenu()
 {
-  mPrintComposersMenu->clear();
-  QList<QAction *> acts = mQgis->printComposersMenu()->actions();
-  if ( acts.size() > 1 )
-  {
-    // sort actions in case main app's aboutToShow slot has not yet
-    std::sort( acts.begin(), acts.end(), cmpByText_ );
-  }
-  mPrintComposersMenu->addActions( acts );
+  mQgis->populateComposerMenu( mPrintComposersMenu );
 }
 
 void QgsComposer::populateWindowMenu()

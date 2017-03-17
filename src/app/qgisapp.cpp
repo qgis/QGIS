@@ -6992,6 +6992,17 @@ QgsComposer *QgisApp::createNewComposer( QString title )
 
 QgsComposer *QgisApp::openComposer( QgsComposition *composition )
 {
+  // maybe a composer already open for this composition
+  Q_FOREACH ( QgsComposer *composer, mPrintComposers )
+  {
+    if ( composer->composition() == composition )
+    {
+      composer->open();
+      return composer;
+    }
+  }
+
+  //nope, so make a new one
   QgsComposer *newComposerObject = new QgsComposer( composition );
   connect( newComposerObject, &QgsComposer::aboutToClose, this, [this, newComposerObject]
   {
@@ -7054,19 +7065,28 @@ void QgisApp::deletePrintComposers()
 
 void QgisApp::composerMenuAboutToShow()
 {
-  mPrintComposersMenu->clear();
+  populateComposerMenu( mPrintComposersMenu );
+}
+
+void QgisApp::populateComposerMenu( QMenu *menu )
+{
+  menu->clear();
   QList<QAction *> acts;
   Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
   {
-
-
+    QAction *a = new QAction( c->name(), menu );
+    connect( a, &QAction::triggered, this, [this, c]
+    {
+      openComposer( c );
+    } );
+    acts << a;
   }
   if ( acts.size() > 1 )
   {
     // sort actions by text
     std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
-  mPrintComposersMenu->addActions( acts );
+  menu->addActions( acts );
 }
 
 void QgisApp::compositionAboutToBeRemoved( const QString &name )

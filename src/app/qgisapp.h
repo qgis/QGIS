@@ -279,6 +279,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Get stylesheet builder object for app and print composers
     QgisAppStyleSheet *styleSheetBuilder();
 
+    //! Populates a menu with actions for opening print composers
+    void populateComposerMenu( QMenu *menu );
+
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
     //! Returns a pointer to the internal clipboard
