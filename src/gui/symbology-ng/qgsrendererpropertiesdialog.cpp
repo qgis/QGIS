@@ -134,7 +134,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
           << mEffectWidget;
 
   connectValueChanged( widgets, SIGNAL( widgetChanged() ) );
-  connect( mEffectWidget, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
+  connect( mEffectWidget, &QgsPanelWidget::showPanel, this, &QgsRendererPropertiesDialog::openPanel );
 }
 
 void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &widgets, const char *slot )
@@ -260,7 +260,7 @@ void QgsRendererPropertiesDialog::rendererChanged()
       connect( mActiveWidget, SIGNAL( layerVariablesChanged() ), this, SIGNAL( layerVariablesChanged() ) );
     }
     connect( mActiveWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
-    connect( mActiveWidget, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
+    connect( mActiveWidget, &QgsPanelWidget::showPanel, this, &QgsRendererPropertiesDialog::openPanel );
     w->setDockMode( mDockMode );
   }
   else

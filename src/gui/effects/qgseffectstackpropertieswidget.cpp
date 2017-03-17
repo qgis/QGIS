@@ -467,7 +467,7 @@ void QgsEffectStackCompactWidget::showDialog()
     widget->setPreviewPicture( *mPreviewPicture );
   }
   connect( widget, SIGNAL( widgetChanged() ), this, SLOT( updateEffectLive() ) );
-  connect( widget, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( updateAcceptWidget( QgsPanelWidget * ) ) );
+  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsEffectStackCompactWidget::updateAcceptWidget );
   openPanel( widget );
 }
 

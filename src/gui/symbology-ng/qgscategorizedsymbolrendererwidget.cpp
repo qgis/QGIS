@@ -544,7 +544,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
   dlg->setContext( mContext );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }
 
@@ -587,7 +587,7 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
   QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
   dlg->setContext( mContext );
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolsFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }
 

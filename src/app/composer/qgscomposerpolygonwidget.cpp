@@ -68,7 +68,7 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolygonWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolygon->beginCommand( tr( "Polygon style changed" ) );
 }

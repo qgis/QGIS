@@ -1652,7 +1652,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateOverviewFrameStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpOverviewFrameStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
 }

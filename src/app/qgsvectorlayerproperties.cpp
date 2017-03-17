@@ -1264,7 +1264,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
-    connect( mRendererDialog, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
+    connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
     connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );
 
     // display the menu to choose the output format (fix #5136)

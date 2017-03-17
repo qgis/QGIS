@@ -356,7 +356,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         connect( styleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         QgsPanelWidgetWrapper *wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );
         wrapper->setDockMode( true );
-        connect( styleWidget, SIGNAL( showPanel( QgsPanelWidget * ) ), wrapper, SLOT( openPanel( QgsPanelWidget * ) ) );
+        connect( styleWidget, &QgsRendererPropertiesDialog::showPanel, wrapper, &QgsPanelWidget::openPanel );
         mWidgetStack->setMainPanel( wrapper );
         break;
       }

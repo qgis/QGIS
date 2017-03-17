@@ -117,7 +117,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerShapeWidget::cleanUpSymbolSelector );
   openPanel( d );
   mComposerShape->beginCommand( tr( "Shape style changed" ) );
 }

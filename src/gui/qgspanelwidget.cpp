@@ -38,8 +38,8 @@ void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 
 void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
 {
-  connect( panel, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
-  connect( panel, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( panel, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsPanelWidget::setDockMode( bool dockMode )

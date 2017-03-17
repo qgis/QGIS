@@ -548,7 +548,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsCompositionWidget::cleanUpStyleSelector );
   openPanel( d );
 }
 

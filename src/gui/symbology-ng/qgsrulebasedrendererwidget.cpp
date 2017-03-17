@@ -183,7 +183,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
 
   QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
   widget->setPanelTitle( tr( "Edit rule" ) );
-  connect( widget, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( ruleWidgetPanelAccepted( QgsPanelWidget * ) ) );
+  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
   connect( widget, SIGNAL( widgetChanged() ), this, SLOT( liveUpdateRuleFromPanel() ) );
   openPanel( widget );
 }
@@ -260,7 +260,7 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 {
   QgsCategorizedSymbolRendererWidget *w = new QgsCategorizedSymbolRendererWidget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add categories to rules" ) );
-  connect( w, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( refineRuleCategoriesAccepted( QgsPanelWidget * ) ) );
+  connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted );
   w->setContext( mContext );
   openPanel( w );
 }
@@ -269,7 +269,7 @@ void QgsRuleBasedRendererWidget::refineRuleRangesGui()
 {
   QgsGraduatedSymbolRendererWidget *w = new QgsGraduatedSymbolRendererWidget( mLayer, mStyle, nullptr );
   w->setPanelTitle( tr( "Add ranges to rules" ) );
-  connect( w, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( refineRuleRangesAccepted( QgsPanelWidget * ) ) );
+  connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleRangesAccepted );
   w->setContext( mContext );
   openPanel( w );
 }
@@ -642,7 +642,7 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   mSymbolSelector = new QgsSymbolSelectorWidget( mSymbol, style, mLayer, this );
   mSymbolSelector->setContext( mContext );
   connect( mSymbolSelector, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
-  connect( mSymbolSelector, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
+  connect( mSymbolSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
 
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mSymbolSelector );
