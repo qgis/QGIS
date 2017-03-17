@@ -117,6 +117,11 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * @param panel The panel to close.
      */
     void closePanel( QgsPanelWidget *panel );
+
+  protected:
+
+    void mouseReleaseEvent( QMouseEvent *e ) override;
+
   private:
     void updateBreadcrumb();
     QStack<QString> mTitles;

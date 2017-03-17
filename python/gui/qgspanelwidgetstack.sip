@@ -89,4 +89,9 @@ class QgsPanelWidgetStack: public QWidget
      * @param panel The panel to close.
      */
     void closePanel( QgsPanelWidget* panel );
+
+  protected:
+
+    void mouseReleaseEvent( QMouseEvent *e );
+
 };

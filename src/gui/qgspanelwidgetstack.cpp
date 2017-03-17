@@ -147,6 +147,14 @@ void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
   this->updateBreadcrumb();
 }
 
+void QgsPanelWidgetStack::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::BackButton )
+  {
+    acceptCurrentPanel();
+  }
+}
+
 void QgsPanelWidgetStack::updateBreadcrumb()
 {
   QString breadcrumb;
