@@ -19,6 +19,8 @@
 #include "ui_qgscomposerbase.h"
 
 #include "qgspanelwidget.h"
+#include "qgsvectorlayer.h"
+
 class QgisApp;
 class QgsComposerArrow;
 class QgsComposerPolygon;
@@ -44,7 +46,6 @@ class QgsComposerItem;
 class QgsDockWidget;
 class QgsMapLayer;
 class QgsFeature;
-class QgsVectorLayer;
 class QgsPanelWidgetStack;
 
 class QGridLayout;
@@ -76,7 +77,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
       Atlas
     };
 
-    QgsComposer( QgisApp *qgis, const QString &title );
+    QgsComposer( QgsComposition *composition );
     ~QgsComposer();
 
     //! Set the pixmap / icons on the toolbar buttons
@@ -101,8 +102,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Restore the window and toolbar state
     void restoreWindowState();
-
-    QAction *windowAction() {return mWindowAction;}
 
     QString title() const {return mTitle;}
     void setTitle( const QString &title );
@@ -137,14 +136,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     virtual void showEvent( QShowEvent *event ) override;
 #endif
 
-    virtual void changeEvent( QEvent *ev ) override;
-
   signals:
     //! Is emitted every time the view zoom has changed
     void zoomLevelChanged();
 
     //! Is emitted when the atlas preview feature changes
     void atlasPreviewFeatureChanged();
+
+    void aboutToClose();
 
   public slots:
 
@@ -434,17 +433,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Shows the configuration widget for a composer item
     void showItemOptions( QgsComposerItem *i );
 
-    //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
-
-    //! Stores state in Dom node
-    void writeXml( QDomDocument &doc );
 
     //! Stores only template as base Dom node
     void templateXml( QDomDocument &doc );
-
-    //! Sets state from Dom document
-    void readXml( const QDomDocument &doc );
-    void readXml( const QDomElement &composerElem, const QDomDocument &doc, bool fromTemplate = false );
 
     void setSelectionTool();
 
@@ -481,9 +472,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Creates the composition widget
     void createCompositionWidget();
 
-    //! Sets up the compositions undo/redo connections
-    void setupUndoView();
-
     //! True if a composer map contains a WMS layer
     bool containsWmsLayer() const;
 
@@ -504,10 +492,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Removes all the item from the graphics scene and deletes them
     void deleteItemWidgets();
-
-    //! Restores composer map preview states.
-    //! Initially after reading from xml, states are set to rectangle to achieve faster project loading.
-    void restoreComposerMapStates();
 
     //! Create composer view and rulers
     void createComposerView();
@@ -578,9 +562,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! To know which item to show if selection changes
     QMap<QgsComposerItem *, QgsPanelWidget *> mItemWidgetMap;
 
-    //! Window menu action to select this window
-    QAction *mWindowAction = nullptr;
-
     //! Copy/cut/paste actions
     QAction *mActionCut = nullptr;
     QAction *mActionCopy = nullptr;
@@ -588,7 +569,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Page & Printer Setup
     QPrinter *mPrinter = nullptr;
-    bool mSetPageOrientation;
+    bool mSetPageOrientation = false;
 
     QUndoView *mUndoView = nullptr;
 
@@ -600,9 +581,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QAction *mActionPreviewDeuteranope = nullptr;
 
     QComboBox *mAtlasPageComboBox = nullptr;
-
-    //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
-    QMap< QgsComposerMap *, int > mMapsToRestore;
 
     QgsDockWidget *mItemDock = nullptr;
     QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
@@ -681,9 +659,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void activateMonoPreview();
     void activateProtanopePreview();
     void activateDeuteranopePreview();
-
-    //! Sets the composition for the composer window
-    void setComposition( QgsComposition *composition );
 
     void dockVisibilityChanged( bool visible );
 

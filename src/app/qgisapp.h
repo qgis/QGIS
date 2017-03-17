@@ -1362,11 +1362,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    //! Creates the composer instances in a project file and adds them to the menu
-    bool loadComposersFromProject( const QDomDocument &doc );
-
     //! Slot to handle display of composers menu, e.g. sorting
-    void on_mPrintComposersMenu_aboutToShow();
+    void composerMenuAboutToShow();
+    void compositionAboutToBeRemoved( const QString &name );
 
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );

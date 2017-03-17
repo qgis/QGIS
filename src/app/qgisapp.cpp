@@ -2938,6 +2938,9 @@ void QgisApp::setupConnections()
 
   // setup undo/redo actions
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
+
+  connect( mPrintComposersMenu, &QMenu::aboutToShow, this, &QgisApp::composerMenuAboutToShow );
+  connect( QgsProject::instance()->layoutManager(), &QgsLayoutManager::compositionAboutToBeRemoved, this, &QgisApp::compositionAboutToBeRemoved );
 }
 
 void QgisApp::createCanvasTools()
@@ -6980,17 +6983,26 @@ QgsComposer *QgisApp::createNewComposer( QString title )
   {
     title = tr( "Composer %1" ).arg( mLastComposerId );
   }
-  //create new composer object
-  QgsComposer *newComposerObject = new QgsComposer( this, title );
+  //create new composition object
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  composition->setName( title );
+  QgsProject::instance()->layoutManager()->addComposition( composition );
+
+  QgsComposer *newComposerObject = new QgsComposer( composition );
+  connect( newComposerObject, &QgsComposer::aboutToClose, this, [this, newComposerObject]
+  {
+    emit composerWillBeRemoved( newComposerObject->view() );
+    mPrintComposers.remove( newComposerObject );
+    emit composerRemoved( newComposerObject->view() );
+  } );
 
   //add it to the map of existing print composers
   mPrintComposers.insert( newComposerObject );
-  //and place action into print composers menu
-  mPrintComposersMenu->addAction( newComposerObject->windowAction() );
+
   newComposerObject->open();
   emit composerAdded( newComposerObject->view() );
   connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
-  markDirty();
+
   return newComposerObject;
 }
 
@@ -6998,22 +7010,8 @@ void QgisApp::deleteComposer( QgsComposer *c )
 {
   emit composerWillBeRemoved( c->view() );
   mPrintComposers.remove( c );
-  mPrintComposersMenu->removeAction( c->windowAction() );
-  markDirty();
   emit composerRemoved( c->view() );
-
-  //save a reference to the composition
-  QgsComposition *composition = c->composition();
-
-  //first, delete the composer. This must occur before deleting the composition as some of the cleanup code in
-  //composer or in composer item widgets may require the composition to still be around
   delete c;
-
-  //next, delete the composition
-  if ( composition )
-  {
-    delete composition;
-  }
 }
 
 QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString title )
@@ -7057,48 +7055,6 @@ QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString t
   return newComposer;
 }
 
-bool QgisApp::loadComposersFromProject( const QDomDocument &doc )
-{
-  if ( doc.isNull() )
-  {
-    return false;
-  }
-
-  //restore each composer
-  QDomNodeList composerNodes = doc.elementsByTagName( QStringLiteral( "Composer" ) );
-  for ( int i = 0; i < composerNodes.size(); ++i )
-  {
-    QString title( composerNodes.at( i ).toElement().attribute( QStringLiteral( "title" ) ) );
-    showStatusMessage( tr( "Loading composer %1" ).arg( title ) );
-    showProgress( i,  composerNodes.size() );
-    ++mLastComposerId;
-
-    QTime t;
-    t.start();
-    QgsComposer *composer = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
-    composer->readXml( composerNodes.at( i ).toElement(), doc );
-    mPrintComposers.insert( composer );
-    mPrintComposersMenu->addAction( composer->windowAction() );
-#ifndef Q_OS_MACX
-    composer->setWindowState( Qt::WindowMinimized );
-#endif
-    composer->zoomFull();
-    QgsComposerView *composerView = composer->view();
-    if ( composerView )
-    {
-      composerView->updateRulers();
-    }
-    emit composerAdded( composer->view() );
-    connect( composer, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
-
-    QgsDebugMsg( QString( "Loaded composer %1: %2ms" ).arg( title ).arg( t.elapsed() ) );
-  }
-
-  showProgress( 0, 0 );
-
-  return true;
-}
-
 void QgisApp::deletePrintComposers()
 {
   QSet<QgsComposer *>::iterator it = mPrintComposers.begin();
@@ -7108,34 +7064,41 @@ void QgisApp::deletePrintComposers()
     emit composerWillBeRemoved( c->view() );
     it = mPrintComposers.erase( it );
     emit composerRemoved( c->view() );
-
-    //save a reference to the composition
-    QgsComposition *composition = c->composition();
-
-    //first, delete the composer. This must occur before deleting the composition as some of the cleanup code in
-    //composer or in composer item widgets may require the composition to still be around
     delete ( c );
-
-    //next, delete the composition
-    if ( composition )
-    {
-      delete composition;
-    }
   }
   mLastComposerId = 0;
-  markDirty();
 }
 
-void QgisApp::on_mPrintComposersMenu_aboutToShow()
+void QgisApp::composerMenuAboutToShow()
 {
-  QList<QAction *> acts = mPrintComposersMenu->actions();
   mPrintComposersMenu->clear();
+  QList<QAction *> acts;
+  Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
+  {
+
+
+  }
   if ( acts.size() > 1 )
   {
     // sort actions by text
     std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   mPrintComposersMenu->addActions( acts );
+}
+
+void QgisApp::compositionAboutToBeRemoved( const QString &name )
+{
+  Q_FOREACH ( QgsComposer *composer, mPrintComposers )
+  {
+    if ( composer->composition()->name() == name )
+    {
+      emit composerWillBeRemoved( composer->view() );
+      mPrintComposers.remove( composer );
+      emit composerRemoved( composer->view() );
+      delete composer;
+      return;
+    }
+  }
 }
 
 void QgisApp::showPinnedLabels( bool show )
