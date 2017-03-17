@@ -72,9 +72,12 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
-        iconSize = settings.value("iconsize", 24)
-        self.toolBar.setIconSize(QSize(iconSize, iconSize))
+        try:
+            iconSize = int(settings.value("iconsize", 24))
+        except:
+            iconSize = 24
 
+        self.toolBar.setIconSize(QSize(iconSize, iconSize))
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.actionSaveScript.setIcon(
