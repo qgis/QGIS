@@ -1162,6 +1162,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   QgsProviderRegistry::instance()->registerGuis( this );
 
+  setupLayoutManagerConnections();
+
   // update windows
   qApp->processEvents();
 
@@ -7031,7 +7033,7 @@ QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString t
   if ( title.isEmpty() )
   {
     // TODO: inject a bit of randomness in auto-titles?
-    title = currentComposer->title() + tr( " copy" );
+    title = currentComposer->composition()->name() + tr( " copy" );
   }
 
   QgsComposition *newComposition = QgsProject::instance()->layoutManager()->duplicateComposition( currentComposer->composition()->name(),
@@ -7057,6 +7059,87 @@ void QgisApp::deletePrintComposers()
     emit composerClosed( c->interface() );
     delete ( c );
   }
+}
+
+void QgisApp::setupLayoutManagerConnections()
+{
+  QgsLayoutManager *manager = QgsProject::instance()->layoutManager();
+  connect( manager, &QgsLayoutManager::compositionAdded, this, [ = ]( const QString & name )
+  {
+    QgsComposition *c = QgsProject::instance()->layoutManager()->compositionByName( name );
+    if ( c )
+    {
+      mAtlasFeatureActions.insert( c, nullptr );
+    }
+
+    connect( c, &QgsComposition::nameChanged, this, [this, c]( const QString & name )
+    {
+      QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
+      if ( action )
+      {
+        action->setText( QString( tr( "Set as atlas feature for %1" ) ).arg( name ) );
+      }
+    } );
+
+    connect( &c->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, [this, c]( QgsVectorLayer * coverageLayer )
+    {
+      setupAtlasMapLayerAction( c, static_cast< bool >( coverageLayer ) );
+    } );
+
+    connect( &c->atlasComposition(), &QgsAtlasComposition::toggled, this, [this, c]( bool enabled )
+    {
+      setupAtlasMapLayerAction( c, enabled );
+    } );
+
+    setupAtlasMapLayerAction( c, c->atlasComposition().enabled() && c->atlasComposition().coverageLayer() );
+  } );
+
+  connect( manager, &QgsLayoutManager::compositionAboutToBeRemoved, this, [ = ]( const QString & name )
+  {
+    QgsComposition *c = QgsProject::instance()->layoutManager()->compositionByName( name );
+    if ( c )
+    {
+      QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
+      if ( action )
+      {
+        QgsMapLayerActionRegistry::instance()->removeMapLayerAction( action );
+        delete action;
+        mAtlasFeatureActions.remove( c );
+      }
+    }
+  } );
+}
+
+void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction )
+{
+  QgsMapLayerAction *action = mAtlasFeatureActions.value( composition );
+  if ( action )
+  {
+    QgsMapLayerActionRegistry::instance()->removeMapLayerAction( action );
+    delete action;
+    action = nullptr;
+    mAtlasFeatureActions.remove( composition );
+  }
+
+  if ( enableAction )
+  {
+    action = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( composition->name() ),
+                                    this, composition->atlasComposition().coverageLayer(), QgsMapLayerAction::SingleFeature,
+                                    QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
+    mAtlasFeatureActions.insert( composition, action );
+    QgsMapLayerActionRegistry::instance()->addMapLayerAction( action );
+    connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this, composition]( QgsMapLayer * layer, const QgsFeature & feat )
+    {
+      setCompositionAtlasFeature( composition, layer, feat );
+    }
+           );
+  }
+}
+
+void QgisApp::setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat )
+{
+  QgsComposer *composer = openComposer( composition );
+  composer->setAtlasFeature( layer, feat );
 }
 
 void QgisApp::composerMenuAboutToShow()

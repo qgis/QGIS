@@ -109,7 +109,7 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   , mQgis( QgisApp::instance() )
 {
   setupUi( this );
-  setTitle( mComposition->name() );
+  setWindowTitle( mComposition->name() );
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
@@ -647,9 +647,9 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   mActionExportAtlasAsPDF->setEnabled( false );
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   connect( atlasMap, &QgsAtlasComposition::toggled, this, &QgsComposer::toggleAtlasControls );
-  connect( atlasMap, &QgsAtlasComposition::coverageLayerChanged, this, [ = ]( QgsVectorLayer * layer ) { updateAtlasMapLayerAction( layer ); } );
   connect( atlasMap, &QgsAtlasComposition::numberFeaturesChanged, this, &QgsComposer::updateAtlasPageComboBox );
   connect( atlasMap, &QgsAtlasComposition::featureChanged, this, &QgsComposer::atlasFeatureChanged );
+  toggleAtlasControls( atlasMap->enabled() && atlasMap->coverageLayer() );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   //should not be needed now that composer has a status bar?
@@ -772,7 +772,7 @@ void QgsComposer::connectCompositionSlots()
     return;
   }
 
-  connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setTitle );
+  connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setWindowTitle );
   connect( mComposition, &QgsComposition::selectedItemChanged, this, &QgsComposer::showItemOptions );
   connect( mComposition, &QgsComposition::composerArrowAdded, this, &QgsComposer::addComposerArrow );
   connect( mComposition, &QgsComposition::composerPolygonAdded, this, &QgsComposer::addComposerPolygon );
@@ -835,18 +835,6 @@ void QgsComposer::activate()
   if ( !shown )
   {
     on_mActionZoomAll_triggered();
-  }
-}
-
-void QgsComposer::setTitle( const QString &title )
-{
-  mTitle = title;
-  setWindowTitle( mTitle );
-
-  //update atlas map layer action name if required
-  if ( mAtlasFeatureAction )
-  {
-    mAtlasFeatureAction->setText( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ) );
   }
 }
 
@@ -1001,8 +989,6 @@ void QgsComposer::toggleAtlasControls( bool atlasEnabled )
   mActionExportAtlasAsImage->setEnabled( atlasEnabled );
   mActionExportAtlasAsSVG->setEnabled( atlasEnabled );
   mActionExportAtlasAsPDF->setEnabled( atlasEnabled );
-
-  updateAtlasMapLayerAction( atlasEnabled );
 }
 
 void QgsComposer::updateAtlasPageComboBox( int pageCount )
@@ -3801,24 +3787,6 @@ void QgsComposer::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )
   emit atlasPreviewFeatureChanged();
 }
 
-void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
-{
-  if ( mAtlasFeatureAction )
-  {
-    delete mAtlasFeatureAction;
-    mAtlasFeatureAction = nullptr;
-  }
-
-  if ( coverageLayer )
-  {
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ),
-        this, coverageLayer, QgsMapLayerAction::SingleFeature,
-        QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
-    QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
-    connect( mAtlasFeatureAction, &QgsMapLayerAction::triggeredForFeature, this, &QgsComposer::setAtlasFeature );
-  }
-}
-
 void QgsComposer::pageOrientationChanged( const QString & )
 {
   mSetPageOrientation = false;
@@ -3842,25 +3810,6 @@ void QgsComposer::setPrinterPageOrientation()
     }
 
     mSetPageOrientation = true;
-  }
-}
-
-void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
-{
-  if ( mAtlasFeatureAction )
-  {
-    delete mAtlasFeatureAction;
-    mAtlasFeatureAction = nullptr;
-  }
-
-  if ( atlasEnabled )
-  {
-    QgsAtlasComposition &atlas = mComposition->atlasComposition();
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ),
-        this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature,
-        QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
-    QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
-    connect( mAtlasFeatureAction, &QgsMapLayerAction::triggeredForFeature, this, &QgsComposer::setAtlasFeature );
   }
 }
 

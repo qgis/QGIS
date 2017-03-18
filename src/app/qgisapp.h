@@ -131,6 +131,7 @@ class QgsDiagramProperties;
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -1564,6 +1565,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Deletes all the composer objects and clears mPrintComposers
     void deletePrintComposers();
 
+    void setupLayoutManagerConnections();
+
+    void setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction );
+
+    void setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat );
+
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
 
     /** Paste features from clipboard into a new memory layer.
@@ -1933,6 +1940,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsWelcomePage *mWelcomePage = nullptr;
 
     QStackedWidget *mCentralContainer = nullptr;
+
+    QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
 
     int mProjOpen;
 

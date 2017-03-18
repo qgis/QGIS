@@ -122,15 +122,16 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    QString title() const {return mTitle;}
-    void setTitle( const QString &title );
-
     /** Loads the contents of a template document into the composer's composition.
      * @param templateDoc template document to load
      * @param clearExisting set to true to remove all existing composition settings and items before loading template
      * @returns true if template load was successful
      */
     bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );
+
+    //! Sets the specified feature as the current atlas feature
+    //! @note added in 2.1
+    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
 
   public slots:
 
@@ -526,18 +527,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Exports either either the whole atlas or just the current feature as a PDF, depending on mode
     void exportCompositionAsPDF( QgsComposer::OutputMode mode );
 
-    //! Updates the "set as atlas feature" map layer action, removing it if atlas is disabled
-    void updateAtlasMapLayerAction( bool atlasEnabled );
-
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
 
     QPrinter *printer();
 
     QgsAppComposerInterface *mInterface = nullptr;
-
-    //! Composer title
-    QString mTitle;
 
     //! Labels in status bar which shows current mouse position
     QLabel *mStatusCursorXLabel = nullptr;
@@ -615,8 +610,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Help menu as mirror of main app's (on Mac)
     QMenu *mHelpMenu = nullptr;
 
-    QgsMapLayerAction *mAtlasFeatureAction = nullptr;
-
     struct PanelStatus
     {
       PanelStatus( bool visible = true, bool active = false )
@@ -652,13 +645,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Toggles the state of the atlas preview and navigation controls
     //! @note added in 2.1
     void toggleAtlasControls( bool atlasEnabled );
-
-    //! Sets the specified feature as the current atlas feature
-    //! @note added in 2.1
-    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
-
-    //! Updates the "set as atlas feature" map layer action when atlas coverage layer changes
-    void updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer );
 
     //! Sets the printer page orientation when the page orientation changes
     void pageOrientationChanged( const QString &orientation );
