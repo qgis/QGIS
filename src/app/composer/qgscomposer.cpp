@@ -673,6 +673,7 @@ QgsComposer::QgsComposer( QgsComposition *composition )
 
 QgsComposer::~QgsComposer()
 {
+  mComposition->setAllDeselected();
   delete mPrinter;
 }
 
