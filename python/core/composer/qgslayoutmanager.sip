@@ -22,9 +22,13 @@ class QgsLayoutManager : QObject
     QString generateUniqueTitle() const;
 
   signals:
-    void compositionAdded( const QString& name );
-    void compositionRemoved( const QString& name );
-    void compositionAboutToBeRemoved( const QString& name );
+
+    void compositionAboutToBeAdded( const QString &name );
+    void compositionAdded( const QString &name );
+    void compositionRemoved( const QString &name );
+    void compositionAboutToBeRemoved( const QString &name );
+    void compositionRenamed( QgsComposition *composition, const QString &newName );
+
 
 };
 

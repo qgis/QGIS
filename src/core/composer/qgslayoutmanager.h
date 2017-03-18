@@ -121,6 +121,9 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
   signals:
 
+    //! Emitted when a composition is about to be added to the manager
+    void compositionAboutToBeAdded( const QString &name );
+
     //! Emitted when a composition has been added to the manager
     void compositionAdded( const QString &name );
 
@@ -129,6 +132,9 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
     //! Emitted when a composition is about to be removed from the manager
     void compositionAboutToBeRemoved( const QString &name );
+
+    //! Emitted when a composition is renamed
+    void compositionRenamed( QgsComposition *composition, const QString &newName );
 
   private:
 

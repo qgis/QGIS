@@ -41,6 +41,11 @@ bool QgsLayoutManager::addComposition( QgsComposition *composition )
       return false;
   }
 
+  connect( composition, &QgsComposition::nameChanged, this, [this, composition]( const QString & newName )
+  {
+    emit compositionRenamed( composition, newName );
+  } );
+  emit compositionAboutToBeAdded( composition->name() );
   mCompositions << composition;
   emit compositionAdded( composition->name() );
   mProject->setDirty( true );

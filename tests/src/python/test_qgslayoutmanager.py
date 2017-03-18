@@ -48,8 +48,11 @@ class TestQgsLayoutManager(unittest.TestCase):
 
         manager = QgsLayoutManager(project)
 
+        composition_about_to_be_added_spy = QSignalSpy(manager.compositionAboutToBeAdded)
         composition_added_spy = QSignalSpy(manager.compositionAdded)
         self.assertTrue(manager.addComposition(composition))
+        self.assertEqual(len(composition_about_to_be_added_spy), 1)
+        self.assertEqual(composition_about_to_be_added_spy[0][0], 'test composition')
         self.assertEqual(len(composition_added_spy), 1)
         self.assertEqual(composition_added_spy[0][0], 'test composition')
 
@@ -61,6 +64,8 @@ class TestQgsLayoutManager(unittest.TestCase):
         composition2.setName('test composition2')
         self.assertTrue(manager.addComposition(composition2))
         self.assertEqual(len(composition_added_spy), 2)
+        self.assertEqual(composition_about_to_be_added_spy[1][0], 'test composition2')
+        self.assertEqual(len(composition_about_to_be_added_spy), 2)
         self.assertEqual(composition_added_spy[1][0], 'test composition2')
 
         # adding a composition with duplicate name should fail
@@ -250,6 +255,26 @@ class TestQgsLayoutManager(unittest.TestCase):
         self.assertEqual(manager.generateUniqueTitle(), 'Composer 3')
         manager.clear()
         self.assertEqual(manager.generateUniqueTitle(), 'Composer 1')
+
+    def testRenameSignal(self):
+        project = QgsProject()
+        manager = QgsLayoutManager(project)
+        composition = QgsComposition(project)
+        composition.setName('c1')
+        manager.addComposition(composition)
+        composition2 = QgsComposition(project)
+        composition2.setName('c2')
+        manager.addComposition(composition2)
+
+        composition_renamed_spy = QSignalSpy(manager.compositionRenamed)
+        composition.setName('d1')
+        self.assertEqual(len(composition_renamed_spy), 1)
+        self.assertEqual(composition_renamed_spy[0][0], composition)
+        self.assertEqual(composition_renamed_spy[0][1], 'd1')
+        composition2.setName('d2')
+        self.assertEqual(len(composition_renamed_spy), 2)
+        self.assertEqual(composition_renamed_spy[1][0], composition2)
+        self.assertEqual(composition_renamed_spy[1][1], 'd2')
 
 
 if __name__ == '__main__':
