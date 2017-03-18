@@ -63,9 +63,8 @@ class TestQgsFeature(unittest.TestCase):
         self.assertTrue(f.isValid())
         f.setValid(False)
         self.assertFalse(f.isValid())
-
-        f.setValid(False)
-        self.assertFalse(f.isValid())
+        f.setId(27)
+        self.assertTrue(f.isValid())
 
     def test_Attributes(self):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
