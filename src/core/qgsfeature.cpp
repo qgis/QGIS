@@ -128,6 +128,7 @@ void QgsFeature::setId( QgsFeatureId id )
 
   d.detach();
   d->fid = id;
+  d->valid = true;
 }
 
 QgsAttributes QgsFeature::attributes() const
