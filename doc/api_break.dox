@@ -728,6 +728,10 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 - dataDefinedProperty() and setDataDefinedProperty() now use the QgsProperty framework instead
 of QgsDataDefined objects.
 - mapSettings() was removed. Use QgsComposerMap::mapSettings() instead.
+- The composerArrowAdded, composerPolygonAdded, composerPolylineAdded, composerHtmlFrameAdded, composerItemGroupAdded,
+composerLabelAdded, composerMapAdded, composerScaleBarAdded, composerLegendAdded, composerPictureAdded, 
+composerShapeAdded, and composerTableFrameAdded were removed. Use the general itemAdded signal instead to catch
+all these item added events.
 
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}

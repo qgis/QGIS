@@ -414,39 +414,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save window state
     void saveWindowState();
 
-    //! Add a composer arrow to the item/widget map and creates a configuration widget for it
-    void addComposerArrow( QgsComposerArrow *arrow );
-
-    //! Add a composer polygon to the item/widget map and creates a configuration widget for it
-    void addComposerPolygon( QgsComposerPolygon *polygon );
-
-    //! Add a composer polyline to the item/widget map and creates a configuration widget for it
-    void addComposerPolyline( QgsComposerPolyline *polyline );
-
-    //! Add a composer map to the item/widget map and creates a configuration widget for it
-    void addComposerMap( QgsComposerMap *map );
-
-    //! Adds a composer label to the item/widget map and creates a configuration widget for it
-    void addComposerLabel( QgsComposerLabel *label );
-
-    //! Adds a composer scale bar to the item/widget map and creates a configuration widget for it
-    void addComposerScaleBar( QgsComposerScaleBar *scalebar );
-
-    //! Adds a composer legend to the item/widget map and creates a configuration widget for it
-    void addComposerLegend( QgsComposerLegend *legend );
-
-    //! Adds a composer picture to the item/widget map and creates a configuration widget
-    void addComposerPicture( QgsComposerPicture *picture );
-
-    //! Adds a composer shape to the item/widget map and creates a configuration widget
-    void addComposerShape( QgsComposerShape *shape );
-
-    //! Adds a composer table v2 to the item/widget map and creates a configuration widget
-    void addComposerTableV2( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
-
-    //! Adds composer html and creates a configuration widget
-    void addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame );
-
     //! Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself
     void deleteItem( QgsComposerItem *item );
 
@@ -503,9 +470,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
 
-    //! Removes all the item from the graphics scene and deletes them
-    void deleteItemWidgets();
-
     //! Create composer view and rulers
     void createComposerView();
 
@@ -531,6 +495,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void loadAtlasPredefinedScalesFromProject();
 
     QPrinter *printer();
+
+    QgsPanelWidget *createItemWidget( QgsComposerItem *item );
 
     QgsAppComposerInterface *mInterface = nullptr;
 
@@ -564,9 +530,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Size grip
     QSizeGrip *mSizeGrip = nullptr;
-
-    //! To know which item to show if selection changes
-    QMap<QgsComposerItem *, QgsPanelWidget *> mItemWidgetMap;
 
     //! Copy/cut/paste actions
     QAction *mActionCut = nullptr;
@@ -664,6 +627,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void updateAtlasPageComboBox( int pageCount );
 
     void atlasFeatureChanged( QgsFeature *feature );
+
+    void compositionItemAdded( QgsComposerItem *item );
+
+
+
 };
 
 #endif

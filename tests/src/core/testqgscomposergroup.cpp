@@ -183,9 +183,9 @@ void TestQgsComposerGroup::deleteGroup()
   QVERIFY( mGroup->isRemoved() );
 }
 
-Q_DECLARE_METATYPE( QgsComposerItemGroup * );
-Q_DECLARE_METATYPE( QgsComposerPolygon * );
-Q_DECLARE_METATYPE( QgsComposerItem * );
+Q_DECLARE_METATYPE( QgsComposerItemGroup * )
+Q_DECLARE_METATYPE( QgsComposerPolygon * )
+Q_DECLARE_METATYPE( QgsComposerItem * )
 
 void TestQgsComposerGroup::undoRedo()
 {
@@ -195,15 +195,15 @@ void TestQgsComposerGroup::undoRedo()
   int itemsRemoved = 0;
 
   qRegisterMetaType<QgsComposerPolygon *>();
-  QSignalSpy spyPolygonAdded( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon * ) ) );
+  QSignalSpy spyPolygonAdded( mComposition, &QgsComposition::itemAdded );
   QCOMPARE( spyPolygonAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItemGroup *>();
-  QSignalSpy spyGroupAdded( mComposition, SIGNAL( composerItemGroupAdded( QgsComposerItemGroup * ) ) );
+  QSignalSpy spyGroupAdded( mComposition, &QgsComposition::composerItemGroupAdded );
   QCOMPARE( spyGroupAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItem *>();
-  QSignalSpy spyItemRemoved( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ) );
+  QSignalSpy spyItemRemoved( mComposition, &QgsComposition::itemRemoved );
   QCOMPARE( spyItemRemoved.count(), 0 );
 
   //test for crash when undo/redoing with groups

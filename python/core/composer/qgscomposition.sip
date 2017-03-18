@@ -659,37 +659,10 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     void paperSizeChanged();
     void nPagesChanged();
     void printResolutionChanged();
-
-    /** Is emitted when selected item changed. If 0, no item is selected*/
-    void selectedItemChanged( QgsComposerItem* selected );
-    /** Is emitted when new composer arrow has been added to the view*/
-    void composerArrowAdded( QgsComposerArrow* arrow );
-    /** Is emitted when new composer polygon has been added to the view*/
-    void composerPolygonAdded( QgsComposerPolygon* polygon );
-    /** Is emitted when new composer polyline has been added to the view*/
-    void composerPolylineAdded( QgsComposerPolyline* polyline );
-    /** Is emitted when a new composer html has been added to the view*/
-    void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
-    /** Is emitted when a new item group has been added to the view*/
-    void composerItemGroupAdded( QgsComposerItemGroup* group );
-    /** Is emitted when new composer label has been added to the view*/
-    void composerLabelAdded( QgsComposerLabel* label );
-    /** Is emitted when new composer map has been added to the view*/
-    void composerMapAdded( QgsComposerMap* map );
-    /** Is emitted when new composer scale bar has been added*/
-    void composerScaleBarAdded( QgsComposerScaleBar* scalebar );
-    /** Is emitted when a new composer legend has been added*/
-    void composerLegendAdded( QgsComposerLegend* legend );
-    /** Is emitted when a new composer picture has been added*/
-    void composerPictureAdded( QgsComposerPicture* picture );
-    /** Is emitted when a new composer shape has been added*/
-    void composerShapeAdded( QgsComposerShape* shape );
-    /** Is emitted when a new composer table frame has been added to the view*/
-    void composerTableFrameAdded( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
-    /** Is emitted when a composer item has been removed from the scene*/
-    void itemRemoved( QgsComposerItem* );
-
-    /** Is emitted when item in the composition must be refreshed*/
+    void selectedItemChanged( QgsComposerItem *selected );
+    void itemAdded( QgsComposerItem *item );
+    void composerItemGroupAdded( QgsComposerItemGroup *group );
+    void itemRemoved( QgsComposerItem * );
     void refreshItemsTriggered();
 
     /** Is emitted when the composition has an updated status bar message for the composer window*/

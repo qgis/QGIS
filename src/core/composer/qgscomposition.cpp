@@ -226,6 +226,7 @@ void QgsComposition::setAllDeselected()
       composerItem->setSelected( false );
     }
   }
+  emit selectedItemChanged( nullptr );
 }
 
 void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
@@ -2452,7 +2453,7 @@ void QgsComposition::addComposerArrow( QgsComposerArrow *arrow )
   updateBounds();
   connect( arrow, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerArrowAdded( arrow );
+  emit itemAdded( arrow );
 }
 
 void QgsComposition::addComposerPolygon( QgsComposerPolygon *polygon )
@@ -2462,7 +2463,7 @@ void QgsComposition::addComposerPolygon( QgsComposerPolygon *polygon )
   updateBounds();
   connect( polygon, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerPolygonAdded( polygon );
+  emit itemAdded( polygon );
 }
 
 void QgsComposition::addComposerPolyline( QgsComposerPolyline *polyline )
@@ -2472,7 +2473,7 @@ void QgsComposition::addComposerPolyline( QgsComposerPolyline *polyline )
   updateBounds();
   connect( polyline, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerPolylineAdded( polyline );
+  emit itemAdded( polyline );
 }
 
 void QgsComposition::addComposerLabel( QgsComposerLabel *label )
@@ -2482,7 +2483,7 @@ void QgsComposition::addComposerLabel( QgsComposerLabel *label )
   updateBounds();
   connect( label, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerLabelAdded( label );
+  emit itemAdded( label );
 }
 
 void QgsComposition::addComposerMap( QgsComposerMap *map, const bool setDefaultPreviewStyle )
@@ -2502,7 +2503,7 @@ void QgsComposition::addComposerMap( QgsComposerMap *map, const bool setDefaultP
   updateBounds();
   connect( map, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerMapAdded( map );
+  emit itemAdded( map );
 }
 
 void QgsComposition::addComposerScaleBar( QgsComposerScaleBar *scaleBar )
@@ -2512,7 +2513,7 @@ void QgsComposition::addComposerScaleBar( QgsComposerScaleBar *scaleBar )
   updateBounds();
   connect( scaleBar, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerScaleBarAdded( scaleBar );
+  emit itemAdded( scaleBar );
 }
 
 void QgsComposition::addComposerLegend( QgsComposerLegend *legend )
@@ -2522,7 +2523,7 @@ void QgsComposition::addComposerLegend( QgsComposerLegend *legend )
   updateBounds();
   connect( legend, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerLegendAdded( legend );
+  emit itemAdded( legend );
 }
 
 void QgsComposition::addComposerPicture( QgsComposerPicture *picture )
@@ -2532,7 +2533,7 @@ void QgsComposition::addComposerPicture( QgsComposerPicture *picture )
   updateBounds();
   connect( picture, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerPictureAdded( picture );
+  emit itemAdded( picture );
 }
 
 void QgsComposition::addComposerShape( QgsComposerShape *shape )
@@ -2542,27 +2543,27 @@ void QgsComposition::addComposerShape( QgsComposerShape *shape )
   updateBounds();
   connect( shape, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerShapeAdded( shape );
+  emit itemAdded( shape );
 }
 
-void QgsComposition::addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame )
+void QgsComposition::addComposerHtmlFrame( QgsComposerHtml *, QgsComposerFrame *frame )
 {
   addItem( frame );
 
   updateBounds();
   connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerHtmlFrameAdded( html, frame );
+  emit itemAdded( frame );
 }
 
-void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame )
+void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *, QgsComposerFrame *frame )
 {
   addItem( frame );
 
   updateBounds();
   connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 
-  emit composerTableFrameAdded( table, frame );
+  emit itemAdded( frame );
 }
 
 /* public */
@@ -2670,88 +2671,25 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem *item )
 {
   //cast and send proper signal
   item->setSelected( true );
-  QgsComposerArrow *arrow = dynamic_cast<QgsComposerArrow *>( item );
-  if ( arrow )
+  switch ( item->type() )
   {
-    emit composerArrowAdded( arrow );
-    emit selectedItemChanged( arrow );
-    return;
-  }
-  QgsComposerLabel *label = dynamic_cast<QgsComposerLabel *>( item );
-  if ( label )
-  {
-    emit composerLabelAdded( label );
-    emit selectedItemChanged( label );
-    return;
-  }
-  QgsComposerMap *map = dynamic_cast<QgsComposerMap *>( item );
-  if ( map )
-  {
-    emit composerMapAdded( map );
-    emit selectedItemChanged( map );
-    return;
-  }
-  QgsComposerScaleBar *scalebar = dynamic_cast<QgsComposerScaleBar *>( item );
-  if ( scalebar )
-  {
-    emit composerScaleBarAdded( scalebar );
-    emit selectedItemChanged( scalebar );
-    return;
-  }
-  QgsComposerLegend *legend = dynamic_cast<QgsComposerLegend *>( item );
-  if ( legend )
-  {
-    emit composerLegendAdded( legend );
-    emit selectedItemChanged( legend );
-    return;
-  }
-  QgsComposerPicture *picture = dynamic_cast<QgsComposerPicture *>( item );
-  if ( picture )
-  {
-    emit composerPictureAdded( picture );
-    emit selectedItemChanged( picture );
-    return;
-  }
-  QgsComposerShape *shape = dynamic_cast<QgsComposerShape *>( item );
-  if ( shape )
-  {
-    emit composerShapeAdded( shape );
-    emit selectedItemChanged( shape );
-    return;
-  }
-  QgsComposerPolygon *polygon = dynamic_cast<QgsComposerPolygon *>( item );
-  if ( polygon )
-  {
-    emit composerPolygonAdded( polygon );
-    emit selectedItemChanged( polygon );
-    return;
-  }
-  QgsComposerPolyline *polyline = dynamic_cast<QgsComposerPolyline *>( item );
-  if ( polyline )
-  {
-    emit composerPolylineAdded( polyline );
-    emit selectedItemChanged( polyline );
-    return;
+    case QgsComposerItem::ComposerArrow:
+    case QgsComposerItem::ComposerLabel:
+    case QgsComposerItem::ComposerMap:
+    case QgsComposerItem::ComposerPolygon:
+    case QgsComposerItem::ComposerPolyline:
+    case QgsComposerItem::ComposerScaleBar:
+    case QgsComposerItem::ComposerLegend:
+    case QgsComposerItem::ComposerPicture:
+    case QgsComposerItem::ComposerShape:
+    case QgsComposerItem::ComposerFrame:
+
+      emit itemAdded( item );
+      emit selectedItemChanged( item );
+      return;
+
   }
 
-  QgsComposerFrame *frame = dynamic_cast<QgsComposerFrame *>( item );
-  if ( frame )
-  {
-    //emit composerFrameAdded( multiframe, frame, );
-    QgsComposerMultiFrame *mf = frame->multiFrame();
-    QgsComposerHtml *html = dynamic_cast<QgsComposerHtml *>( mf );
-    if ( html )
-    {
-      emit composerHtmlFrameAdded( html, frame );
-    }
-    QgsComposerAttributeTableV2 *table = dynamic_cast<QgsComposerAttributeTableV2 *>( mf );
-    if ( table )
-    {
-      emit composerTableFrameAdded( table, frame );
-    }
-    emit selectedItemChanged( frame );
-    return;
-  }
   QgsComposerItemGroup *group = dynamic_cast<QgsComposerItemGroup *>( item );
   if ( group )
   {

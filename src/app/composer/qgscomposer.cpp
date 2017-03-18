@@ -673,7 +673,6 @@ QgsComposer::QgsComposer( QgsComposition *composition )
 
 QgsComposer::~QgsComposer()
 {
-  deleteItemWidgets();
   delete mPrinter;
 }
 
@@ -774,17 +773,7 @@ void QgsComposer::connectCompositionSlots()
 
   connect( mComposition, &QgsComposition::nameChanged, this, &QgsComposer::setWindowTitle );
   connect( mComposition, &QgsComposition::selectedItemChanged, this, &QgsComposer::showItemOptions );
-  connect( mComposition, &QgsComposition::composerArrowAdded, this, &QgsComposer::addComposerArrow );
-  connect( mComposition, &QgsComposition::composerPolygonAdded, this, &QgsComposer::addComposerPolygon );
-  connect( mComposition, &QgsComposition::composerPolylineAdded, this, &QgsComposer::addComposerPolyline );
-  connect( mComposition, &QgsComposition::composerHtmlFrameAdded, this, &QgsComposer::addComposerHtmlFrame );
-  connect( mComposition, &QgsComposition::composerLabelAdded, this, &QgsComposer::addComposerLabel );
-  connect( mComposition, &QgsComposition::composerMapAdded, this, &QgsComposer::addComposerMap );
-  connect( mComposition, &QgsComposition::composerScaleBarAdded, this, &QgsComposer::addComposerScaleBar );
-  connect( mComposition, &QgsComposition::composerLegendAdded, this, &QgsComposer::addComposerLegend );
-  connect( mComposition, &QgsComposition::composerPictureAdded, this, &QgsComposer::addComposerPicture );
-  connect( mComposition, &QgsComposition::composerShapeAdded, this, &QgsComposer::addComposerShape );
-  connect( mComposition, &QgsComposition::composerTableFrameAdded, this, &QgsComposer::addComposerTableV2 );
+  connect( mComposition, &QgsComposition::itemAdded, this, &QgsComposer::compositionItemAdded );
   connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposer::deleteItem );
   connect( mComposition, &QgsComposition::paperSizeChanged, this, [ = ]
   {
@@ -847,6 +836,7 @@ bool QgsComposer::loadFromTemplate( const QDomDocument &templateDoc, bool clearE
 
   setUpdatesEnabled( false );
   bool result = mComposition->loadFromTemplate( templateDoc, nullptr, false, clearExisting );
+  cleanupAfterTemplateRead();
   setUpdatesEnabled( true );
 
   dlg->close();
@@ -947,25 +937,19 @@ void QgsComposer::showItemOptions( QgsComposerItem *item )
 {
   if ( !item )
   {
-    mItemPropertiesStack->takeMainPanel();
+    delete mItemPropertiesStack->takeMainPanel();
     return;
   }
 
-  QMap<QgsComposerItem *, QgsPanelWidget *>::const_iterator it = mItemWidgetMap.constFind( item );
-  if ( it == mItemWidgetMap.constEnd() )
+  std::unique_ptr< QgsPanelWidget > widget( createItemWidget( item ) );
+  if ( ! widget )
   {
     return;
   }
 
-  QgsPanelWidget *newWidget = it.value();
-  if ( !newWidget || newWidget == mItemPropertiesStack->mainPanel() ) //bail out if new widget does not exist or is already there
-  {
-    return;
-  }
-
-  ( void ) mItemPropertiesStack->takeMainPanel();
-  newWidget->setDockMode( true );
-  mItemPropertiesStack->setMainPanel( newWidget );
+  delete mItemPropertiesStack->takeMainPanel();
+  widget->setDockMode( true );
+  mItemPropertiesStack->setMainPanel( widget.release() );
 }
 
 void QgsComposer::on_mActionOptions_triggered()
@@ -1037,6 +1021,63 @@ void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), atlasFeature.id(), true ) );
   mapCanvas()->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( atlasFeature.geometry() ), true ) );
+}
+
+void QgsComposer::compositionItemAdded( QgsComposerItem *item )
+{
+  if ( item && item->type() == QgsComposerItem::ComposerMap )
+  {
+    connect( this, &QgsComposer::zoomLevelChanged, static_cast< QgsComposerMap *>( item ), &QgsComposerMap::renderModeUpdateCachedImage );
+  }
+}
+
+QgsPanelWidget *QgsComposer::createItemWidget( QgsComposerItem *item )
+{
+  if ( !item )
+    return nullptr;
+
+  switch ( item->type() )
+  {
+    case QgsComposerItem::ComposerArrow:
+      return new QgsComposerArrowWidget( static_cast< QgsComposerArrow * >( item ) );
+
+    case QgsComposerItem::ComposerPolygon:
+      return new QgsComposerPolygonWidget( static_cast< QgsComposerPolygon * >( item ) );
+
+    case QgsComposerItem::ComposerPolyline:
+      return new QgsComposerPolylineWidget( static_cast< QgsComposerPolyline * >( item ) );
+
+    case QgsComposerItem::ComposerLabel:
+      return new QgsComposerLabelWidget( static_cast< QgsComposerLabel * >( item ) );
+
+    case QgsComposerItem::ComposerMap:
+      return new QgsComposerMapWidget( static_cast< QgsComposerMap * >( item ) );
+
+    case QgsComposerItem::ComposerScaleBar:
+      return new QgsComposerScaleBarWidget( static_cast< QgsComposerScaleBar * >( item ) );
+
+    case QgsComposerItem::ComposerLegend:
+      return new QgsComposerLegendWidget( static_cast< QgsComposerLegend * >( item ) );
+
+    case QgsComposerItem::ComposerPicture:
+      return new QgsComposerPictureWidget( static_cast< QgsComposerPicture * >( item ) );
+
+    case QgsComposerItem::ComposerFrame:
+    {
+      QgsComposerFrame *frame = static_cast< QgsComposerFrame * >( item );
+      if ( QgsComposerHtml *html = dynamic_cast< QgsComposerHtml * >( frame->multiFrame() ) )
+      {
+        return new QgsComposerHtmlWidget( html, frame );
+      }
+      else if ( QgsComposerAttributeTableV2 *table = dynamic_cast< QgsComposerAttributeTableV2 * >( frame->multiFrame() ) )
+      {
+        return new QgsComposerAttributeTableWidget( table, frame );
+      }
+      break;
+    }
+
+  }
+  return nullptr; // no warnings!
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
@@ -3376,145 +3417,9 @@ void QgsComposer::restoreGridSettings()
   mActionShowBoxes->setChecked( mComposition->boundingBoxesVisible() );
 }
 
-void QgsComposer::deleteItemWidgets()
+void QgsComposer::deleteItem( QgsComposerItem * )
 {
-  //delete all the items
-  qDeleteAll( mItemWidgetMap );
-  mItemWidgetMap.clear();
-}
-
-void QgsComposer::addComposerArrow( QgsComposerArrow *arrow )
-{
-  if ( !arrow )
-  {
-    return;
-  }
-
-  QgsComposerArrowWidget *arrowWidget = new QgsComposerArrowWidget( arrow );
-  mItemWidgetMap.insert( arrow, arrowWidget );
-}
-
-void QgsComposer::addComposerPolygon( QgsComposerPolygon *polygon )
-{
-  if ( !polygon )
-  {
-    return;
-  }
-
-  QgsComposerPolygonWidget *polygonWidget = new QgsComposerPolygonWidget( polygon );
-  mItemWidgetMap.insert( polygon, polygonWidget );
-}
-
-void QgsComposer::addComposerPolyline( QgsComposerPolyline *polyline )
-{
-  if ( !polyline )
-  {
-    return;
-  }
-
-  QgsComposerPolylineWidget *polylineWidget = new QgsComposerPolylineWidget( polyline );
-  mItemWidgetMap.insert( polyline, polylineWidget );
-}
-
-void QgsComposer::addComposerMap( QgsComposerMap *map )
-{
-  if ( !map )
-  {
-    return;
-  }
-
-  QgsComposerMapWidget *mapWidget = new QgsComposerMapWidget( map );
-  connect( this, &QgsComposer::zoomLevelChanged, map, &QgsComposerMap::renderModeUpdateCachedImage );
-  mItemWidgetMap.insert( map, mapWidget );
-}
-
-void QgsComposer::addComposerLabel( QgsComposerLabel *label )
-{
-  if ( !label )
-  {
-    return;
-  }
-
-  QgsComposerLabelWidget *labelWidget = new QgsComposerLabelWidget( label );
-  mItemWidgetMap.insert( label, labelWidget );
-}
-
-void QgsComposer::addComposerScaleBar( QgsComposerScaleBar *scalebar )
-{
-  if ( !scalebar )
-  {
-    return;
-  }
-
-  QgsComposerScaleBarWidget *sbWidget = new QgsComposerScaleBarWidget( scalebar );
-  mItemWidgetMap.insert( scalebar, sbWidget );
-}
-
-void QgsComposer::addComposerLegend( QgsComposerLegend *legend )
-{
-  if ( !legend )
-  {
-    return;
-  }
-
-  QgsComposerLegendWidget *lWidget = new QgsComposerLegendWidget( legend );
-  mItemWidgetMap.insert( legend, lWidget );
-}
-
-void QgsComposer::addComposerPicture( QgsComposerPicture *picture )
-{
-  if ( !picture )
-  {
-    return;
-  }
-
-  QgsComposerPictureWidget *pWidget = new QgsComposerPictureWidget( picture );
-  mItemWidgetMap.insert( picture, pWidget );
-}
-
-void QgsComposer::addComposerShape( QgsComposerShape *shape )
-{
-  if ( !shape )
-  {
-    return;
-  }
-  QgsComposerShapeWidget *sWidget = new QgsComposerShapeWidget( shape );
-  mItemWidgetMap.insert( shape, sWidget );
-}
-
-void QgsComposer::addComposerTableV2( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame )
-{
-  if ( !table )
-  {
-    return;
-  }
-  QgsComposerAttributeTableWidget *tWidget = new QgsComposerAttributeTableWidget( table, frame );
-  mItemWidgetMap.insert( frame, tWidget );
-}
-
-void QgsComposer::addComposerHtmlFrame( QgsComposerHtml *html, QgsComposerFrame *frame )
-{
-  if ( !html )
-  {
-    return;
-  }
-
-  QgsComposerHtmlWidget *hWidget = new QgsComposerHtmlWidget( html, frame );
-  mItemWidgetMap.insert( frame, hWidget );
-}
-
-void QgsComposer::deleteItem( QgsComposerItem *item )
-{
-  QMap<QgsComposerItem *, QgsPanelWidget *>::const_iterator it = mItemWidgetMap.constFind( item );
-
-  if ( it == mItemWidgetMap.constEnd() )
-  {
-    return;
-  }
-
-  //the item itself is not deleted here (usually, this is done in the destructor of QgsAddRemoveItemCommand)
-  it.value()->deleteLater();
-  mItemWidgetMap.remove( it.key() );
+  showItemOptions( nullptr );
 }
 
 void QgsComposer::setSelectionTool()
@@ -3608,11 +3513,10 @@ void QgsComposer::showAdvancedEffectsWarning()
 
 void QgsComposer::cleanupAfterTemplateRead()
 {
-  QMap<QgsComposerItem *, QgsPanelWidget *>::const_iterator itemIt = mItemWidgetMap.constBegin();
-  for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
+  Q_FOREACH ( QGraphicsItem *item, mComposition->items() )
   {
     //update all legends completely
-    QgsComposerLegend *legendItem = dynamic_cast<QgsComposerLegend *>( itemIt.key() );
+    QgsComposerLegend *legendItem = dynamic_cast<QgsComposerLegend *>( item );
     if ( legendItem )
     {
       legendItem->updateLegend();
@@ -3620,7 +3524,7 @@ void QgsComposer::cleanupAfterTemplateRead()
     }
 
     //update composer map extent if it does not intersect the full extent of all layers
-    QgsComposerMap *mapItem = dynamic_cast<QgsComposerMap *>( itemIt.key() );
+    QgsComposerMap *mapItem = dynamic_cast<QgsComposerMap *>( item );
     if ( mapItem )
     {
       //test if composer map extent intersects extent of all layers
