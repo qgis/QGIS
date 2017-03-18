@@ -1367,12 +1367,12 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
 void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
 {
-  QSet<QgsComposer *> projectComposers = QgisApp::instance()->printComposers();
+  QList<QgsComposition *> projectComposers = QgsProject::instance()->layoutManager()->compositions();
   QStringList composerTitles;
-  QSet<QgsComposer *>::const_iterator cIt = projectComposers.constBegin();
+  QList<QgsComposition *>::const_iterator cIt = projectComposers.constBegin();
   for ( ; cIt != projectComposers.constEnd(); ++cIt )
   {
-    composerTitles << ( *cIt )->title();
+    composerTitles << ( *cIt )->name();
   }
 
   bool ok;
