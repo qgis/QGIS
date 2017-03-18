@@ -7003,16 +7003,16 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   QgsComposer *newComposerObject = new QgsComposer( composition );
   connect( newComposerObject, &QgsComposer::aboutToClose, this, [this, newComposerObject]
   {
-    emit composerWillBeRemoved( newComposerObject->view() );
+    emit composerWillBeClosed( newComposerObject->interface() );
     mPrintComposers.remove( newComposerObject );
-    emit composerRemoved( newComposerObject->view() );
+    emit composerClosed( newComposerObject->interface() );
   } );
 
   //add it to the map of existing print composers
   mPrintComposers.insert( newComposerObject );
 
   newComposerObject->open();
-  emit composerAdded( newComposerObject->view() );
+  emit composerOpened( newComposerObject->interface() );
   connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
 
   return newComposerObject;
@@ -7020,9 +7020,9 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
 
 void QgisApp::deleteComposer( QgsComposer *c )
 {
-  emit composerWillBeRemoved( c->view() );
+  emit composerWillBeClosed( c->interface() );
   mPrintComposers.remove( c );
-  emit composerRemoved( c->view() );
+  emit composerClosed( c->interface() );
   delete c;
 }
 
@@ -7052,9 +7052,9 @@ void QgisApp::deletePrintComposers()
   while ( it != mPrintComposers.end() )
   {
     QgsComposer *c = ( *it );
-    emit composerWillBeRemoved( c->view() );
+    emit composerWillBeClosed( c->interface() );
     it = mPrintComposers.erase( it );
-    emit composerRemoved( c->view() );
+    emit composerClosed( c->interface() );
     delete ( c );
   }
 }
@@ -7091,9 +7091,9 @@ void QgisApp::compositionAboutToBeRemoved( const QString &name )
   {
     if ( composer->composition()->name() == name )
     {
-      emit composerWillBeRemoved( composer->view() );
+      emit composerWillBeClosed( composer->interface() );
       mPrintComposers.remove( composer );
-      emit composerRemoved( composer->view() );
+      emit composerClosed( composer->interface() );
       delete composer;
       return;
     }

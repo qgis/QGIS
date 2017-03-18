@@ -3923,3 +3923,8 @@ QgsComposition *QgsAppComposerInterface::composition()
 {
   return mComposer->composition();
 }
+
+void QgsAppComposerInterface::close()
+{
+  mComposer->close();
+}

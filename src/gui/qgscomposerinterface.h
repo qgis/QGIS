@@ -57,6 +57,11 @@ class GUI_EXPORT QgsComposerInterface: public QObject
      */
     virtual QgsComposition *composition() = 0;
 
+    /**
+     * Closes the composer window.
+     */
+    virtual void close() = 0;
+
 };
 
 #endif // QGSCOMPOSERINTERFACE_H

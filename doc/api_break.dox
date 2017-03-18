@@ -365,6 +365,14 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 - fileMenu() has been removed, use projectMenu() instead.
 - actionRemoveLayer was removed as it no longer exists.
 - actionTouch was removed, as the corresponding action no longer exists (see notes on QgsMapToolTouch)
+- activeComposers(), createNewComposer(), duplicateComposer(), deleteComposer(), composerAdded(),
+composerWillBeRemoved(), composerRemoved() were all removed. Composer windows are now only created
+on demand, and destroyed when the window is closed. The new interface methods openComposers(),
+openComposer(), closeComposer(), composerOpened(), composerWillBeClosed() and composerClosed()
+are similar, but only apply to composer windows when they are exist. To access all compositions
+from a project, the new QgsProject.instance().layoutManager() class should be used instead.
+Additionally, the new interface methods work with QgsComposerInterface objects instead
+of QgsComposerView objects.
 
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}

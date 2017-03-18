@@ -46,6 +46,7 @@ class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
 class QgsComposer;
+class QgsComposerInterface;
 class QgsComposition;
 class QgsComposerManager;
 class QgsComposerView;
@@ -1480,17 +1481,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * can change there tool button icons. */
     void currentThemeChanged( const QString & );
 
-    /** This signal is emitted when a new composer instance has been created
-       */
-    void composerAdded( QgsComposerView *v );
+    /**
+     * This signal is emitted when a new composer window is opened
+     */
+    void composerOpened( QgsComposerInterface *composer );
 
-    /** This signal is emitted before a new composer instance is going to be removed
-      */
-    void composerWillBeRemoved( QgsComposerView *v );
+    /**
+     * This signal is emitted before a composer window is going to be closed
+     * and deleted.
+     */
+    void composerWillBeClosed( QgsComposerInterface *composer );
 
-    /** This signal is emitted when a composer instance has been removed
-       @note added in version 2.3*/
-    void composerRemoved( QgsComposerView *v );
+    /**
+     * This signal is emitted when a composer window has been closed.
+     */
+    void composerClosed( QgsComposerInterface *composer );
 
     //! This signal is emitted when QGIS' initialization is complete
     void initializationCompleted();

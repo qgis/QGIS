@@ -72,6 +72,7 @@ class QgsAppComposerInterface : public QgsComposerInterface
     QgsAppComposerInterface( QgsComposer *composer );
     QgsComposerView *view() override;
     QgsComposition *composition() override;
+    void close() override;
 
   private:
 
