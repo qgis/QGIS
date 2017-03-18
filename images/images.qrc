@@ -506,8 +506,6 @@
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
         <file>flags/zh.png</file>
-        <file>icons/qgis-icon-16x16_xmas.png</file>
-        <file>icons/qgis-icon-60x60_xmas.png</file>
         <file>themes/default/vector_grid.png</file>
         <file>themes/default/legend.svg</file>
         <file>themes/default/multieditChangedValues.svg</file>
