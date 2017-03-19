@@ -1024,7 +1024,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
 
 void QgsComposerMap::updateItem()
 {
-  if ( !mUpdatesEnabled )
+  if ( !updatesEnabled() )
   {
     return;
   }
@@ -1246,6 +1246,8 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
   {
     return false;
   }
+
+  setUpdatesEnabled( false );
 
   QString idRead = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "not found" ) );
   if ( idRead != QLatin1String( "not found" ) )
@@ -1489,6 +1491,8 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
   }
 
   updateBoundingRect();
+  setUpdatesEnabled( true );
+
   emit itemChanged();
   return true;
 }

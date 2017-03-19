@@ -544,26 +544,28 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     void setIsGroupMember( const bool isGroupMember );
 
-    /** Get the number of layers that this item requires for exporting as layers
-     * @returns 0 if this item is to be placed on the same layer as the previous item,
-     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
-     * @note this method was added in version 2.4
-     * @see setCurrentExportLayer
-     */
-    int numberExportLayers() const;
 
-    /** Sets the current layer to draw for exporting
-     * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
-     * @note this method was added in version 2.4
-     * @see numberExportLayers
-     */
-    void setCurrentExportLayer( const int layerIdx = -1 );
 
-    /** Creates an expression context relating to the item's current state. The context includes
-     * scopes for global, project, composition, atlas and item properties.
-     * @note added in QGIS 2.12
-     */
-    QgsExpressionContext createExpressionContext() const;
+
+
+
+
+    virtual int numberExportLayers() const;
+
+
+
+
+
+
+    virtual void setCurrentExportLayer( const int layerIdx = -1 );
+
+
+
+
+
+    virtual QgsExpressionContext createExpressionContext() const;
+    void setUpdatesEnabled( bool enabled );
+    bool updatesEnabled() const;
 
   public slots:
 

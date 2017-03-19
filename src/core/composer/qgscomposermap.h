@@ -425,12 +425,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
-    //! Sets whether updates to the composer map are enabled.
-    void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
-
-    //! Returns whether updates to the composer map are enabled.
-    bool updatesEnabled() const { return mUpdatesEnabled; }
-
     /** Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
@@ -561,9 +555,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
-
-    //! Whether updates to the map are enabled
-    bool mUpdatesEnabled = true;
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();

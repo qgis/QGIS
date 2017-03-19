@@ -318,12 +318,6 @@ class QgsComposerMap : QgsComposerItem
      */
     void setAtlasMargin( double margin );
 
-    /** Sets whether updates to the composer map are enabled. */
-    void setUpdatesEnabled( bool enabled );
-
-    /** Returns whether updates to the composer map are enabled. */
-    bool updatesEnabled() const;
-
     /** Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
