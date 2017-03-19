@@ -102,19 +102,25 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     layoutsElem = element.firstChildElement( QStringLiteral( "Layouts" ) );
   }
   if ( layoutsElem.isNull() )
-    return false;
+  {
+    // handle legacy projects
+    layoutsElem = doc.documentElement();
+  }
 
   //restore each composer
   bool result = true;
   QDomNodeList composerNodes = element.elementsByTagName( QStringLiteral( "Composer" ) );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
+    QString legacyTitle = composerNodes.at( i ).toElement().attribute( QStringLiteral( "title" ) );
     QgsComposition *c = createCompositionFromXml( composerNodes.at( i ).toElement(), doc );
     if ( !c )
     {
       result = false;
       continue;
     }
+    if ( c->name().isEmpty() )
+      c->setName( legacyTitle );
     result = result && addComposition( c );
   }
   return result;
