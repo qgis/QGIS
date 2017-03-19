@@ -6936,12 +6936,11 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
 
   while ( !titleValid )
   {
-    newTitle = QInputDialog::getItem( parent,
+    newTitle = QInputDialog::getText( parent,
                                       tr( "Composer title" ),
                                       titleMsg,
-                                      cNames,
-                                      cNames.indexOf( newTitle ),
-                                      true,
+                                      QLineEdit::Normal,
+                                      newTitle,
                                       &ok );
     if ( !ok )
     {
