@@ -865,7 +865,7 @@ class TestQgsServer(unittest.TestCase):
         }
         qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self.server.handleRequest(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(10, 10))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
 
         parms = {
             'MAP': self.testdata_path + "test_project.qgs",
@@ -880,7 +880,7 @@ class TestQgsServer(unittest.TestCase):
         }
         qs = '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self.server.handleRequest(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(10, 10))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test_layertitle_false", 250, QSize(15, 15))
 
     def test_wms_GetLegendGraphic_Basic(self):
         qs = "&".join(["%s=%s" % i for i in list({
