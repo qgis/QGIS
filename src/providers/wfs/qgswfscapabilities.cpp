@@ -144,16 +144,16 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
 
   if ( mCaps.version.startsWith( QLatin1String( "1.0" ) ) )
   {
-    QDomElement capabilityElem = doc.firstChildElement( QStringLiteral( "Capability" ) );
+    QDomElement capabilityElem = doc.firstChildElement( "Capability" );
     if ( !capabilityElem.isNull() )
     {
-      QDomElement requestElem = capabilityElem.firstChildElement( QStringLiteral( "Request" ) );
+      QDomElement requestElem = capabilityElem.firstChildElement( "Request" );
       if ( !requestElem.isNull() )
       {
-        QDomElement getFeatureElem = requestElem.firstChildElement( QStringLiteral( "GetFeature" ) );
+        QDomElement getFeatureElem = requestElem.firstChildElement( "GetFeature" );
         if ( !getFeatureElem.isNull() )
         {
-          QDomElement resultFormatElem = getFeatureElem.firstChildElement( QStringLiteral( "ResultFormat" ) );
+          QDomElement resultFormatElem = getFeatureElem.firstChildElement( "ResultFormat" );
           if ( !resultFormatElem.isNull() )
           {
             QDomElement child = resultFormatElem.firstChildElement();
@@ -257,9 +257,9 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
               }
             }
           }
-          else if ( parameter.attribute( QStringLiteral( "name" ) ) == QLatin1String( "outputFormat" ) )
+          else if ( parameter.attribute( "name" ) == QLatin1String( "outputFormat" ) )
           {
-            QDomNodeList valueList = parameter.elementsByTagName( QStringLiteral( "Value" ) );
+            QDomNodeList valueList = parameter.elementsByTagName( "Value" );
             for ( int k = 0; k < valueList.size(); ++k )
             {
               QDomElement value = valueList.at( k ).toElement();

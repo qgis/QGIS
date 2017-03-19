@@ -330,7 +330,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
 
   if ( !forHits && !mShared->mURI.outputFormat().isEmpty() )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ), mShared->mURI.outputFormat() );
+    getFeatureUrl.addQueryItem( "OUTPUTFORMAT", mShared->mURI.outputFormat() );
   }
   else if ( !forHits && mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
   {
@@ -346,8 +346,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
     {
       if ( mShared->mCaps.outputFormats.contains( format ) )
       {
-        getFeatureUrl.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ),
-                                    format );
+        getFeatureUrl.addQueryItem( "OUTPUTFORMAT", format );
         break;
       }
     }
