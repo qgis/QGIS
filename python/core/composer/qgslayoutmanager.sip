@@ -6,7 +6,7 @@ class QgsLayoutManager : QObject
 %End
   public:
 
-    explicit QgsLayoutManager( QgsProject* project = 0 );
+    explicit QgsLayoutManager( QgsProject* project /TransferThis/ = 0 );
 
     ~QgsLayoutManager();
     bool addComposition( QgsComposition* composition /Transfer/ );
