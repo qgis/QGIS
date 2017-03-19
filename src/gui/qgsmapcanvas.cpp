@@ -1404,10 +1404,9 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   }
 
   double zoomFactor = mWheelZoomFactor;
-  double delta = e->orientation() == Qt::Vertical ? e->angleDelta().y() : e->angleDelta().x();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( delta );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( e->angleDelta().y() );
 
   if ( e->modifiers() & Qt::ControlModifier )
   {
@@ -1415,7 +1414,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
   }
 
-  double signedWheelFactor = delta > 0 ? 1 / zoomFactor : zoomFactor;
+  double signedWheelFactor = e->angleDelta().y() > 0 ? 1 / zoomFactor : zoomFactor;
 
   // zoom map to mouse cursor by scaling
   QgsPoint oldCenter = center();
@@ -1423,16 +1422,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   QgsPoint newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
                       mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
-  switch ( e->orientation() )
-  {
-    case Qt::Vertical:
-      zoomByFactor( signedWheelFactor, &newCenter );
-      break;
-
-    case Qt::Horizontal:
-      setMagnificationFactor( mapSettings().magnificationFactor() / signedWheelFactor );
-      break;
-  }
+  zoomByFactor( signedWheelFactor, &newCenter );
 }
 
 void QgsMapCanvas::setWheelFactor( double factor )
