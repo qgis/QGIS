@@ -484,13 +484,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
      * @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
      * @param doc xml document
-     * @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
      * @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
      * @param pos item position. Optional, take position from xml if 0
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc, QMap< QgsComposerMap *, int > *mapsToRestore = nullptr,
+    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
                           bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false );
 
     //! Adds item to z list. Usually called from constructor of QgsComposerItem
@@ -602,7 +601,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Adds label to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerLabel( QgsComposerLabel *label );
     //! Adds map to the graphics scene and advises composer to create a widget for it (through signal)
-    void addComposerMap( QgsComposerMap *map, const bool setDefaultPreviewStyle = true );
+    void addComposerMap( QgsComposerMap *map );
     //! Adds scale bar to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerScaleBar( QgsComposerScaleBar *scaleBar );
     //! Adds legend to the graphics scene and advises composer to create a widget for it (through signal)

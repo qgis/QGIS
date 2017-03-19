@@ -732,7 +732,8 @@ of QgsDataDefined objects.
 composerLabelAdded, composerMapAdded, composerScaleBarAdded, composerLegendAdded, composerPictureAdded, 
 composerShapeAdded, and composerTableFrameAdded were removed. Use the general itemAdded signal instead to catch
 all these item added events.
-
+- addComposerMap no longer takes a setDefaultPreviewStyle argument.
+- the mapsToRestore parameter has been removed from addItemsFromXml
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}
 ----------------------------

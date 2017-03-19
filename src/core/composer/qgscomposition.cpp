@@ -1097,7 +1097,7 @@ bool QgsComposition::loadFromTemplate( const QDomDocument &doc, QMap<QString, QS
   }
 
   //addItemsFromXML
-  addItemsFromXml( importDoc.documentElement(), importDoc, nullptr, addUndoCommands, nullptr );
+  addItemsFromXml( importDoc.documentElement(), importDoc, addUndoCommands, nullptr );
 
   return true;
 }
@@ -1131,7 +1131,7 @@ QPointF QgsComposition::minPointFromXml( const QDomElement &elem ) const
   }
 }
 
-void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocument &doc, QMap< QgsComposerMap *, int > *mapsToRestore,
+void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
                                       bool addUndoCommands, QPointF *pos, bool pasteInPlace )
 {
   QPointF *pasteInPlacePt = nullptr;
@@ -1195,21 +1195,10 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
     QgsComposerMap *newMap = new QgsComposerMap( this );
 
-    if ( mapsToRestore )
-    {
-      newMap->setUpdatesEnabled( false );
-    }
-
     newMap->readXml( currentComposerMapElem, doc );
     newMap->assignFreeId();
 
-    if ( mapsToRestore )
-    {
-      mapsToRestore->insert( newMap, static_cast< int >( newMap->previewMode() ) );
-      newMap->setPreviewMode( QgsComposerMap::Rectangle );
-      newMap->setUpdatesEnabled( true );
-    }
-    addComposerMap( newMap, false );
+    addComposerMap( newMap );
     newMap->setZValue( newMap->zValue() + zOrderOffset );
     if ( pos )
     {
@@ -2486,20 +2475,9 @@ void QgsComposition::addComposerLabel( QgsComposerLabel *label )
   emit itemAdded( label );
 }
 
-void QgsComposition::addComposerMap( QgsComposerMap *map, const bool setDefaultPreviewStyle )
+void QgsComposition::addComposerMap( QgsComposerMap *map )
 {
   addItem( map );
-  if ( setDefaultPreviewStyle )
-  {
-    //set default preview mode to cache. Must be done here between adding composer map to scene and emitting signal
-    map->setPreviewMode( QgsComposerMap::Cache );
-  }
-
-  if ( map->previewMode() != QgsComposerMap::Rectangle )
-  {
-    map->cache();
-  }
-
   updateBounds();
   connect( map, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
 

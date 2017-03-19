@@ -140,7 +140,7 @@ void TestQgsComposerMap::uniqueId()
   QDomDocument doc;
   QDomElement documentElement = doc.createElement( QStringLiteral( "ComposerItemClipboard" ) );
   mComposerMap->writeXml( documentElement, doc );
-  mComposition->addItemsFromXml( documentElement, doc, 0, false );
+  mComposition->addItemsFromXml( documentElement, doc, false );
 
   //test if both composer maps have different ids
   const QgsComposerMap *newMap = 0;
