@@ -1001,7 +1001,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
         if ( mCanvas )
         {
           composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
-          composerMap->setLayers( mCanvas->mapSettings().layers() );
         }
 
         composition()->addComposerMap( composerMap );

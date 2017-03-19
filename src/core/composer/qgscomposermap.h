@@ -205,7 +205,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**
      * Getter for flag that determines if a stored layer set should be used
-     * or the current layer set of the QGIS map canvas.
+     * or the current layer set of the QGIS map canvas. This is just a GUI flag,
+     * and itself does not change which layers are rendered in the map.
+     * Instead, use setLayers() to control which layers are rendered.
      * @see setKeepLayerSet()
      * @see layers()
      */
@@ -213,23 +215,25 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**
      * Setter for flag that determines if the stored layer set should be used
-     * or the current layer set of the QGIS map canvas.
+     * or the current layer set of the QGIS map canvas. This is just a GUI flag,
+     * and itself does not change which layers are rendered in the map.
+     * Instead, use setLayers() to control which layers are rendered.
      * @see keepLayerSet()
      * @see layers()
      */
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
     /**
-     * Getter for stored layer set. This will usually be synchronized with the main app canvas
-     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * Getter for stored layer set. If empty, the current canvas layers will
+     * be used instead.
      * @see setLayers()
      * @see keepLayerSet()
      */
     QList<QgsMapLayer *> layers() const;
 
     /**
-     * Setter for stored layer set.  This will usually be synchronized with the main app canvas
-     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * Setter for stored layer set. If empty, the current canvas layers will
+     * be used instead.
      * @see layers()
      * @see keepLayerSet()
      */
