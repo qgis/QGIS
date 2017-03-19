@@ -93,6 +93,7 @@ SET(QGIS_CORE_SRCS
   qgsactionscoperegistry.cpp
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
+  qgsanimatedicon.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsbearingutils.cpp
@@ -482,6 +483,7 @@ ENDIF(NOT MSVC)
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
   qgsactionscoperegistry.h
+  qgsanimatedicon.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatereferencesystem.h

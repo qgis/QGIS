@@ -134,7 +134,7 @@ QgsGrassImport::QgsGrassImport( const QgsGrassObject &grassObject )
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
   // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
   // connect it also here (QgsGrassImport is constructed on the main thread) to a slot doing nothing.
-  QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( frameChanged() ) );
+  QgsGrassImportIcon::instance()->connectFrameChanged( this, &QgsGrassImport::frameChanged );
 }
 
 QgsGrassImport::~QgsGrassImport()
@@ -144,7 +144,7 @@ QgsGrassImport::~QgsGrassImport()
     QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
     mFutureWatcher->waitForFinished();
   }
-  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( frameChanged() ) );
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, &QgsGrassImport::frameChanged );
 }
 
 void QgsGrassImport::setError( const QString &error )

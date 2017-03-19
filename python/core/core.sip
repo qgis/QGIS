@@ -20,6 +20,7 @@
 %Include qgsactionscope.sip
 %Include qgsactionscoperegistry.sip
 %Include qgsaggregatecalculator.sip
+%Include qgsanimatedicon.sip
 %Include qgsattributetableconfig.sip
 %Include qgsattributeeditorelement.sip
 %Include qgsbearingutils.sip
