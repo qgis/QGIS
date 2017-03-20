@@ -51,12 +51,19 @@ class SelectByAttribute(GeoAlgorithm):
                  '<',
                  '<=',
                  'begins with',
-                 'contains'
+                 'contains',
+                 'is null',
+                 'is not null',
+                 'does not contain'
                  ]
+    STRING_OPERATORS = ['begins with',
+                        'contains',
+                        'does not contain']
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by attribute')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+        self.tags = self.tr('select,attribute,value,contains,null,field')
 
         self.i18n_operators = ['=',
                                '!=',
@@ -64,8 +71,12 @@ class SelectByAttribute(GeoAlgorithm):
                                '>=',
                                '<',
                                '<=',
-                               self.tr('begins with '),
-                               self.tr('contains')]
+                               self.tr('begins with'),
+                               self.tr('contains'),
+                               self.tr('is null'),
+                               self.tr('is not null'),
+                               self.tr('does not contain')
+                               ]
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
@@ -89,32 +100,29 @@ class SelectByAttribute(GeoAlgorithm):
         idx = layer.fields().lookupField(fieldName)
         fieldType = fields[idx].type()
 
-        if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:
-            op = ''.join(['"%s", ' % o for o in self.OPERATORS[-2:]])
+        if fieldType != QVariant.String and operator in self.STRING_OPERATORS:
+            op = ''.join(['"%s", ' % o for o in self.STRING_OPERATORS])
             raise GeoAlgorithmExecutionException(
                 self.tr('Operators {0} can be used only with string fields.').format(op))
 
-        if fieldType in [QVariant.Int, QVariant.Double, QVariant.UInt, QVariant.LongLong, QVariant.ULongLong]:
-            expr = '"%s" %s %s' % (fieldName, operator, value)
-        elif fieldType == QVariant.String:
-            if operator not in self.OPERATORS[-2:]:
-                expr = """"%s" %s '%s'""" % (fieldName, operator, value)
-            elif operator == 'begins with':
-                expr = """"%s" LIKE '%s%%'""" % (fieldName, value)
-            elif operator == 'contains':
-                expr = """"%s" LIKE '%%%s%%'""" % (fieldName, value)
-        elif fieldType in [QVariant.Date, QVariant.DateTime]:
-            expr = """"%s" %s '%s'""" % (fieldName, operator, value)
+        field_ref = QgsExpression.quotedColumnRef(fieldName)
+        quoted_val = QgsExpression.quotedValue(value)
+        if operator == 'is null':
+            expression_string = '{} IS NULL'.format(field_ref)
+        elif operator == 'is not null':
+            expression_string = '{} IS NOT NULL'.format(field_ref)
+        elif operator == 'begins with':
+            expression_string = """%s LIKE '%s%%'""" % (field_ref, value)
+        elif operator == 'contains':
+            expression_string = """%s LIKE '%%%s%%'""" % (field_ref, value)
+        elif operator == 'does not contain':
+            expression_string = """%s NOT LIKE '%%%s%%'""" % (field_ref, value)
         else:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Unsupported field type "{0}"').format(fields[idx].typeName()))
+            expression_string = '{} {} {}'.format(field_ref, operator, quoted_val)
 
-        qExp = QgsExpression(expr)
-        if not qExp.hasParserError():
-            qReq = QgsFeatureRequest(qExp).setSubsetOfAttributes([])
-        else:
-            raise GeoAlgorithmExecutionException(qExp.parserErrorString())
-        selected = [f.id() for f in layer.getFeatures(qReq)]
+        expression = QgsExpression(expression_string)
+        if expression.hasParserError():
+            raise GeoAlgorithmExecutionException(expression.parserErrorString())
 
-        layer.selectByIds(selected)
+        layer.selectByExpression(expression_string)
         self.setOutputValue(self.OUTPUT, fileName)
