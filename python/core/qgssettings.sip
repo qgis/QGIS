@@ -58,8 +58,11 @@ typedef PyObject *(*pyqt5_from_qvariant_by_type)(QVariant &value, PyObject *type
       Gui,
       Server,
       Plugins,
+      Auth,
+      App,
+      Providers,
       Misc
-    };
+   };
 
   /** Construct a QgsSettings object for accessing settings of the application
    * called application from the organization called organization, and with parent parent.

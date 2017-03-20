@@ -171,6 +171,18 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.setValue('key1', 'misc1', section=QgsSettings.Misc)
         self.settings.setValue('key2', 'misc2', section=QgsSettings.Misc)
 
+        self.settings.setValue('key1', 'auth1', section=QgsSettings.Auth)
+        self.settings.setValue('key2', 'auth2', section=QgsSettings.Auth)
+
+        self.settings.setValue('key1', 'app1', section=QgsSettings.App)
+        self.settings.setValue('key2', 'app2', section=QgsSettings.App)
+
+        self.settings.setValue('key1', 'provider1', section=QgsSettings.Providers)
+        self.settings.setValue('key2', 'provider2', section=QgsSettings.Providers)
+
+        self.settings.setValue('key1', 'auth1', section=QgsSettings.Auth)
+        self.settings.setValue('key2', 'auth2', section=QgsSettings.Auth)
+
         # Test that the values are namespaced
         self.assertEqual(self.settings.value('core/key1'), 'core1')
         self.assertEqual(self.settings.value('core/key2'), 'core2')
@@ -202,6 +214,15 @@ class TestQgsSettings(unittest.TestCase):
 
         self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Misc), 'misc1')
         self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Misc), 'misc2')
+
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Auth), 'auth1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Auth), 'auth2')
+
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.App), 'app1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.App), 'app2')
+
+        self.assertEqual(self.settings.value('key1', None, section=QgsSettings.Providers), 'provider1')
+        self.assertEqual(self.settings.value('key2', None, section=QgsSettings.Providers), 'provider2')
 
         # Test default values on Section getter
         self.assertEqual(self.settings.value('key_not_exist', 'misc_not_exist', section=QgsSettings.Misc), 'misc_not_exist')
