@@ -7582,6 +7582,7 @@ void QgisApp::deselectAll()
   // Turn on rendering (if it was on previously)
   if ( !wasFrozen )
     freezeCanvases( false );
+  refreshMapCanvas();
 }
 
 void QgisApp::invertSelection()
@@ -7597,15 +7598,7 @@ void QgisApp::invertSelection()
     return;
   }
 
-  // Turn off rendering to improve speed.
-  bool wasFrozen = mMapCanvas->isFrozen();
-  freezeCanvases();
-
   vlayer->invertSelection();
-
-  // Turn on rendering (if it was on previously)
-  if ( !wasFrozen )
-    freezeCanvases( false );
 }
 
 void QgisApp::selectAll()
@@ -9890,6 +9883,7 @@ void QgisApp::closeProject()
   mMapCanvas->setLayers( QList<QgsMapLayer *>() );
   mMapCanvas->clearCache();
   mOverviewCanvas->setLayers( QList<QgsMapLayer *>() );
+  mMapCanvas->freeze( false );
   removeAllLayers();
 }
 
