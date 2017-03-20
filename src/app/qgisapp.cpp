@@ -11621,16 +11621,7 @@ void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
     QgsTask *task = QgsApplication::taskManager()->task( taskId );
     if ( task )
     {
-      QString description = task->description();
-#ifdef Q_OS_MAC
-      // Menubar icon is hidden on macOS, by default. Show to enable notification bubbles
-      mTray->show();
-#endif
-      mTray->showMessage( "Task Complete", description );
-#ifdef Q_OS_MAC
-      // Re-hide menubar icon
-      mTray->hide();
-#endif
+      notifyUser( tr( "Task complete" ), task->description() );
     }
   }
 }
@@ -12342,6 +12333,19 @@ QMenu *QgisApp::createPopupMenu()
   }
 
   return menu;
+}
+
+void QgisApp::notifyUser( QString title, QString message )
+{
+#ifdef Q_OS_MAC
+  // Menubar icon is hidden on macOS, by default. Show to enable notification bubbles
+  mTray->show();
+#endif
+  mTray->showMessage( title, message );
+#ifdef Q_OS_MAC
+  // Re-hide menubar icon
+  mTray->hide();
+#endif
 }
 
 void QgisApp::osmDownloadDialog()
