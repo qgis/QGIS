@@ -11621,7 +11621,7 @@ void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
     QgsTask *task = QgsApplication::taskManager()->task( taskId );
     if ( task )
     {
-      notifyUser( tr( "Task complete" ), task->description() );
+      showSystemNotification( tr( "Task complete" ), task->description() );
     }
   }
 }
@@ -12335,7 +12335,8 @@ QMenu *QgisApp::createPopupMenu()
   return menu;
 }
 
-void QgisApp::notifyUser( QString title, QString message )
+
+void QgisApp::showSystemNotification( const QString title, const QString message )
 {
 #ifdef Q_OS_MAC
   // Menubar icon is hidden on macOS, by default. Show to enable notification bubbles

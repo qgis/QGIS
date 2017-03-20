@@ -358,7 +358,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @param title
      * @param message
      */
-    void notifyUser( QString title, QString message );
+    void showSystemNotification( const QString title, const QString message );
 
 
     //! Actions to be inserted in menus and toolbars
