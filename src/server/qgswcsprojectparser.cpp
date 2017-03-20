@@ -435,20 +435,24 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
     {
+      QString id = mProjectParser->layerId( elem );
+      if ( !wcsLayersId.contains( id ) )
+        continue;
+
+      QString coveName = mProjectParser->layerShortName( elem );
+      if ( coveName.isEmpty() )
+        coveName = mProjectParser->layerName( elem );
+      coveName = coveName.replace( " ", "_" );
+
+      if ( coveName != cName )
+        continue;
+
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem, useCache );
       QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayer );
-      if ( !layer || !wcsLayersId.contains( layer->id() ) )
-        return layerList;
+      if ( !layer )
+        continue;
 
-      QString coveName = layer->name();
-      if ( !layer->shortName().isEmpty() )
-        coveName = layer->shortName();
-      coveName = coveName.replace( " ", "_" );
-      if ( cName == coveName )
-      {
-        layerList.push_back( mLayer );
-        return layerList;
-      }
+      layerList.push_back( mLayer );
     }
   }
   return layerList;
