@@ -564,18 +564,24 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
+      QString id = mProjectParser->layerId( elem );
+      if ( !wfsLayersId.contains( id ) )
+        continue;
+
+      QString typeName = mProjectParser->layerShortName( elem );
+      if ( typeName.isEmpty() )
+        typeName = mProjectParser->layerName( elem );
+      typeName = typeName.replace( " ", "_" );
+
+      if ( !aTypeName.isEmpty() && !typeNameList.contains( typeName ) )
+        continue;
+
       QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
       QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;
 
-      QString typeName = layer->name();
-      if ( !layer->shortName().isEmpty() )
-        typeName = layer->shortName();
-      typeName = typeName.replace( " ", "_" );
-
-      if ( wfsLayersId.contains( layer->id() ) && ( aTypeName == "" || typeNameList.contains( typeName ) ) )
-        layerList.push_back( mLayer );
+      layerList.push_back( mLayer );
     }
   }
   return layerList;
