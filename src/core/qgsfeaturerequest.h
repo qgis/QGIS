@@ -404,9 +404,6 @@ class CORE_EXPORT QgsFeatureRequest
      */
     bool acceptFeature( const QgsFeature &feature );
 
-    // TODO: in future
-    // void setFilterNativeExpression(con QString& expr);   // using provider's SQL (if supported)
-
   protected:
     FilterType mFilter;
     QgsRectangle mFilterRect;

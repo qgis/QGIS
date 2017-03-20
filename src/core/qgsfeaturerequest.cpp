@@ -245,13 +245,16 @@ QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
 
 bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
+  if ( !mFilterRect.isNull() )
+  {
+    if ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) )
+      return false;
+  }
+
   switch ( mFilter )
   {
     case QgsFeatureRequest::FilterNone:
       return true;
-
-    case QgsFeatureRequest::FilterRect:
-      return ( feature.hasGeometry() && feature.geometry().intersects( mFilterRect ) );
 
     case QgsFeatureRequest::FilterFid:
       return ( feature.id() == mFilterFid );

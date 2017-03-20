@@ -141,6 +141,11 @@ class ProviderTestCase(object):
         result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes([0]))])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(set(expected), result, expression)
 
+        # test that results match QgsFeatureRequest.acceptFeature
+        request = QgsFeatureRequest().setFilterExpression(expression)
+        for f in provider.getFeatures():
+            self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
+
     def runGetFeatureTests(self, provider):
         assert len([f for f in provider.getFeatures()]) == 5
         self.assert_query(provider, 'name ILIKE \'QGIS\'', [])
@@ -485,6 +490,11 @@ class ProviderTestCase(object):
             expected = [id]
             assert result == expected, 'Expected {} and got {} when testing for feature ID filter'.format(expected, result)
 
+            # test that results match QgsFeatureRequest.acceptFeature
+            request = QgsFeatureRequest().setFilterFid(id)
+            for f in self.provider.getFeatures():
+                self.assertEqual(request.acceptFeature(f), f.id() == id)
+
         # bad features
         it = self.provider.getFeatures(QgsFeatureRequest().setFilterFid(-99999999))
         feature = QgsFeature(5)
@@ -502,6 +512,10 @@ class ProviderTestCase(object):
         expected = set([fids[0], fids[2]])
         assert result == expected, 'Expected {} and got {} when testing for feature IDs filter'.format(expected, result)
         self.assertTrue(all_valid)
+
+        # test that results match QgsFeatureRequest.acceptFeature
+        for f in self.provider.getFeatures():
+            self.assertEqual(request.acceptFeature(f), f.id() in expected)
 
         result = set([f.id() for f in self.provider.getFeatures(QgsFeatureRequest().setFilterFids([fids[1], fids[3], fids[4]]))])
         expected = set([fids[1], fids[3], fids[4]])
@@ -544,6 +558,10 @@ class ProviderTestCase(object):
         all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
         assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
         self.assertTrue(all_valid)
+
+        # test that results match QgsFeatureRequest.acceptFeature
+        for f in self.provider.getFeatures():
+            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2, 4]))
 
         # test with an empty rectangle
         extent = QgsRectangle()
@@ -589,6 +607,20 @@ class ProviderTestCase(object):
         expected = [4]
         assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
         self.assertTrue(all_valid)
+
+        # shouldn't matter what order this is done in
+        request = QgsFeatureRequest().setFilterRect(extent).setFilterExpression('"cnt">200')
+        result = set([f['pk'] for f in self.provider.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.provider.getFeatures(request)))
+        expected = [4]
+        assert set(
+            expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(
+            set(expected), result)
+        self.assertTrue(all_valid)
+
+        # test that results match QgsFeatureRequest.acceptFeature
+        for f in self.provider.getFeatures():
+            self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
     def testGetFeaturesLimit(self):
         it = self.provider.getFeatures(QgsFeatureRequest().setLimit(2))
