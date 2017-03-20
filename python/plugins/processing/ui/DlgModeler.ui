@@ -44,7 +44,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QScrollArea" name="scrollArea_1">
+     <widget class="QgsScrollArea" name="scrollArea_1">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
         <horstretch>0</horstretch>
@@ -138,7 +138,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QScrollArea" name="scrollArea_2">
+     <widget class="QgsScrollArea" name="scrollArea_2">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
         <horstretch>0</horstretch>
@@ -222,7 +222,7 @@
      <number>2</number>
     </property>
     <item>
-     <widget class="QScrollArea" name="scrollArea_3">
+     <widget class="QgsScrollArea" name="scrollArea_3">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
         <horstretch>0</horstretch>
@@ -505,6 +505,11 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgis.gui</header>
+  </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>

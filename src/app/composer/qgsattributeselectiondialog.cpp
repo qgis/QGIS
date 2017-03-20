@@ -29,7 +29,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QScrollArea>
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
 

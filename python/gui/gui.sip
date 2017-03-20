@@ -154,6 +154,7 @@
 %Include qgsscalerangewidget.sip
 %Include qgsscalevisibilitydialog.sip
 %Include qgsscalewidget.sip
+%Include qgsscrollarea.sip
 %Include qgssearchquerybuilder.sip
 %Include qgsshortcutsmanager.sip
 %Include qgsslider.sip

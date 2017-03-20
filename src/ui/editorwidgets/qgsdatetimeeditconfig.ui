@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="4" column="0">
-    <widget class="QScrollArea" name="mHelpScrollArea">
+    <widget class="QgsScrollArea" name="mHelpScrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -251,6 +251,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mFieldFormatComboBox</tabstop>
   <tabstop>mFieldFormatEdit</tabstop>

@@ -29,7 +29,6 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QFrame>
-#include <QScrollArea>
 #include <QCompleter>
 #include <QSpinBox>
 #include <QPushButton>

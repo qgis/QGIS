@@ -31,6 +31,7 @@
 #include "qgslogger.h"
 #include "qgstabwidget.h"
 #include "qgssettings.h"
+#include "qgsscrollarea.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -42,7 +43,6 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
-#include <QScrollArea>
 #include <QUiLoader>
 #include <QMessageBox>
 #include <QToolButton>
@@ -1210,7 +1210,7 @@ void QgsAttributeForm::init()
     if ( mContext.formMode() != QgsAttributeEditorContext::Embed )
     {
       // put the form into a scroll area to nicely handle cases with lots of attributes
-      QScrollArea *scrollArea = new QScrollArea( this );
+      QgsScrollArea *scrollArea = new QgsScrollArea( this );
       scrollArea->setWidget( formWidget );
       scrollArea->setWidgetResizable( true );
       scrollArea->setFrameShape( QFrame::NoFrame );
@@ -1599,7 +1599,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
         if ( context.formMode() != QgsAttributeEditorContext::Embed )
         {
-          QScrollArea *scrollArea = new QScrollArea( parent );
+          QgsScrollArea *scrollArea = new QgsScrollArea( parent );
 
           scrollArea->setWidget( myContainer );
           scrollArea->setWidgetResizable( true );
