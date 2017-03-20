@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include <QFlags>
 #include <QList>
+#include <memory>
 
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
@@ -79,7 +80,6 @@ class CORE_EXPORT QgsFeatureRequest
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Obsolete, will be ignored. If a filterRect is set it will be used anyway. Filter using a rectangle, no need to set NoGeometry. Instead check for request.filterRect().isNull()
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature IDs
@@ -242,14 +242,12 @@ class CORE_EXPORT QgsFeatureRequest
     //! Assignment operator
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
 
-    ~QgsFeatureRequest();
-
     /**
      * Return the filter type which is currently set on this request
      *
      * @return Filter type
      */
-    FilterType filterType() const { if ( mFilter == FilterNone && !mFilterRect.isNull() ) return FilterRect; else return mFilter; }
+    FilterType filterType() const { return mFilter; }
 
     /**
      * Set rectangle from which features will be taken. Empty rectangle removes the filter.
@@ -257,7 +255,8 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setFilterRect( const QgsRectangle &rect );
 
     /**
-     * Get the rectangle from which features will be taken.
+     * Get the rectangle from which features will be taken. If the returned
+     * rectangle is null, then no filter rectangle is set.
      */
     const QgsRectangle &filterRect() const { return mFilterRect; }
 
@@ -282,7 +281,7 @@ class CORE_EXPORT QgsFeatureRequest
      * @see setFilterExpression
      * @see expressionContext
      */
-    QgsExpression *filterExpression() const { return mFilterExpression; }
+    QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
     /** Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
@@ -405,16 +404,16 @@ class CORE_EXPORT QgsFeatureRequest
     bool acceptFeature( const QgsFeature &feature );
 
   protected:
-    FilterType mFilter;
+    FilterType mFilter = FilterNone;
     QgsRectangle mFilterRect;
-    QgsFeatureId mFilterFid;
+    QgsFeatureId mFilterFid = -1;
     QgsFeatureIds mFilterFids;
-    QgsExpression *mFilterExpression = nullptr;
+    std::unique_ptr< QgsExpression > mFilterExpression;
     QgsExpressionContext mExpressionContext;
     Flags mFlags;
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;
-    long mLimit;
+    long mLimit = -1;
     OrderBy mOrderBy;
 };
 
