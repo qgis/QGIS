@@ -305,6 +305,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
+
+    //! Starts a transaction if possible and return true in that case
+    bool startTransaction();
+
+    //! Commits a transaction
+    bool commitTransaction();
+
     QgsFields mAttributeFields;
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
