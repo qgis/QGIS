@@ -32,6 +32,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
   qgsscalewidgetplugin.cpp
+  qgsscrollareawidgetplugin.cpp
   qgsspinboxplugin.cpp
 )
 
@@ -57,6 +58,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
   qgsscalewidgetplugin.h
+  qgsscrollareawidgetplugin.h
   qgsspinboxplugin.h
 )
 
