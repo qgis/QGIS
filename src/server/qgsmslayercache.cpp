@@ -34,6 +34,7 @@ QgsMSLayerCache* QgsMSLayerCache::instance()
 QgsMSLayerCache::QgsMSLayerCache()
     : mProjectMaxLayers( 0 )
 {
+  QgsMessageLog::logMessage( "QgsMSLayerCache initialized", "Server", QgsMessageLog::INFO );
   mDefaultMaxLayers = 100;
   //max layer from environment variable overrides default
   char* maxLayerEnv = getenv( "MAX_CACHE_LAYERS" );
@@ -61,7 +62,7 @@ QgsMSLayerCache::~QgsMSLayerCache()
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
 {
-  QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' configFile: " + configFile, "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Layer cache: insert Layer '" + layerName + "' url: '" + url + "' configFile: " + configFile, "Server", QgsMessageLog::INFO );
   if ( mEntries.size() > qMax( mDefaultMaxLayers, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
   {
     updateEntries();
@@ -100,7 +101,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   QPair<QString, QString> urlNamePair = qMakePair( url, layerName );
   if ( !mEntries.contains( urlNamePair ) )
   {
-    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Layer '" + layerName + "' url: '" + url + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
     return nullptr;
   }
   else
@@ -112,11 +113,11 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
       if ( configFile.isEmpty() || layerIt->configFile == configFile )
       {
         layerIt->lastUsedTime = time( nullptr );
-        QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " found in layer cache", "Server", QgsMessageLog::INFO );
+        QgsMessageLog::logMessage( "Layer '" + layerName + "' url: '" + url + "' configFile: " + configFile + " found in layer cache", "Server", QgsMessageLog::INFO );
         return layerIt->layerPointer;
       }
     }
-    QgsMessageLog::logMessage( "Layer '" + layerName + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Layer '" + layerName + "' url: '" + url + "' configFile: " + configFile + " not found in layer cache'", "Server", QgsMessageLog::INFO );
     return nullptr;
   }
 }
