@@ -87,7 +87,7 @@ void QgsComposerPolygonWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
+    mComposerPolygon->setPolygonStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
     mComposerPolygon->update();
   }
 }

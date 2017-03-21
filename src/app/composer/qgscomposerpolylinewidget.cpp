@@ -80,7 +80,7 @@ void QgsComposerPolylineWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol * >( w->symbol() ) );
+    mComposerPolyline->setPolylineStyleSymbol( static_cast< QgsLineSymbol * >( w->symbol() ) );
     mComposerPolyline->update();
   }
 }

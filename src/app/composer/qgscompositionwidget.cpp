@@ -201,7 +201,7 @@ void QgsCompositionWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposition->setPageStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
+    mComposition->setPageStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
     mComposition->update();
   }
 }
