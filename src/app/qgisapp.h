@@ -68,6 +68,7 @@ class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
+class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -814,6 +815,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void onTaskCompleteShowNotify( long taskId, int status );
 
     void onTransactionGroupsChanged();
+
+    void transactionGroupCommitError( const QString &error );
 
     void onSnappingConfigChanged();
 
@@ -1719,7 +1722,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mZoomIn = nullptr;
         QgsMapTool *mZoomOut = nullptr;
         QgsMapTool *mPan = nullptr;
-        QgsMapTool *mIdentify = nullptr;
+        QgsMapToolIdentifyAction *mIdentify = nullptr;
         QgsMapTool *mFeatureAction = nullptr;
         QgsMapTool *mMeasureDist = nullptr;
         QgsMapTool *mMeasureArea = nullptr;

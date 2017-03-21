@@ -71,9 +71,9 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
   public slots:
     void showInOverview();
+    void addGroup();
 
   protected slots:
-    void addGroup();
     void removeGroupOrLayer();
     void renameGroupOrLayer();
     void showFeatureCount();
