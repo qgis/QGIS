@@ -131,17 +131,14 @@ void QgsSettingsTree::refresh()
   settings->sync();
 
   // add any settings not in QgsSettings object, so it will show up in the tree view
-  if ( settings )
+  QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();
+  while ( it != settingsMap.constEnd() )
   {
-    QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();
-    while ( it != settingsMap.constEnd() )
+    if ( ! settings->contains( it.key() ) )
     {
-      if ( ! settings->contains( it.key() ) )
-      {
-        settings->setValue( it.key(), it.value().at( 3 ) );
-      }
-      ++it;
+      settings->setValue( it.key(), it.value().at( 3 ) );
     }
+    ++it;
   }
 
   updateChildItems( nullptr );
