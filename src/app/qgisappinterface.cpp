@@ -380,7 +380,7 @@ QList<QgsComposerInterface *> QgisAppInterface::openComposers()
     {
       if ( *it )
       {
-        QgsComposerInterface *v = ( *it )->interface();
+        QgsComposerInterface *v = ( *it )->iface();
         if ( v )
         {
           composerInterfaceList << v;
@@ -396,7 +396,7 @@ QgsComposerInterface *QgisAppInterface::openComposer( QgsComposition *compositio
   QgsComposer *composerObj = qgis->openComposer( composition );
   if ( composerObj )
   {
-    return composerObj->interface();
+    return composerObj->iface();
   }
   return nullptr;
 }

@@ -677,7 +677,7 @@ QgsComposer::~QgsComposer()
   delete mPrinter;
 }
 
-QgsComposerInterface *QgsComposer::interface()
+QgsComposerInterface *QgsComposer::iface()
 {
   return mInterface;
 }

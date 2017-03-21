@@ -97,7 +97,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposer( QgsComposition *composition );
     ~QgsComposer();
 
-    QgsComposerInterface *interface();
+    QgsComposerInterface *iface();
 
     //! Set the pixmap / icons on the toolbar buttons
     void setupTheme();
