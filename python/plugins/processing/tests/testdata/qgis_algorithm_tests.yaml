@@ -2570,3 +2570,14 @@ tests:
       METHOD: '1'
       NUMBER: 50
     results: {}
+
+  - algorithm: script:randomselection
+    name: Select by expression
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/random_selection_number.gml
+        type: vector
