@@ -48,12 +48,12 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
 {
   mLegendModel = new QgsLegendModel( mComposition->project()->layerTreeRoot() );
 
-  connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
-  connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( onAtlasFeature( QgsFeature * ) ) );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsComposerLegend::onAtlasEnded );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLegend::onAtlasFeature );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
-  connect( mComposition->project()->layerTreeRoot(), SIGNAL( customPropertyChanged( QgsLayerTreeNode *, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode *, QString ) ) );
+  connect( mComposition->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsComposerLegend::nodeCustomPropertyChanged );
 }
 
 QgsComposerLegend::QgsComposerLegend()

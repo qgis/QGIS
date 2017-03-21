@@ -67,7 +67,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 
   if ( mComposition )
   {
-    QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SLOT( handleFrameRemoval( QgsComposerItem * ) ) );
+    connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
   }
 
   //get default composer font from settings

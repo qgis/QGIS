@@ -1923,8 +1923,8 @@ QgsComposerItemGroup *QgsComposition::groupItems( QList<QgsComposerItem *> items
   addItem( itemGroup );
 
   QgsGroupUngroupItemsCommand *c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Grouped, itemGroup, this, tr( "Items grouped" ) );
-  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SIGNAL( itemRemoved( QgsComposerItem * ) ) );
-  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem * ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem * ) ) );
+  connect( c, &QgsGroupUngroupItemsCommand::itemRemoved, this, &QgsComposition::itemRemoved );
+  connect( c, &QgsGroupUngroupItemsCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
 
   undoStack()->push( c );
   mProject->setDirty( true );
@@ -1947,8 +1947,8 @@ QList<QgsComposerItem *> QgsComposition::ungroupItems( QgsComposerItemGroup *gro
   // Call this before removing group items so it can keep note
   // of contents
   QgsGroupUngroupItemsCommand *c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Ungrouped, group, this, tr( "Items ungrouped" ) );
-  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SIGNAL( itemRemoved( QgsComposerItem * ) ) );
-  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem * ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem * ) ) );
+  connect( c, &QgsGroupUngroupItemsCommand::itemRemoved, this, &QgsComposition::itemRemoved );
+  connect( c, &QgsGroupUngroupItemsCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
 
   undoStack()->push( c );
   mProject->setDirty( true );
@@ -2431,7 +2431,7 @@ void QgsComposition::addComposerArrow( QgsComposerArrow *arrow )
   addItem( arrow );
 
   updateBounds();
-  connect( arrow, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( arrow, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( arrow );
 }
@@ -2441,7 +2441,7 @@ void QgsComposition::addComposerPolygon( QgsComposerPolygon *polygon )
   addItem( polygon );
 
   updateBounds();
-  connect( polygon, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( polygon, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( polygon );
 }
@@ -2451,7 +2451,7 @@ void QgsComposition::addComposerPolyline( QgsComposerPolyline *polyline )
   addItem( polyline );
 
   updateBounds();
-  connect( polyline, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( polyline, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( polyline );
 }
@@ -2461,7 +2461,7 @@ void QgsComposition::addComposerLabel( QgsComposerLabel *label )
   addItem( label );
 
   updateBounds();
-  connect( label, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( label, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( label );
 }
@@ -2470,7 +2470,7 @@ void QgsComposition::addComposerMap( QgsComposerMap *map )
 {
   addItem( map );
   updateBounds();
-  connect( map, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( map, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( map );
 }
@@ -2480,7 +2480,7 @@ void QgsComposition::addComposerScaleBar( QgsComposerScaleBar *scaleBar )
   addItem( scaleBar );
 
   updateBounds();
-  connect( scaleBar, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( scaleBar, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( scaleBar );
 }
@@ -2490,7 +2490,7 @@ void QgsComposition::addComposerLegend( QgsComposerLegend *legend )
   addItem( legend );
 
   updateBounds();
-  connect( legend, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( legend, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( legend );
 }
@@ -2500,7 +2500,7 @@ void QgsComposition::addComposerPicture( QgsComposerPicture *picture )
   addItem( picture );
 
   updateBounds();
-  connect( picture, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( picture, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( picture );
 }
@@ -2510,7 +2510,7 @@ void QgsComposition::addComposerShape( QgsComposerShape *shape )
   addItem( shape );
 
   updateBounds();
-  connect( shape, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( shape, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( shape );
 }
@@ -2520,7 +2520,7 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml *, QgsComposerFrame *
   addItem( frame );
 
   updateBounds();
-  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( frame );
 }
@@ -2530,7 +2530,7 @@ void QgsComposition::addComposerTableFrame( QgsComposerAttributeTableV2 *, QgsCo
   addItem( frame );
 
   updateBounds();
-  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( updateBounds() ) );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposition::updateBounds );
 
   emit itemAdded( frame );
 }
@@ -2632,8 +2632,8 @@ void QgsComposition::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand *c 
     return;
   }
 
-  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SIGNAL( itemRemoved( QgsComposerItem * ) ) );
-  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem * ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem * ) ) );
+  connect( c, &QgsAddRemoveItemCommand::itemRemoved, this, &QgsComposition::itemRemoved );
+  connect( c, &QgsAddRemoveItemCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
 }
 
 void QgsComposition::sendItemAddedSignal( QgsComposerItem *item )

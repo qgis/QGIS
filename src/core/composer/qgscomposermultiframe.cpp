@@ -25,7 +25,7 @@ QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition *c, bool createUndo
   , mIsRecalculatingSize( false )
 {
   mComposition->addMultiFrame( this );
-  connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
+  connect( mComposition, &QgsComposition::nPagesChanged, this, &QgsComposerMultiFrame::handlePageChange );
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame()
@@ -315,13 +315,13 @@ void QgsComposerMultiFrame::deleteFrames()
 {
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
-  QObject::disconnect( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SLOT( handleFrameRemoval( QgsComposerItem * ) ) );
+  disconnect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
   Q_FOREACH ( QgsComposerFrame *frame, mFrameItems )
   {
     mComposition->removeComposerItem( frame, false );
     delete frame;
   }
-  QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SLOT( handleFrameRemoval( QgsComposerItem * ) ) );
+  connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
   mFrameItems.clear();
   mResizeMode = bkResizeMode;
 }

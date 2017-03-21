@@ -65,10 +65,10 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
   mWebPage->setPalette( palette );
 
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-  QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
+  connect( mWebPage, &QWebPage::loadFinished, this, &QgsComposerHtml::frameLoaded );
   if ( mComposition )
   {
-    QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SLOT( handleFrameRemoval( QgsComposerItem * ) ) );
+    connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
   }
 
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
@@ -80,10 +80,10 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
 
   //connect to atlas feature changes
   //to update the expression context
-  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( refreshExpressionContext() ) );
+  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerHtml::refreshExpressionContext );
 
   mFetcher = new QgsNetworkContentFetcher();
-  connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, this, [ = ] { frameLoaded(); } );
 
 }
 
@@ -329,7 +329,7 @@ double QgsComposerHtml::htmlUnitsToMM()
 void QgsComposerHtml::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
 {
   mFrameItems.push_back( frame );
-  QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposerHtml::recalculateFrameSizes );
   if ( mComposition )
   {
     mComposition->addComposerHtmlFrame( this, frame );

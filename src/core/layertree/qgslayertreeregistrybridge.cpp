@@ -30,11 +30,11 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mInsertionPointGroup( root )
   , mInsertionPointIndex( 0 )
 {
-  connect( mProject, SIGNAL( legendLayersAdded( QList<QgsMapLayer *> ) ), this, SLOT( layersAdded( QList<QgsMapLayer *> ) ) );
-  connect( mProject, SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
+  connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
+  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
 
-  connect( mRoot, SIGNAL( willRemoveChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( groupWillRemoveChildren( QgsLayerTreeNode *, int, int ) ) );
-  connect( mRoot, SIGNAL( removedChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( groupRemovedChildren() ) );
+  connect( mRoot, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeRegistryBridge::groupWillRemoveChildren );
+  connect( mRoot, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeRegistryBridge::groupRemovedChildren );
 }
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )

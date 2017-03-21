@@ -734,7 +734,7 @@ void QgsAuthManager::setScheduledAuthDatabaseErase( bool scheduleErase )
     if ( !mScheduledDbEraseTimer )
     {
       mScheduledDbEraseTimer = new QTimer( this );
-      connect( mScheduledDbEraseTimer, SIGNAL( timeout() ), this, SLOT( tryToStartDbErase() ) );
+      connect( mScheduledDbEraseTimer, &QTimer::timeout, this, &QgsAuthManager::tryToStartDbErase );
       mScheduledDbEraseTimer->start( mScheduledDbEraseRequestWait * 1000 );
     }
     else if ( !mScheduledDbEraseTimer->isActive() )
@@ -2823,8 +2823,8 @@ QgsAuthManager::QgsAuthManager()
   , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
 {
   mMutex = new QMutex( QMutex::Recursive );
-  connect( this, SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-           this, SLOT( writeToConsole( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+  connect( this, &QgsAuthManager::messageOut,
+           this, &QgsAuthManager::writeToConsole );
 }
 
 QgsAuthManager::~QgsAuthManager()

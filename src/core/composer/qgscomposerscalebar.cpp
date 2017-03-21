@@ -198,8 +198,8 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
-    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
+    disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
+    disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerScaleBar::invalidateCurrentMap );
   }
   mComposerMap = map;
 
@@ -208,8 +208,8 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap *map )
     return;
   }
 
-  connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  connect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
+  connect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
+  connect( mComposerMap, &QObject::destroyed, this, &QgsComposerScaleBar::invalidateCurrentMap );
 
   refreshSegmentMillimeters();
   emit itemChanged();
@@ -222,8 +222,8 @@ void QgsComposerScaleBar::invalidateCurrentMap()
     return;
   }
 
-  disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-  disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
+  disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
+  disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerScaleBar::invalidateCurrentMap );
   mComposerMap = nullptr;
 }
 
@@ -923,8 +923,8 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
     mComposerMap = composerMap;
     if ( mComposerMap )
     {
-      connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
-      connect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
+      connect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
+      connect( mComposerMap, &QObject::destroyed, this, &QgsComposerScaleBar::invalidateCurrentMap );
     }
   }
 
