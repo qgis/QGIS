@@ -1524,6 +1524,20 @@ tests:
         type: vector
 
   - algorithm: qgis:extractbyattribute
+    name: Extract by attribute (does not contain)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '10'
+      VALUE: a
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_does_not_contain.gml
+        type: vector
+
+  - algorithm: qgis:extractbyattribute
     name: Extract by attribute (greater)
     params:
       FIELD: floatval
