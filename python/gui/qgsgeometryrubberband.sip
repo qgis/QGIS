@@ -54,7 +54,7 @@ class QgsGeometryRubberBand: QgsMapCanvasItem
     ~QgsGeometryRubberBand();
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
-    void setGeometry( QgsAbstractGeometryV2* geom );
+    void setGeometry( QgsAbstractGeometryV2* geom /Transfer/ );
     /** Returns a pointer to the geometry*/
     const QgsAbstractGeometryV2* geometry();
     /** Moves vertex to new position (in map coordinates)*/
