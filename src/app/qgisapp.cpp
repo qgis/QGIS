@@ -3119,7 +3119,8 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
-QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, bool synced, bool showCursor, bool scaleSynced, double scaleFactor )
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area,
+    bool synced, bool showCursor, bool scaleSynced, double scaleFactor )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3134,17 +3135,6 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
   QgsMapCanvasDockWidget *mapCanvasWidget = new QgsMapCanvasDockWidget( name, this );
   mapCanvasWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
   mapCanvasWidget->setMainCanvas( mMapCanvas );
-
-  mapCanvasWidget->setFloating( isFloating );
-  if ( dockGeometry.isEmpty() )
-  {
-    // try to guess a nice initial placement for view - about 3/4 along, half way down
-    mapCanvasWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
-  }
-  else
-  {
-    mapCanvasWidget->setGeometry( dockGeometry );
-  }
 
   QgsMapCanvas *mapCanvas = mapCanvasWidget->mapCanvas();
   mapCanvas->freeze( true );
@@ -3168,11 +3158,35 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
     Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
   }
 
-  addDockWidget( Qt::RightDockWidgetArea, mapCanvasWidget );
   mapCanvas->freeze( false );
   markDirty();
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
+
+  mapCanvasWidget->setFloating( isFloating );
+  if ( dockGeometry.isEmpty() )
+  {
+    // try to guess a nice initial placement for view - about 3/4 along, half way down
+    mapCanvasWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+    addDockWidget( area, mapCanvasWidget );
+  }
+  else
+  {
+    if ( !isFloating )
+    {
+      // ugly hack, but only way to set dock size correctly for Qt < 5.6
+      mapCanvasWidget->setFixedSize( dockGeometry.size() );
+      addDockWidget( area, mapCanvasWidget );
+      mapCanvasWidget->resize( dockGeometry.size() );
+      QgsApplication::processEvents(); // required!
+      mapCanvasWidget->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
+    }
+    else
+    {
+      mapCanvasWidget->setGeometry( dockGeometry );
+      addDockWidget( area, mapCanvasWidget );
+    }
+  }
 
   mapCanvasWidget->setViewCenterSynchronized( synced );
   mapCanvasWidget->setCursorMarkerVisible( showCursor );
@@ -11788,6 +11802,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "width" ), w->width() );
     node.setAttribute( QStringLiteral( "height" ), w->height() );
     node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
+    node.setAttribute( QStringLiteral( "area" ), dockWidgetArea( w ) );
     node.setAttribute( QStringLiteral( "synced" ), w->isViewCenterSynchronized() );
     node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
@@ -11830,8 +11845,9 @@ void QgisApp::readProject( const QDomDocument &doc )
       bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
+      Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elementNode.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
-      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), synced, showCursor, scaleSynced, scaleFactor );
+      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), area, synced, showCursor, scaleSynced, scaleFactor );
       mapCanvas->readProject( doc );
     }
   }
