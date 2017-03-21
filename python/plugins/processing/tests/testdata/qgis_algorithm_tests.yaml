@@ -2550,3 +2550,23 @@ tests:
       OUTPUT_LAYER:
         name: expected/select_by_expression.gml
         type: vector
+
+  - algorithm: qgis:randomextract
+    name: Random extract by number
+    params:
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      METHOD: '0'
+      NUMBER: 4
+    results: {}
+
+  - algorithm: qgis:randomextract
+    name: Random extract by percentage
+    params:
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      METHOD: '1'
+      NUMBER: 50
+    results: {}
