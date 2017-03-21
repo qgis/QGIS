@@ -110,7 +110,7 @@ void QgsComposition::init()
   connect( &mAtlasComposition, &QgsAtlasComposition::coverageLayerChanged, this, [this] { refreshDataDefinedProperty(); } );
   connect( &mAtlasComposition, &QgsAtlasComposition::featureChanged, this, [this] { refreshDataDefinedProperty(); } );
   //also, refreshing composition triggers a recalculation of data defined properties
-  connect( this, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshDataDefinedProperty() ) );
+  connect( this, &QgsComposition::refreshItemsTriggered, this, [ = ] { refreshDataDefinedProperty(); } );
   //toggling atlas or changing coverage layer requires data defined expressions to be reprepared
   connect( &mAtlasComposition, &QgsAtlasComposition::toggled, this, [this] { prepareAllDataDefinedExpressions(); } );
   connect( &mAtlasComposition, &QgsAtlasComposition::coverageLayerChanged, this, [this] { prepareAllDataDefinedExpressions(); } );
@@ -188,15 +188,6 @@ void QgsComposition::updateBounds()
 void QgsComposition::refreshItems()
 {
   emit refreshItemsTriggered();
-  //force a redraw on all maps
-  QList<QgsComposerMap *> maps;
-  composerItems( maps );
-  QList<QgsComposerMap *>::iterator mapIt = maps.begin();
-  for ( ; mapIt != maps.end(); ++mapIt )
-  {
-    ( *mapIt )->cache();
-    ( *mapIt )->update();
-  }
 }
 
 void QgsComposition::setSelectedItem( QgsComposerItem *item )

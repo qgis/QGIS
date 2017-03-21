@@ -1121,6 +1121,7 @@ void QgsComposerMap::connectUpdateSlot()
     connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
     connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
   }
+  connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::updateCachedImage );
 }
 
 bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
