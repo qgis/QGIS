@@ -2525,3 +2525,14 @@ tests:
       OUTPUT_LAYER:
         name: expected/selected_points.gml
         type: vector
+
+  - algorithm: script:selectbyexpression
+    name: Select by expression
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/select_by_expression.gml
+        type: vector
