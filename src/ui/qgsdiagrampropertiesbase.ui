@@ -291,7 +291,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QgsScrollArea" name="scrollArea">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -527,7 +527,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QScrollArea" name="scrollArea_4">
+               <widget class="QgsScrollArea" name="scrollArea_4">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -1118,7 +1118,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QScrollArea" name="scrollArea_5">
+               <widget class="QgsScrollArea" name="scrollArea_5">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -1434,7 +1434,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QScrollArea" name="scrollArea_6">
+               <widget class="QgsScrollArea" name="scrollArea_6">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -1860,7 +1860,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QScrollArea" name="scrollArea_7">
+               <widget class="QgsScrollArea" name="scrollArea_7">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -2079,7 +2079,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QScrollArea" name="scrollArea_2">
+               <widget class="QgsScrollArea" name="scrollArea_2">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -2170,9 +2170,38 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>
@@ -2186,32 +2215,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -28,6 +28,7 @@
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
+#include "qgsscrollarea.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -95,7 +96,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mAttributeForm = new QgsAttributeForm( mLayer, QgsFeature(), mEditorContext );
   if ( !context.parentContext() )
   {
-    mAttributeEditorScrollArea = new QScrollArea();
+    mAttributeEditorScrollArea = new QgsScrollArea();
     mAttributeEditorScrollArea->setWidgetResizable( true );
     mAttributeEditor->layout()->addWidget( mAttributeEditorScrollArea );
     mAttributeEditorScrollArea->setWidget( mAttributeForm );

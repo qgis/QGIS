@@ -29,11 +29,11 @@
 
 #include <QLabel>
 #include <QWidget>
-#include <QScrollArea>
 #include <QPushButton>
 #include <QBuffer>
-
 #include <QResizeEvent>
+
+class QgsScrollArea;
 
 /**
 * \class eVisGenericEventBrowserGui
@@ -81,7 +81,7 @@ class eVisImageDisplayWidget : public QWidget
     int mCurrentZoomStep;
 
     //! \brief widget to display the image in
-    QScrollArea *mDisplayArea = nullptr;
+    QgsScrollArea *mDisplayArea = nullptr;
 
     //! \brief Method that actually display the image in the widget
     void displayImage();

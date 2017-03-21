@@ -30,13 +30,14 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import Qt, QUrl, QMetaObject
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
-                                 QHBoxLayout, QTabWidget, QWidget, QScrollArea,
+                                 QHBoxLayout, QTabWidget, QWidget,
                                  QTextBrowser)
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.core import QgsNetworkAccessManager
 
-from qgis.gui import QgsMessageBar
+from qgis.gui import (QgsMessageBar,
+                      QgsScrollArea)
 
 from processing.gui.wrappers import InvalidParameterValue
 from processing.gui.MultipleInputPanel import MultipleInputPanel
@@ -187,7 +188,7 @@ class ModelerParametersDialog(QDialog):
         self.tabWidget.setMinimumWidth(300)
         self.paramPanel = QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.scrollArea = QScrollArea()
+        self.scrollArea = QgsScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, self.tr('Parameters'))

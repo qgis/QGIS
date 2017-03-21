@@ -37,6 +37,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgssettings.h"
+#include "qgsscrollarea.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
@@ -550,7 +551,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
 
   QVBoxLayout *layout = new QVBoxLayout( &dialog );
 
-  QScrollArea *scrollArea = new QScrollArea( &dialog );
+  QgsScrollArea *scrollArea = new QgsScrollArea( &dialog );
   scrollArea->setFrameShape( QFrame::NoFrame );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( scrollArea );
