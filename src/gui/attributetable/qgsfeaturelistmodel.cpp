@@ -132,11 +132,10 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     return Qt::AlignLeft;
   }
 
-
   if ( role == Qt::BackgroundColorRole
-       || Qt::TextColorRole
-       || Qt::DecorationRole
-       || Qt::FontRole )
+       || role == Qt::TextColorRole
+       || role == Qt::DecorationRole
+       || role == Qt::FontRole )
   {
     QgsVectorLayer *layer = mFilterModel->layer();
     QgsFeature feat;
