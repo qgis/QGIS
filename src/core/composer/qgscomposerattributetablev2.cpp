@@ -85,7 +85,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition *compos
     connect( mComposition->project(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString & ) ) );
 
     //refresh table attributes when composition is refreshed
-    connect( mComposition, SIGNAL( refreshItemsTriggered() ), this, SLOT( refreshAttributes() ) );
+    connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerTableV2::refreshAttributes );
 
     //connect to atlas feature changes to update table rows
     connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( refreshAttributes() ) );

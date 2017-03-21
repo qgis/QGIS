@@ -1001,7 +1001,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
         if ( mCanvas )
         {
           composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
-          composerMap->setLayers( mCanvas->mapSettings().layers() );
         }
 
         composition()->addComposerMap( composerMap );
@@ -1543,7 +1542,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
           pt = mapToScene( viewport()->rect().center() );
         }
         bool pasteInPlace = ( mode == PasteModeInPlace );
-        composition()->addItemsFromXml( docElem, doc, nullptr, true, &pt, pasteInPlace );
+        composition()->addItemsFromXml( docElem, doc, true, &pt, pasteInPlace );
       }
     }
   }

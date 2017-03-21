@@ -46,6 +46,8 @@ class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
 class QgsComposer;
+class QgsComposerInterface;
+class QgsComposition;
 class QgsComposerManager;
 class QgsComposerView;
 class QgsContrastEnhancement;
@@ -129,6 +131,7 @@ class QgsDiagramProperties;
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -278,6 +281,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Get stylesheet builder object for app and print composers
     QgisAppStyleSheet *styleSheetBuilder();
 
+    //! Populates a menu with actions for opening print composers
+    void populateComposerMenu( QMenu *menu );
+
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
     //! Returns a pointer to the internal clipboard
@@ -332,6 +338,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
     //! Creates a new composer and returns a pointer to it
     QgsComposer *createNewComposer( QString title = QString() );
+
+    /**
+     * Opens a composer window for an existing \a composition.
+     */
+    QgsComposer *openComposer( QgsComposition *composition );
+
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
 
@@ -1362,11 +1374,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    //! Creates the composer instances in a project file and adds them to the menu
-    bool loadComposersFromProject( const QDomDocument &doc );
-
     //! Slot to handle display of composers menu, e.g. sorting
-    void on_mPrintComposersMenu_aboutToShow();
+    void composerMenuAboutToShow();
+    void compositionAboutToBeRemoved( const QString &name );
 
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );
@@ -1472,17 +1482,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * can change there tool button icons. */
     void currentThemeChanged( const QString & );
 
-    /** This signal is emitted when a new composer instance has been created
-       */
-    void composerAdded( QgsComposerView *v );
+    /**
+     * This signal is emitted when a new composer window is opened
+     */
+    void composerOpened( QgsComposerInterface *composer );
 
-    /** This signal is emitted before a new composer instance is going to be removed
-      */
-    void composerWillBeRemoved( QgsComposerView *v );
+    /**
+     * This signal is emitted before a composer window is going to be closed
+     * and deleted.
+     */
+    void composerWillBeClosed( QgsComposerInterface *composer );
 
-    /** This signal is emitted when a composer instance has been removed
-       @note added in version 2.3*/
-    void composerRemoved( QgsComposerView *v );
+    /**
+     * This signal is emitted when a composer window has been closed.
+     */
+    void composerClosed( QgsComposerInterface *composer );
 
     //! This signal is emitted when QGIS' initialization is complete
     void initializationCompleted();
@@ -1550,6 +1564,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Deletes all the composer objects and clears mPrintComposers
     void deletePrintComposers();
+
+    void setupLayoutManagerConnections();
+
+    void setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction );
+
+    void setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat );
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
 
@@ -1876,8 +1896,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsDecorationItem *> mDecorationItems;
 
-    int mLastComposerId;
-
     //! Persistent GPS toolbox
     QgsGPSInformationWidget *mpGpsWidget = nullptr;
 
@@ -1922,6 +1940,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsWelcomePage *mWelcomePage = nullptr;
 
     QStackedWidget *mCentralContainer = nullptr;
+
+    QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
 
     int mProjOpen;
 

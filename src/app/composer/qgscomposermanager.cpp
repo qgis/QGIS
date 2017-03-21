@@ -22,6 +22,9 @@
 #include "qgscomposition.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgscomposerview.h"
+#include "qgslayoutmanager.h"
+#include "qgsproject.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -39,25 +42,25 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerManager/geometry" ) ).toByteArray() );
 
-  mComposerListWidget->setItemDelegate( new QgsComposerNameDelegate( mComposerListWidget ) );
+  mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
+                                      this );
+  mComposerListView->setModel( mModel );
 
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-  connect( QgisApp::instance(), SIGNAL( composerAdded( QgsComposerView * ) ), this, SLOT( refreshComposers() ) );
-  connect( QgisApp::instance(), SIGNAL( composerRemoved( QgsComposerView * ) ), this, SLOT( refreshComposers() ) );
-
-  connect( mComposerListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleButtons() ) );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( mComposerListView->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &QgsComposerManager::toggleButtons );
 
   mShowButton = mButtonBox->addButton( tr( "&Show" ), QDialogButtonBox::ActionRole );
-  connect( mShowButton, SIGNAL( clicked() ), this, SLOT( show_clicked() ) );
+  connect( mShowButton, &QAbstractButton::clicked, this, &QgsComposerManager::showClicked );
 
   mDuplicateButton = mButtonBox->addButton( tr( "&Duplicate" ), QDialogButtonBox::ActionRole );
-  connect( mDuplicateButton, SIGNAL( clicked() ), this, SLOT( duplicate_clicked() ) );
+  connect( mDuplicateButton, &QAbstractButton::clicked, this, &QgsComposerManager::duplicateClicked );
 
   mRemoveButton = mButtonBox->addButton( tr( "&Remove" ), QDialogButtonBox::ActionRole );
-  connect( mRemoveButton, SIGNAL( clicked() ), this, SLOT( remove_clicked() ) );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsComposerManager::removeClicked );
 
   mRenameButton = mButtonBox->addButton( tr( "Re&name" ), QDialogButtonBox::ActionRole );
-  connect( mRenameButton, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
+  connect( mRenameButton, &QAbstractButton::clicked, this, &QgsComposerManager::renameClicked );
 
 #ifdef Q_OS_MAC
   // Create action to select this window
@@ -78,8 +81,6 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
   this->addTemplates( this->otherTemplates() );
 
   mTemplatePathLineEdit->setText( settings.value( QStringLiteral( "UI/ComposerManager/templatePath" ), QString() ).toString() );
-
-  refreshComposers();
 }
 
 QgsComposerManager::~QgsComposerManager()
@@ -88,65 +89,10 @@ QgsComposerManager::~QgsComposerManager()
   settings.setValue( QStringLiteral( "Windows/ComposerManager/geometry" ), saveGeometry() );
 }
 
-void QgsComposerManager::refreshComposers()
-{
-  // Backup selection
-  QSet<QgsComposer *> selectedComposers;
-  Q_FOREACH ( QListWidgetItem *item, mComposerListWidget->selectedItems() )
-  {
-    QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
-    if ( it != mItemComposerMap.constEnd() )
-    {
-      selectedComposers << it.value();
-    }
-  }
-
-  mItemComposerMap.clear();
-  mComposerListWidget->clear();
-
-  QSet<QgsComposer *> composers = QgisApp::instance()->printComposers();
-  QSet<QgsComposer *>::const_iterator it = composers.constBegin();
-  for ( ; it != composers.constEnd(); ++it )
-  {
-    QListWidgetItem *item = new QListWidgetItem( ( *it )->composition()->name(), mComposerListWidget );
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-    mItemComposerMap.insert( item, *it );
-  }
-  mComposerListWidget->sortItems();
-
-  // Restore selection
-  bool selectionRestored = false;
-  if ( !selectedComposers.isEmpty() )
-  {
-    QMap<QListWidgetItem *, QgsComposer *>::const_iterator i = mItemComposerMap.constBegin();
-    while ( i != mItemComposerMap.constEnd() )
-    {
-      // This composer was selected: reselect it !
-      if ( selectedComposers.contains( i.value() ) )
-      {
-        selectionRestored = true;
-        int index = mComposerListWidget->row( i.key() );
-        QModelIndex selectLine = mComposerListWidget->model()->index( index, 0, QModelIndex() );
-        mComposerListWidget->selectionModel()->select( selectLine, QItemSelectionModel::Select );
-      }
-      ++i;
-    }
-  }
-  // Select the first item by default
-  if ( !selectionRestored && mComposerListWidget->count() > 0 )
-  {
-    QModelIndex firstLine = mComposerListWidget->model()->index( 0, 0, QModelIndex() );
-    mComposerListWidget->selectionModel()->select( firstLine, QItemSelectionModel::Select );
-  }
-
-  // Update buttons
-  toggleButtons();
-}
-
 void QgsComposerManager::toggleButtons()
 {
   // Nothing selected: no button.
-  if ( mComposerListWidget->selectedItems().isEmpty() )
+  if ( mComposerListView->selectionModel()->selectedRows().isEmpty() )
   {
     mShowButton->setEnabled( false );
     mRemoveButton->setEnabled( false );
@@ -154,7 +100,7 @@ void QgsComposerManager::toggleButtons()
     mDuplicateButton->setEnabled( false );
   }
   // toggle everything if one composer is selected
-  else if ( mComposerListWidget->selectedItems().count() == 1 )
+  else if ( mComposerListView->selectionModel()->selectedRows().count() == 1 )
   {
     mShowButton->setEnabled( true );
     mRemoveButton->setEnabled( true );
@@ -296,7 +242,6 @@ void QgsComposerManager::on_mAddButton_clicked()
 
   if ( !loadedOK )
   {
-    newComposer->close();
     QgisApp::instance()->deleteComposer( newComposer );
     newComposer = nullptr;
     QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not load template file" ) );
@@ -375,10 +320,9 @@ void QgsComposerManager::changeEvent( QEvent *event )
 }
 #endif
 
-void QgsComposerManager::remove_clicked()
+void QgsComposerManager::removeClicked()
 {
-  QList<QgsComposer *> composerList;
-  QList<QListWidgetItem *> composerItems = mComposerListWidget->selectedItems();
+  QModelIndexList composerItems = mComposerListView->selectionModel()->selectedRows();
   QString title = tr( "Remove composers" );
   QString message = tr( "Do you really want to remove all selected map composers?" );
 
@@ -391,8 +335,8 @@ void QgsComposerManager::remove_clicked()
   if ( composerItems.count() == 1 )
   {
     title = tr( "Remove composer" );
-    QListWidgetItem *uniqItem = composerItems.at( 0 );
-    message = tr( "Do you really want to remove the map composer '%1'?" ).arg( uniqItem->text() );
+    message = tr( "Do you really want to remove the map composer '%1'?" ).arg(
+                mComposerListView->model()->data( composerItems.at( 0 ), Qt::DisplayRole ).toString() );
   }
 
   if ( QMessageBox::warning( this, title, message, QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
@@ -400,73 +344,47 @@ void QgsComposerManager::remove_clicked()
     return;
   }
 
+  QList<QgsComposition *> composerList;
   // Find the QgsComposers that need to be deleted
-  Q_FOREACH ( QListWidgetItem *item, composerItems )
+  Q_FOREACH ( const QModelIndex &index, composerItems )
   {
-    QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
-    if ( it != mItemComposerMap.constEnd() )
+    QgsComposition *c = mModel->compositionFromIndex( index );
+    if ( c )
     {
-      composerList << it.value();
+      composerList << c;
     }
   }
 
   // Once we have the composer list, we can delete all of them !
-  Q_FOREACH ( QgsComposer *c, composerList )
+  Q_FOREACH ( QgsComposition *c, composerList )
   {
-    QgisApp::instance()->deleteComposer( c );
+    QgsProject::instance()->layoutManager()->removeComposition( c );
   }
 }
 
-void QgsComposerManager::show_clicked()
+void QgsComposerManager::showClicked()
 {
-  Q_FOREACH ( QListWidgetItem *item, mComposerListWidget->selectedItems() )
+  Q_FOREACH ( const QModelIndex &index, mComposerListView->selectionModel()->selectedRows() )
   {
-    QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
-    if ( it != mItemComposerMap.constEnd() )
+    QgsComposition *c = mModel->compositionFromIndex( index );
+    if ( c )
     {
-      QgsComposer *c = nullptr;
-      if ( it.value() ) //a normal composer
-      {
-        c = it.value();
-        if ( c )
-        {
-          // extra activation steps for Windows
-          bool shown = c->isVisible();
-
-          c->activate();
-
-          // extra activation steps for Windows
-          if ( !shown )
-          {
-            c->on_mActionZoomAll_triggered();
-          }
-        }
-      }
+      QgisApp::instance()->openComposer( c );
     }
   }
 }
 
-void QgsComposerManager::duplicate_clicked()
+void QgsComposerManager::duplicateClicked()
 {
-  if ( mComposerListWidget->selectedItems().isEmpty() )
+  if ( mComposerListView->selectionModel()->selectedRows().isEmpty() )
   {
     return;
   }
 
-  QgsComposer *currentComposer = nullptr;
-  QString currentTitle;
-
-  QListWidgetItem *item = mComposerListWidget->selectedItems().at( 0 );
-  QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
-  if ( it != mItemComposerMap.constEnd() )
-  {
-    currentComposer = it.value();
-    currentTitle = it.value()->composition()->name();
-  }
-  else
-  {
+  QgsComposition *currentComposer = mModel->compositionFromIndex( mComposerListView->selectionModel()->selectedRows().at( 0 ) );
+  if ( !currentComposer )
     return;
-  }
+  QString currentTitle = currentComposer->name();
 
   QString newTitle;
   if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle + tr( " copy" ) ) )
@@ -479,121 +397,170 @@ void QgsComposerManager::duplicate_clicked()
   dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
   dlg->show();
 
-  QgsComposer *newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
-
+  QgsComposition *newComposition = QgsProject::instance()->layoutManager()->duplicateComposition( currentComposer->name(),
+                                   newTitle );
+  QgsComposer *newComposer = QgisApp::instance()->openComposer( newComposition );
   dlg->close();
   delete dlg;
   dlg = nullptr;
-
-  if ( newComposer )
-  {
-    // extra activation steps for Windows
-    newComposer->activate();
-  }
-  else
+  if ( !newComposer )
   {
     QMessageBox::warning( this, tr( "Duplicate Composer" ),
                           tr( "Composer duplication failed." ) );
   }
-}
-
-void QgsComposerManager::rename_clicked()
-{
-  if ( mComposerListWidget->selectedItems().isEmpty() )
-  {
-    return;
-  }
-
-  QString currentTitle;
-  QgsComposer *currentComposer = nullptr;
-
-  QListWidgetItem *item = mComposerListWidget->selectedItems().at( 0 );
-  QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
-  if ( it != mItemComposerMap.constEnd() )
-  {
-    currentComposer = it.value();
-    currentTitle = it.value()->composition()->name();
-  }
   else
   {
+    newComposer->activate();
+  }
+}
+
+void QgsComposerManager::renameClicked()
+{
+  if ( mComposerListView->selectionModel()->selectedRows().isEmpty() )
+  {
     return;
   }
 
+  QgsComposition *currentComposer = mModel->compositionFromIndex( mComposerListView->selectionModel()->selectedRows().at( 0 ) );
+  if ( !currentComposer )
+    return;
+
+  QString currentTitle = currentComposer->name();
   QString newTitle;
   if ( !QgisApp::instance()->uniqueComposerTitle( this, newTitle, false, currentTitle ) )
   {
     return;
   }
-  currentComposer->composition()->setName( newTitle );
-  item->setText( newTitle );
-
-  mComposerListWidget->sortItems();
+  currentComposer->setName( newTitle );
 }
 
-void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem *item )
+//
+// QgsLayoutManagerModel
+//
+
+QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent )
+  : QAbstractListModel( parent )
+  , mLayoutManager( manager )
 {
-  QMap<QListWidgetItem *, QgsComposer *>::const_iterator it = mItemComposerMap.constFind( item );
-  if ( it != mItemComposerMap.constEnd() )
+  connect( mLayoutManager, &QgsLayoutManager::compositionAboutToBeAdded, this, &QgsLayoutManagerModel::compositionAboutToBeAdded );
+  connect( mLayoutManager, &QgsLayoutManager::compositionAdded, this, &QgsLayoutManagerModel::compositionAdded );
+  connect( mLayoutManager, &QgsLayoutManager::compositionAboutToBeRemoved, this, &QgsLayoutManagerModel::compositionAboutToBeRemoved );
+  connect( mLayoutManager, &QgsLayoutManager::compositionRemoved, this, &QgsLayoutManagerModel::compositionRemoved );
+  connect( mLayoutManager, &QgsLayoutManager::compositionRenamed, this, &QgsLayoutManagerModel::compositionRenamed );
+}
+
+int QgsLayoutManagerModel::rowCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  return mLayoutManager->compositions().count();
+}
+
+QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
+{
+  if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
+    return QVariant();
+
+  switch ( role )
   {
-    it.value()->composition()->setName( item->text() );
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
+    case Qt::EditRole:
+      return mLayoutManager->compositions().at( index.row() )->name();
+
+    case CompositionRole:
+      return QVariant::fromValue( mLayoutManager->compositions().at( index.row() ) );
+
+    default:
+      return QVariant();
   }
-  mComposerListWidget->sortItems();
 }
 
-
-//
-// QgsComposerNameDelegate
-//
-
-QgsComposerNameDelegate::QgsComposerNameDelegate( QObject *parent )
-  : QItemDelegate( parent )
+bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  if ( !index.isValid() || role != Qt::EditRole )
+  {
+    return false;
+  }
+  if ( index.row() >= mLayoutManager->compositions().count() )
+  {
+    return false;
+  }
 
-}
+  if ( value.toString().isEmpty() )
+    return false;
 
-QWidget *QgsComposerNameDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
-{
-  Q_UNUSED( option );
-  Q_UNUSED( index );
-
-  //create a line edit
-  QLineEdit *lineEdit = new QLineEdit( parent );
-  return lineEdit;
-}
-
-void QgsComposerNameDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
-{
-  QString text = index.model()->data( index, Qt::EditRole ).toString();
-  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
-  lineEdit->setText( text );
-}
-
-void QgsComposerNameDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
-{
-  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
-  QString value = lineEdit->text();
+  QgsComposition *c = compositionFromIndex( index );
+  if ( !c )
+    return false;
 
   //has name changed?
-  bool changed = model->data( index, Qt::EditRole ).toString() != value;
+  bool changed = c->name() != value.toString();
+  if ( !changed )
+    return true;
 
   //check if name already exists
   QStringList cNames;
-  Q_FOREACH ( QgsComposer *c, QgisApp::instance()->printComposers() )
+  Q_FOREACH ( QgsComposition *comp, QgsProject::instance()->layoutManager()->compositions() )
   {
-    cNames << c->composition()->name();
+    cNames << comp->name();
   }
-  if ( changed && cNames.contains( value ) )
+  if ( cNames.contains( value.toString() ) )
   {
     //name exists!
-    QMessageBox::warning( nullptr, tr( "Rename composer" ), tr( "There is already a composer named \"%1\"" ).arg( value ) );
-    return;
+    QMessageBox::warning( nullptr, tr( "Rename composer" ), tr( "There is already a composer named \"%1\"" ).arg( value.toString() ) );
+    return false;
   }
 
-  model->setData( index, QVariant( value ), Qt::EditRole );
+  c->setName( value.toString() );
+  return true;
 }
 
-void QgsComposerNameDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
 {
-  Q_UNUSED( index );
-  editor->setGeometry( option.rect );
+  Qt::ItemFlags flags = QAbstractListModel::flags( index );
+
+  if ( index.isValid() )
+  {
+    return flags | Qt::ItemIsEditable;
+  }
+  else
+  {
+    return flags;
+  }
+}
+
+QgsComposition *QgsLayoutManagerModel::compositionFromIndex( const QModelIndex &index ) const
+{
+  return qobject_cast< QgsComposition * >( qvariant_cast<QObject *>( data( index, CompositionRole ) ) );
+}
+
+void QgsLayoutManagerModel::compositionAboutToBeAdded( const QString & )
+{
+  int row = mLayoutManager->compositions().count();
+  beginInsertRows( QModelIndex(), row, row );
+}
+
+void QgsLayoutManagerModel::compositionAboutToBeRemoved( const QString &name )
+{
+  QgsComposition *c = mLayoutManager->compositionByName( name );
+  int row = mLayoutManager->compositions().indexOf( c );
+  if ( row >= 0 )
+    beginRemoveRows( QModelIndex(), row, row );
+}
+
+void QgsLayoutManagerModel::compositionAdded( const QString & )
+{
+  endInsertRows();
+}
+
+void QgsLayoutManagerModel::compositionRemoved( const QString & )
+{
+  endRemoveRows();
+}
+
+void QgsLayoutManagerModel::compositionRenamed( QgsComposition *composition, const QString & )
+{
+  int row = mLayoutManager->compositions().indexOf( composition );
+  QModelIndex index = createIndex( row, 0 );
+  emit dataChanged( index, index, QVector<int>() << Qt::DisplayRole );
 }

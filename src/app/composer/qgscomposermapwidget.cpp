@@ -908,6 +908,10 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
   // update map
   storeCurrentLayerSet();
   mComposerMap->setKeepLayerSet( state == Qt::Checked );
+  if ( state == Qt::Unchecked )
+  {
+    mComposerMap->setLayers( QList< QgsMapLayer * >() );
+  }
 
   // update gui
   if ( state == Qt::Checked )

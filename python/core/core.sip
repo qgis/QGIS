@@ -225,6 +225,7 @@
 %Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
+%Include composer/qgslayoutmanager.sip
 %Include composer/qgsnumericscalebarstyle.sip
 %Include composer/qgspaperitem.sip
 %Include composer/qgsscalebarstyle.sip

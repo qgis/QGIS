@@ -23,24 +23,36 @@
 
 class QListWidgetItem;
 class QgsComposer;
+class QgsComposition;
+class QgsLayoutManager;
 
-//! Delegate for a line edit for renaming a composer. Prevents entry of duplicate composer names.
-class QgsComposerNameDelegate : public QItemDelegate
+class QgsLayoutManagerModel : public QAbstractListModel
 {
     Q_OBJECT
 
   public:
-    explicit QgsComposerNameDelegate( QObject *parent = nullptr );
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const override;
+    enum Role
+    {
+      CompositionRole = Qt::UserRole + 1,
+    };
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-    void setModelData( QWidget *editor, QAbstractItemModel *model,
-                       const QModelIndex &index ) const override;
+    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent = nullptr );
 
-    void updateEditorGeometry( QWidget *editor,
-                               const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QgsComposition *compositionFromIndex( const QModelIndex &index ) const;
+
+  private slots:
+    void compositionAboutToBeAdded( const QString &name );
+    void compositionAboutToBeRemoved( const QString &name );
+    void compositionAdded( const QString &name );
+    void compositionRemoved( const QString &name );
+    void compositionRenamed( QgsComposition *composition, const QString &newName );
+  private:
+    QgsLayoutManager *mLayoutManager;
 };
 
 /** A dialog that shows the existing composer instances. Lets the user add new
@@ -60,10 +72,6 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
   private:
 
-    /** Stores the relation between items and composer pointers. A 0 pointer for the composer means that
-      this composer needs to be created from a default template*/
-    QMap<QListWidgetItem *, QgsComposer *> mItemComposerMap;
-
     /** Returns the default templates (key: template name, value: absolute path to template file)
      * @param fromUser whether to return user templates from ~/.qgis/composer_templates
      */
@@ -82,6 +90,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QPushButton *mRemoveButton = nullptr;
     QPushButton *mRenameButton = nullptr;
     QPushButton *mDuplicateButton = nullptr;
+    QgsLayoutManagerModel *mModel = nullptr;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );
@@ -103,15 +112,11 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     //! Slot to open user templates dir with user's system
     void on_mTemplatesUserDirBtn_pressed();
 
-    //! Refreshes the list of composers
-    void refreshComposers();
-
-    void remove_clicked();
-    void show_clicked();
+    void removeClicked();
+    void showClicked();
     //! Duplicate composer
-    void duplicate_clicked();
-    void rename_clicked();
-    void on_mComposerListWidget_itemChanged( QListWidgetItem *item );
+    void duplicateClicked();
+    void renameClicked();
 };
 
 #endif // QGSCOMPOSERMANAGER_H

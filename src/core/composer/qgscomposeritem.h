@@ -432,8 +432,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 
-    //! Updates item, with the possibility to do custom update for subclasses
-    virtual void updateItem() { QGraphicsRectItem::update(); }
+    /**
+     * Updates (redraws) the item, with the possibility to do custom update for subclasses.
+     * Subclasses should check updatesEnabled() to determine whether updates are
+     * currently permitted for the item.
+     */
+    virtual void updateItem();
 
     /** Get item's id (which is not necessarly unique)
      * @returns item id
@@ -523,6 +527,26 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note added in QGIS 2.12
      */
     virtual QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Sets whether updates to the item are enabled. If false,
+     * the item will not be redrawn. This can be used to prevent
+     * multiple item updates when many settings for an item are
+     * changed sequentially.
+     * @note added in QGIS 3.0
+     * @see updatesEnabled()
+     */
+    void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
+
+    /**
+     * Returns whether updates to the item are enabled. If false,
+     * the item will not be redrawn. This can be used to prevent
+     * multiple item updates when many settings for an item are
+     * changed sequentially.
+     * @note added in QGIS 3.0
+     * @see setUpdatesEnabled()
+     */
+    bool updatesEnabled() const { return mUpdatesEnabled; }
 
   public slots:
 
@@ -693,6 +717,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     QString mTemplateUuid;
     // true if composition manages the z value for this item
     bool mCompositionManagesZValue;
+
+    /**
+     * Whether updates to the item are enabled. If false,
+     * the item should not be redrawn.
+     */
+    bool mUpdatesEnabled = true;
 
     /** Refresh item's rotation, considering data defined rotation setting
       *@param updateItem set to false to prevent the item being automatically updated

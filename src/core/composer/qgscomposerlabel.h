@@ -162,6 +162,8 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     void loadingHtmlFinished( bool );
 
   private:
+    bool mFirstRender = true;
+
     // Text
     QString mText;
 
@@ -200,8 +202,6 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;
 
-    std::unique_ptr<QgsFeature> mExpressionFeature;
-    QgsVectorLayer *mExpressionLayer = nullptr;
     QgsDistanceArea *mDistanceArea = nullptr;
 
     QgsWebPage *mWebPage = nullptr;

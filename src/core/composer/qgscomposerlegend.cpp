@@ -348,6 +348,9 @@ void QgsComposerLegend::updateLegend()
 
 void QgsComposerLegend::updateItem()
 {
+  if ( !updatesEnabled() )
+    return;
+
   updateFilterByMap( false );
   QgsComposerItem::updateItem();
 }

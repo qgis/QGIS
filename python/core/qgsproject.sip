@@ -309,12 +309,11 @@ class QgsProject : QObject, QgsExpressionContextGenerator
       @return home path of project (or QString::null if not set) */
     QString homePath() const;
 
-    QgsRelationManager* relationManager() const;
+    QgsRelationManager *relationManager() const;
 
-    /** Return pointer to the root (invisible) node of the project's layer tree
-     * @note added in 2.4
-     */
-    QgsLayerTreeGroup* layerTreeRoot() const;
+    //const QgsLayoutManager *layoutManager() const;
+    QgsLayoutManager *layoutManager();
+    QgsLayerTreeGroup *layerTreeRoot() const;
 
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
      * @note added in 2.4

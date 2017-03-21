@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QListWidget" name="mComposerListWidget">
+    <widget class="QListView" name="mComposerListView">
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
@@ -154,7 +154,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mComposerListView</tabstop>
   <tabstop>mTemplateGrpBox</tabstop>
   <tabstop>mTemplate</tabstop>
   <tabstop>mAddButton</tabstop>

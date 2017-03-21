@@ -45,6 +45,7 @@
 #include "qgsprojectbadlayerhandler.h"
 #include "qgssettings.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgslayoutmanager.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -325,6 +326,7 @@ QgsProject::QgsProject( QObject *parent )
   , mSnappingConfig( this )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
+  , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTreeGroup )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
@@ -461,6 +463,7 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mAnnotationManager->clear();
+  mLayoutManager->clear();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
 
@@ -947,6 +950,7 @@ bool QgsProject::read()
   mMapThemeCollection->readXml( *doc );
 
   mAnnotationManager->readXml( doc->documentElement(), *doc );
+  mLayoutManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
@@ -1323,6 +1327,9 @@ bool QgsProject::write()
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
   qgisNode.appendChild( annotationsElem );
+
+  QDomElement layoutElem = mLayoutManager->writeXml( *doc );
+  qgisNode.appendChild( layoutElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -1985,6 +1992,16 @@ QString QgsProject::homePath() const
 QgsRelationManager *QgsProject::relationManager() const
 {
   return mRelationManager;
+}
+
+const QgsLayoutManager *QgsProject::layoutManager() const
+{
+  return mLayoutManager.get();
+}
+
+QgsLayoutManager *QgsProject::layoutManager()
+{
+  return mLayoutManager.get();
 }
 
 QgsLayerTreeGroup *QgsProject::layerTreeRoot() const

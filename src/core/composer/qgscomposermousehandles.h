@@ -19,6 +19,7 @@
 
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QPointer>
 
 #include "qgis_core.h"
 
@@ -110,7 +111,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
   private:
 
     QgsComposition *mComposition; //reference to composition
-    QGraphicsView *mGraphicsView; //reference to QGraphicsView
+    QPointer< QGraphicsView > mGraphicsView; //reference to QGraphicsView
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
     //! Start point of the last mouse move action (in scene coordinates)

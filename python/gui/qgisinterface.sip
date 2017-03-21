@@ -210,28 +210,10 @@ class QgisInterface : QObject
     /** Adds a widget to the user input tool bar.*/
     virtual void addUserInputWidget( QWidget* widget ) = 0;
 
-    /** Return mainwindows / composer views of running composer instances (currently only one) */
-    virtual QList<QgsComposerView*> activeComposers() = 0;
+    virtual QList<QgsComposerInterface *> openComposers() = 0;
+    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
+    virtual void closeComposer( QgsComposition *composition ) = 0;
 
-    /** Create a new composer
-     * @param title window title for new composer (one will be generated if empty)
-     * @return pointer to composer's view
-     * @note new composer window will be shown and activated
-     */
-    virtual QgsComposerView* createNewComposer( const QString& title = QString() ) = 0;
-
-    /** Duplicate an existing parent composer from composer view
-     * @param composerView pointer to existing composer view
-     * @param title window title for duplicated composer (one will be generated if empty)
-     * @return pointer to duplicate composer's view
-     * @note duplicate composer window will be hidden until loaded, then shown and activated
-     */
-    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) = 0;
-
-    /** Deletes parent composer of composer view, after closing composer window */
-    virtual void deleteComposer( QgsComposerView* composerView ) = 0;
-
-    /** Return changeable options built from settings and/or defaults */
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
     /** Generate stylesheet
@@ -527,29 +509,10 @@ class QgisInterface : QObject
     virtual int messageTimeout() = 0;
 
   signals:
-    /** Emitted whenever current (selected) layer changes.
-     *  The pointer to layer can be null if no layer is selected
-     */
-    void currentLayerChanged( QgsMapLayer * layer );
-
-    /**
-     * This signal is emitted when a new composer instance has been created
-     */
-    void composerAdded( QgsComposerView* v );
-
-    /**
-     * This signal is emitted before a new composer instance is going to be removed
-     */
-    void composerWillBeRemoved( QgsComposerView* v );
-
-    /** This signal is emitted when a composer instance has been removed
-     * @note added in version 2.9
-     */
-    void composerRemoved( QgsComposerView* v );
-
-    /**
-     * This signal is emitted when the initialization is complete
-     */
+    void currentLayerChanged( QgsMapLayer *layer );
+    void composerOpened( QgsComposerInterface *composer );
+    void composerWillBeClosed( QgsComposerInterface *composer );
+    void composerClosed( QgsComposerInterface *composer );
     void initializationCompleted();
     /** Emitted when a project file is successfully read
      * @note

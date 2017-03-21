@@ -205,30 +205,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget *widget ) override;
 
-    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-    QList<QgsComposerView *> activeComposers() override;
-
-    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-
-    /** Create a new composer
-     * @param title window title for new composer (one will be generated if empty)
-     * @return pointer to composer's view
-     * @note new composer window will be shown and activated
-     */
-    QgsComposerView *createNewComposer( const QString &title = QString() ) override;
-
-    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-
-    /** Duplicate an existing parent composer from composer view
-     * @param composerView pointer to existing composer view
-     * @param title window title for duplicated composer (one will be generated if empty)
-     * @return pointer to duplicate composer's view
-     * @note duplicate composer window will be hidden until loaded, then shown and activated
-     */
-    QgsComposerView *duplicateComposer( QgsComposerView *composerView, const QString &title = QString() ) override;
-
-    //! Deletes parent composer of composer view, after closing composer window
-    void deleteComposer( QgsComposerView *composerView ) override;
+    QList<QgsComposerInterface *> openComposers() override;
+    QgsComposerInterface *openComposer( QgsComposition *composition ) override;
+    void closeComposer( QgsComposition *composition ) override;
 
     //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
