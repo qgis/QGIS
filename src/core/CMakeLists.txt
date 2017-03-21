@@ -383,6 +383,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsmultisurface.cpp
   geometry/qgspointv2.cpp
   geometry/qgspolygon.cpp
+  geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
 
@@ -922,6 +923,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultisurface.h
   geometry/qgspointv2.h
   geometry/qgspolygon.h
+  geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
