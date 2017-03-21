@@ -37,6 +37,9 @@
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 
+// Qt5KeyChain library
+#include "keychain.h"
+
 namespace QCA
 {
   class Initializer;
@@ -496,7 +499,53 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Return pointer to mutex
     QMutex *mutex() { return mMutex; }
 
+    //! Error message getter
+    //! @note not available in Python bindings
+    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; }
+
+    //! Delete master password from wallet
+    //! @note not available in Python bindings
+    bool passwordHelperDelete();
+
+    //! Password helper enabled getter
+    //! @note not available in Python bindings
+    bool passwordHelperEnabled() const;
+
+    //! Password helper enabled setter
+    //! @note not available in Python bindings
+    void setPasswordHelperEnabled( const bool enabled );
+
+    //! Password helper logging enabled getter
+    //! @note not available in Python bindings
+    bool passwordHelperLoggingEnabled() const;
+
+    //! Password helper logging enabled setter
+    //! @note not available in Python bindings
+    void setPasswordHelperLoggingEnabled( const bool enabled );
+
+    //! Store the password manager into the wallet
+    //! @note not available in Python bindings
+    bool passwordHelperSync( );
+
+    //! The display name of the password helper (platform dependent)
+    static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    //! The display name of the Authentication Manager
+    static const QString AUTH_MAN_TAG;
+
   signals:
+
+    /**
+     * Signals emitted on password helper failure,
+     * mainly used in the tests to exit main application loop
+     */
+    void passwordHelperFailure();
+
+    /**
+     * Signals emitted on password helper success,
+     * mainly used in the tests to exit main application loop
+     */
+    void passwordHelperSuccess();
 
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
@@ -506,6 +555,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param level Message log level
      */
     void messageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+
+    /**
+     * Custom logging signal to inform the user about master password <-> password manager interactions
+     * @see QgsMessageLog
+     * @param message Message to send
+     * @param tag Associated tag (title)
+     * @param level Message log level
+     */
+    void passwordHelperMessageOut( const QString &message, const QString &tag = AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = INFO ) const;
+
 
     /**
      * Emitted when a password has been verify (or not)
@@ -543,6 +602,31 @@ class CORE_EXPORT QgsAuthManager : public QObject
     explicit QgsAuthManager();
 
   private:
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Password Helper methods
+
+    //! Return name for logging
+    QString passwordHelperName() const;
+
+    //! Print a debug message in QGIS
+    void passwordHelperLog( const QString &msg ) const;
+
+    //! Read Master password from the wallet
+    QString passwordHelperRead();
+
+    //! Store Master password in the wallet
+    bool passwordHelperWrite( const QString &password );
+
+    //! Error message setter
+    void passwordHelperSetErrorMessage( const QString errorMessage ) { mPasswordHelperErrorMessage = errorMessage; }
+
+    //! Clear error code and message
+    void passwordHelperClearErrors();
+
+    //! Process the error: show it and/or disable the password helper system in case of
+    //! access denied or no backend, reset error flags at the end
+    void passwordHelperProcessError();
 
     bool createConfigTables();
 
@@ -604,7 +688,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static const QString AUTH_SERVERS_TABLE;
     static const QString AUTH_AUTHORITIES_TABLE;
     static const QString AUTH_TRUST_TABLE;
-    static const QString AUTH_MAN_TAG;
     static const QString AUTH_CFG_REGEX;
 
     bool mAuthInit;
@@ -637,6 +720,31 @@ class CORE_EXPORT QgsAuthManager : public QObject
     // cache of SSL errors to be ignored in network connections, per sha-hostport
     QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
 #endif
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Password Helper Variables
+
+    //! Master password verification has failed
+    bool mPasswordHelperVerificationError;
+
+    //! Store last error message
+    QString mPasswordHelperErrorMessage;
+
+    //! Store last error code (enum)
+    QKeychain::Error mPasswordHelperErrorCode;
+
+    //! Enable logging
+    bool mPasswordHelperLoggingEnabled;
+
+    //! Whether the keychain bridge failed to initialize
+    bool mPasswordHelperFailedInit;
+
+    //! Master password name in the wallets
+    static const QLatin1String AUTH_PASSWORD_HELPER_KEY_NAME;
+
+    //! password helper folder in the wallets
+    static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;
+
 };
 
 #endif // QGSAUTHMANAGER_H

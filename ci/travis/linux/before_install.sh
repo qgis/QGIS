@@ -22,7 +22,7 @@
 pushd ${HOME}
 
 # fetching data from github should be just as fast as S3
-curl -s -S -L https://github.com/opengisch/osgeo4travis/archive/qt5bin.tar.gz | tar --strip-components=1 -xz -C /home/travis &
+curl -s -S -L https://github.com/opengisch/osgeo4travis/archive/qt55bin.tar.gz | tar --strip-components=1 -xz -C /home/travis &
 SETUP_OSGEO4W_PID=$!
 
 mkdir /home/travis/osgeo4travis
