@@ -74,7 +74,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     //! If we should add layers in a group
     //! @note added in 3.0
-    bool addToGroupCheckbox() const { return checkboxAddToGroup->isChecked(); }
+    bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
 
   public slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
@@ -83,10 +83,13 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   protected:
     QString mName;
     QStringList mSelectedSubLayers;
-    bool mShowCount;  //!< Whether to show number of features in the table
-    bool mShowType;   //!< Whether to show type in the table
-    bool mShowAddToGroupCheckbox;   //!< Whether to show the add to group checkbox
-    QCheckBox *checkboxAddToGroup = nullptr;
+    bool mShowCount = false;  //!< Whether to show number of features in the table
+    bool mShowType = false;   //!< Whether to show type in the table
+
+  private:
+
+    bool mShowAddToGroupCheckbox = false;   //!< Whether to show the add to group checkbox
+    QCheckBox *mCheckboxAddToGroup = nullptr;
 };
 
 #endif

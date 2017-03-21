@@ -25,8 +25,6 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
                                         QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mName( name )
-  , mShowCount( false )
-  , mShowType( false )
 {
   setupUi( this );
 
@@ -61,11 +59,13 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   restoreGeometry( settings.value( "/Windows/" + mName + "SubLayers/geometry" ).toByteArray() );
 
   // Checkbox about adding sublayers to a group
-  checkboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ) );
-  bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
-  checkboxAddToGroup->setChecked( addToGroup );
   if ( mShowAddToGroupCheckbox )
-    buttonBox->addButton( checkboxAddToGroup, QDialogButtonBox::ActionRole );
+  {
+    mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ) );
+    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+    mCheckboxAddToGroup->setChecked( addToGroup );
+    buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
+  }
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
@@ -185,6 +185,7 @@ int QgsSublayersDialog::exec()
   if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
 
-  settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), checkboxAddToGroup->isChecked() );
+  if ( mCheckboxAddToGroup )
+    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
   return ret;
 }
