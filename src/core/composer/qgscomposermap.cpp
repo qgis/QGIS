@@ -295,10 +295,8 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
   else if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
-    //draw cached pixmap. This function does not call cache() any more because
-    //Qt 4.4.0 and 4.4.1 have problems with recursive paintings
-    //QgsComposerMap::cache() and QgsComposerMap::update() need to be called by
-    //client functions
+    if ( mCacheImage.isNull() )
+      cache();
 
     //Background color is already included in cached image, so no need to draw
 
