@@ -27,10 +27,11 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   , mName( name )
   , mShowCount( false )
   , mShowType( false )
+  , mProviderType( providerType )
 {
   setupUi( this );
 
-  if ( providerType == QgsSublayersDialog::Ogr )
+  if ( mProviderType == QgsSublayersDialog::Ogr )
   {
     setWindowTitle( tr( "Select vector layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
@@ -38,7 +39,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
     mShowCount = true;
     mShowType = true;
   }
-  else if ( providerType == QgsSublayersDialog::Gdal )
+  else if ( mProviderType == QgsSublayersDialog::Gdal )
   {
     setWindowTitle( tr( "Select raster layers to add..." ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
@@ -106,6 +107,10 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
       if ( !_isLayerIdUnique( def.layerId, layersTable ) )
         def.type = item->text( mShowCount ? 3 : 2 );
     }
+    if ( mProviderType == QgsSublayersDialog::Ogr )
+    { // Ogr-Internal use only - no needed to show to user
+     def.geometryName = item->text(  mShowCount ? 4 : 3 ).toInt();
+    }
 
     list << def;
   }
@@ -123,6 +128,10 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
       elements << QString::number( item.count );
     if ( mShowType )
       elements << item.type;
+    if ( mProviderType == QgsSublayersDialog::Ogr )
+    {  // Ogr-Internal use only - no needed to show to user
+     elements << item.geometryName;
+    }
     layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
 

@@ -628,6 +628,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   sInstance = this;
+  Qgis::ogrRuntimeSupport();
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   namSetup();
@@ -3683,7 +3684,23 @@ void QgisApp::about()
     versionString += QLatin1String( "</tr><tr>" );
 
     versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
-    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
+    QString gdalString = tr( "Running against GDAL/OGR" );
+    if (( !Qgis::ogrRuntimeSupport() ) || ( !Qgis::gdalRuntimeSupport() ) )
+    {
+      if (( !Qgis::ogrRuntimeSupport() ) && ( !Qgis::gdalRuntimeSupport() ) )
+      {
+        gdalString = tr( "Running against a Deprecated  GDAL/OGR" );
+        if ( !Qgis::ogrRuntimeSupport() )
+        {
+          gdalString = tr( "Running against GDAL/ Deprecated[OGR]" );
+        }
+        else
+        {
+          gdalString = tr( "Running against Deprecated[GDAL]  / OGR" );
+        }
+      }
+    }
+    versionString += "<td>" + gdalString  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
 
     versionString += QLatin1String( "</tr><tr>" );
 
@@ -4280,11 +4297,15 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   Q_FOREACH ( const QgsSublayersDialog::LayerDefinition &def, chooseSublayersDialog.selection() )
   {
     QString layerGeometryType = def.type;
-    QString composedURI = uri + "|layerid=" + QString::number( def.layerId );
+    QString composedURI = uri + "|layerid=" + QString::number( def.layerId ) + "|layername=" + def.layerName;
 
     if ( !layerGeometryType.isEmpty() )
     {
       composedURI += "|geometrytype=" + layerGeometryType;
+    }
+    if ( !def.geometryName.isEmpty() )
+    {
+      composedURI += "|geometryname=" + def.geometryName;
     }
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );

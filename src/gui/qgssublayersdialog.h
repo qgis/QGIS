@@ -47,6 +47,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString geometryName;  //!< Name of the geometry (not necessarily unique)
     } LayerDefinition;
 
     //! List of layer definitions for the purpose of this dialog
@@ -87,6 +88,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     bool mShowType;   //!< Whether to show type in the table
     bool mShowAddToGroupCheckbox;   //!< Whether to show the add to group checkbox
     QCheckBox *checkboxAddToGroup = nullptr;
+    ProviderType mProviderType;
 };
 
 #endif

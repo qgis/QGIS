@@ -111,6 +111,8 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
   mGeoTransform[3] =  0;
   mGeoTransform[4] =  0;
   mGeoTransform[5] = -1;
+  if ( !Qgis::gdalRuntimeSupport() )
+    return;
   setError( error );
 }
 
@@ -133,6 +135,8 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   mGeoTransform[3] =  0;
   mGeoTransform[4] =  0;
   mGeoTransform[5] = -1;
+  if ( !Qgis::gdalRuntimeSupport() )
+    return;
 
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
