@@ -265,30 +265,25 @@ QRectF QgsRectangle::toRectF() const
   return QRectF( static_cast< qreal >( xmin ), static_cast< qreal >( ymin ), static_cast< qreal >( xmax - xmin ), static_cast< qreal >( ymax - ymin ) );
 }
 
-// Return a string representation of the rectangle with automatic or high precision
-QString QgsRectangle::toString( bool automaticPrecision ) const
+// Returns a string representation of form xmin,ymin : xmax,ymax. Coordinates will be truncated
+// to the specified \a precision. If \a precision is less than 0 then a suitable minimum precision
+// will be automatically calculated.
+QString QgsRectangle::toString( int precision ) const
 {
-  if ( automaticPrecision )
+  QString rep;
+
+  if ( precision < 0 )
   {
-    int precision = 0;
-    if ( ( width() < 1 || height() < 1 ) && ( width() > 0 && height() > 0 ) )
+    precision = 0;
+    if ( ( width() < 10 || height() < 10 ) && ( width() > 0 && height() > 0 ) )
     {
       precision = static_cast<int>( ceil( -1.0 * log10( qMin( width(), height() ) ) ) ) + 1;
       // sanity check
       if ( precision > 20 )
         precision = 20;
     }
-    return toString( precision );
   }
-  else
-    return toString( 16 );
-}
 
-// overloaded version of above fn to allow precision to be set
-// Return a string representation of the rectangle with high precision
-QString QgsRectangle::toString( int precision ) const
-{
-  QString rep;
   if ( isEmpty() )
     rep = QStringLiteral( "Empty" );
   else
