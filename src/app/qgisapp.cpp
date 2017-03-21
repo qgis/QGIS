@@ -7066,11 +7066,10 @@ void QgisApp::setupLayoutManagerConnections()
   connect( manager, &QgsLayoutManager::compositionAdded, this, [ = ]( const QString & name )
   {
     QgsComposition *c = QgsProject::instance()->layoutManager()->compositionByName( name );
-    if ( c )
-    {
-      mAtlasFeatureActions.insert( c, nullptr );
-    }
+    if ( !c )
+      return;
 
+    mAtlasFeatureActions.insert( c, nullptr );
     connect( c, &QgsComposition::nameChanged, this, [this, c]( const QString & name )
     {
       QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
