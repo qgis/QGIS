@@ -48,6 +48,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mXyMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
   mXyMarker->setIconSize( 6 );
   mXyMarker->setColor( QColor( 30, 30, 30, 225 ) );
+  mXyMarker->setFillColor( QColor( 255, 255, 255, 225 ) );
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );
 

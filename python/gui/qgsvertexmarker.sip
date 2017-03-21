@@ -17,23 +17,24 @@ class QgsVertexMarker : QgsMapCanvasItem
       ICON_CIRCLE
     };
 
-    QgsVertexMarker( QgsMapCanvas* mapCanvas /TransferThis/ );
+    QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );
 
-    void setCenter( const QgsPoint& point );
+    void setCenter( const QgsPoint &point );
 
     void setIconType( int iconType );
 
     void setIconSize( int iconSize );
-
-    void setColor( const QColor& color );
+    void setColor( const QColor &color );
+    QColor color() const;
+    void setFillColor( const QColor &color );
+    QColor fillColor() const;
 
     void setPenWidth( int width );
 
-    void paint( QPainter* p );
+    void paint( QPainter *p );
 
     QRectF boundingRect() const;
 
     virtual void updatePosition();
-
 };
 

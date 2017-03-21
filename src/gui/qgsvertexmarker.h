@@ -47,7 +47,38 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     void setIconSize( int iconSize );
 
+    /**
+     * Sets the stroke \a color for the marker.
+     * @see color()
+     * @see setFillColor()
+     */
     void setColor( const QColor &color );
+
+    /**
+     * Returns the stroke color for the marker.
+     * @see setColor()
+     * @see fillColor()
+     * @note added in QGIS 3.0
+     */
+    QColor color() const { return mColor; }
+
+    /**
+     * Sets the fill \a color for the marker. This setting only
+     * applies to some icon types.
+     * @note added in QGIS 3.0
+     * @see fillColor()
+     * @see setColor()
+     */
+    void setFillColor( const QColor &color );
+
+    /**
+     * Returns the fill \a color for the marker. This setting only
+     * applies to some icon types.
+     * @note added in QGIS 3.0
+     * @see setFillColor()
+     * @see color()
+     */
+    QColor fillColor() const { return mFillColor; }
 
     void setPenWidth( int width );
 
@@ -57,22 +88,26 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     virtual void updatePosition() override;
 
-  protected:
+  private:
 
     //! icon to be shown
-    int mIconType;
+    int mIconType = ICON_X;
 
     //! size
-    int mIconSize;
+    int mIconSize = 10;
 
     //! coordinates of the point in the center
     QgsPoint mCenter;
 
     //! color of the marker
-    QColor mColor;
+    QColor mColor = QColor( 255, 0, 0 );
 
     //! pen width
-    int mPenWidth;
+    int mPenWidth = 1;
+
+    //! Fill color
+    QColor mFillColor = QColor( 0, 0, 0, 0 );
+
 };
 
 #endif

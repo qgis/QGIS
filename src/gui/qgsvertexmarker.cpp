@@ -20,12 +20,7 @@
 
 QgsVertexMarker::QgsVertexMarker( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
-{
-  mIconSize = 10;
-  mIconType = ICON_X;
-  mColor = QColor( 255, 0, 0 );
-  mPenWidth = 1;
-}
+{}
 
 void QgsVertexMarker::setIconType( int type )
 {
@@ -47,6 +42,13 @@ void QgsVertexMarker::setCenter( const QgsPoint &point )
 void QgsVertexMarker::setColor( const QColor &color )
 {
   mColor = color;
+  update();
+}
+
+void QgsVertexMarker::setFillColor( const QColor &color )
+{
+  mFillColor = color;
+  update();
 }
 
 void QgsVertexMarker::setPenWidth( int width )
@@ -61,6 +63,8 @@ void QgsVertexMarker::paint( QPainter *p )
   QPen pen( mColor );
   pen.setWidth( mPenWidth );
   p->setPen( pen );
+  QBrush brush( mFillColor );
+  p->setBrush( brush );
 
   switch ( mIconType )
   {
