@@ -2572,7 +2572,7 @@ tests:
     results: {}
 
   - algorithm: script:randomselection
-    name: Select by expression
+    name: Random Selection with point input
     params:
       INPUT_LAYER:
         name: points.gml
@@ -2580,4 +2580,15 @@ tests:
     results:
       OUTPUT_LAYER:
         name: expected/random_selection_number.gml
+        type: vector
+
+  - algorithm: script:randomselectionwithinsubsets
+    name: Random selection within subset
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/random_selection_subset.gml
         type: vector
