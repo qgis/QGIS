@@ -123,9 +123,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize">
+     <property name="maximumSize">
       <size>
-       <width>0</width>
+       <width>16777215</width>
        <height>50</height>
       </size>
      </property>
@@ -148,7 +148,7 @@
         <x>0</x>
         <y>0</y>
         <width>850</width>
-        <height>494</height>
+        <height>487</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -180,16 +180,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QgsDoubleSpinBox" name="mPositionSpinBox">
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
            <widget class="QPushButton" name="mDeleteStopButton">
             <property name="text">
@@ -214,6 +204,16 @@
            <widget class="QgsCompoundColorWidget" name="mColorWidget" native="true">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsDoubleSpinBox" name="mPositionSpinBox">
+            <property name="suffix">
+             <string> %</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
             </property>
            </widget>
           </item>
@@ -249,7 +249,7 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>200</height>
+              <height>180</height>
              </size>
             </property>
            </widget>
@@ -331,6 +331,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QwtPlot</class>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -346,12 +352,6 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsGradientStopEditor</class>
