@@ -73,7 +73,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   else
   {
     QgsRectangle filterRect = mSource->provider()->extent();
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+    if ( !mRequest.filterRect().isNull() )
       filterRect = filterRect.intersect( &mRequest.filterRect() );
     while ( mFeatureIterator < mSource->provider()->featureCount() )
     {

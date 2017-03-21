@@ -142,9 +142,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
       //handled below
       break;
 
-    case QgsFeatureRequest::FilterRect:
-      // Handled in the if-statement above
-      break;
   }
 
   if ( mSource->mRequestedGeomType != QgsWkbTypes::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )

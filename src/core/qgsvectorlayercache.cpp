@@ -310,7 +310,6 @@ bool QgsVectorLayerCache::canUseCacheForRequest( const QgsFeatureRequest &featur
       break;
     }
     case QgsFeatureRequest::FilterNone:
-    case QgsFeatureRequest::FilterRect:
     case QgsFeatureRequest::FilterExpression:
     {
       if ( mFullCache )

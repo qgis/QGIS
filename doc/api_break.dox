@@ -1062,6 +1062,9 @@ QgsFeatureRequest        {#qgis_api_break_3_0_QgsFeatureRequest}
 -----------------
 
 - AllAttributes was renamed to ALL_ATTRIBUTES
+- FilterRect was removed. This enum value was unused, and QgsFeatureRequest.filterRect() should be used
+instead. Check for a null rectangle returned by filterRect() to determine whether a filter rect
+is in place.
 
 QgsFieldCombobox        {#qgis_api_break_3_0_QgsFieldCombobox}
 ----------------
