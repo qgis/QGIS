@@ -27,6 +27,7 @@
 #include <qgsvectorlayerjoinbuffer.h>
 #include <qgslayerdefinition.h>
 #include <qgsproject.h>
+#include "qgslayertree.h"
 
 /** @ingroup UnitTests
  * This is a unit test for the vector layer join buffer

@@ -57,6 +57,7 @@ class QgsTransactionGroup;
 class QgsVectorLayer;
 class QgsAnnotationManager;
 class QgsLayoutManager;
+class QgsLayerTree;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -395,7 +396,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /** Return pointer to the root (invisible) node of the project's layer tree
      * @note added in 2.4
      */
-    QgsLayerTreeGroup *layerTreeRoot() const;
+    QgsLayerTree *layerTreeRoot() const;
 
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
      * @note added in 2.4
@@ -705,22 +706,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void reloadAllLayers();
 
-    /**
-     * Returns an ordered list of layers. This list reflects the order of layers as
-     * drawn in the main map canvas for the project.
-     * @note added in QGIS 3.0
-     * @see setLayerOrder()
-     */
-    QList< QgsMapLayer * > layerOrder() const;
-
-    /**
-     * Sets the \a order for layers in the project. This list reflects the order of layers shown in
-     * the layer tree for the project.
-     * @note added in QGIS 3.0
-     * @see layerOrder()
-     */
-    void setLayerOrder( const QList< QgsMapLayer * > &order );
-
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
@@ -923,13 +908,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
-    /**
-     * Emitted when the order of layers in the project is changed.
-     * @note added in QGIS 3.0
-     * @see setLayerOrder()
-     */
-    void layerOrderChanged();
-
   public slots:
 
     /**
@@ -989,8 +967,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QMap<QString, QgsMapLayer *> mMapLayers;
 
-    QgsWeakMapLayerPointerList mLayerOrder;
-
     QString mErrorMessage;
 
     QgsProjectBadLayerHandler *mBadLayerHandler = nullptr;
@@ -1008,7 +984,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
 
-    QgsLayerTreeGroup *mRootGroup = nullptr;
+    QgsLayerTree *mRootGroup = nullptr;
 
     QgsLayerTreeRegistryBridge *mLayerTreeRegistryBridge = nullptr;
 

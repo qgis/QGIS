@@ -180,7 +180,7 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterLayerOrder() const
   if ( !mProject )
     return QList< QgsMapLayer * >();
 
-  return mProject->layerOrder();
+  return mProject->layerTreeRoot()->layerOrder();
 }
 
 QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const

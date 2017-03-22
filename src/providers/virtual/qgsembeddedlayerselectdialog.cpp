@@ -25,6 +25,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <layertree/qgslayertreemodel.h>
 #include <layertree/qgslayertreegroup.h>
 #include <layertree/qgslayertreelayer.h>
+#include <layertree/qgslayertree.h>
 #include <qgsproviderregistry.h>
 #include <qgsvectordataprovider.h>
 

@@ -20,7 +20,6 @@
 
 #include "qgswmsconfigparser.h"
 #include "qgsserverprojectparser.h"
-#include "qgslayertreegroup.h"
 #include "qgis_server.h"
 
 class QgsAccessControl;
@@ -28,6 +27,7 @@ class QgsAccessControl;
 class QTextDocument;
 class QSvgRenderer;
 class QgsMapSettings;
+class QgsLayerTree;
 
 class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
 {
@@ -165,7 +165,7 @@ class SERVER_EXPORT QgsWmsProjectParser : public QgsWmsConfigParser
     void addLayersFromGroup( const QDomElement &legendGroupElem, QMap< int, QgsMapLayer *> &layers, bool useCache = true ) const;
 
     QDomElement composerByName( const QString &composerName ) const;
-    QgsLayerTreeGroup *projectLayerTreeGroup() const;
+    QgsLayerTree *projectLayerTreeGroup() const;
 
     static bool annotationPosition( const QDomElement &elem, double scaleFactor, double &xPos, double &yPos );
     static void drawAnnotationRectangle( QPainter *p, const QDomElement &elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );

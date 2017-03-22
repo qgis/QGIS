@@ -29,7 +29,7 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsSelectLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent = nullptr );
+    QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
     ~QgsSelectLayerTreeModel();
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;

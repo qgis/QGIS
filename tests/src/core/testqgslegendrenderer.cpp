@@ -128,7 +128,7 @@ class TestQgsLegendRenderer : public QObject
     void testDiagramSizeLegend();
 
   private:
-    QgsLayerTreeGroup *mRoot = nullptr;
+    QgsLayerTree *mRoot = nullptr;
     QgsVectorLayer *mVL1; // line
     QgsVectorLayer *mVL2; // polygon
     QgsVectorLayer *mVL3; // point
@@ -223,7 +223,7 @@ void TestQgsLegendRenderer::init()
   QgsCategorizedSymbolRenderer *r3 = new QgsCategorizedSymbolRenderer( QStringLiteral( "test_attr" ), cats );
   mVL3->setRenderer( r3 );
 
-  mRoot = new QgsLayerTreeGroup();
+  mRoot = new QgsLayerTree();
   QgsLayerTreeGroup *grp1 = mRoot->addGroup( QStringLiteral( "Line + Polygon" ) );
   grp1->addLayer( mVL1 );
   grp1->addLayer( mVL2 );
@@ -327,7 +327,7 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setSizeUnit( QgsUnitTypes::RenderMillimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( mVL3 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -481,7 +481,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 
   QString testName = QStringLiteral( "legend_filter_by_map_dupe" );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -507,7 +507,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsFillSymbol *sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
 
   QList< QgsVectorLayer * > layers;
   for ( int i = 1; i <= itemCount; ++i )
@@ -565,7 +565,7 @@ void TestQgsLegendRenderer::testRasterStroke()
 {
   QString testName = QStringLiteral( "legend_raster_border" );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( mRL );
 
   QgsLayerTreeModel legendModel( root.get() );
@@ -673,7 +673,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -713,7 +713,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 

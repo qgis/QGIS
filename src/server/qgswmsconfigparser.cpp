@@ -33,6 +33,7 @@
 
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslayertree.h"
 
 #include "qgsrenderer.h"
 #include "qgsvectordataprovider.h"
@@ -553,7 +554,7 @@ void QgsWmsConfigParser::setLayerIdsToLegendModel( QgsLegendModel *model, const 
   }
 
   // get model and layer tree root of the legend
-  QgsLayerTreeGroup *root = model->rootGroup();
+  QgsLayerTree *root = model->rootGroup();
 
 
   // get layerIds find in the layer tree root

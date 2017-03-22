@@ -3378,8 +3378,6 @@ void QgisApp::initLayerTreeView()
   addDockWidget( Qt::LeftDockWidgetArea, mLayerTreeDock );
 
   mLayerTreeCanvasBridge = new QgsLayerTreeMapCanvasBridge( QgsProject::instance()->layerTreeRoot(), mMapCanvas, this );
-  connect( QgsProject::instance(), &QgsProject::writeProject, mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::writeProject );
-  connect( QgsProject::instance(), &QgsProject::readProject, mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::readProject );
 
   mMapLayerOrder = new QgsCustomLayerOrderWidget( mLayerTreeCanvasBridge, this );
   mMapLayerOrder->setObjectName( QStringLiteral( "theMapLayerOrder" ) );
@@ -4768,8 +4766,6 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   prj->clear();
 
   prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( QStringLiteral( "qgis/new_layers_visible" ), true ).toBool() );
-
-  mLayerTreeCanvasBridge->clear();
 
   //set the color for selections
   //the default can be set in qgisoptions
@@ -11833,11 +11829,11 @@ void QgisApp::writeProject( QDomDocument &doc )
   // The <legend> tag is ignored by QGIS application in >= 2.4 and this way also the new project files
   // can be opened in older versions of QGIS without losing information about layer groups.
 
-  QgsLayerTreeNode *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
+  QgsLayerTree *clonedRoot = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), QgsProject::instance() ); // convert absolute paths to relative paths if required
   QDomElement oldLegendElem = QgsLayerTreeUtils::writeOldLegend( doc, QgsLayerTree::toGroup( clonedRoot ),
-                              mLayerTreeCanvasBridge->hasCustomLayerOrder(), mLayerTreeCanvasBridge->customLayerOrder() );
+                              clonedRoot->hasCustomLayerOrder(), clonedRoot->customLayerOrder() );
   delete clonedRoot;
   QDomElement qgisNode = doc.firstChildElement( QStringLiteral( "qgis" ) );
   qgisNode.appendChild( oldLegendElem );

@@ -86,15 +86,12 @@ QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &na
   QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
 
   // also make sure to order the layers according to map canvas order
-  QgsLayerTreeMapCanvasBridge *bridge = QgisApp::instance()->layerTreeCanvasBridge();
-  QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList<QgsMapLayer *> lst;
-  Q_FOREACH ( const QString &layerID, order )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->layerTreeRoot()->layerOrder() )
   {
-    if ( visibleIds.contains( layerID ) )
+    if ( visibleIds.contains( layer->id() ) )
     {
-      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerID ) )
-        lst << layer;
+      lst << layer;
     }
   }
   return lst;

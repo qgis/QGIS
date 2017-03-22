@@ -327,7 +327,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
-  , mRootGroup( new QgsLayerTreeGroup )
+  , mRootGroup( new QgsLayerTree )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -458,7 +458,6 @@ void QgsProject::clear()
   mEvaluateDefaultValues = false;
   mDirty = false;
   mCustomVariables.clear();
-  mLayerOrder.clear();
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -470,7 +469,7 @@ void QgsProject::clear()
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
 
-  mRootGroup->removeAllChildren();
+  mRootGroup->clear();
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -847,7 +846,7 @@ bool QgsProject::read()
 
   mRootGroup->setCustomProperty( QStringLiteral( "loading" ), 1 );
 
-  QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
+  QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree" ) );
   if ( !layerTreeElem.isNull() )
   {
     // read the tree but do not resolve the references (we have not loaded the layers yet)
@@ -855,10 +854,16 @@ bool QgsProject::read()
   }
   else
   {
-    QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
+    QDomElement layerTreeGroupElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
+    if ( !layerTreeGroupElem.isNull() )
+    {
+      mRootGroup->readChildrenFromXml( layerTreeGroupElem );
+    }
+    else
+    {
+      QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
+    }
   }
-
-  QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
 
   mLayerTreeRegistryBridge->setEnabled( false );
 
@@ -894,51 +899,20 @@ bool QgsProject::read()
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
 
-  // load layer order
-  QList< QgsMapLayer * > layerOrder;
-  QDomNodeList layerOrderNodes = doc->elementsByTagName( QStringLiteral( "layerorder" ) );
-  if ( layerOrderNodes.count() )
+  // now that layers are loaded, we can resolve layer tree's references to the layers
+  mRootGroup->resolveReferences( this );
+
+
+  if ( !layerTreeElem.isNull() )
   {
-    QDomElement layerOrderElem = layerOrderNodes.at( 0 ).toElement();
-    for ( int i = 0; i < layerOrderElem.childNodes().count(); ++i )
-    {
-      QDomElement layerElem = layerOrderElem.childNodes().at( i ).toElement();
-      layerOrder << mMapLayers.value( layerElem.attribute( QStringLiteral( "id" ) ) );
-    }
+    mRootGroup->readLayerOrderFromXml( layerTreeElem );
   }
   else
   {
-    //old layer order nodes
-    QStringList order;
+    // Load pre 3.0 configuration
     QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
-    if ( elem.isNull() )
-    {
-      bool oldEnabled;
-      QgsLayerTreeUtils::readOldLegendLayerOrder( doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ), oldEnabled, order );
-    }
-    else
-    {
-      QDomElement customOrderElem = elem.firstChildElement( QStringLiteral( "custom-order" ) );
-      if ( !customOrderElem.isNull() )
-      {
-
-        QDomElement itemElem = customOrderElem.firstChildElement( QStringLiteral( "item" ) );
-        while ( !itemElem.isNull() )
-        {
-          order.append( itemElem.text() );
-          itemElem = itemElem.nextSiblingElement( QStringLiteral( "item" ) );
-        }
-      }
-    }
-    Q_FOREACH ( const QString &id, order )
-    {
-      layerOrder << mMapLayers.value( id );
-    }
+    mRootGroup->readLayerOrderFromXml( elem );
   }
-  setLayerOrder( layerOrder );
-
-  // now that layers are loaded, we can resolve layer tree's references to the layers
-  mRootGroup->resolveReferences( this );
 
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
@@ -1302,7 +1276,7 @@ bool QgsProject::write()
   qgisNode.appendChild( projectLayersNode );
 
   QDomElement layerOrderNode = doc->createElement( QStringLiteral( "layerorder" ) );
-  Q_FOREACH ( QgsMapLayer *layer, layerOrder() )
+  Q_FOREACH ( QgsMapLayer *layer, mRootGroup->customLayerOrder() )
   {
     QDomElement mapLayerElem = doc->createElement( QStringLiteral( "layer" ) );
     mapLayerElem.setAttribute( QStringLiteral( "id" ), layer->id() );
@@ -2004,7 +1978,7 @@ QgsLayoutManager *QgsProject::layoutManager()
   return mLayoutManager.get();
 }
 
-QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
+QgsLayerTree *QgsProject::layerTreeRoot() const
 {
   return mRootGroup;
 }
@@ -2171,7 +2145,6 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
   QStringList layerIds;
   QList<QgsMapLayer *> layerList;
 
-  QList< QgsMapLayer * > currentOrder = layerOrder();
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     // check layer and the registry contains it
@@ -2230,20 +2203,6 @@ void QgsProject::reloadAllLayers()
   {
     layer->reload();
   }
-}
-
-QList<QgsMapLayer *> QgsProject::layerOrder() const
-{
-  return _qgis_listQPointerToRaw( mLayerOrder );
-}
-
-void QgsProject::setLayerOrder( const QList<QgsMapLayer *> &order )
-{
-  if ( order == layerOrder() )
-    return;
-
-  mLayerOrder = _qgis_listRawToQPointer( order );
-  emit layerOrderChanged();
 }
 
 void QgsProject::onMapLayerDeleted( QObject *obj )

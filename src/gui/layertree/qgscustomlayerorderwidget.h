@@ -23,6 +23,7 @@
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeNode;
+class QgsMapLayer;
 
 class QCheckBox;
 class QListView;
@@ -46,15 +47,15 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 
   signals:
 
-  protected slots:
+  private slots:
     void bridgeHasCustomLayerOrderChanged( bool state );
-    void bridgeCustomLayerOrderChanged( const QStringList &order );
+    void bridgeCustomLayerOrderChanged();
     //! Slot triggered when the ivsibility of a node changes
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
     void modelUpdated();
 
-  protected:
+  private:
     QgsLayerTreeMapCanvasBridge *mBridge = nullptr;
 
     QCheckBox *mChkOverride = nullptr;
@@ -89,7 +90,7 @@ class CustomLayerOrderModel : public QAbstractListModel
 
     bool removeRows( int row, int count, const QModelIndex &parent ) override;
 
-    void refreshModel( const QStringList &order );
+    void refreshModel( const QList<QgsMapLayer *> &order );
 
     QStringList order() const { return mOrder; }
 

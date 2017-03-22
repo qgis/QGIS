@@ -223,7 +223,7 @@ bool QgsComposerLegend::resizeToContents() const
   return mSizeToContents;
 }
 
-void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup *rootGroup )
+void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 {
   mLegendModel->setRootGroup( rootGroup ? rootGroup : mComposition->project()->layerTreeRoot() );
 
@@ -237,7 +237,7 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : QgsLayerTree::toGroup( mComposition->project()->layerTreeRoot()->clone() ) );
+  setCustomLayerTree( autoUpdate ? nullptr : mComposition->project()->layerTreeRoot()->clone() );
   adjustBoxSize();
   updateItem();
 }
@@ -528,20 +528,12 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
   }
 
-  QDomElement oldLegendModelElem = itemElem.firstChildElement( QStringLiteral( "Model" ) );
-  if ( !oldLegendModelElem.isNull() )
-  {
-    // QGIS <= 2.4
-    QgsLayerTreeGroup *nodeRoot = new QgsLayerTreeGroup();
-    _readOldLegendGroup( oldLegendModelElem, nodeRoot, mComposition->project() );
-    setCustomLayerTree( nodeRoot );
-  }
-  else
-  {
-    // QGIS >= 2.6
-    QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
-    setCustomLayerTree( QgsLayerTreeGroup::readXml( layerTreeElem, mComposition->project() ) );
-  }
+  // QGIS >= 2.6
+  QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
+  if ( layerTreeElem.isNull() )
+    layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
+
+  setCustomLayerTree( QgsLayerTree::readXml( layerTreeElem ) );
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
@@ -789,7 +781,7 @@ void QgsComposerLegend::onAtlasEnded()
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
 
-QgsLegendModel::QgsLegendModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );

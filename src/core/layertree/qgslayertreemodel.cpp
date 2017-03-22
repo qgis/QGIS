@@ -63,7 +63,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
 
 ///@endcond
 
-QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( rootNode )
   , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
@@ -498,12 +498,12 @@ QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexLis
   return nodesFinal;
 }
 
-QgsLayerTreeGroup *QgsLayerTreeModel::rootGroup() const
+QgsLayerTree *QgsLayerTreeModel::rootGroup() const
 {
   return mRootNode;
 }
 
-void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup *newRootGroup )
+void QgsLayerTreeModel::setRootGroup( QgsLayerTree *newRootGroup )
 {
   beginResetModel();
 

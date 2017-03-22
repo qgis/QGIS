@@ -16,7 +16,7 @@ class QgsLayerTreeUtils
     //! Try to load custom layer order from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
     static bool readOldLegendLayerOrder( const QDomElement& legendElem, bool& hasCustomOrder, QStringList& order );
     //! Return \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
-    static QDomElement writeOldLegend( QDomDocument& doc, QgsLayerTreeGroup* root, bool hasCustomOrder, const QStringList& order );
+    static QDomElement writeOldLegend( QDomDocument& doc, QgsLayerTreeGroup* root, bool hasCustomOrder, const QList<QgsMapLayer *> &order );
 
     //! Convert Qt::CheckState to QString
     static QString checkStateToXml( Qt::CheckState state );

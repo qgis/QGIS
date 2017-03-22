@@ -41,6 +41,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
+#include "qgslayertree.h"
 #include "qgsaccesscontrol.h"
 
 #include <QFileInfo>
@@ -493,7 +494,7 @@ QgsComposition *QgsWmsProjectParser::initComposition( const QString &composerTem
       const QgsComposerMap *map = legend->composerMap();
       if ( !map )
       {
-        QgsLayerTreeGroup *root = model->rootGroup();
+        QgsLayerTree *root = model->rootGroup();
         QStringList layerIds = root->findLayerIds();
         // for each layer find in the layer tree
         // load it if the layer id is not QgsProject
@@ -2297,9 +2298,9 @@ QDomElement QgsWmsProjectParser::composerByName( const QString &composerName ) c
   return composerElem;
 }
 
-QgsLayerTreeGroup *QgsWmsProjectParser::projectLayerTreeGroup() const
+QgsLayerTree *QgsWmsProjectParser::projectLayerTreeGroup() const
 {
-  QgsLayerTreeGroup *rootGroup = new QgsLayerTreeGroup;
+  QgsLayerTree *rootGroup = new QgsLayerTree;
   const QDomDocument *projectDoc = mProjectParser->xmlDocument();
   if ( !projectDoc )
   {
@@ -2317,7 +2318,7 @@ QgsLayerTreeGroup *QgsWmsProjectParser::projectLayerTreeGroup() const
     QgsLayerTreeUtils::readOldLegend( rootGroup, mProjectParser->legendElem() );
     return rootGroup;
   }
-  return QgsLayerTreeGroup::readXml( layerTreeElem, QgsProject::instance() );
+  return QgsLayerTree::readXml( layerTreeElem );
 }
 
 bool QgsWmsProjectParser::annotationPosition( const QDomElement &elem, double scaleFactor, double &xPos, double &yPos )
