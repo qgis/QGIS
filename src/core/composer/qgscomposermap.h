@@ -517,7 +517,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool mCacheUpdated = false;
 
     //! \brief Preview style
-    PreviewMode mPreviewMode = QgsComposerMap::Rectangle;
+    PreviewMode mPreviewMode = QgsComposerMap::Cache;
 
     //! \brief Number of layers when cache was created
     int mNumCachedLayers;
