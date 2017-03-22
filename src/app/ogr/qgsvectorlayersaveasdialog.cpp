@@ -64,7 +64,9 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
     mScaleSpinBox->hide();
   }
 
-  mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
+  bool enableSelectedOnly = layer && layer->selectedFeatureCount() != 0;
+  mSelectedOnly->setEnabled( enableSelectedOnly );
+  mSelectedOnly->setChecked( enableSelectedOnly );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
 }
 
