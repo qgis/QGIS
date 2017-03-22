@@ -45,8 +45,8 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 {
   setupUi( this );
 
-  connect( mShowAllButton, SIGNAL( clicked( bool ) ), this, SLOT( showAll() ) );
-  connect( mHideAllButton, SIGNAL( clicked( bool ) ), this, SLOT( hideAll() ) );
+  connect( mShowAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::showAll );
+  connect( mHideAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::hideAll );
 
   if ( vl )
   {

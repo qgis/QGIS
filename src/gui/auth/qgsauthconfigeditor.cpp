@@ -79,20 +79,20 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     tableViewConfigs->sortByColumn( 1, Qt::AscendingOrder );
     tableViewConfigs->setSortingEnabled( true );
 
-    connect( tableViewConfigs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( tableViewConfigs->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthConfigEditor::selectionChanged );
 
-    connect( tableViewConfigs, SIGNAL( doubleClicked( QModelIndex ) ),
-             this, SLOT( on_btnEditConfig_clicked() ) );
+    connect( tableViewConfigs, &QAbstractItemView::doubleClicked,
+             this, &QgsAuthConfigEditor::on_btnEditConfig_clicked );
 
     if ( mRelayMessages )
     {
-      connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-               this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+      connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+               this, &QgsAuthConfigEditor::authMessageOut );
     }
 
-    connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
-             this, SLOT( refreshTableView() ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+             this, &QgsAuthConfigEditor::refreshTableView );
 
     checkSelection();
 
@@ -104,12 +104,12 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
     mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
 
-    connect( mActionSetMasterPassword, SIGNAL( triggered() ), this, SLOT( setMasterPassword() ) );
-    connect( mActionClearCachedMasterPassword, SIGNAL( triggered() ), this, SLOT( clearCachedMasterPassword() ) );
-    connect( mActionResetMasterPassword, SIGNAL( triggered() ), this, SLOT( resetMasterPassword() ) );
-    connect( mActionClearCachedAuthConfigs, SIGNAL( triggered() ), this, SLOT( clearCachedAuthenticationConfigs() ) );
-    connect( mActionRemoveAuthConfigs, SIGNAL( triggered() ), this, SLOT( removeAuthenticationConfigs() ) );
-    connect( mActionEraseAuthDatabase, SIGNAL( triggered() ), this, SLOT( eraseAuthenticationDatabase() ) );
+    connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::setMasterPassword );
+    connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedMasterPassword );
+    connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::resetMasterPassword );
+    connect( mActionClearCachedAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedAuthenticationConfigs );
+    connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::removeAuthenticationConfigs );
+    connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthConfigEditor::eraseAuthenticationDatabase );
 
     mAuthUtilitiesMenu = new QMenu( this );
     mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
@@ -191,14 +191,14 @@ void QgsAuthConfigEditor::setRelayMessages( bool relay )
 
   if ( mRelayMessages )
   {
-    disconnect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-                this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+    disconnect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+                this, &QgsAuthConfigEditor::authMessageOut );
     mRelayMessages = relay;
     return;
   }
 
-  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-           this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+  connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+           this, &QgsAuthConfigEditor::authMessageOut );
   mRelayMessages = relay;
 }
 

@@ -30,17 +30,17 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
 {
   setupUi( this );
   mDeleteButton->hide();
-  connect( mFieldCombo, SIGNAL( fieldChanged( QString ) ), SLOT( fieldChanged( QString ) ) );
-  connect( fieldRadio, SIGNAL( clicked() ), SLOT( reloadStyles() ) );
-  connect( rowRadio, SIGNAL( clicked() ), SLOT( reloadStyles() ) );
-  connect( mNewButton, SIGNAL( clicked() ), SLOT( addNewRule() ) );
-  connect( mSaveRule, SIGNAL( clicked() ), SLOT( saveRule() ) );
-  connect( mCancelButton, SIGNAL( clicked() ), SLOT( cancelRule() ) );
-  connect( mDeleteButton, SIGNAL( clicked() ), SLOT( deleteRule() ) );
-  connect( listView, SIGNAL( clicked( QModelIndex ) ), SLOT( ruleClicked( QModelIndex ) ) );
-  connect( btnChangeIcon, SIGNAL( clicked() ), SLOT( updateIcon() ) );
-  connect( btnBuildExpression, SIGNAL( clicked() ), SLOT( setExpression() ) );
-  connect( mPresetsList, SIGNAL( currentIndexChanged( int ) ), SLOT( presetSet( int ) ) );
+  connect( mFieldCombo, &QgsFieldComboBox::fieldChanged, this, &QgsFieldConditionalFormatWidget::fieldChanged );
+  connect( fieldRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::reloadStyles );
+  connect( rowRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::reloadStyles );
+  connect( mNewButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::addNewRule );
+  connect( mSaveRule, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::saveRule );
+  connect( mCancelButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::cancelRule );
+  connect( mDeleteButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::deleteRule );
+  connect( listView, &QAbstractItemView::clicked, this, &QgsFieldConditionalFormatWidget::ruleClicked );
+  connect( btnChangeIcon, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::updateIcon );
+  connect( btnBuildExpression, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::setExpression );
+  connect( mPresetsList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldConditionalFormatWidget::presetSet );
   btnBackgroundColor->setAllowAlpha( true );
   btnBackgroundColor->setShowNoColor( true );
   btnTextColor->setAllowAlpha( true );

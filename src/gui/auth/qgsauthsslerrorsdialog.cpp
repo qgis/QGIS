@@ -74,11 +74,11 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
 
     grpbxSslConfig->setChecked( false );
     grpbxSslConfig->setCollapsed( true );
-    connect( grpbxSslConfig, SIGNAL( toggled( bool ) ),
-             this, SLOT( loadUnloadCertificate( bool ) ) );
+    connect( grpbxSslConfig, &QGroupBox::toggled,
+             this, &QgsAuthSslErrorsDialog::loadUnloadCertificate );
 
-    connect( wdgtSslConfig, SIGNAL( readyToSaveChanged( bool ) ),
-             this, SLOT( widgetReadyToSaveChanged( bool ) ) );
+    connect( wdgtSslConfig, &QgsAuthSslConfigWidget::readyToSaveChanged,
+             this, &QgsAuthSslErrorsDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setConfigCheckable( false );
     wdgtSslConfig->certificateGroupBox()->setFlat( true );
   }

@@ -47,21 +47,21 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   {
     setupUi( this );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+             this, &QgsAuthServersEditor::authMessageOut );
 
-    connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
-             this, SLOT( refreshSslConfigsView() ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+             this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     setupSslConfigsTree();
 
-    connect( treeServerConfigs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( treeServerConfigs->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthServersEditor::selectionChanged );
 
-    connect( treeServerConfigs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeServerConfigs, &QTreeWidget::itemDoubleClicked,
+             this, &QgsAuthServersEditor::handleDoubleClick );
 
-    connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshSslConfigsView() ) );
+    connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     btnGroupByOrg->setChecked( false );
     QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );

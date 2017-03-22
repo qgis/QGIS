@@ -124,38 +124,38 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mEnabledButton->setDefaultAction( mEnableAction );
 
   // Connect the UI to the event filter to update constraints
-  connect( mEnableAction, SIGNAL( triggered( bool ) ), this, SLOT( activateCad( bool ) ) );
-  connect( mConstructionModeButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstructionMode( bool ) ) );
-  connect( mParallelButton, SIGNAL( clicked( bool ) ), this, SLOT( additionalConstraintClicked( bool ) ) );
-  connect( mPerpendicularButton, SIGNAL( clicked( bool ) ), this, SLOT( additionalConstraintClicked( bool ) ) );
-  connect( mLockAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
-  connect( mLockDistanceButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
-  connect( mLockXButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
-  connect( mLockYButton, SIGNAL( clicked( bool ) ), this, SLOT( lockConstraint( bool ) ) );
-  connect( mRelativeAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRelative( bool ) ) );
-  connect( mRelativeXButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRelative( bool ) ) );
-  connect( mRelativeYButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRelative( bool ) ) );
-  connect( mRepeatingLockDistanceButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
-  connect( mRepeatingLockAngleButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
-  connect( mRepeatingLockXButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
-  connect( mRepeatingLockYButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstraintRepeatingLock( bool ) ) );
+  connect( mEnableAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::activateCad );
+  connect( mConstructionModeButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstructionMode );
+  connect( mParallelButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
+  connect( mPerpendicularButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::additionalConstraintClicked );
+  connect( mLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
+  connect( mLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
+  connect( mLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
+  connect( mLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::lockConstraint );
+  connect( mRelativeAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
+  connect( mRelativeXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
+  connect( mRelativeYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRelative );
+  connect( mRepeatingLockDistanceButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
+  connect( mRepeatingLockAngleButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
+  connect( mRepeatingLockXButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
+  connect( mRepeatingLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mAngleLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mDistanceLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mYLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
-  connect( mAngleLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
-  connect( mDistanceLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
-  connect( mXLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
-  connect( mYLineEdit, SIGNAL( textEdited( QString ) ), this, SLOT( constraintTextEdited( QString ) ) );
+  connect( mAngleLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
+  connect( mDistanceLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
+  connect( mXLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
+  connect( mYLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   //also watch for focus out events on these widgets
   QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
-  connect( angleWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  connect( angleWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
   QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
-  connect( distanceWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  connect( distanceWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
   QgsFocusWatcher *xWatcher = new QgsFocusWatcher( mXLineEdit );
-  connect( xWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  connect( xWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
   QgsFocusWatcher *yWatcher = new QgsFocusWatcher( mYLineEdit );
-  connect( yWatcher, SIGNAL( focusOut() ), this, SLOT( constraintFocusOut() ) );
+  connect( yWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
 
   // config menu
   QMenu *menu = new QMenu( this );
