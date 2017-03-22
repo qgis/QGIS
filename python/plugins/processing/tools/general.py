@@ -55,17 +55,15 @@ def alglist(text=None):
 def algorithmOptions(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
-        s = ''
+        opts = ''
         for param in alg.parameters:
             if isinstance(param, ParameterSelection):
-                s += param.name + '(' + param.description + ')\n'
-                i = 0
-                for option in param.options:
-                    s += '\t' + str(i) + ' - ' + str(option) + '\n'
-                    i += 1
-        print(s)
+                opts += '{} ({})\n'.format(param.name, param.description)
+                for option in enumerate(param.options):
+                    opts += '\t{} - {}\n'.format(option[0], option[1])
+        print(opts)
     else:
-        print('Algorithm not found')
+        print('Algorithm "{}" not found.'.format(name))
 
 
 def algorithmHelp(name):
@@ -75,7 +73,7 @@ def algorithmHelp(name):
         print(str(alg))
         algorithmOptions(name)
     else:
-        print('Algorithm not found')
+        print('Algorithm "{}" not found.'.format(name))
 
 
 def runalg(algOrName, *args, **kwargs):
