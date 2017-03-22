@@ -195,10 +195,6 @@ class Processing(object):
         return dataobjects.getObjectFromUri(uri)
 
     @staticmethod
-    def runandload(name, *args):
-        Processing.runAlgorithm(name, handleAlgorithmResults, *args)
-
-    @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
         if isinstance(algOrName, GeoAlgorithm):
             alg = algOrName
