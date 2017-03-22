@@ -160,7 +160,7 @@ class Parameter(object):
         """
         Returns the value of this parameter as it should have been
         entered in the console if calling an algorithm using the
-        processing.runalg() method.
+        processing.run() method.
         """
         return str(self.value)
 

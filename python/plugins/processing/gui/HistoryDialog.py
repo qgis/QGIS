@@ -114,7 +114,7 @@ class HistoryDialog(BASE, WIDGET):
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 script = 'import processing\n'
-                script += item.entry.text.replace('runalg(', 'runandload(')
+                script += item.entry.text.replace('run(', 'runAndLoadResults(')
                 exec(script)
 
     def changeText(self):

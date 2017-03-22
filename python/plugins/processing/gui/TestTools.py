@@ -133,7 +133,7 @@ def parseParameters(command):
 def createTest(text):
     definition = {}
 
-    tokens = list(parseParameters(text[len('processing.runalg('):-1]))
+    tokens = list(parseParameters(text[len('processing.run('):-1]))
     cmdname = tokens[0]
     alg = Processing.getAlgorithm(cmdname)
 

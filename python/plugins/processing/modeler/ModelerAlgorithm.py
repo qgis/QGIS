@@ -152,7 +152,7 @@ class Algorithm(object):
                     params.append(safeName(self.outputs[out.name].description).lower())
                 else:
                     params.append(str(None))
-        s.append("outputs_%s=processing.runalg('%s', %s)" % (self.name, self.consoleName, ",".join(params)))
+        s.append("outputs_%s=processing.run('%s', %s)" % (self.name, self.consoleName, ",".join(params)))
         return s
 
 

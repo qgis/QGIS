@@ -99,7 +99,7 @@ def algorithmHelp(name):
         print('Algorithm "{}" not found.'.format(name))
 
 
-def runalg(algOrName, *args, **kwargs):
+def run(algOrName, *args, **kwargs):
     """Executes given algorithm and returns its outputs as dictionary
     object.
     """
@@ -108,7 +108,7 @@ def runalg(algOrName, *args, **kwargs):
         return alg.getOutputValuesAsDictionary()
 
 
-def runandload(name, *args, **kwargs):
+def runAndLoadResults(name, *args, **kwargs):
     """Executes given algorithm and load its results into QGIS project
     when possible.
     """
