@@ -119,6 +119,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     void updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
 
+    /**
+     * Preserve the layer order
+     */
+    void updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer );
+
     QMap<int, int> attributeLookup( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer );
 
     void showWarning( const QString &message );
