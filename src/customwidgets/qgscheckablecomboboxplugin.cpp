@@ -1,7 +1,7 @@
 /***************************************************************************
-   qgspasswordlineeditplugin.cpp
+   qgscheckablecomboboxplugin.cpp
     --------------------------------------
-   Date                 : March 13, 2017
+   Date                 : March 22, 2017
    Copyright            : (C) 2017 Alexander Bruy
    Email                : alexander dot bruy at gmail dot com
 ***************************************************************************
@@ -14,53 +14,53 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgspasswordlineedit.h"
-#include "qgspasswordlineeditplugin.h"
+#include "qgscheckablecombobox.h"
+#include "qgscheckablecomboboxplugin.h"
 
 
-QgsPasswordLineEditPlugin::QgsPasswordLineEditPlugin( QObject *parent )
+QgsCheckableComboBoxPlugin::QgsCheckableComboBoxPlugin( QObject *parent )
   : QObject( parent )
   , mInitialized( false )
 {
 }
 
 
-QString QgsPasswordLineEditPlugin::name() const
+QString QgsCheckableComboBoxPlugin::name() const
 {
-  return "QgsPasswordLineEdit";
+  return "QgsCheckableComboBox";
 }
 
-QString QgsPasswordLineEditPlugin::group() const
+QString QgsCheckableComboBoxPlugin::group() const
 {
   return QgisCustomWidgets::groupName();
 }
 
-QString QgsPasswordLineEditPlugin::includeFile() const
+QString QgsCheckableComboBoxPlugin::includeFile() const
 {
-  return "qgspasswordlineedit.h";
+  return "qgscheckablecombobox.h";
 }
 
-QIcon QgsPasswordLineEditPlugin::icon() const
+QIcon QgsCheckableComboBoxPlugin::icon() const
 {
   return QIcon( ":/images/icons/qgis-icon-60x60.png" );
 }
 
-bool QgsPasswordLineEditPlugin::isContainer() const
+bool QgsCheckableComboBoxPlugin::isContainer() const
 {
   return false;
 }
 
-QWidget *QgsPasswordLineEditPlugin::createWidget( QWidget *parent )
+QWidget *QgsCheckableComboBoxPlugin::createWidget( QWidget *parent )
 {
-  return new QgsPasswordLineEdit( parent );
+  return new QgsCheckableComboBox( parent );
 }
 
-bool QgsPasswordLineEditPlugin::isInitialized() const
+bool QgsCheckableComboBoxPlugin::isInitialized() const
 {
   return mInitialized;
 }
 
-void QgsPasswordLineEditPlugin::initialize( QDesignerFormEditorInterface *core )
+void QgsCheckableComboBoxPlugin::initialize( QDesignerFormEditorInterface *core )
 {
   Q_UNUSED( core );
   if ( mInitialized )
@@ -69,25 +69,25 @@ void QgsPasswordLineEditPlugin::initialize( QDesignerFormEditorInterface *core )
 }
 
 
-QString QgsPasswordLineEditPlugin::toolTip() const
+QString QgsCheckableComboBoxPlugin::toolTip() const
 {
   return "";
 }
 
-QString QgsPasswordLineEditPlugin::whatsThis() const
+QString QgsCheckableComboBoxPlugin::whatsThis() const
 {
   return "";
 }
 
-QString QgsPasswordLineEditPlugin::domXml() const
+QString QgsCheckableComboBoxPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mLineEdit\">\n"
+                  " <widget class=\"%1\" name=\"mComboBox\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"
                   "    <y>0</y>\n"
-                  "    <width>60</width>\n"
+                  "    <width>160</width>\n"
                   "    <height>27</height>\n"
                   "   </rect>\n"
                   "  </property>\n"
