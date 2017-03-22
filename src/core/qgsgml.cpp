@@ -93,8 +93,8 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
     }
   }
 
-  connect( reply, SIGNAL( finished() ), this, SLOT( setFinished() ) );
-  connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( handleProgressEvent( qint64, qint64 ) ) );
+  connect( reply, &QNetworkReply::finished, this, &QgsGml::setFinished );
+  connect( reply, &QNetworkReply::downloadProgress, this, &QgsGml::handleProgressEvent );
 
   //find out if there is a QGIS main window. If yes, display a progress dialog
   QProgressDialog *progressDialog = nullptr;
@@ -112,9 +112,9 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   {
     progressDialog = new QProgressDialog( tr( "Loading GML data\n%1" ).arg( mTypeName ), tr( "Abort" ), 0, 0, mainWindow );
     progressDialog->setWindowModality( Qt::ApplicationModal );
-    connect( this, SIGNAL( dataReadProgress( int ) ), progressDialog, SLOT( setValue( int ) ) );
-    connect( this, SIGNAL( totalStepsUpdate( int ) ), progressDialog, SLOT( setMaximum( int ) ) );
-    connect( progressDialog, SIGNAL( canceled() ), this, SLOT( setFinished() ) );
+    connect( this, &QgsGml::dataReadProgress, progressDialog, &QProgressDialog::setValue );
+    connect( this, &QgsGml::totalStepsUpdate, progressDialog, &QProgressDialog::setMaximum );
+    connect( progressDialog, &QProgressDialog::canceled, this, &QgsGml::setFinished );
     progressDialog->show();
   }
 

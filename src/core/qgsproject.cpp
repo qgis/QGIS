@@ -339,9 +339,9 @@ QgsProject::QgsProject( QObject *parent )
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this, this );
-  connect( this, SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( onMapLayersAdded( QList<QgsMapLayer *> ) ) );
-  connect( this, SIGNAL( layersRemoved( QStringList ) ), this, SLOT( cleanTransactionGroups() ) );
-  connect( this, SIGNAL( layersWillBeRemoved( QList<QgsMapLayer *> ) ), this, SLOT( onMapLayersRemoved( QList<QgsMapLayer *> ) ) );
+  connect( this, &QgsProject::layersAdded, this, &QgsProject::onMapLayersAdded );
+  connect( this, &QgsProject::layersRemoved, this, [ = ] { cleanTransactionGroups(); } );
+  connect( this, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *> & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
 }
 
 
@@ -1130,7 +1130,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
     if ( tgChanged )
       emit transactionGroupsChanged();
 
-    connect( layer, SIGNAL( configChanged() ), this, SLOT( setDirty() ) );
+    connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
     // check if we have to update connections for layers with dependencies
     for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
@@ -2128,7 +2128,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
       {
         myLayer->setParent( this );
       }
-      connect( myLayer, SIGNAL( destroyed( QObject * ) ), this, SLOT( onMapLayerDeleted( QObject * ) ) );
+      connect( myLayer, &QObject::destroyed, this, &QgsProject::onMapLayerDeleted );
       emit layerWasAdded( myLayer );
     }
   }

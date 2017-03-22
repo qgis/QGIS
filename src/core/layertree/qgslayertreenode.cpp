@@ -207,17 +207,18 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode 
   emit willAddChildren( this, index, indexTo );
   for ( int i = 0; i < nodes.count(); ++i )
   {
-    mChildren.insert( index + i, nodes[i] );
+    QgsLayerTreeNode *node = nodes.at( i );
+    mChildren.insert( index + i, node );
 
     // forward the signal towards the root
-    connect( nodes[i], SIGNAL( willAddChildren( QgsLayerTreeNode *, int, int ) ), this, SIGNAL( willAddChildren( QgsLayerTreeNode *, int, int ) ) );
-    connect( nodes[i], SIGNAL( addedChildren( QgsLayerTreeNode *, int, int ) ), this, SIGNAL( addedChildren( QgsLayerTreeNode *, int, int ) ) );
-    connect( nodes[i], SIGNAL( willRemoveChildren( QgsLayerTreeNode *, int, int ) ), this, SIGNAL( willRemoveChildren( QgsLayerTreeNode *, int, int ) ) );
-    connect( nodes[i], SIGNAL( removedChildren( QgsLayerTreeNode *, int, int ) ), this, SIGNAL( removedChildren( QgsLayerTreeNode *, int, int ) ) );
-    connect( nodes[i], SIGNAL( customPropertyChanged( QgsLayerTreeNode *, QString ) ), this, SIGNAL( customPropertyChanged( QgsLayerTreeNode *, QString ) ) );
-    connect( nodes[i], &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeNode::visibilityChanged );
-    connect( nodes[i], SIGNAL( expandedChanged( QgsLayerTreeNode *, bool ) ), this, SIGNAL( expandedChanged( QgsLayerTreeNode *, bool ) ) );
-    connect( nodes[i], SIGNAL( nameChanged( QgsLayerTreeNode *, QString ) ), this, SIGNAL( nameChanged( QgsLayerTreeNode *, QString ) ) );
+    connect( node, &QgsLayerTreeNode::willAddChildren, this, &QgsLayerTreeNode::willAddChildren );
+    connect( node, &QgsLayerTreeNode::addedChildren, this, &QgsLayerTreeNode::addedChildren );
+    connect( node, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeNode::willRemoveChildren );
+    connect( node, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeNode::removedChildren );
+    connect( node, &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeNode::customPropertyChanged );
+    connect( node, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeNode::visibilityChanged );
+    connect( node, &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeNode::expandedChanged );
+    connect( node, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeNode::nameChanged );
   }
   emit addedChildren( this, index, indexTo );
 }

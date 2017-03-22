@@ -288,6 +288,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
 
   private slots:
+
+    void updateFilterByMapAndRedraw();
+
     void updateFilterByMap( bool redraw = true );
 
     //! update legend in case style of associated map has changed

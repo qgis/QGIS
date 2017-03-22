@@ -46,8 +46,8 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent )
   , mFavorites( nullptr )
   , mProjectHome( nullptr )
 {
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
+  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
+  connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
   addRootItems();
 }
 
@@ -413,18 +413,18 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State ol
 }
 void QgsBrowserModel::connectItem( QgsDataItem *item )
 {
-  connect( item, SIGNAL( beginInsertItems( QgsDataItem *, int, int ) ),
-           this, SLOT( beginInsertItems( QgsDataItem *, int, int ) ) );
-  connect( item, SIGNAL( endInsertItems() ),
-           this, SLOT( endInsertItems() ) );
-  connect( item, SIGNAL( beginRemoveItems( QgsDataItem *, int, int ) ),
-           this, SLOT( beginRemoveItems( QgsDataItem *, int, int ) ) );
-  connect( item, SIGNAL( endRemoveItems() ),
-           this, SLOT( endRemoveItems() ) );
-  connect( item, SIGNAL( dataChanged( QgsDataItem * ) ),
-           this, SLOT( itemDataChanged( QgsDataItem * ) ) );
-  connect( item, SIGNAL( stateChanged( QgsDataItem *, QgsDataItem::State ) ),
-           this, SLOT( itemStateChanged( QgsDataItem *, QgsDataItem::State ) ) );
+  connect( item, &QgsDataItem::beginInsertItems,
+           this, &QgsBrowserModel::beginInsertItems );
+  connect( item, &QgsDataItem::endInsertItems,
+           this, &QgsBrowserModel::endInsertItems );
+  connect( item, &QgsDataItem::beginRemoveItems,
+           this, &QgsBrowserModel::beginRemoveItems );
+  connect( item, &QgsDataItem::endRemoveItems,
+           this, &QgsBrowserModel::endRemoveItems );
+  connect( item, &QgsDataItem::dataChanged,
+           this, &QgsBrowserModel::itemDataChanged );
+  connect( item, &QgsDataItem::stateChanged,
+           this, &QgsBrowserModel::itemStateChanged );
 }
 
 QStringList QgsBrowserModel::mimeTypes() const

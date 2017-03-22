@@ -58,9 +58,9 @@ QProcess *QgsContextHelp::start()
   QProcess *process = new QProcess;
 
   // Delete this object if the process terminates
-  connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( processExited() ) );
+  connect( process, static_cast < void ( QProcess::* )( int ) >( &QProcess::finished ), this, [ = ] { processExited(); } );
 
-  connect( process, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( error( QProcess::ProcessError ) ) );
+  connect( process, static_cast < void ( QProcess::* )( QProcess::ProcessError ) >( &QProcess::error ), this, &QgsContextHelp::error );
 
 #ifdef Q_OS_WIN
   if ( QgsApplication::isRunningFromBuildDir() )

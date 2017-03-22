@@ -406,7 +406,7 @@ void QgsDataItem::setParent( QgsDataItem *parent )
     connect( this, &QgsDataItem::beginInsertItems, parent, &QgsDataItem::beginInsertItems );
     connect( this, &QgsDataItem::endInsertItems, parent, &QgsDataItem::endInsertItems );
     connect( this, &QgsDataItem::beginRemoveItems, parent, &QgsDataItem::beginRemoveItems );
-    connect( this, SIGNAL( endRemoveItems() ), parent, SIGNAL( endRemoveItems() ) );
+    connect( this, &QgsDataItem::endRemoveItems, parent, &QgsDataItem::endRemoveItems );
     connect( this, &QgsDataItem::dataChanged, parent, &QgsDataItem::dataChanged );
     connect( this, &QgsDataItem::stateChanged, parent, &QgsDataItem::stateChanged );
   }

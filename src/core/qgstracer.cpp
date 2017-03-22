@@ -583,20 +583,20 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
 
   Q_FOREACH ( QgsVectorLayer *layer, mLayers )
   {
-    disconnect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
-    disconnect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-    disconnect( layer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
-    disconnect( layer, SIGNAL( destroyed( QObject * ) ), this, SLOT( onLayerDestroyed( QObject * ) ) );
+    disconnect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
+    disconnect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
+    disconnect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
+    disconnect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
   mLayers = layers;
 
   Q_FOREACH ( QgsVectorLayer *layer, mLayers )
   {
-    connect( layer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
-    connect( layer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
-    connect( layer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( onGeometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
-    connect( layer, SIGNAL( destroyed( QObject * ) ), this, SLOT( onLayerDestroyed( QObject * ) ) );
+    connect( layer, &QgsVectorLayer::featureAdded, this, &QgsTracer::onFeatureAdded );
+    connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsTracer::onFeatureDeleted );
+    connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsTracer::onGeometryChanged );
+    connect( layer, &QObject::destroyed, this, &QgsTracer::onLayerDestroyed );
   }
 
   invalidateGraph();

@@ -183,8 +183,8 @@ void QgsGPSDetector::advance()
     }
   }
 
-  connect( mConn, SIGNAL( stateChanged( const QgsGPSInformation & ) ), this, SLOT( detected( const QgsGPSInformation & ) ) );
-  connect( mConn, SIGNAL( destroyed( QObject * ) ), this, SLOT( connDestroyed( QObject * ) ) );
+  connect( mConn, &QgsGPSConnection::stateChanged, this, static_cast < void ( QgsGPSDetector::* )( const QgsGPSInformation & ) >( &QgsGPSDetector::detected ) );
+  connect( mConn, &QObject::destroyed, this, &QgsGPSDetector::connDestroyed );
 
   // leave 2s to pickup a valid string
   QTimer::singleShot( 2000, this, SLOT( advance() ) );

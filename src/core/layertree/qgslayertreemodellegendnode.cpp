@@ -603,9 +603,9 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
     if ( mFetcher )
     {
-      connect( mFetcher.get(), SIGNAL( finish( const QImage & ) ), this, SLOT( getLegendGraphicFinished( const QImage & ) ) );
-      connect( mFetcher.get(), SIGNAL( error( const QString & ) ), this, SLOT( getLegendGraphicErrored( const QString & ) ) );
-      connect( mFetcher.get(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
+      connect( mFetcher.get(), &QgsImageFetcher::finish, this, &QgsWmsLegendNode::getLegendGraphicFinished );
+      connect( mFetcher.get(), &QgsImageFetcher::error, this, &QgsWmsLegendNode::getLegendGraphicErrored );
+      connect( mFetcher.get(), &QgsImageFetcher::progress, this, &QgsWmsLegendNode::getLegendGraphicProgress );
       mFetcher->start();
     } // else QgsDebugMsg("XXX No legend supported?");
 

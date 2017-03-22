@@ -150,7 +150,7 @@ to use, since you never have to worry about checking for new data.
 \b Example
 \code
 QextSerialPort* port = new QextSerialPort("COM1", QextSerialPort::EventDriven);
-connect(port, SIGNAL(readyRead()), myClass, SLOT(onDataAvailable()));
+connect(port, &QextSerialPort::readyRead, myClass, &MyObject::onDataAvailable);
 port->open();
 
 void MyClass::onDataAvailable() {

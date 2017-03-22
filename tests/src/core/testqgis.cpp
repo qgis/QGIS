@@ -160,7 +160,7 @@ void TestQgis::signalBlocker()
 {
   std::unique_ptr< QCheckBox > checkbox( new QCheckBox() );
 
-  QSignalSpy spy( checkbox.get(), SIGNAL( toggled( bool ) ) );
+  QSignalSpy spy( checkbox.get(), &QCheckBox::toggled );
 
   //first check that signals are not blocked
   QVERIFY( !checkbox->signalsBlocked() );

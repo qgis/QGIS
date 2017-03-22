@@ -624,20 +624,20 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
-    disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
+    disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    disconnect( mComposerMap, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
 
   mComposerMap = map;
 
   if ( map )
   {
-    QObject::connect( map, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
-    QObject::connect( map, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-    QObject::connect( map, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
+    connect( map, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    connect( map, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
 
   updateItem();
@@ -682,6 +682,11 @@ void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::Dat
   }
 
   QgsComposerObject::refreshDataDefinedProperty( property, context );
+}
+
+void QgsComposerLegend::updateFilterByMapAndRedraw()
+{
+  updateFilterByMap( true );
 }
 
 void QgsComposerLegend::mapLayerStyleOverridesChanged()
