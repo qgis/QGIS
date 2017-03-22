@@ -10,7 +10,7 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
 from qgis.core import QgsApplication
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
 
@@ -221,7 +221,7 @@ def _executeAlgorithm(alg):
             canvas.setMapTool(prevMapTool)
     else:
         feedback = MessageBarProgress()
-        runalg(alg, feedback)
+        execute(alg, feedback)
         handleAlgorithmResults(alg, feedback)
         feedback.close()
 

@@ -49,7 +49,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.core.alglist import algList
 
@@ -298,7 +298,7 @@ class Processing(object):
         elif iface is not None:
             feedback = MessageBarProgress(alg.name)
 
-        ret = runalg(alg, feedback)
+        ret = execute(alg, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, feedback)

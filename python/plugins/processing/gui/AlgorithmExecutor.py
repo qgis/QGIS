@@ -42,7 +42,7 @@ from processing.tools.system import getTempFilename
 from processing.tools import vector
 
 
-def runalg(alg, feedback=None):
+def execute(alg, feedback=None):
     """Executes a given algorithm, showing its progress in the
     progress object passed along.
 
@@ -63,7 +63,7 @@ def runalg(alg, feedback=None):
         return False
 
 
-def runalgIterating(alg, paramToIter, feedback):
+def executeIterating(alg, paramToIter, feedback):
     # Generate all single-feature layers
     settings = QgsSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
@@ -96,7 +96,7 @@ def runalgIterating(alg, paramToIter, feedback):
             out.value = filename
         feedback.setProgressText(tr('Executing iteration {0}/{1}...').format(i, len(filelist)))
         feedback.setProgress(i * 100 / len(filelist))
-        if runalg(alg, feedback):
+        if execute(alg, feedback):
             handleAlgorithmResults(alg, None, False)
         else:
             return False
