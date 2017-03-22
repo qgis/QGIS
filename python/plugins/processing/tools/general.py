@@ -68,7 +68,7 @@ def algoptions(name):
         print('Algorithm not found')
 
 
-def alghelp(name):
+def algorithmHelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         alg = alg.getCopy()

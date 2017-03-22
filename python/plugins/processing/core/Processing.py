@@ -251,7 +251,7 @@ class Processing(object):
                 # fix_print_with_import
                 print('Error: Wrong number of parameters')
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'), Processing.tr("Processing"))
-                processing.alghelp(algOrName)
+                processing.algorithmHelp(algOrName)
                 return
             i = 0
             for param in alg.parameters:
