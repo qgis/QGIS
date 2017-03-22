@@ -1472,6 +1472,11 @@ QgsNetworkAccessManager        {#qgis_api_break_3_0_QgsNetworkAccessManager}
 - deleteReply() was removed. Use abort() and deleteLayer() on the reply directly.
 - requestSent signal was removed. This is no longer emitted.
 
+QgsNewVectorLayerDialog        {#qgis_api_break_3_0_QgsNewVectorLayerDialog}
+-----------------------
+
+- selectedCrsId() was removed. Use crs() instead.
+
 
 QgsOSMElement        {#qgis_api_break_3_0_QgsOSMElement}
 -------------
