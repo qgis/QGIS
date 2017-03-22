@@ -22,6 +22,7 @@
 #include "qgscomposeritem.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
+#include "qgslayertreegroup.h"
 
 class QgsLayerTreeModel;
 class QgsSymbol;
@@ -58,7 +59,6 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
   public:
     QgsComposerLegend( QgsComposition *composition );
-    ~QgsComposerLegend();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**
      * Returns the legend model
      */
-    QgsLegendModel *model() { return mLegendModel; }
+    QgsLegendModel *model() { return mLegendModel.get(); }
 
     //! \since QGIS 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -308,8 +308,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
-    QgsLegendModel *mLegendModel = nullptr;
-    QgsLayerTreeGroup *mCustomLayerTree = nullptr;
+    std::unique_ptr< QgsLegendModel > mLegendModel;
+    std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
     QgsLegendSettings mSettings;
 
