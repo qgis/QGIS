@@ -533,7 +533,7 @@ void QgisApp::validateCrs( QgsCoordinateReferenceSystem &srs )
     QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog();
     mySelector->setMessage( srs.validationHint() ); //shows a generic message, if not specified
     if ( sAuthId.isNull() )
-      sAuthId = QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid();
+      sAuthId = QgsProject::instance()->crs().authid();
 
     QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( sAuthId );
     if ( defaultCrs.isValid() )
@@ -10535,7 +10535,7 @@ void QgisApp::updateCrsStatusBar()
     mOnTheFlyProjectionStatusButton->setText( QgsProject::instance()->crs().authid() );
 
     mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
+      tr( "Current CRS: %1" ).arg( QgsProject::instance()->crs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
   }
   else
