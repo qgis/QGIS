@@ -39,7 +39,8 @@ from qgis.core import (
     QgsMapLayerProxyModel,
     QgsWkbTypes,
     QgsSettings,
-    QgsProject
+    QgsProject,
+    QgsMapLayer
 )
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -63,6 +64,7 @@ from qgis.gui import (
     QgsProjectionSelectionWidget,
 )
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
+from qgis.utils import iface
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
@@ -628,6 +630,11 @@ class RasterWidgetWrapper(WidgetWrapper):
 
             self.combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
             self.combo.setExcludedProviders(['grass'])
+            try:
+                if iface.activeLayer().type() == QgsMapLayer.RasterLayer:
+                    self.combo.setLayer(iface.activeLayer())
+            except:
+                pass
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -754,6 +761,12 @@ class VectorWidgetWrapper(WidgetWrapper):
                 filters |= QgsMapLayerProxyModel.LineLayer
             if QgsWkbTypes.PolygonGeometry in self.param.datatype:
                 filters |= QgsMapLayerProxyModel.PolygonLayer
+
+            try:
+                if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+                    self.combo.setLayer(iface.activeLayer())
+            except:
+                pass
 
             if self.param.optional:
                 self.combo.setAllowEmptyLayer(True)
@@ -989,6 +1002,11 @@ class TableWidgetWrapper(WidgetWrapper):
 
             self.combo.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.combo.setExcludedProviders(['grass'])
+            try:
+                if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+                    self.combo.setLayer(iface.activeLayer())
+            except:
+                pass
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
