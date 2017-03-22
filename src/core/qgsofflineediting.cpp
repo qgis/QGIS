@@ -34,6 +34,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
+#include "qgslayertree.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -258,6 +259,7 @@ void QgsOfflineEditing::synchronize()
       copySymbology( offlineLayer, remoteLayer );
       updateRelations( offlineLayer, remoteLayer );
       updateMapThemes( offlineLayer, remoteLayer );
+      updateLayerOrder( offlineLayer, remoteLayer );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -617,6 +619,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       updateRelations( layer, newLayer );
       updateMapThemes( layer, newLayer );
+      updateLayerOrder( layer, newLayer );
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -948,6 +951,32 @@ void QgsOfflineEditing::updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorL
 
     QgsProject::instance()->mapThemeCollection()->update( mapThemeName, record );
   }
+}
+
+void QgsOfflineEditing::updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
+{
+  QList<QgsMapLayer *>  layerOrder = QgsProject::instance()->layerTreeRoot()->customLayerOrder();
+
+  auto iterator = layerOrder.begin();
+
+  while ( iterator != layerOrder.end() )
+  {
+    if ( *iterator == targetLayer )
+    {
+      iterator = layerOrder.erase( iterator );
+      if ( iterator == layerOrder.end() )
+        break;
+    }
+
+    if ( *iterator == sourceLayer )
+    {
+      *iterator = targetLayer;
+    }
+
+    ++iterator;
+  }
+
+  QgsProject::instance()->layerTreeRoot()->setCustomLayerOrder( layerOrder );
 }
 
 // NOTE: use this to map column indices in case the remote geometry column is not last
