@@ -26,6 +26,11 @@
 #include "qgsmapsettings.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfillsymbollayerv2.h"
+#include "qgsmaplayerregistry.h"
+#include "qgscomposerlegend.h"
+#include "qgsvectorlayer.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
 
 #include <QObject>
 #include <QtTest/QtTest>
@@ -54,6 +59,7 @@ class TestQgsComposition : public QObject
     void resizeToContentsMultiPage();
     void georeference();
     void variablesEdited();
+    void legendRestoredFromTemplate();
 
   private:
     QgsComposition *mComposition;
@@ -596,6 +602,90 @@ void TestQgsComposition::variablesEdited()
   QVERIFY( spyVariablesChanged.count() == 1 );
   c.setCustomProperty( "variableValues", "1" );
   QVERIFY( spyVariablesChanged.count() == 2 );
+}
+
+void TestQgsComposition::legendRestoredFromTemplate()
+{
+  // load a layer
+
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer* layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  // create composition
+  QgsMapSettings ms;
+  QgsComposition c( ms );
+  // add a legend
+  QgsComposerLegend* legend = new QgsComposerLegend( &c );
+  c.addComposerLegend( legend );
+  legend->setAutoUpdateModel( false );
+
+  QgsLegendModelV2* model = legend->modelV2();
+  QgsLayerTreeNode* node = model->rootGroup()->children().at( 0 );
+  // make sure we've got right node
+  QgsLayerTreeLayer* layerNode = dynamic_cast< QgsLayerTreeLayer* >( node );
+  QVERIFY( layerNode );
+  QCOMPARE( layerNode->layer(), layer );
+
+  // got it!
+  layerNode->setCustomProperty( "legend/title-label", QString( "new title!" ) );
+  // make sure new title stuck
+  QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( "Composer" );
+  doc.appendChild( composerElem );
+  c.writeXML( composerElem, doc );
+  c.atlasComposition().writeXML( composerElem, doc );
+
+
+  // make a new composition from template
+  QgsComposition c2( ms );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get legend from new composition
+  QList< QgsComposerLegend* > legends2;
+  c2.composerItems( legends2 );
+  QgsComposerLegend* legend2 = legends2.at( 0 );
+  QVERIFY( legend2 );
+
+  QgsLegendModelV2* model2 = legend2->modelV2();
+  QgsLayerTreeNode* node2 = model2->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer* layerNode2 = dynamic_cast< QgsLayerTreeLayer* >( node2 );
+  QVERIFY( layerNode2 );
+  QCOMPARE( layerNode2->layer(), layer );
+  QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+
+  QString oldId = layer->id();
+  // new test
+  // remove existing layer
+  QgsMapLayerRegistry::instance()->removeMapLayer( layer );
+
+  // reload it, with a new id
+  QgsVectorLayer* layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( layer2 );
+  QVERIFY( oldId != layer2->id() );
+
+  // load composition from template
+  QgsComposition c3( ms );
+  QVERIFY( c3.loadFromTemplate( doc ) );
+  // get legend from new composition
+  QList< QgsComposerLegend* > legends3;
+  c3.composerItems( legends3 );
+  QgsComposerLegend* legend3 = legends3.at( 0 );
+  QVERIFY( legend3 );
+
+  //make sure customisation remains intact
+  QgsLegendModelV2* model3 = legend3->modelV2();
+  QgsLayerTreeNode* node3 = model3->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer* layerNode3 = dynamic_cast< QgsLayerTreeLayer* >( node3 );
+  QVERIFY( layerNode3 );
+  QCOMPARE( layerNode3->layer(), layer2 );
+  QCOMPARE( model3->data( model->node2index( layerNode3 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
 }
 
 QTEST_MAIN( TestQgsComposition )
