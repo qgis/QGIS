@@ -142,10 +142,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Resize event
     virtual void resizeEvent( QResizeEvent * ) override;
 
-#ifdef Q_OS_MAC
-    virtual void showEvent( QShowEvent *event ) override;
-#endif
-
   signals:
     //! Is emitted every time the view zoom has changed
     void zoomLevelChanged();
