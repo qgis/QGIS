@@ -3336,17 +3336,6 @@ void QgsComposer::resizeEvent( QResizeEvent *e )
   saveWindowState();
 }
 
-#ifdef Q_OS_MAC
-void QgsComposer::showEvent( QShowEvent *event )
-{
-  // add to menu if (re)opening window (event not due to unminimize)
-  if ( !event->spontaneous() )
-  {
-    mQgis->addWindow( mWindowAction );
-  }
-}
-#endif
-
 void QgsComposer::saveWindowState()
 {
   QgsSettings settings;
