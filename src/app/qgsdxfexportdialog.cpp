@@ -94,7 +94,7 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
   model->setData( index, vl->fields().lookupField( fcb->currentField() ) );
 }
 
-QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
 }
@@ -312,13 +312,18 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
     }
   }
 
-  QgsLayerTreeMapCanvasBridge *bridge = QgisApp::instance()->layerTreeCanvasBridge();
-  QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList< QPair<QgsVectorLayer *, int> > layersInROrder;
 
-  for ( int i = inDrawingOrder.size() - 1; i >= 0; i-- )
+  QList<QgsMapLayer *> layerOrder = mRootNode->layerOrder();
+
+  QList<QgsMapLayer *>::ConstIterator layerIterator = layerOrder.constEnd();
+
+  while ( layerIterator != layerOrder.constBegin() )
   {
-    int idx = layerIdx.value( inDrawingOrder[i], -1 );
+    --layerIterator;
+
+    QgsMapLayer *l = *layerIterator;
+    int idx = layerIdx.value( l->id(), -1 );
     if ( idx < 0 )
       continue;
 
@@ -422,7 +427,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 {
   setupUi( this );
 
-  mLayerTreeGroup = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
+  mLayerTreeGroup = QgsProject::instance()->layerTreeRoot()->clone();
   cleanGroup( mLayerTreeGroup );
 
   mFieldSelectorDelegate = new FieldSelectorDelegate( this );

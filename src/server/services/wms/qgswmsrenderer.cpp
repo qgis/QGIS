@@ -227,7 +227,7 @@ namespace QgsWms
       showFeatureCount = QVariant( mParameters[ QStringLiteral( "SHOWFEATURECOUNT" )] ).toBool();
 
     // Create the layer tree root
-    QgsLayerTreeGroup rootGroup;
+    QgsLayerTree rootGroup;
     // Store layers' name to reset them
     QMap<QString, QString> layerNameMap;
     // Create tree layer node for each layer

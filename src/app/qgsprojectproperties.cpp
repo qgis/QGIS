@@ -54,6 +54,7 @@
 #include "qgslayertreemodel.h"
 #include "qgsunittypes.h"
 #include "qgstablewidgetitem.h"
+#include "qgslayertree.h"
 
 #include "qgsmessagelog.h"
 

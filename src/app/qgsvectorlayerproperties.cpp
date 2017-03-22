@@ -57,6 +57,7 @@
 #include "qgsstyle.h"
 
 #include "layertree/qgslayertreelayer.h"
+#include "qgslayertree.h"
 
 #include <QMessageBox>
 #include <QDir>

@@ -69,6 +69,7 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreenode.cpp
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
+  layertree/qgslayertree.cpp
 
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
@@ -605,6 +606,7 @@ SET(QGIS_CORE_MOC_HDRS
   symbology-ng/qgssvgcache.h
   symbology-ng/qgsstyle.h
 
+  layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
   layertree/qgslayertreemodel.h
@@ -899,7 +901,6 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorfieldsymbollayer.h
   symbology-ng/qgsgeometrygeneratorsymbollayer.h
 
-  layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
 
   geometry/qgsabstractgeometry.h

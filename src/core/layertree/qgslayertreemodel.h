@@ -24,6 +24,7 @@
 #include <memory>
 
 #include "qgsgeometry.h"
+#include "qgsmaplayer.h"
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -34,6 +35,7 @@ class QgsMapLayer;
 class QgsMapSettings;
 class QgsExpression;
 class QgsRenderContext;
+class QgsLayerTree;
 
 /** \ingroup core
  * The QgsLayerTreeModel class is model implementation for Qt item views framework.
@@ -55,7 +57,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
   public:
     //! Construct a new tree model with given layer tree (root node must not be null pointer).
     //! The root node is not transferred by the model.
-    explicit QgsLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent = nullptr );
+    explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
+
     ~QgsLayerTreeModel();
 
     // Implementation of virtual functions from QAbstractItemModel
@@ -146,10 +149,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QgsLayerTreeModelLegendNode *findLegendNode( const QString &layerId, const QString &ruleKey ) const;
 
     //! Return pointer to the root node of the layer tree. Always a non-null pointer.
-    QgsLayerTreeGroup *rootGroup() const;
+    QgsLayerTree *rootGroup() const;
     //! Reset the model and use a new root group node
     //! @note added in 2.6
-    void setRootGroup( QgsLayerTreeGroup *newRootGroup );
+    void setRootGroup( QgsLayerTree *newRootGroup );
 
     //! Force a refresh of legend nodes of a layer node.
     //! Not necessary to call when layer's renderer is changed as the model listens to these events.
@@ -209,8 +212,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
     //! @note added in 2.10
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
-
-  signals:
 
   protected slots:
     void nodeWillAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
@@ -277,7 +278,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
   protected:
     //! Pointer to the root node of the layer tree. Not owned by the model
-    QgsLayerTreeGroup *mRootNode = nullptr;
+    QgsLayerTree *mRootNode = nullptr;
     //! Set of flags for the model
     Flags mFlags;
     //! Current index - will be underlined

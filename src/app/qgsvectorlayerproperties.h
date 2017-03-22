@@ -196,7 +196,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsExpressionContext createExpressionContext() const override;
 
-    std::unique_ptr<QgsLayerTreeGroup> mLayersDependenciesTreeGroup;
+    std::unique_ptr<QgsLayerTree> mLayersDependenciesTreeGroup;
     std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
 
   private slots:

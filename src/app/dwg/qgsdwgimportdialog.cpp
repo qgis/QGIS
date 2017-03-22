@@ -42,6 +42,7 @@
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 #include "qgsproperty.h"
+#include "qgslayertree.h"
 
 
 struct CursorOverride

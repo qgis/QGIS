@@ -103,11 +103,11 @@ bool QgsLayerTreeUtils::readOldLegendLayerOrder( const QDomElement &legendElem, 
 }
 
 
-static QDomElement _writeOldLegendLayer( QDomDocument &doc, QgsLayerTreeLayer *nodeLayer, bool hasCustomOrder, const QStringList &order )
+static QDomElement _writeOldLegendLayer( QDomDocument &doc, QgsLayerTreeLayer *nodeLayer, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   int drawingOrder = -1;
   if ( hasCustomOrder )
-    drawingOrder = order.indexOf( nodeLayer->layerId() );
+    drawingOrder = order.indexOf( nodeLayer->layer() );
 
   QDomElement layerElem = doc.createElement( QStringLiteral( "legendlayer" ) );
   layerElem.setAttribute( QStringLiteral( "drawingOrder" ), drawingOrder );
@@ -131,9 +131,9 @@ static QDomElement _writeOldLegendLayer( QDomDocument &doc, QgsLayerTreeLayer *n
 }
 
 // need forward declaration as write[..]Group and write[..]GroupChildren call each other
-static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupElem, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QStringList &order );
+static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupElem, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QList<QgsMapLayer *> &order );
 
-static QDomElement _writeOldLegendGroup( QDomDocument &doc, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QStringList &order )
+static QDomElement _writeOldLegendGroup( QDomDocument &doc, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   QDomElement groupElem = doc.createElement( QStringLiteral( "legendgroup" ) );
   groupElem.setAttribute( QStringLiteral( "open" ), nodeGroup->isExpanded() ? "true" : "false" );
@@ -151,7 +151,7 @@ static QDomElement _writeOldLegendGroup( QDomDocument &doc, QgsLayerTreeGroup *n
 }
 
 
-static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupElem, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QStringList &order )
+static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupElem, QgsLayerTreeGroup *nodeGroup, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   Q_FOREACH ( QgsLayerTreeNode *node, nodeGroup->children() )
   {
@@ -167,7 +167,7 @@ static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupE
 }
 
 
-QDomElement QgsLayerTreeUtils::writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QStringList &order )
+QDomElement QgsLayerTreeUtils::writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   QDomElement legendElem = doc.createElement( QStringLiteral( "legend" ) );
   legendElem.setAttribute( QStringLiteral( "updateDrawingOrder" ), hasCustomOrder ? "false" : "true" );

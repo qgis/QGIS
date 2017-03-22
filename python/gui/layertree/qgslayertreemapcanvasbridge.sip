@@ -21,57 +21,26 @@ class QgsLayerTreeMapCanvasBridge : QObject
 
   public:
     //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent /TransferThis/ = 0 );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTree* root, QgsMapCanvas* canvas, QObject* parent /TransferThis/ = 0 );
 
-    void clear();
-
-    QgsLayerTreeGroup* rootGroup() const;
-    QgsMapCanvas* mapCanvas() const;
+    QgsLayerTree *rootGroup() const;
+    QgsMapCanvas *mapCanvas() const;
 
     //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
     //! @note added in 3.0
     void setOvervewCanvas( QgsMapOverviewCanvas* overviewCanvas );
     //! Returns associated overview canvas (may be null)
     //! @note added in 3.0
-    QgsMapOverviewCanvas* overviewCanvas() const;
-
-    bool hasCustomLayerOrder() const;
-    QStringList customLayerOrder() const;
-
-    QStringList defaultLayerOrder() const;
+    QgsMapOverviewCanvas *overviewCanvas() const;
 
     //! if enabled, will automatically set full canvas extent and destination CRS + map units
     //! when first layer(s) are added
     void setAutoSetupOnFirstLayer( bool enabled );
     bool autoSetupOnFirstLayer() const;
 
-  public slots:
-    void setHasCustomLayerOrder( bool state );
-    void setCustomLayerOrder( const QStringList& order );
-
-    //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.
     void setCanvasLayers();
 
-    void readProject( const QDomDocument& doc );
-    void writeProject( QDomDocument& doc );
-
   signals:
-    void hasCustomLayerOrderChanged( bool );
-    void customLayerOrderChanged( const QStringList& order );
     void canvasLayersChanged( const QList< QgsMapLayer* >& layers );
 
-  protected:
-
-    void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
-
-    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers,
-                          QList<QgsMapLayer *> &allLayers );
-
-    void deferredSetCanvasLayers();
-
-  protected slots:
-    void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
-    void nodeRemovedChildren();
-    void nodeVisibilityChanged();
-    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 };
