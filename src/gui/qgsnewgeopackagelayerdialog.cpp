@@ -86,11 +86,6 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
 
-  // Set the SRID box to a default of WGS84
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
-  defaultCrs.validate();
-  mCrsSelector->setCrs( defaultCrs );
-
   connect( mFieldNameEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( fieldNameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
   connect( mTableNameEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( checkOk() ) );
@@ -106,6 +101,11 @@ QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ), saveGeometry() );
+}
+
+void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrsSelector->setCrs( crs );
 }
 
 void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
@@ -351,10 +351,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
-  int crsId = mCrsSelector->crs().srsid();
-  if ( wkbType != wkbNone && crsId > 0 )
+  QgsCoordinateReferenceSystem srs = mCrsSelector->crs();
+  if ( wkbType != wkbNone && srs.isValid() )
   {
-    QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( crsId );
     QString srsWkt = srs.toWkt();
     hSRS = OSRNewSpatialReference( srsWkt.toLocal8Bit().data() );
   }

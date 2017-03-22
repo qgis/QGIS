@@ -18,7 +18,7 @@ class QgsNewMemoryLayerDialog : QDialog
     /** Returns the selected geometry type*/
     QgsWkbTypes::Type selectedType() const;
 
-    /** Returns the selected crs*/
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
     QgsCoordinateReferenceSystem crs() const;
 
     /** Returns the layer name*/

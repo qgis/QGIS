@@ -84,11 +84,6 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
 
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QLatin1String( "" ) ) );
-
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
-  defaultCrs.validate();
-  mCrsSelector->setCrs( defaultCrs );
-
   connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
 
@@ -165,9 +160,14 @@ QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
   return wkbType;
 }
 
-int QgsNewVectorLayerDialog::selectedCrsId() const
+QgsCoordinateReferenceSystem QgsNewVectorLayerDialog::crs() const
 {
-  return mCrsSelector->crs().srsid();
+  return mCrsSelector->crs();
+}
+
+void QgsNewVectorLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrsSelector->setCrs( crs );
 }
 
 void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
@@ -231,9 +231,10 @@ void QgsNewVectorLayerDialog::selectionChanged()
 
 
 // this is static
-QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc )
+QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs )
 {
   QgsNewVectorLayerDialog geomDialog( parent );
+  geomDialog.setCrs( crs );
   if ( geomDialog.exec() == QDialog::Rejected )
   {
     return QLatin1String( "" );
@@ -242,7 +243,6 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   QgsWkbTypes::Type geometrytype = geomDialog.selectedType();
   QString fileformat = geomDialog.selectedFileFormat();
   QString enc = geomDialog.selectedFileEncoding();
-  int crsId = geomDialog.selectedCrsId();
   QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   QList< QPair<QString, QString> > attributes;
@@ -280,7 +280,7 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
     {
       if ( geometrytype != QgsWkbTypes::Unknown )
       {
-        QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( crsId );
+        QgsCoordinateReferenceSystem srs = geomDialog.crs();
         if ( !createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, srs ) )
         {
           return QString::null;

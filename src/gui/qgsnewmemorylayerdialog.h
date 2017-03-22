@@ -35,9 +35,10 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
     /** Runs the dialoag and creates a new memory layer
      * @param parent parent widget
+     * @param defaultCrs default layer CRS to show in dialog
      * @returns new memory layer
      */
-    static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr );
+    static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 
     QgsNewMemoryLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
@@ -45,7 +46,17 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
 
-    //! Returns the selected crs
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * @note added in QGIS 3.0
+     * @see crs()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the selected CRS for the new layer.
+     * @see setCrs()
+     */
     QgsCoordinateReferenceSystem crs() const;
 
     //! Returns the layer name

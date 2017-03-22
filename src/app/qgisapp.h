@@ -1627,6 +1627,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
 
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------

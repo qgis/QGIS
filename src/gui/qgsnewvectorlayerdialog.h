@@ -33,9 +33,11 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
   public:
 
-    // run the dialog, create the layer.
-    // @return fileName on success, empty string use aborted, QString::null if creation failed
-    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr );
+    /**
+     * Runs the dialog and creates a layer matching the dialog parameters.
+     * @returns fileName on success, empty string use aborted, QString::null if creation failed
+     */
+    static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     QgsNewVectorLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
@@ -47,8 +49,19 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     QString selectedFileFormat() const;
     //! Returns the file format for storage
     QString selectedFileEncoding() const;
-    //! Returns the selected crs id
-    int selectedCrsId() const;
+
+    /**
+     * Returns the selected CRS for the new layer.
+     * @see setCrs()
+     */
+    QgsCoordinateReferenceSystem crs() const;
+
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * @note added in QGIS 3.0
+     * @see crs()
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
   protected slots:
     void on_mAddAttributeButton_clicked();
