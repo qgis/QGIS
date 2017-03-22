@@ -21,17 +21,29 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 %TypeHeaderCode
 #include <qgslayertreelayer.h>
 %End
+  public:
+
+    //! Parameters for loose layer matching
+    struct LayerMatchParams
+    {
+      //! Layer public source
+      QString source;
+      //! Layer name
+      QString name;
+      //! Provider
+      QString providerKey;
+    };
 
   public:
     explicit QgsLayerTreeLayer( QgsMapLayer* layer );
 
     /**
-     * Creates a layer node which will attach to a layer with a matching
-     * QgsMapLayer::publicSource(). This can be used for "looser" layer matching,
+     * Creates a layer node which will attach to a layer with matching
+     * parameters. This can be used for "looser" layer matching,
      * avoiding the usual layer id check in favour of attaching to any layer
-     * with an equal source.
+     * with an equal source/name/provider.
      */
-    static QgsLayerTreeLayer* createLayerFromSource( const QString& source ) /Factory/;
+    static QgsLayerTreeLayer* createLayerFromParams( const LayerMatchParams& source ) /Factory/;
 
     explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
 
@@ -52,7 +64,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
      * avoiding the usual layer id check in favour of attaching to any layer
      * with an equal source.
      */
-    void attachToSource( const QString& source );
+    void attachToSource( const LayerMatchParams &source );
 
     QString layerName() const;
     void setLayerName( const QString& n );

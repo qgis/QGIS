@@ -18,7 +18,10 @@
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsrasterdataprovider.h"
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
     : QgsLayerTreeNode( NodeLayer )
@@ -50,7 +53,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
   attachToLayer();
 }
 
-QgsLayerTreeLayer *QgsLayerTreeLayer::createLayerFromSource( const QString &source )
+QgsLayerTreeLayer *QgsLayerTreeLayer::createLayerFromParams( const LayerMatchParams &source )
 {
   QgsLayerTreeLayer* l = new QgsLayerTreeLayer( QString() );
   l->attachToSource( source );
@@ -78,6 +81,35 @@ void QgsLayerTreeLayer::attachToLayer()
   }
 }
 
+bool QgsLayerTreeLayer::layerMatchesSource( QgsMapLayer* layer, const QgsLayerTreeLayer::LayerMatchParams &params ) const
+{
+  if ( layer->publicSource() != params.source ||
+       layer->name() != params.name )
+    return false;
+
+  switch ( layer->type() )
+  {
+    case QgsMapLayer::VectorLayer:
+    {
+      QgsVectorLayer* vl = qobject_cast< QgsVectorLayer* >( layer );
+      if ( vl->dataProvider()->name() != params.providerKey )
+        return false;
+      break;
+    }
+    case QgsMapLayer::RasterLayer:
+    {
+      QgsRasterLayer* rl = qobject_cast< QgsRasterLayer* >( layer );
+      if ( rl->dataProvider()->name() != params.providerKey )
+        return false;
+      break;
+    }
+    case QgsMapLayer::PluginLayer:
+      break;
+
+  }
+  return true;
+}
+
 QString QgsLayerTreeLayer::name() const
 {
   return layerName();
@@ -88,13 +120,13 @@ void QgsLayerTreeLayer::setName( const QString& n )
   setLayerName( n );
 }
 
-void QgsLayerTreeLayer::attachToSource( const QString &source )
+void QgsLayerTreeLayer::attachToSource( const LayerMatchParams &source )
 {
   // check if matching source already open
   bool foundMatch = false;
   Q_FOREACH ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers() )
   {
-    if ( layer->publicSource() == source )
+    if ( layerMatchesSource( layer, source ) )
     {
       // found a source! need to disconnect from layersAdded signal as original attachToLayer call
       // will have set this up
@@ -108,7 +140,7 @@ void QgsLayerTreeLayer::attachToSource( const QString &source )
   }
 
   if ( !foundMatch )
-    mLayerSource = source; // no need to store source if match already made
+    mLooseMatchParams = source; // no need to store source if match already made
 }
 
 QString QgsLayerTreeLayer::layerName() const
@@ -150,7 +182,10 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element , bool loose
 
   QString layerID = element.attribute( "id" );
   QString layerName = element.attribute( "name" );
+
   QString source = element.attribute( "source" );
+  QString providerKey = element.attribute( "providerKey" );
+
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( "checked" ) );
   bool isExpanded = ( element.attribute( "expanded", "1" ) == "1" );
 
@@ -162,7 +197,11 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXML( QDomElement& element , bool loose
     nodeLayer = new QgsLayerTreeLayer( layer );
   else if ( looseMatch && !source.isEmpty() )
   {
-    nodeLayer = QgsLayerTreeLayer::createLayerFromSource( source );
+    LayerMatchParams params;
+    params.name = layerName;
+    params.source = source;
+    params.providerKey = providerKey;
+    nodeLayer = QgsLayerTreeLayer::createLayerFromParams( params );
   }
   else
     nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
@@ -180,7 +219,29 @@ void QgsLayerTreeLayer::writeXML( QDomElement& parentElement )
   QDomElement elem = doc.createElement( "layer-tree-layer" );
   elem.setAttribute( "id", mLayerId );
   if ( mLayer )
+  {
     elem.setAttribute( "source", mLayer->publicSource() );
+
+    QString providerKey;
+    switch ( mLayer->type() )
+    {
+      case QgsMapLayer::VectorLayer:
+      {
+        QgsVectorLayer* vl = qobject_cast< QgsVectorLayer* >( mLayer );
+        providerKey = vl->dataProvider()->name();
+        break;
+      }
+      case QgsMapLayer::RasterLayer:
+      {
+        QgsRasterLayer* rl = qobject_cast< QgsRasterLayer* >( mLayer );
+        providerKey = rl->dataProvider()->name();
+        break;
+      }
+      case QgsMapLayer::PluginLayer:
+        break;
+    }
+    elem.setAttribute( "providerKey", providerKey );
+  }
 
   elem.setAttribute( "name", layerName() );
   elem.setAttribute( "checked", QgsLayerTreeUtils::checkStateToXml( mVisible ) );
@@ -205,7 +266,7 @@ void QgsLayerTreeLayer::registryLayersAdded( const QList<QgsMapLayer*>& layers )
 {
   Q_FOREACH ( QgsMapLayer* l, layers )
   {
-    if ( !mLayerSource.isEmpty() && l->publicSource() == mLayerSource )
+    if ( !mLooseMatchParams.source.isEmpty() && layerMatchesSource( l, mLooseMatchParams ) )
     {
       // we are loosely matching, and found a layer with a matching source.
       // Attach to this!
