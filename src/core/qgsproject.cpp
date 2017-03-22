@@ -2171,7 +2171,6 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
   QStringList layerIds;
   QList<QgsMapLayer *> layerList;
 
-  bool layerOrderHasChanged = false;
   QList< QgsMapLayer * > currentOrder = layerOrder();
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
@@ -2180,7 +2179,6 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
     {
       layerIds << layer->id();
       layerList << layer;
-      layerOrderHasChanged = layerOrderHasChanged || currentOrder.contains( layer );
     }
   }
 
@@ -2204,8 +2202,6 @@ void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
   }
 
   emit layersRemoved( layerIds );
-  if ( layerOrderHasChanged )
-    emit layerOrderChanged();
 }
 
 void QgsProject::removeMapLayer( const QString &layerId )

@@ -210,7 +210,7 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(len(layer_order_changed_spy), 3)
         prj.removeMapLayer(layer)
         self.assertEqual(prj.layerOrder(), [layer2, layer3])
-        self.assertEqual(len(layer_order_changed_spy), 4)
+        self.assertEqual(len(layer_order_changed_spy), 3) # should be no signal
 
         # save and restore
         file_name = os.path.join(str(QDir.tempPath()), 'proj.qgs')
