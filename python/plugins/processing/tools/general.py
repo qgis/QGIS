@@ -52,7 +52,7 @@ def alglist(text=None):
     print(s)
 
 
-def algoptions(name):
+def algorithmOptions(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
         s = ''
@@ -73,7 +73,7 @@ def algorithmHelp(name):
     if alg is not None:
         alg = alg.getCopy()
         print(str(alg))
-        algoptions(name)
+        algorithmOptions(name)
     else:
         print('Algorithm not found')
 
