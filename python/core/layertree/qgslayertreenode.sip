@@ -51,6 +51,8 @@ class QgsLayerTreeNode : QObject
     QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sipCpp);
     if (QgsLayerTree::isLayer(node))
       sipType = sipType_QgsLayerTreeLayer;
+    else if (qobject_cast<QgsLayerTree*>(sipCpp))
+      sipType = sipType_QgsLayerTree;
     else if (QgsLayerTree::isGroup(node))
       sipType = sipType_QgsLayerTreeGroup;
   }

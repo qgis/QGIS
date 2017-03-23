@@ -418,46 +418,6 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   return _writeXml( composerLegendElem, doc );
 }
 
-static void _readOldLegendGroup( QDomElement &elem, QgsLayerTreeGroup *parentGroup, QgsProject *project )
-{
-  QDomElement itemElem = elem.firstChildElement();
-
-  while ( !itemElem.isNull() )
-  {
-
-    if ( itemElem.tagName() == QLatin1String( "LayerItem" ) )
-    {
-      QString layerId = itemElem.attribute( QStringLiteral( "layerId" ) );
-      if ( QgsMapLayer *layer = project->mapLayer( layerId ) )
-      {
-        QgsLayerTreeLayer *nodeLayer = parentGroup->addLayer( layer );
-        QString userText = itemElem.attribute( QStringLiteral( "userText" ) );
-        if ( !userText.isEmpty() )
-          nodeLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), userText );
-        QString style = itemElem.attribute( QStringLiteral( "style" ) );
-        if ( !style.isEmpty() )
-          nodeLayer->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
-        QString showFeatureCount = itemElem.attribute( QStringLiteral( "showFeatureCount" ) );
-        if ( showFeatureCount.toInt() )
-          nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
-
-        // support for individual legend items (user text, order) not implemented yet
-      }
-    }
-    else if ( itemElem.tagName() == QLatin1String( "GroupItem" ) )
-    {
-      QgsLayerTreeGroup *nodeGroup = parentGroup->addGroup( itemElem.attribute( QStringLiteral( "userText" ) ) );
-      QString style = itemElem.attribute( QStringLiteral( "style" ) );
-      if ( !style.isEmpty() )
-        nodeGroup->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
-
-      _readOldLegendGroup( itemElem, nodeGroup, project );
-    }
-
-    itemElem = itemElem.nextSiblingElement();
-  }
-}
-
 bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
