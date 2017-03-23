@@ -1272,6 +1272,11 @@ QgsLayerTreeMapCanvasBridge        {#qgis_api_break_3_0_QgsLayerTreeMapCanvasBri
 
 - setAutoEnableCrsTransform() and autoEnableCrsTransform() were removed. CRS transformation is now always enabled.
 - setCanvasLayers() now requires a third map layer list argument for storage of all layers in the layer tree order.
+- `setCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().setCustomLayerOrder()` instead
+- `customLayerOrder()` has been removed. Use `QgsProject::layerTree().customLayerOrder()` or `QgsProject::layerOrder()` instead
+- `hasCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().hasCustomLayerOrder()` instead
+- `setHasCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().setHasCustomLayerOrder()` instead
+- `defaultLayerOrder()` has been removed.
 
 
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
@@ -1285,6 +1290,7 @@ QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
 - refreshLayerSymbology() was removed. Use refreshLayerLegend() instead.
 - setAutoCollapseSymbologyNodes() was removed. Use setAutoCollapseLegendNodes() instead.
 - autoCollapseSymbologyNodes() was removed. Use autoCollapseLegendNodes() instead.
+- the constructor takes a `QgsLayerTree*` instead of a `QgsLayerTreeGroup*`
 
 QgsLayerTreeModelLegendNode        {#qgis_api_break_3_0_QgsLayerTreeModelLegendNode}
 ---------------------------
