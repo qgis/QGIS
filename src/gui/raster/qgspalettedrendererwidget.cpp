@@ -20,6 +20,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgscolordialog.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
 #include <QInputDialog>
@@ -46,6 +47,11 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
   connect( mTreeView, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
          );
+
+  QgsSettings settings;
+  QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), QString() ).toString();
+  btnColorRamp->setColorRampFromName( defaultPalette );
+  connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsPalettedRendererWidget::applyColorRamp );
 
   if ( mRasterLayer )
   {
@@ -75,7 +81,13 @@ QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 {
   QgsPalettedRasterRenderer::ClassData classes = mModel->classData();
   int bandNumber = mBandComboBox->currentData().toInt();
-  return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
+
+  QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
+  if ( !btnColorRamp->isNull() )
+  {
+    r->setSourceColorRamp( btnColorRamp->colorRamp() );
+  }
+  return r;
 }
 
 void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
@@ -85,6 +97,17 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
   {
     //read values and colors and fill into tree widget
     mModel->setClassData( pr->classes() );
+
+    if ( pr->sourceColorRamp() )
+    {
+      whileBlocking( btnColorRamp )->setColorRamp( pr->sourceColorRamp() );
+    }
+    else
+    {
+      QgsSettings settings;
+      QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+      whileBlocking( btnColorRamp )->setColorRampFromName( defaultPalette );
+    }
   }
   else
   {
@@ -95,6 +118,9 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
       QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
       mModel->setClassData( classes );
     }
+    QgsSettings settings;
+    QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+    whileBlocking( btnColorRamp )->setColorRampFromName( defaultPalette );
   }
 }
 
@@ -137,7 +163,14 @@ void QgsPalettedRendererWidget::deleteEntry()
 void QgsPalettedRendererWidget::addEntry()
 {
   disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
-  mModel->insertRow( mModel->rowCount() );
+
+  QColor color( 150, 150, 150 );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  if ( ramp )
+  {
+    color = ramp->color( 1.0 );
+  }
+  mModel->addEntry( color );
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   emit widgetChanged();
 }
@@ -229,6 +262,39 @@ void QgsPalettedRendererWidget::changeLabel()
 
     emit widgetChanged();
   }
+}
+
+void QgsPalettedRendererWidget::applyColorRamp()
+{
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+  if ( !ramp )
+  {
+    return;
+  }
+
+  if ( !btnColorRamp->colorRampName().isEmpty() )
+  {
+    // Remember last used color ramp
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "Raster/defaultPalette" ), btnColorRamp->colorRampName() );
+  }
+
+  disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
+
+  QgsPalettedRasterRenderer::ClassData data = mModel->classData();
+  QgsPalettedRasterRenderer::ClassData::iterator cIt = data.begin();
+
+  double numberOfEntries = data.count();
+  int i = 0;
+  for ( ; cIt != data.end(); ++cIt )
+  {
+    cIt->color = ramp->color( i / numberOfEntries );
+    i++;
+  }
+  mModel->setClassData( data );
+
+  connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
+  emit widgetChanged();
 }
 
 //
@@ -463,6 +529,12 @@ bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex
   mData = newData;
   endInsertRows();
   return true;
+}
+
+void QgsPalettedRendererModel::addEntry( const QColor &color )
+{
+  insertRow( rowCount() );
+  setData( index( mData.count() - 1, 1 ), color );
 }
 
 ///@endcond PRIVATE

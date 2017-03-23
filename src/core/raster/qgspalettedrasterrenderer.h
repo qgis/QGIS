@@ -91,6 +91,19 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QList<int> usesBands() const override;
 
     /**
+     * Set the source color \a ramp. Ownership is transferred to the renderer.
+     * @note added in QGIS 3.0
+     * @see sourceColorRamp()
+     */
+    void setSourceColorRamp( QgsColorRamp *ramp );
+
+    /** Get the source color ramp
+     * @note added in QGIS 3.0
+     * @see setSourceColorRamp()
+     */
+    QgsColorRamp *sourceColorRamp() const;
+
+    /**
      * Converts a raster color \a table to paletted renderer class data.
      * @note added in QGIS 3.0
      */
@@ -102,6 +115,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     int mMaxColorIndex = -INT_MAX;
     ClassData mClassData;
 
+    //! Source color ramp
+    std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
     //! Premultiplied color array
     QRgb *mColors = nullptr;

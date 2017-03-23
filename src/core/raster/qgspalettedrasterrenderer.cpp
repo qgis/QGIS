@@ -18,6 +18,7 @@
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+#include "qgssymbollayerutils.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -43,6 +44,9 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
 QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
 {
   QgsPalettedRasterRenderer *renderer = new QgsPalettedRasterRenderer( nullptr, mBand, mClassData );
+  if ( mSourceColorRamp )
+    renderer->setSourceColorRamp( mSourceColorRamp->clone() );
+
   renderer->copyCommonProperties( this );
   return renderer;
 }
@@ -78,8 +82,17 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
       classData.insert( value, Class( color, label ) );
     }
   }
+
   QgsPalettedRasterRenderer *r = new QgsPalettedRasterRenderer( input, bandNumber, classData );
   r->readXml( elem );
+
+  // try to load color ramp (optional)
+  QDomElement sourceColorRampElem = elem.firstChildElement( QStringLiteral( "colorramp" ) );
+  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( QStringLiteral( "name" ) ) == QLatin1String( "[source]" ) )
+  {
+    r->setSourceColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+  }
+
   return r;
 }
 
@@ -218,6 +231,13 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
   }
   rasterRendererElem.appendChild( colorPaletteElem );
 
+  // save source color ramp
+  if ( mSourceColorRamp )
+  {
+    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mSourceColorRamp.get(), doc );
+    rasterRendererElem.appendChild( colorRampElem );
+  }
+
   parentElem.appendChild( rasterRendererElem );
 }
 
@@ -253,6 +273,16 @@ QList<int> QgsPalettedRasterRenderer::usesBands() const
     bandList << mBand;
   }
   return bandList;
+}
+
+void QgsPalettedRasterRenderer::setSourceColorRamp( QgsColorRamp *ramp )
+{
+  mSourceColorRamp.reset( ramp );
+}
+
+QgsColorRamp *QgsPalettedRasterRenderer::sourceColorRamp() const
+{
+  return mSourceColorRamp.get();
 }
 
 QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table )

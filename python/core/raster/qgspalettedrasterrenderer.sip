@@ -32,6 +32,8 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
     QList<int> usesBands() const;
+    void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
+    QgsColorRamp *sourceColorRamp() const;
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
 
   private:

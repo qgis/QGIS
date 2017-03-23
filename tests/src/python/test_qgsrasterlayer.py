@@ -34,7 +34,8 @@ from qgis.core import (QgsRaster,
                        QgsRenderChecker,
                        QgsPalettedRasterRenderer,
                        QgsSingleBandGrayRenderer,
-                       QgsSingleBandPseudoColorRenderer)
+                       QgsSingleBandPseudoColorRenderer,
+                       QgsLimitedRandomColorRamp)
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 
@@ -329,6 +330,12 @@ class TestQgsRasterLayer(unittest.TestCase):
         renderer.setLabel(3, 'new class')
         self.assertEqual(renderer.label(3), 'new class')
 
+        # color ramp
+        r = QgsLimitedRandomColorRamp(5)
+        renderer.setSourceColorRamp(r)
+        self.assertEqual(renderer.sourceColorRamp().type(), 'random')
+        self.assertEqual(renderer.sourceColorRamp().count(), 5)
+
         # clone
         new_renderer = renderer.clone()
         classes = new_renderer.classes()
@@ -336,6 +343,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[3].label, 'new class')
         self.assertEqual(classes[1].color.name(), '#00ff00')
         self.assertEqual(classes[3].color.name(), '#ff0000')
+        self.assertEqual(new_renderer.sourceColorRamp().type(), 'random')
+        self.assertEqual(new_renderer.sourceColorRamp().count(), 5)
 
         # write to xml and read
         doc = QDomDocument('testdoc')
@@ -350,6 +359,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[3].label, 'new class')
         self.assertEqual(classes[1].color.name(), '#00ff00')
         self.assertEqual(classes[3].color.name(), '#ff0000')
+        self.assertEqual(restored.sourceColorRamp().type(), 'random')
+        self.assertEqual(restored.sourceColorRamp().count(), 5)
 
         # render test
         layer.setRenderer(renderer)
@@ -375,6 +386,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[5].color.name(), '#ff0000')
         self.assertEqual(classes[3].color.name(), '#00ff00')
         self.assertEqual(classes[6].color.name(), '#0000ff')
+
 
 if __name__ == '__main__':
     unittest.main()

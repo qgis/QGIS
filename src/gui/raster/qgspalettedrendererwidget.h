@@ -55,6 +55,8 @@ class QgsPalettedRendererModel : public QAbstractTableModel
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
+    void addEntry( const QColor &color );
+
   signals:
 
     void classesChanged();
@@ -98,6 +100,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void changeColor();
     void changeTransparency();
     void changeLabel();
+    void applyColorRamp();
 };
 
 #endif // QGSPALETTEDRENDERERWIDGET_H
