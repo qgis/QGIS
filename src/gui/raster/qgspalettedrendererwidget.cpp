@@ -34,6 +34,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
 
   mModel = new QgsPalettedRendererModel( this );
+  mTreeView->setSortingEnabled( false );
   mTreeView->setModel( mModel );
 
   mSwatchDelegate = new QgsColorSwatchDelegate( this );
@@ -311,7 +312,38 @@ bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant
       switch ( index.column() )
       {
         case ValueColumn:
-          return mData.keys().at( index.row() );
+        {
+          // make sure value is unique
+          bool ok = false;
+          int newValue = value.toInt( &ok );
+          if ( !ok )
+            return false;
+
+          for ( int i = 0; i < rowCount(); ++i )
+          {
+            if ( i == index.row() )
+              continue;
+            if ( data( QgsPalettedRendererModel::index( i, ValueColumn ) ).toInt() == newValue )
+            {
+              return false;
+            }
+          }
+
+          QgsPalettedRasterRenderer::ClassData newData;
+          QgsPalettedRasterRenderer::ClassData::const_iterator cIt = mData.constBegin();
+          for ( int i = 0; cIt != mData.constEnd(); ++i, ++cIt )
+          {
+            if ( i == index.row() )
+              newData.insert( newValue, cIt.value() );
+            else
+              newData.insert( cIt.key(), cIt.value() );
+          }
+          mData = newData;
+
+          emit dataChanged( index, index, QVector< int >() << Qt::EditRole << Qt::DisplayRole );
+          emit classesChanged();
+          return true;
+        }
 
         case ColorColumn:
         {
@@ -343,8 +375,6 @@ Qt::ItemFlags QgsPalettedRendererModel::flags( const QModelIndex &index ) const
   switch ( index.column() )
   {
     case ValueColumn:
-      break;
-
     case LabelColumn:
     case ColorColumn:
       f = f | Qt::ItemIsEditable;
