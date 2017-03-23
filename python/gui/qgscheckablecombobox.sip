@@ -87,5 +87,7 @@ class QgsCheckableComboBox : QComboBox
     void setCheckedItems( const QStringList &items );
 
   protected:
+    /** Handler for widget resizing
+     */
     virtual void resizeEvent( QResizeEvent *event );
 };
