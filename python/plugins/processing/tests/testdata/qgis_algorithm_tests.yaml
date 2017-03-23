@@ -2577,18 +2577,12 @@ tests:
       INPUT_LAYER:
         name: points.gml
         type: vector
-    results:
-      OUTPUT_LAYER:
-        name: expected/random_selection_number.gml
-        type: vector
-
+    results: {}
+    
   - algorithm: script:randomselectionwithinsubsets
     name: Random selection within subset
     params:
       INPUT_LAYER:
         name: points.gml
         type: vector
-    results:
-      OUTPUT_LAYER:
-        name: expected/random_selection_subset.gml
-        type: vector
+    results: {}
