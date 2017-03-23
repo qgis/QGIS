@@ -31,7 +31,7 @@
  * @note added in QGIS 3.0
  * @note not available in Python bindings
  **/
-class GUI_EXPORT QgsCheckableItemModel : public QStandardItemModel
+class QgsCheckableItemModel : public QStandardItemModel
 {
     Q_OBJECT
 
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsCheckableItemModel : public QStandardItemModel
  * @note not available in Python bindings
  **/
 
-class GUI_EXPORT QgsCheckBoxDelegate : public QStyledItemDelegate
+class QgsCheckBoxDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
