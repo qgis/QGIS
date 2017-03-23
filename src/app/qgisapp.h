@@ -62,6 +62,7 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsMapCanvas;
+class QgsMapCanvasDockWidget;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
@@ -241,13 +242,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList< QgsMapCanvas * > mapCanvases();
 
     /**
-     * Create a new map canvas with the specified unique \a name. The \a isFloating
+     * Create a new map canvas with the specified unique \a name.
+     */
+    QgsMapCanvas *createNewMapCanvas( const QString &name );
+
+    /**
+     * Create a new map canvas dock widget with the specified unique \a name. The \a isFloating
      * and \a dockGeometry arguments can be used to specify an initial floating state
      * and widget geometry rect for the dock.
      */
-    QgsMapCanvas *createNewMapCanvas( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
-                                      Qt::DockWidgetArea area = Qt::RightDockWidgetArea, bool synced = false, bool showCursor = true, bool scaleSynced = false,
-                                      double scaleFactor = 1.0 );
+    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
+        Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
 
     /**
      * Closes the additional map canvas with matching \a name.

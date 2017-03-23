@@ -151,6 +151,14 @@
     <string>Show Cursor Position</string>
    </property>
   </action>
+  <action name="mActionShowExtent">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Main Canvas Extent</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

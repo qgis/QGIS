@@ -27,6 +27,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgisapp.h"
 #include "qgsvertexmarker.h"
+#include "qgsrubberband.h"
 #include <QMessageBox>
 #include <QMenu>
 #include <QToolBar>
@@ -49,6 +50,10 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mXyMarker->setIconSize( 6 );
   mXyMarker->setColor( QColor( 30, 30, 30, 225 ) );
   mXyMarker->setFillColor( QColor( 255, 255, 255, 225 ) );
+
+  mExtentRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::PolygonGeometry );
+  mExtentRubberBand->setStrokeColor( Qt::red );
+
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );
 
@@ -85,6 +90,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
   connect( mActionZoomFullExtent, &QAction::triggered, mMapCanvas, &QgsMapCanvas::zoomToFullExtent );
   connect( mActionZoomToLayer, &QAction::triggered, mMapCanvas, [ = ] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayer( mMapCanvas ); } );
   connect( mActionZoomToSelected, &QAction::triggered, mMapCanvas, [ = ] { mMapCanvas->zoomToSelected(); } );
@@ -94,9 +100,11 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsMenu->addAction( settingsAction );
 
   settingsMenu->addSeparator();
-  settingsMenu->addAction( mActionSetCrs );
   settingsMenu->addAction( mActionShowAnnotations );
   settingsMenu->addAction( mActionShowCursor );
+  settingsMenu->addAction( mActionShowExtent );
+  settingsMenu->addSeparator();
+  settingsMenu->addAction( mActionSetCrs );
   settingsMenu->addAction( mActionRename );
 
   connect( settingsMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::settingsMenuAboutToShow );
@@ -106,6 +114,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mActionShowAnnotations, &QAction::toggled, this, [ = ]( bool checked ) { mMapCanvas->setAnnotationsVisible( checked ); } );
   mActionShowCursor->setChecked( true );
   connect( mActionShowCursor, &QAction::toggled, this, [ = ]( bool checked ) { mXyMarker->setVisible( checked ); } );
+  mActionShowExtent->setChecked( false );
+  connect( mActionShowExtent, &QAction::toggled, this, [ = ]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
 
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
@@ -197,6 +207,8 @@ void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
     disconnect( mMainCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsMapCanvasDockWidget::syncMarker );
     disconnect( mMainCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapCanvasDockWidget::mapScaleChanged );
     disconnect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
+    disconnect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
+    disconnect( mMainCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
   }
 
   mMainCanvas = canvas;
@@ -204,6 +216,9 @@ void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
   connect( mMainCanvas, &QgsMapCanvas::scaleChanged, this, &QgsMapCanvasDockWidget::mapScaleChanged );
   connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged );
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::mapExtentChanged, Qt::UniqueConnection );
+  connect( mMainCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
+  connect( mMainCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
+  updateExtentRect();
 }
 
 QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
@@ -229,6 +244,16 @@ void QgsMapCanvasDockWidget::setCursorMarkerVisible( bool visible )
 bool QgsMapCanvasDockWidget::isCursorMarkerVisible() const
 {
   return mXyMarker->isVisible();
+}
+
+void QgsMapCanvasDockWidget::setMainCanvasExtentVisible( bool visible )
+{
+  mActionShowExtent->setChecked( visible );
+}
+
+bool QgsMapCanvasDockWidget::isMainCanvasExtentVisible() const
+{
+  return mExtentRubberBand->isVisible();
 }
 
 void QgsMapCanvasDockWidget::setScaleFactor( double factor )
@@ -390,6 +415,28 @@ void QgsMapCanvasDockWidget::mapScaleChanged()
   mBlockExtentSync = true;
   mMapCanvas->zoomScale( newScale );
   mBlockExtentSync = prev;
+}
+
+void QgsMapCanvasDockWidget::updateExtentRect()
+{
+  if ( !mExtentRubberBand->isVisible() )
+    return;
+
+  QPolygonF mainCanvasPoly = mMainCanvas->mapSettings().visiblePolygon();
+  // close polygon
+  mainCanvasPoly << mainCanvasPoly.at( 0 );
+  QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
+  // reproject extent
+  QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                             mMapCanvas->mapSettings().destinationCrs() );
+  try
+  {
+    g.transform( ct );
+  }
+  catch ( QgsCsException & )
+  {
+  }
+  mExtentRubberBand->setToGeometry( g, nullptr );
 }
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )

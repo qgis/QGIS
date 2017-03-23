@@ -30,6 +30,7 @@ class QgsDoubleSpinBox;
 class QgsStatusBarMagnifierWidget;
 class QgsMapToolPan;
 class QgsVertexMarker;
+class QgsRubberBand;
 class QCheckBox;
 
 /**
@@ -78,6 +79,18 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     bool isCursorMarkerVisible() const;
 
     /**
+     * Sets whether the main canvas extent is visible.
+     * @see isMainCanvasExtentVisible()
+     */
+    void setMainCanvasExtentVisible( bool visible );
+
+    /**
+     * Returns true if the main canvas extent is visible.
+     * @see setMainCanvasExtentVisible()
+     */
+    bool isMainCanvasExtentVisible() const;
+
+    /**
      * Returns the scaling factor for main canvas scale to view scale.
      * @see setScaleFactor()
      * @see isViewScaleSynchronized()
@@ -122,6 +135,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void settingsMenuAboutToShow();
     void syncMarker( const QgsPoint &p );
     void mapScaleChanged();
+    void updateExtentRect();
 
   private:
 
@@ -141,6 +155,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapToolPan *mPanTool = nullptr;
     QTimer mResizeTimer;
     QgsVertexMarker *mXyMarker = nullptr;
+    QgsRubberBand *mExtentRubberBand = nullptr;
     void syncViewCenter( QgsMapCanvas *sourceCanvas );
 };
 

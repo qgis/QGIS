@@ -3141,8 +3141,16 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
-QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area,
-    bool synced, bool showCursor, bool scaleSynced, double scaleFactor )
+QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
+{
+  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name );
+  if ( !dock )
+    return nullptr;
+  else
+    return dock->mapCanvas();
+}
+
+QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3209,13 +3217,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name, bool isFloating,
       addDockWidget( area, mapCanvasWidget );
     }
   }
-
-  mapCanvasWidget->setViewCenterSynchronized( synced );
-  mapCanvasWidget->setCursorMarkerVisible( showCursor );
-  mapCanvasWidget->setScaleFactor( scaleFactor );
-  mapCanvasWidget->setViewScaleSynchronized( scaleSynced );
-
-  return mapCanvas;
+  return mapCanvasWidget;
 }
 
 void QgisApp::closeMapCanvas( const QString &name )
@@ -9815,7 +9817,7 @@ void QgisApp::newMapCanvas()
     }
   }
 
-  createNewMapCanvas( name, true );
+  createNewMapCanvasDock( name, true );
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
@@ -11854,6 +11856,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "area" ), dockWidgetArea( w ) );
     node.setAttribute( QStringLiteral( "synced" ), w->isViewCenterSynchronized() );
     node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
+    node.setAttribute( QStringLiteral( "showExtent" ), w->isMainCanvasExtentVisible() );
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
     mapViewNode.appendChild( node );
@@ -11892,12 +11895,20 @@ void QgisApp::readProject( const QDomDocument &doc )
       bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
       bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
       bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
+      bool showExtent = elementNode.attribute( QStringLiteral( "showExtent" ), QStringLiteral( "0" ) ).toInt();
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
       Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elementNode.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
-      QgsMapCanvas *mapCanvas = createNewMapCanvas( mapName, floating, QRect( x, y, w, h ), area, synced, showCursor, scaleSynced, scaleFactor );
+      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, floating, QRect( x, y, w, h ), area );
+      QgsMapCanvas *mapCanvas = mapCanvasDock->mapCanvas();
       mapCanvas->readProject( doc );
+
+      mapCanvasDock->setViewCenterSynchronized( synced );
+      mapCanvasDock->setCursorMarkerVisible( showCursor );
+      mapCanvasDock->setScaleFactor( scaleFactor );
+      mapCanvasDock->setViewScaleSynchronized( scaleSynced );
+      mapCanvasDock->setMainCanvasExtentVisible( showExtent );
     }
   }
 }
