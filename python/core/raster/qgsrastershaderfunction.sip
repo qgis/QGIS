@@ -34,5 +34,5 @@ class QgsRasterShaderFunction
     double minimumValue() const;
     double maximumValue() const;
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
 };

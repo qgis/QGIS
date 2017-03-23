@@ -104,7 +104,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
     /** \brief Generates and new RGB value based on original RGB value */
     bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
 
     //! Sets classification mode
     void setClassificationMode( ClassificationMode classificationMode );
