@@ -32,6 +32,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeTransparency() ) );
+  contextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
 
   mModel = new QgsPalettedRendererModel( this );
   mTreeView->setSortingEnabled( false );
@@ -194,6 +195,34 @@ void QgsPalettedRendererWidget::changeTransparency()
         QColor newColor = mModel->data( colorIndex, Qt::DisplayRole ).value<QColor>();
         newColor.setAlpha( newTransparency );
         mModel->setData( colorIndex, newColor, Qt::EditRole );
+      }
+    }
+    connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
+
+    emit widgetChanged();
+  }
+}
+
+void QgsPalettedRendererWidget::changeLabel()
+{
+  QItemSelection sel = mTreeView->selectionModel()->selection();
+
+  QModelIndex labelIndex = mModel->index( sel.first().top(), QgsPalettedRendererModel::LabelColumn );
+  QString currentLabel = mModel->data( labelIndex, Qt::DisplayRole ).toString();
+
+  bool ok;
+  QString newLabel = QInputDialog::getText( this, tr( "Label" ), tr( "Change label" ), QLineEdit::Normal, currentLabel, &ok );
+  if ( ok )
+  {
+    // don't want to emit widgetChanged multiple times
+    disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
+
+    Q_FOREACH ( const QItemSelectionRange &range, sel )
+    {
+      Q_FOREACH ( const QModelIndex &index, range.indexes() )
+      {
+        labelIndex = mModel->index( index.row(), QgsPalettedRendererModel::LabelColumn );
+        mModel->setData( labelIndex, newLabel, Qt::EditRole );
       }
     }
     connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
