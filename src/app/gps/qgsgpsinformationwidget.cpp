@@ -202,10 +202,17 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   {
     mRadGpsd->setChecked( true );
   }
-  //disable the internal port method if build is without QtLocation
+  //hide the internal port method and Hacc, Vacc fields if build is without QtLocation
 #ifndef HAVE_QT_MOBILITY_LOCATION
-  mRadInternal->setDisabled( true );
-  mRadAutodetect->setChecked( true );
+  if ( mRadInternal->isChecked() )
+  {
+    mRadAutodetect->setChecked( true );
+  }
+  mRadInternal->hide();
+  mLblHacc->hide();
+  mTxtHacc->hide();
+  mLblVacc->hide();
+  mTxtVacc->hide();
 #endif
 
   //auto digitizing behavior
