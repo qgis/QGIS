@@ -114,7 +114,7 @@ QgsLayerTree *QgsLayerTree::readXml( QDomElement &element )
 void QgsLayerTree::writeXml( QDomElement &parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree" ) );
+  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
 
   writeCommonXml( elem );
 

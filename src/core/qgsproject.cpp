@@ -846,23 +846,14 @@ bool QgsProject::read()
 
   mRootGroup->setCustomProperty( QStringLiteral( "loading" ), 1 );
 
-  QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree" ) );
+  QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    // read the tree but do not resolve the references (we have not loaded the layers yet)
     mRootGroup->readChildrenFromXml( layerTreeElem );
   }
   else
   {
-    QDomElement layerTreeGroupElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
-    if ( !layerTreeGroupElem.isNull() )
-    {
-      mRootGroup->readChildrenFromXml( layerTreeGroupElem );
-    }
-    else
-    {
-      QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
-    }
+    QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
   }
 
   mLayerTreeRegistryBridge->setEnabled( false );
