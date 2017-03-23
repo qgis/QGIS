@@ -202,8 +202,8 @@ class TestLayerDependencies(unittest.TestCase):
                 newPointsLayer = l.layer()
             elif l.layerId().startswith('lines'):
                 newLinesLayer = l.layer()
-        self.assertFalse(newPointsLayer is None)
-        self.assertFalse(newLinesLayer is None)
+        self.assertIsNotNone(newPointsLayer)
+        self.assertIsNotNone(newLinesLayer)
         self.assertTrue(newLinesLayer.id() in [dep.layerId() for dep in newPointsLayer.dependencies()])
 
         self.pointsLayer.setDependencies([])
