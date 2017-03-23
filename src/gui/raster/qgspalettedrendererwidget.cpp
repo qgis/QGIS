@@ -62,20 +62,20 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
 {
   int nColors = mTreeWidget->topLevelItemCount();
-  QColor *colorArray = new QColor[nColors];
-  QVector<QString> labels;
+  QgsPalettedRasterRenderer::ClassData classes;
+  bool ok = false;
   for ( int i = 0; i < nColors; ++i )
   {
-    colorArray[i] = mTreeWidget->topLevelItem( i )->background( 1 ).color();
+    int value = mTreeWidget->topLevelItem( i )->text( 0 ).toInt( &ok );
+    if ( !ok )
+      continue;
+
+    QColor color = mTreeWidget->topLevelItem( i )->background( 1 ).color();
     QString label = mTreeWidget->topLevelItem( i )->text( 2 );
-    if ( !label.isEmpty() )
-    {
-      if ( i >= labels.size() ) labels.resize( i + 1 );
-      labels[i] = label;
-    }
+    classes.insert( value, QgsPalettedRasterRenderer::Class( color, label ) );
   }
   int bandNumber = mBandComboBox->currentData().toInt();
-  return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, colorArray, nColors, labels );
+  return new QgsPalettedRasterRenderer( mRasterLayer->dataProvider(), bandNumber, classes );
 }
 
 void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
@@ -110,16 +110,15 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
   if ( pr )
   {
     //read values and colors and fill into tree widget
-    int nColors = pr->nColors();
-    QColor *colors = pr->colors();
-    for ( int i = 0; i < nColors; ++i )
+    QgsPalettedRasterRenderer::ClassData classes = pr->classes();
+    QgsPalettedRasterRenderer::ClassData::const_iterator it = classes.constBegin();
+    for ( ; it != classes.constEnd(); ++it )
     {
       QTreeWidgetItem *item = new QTreeWidgetItem( mTreeWidget );
-      item->setText( 0, QString::number( i ) );
-      item->setBackground( 1, QBrush( colors[i] ) );
-      item->setText( 2, pr->label( i ) );
+      item->setText( 0, QString::number( it.key() ) );
+      item->setBackground( 1, QBrush( it->color ) );
+      item->setText( 2, it->label );
     }
-    delete[] colors;
   }
   else
   {

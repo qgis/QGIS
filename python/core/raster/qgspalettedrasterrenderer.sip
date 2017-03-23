@@ -4,8 +4,17 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     #include "qgspalettedrasterrenderer.h"
 %End
   public:
-    /** Renderer owns color array*/
-    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray /Array,Transfer/, int nColors /ArraySize/, const QVector<QString>& labels = QVector<QString>() );
+
+    struct Class
+    {
+
+      Class( const QColor &color, const QString &label );
+      QColor color;
+      QString label;
+    };
+
+    typedef QMap< int, QgsPalettedRasterRenderer::Class > ClassData;
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
     ~QgsPalettedRasterRenderer();
     virtual QgsPalettedRasterRenderer * clone() const /Factory/;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input ) /Factory/;
@@ -14,20 +23,13 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
 
     /** Returns number of colors*/
     int nColors() const;
-    /** Returns copy of color array (caller takes ownership)*/
-    QColor* colors() const /Factory/;
-
-    /** Return optional category label
-     *  @note added in 2.1 */
+    ClassData classes() const;
     QString label( int idx ) const;
+    void setLabel( int idx, const QString &label );
 
-    /** Set category label
-     *  @note added in 2.1 */
-    void setLabel( int idx, const QString& label );
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
-
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 
     QList<int> usesBands() const;
 

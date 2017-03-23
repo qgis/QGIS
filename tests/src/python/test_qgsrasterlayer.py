@@ -32,6 +32,7 @@ from qgis.core import (QgsRaster,
                        QgsRasterShader,
                        QgsRasterTransparency,
                        QgsRenderChecker,
+                       QgsPalettedRasterRenderer,
                        QgsSingleBandGrayRenderer,
                        QgsSingleBandPseudoColorRenderer)
 from utilities import unitTestDataPath
@@ -286,6 +287,81 @@ class TestQgsRasterLayer(unittest.TestCase):
         mmoUnserialized = QgsRasterMinMaxOrigin()
         mmoUnserialized.readXml(parentElem)
         self.assertEqual(mmo, mmoUnserialized)
+
+    def testPaletted(self):
+        """ test paletted raster renderer with raster with color table"""
+        path = os.path.join(unitTestDataPath('raster'),
+                            'with_color_table.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 1,
+                                             {3: QgsPalettedRasterRenderer.Class(QColor(255, 0, 0), 'class 1'),
+                                              1: QgsPalettedRasterRenderer.Class(QColor(0, 255, 0), 'class 2')})
+
+        self.assertEqual(renderer.nColors(), 2)
+        self.assertEqual(renderer.usesBands(), [1])
+
+        # test labels
+        self.assertEqual(renderer.label(1), 'class 2')
+        self.assertEqual(renderer.label(3), 'class 1')
+        self.assertFalse(renderer.label(101))
+
+        # test legend symbology - should be sorted by value
+        legend = renderer.legendSymbologyItems()
+        self.assertEqual(legend[0][0], 'class 2')
+        self.assertEqual(legend[1][0], 'class 1')
+        self.assertEqual(legend[0][1].name(), '#00ff00')
+        self.assertEqual(legend[1][1].name(), '#ff0000')
+
+        # test retrieving classes
+        classes = renderer.classes()
+        self.assertEqual(classes[1].label, 'class 2')
+        self.assertEqual(classes[3].label, 'class 1')
+        self.assertEqual(classes[1].color.name(), '#00ff00')
+        self.assertEqual(classes[3].color.name(), '#ff0000')
+
+        # test set label
+        # bad index
+        renderer.setLabel(1212, 'bad')
+        renderer.setLabel(3, 'new class')
+        self.assertEqual(renderer.label(3), 'new class')
+
+        # clone
+        new_renderer = renderer.clone()
+        classes = new_renderer.classes()
+        self.assertEqual(classes[1].label, 'class 2')
+        self.assertEqual(classes[3].label, 'new class')
+        self.assertEqual(classes[1].color.name(), '#00ff00')
+        self.assertEqual(classes[3].color.name(), '#ff0000')
+
+        # write to xml and read
+        doc = QDomDocument('testdoc')
+        elem = doc.createElement('qgis')
+        renderer.writeXml(doc, elem)
+        restored = QgsPalettedRasterRenderer.create(elem.firstChild().toElement(), layer.dataProvider())
+        self.assertTrue(restored)
+        self.assertEqual(restored.usesBands(), [1])
+        classes = restored.classes()
+        self.assertTrue(classes)
+        self.assertEqual(classes[1].label, 'class 2')
+        self.assertEqual(classes[3].label, 'new class')
+        self.assertEqual(classes[1].color.name(), '#00ff00')
+        self.assertEqual(classes[3].color.name(), '#ff0000')
+
+        # render test
+        layer.setRenderer(renderer)
+        ms = QgsMapSettings()
+        ms.setLayers([layer])
+        ms.setExtent(layer.extent())
+
+        checker = QgsRenderChecker()
+        checker.setControlName("expected_paletted_renderer")
+        checker.setMapSettings(ms)
+
+        self.assertTrue(checker.runTest("expected_paletted_renderer"), "Paletted rendering test failed")
 
 
 if __name__ == '__main__':

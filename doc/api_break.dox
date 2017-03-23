@@ -1536,7 +1536,10 @@ QgsPaintEffectRegistry        {#qgis_api_break_3_0_QgsPaintEffectRegistry}
 QgsPalettedRasterRenderer        {#qgis_api_break_3_0_QgsPalettedRasterRenderer}
 -------------------------
 
-- The rgbArray() method was made private
+- The rgbArray() method was removed
+- colors() has been removed, use classes() instead.
+- The constructor has a different signature and requires a list of classes instead of an array
+
 
 QgsPalLabeling        {#qgis_api_break_3_0_QgsPalLabeling}
 --------------

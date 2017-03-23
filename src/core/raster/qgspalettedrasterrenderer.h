@@ -33,9 +33,28 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
 
-    //! Renderer owns color array
-    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, QColor *colorArray, int nColors, const QVector<QString> &labels = QVector<QString>() );
-    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, QRgb *colorArray, int nColors, const QVector<QString> &labels = QVector<QString>() );
+    //! Properties of a single value class
+    struct Class
+    {
+      //! Constructor for Class
+      Class( const QColor &color = QColor(), const QString &label = QString() )
+        : color( color )
+        , label( label )
+      {}
+
+      //! Color to render value
+      QColor color;
+      //! Label for value
+      QString label;
+    };
+
+    //! Map of value to class properties
+    typedef QMap< int, Class > ClassData;
+
+    /**
+     * Constructor for QgsPalettedRasterRenderer.
+     */
+    QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
     ~QgsPalettedRasterRenderer();
 
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
@@ -49,13 +68,16 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Returns number of colors
-    int nColors() const { return mNColors; }
-    //! Returns copy of color array (caller takes ownership)
-    QColor *colors() const;
+    int nColors() const { return mClassData.size(); }
+
+    /**
+     * Returns a map of value to classes (colors) used by the renderer.
+     */
+    ClassData classes() const;
 
     /** Return optional category label
-     *  \since QGIS 2.1 */
-    QString label( int idx ) const { return mLabels.value( idx ); }
+     * \since QGIS 2.1 */
+    QString label( int idx ) const;
 
     /** Set category label
      *  \since QGIS 2.1 */
@@ -69,17 +91,16 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
   private:
 
-    /** Returns copy of premultiplied rgb array (caller takes ownership)
-     */
-    QRgb *rgbArray() const;
-
     int mBand;
+    int mMaxColorIndex = -INT_MAX;
+    ClassData mClassData;
+
+
     //! Premultiplied color array
     QRgb *mColors = nullptr;
-    //! Number of colors
-    int mNColors;
-    //! Optional category labels, size of vector may be < mNColors
-    QVector<QString> mLabels;
+    bool *mIsNoData = nullptr;
+    void updateArrays();
+
 
 };
 
