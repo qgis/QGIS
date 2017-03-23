@@ -515,7 +515,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     filename = orgFilename
             else:
                 filename = orgFilename
-        destFilename = self.getTempFilename()
+        destFilename = 'a' + os.path.basename(self.getTempFilename())
         self.exportedLayers[orgFilename] = destFilename
         command = 'v.in.ogr'
         min_area = self.getParameterValue(self.GRASS_MIN_AREA_PARAMETER)
@@ -549,7 +549,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 Grass7Utils.projectionSet = True
 
     def exportRasterLayer(self, layer):
-        destFilename = self.getTempFilename()
+        destFilename = 'a' + os.path.basename(self.getTempFilename())
         self.exportedLayers[layer] = destFilename
         command = 'r.external'
         command += ' input="' + layer + '"'
