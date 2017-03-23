@@ -3,20 +3,22 @@ class QgsLayerTree : QgsLayerTreeGroup
 %TypeHeaderCode
 #include <qgslayertree.h>
 %End
-  static bool isGroup( QgsLayerTreeNode *node );
-  static bool isLayer( const QgsLayerTreeNode *node );
 
-  //! Cast node to a group. No type checking is done - use isGroup() to find out whether this operation is legal.
-  // PYTHON: automatic cast
-  //inline QgsLayerTreeGroup* toGroup( QgsLayerTreeNode* node );
+  public:
+    static bool isGroup( QgsLayerTreeNode *node );
+    static bool isLayer( const QgsLayerTreeNode *node );
 
-  //! Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
-  // PYTHON: automatic cast
-  //inline QgsLayerTreeLayer* toLayer( QgsLayerTreeNode* node );
+    //! Cast node to a group. No type checking is done - use isGroup() to find out whether this operation is legal.
+    // PYTHON: automatic cast
+    //inline QgsLayerTreeGroup* toGroup( QgsLayerTreeNode* node );
+
+    //! Cast node to a layer. No type checking is done - use isLayer() to find out whether this operation is legal.
+    // PYTHON: automatic cast
+    //inline QgsLayerTreeLayer* toLayer( QgsLayerTreeNode* node );
 
     QList<QgsMapLayer *> customLayerOrder() const;
     void setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder );
-    void setCustomLayerOrder( const QStringList &customLayerOrder );
+    void setCustomLayerOrder( const QStringList &customLayerOrder ) /PyName=setCustomLayerOrderByIds/;
     QList<QgsMapLayer *> layerOrder() const;
     bool hasCustomLayerOrder() const;
     void setHasCustomLayerOrder( bool hasCustomLayerOrder );

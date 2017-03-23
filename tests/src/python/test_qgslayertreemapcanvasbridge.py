@@ -54,32 +54,34 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         bridge = QgsLayerTreeMapCanvasBridge(prj.layerTreeRoot(), canvas)
 
         #custom layer order
-        bridge.setHasCustomLayerOrder(True)
-        bridge.setCustomLayerOrder([layer3.id(), layer.id(), layer2.id()])
+        prj.layerTreeRoot().setHasCustomLayerOrder(True)
+        prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer3.id(), layer.id(), layer2.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer3, layer, layer2])
 
         # no custom layer order
-        bridge.setHasCustomLayerOrder(False)
+        prj.layerTreeRoot().setHasCustomLayerOrder(False)
         app.processEvents()
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3])
 
         # mess around with the layer tree order
         root = prj.layerTreeRoot()
-        layer_node = root.findLayer(layer2.id())
+        layer_node = root.findLayer(layer2)
         cloned_node = layer_node.clone()
         parent = layer_node.parent()
         parent.insertChildNode(0, cloned_node)
         parent.removeChildNode(layer_node)
         app.processEvents()
         # make sure project respects this
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
 
         # make sure project order includes ALL layers, not just visible ones
-        layer_node = root.findLayer(layer.id())
+        layer_node = root.findLayer(layer)
         layer_node.setItemVisibilityChecked(False)
         app.processEvents()
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
 
     def testCustomLayerOrderUpdatedFromProject(self):
         """ test that setting project layer order is reflected in custom layer order panel """
@@ -99,37 +101,35 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
         custom_order_widget = QgsCustomLayerOrderWidget(bridge)
 
         #custom layer order
-        bridge.setHasCustomLayerOrder(True)
-        bridge.setCustomLayerOrder([layer3.id(), layer.id(), layer2.id()])
+        prj.layerTreeRoot().setHasCustomLayerOrder(True)
+        prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer3.id(), layer.id(), layer2.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2])
 
         # no custom layer order
-        bridge.setHasCustomLayerOrder(False)
+        prj.layerTreeRoot().setHasCustomLayerOrder(False)
         app.processEvents()
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3])
 
         # mess around with the project layer order
-        prj.setLayerOrder([layer3, layer, layer2])
+        prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
-        # make sure bridge respects this new order
-        self.assertTrue(bridge.hasCustomLayerOrder())
-        self.assertEqual(bridge.customLayerOrder(), [layer3.id(), layer.id(), layer2.id()])
+        self.assertEqual(prj.layerTreeRoot().layerOrder(), [layer, layer2, layer3])
 
         # try reordering through bridge
-        bridge.setHasCustomLayerOrder(False)
+        prj.layerTreeRoot().setHasCustomLayerOrder(False)
         app.processEvents()
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer.id(), layer2.id(), layer3.id()])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3])
         root = prj.layerTreeRoot()
-        layer_node = root.findLayer(layer2.id())
+        layer_node = root.findLayer(layer2)
         cloned_node = layer_node.clone()
         parent = layer_node.parent()
         parent.insertChildNode(0, cloned_node)
         parent.removeChildNode(layer_node)
         app.processEvents()
         # make sure project respects this
-        self.assertEqual([l.id() for l in prj.layerOrder()], [layer2.id(), layer.id(), layer3.id()])
-        self.assertFalse(bridge.hasCustomLayerOrder())
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
+        self.assertFalse(prj.layerTreeRoot().hasCustomLayerOrder())
 
 
 if __name__ == '__main__':
