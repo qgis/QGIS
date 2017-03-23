@@ -193,7 +193,6 @@ QList<QgsMapLayer *> QgsMapThemeCollection::masterVisibleLayers() const
     // no project layer order set
     return visibleLayers;
   }
-
   else
   {
     QList< QgsMapLayer * > orderedVisibleLayers;
