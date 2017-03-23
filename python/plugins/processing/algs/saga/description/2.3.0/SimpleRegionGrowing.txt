@@ -1,0 +1,14 @@
+Simple Region Growing
+imagery_segmentation
+ParameterRaster|SEEDS|Seeds|False
+ParameterMultipleInput|FEATURES|Features|3|False
+ParameterSelection|METHOD|Method|[0] feature space and position;[1] feature space
+ParameterSelection|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)
+ParameterNumber|SIG_1|Variance in Feature Space|None|None|1.0
+ParameterNumber|SIG_2|Variance in Position Space|None|None|1.0
+ParameterNumber|THRESHOLD|Threshold - Similarity|None|None|0.0
+ParameterBoolean|REFRESH         |Refresh|True
+ParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)|None|None|256
+OutputRaster|SEGMENTS|Segments
+OutputRaster|SIMILARITY|Similarity
+OutputTable|TABLE|Seeds

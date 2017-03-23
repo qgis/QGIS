@@ -1,0 +1,18 @@
+Flow Accumulation (Recursive)
+ta_hydrology
+ParameterRaster|ELEVATION|Elevation|False
+ParameterRaster|SINKROUTE|Sink Routes|True
+ParameterRaster|WEIGHT|Weight|True
+ParameterRaster|MATERIAL|Material|True
+ParameterRaster|VAL_INPUT|Input for Mean over Catchment Calculation|True
+ParameterRaster|TARGET|Target|True
+ParameterNumber|STEP|Step|None|None|1
+ParameterRaster|TARGETS|Target Areas|True
+ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Rho 8;[2] Deterministic Infinity;[3] Multiple Flow Direction
+ParameterNumber|CONVERGENCE|Convergence|None|None|1.1
+OutputRaster|CAREA|Catchment Area
+OutputRaster|VAL_MEAN|Mean over Catchment
+OutputRaster|ACCU_TOT|Total accumulated Material
+OutputRaster|ACCU_LEFT|Accumulated Material from left side
+OutputRaster|ACCU_RIGHT|Accumulated Material from right side
+OutputRaster|FLOWLEN|Flow Path Length
