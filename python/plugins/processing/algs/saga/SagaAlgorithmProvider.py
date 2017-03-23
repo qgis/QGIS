@@ -33,6 +33,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from SagaAlgorithm212 import SagaAlgorithm212
 from SagaAlgorithm213 import SagaAlgorithm213
 from SagaAlgorithm214 import SagaAlgorithm214
+from SagaAlgorithm230 import SagaAlgorithm230
 from SplitRGBBands import SplitRGBBands
 import SagaUtils
 from processing.tools.system import isWindows, isMac
@@ -50,7 +51,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                          "2.2.0": ("2.2.0", SagaAlgorithm214),
                          "2.2.1": ("2.2.0", SagaAlgorithm214),
                          "2.2.2": ("2.2.2", SagaAlgorithm214),
-                         "2.2.3": ("2.2.3", SagaAlgorithm214)}
+                         "2.2.3": ("2.2.3", SagaAlgorithm214),
+                         "2.3.0": ("2.3.0", SagaAlgorithm230),
+                         "2.3.1": ("2.3.1", SagaAlgorithm230)}
 
     def __init__(self):
         AlgorithmProvider.__init__(self)

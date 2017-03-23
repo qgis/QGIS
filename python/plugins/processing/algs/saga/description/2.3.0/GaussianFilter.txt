@@ -1,0 +1,7 @@
+Gaussian Filter
+grid_filter
+ParameterRaster|INPUT|Grid|False
+ParameterNumber|SIGMA|Standard Deviation|None|None|1
+ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
+ParameterNumber|RADIUS|Search Radius|None|None|3
+OutputRaster|RESULT|Filtered Grid

@@ -1,0 +1,23 @@
+Directional Statistics for Single Grid
+statistics_grid
+ParameterRaster|GRID|Grid|False
+ParameterVector|POINTS|Points|-1|True
+ParameterNumber|DIRECTION|Direction [Degree]|None|None|0.0
+ParameterNumber|TOLERANCE|Tolerance [Degree]|None|None|0.0
+ParameterNumber|MAXDISTANCE|Maximum Distance [Cells]|None|None|0
+ParameterSelection|DISTANCE_WEIGHTING_DW_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
+ParameterNumber|DISTANCE_WEIGHTING_DW_IDW_POWER|Inverse Distance Weighting Power|None|None|1
+ParameterBoolean|DISTANCE_WEIGHTING_DW_IDW_OFFSET|Inverse Distance Offset|True
+ParameterNumber|DISTANCE_WEIGHTING_DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|None|None|1.0
+OutputRaster|MEAN|Arithmetic Mean
+OutputRaster|DIFMEAN|Difference from Arithmetic Mean
+OutputRaster|MIN|Minimum
+OutputRaster|MAX|Maximum
+OutputRaster|RANGE|Range
+OutputRaster|VAR|Variance
+OutputRaster|STDDEV|Standard Deviation
+OutputRaster|STDDEVLO|Mean less Standard Deviation
+OutputRaster|STDDEVHI|Mean plus Standard Deviation
+OutputRaster|DEVMEAN|Deviation from Arithmetic Mean
+OutputRaster|PERCENT|Percentile
+OutputVector|POINTS_OUT|Directional Statistics for Points

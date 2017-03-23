@@ -1,0 +1,16 @@
+Grid Statistics for Polygons
+shapes_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterVector|POLYGONS|Polygons|2|False
+ParameterSelection|METHOD|Method|[0] Standard;[1] Shape wise, supports overlapping polygons|1
+ParameterSelection|NAMING|Grid Naming|[0] Grid number;[1] Grid name|1
+ParameterBoolean|COUNT|Number of Cells|True
+ParameterBoolean|MIN|Minimum|True
+ParameterBoolean|MAX|Maximum|True
+ParameterBoolean|RANGE|Range|True
+ParameterBoolean|SUM|Sum|True
+ParameterBoolean|MEAN|Mean|True
+ParameterBoolean|VAR|Variance|True
+ParameterBoolean|STDDEV|Standard Deviation|True
+ParameterNumber|QUANTILE|Quantiles|None|None|0
+OutputVector|RESULT|Statistics

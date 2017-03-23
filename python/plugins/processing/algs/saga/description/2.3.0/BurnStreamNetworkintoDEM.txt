@@ -1,0 +1,8 @@
+Burn Stream Network into DEM
+ta_preprocessor
+ParameterRaster|DEM|DEM|False
+ParameterRaster|STREAM|Streams|False
+ParameterRaster|FLOWDIR|Flow direction|False
+ParameterSelection|METHOD|Method|[0] simply decrease cell's value by epsilon;[1] lower cell's value to neighbours minimum value minus epsilon;[2] trace stream network downstream
+ParameterNumber|EPSILON|Epsilon|0.0|None|1.0
+OutputRaster|BURN|Processed DEM

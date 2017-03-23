@@ -1,0 +1,11 @@
+Multilevel B-Spline Interpolation for Categories
+grid_spline
+ParameterVector|SHAPES|Points|0|False
+ParameterTableField|FIELD|Attribute|SHAPES|-1|False
+Hardcoded|-TARGET_DEFINITION 0
+Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+ParameterRaster|TARGET_TEMPLATE|Target system|True
+OutputRaster|TARGET_CATEGORIES|Categories
+OutputRaster|TARGET_PROPABILITY|Propability
