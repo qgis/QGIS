@@ -26,6 +26,10 @@
 #include <QInputDialog>
 #include <QMenu>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
@@ -39,12 +43,22 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSortingEnabled( false );
   mTreeView->setModel( mModel );
 
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mModel, this );
+#endif
+
   mSwatchDelegate = new QgsColorSwatchDelegate( this );
   mTreeView->setItemDelegateForColumn( QgsPalettedRendererModel::ColorColumn, mSwatchDelegate );
-
   mTreeView->setColumnWidth( QgsPalettedRendererModel::ColorColumn, 50 );
   mTreeView->setContextMenuPolicy( Qt::CustomContextMenu );
   mTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mTreeView->setDragEnabled( true );
+  mTreeView->setAcceptDrops( true );
+  mTreeView->setDropIndicatorShown( true );
+  mTreeView->setDragDropMode( QAbstractItemView::InternalMove );
+  mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mTreeView->setDefaultDropAction( Qt::MoveAction );
+
   connect( mTreeView, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
          );
 
@@ -303,7 +317,7 @@ void QgsPalettedRendererWidget::applyColorRamp()
 
 ///@cond PRIVATE
 QgsPalettedRendererModel::QgsPalettedRendererModel( QObject *parent )
-  : QAbstractTableModel( parent )
+  : QAbstractItemModel( parent )
 {
 
 }
@@ -315,21 +329,51 @@ void QgsPalettedRendererModel::setClassData( const QgsPalettedRasterRenderer::Cl
   endResetModel();
 }
 
-int QgsPalettedRendererModel::columnCount( const QModelIndex & ) const
+QModelIndex QgsPalettedRendererModel::index( int row, int column, const QModelIndex &parent ) const
 {
+  if ( column < 0 || column >= columnCount() )
+  {
+    //column out of bounds
+    return QModelIndex();
+  }
+
+  if ( !parent.isValid() && row >= 0 && row < mData.size() )
+  {
+    //return an index for the item at this position
+    return createIndex( row, column );
+  }
+
+  //only top level supported
+  return QModelIndex();
+}
+
+QModelIndex QgsPalettedRendererModel::parent( const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+
+  //all items are top level
+  return QModelIndex();
+}
+
+int QgsPalettedRendererModel::columnCount( const QModelIndex &parent ) const
+{
+  if ( parent.isValid() )
+    return 0;
+
   return 3;
 }
 
-int QgsPalettedRendererModel::rowCount( const QModelIndex & ) const
+int QgsPalettedRendererModel::rowCount( const QModelIndex &parent ) const
 {
+  if ( parent.isValid() )
+    return 0;
+
   return mData.count();
 }
 
 QVariant QgsPalettedRendererModel::data( const QModelIndex &index, int role ) const
 {
-  if ( index.row() < 0 || index.row() >= mData.count() )
-    return QVariant();
-  if ( index.column() < 0 || index.column() >= columnCount() )
+  if ( !index.isValid() )
     return QVariant();
 
   switch ( role )
@@ -340,13 +384,13 @@ QVariant QgsPalettedRendererModel::data( const QModelIndex &index, int role ) co
       switch ( index.column() )
       {
         case ValueColumn:
-          return mData.keys().at( index.row() );
+          return mData.at( index.row() ).value;
 
         case ColorColumn:
-          return mData.value( mData.keys().at( index.row() ) ).color;
+          return mData.at( index.row() ).color;
 
         case LabelColumn:
-          return mData.value( mData.keys().at( index.row() ) ).label;
+          return mData.at( index.row() ).label;
       }
     }
 
@@ -388,146 +432,170 @@ QVariant QgsPalettedRendererModel::headerData( int section, Qt::Orientation orie
     }
 
     default:
-      return QAbstractTableModel::headerData( section, orientation, role );
+      return QAbstractItemModel::headerData( section, orientation, role );
   }
-  return QAbstractTableModel::headerData( section, orientation, role );
+  return QAbstractItemModel::headerData( section, orientation, role );
 }
 
-bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant &value, int )
 {
-  if ( index.row() < 0 || index.row() >= mData.count() )
+  if ( !index.isValid() )
     return false;
-  if ( index.column() < 0 || index.column() >= columnCount() )
+  if ( index.row() >= mData.length() )
     return false;
 
-  switch ( role )
+  switch ( index.column() )
   {
-    case Qt::EditRole:
+    case ValueColumn:
     {
-      switch ( index.column() )
-      {
-        case ValueColumn:
-        {
-          // make sure value is unique
-          bool ok = false;
-          int newValue = value.toInt( &ok );
-          if ( !ok )
-            return false;
+      bool ok = false;
+      int newValue = value.toInt( &ok );
+      if ( !ok )
+        return false;
 
-          for ( int i = 0; i < rowCount(); ++i )
-          {
-            if ( i == index.row() )
-              continue;
-            if ( data( QgsPalettedRendererModel::index( i, ValueColumn ) ).toInt() == newValue )
-            {
-              return false;
-            }
-          }
+      mData[ index.row() ].value = newValue;
+      emit dataChanged( index, index );
+      emit classesChanged();
+      return true;
+    }
 
-          QgsPalettedRasterRenderer::ClassData newData;
-          QgsPalettedRasterRenderer::ClassData::const_iterator cIt = mData.constBegin();
-          for ( int i = 0; cIt != mData.constEnd(); ++i, ++cIt )
-          {
-            if ( i == index.row() )
-              newData.insert( newValue, cIt.value() );
-            else
-              newData.insert( cIt.key(), cIt.value() );
-          }
-          mData = newData;
+    case ColorColumn:
+    {
+      mData[ index.row() ].color = value.value<QColor>();
+      emit dataChanged( index, index );
+      emit classesChanged();
+      return true;
+    }
 
-          emit dataChanged( index, index, QVector< int >() << Qt::EditRole << Qt::DisplayRole );
-          emit classesChanged();
-          return true;
-        }
-
-        case ColorColumn:
-        {
-          int pixValue = mData.keys().at( index.row() );
-          mData[ pixValue ].color = value.value<QColor>();
-          emit dataChanged( index, index, QVector< int >() << Qt::EditRole << Qt::DisplayRole );
-          emit classesChanged();
-          return true;
-        }
-
-        case LabelColumn:
-        {
-          int pixValue = mData.keys().at( index.row() );
-          mData[ pixValue ].label = value.toString();
-          emit dataChanged( index, index, QVector< int >() << Qt::EditRole << Qt::DisplayRole );
-          emit classesChanged();
-          return true;
-        }
-      }
+    case LabelColumn:
+    {
+      mData[ index.row() ].label = value.toString();
+      emit dataChanged( index, index );
+      emit classesChanged();
+      return true;
     }
   }
 
-  return QAbstractTableModel::setData( index, value, role );
+  return false;
 }
 
 Qt::ItemFlags QgsPalettedRendererModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags f = QAbstractTableModel::flags( index );
+  if ( !index.isValid() )
+    return QAbstractItemModel::flags( index ) | Qt::ItemIsDropEnabled;
+
+  Qt::ItemFlags f = QAbstractItemModel::flags( index );
   switch ( index.column() )
   {
     case ValueColumn:
     case LabelColumn:
     case ColorColumn:
-      f = f | Qt::ItemIsEditable;
+      f = f | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
       break;
   }
-  return f;
+  return f | Qt::ItemIsEnabled | Qt::ItemIsSelectable;;
 }
 
 bool QgsPalettedRendererModel::removeRows( int row, int count, const QModelIndex &parent )
 {
   if ( row < 0 || row >= mData.count() )
     return false;
+  if ( parent.isValid() )
+    return false;
 
-  beginRemoveRows( parent, row, row + count - 1 );
-
-  for ( int i = 0; i < count; i++ )
+  for ( int i = row + count - 1; i >= row; --i )
   {
-    mData.remove( mData.keys().at( row ) );
+    beginRemoveRows( parent, i, i );
+    mData.removeAt( i );
+    endRemoveRows();
   }
-
-  endRemoveRows();
+  emit classesChanged();
   return true;
 }
 
 bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex & )
 {
-  beginInsertRows( QModelIndex(), row, row + count - 1 );
-
   QgsPalettedRasterRenderer::ClassData::const_iterator cIt = mData.constBegin();
   int currentMaxValue = -INT_MAX;
   for ( ; cIt != mData.constEnd(); ++cIt )
   {
-    int value = cIt.key();
+    int value = cIt->value;
     currentMaxValue = qMax( value, currentMaxValue );
   }
   int nextValue = qMax( 0, currentMaxValue + 1 );
 
-  QgsPalettedRasterRenderer::ClassData newData;
-  cIt = mData.constBegin();
-  bool insertedRows = false;
-  for ( int i = 0; !insertedRows; ++i )
+  beginInsertRows( QModelIndex(), row, row + count - 1 );
+  for ( int i = row; i < row + count; ++i, ++nextValue )
   {
-    if ( i == row )
-    {
-      for ( int j = nextValue; j < nextValue + count; ++j )
-      {
-        newData.insert( j, QgsPalettedRasterRenderer::Class( QColor( 200, 200, 200 ), QString::number( j ) ) );
-      }
-      insertedRows = true;
-    }
-    if ( cIt != mData.constEnd() )
-    {
-      newData.insert( cIt.key(), cIt.value() );
-      cIt++;
-    }
+    mData.insert( i, QgsPalettedRasterRenderer::Class( nextValue, QColor( 200, 200, 200 ), QString::number( nextValue ) ) );
   }
-  mData = newData;
   endInsertRows();
+  emit classesChanged();
+  return true;
+}
+
+Qt::DropActions QgsPalettedRendererModel::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
+
+QStringList QgsPalettedRendererModel::mimeTypes() const
+{
+  QStringList types;
+  types << QStringLiteral( "application/x-qgspalettedrenderermodel" );
+  return types;
+}
+
+QMimeData *QgsPalettedRendererModel::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+  // Create list of rows
+  Q_FOREACH ( const QModelIndex &index, indexes )
+  {
+    if ( !index.isValid() || index.column() != 0 )
+      continue;
+
+    stream << index.row();
+  }
+  mimeData->setData( QStringLiteral( "application/x-qgspalettedrenderermodel" ), encodedData );
+  return mimeData;
+}
+
+bool QgsPalettedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & )
+{
+  Q_UNUSED( column );
+  if ( action != Qt::MoveAction ) return true;
+
+  if ( !data->hasFormat( QStringLiteral( "application/x-qgspalettedrenderermodel" ) ) )
+    return false;
+
+  QByteArray encodedData = data->data( QStringLiteral( "application/x-qgspalettedrenderermodel" ) );
+  QDataStream stream( &encodedData, QIODevice::ReadOnly );
+
+  QVector<int> rows;
+  while ( !stream.atEnd() )
+  {
+    int r;
+    stream >> r;
+    rows.append( r );
+  }
+
+  QgsPalettedRasterRenderer::ClassData newData;
+  for ( int i = 0; i < rows.count(); ++i )
+    newData << mData.at( rows.at( i ) );
+
+  if ( row < 0 )
+    row = mData.count();
+
+  beginInsertRows( QModelIndex(), row, row + rows.count() - 1 );
+  for ( int i = 0; i < rows.count(); ++i )
+    mData.insert( row + i, newData.at( i ) );
+  endInsertRows();
+  emit classesChanged();
   return true;
 }
 

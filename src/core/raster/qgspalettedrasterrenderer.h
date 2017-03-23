@@ -38,10 +38,14 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     struct Class
     {
       //! Constructor for Class
-      Class( const QColor &color = QColor(), const QString &label = QString() )
-        : color( color )
+      Class( int value, const QColor &color = QColor(), const QString &label = QString() )
+        : value( value )
+        , color( color )
         , label( label )
       {}
+
+      //! Value
+      int value;
 
       //! Color to render value
       QColor color;
@@ -50,7 +54,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     };
 
     //! Map of value to class properties
-    typedef QMap< int, Class > ClassData;
+    typedef QList< Class > ClassData;
 
     /**
      * Constructor for QgsPalettedRasterRenderer.

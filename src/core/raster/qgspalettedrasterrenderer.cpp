@@ -79,7 +79,7 @@ QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, Q
       color = QColor( entryElem.attribute( QStringLiteral( "color" ), QStringLiteral( "#000000" ) ) );
       color.setAlpha( entryElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt() );
       label = entryElem.attribute( QStringLiteral( "label" ) );
-      classData.insert( value, Class( color, label ) );
+      classData << Class( value, color, label );
     }
   }
 
@@ -103,18 +103,26 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classes() const
 
 QString QgsPalettedRasterRenderer::label( int idx ) const
 {
-  if ( !mClassData.contains( idx ) )
-    return QString();
+  Q_FOREACH ( const Class &c, mClassData )
+  {
+    if ( c.value == idx )
+      return c.label;
+  }
 
-  return mClassData.value( idx ).label;
+  return QString();
 }
 
 void QgsPalettedRasterRenderer::setLabel( int idx, const QString &label )
 {
-  if ( !mClassData.contains( idx ) )
-    return;
-
-  mClassData[ idx ].label = label;
+  ClassData::iterator cIt = mClassData.begin();
+  for ( ; cIt != mClassData.end(); ++cIt )
+  {
+    if ( cIt->value == idx )
+    {
+      cIt->label = label;
+      return;
+    }
+  }
 }
 
 QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
@@ -218,14 +226,14 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
   ClassData::const_iterator it = mClassData.constBegin();
   for ( ; it != mClassData.constEnd(); ++it )
   {
-    QColor color = it.value().color;
+    QColor color = it->color;
     QDomElement colorElem = doc.createElement( QStringLiteral( "paletteEntry" ) );
-    colorElem.setAttribute( QStringLiteral( "value" ), it.key() );
+    colorElem.setAttribute( QStringLiteral( "value" ), it->value );
     colorElem.setAttribute( QStringLiteral( "color" ), color.name() );
     colorElem.setAttribute( QStringLiteral( "alpha" ), color.alpha() );
-    if ( !it.value().label.isEmpty() )
+    if ( !it->label.isEmpty() )
     {
-      colorElem.setAttribute( QStringLiteral( "label" ), it.value().label );
+      colorElem.setAttribute( QStringLiteral( "label" ), it->label );
     }
     colorPaletteElem.appendChild( colorElem );
   }
@@ -243,25 +251,11 @@ void QgsPalettedRasterRenderer::writeXml( QDomDocument &doc, QDomElement &parent
 
 void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems ) const
 {
-  QList< QPair< int, QPair< QString, QColor > > > legends;
   ClassData::const_iterator it = mClassData.constBegin();
   for ( ; it != mClassData.constEnd(); ++it )
   {
-    QString lab = it.value().label.isEmpty() ? QString::number( it.key() ) : it.value().label;
-    legends.push_back( qMakePair( it.key(), qMakePair( lab, it.value().color ) ) );
-  }
-
-  // sort by color value
-  std::sort( legends.begin(), legends.end(),
-             []( const QPair< int, QPair< QString, QColor > > &a, const QPair< int, QPair< QString, QColor > > &b ) -> bool
-  {
-    return a.first < b.first;
-  } );
-
-  QList< QPair< int, QPair< QString, QColor > > >::const_iterator lIt = legends.constBegin();
-  for ( ; lIt != legends.constEnd(); ++lIt )
-  {
-    symbolItems << lIt->second;
+    QString lab = it->label.isEmpty() ? QString::number( it->value ) : it->label;
+    symbolItems << qMakePair( lab, it->color );
   }
 }
 
@@ -292,7 +286,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClas
   for ( ; colorIt != table.constEnd(); ++colorIt )
   {
     int idx = ( int )( colorIt->value );
-    classes.insert( idx, QgsPalettedRasterRenderer::Class( colorIt->color, colorIt->label ) );
+    classes << QgsPalettedRasterRenderer::Class( idx, colorIt->color, colorIt->label );
   }
   return classes;
 }
@@ -303,7 +297,7 @@ void QgsPalettedRasterRenderer::updateArrays()
   ClassData::const_iterator mIt = mClassData.constBegin();
   for ( ; mIt != mClassData.constEnd(); ++mIt )
   {
-    mMaxColorIndex = qMax( mMaxColorIndex, mIt.key() );
+    mMaxColorIndex = qMax( mMaxColorIndex, mIt->value );
   }
   mMaxColorIndex = qMax( 0, mMaxColorIndex );
 
@@ -317,8 +311,8 @@ void QgsPalettedRasterRenderer::updateArrays()
   ClassData::const_iterator it = mClassData.constBegin();
   for ( ; it != mClassData.constEnd(); ++it )
   {
-    mColors[it.key()] = qPremultiply( it.value().color.rgba() );
-    mIsNoData[it.key()] = false;
+    mColors[ it->value] = qPremultiply( it->color.rgba() );
+    mIsNoData[it->value] = false;
     i++;
   }
 }

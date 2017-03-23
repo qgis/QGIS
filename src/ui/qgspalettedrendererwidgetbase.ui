@@ -46,16 +46,6 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="QTreeView" name="mTreeView">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>280</height>
-      </size>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QgsColorRampButton" name="btnColorRamp">
      <property name="sizePolicy">
@@ -116,6 +106,16 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QTreeView" name="mTreeView">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>280</height>
+      </size>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

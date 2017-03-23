@@ -8,12 +8,14 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     struct Class
     {
 
-      Class( const QColor &color, const QString &label );
+      Class( int value, const QColor &color = QColor(), const QString &label = QString() );
+      int value;
       QColor color;
       QString label;
     };
 
-    typedef QMap< int, QgsPalettedRasterRenderer::Class > ClassData;
+    typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
+
     QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
     ~QgsPalettedRasterRenderer();
     virtual QgsPalettedRasterRenderer * clone() const /Factory/;

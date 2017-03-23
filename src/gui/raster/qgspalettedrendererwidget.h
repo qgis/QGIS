@@ -27,7 +27,7 @@
 class QgsRasterLayer;
 
 /// @cond PRIVATE
-class QgsPalettedRendererModel : public QAbstractTableModel
+class QgsPalettedRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -46,6 +46,8 @@ class QgsPalettedRendererModel : public QAbstractTableModel
 
     QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
 
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -54,6 +56,10 @@ class QgsPalettedRendererModel : public QAbstractTableModel
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     void addEntry( const QColor &color );
 
