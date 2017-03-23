@@ -255,6 +255,18 @@ QList<int> QgsPalettedRasterRenderer::usesBands() const
   return bandList;
 }
 
+QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table )
+{
+  QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = table.constBegin();
+  QgsPalettedRasterRenderer::ClassData classes;
+  for ( ; colorIt != table.constEnd(); ++colorIt )
+  {
+    int idx = ( int )( colorIt->value );
+    classes.insert( idx, QgsPalettedRasterRenderer::Class( colorIt->color, colorIt->label ) );
+  }
+  return classes;
+}
+
 void QgsPalettedRasterRenderer::updateArrays()
 {
   // find maximum color index
@@ -263,6 +275,7 @@ void QgsPalettedRasterRenderer::updateArrays()
   {
     mMaxColorIndex = qMax( mMaxColorIndex, mIt.key() );
   }
+  mMaxColorIndex = qMax( 0, mMaxColorIndex );
 
   delete [] mColors;
   delete [] mIsNoData;

@@ -363,6 +363,18 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         self.assertTrue(checker.runTest("expected_paletted_renderer"), "Paletted rendering test failed")
 
+    def testPalettedColorTableToClassData(self):
+        entries = [QgsColorRampShader.ColorRampItem(5, QColor(255, 0, 0), 'item1'),
+                   QgsColorRampShader.ColorRampItem(3, QColor(0, 255, 0), 'item2'),
+                   QgsColorRampShader.ColorRampItem(6, QColor(0, 0, 255), 'item3'),
+                   ]
+        classes = QgsPalettedRasterRenderer.colorTableToClassData(entries)
+        self.assertEqual(classes[5].label, 'item1')
+        self.assertEqual(classes[3].label, 'item2')
+        self.assertEqual(classes[6].label, 'item3')
+        self.assertEqual(classes[5].color.name(), '#ff0000')
+        self.assertEqual(classes[3].color.name(), '#00ff00')
+        self.assertEqual(classes[6].color.name(), '#0000ff')
 
 if __name__ == '__main__':
     unittest.main()

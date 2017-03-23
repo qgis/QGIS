@@ -22,6 +22,7 @@
 #include <QVector>
 
 #include "qgsrasterrenderer.h"
+#include "qgscolorrampshader.h"
 
 class QColor;
 class QDomElement;
@@ -89,6 +90,12 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
+    /**
+     * Converts a raster color \a table to paletted renderer class data.
+     * @note added in QGIS 3.0
+     */
+    static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
+
   private:
 
     int mBand;
@@ -100,8 +107,6 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QRgb *mColors = nullptr;
     bool *mIsNoData = nullptr;
     void updateArrays();
-
-
 };
 
 #endif // QGSPALETTEDRASTERRENDERER_H

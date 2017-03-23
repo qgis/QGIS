@@ -122,16 +122,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     case QgsRaster::PalettedColor:
     {
       int grayBand = 1; //reasonable default
-      QList<QgsColorRampShader::ColorRampItem> colorEntries = provider->colorTable( grayBand );
-
-      QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = colorEntries.constBegin();
-      QgsPalettedRasterRenderer::ClassData classes;
-      for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
-      {
-        int idx = ( int )( colorIt->value );
-        classes.insert( idx, QgsPalettedRasterRenderer::Class( colorIt->color, colorIt->label ) );
-      }
-
+      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
       renderer = new QgsPalettedRasterRenderer( provider,
           grayBand,
           classes );

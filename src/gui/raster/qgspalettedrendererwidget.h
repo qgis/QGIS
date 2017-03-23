@@ -19,10 +19,53 @@
 #define QGSPALETTEDRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgscolorschemelist.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
 #include "qgis_gui.h"
 
 class QgsRasterLayer;
+
+/// @cond PRIVATE
+class QgsPalettedRendererModel : public QAbstractTableModel
+{
+    Q_OBJECT
+
+  public:
+
+    enum Column
+    {
+      ValueColumn = 0,
+      ColorColumn = 1,
+      LabelColumn = 2,
+    };
+
+    QgsPalettedRendererModel( QObject *parent = nullptr );
+
+    void setClassData( const QgsPalettedRasterRenderer::ClassData &data );
+
+    QgsPalettedRasterRenderer::ClassData classData() const { return mData; }
+
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+
+  signals:
+
+    void classesChanged();
+
+  private:
+
+    QgsPalettedRasterRenderer::ClassData mData;
+
+
+};
+///@endcond PRIVATE
 
 /** \ingroup gui
  * \class QgsPalettedRendererWidget
@@ -42,19 +85,16 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
 
   private:
 
-    enum Column
-    {
-      ValueColumn = 0,
-      ColorColumn = 1,
-      LabelColumn = 2,
-    };
-
     QMenu *contextMenu = nullptr;
+    QgsPalettedRendererModel *mModel = nullptr;
+    QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
+
+    void setSelectionColor( const QItemSelection &selection, const QColor &color );
 
   private slots:
 
-    void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void on_mTreeWidget_itemChanged( QTreeWidgetItem *item, int column );
+    void deleteEntry();
+    void addEntry();
     void changeColor();
     void changeTransparency();
 };
