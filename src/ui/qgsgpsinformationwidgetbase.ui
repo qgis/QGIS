@@ -616,14 +616,14 @@ gray = no data
              <item row="12" column="0">
               <widget class="QLabel" name="mLblHacc">
                <property name="text">
-                <string>H accurancy</string>
+                <string>H accuracy</string>
                </property>
               </widget>
              </item>
              <item row="13" column="0">
               <widget class="QLabel" name="mLblVacc">
                <property name="text">
-                <string>V accurancy</string>
+                <string>V accuracy</string>
                </property>
               </widget>
              </item>
