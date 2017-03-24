@@ -53,13 +53,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     return;
   }
 
-  if ( mSource->mLayerName.isNull() )
+  if ( !mSource->mSubLayerString.isNull() )
   {
-    ogrLayer = OGR_DS_GetLayer( mConn->ds, mSource->mLayerIndex );
-  }
-  else
-  {
-    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, mSource->mLayerName.toUtf8().constData() );
+    ogrLayer = QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( mConn->ds, mSource-> mSubLayerString );
   }
   if ( !ogrLayer )
   {
@@ -357,6 +353,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
 {
   mDataSource = p->dataSourceUri();
   mLayerName = p->layerName();
+  mGeometryName = p->layerName();
   mLayerIndex = p->layerIndex();
   mSubsetString = p->mSubsetString;
   mEncoding = p->textEncoding(); // no copying - this is a borrowed pointer from Qt
@@ -366,6 +363,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   mDriverName = p->ogrDriverName;
   mFirstFieldIsFid = p->mFirstFieldIsFid;
   mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
+  mSubLayerString = p->SubLayerString();
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 

@@ -65,6 +65,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual QgsAbstractFeatureSource *featureSource() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
+
     /** Retrieves list of valid sublayers of the Dataset, using different Gdal versions (compile,runtime) pre 2.0 and after
      * Sub-layers handled by this provider, in order from bottom to top
      * @returns subLayers list of valid sublayers of the Dataset
@@ -164,6 +165,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QString layerName() const { return mLayerName; }
     QString geometryName() const { return mGeometryName; }
+    QString SubLayerString() const { return mSubLayerString; }
 
     QString filePath() const { return mFilePath; }
 
@@ -243,6 +245,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;
+    //! Driver name
+    QString mDriverName;
     mutable OGREnvelope *mExtent;
     bool mForceRecomputeExtent;
 
@@ -260,7 +264,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! layer name
     QString mLayerName;
-    //! goemetry name
+    //! geometry name
     QString mGeometryName;
 
     //! layer index
@@ -369,6 +373,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsVectorDataProvider::Capabilities mCapabilities;
 
     bool doInitialActionsForEdition();
+
     /** Retrieves the requested Layer, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
      * @param mLayerName name of Layer
@@ -411,7 +416,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * @see QgsOgrFeatureIterator::QgsOgrFeatureIterator
      *
      */
-    OGRLayerH OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QString mLayerName, long mLayerIndex );
+    OGRLayerH OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QString sLayerName, QString sGeometryName, long lLayerIndex );
 };
 
 
@@ -445,10 +450,11 @@ class QgsOgrProviderUtils
      */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
     static QString wkbGeometryTypeName( OGRwkbGeometryType type );
-    static OGRwkbGeometryType wkbGeometryTypeFromName( const QString& typeName ) ;
-    /** Get single flatten geometry type */
+    static OGRwkbGeometryType wkbGeometryTypeFromName( const QString &typeName ) ;
+    //! Get single flatten geometry type
     static OGRwkbGeometryType wkbSingleFlattenWrapper( OGRwkbGeometryType type );
     static OGRwkbGeometryType wkbFlattenWrapper( OGRwkbGeometryType eType );
+
     /** Retrieves list of valid sublayers of the Dataset, using different Gdal versions (compile,runtime) pre 2.0 and after
      * Sub-layers handled by this provider, in order from bottom to top
      * @param ogrDataSource Data Source
@@ -466,13 +472,18 @@ class QgsOgrProviderUtils
      * For non-Database-drivers, such as GML,KML
      * - duplicate layer-names can exist, therefore all layers must be listed to check againt duplicate Layer-Names
      *-- the skipping-logic, when searching for a specific layer has been removed.
-     * The created SubLayer string now has 5 fields (ogr_get_type was added)
-     * - layer_id:layer_name:feature_count:geometry_type:ogr_get_type
+     * The created SubLayer string now has 6 fields (ogr_get_type was added)
+     * - layer_id:layer_name:feature_count:geometry_type:geometry_name:ogr_get_type
      * -- ogr_get_type=0: OGRGetLayerNameWrapper() ; 1: OGRGetLayerIndexWrapper
      * Goal: avoid (the costly) calling of this function when not needed
      * - QgsOgrProvider::OGRGetLayerWrapper should be able to open a Layer without any further checks
      * -- if not [caused possibly by an external change of the DataSource], it will re-read the DataSource and attempt to resove the issue
      * @see QgsOgrProvider::OGRGetLayerWrapper()
+     * ogr_get_type: removal and replacement of layer_id with -1 (layer-name is unique)
+     * - is done after the User has selected the Layers to be loaded
+     * - QgsOgrProvider will not recieve this value, but will assume when:
+     * - layer_id > = 0 : The Layer-Id must be used because the Layer-Name is not unique
+     * @see QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
      * For cases where the geometry type could not be reliably determined
      * - all the features of the Layer where checked until something was found
      * -- with Gdal 2.* (where more than 1 geometry can exist for a Layer),
@@ -497,11 +508,9 @@ class QgsOgrProviderUtils
      * When running with Gdal 2.*
      * -  'SpatialViews' in spatialite,  cannot be determined, thus invalid layers will turn up
      *
-     * When compiled against Gdal 1.*
-     * - OGR_DS_GetLayer will always be used
-     *
      */
     static QStringList OGRGetSubLayersWrapper( OGRDataSourceH ogrDataSource );
+
     /** Returns Sub-layer string, using different Gdal versions (compile,runtime) pre 2.0 and after
      * Checks Sub-layers for duplicate entries,
      * @param sLayerName name of Layer to be opened
@@ -528,7 +537,8 @@ class QgsOgrProviderUtils
      * - Layer without geometries can exist, but will be ignored
      * - Layer with a defined geometry, but is empty (no rows) , will be loaded so that new geometries can be added
      */
-    static QString OGRGetSubLayerWrapper( QString sLayerName, long& lLayerIndex, const QStringList& listSubLayers );
+    static QString OGRGetSubLayerWrapper( QString sLayerName, long &lLayerIndex, const QStringList &listSubLayers );
+
     /** Retrieves OgrLayer with an layer-name, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
      * @param sSubLayerString name of Layer
@@ -571,6 +581,7 @@ class QgsOgrProviderUtils
      *
      */
     static OGRLayerH OGRGetSubLayerStringWrapper( OGRDataSourceH ogrDataSource, QString sSubLayerString );
+
     /** Retrieves OgrLayer with an index, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
      * @param mLayerIndex index of Layer
@@ -597,6 +608,7 @@ class QgsOgrProviderUtils
      *
      */
     static OGRLayerH OGRGetLayerIndexWrapper( OGRDataSourceH ogrDataSource, long mLayerIndex );
+
     /** Retrieves OgrLayer with an layer-name, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
      * @param mLayerName name of Layer
@@ -628,6 +640,21 @@ class QgsOgrProviderUtils
      *
      */
     static OGRLayerH OGRGetLayerNameWrapper( OGRDataSourceH ogrDataSource, QString mLayerName );
+
+    /** Retrieves OgrLayer with an layer-name and Geomertry field-name
+     * 'table_name(field_name)' format is only valid as a OGR layer name for the SQLite driver
+     *  - for other drivers where more than 1 geometry field exist
+     * -> a layer must be created based on the value returned by for GetGeomFieldIndex()
+     * @param ogrDataSource Data Source
+     * @param mLayerName name of Layer
+     * @param mGeometry name of Layer
+     * @returns OGRLayerH if found
+     * @note
+     * If the mLayerName contains a name in the 'table_name(field_name)' format
+     * - the 'table_name' will extracted to mLayerName and 'field_name' to mGeometryName
+     */
+    static OGRLayerH OGRGetGeometryNameWrapper( OGRDataSourceH ogrDataSource, QString mLayerName, QString mGeometryName = QString::null );
+
     /** Retrieves amount of Layers found in the Datasource, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
      * @returns amount as 'long' value
@@ -650,6 +677,7 @@ class QgsOgrProviderUtils
      *
      */
     static long OGRGetLayerCountWrapper( OGRDataSourceH ogrDataSource );
+
     /** Retrieves amount of Featues (geometries) found in the Layer, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
      * @returns amount as 'long' value
@@ -679,6 +707,7 @@ class QgsOgrProviderUtils
      *
      */
     static long OGRGetFeatureCountWrapper( OGRLayerH layer, int bForce );
+
     /** Determins if the Geometry-Type contains a Z-value, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param eType geometry Type
      * @returns true or false
@@ -703,6 +732,7 @@ class QgsOgrProviderUtils
      *
      */
     static int wkbHasZWrapper( OGRwkbGeometryType eType );
+
     /** Determins if the Geometry-Type contains a M-value, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param eType geometry Type
      * @returns true or false

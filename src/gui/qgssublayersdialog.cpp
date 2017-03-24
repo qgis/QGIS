@@ -109,7 +109,12 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
     }
     if ( mProviderType == QgsSublayersDialog::Ogr )
     { // Ogr-Internal use only - no needed to show to user
-     def.geometryName = item->text(  mShowCount ? 4 : 3 ).toInt();
+     def.geometryName = item->text(  mShowCount ? 4 : 3 );
+     int mOgrGetType = item->text(  mShowCount ? 5 : 4 ).toInt();
+     if (mOgrGetType == 0)
+     { // Layer-Name is unique, set layerId to -1
+      // def.layerId=-1;
+     }
     }
 
     list << def;
@@ -129,8 +134,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     if ( mShowType )
       elements << item.type;
     if ( mProviderType == QgsSublayersDialog::Ogr )
-    {  // Ogr-Internal use only - no needed to show to user
+    {  //  layer_id:layer_name:feature_count:geometry_type:geometry_name:ogr_get_type
      elements << item.geometryName;
+     elements << QString::number( item.getType );
     }
     layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }

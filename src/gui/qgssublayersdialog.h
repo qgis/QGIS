@@ -41,13 +41,14 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! @note added in 2.16
     typedef struct LayerDefinition
     {
-      LayerDefinition() : layerId( -1 ), count( -1 ) {}
+      LayerDefinition() : layerId( -1 ), count( -1 ), getType(-1) {}
 
       int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
       QString geometryName;  //!< Name of the geometry (not necessarily unique)
+      int getType;          //!< ogr retrievel method, internal use only
     } LayerDefinition;
 
     //! List of layer definitions for the purpose of this dialog
@@ -62,6 +63,8 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     void populateLayerTable( const LayerDefinitionList &list );
 
     //! Returns list of selected layers
+    //! @note Provider specific strings are parse here
+    //! QgsOgrProvider: layer-id is set to -1 if layer-name is unique
     //! @note added in 2.16
     LayerDefinitionList selection();
 
@@ -88,6 +91,8 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     bool mShowType;   //!< Whether to show type in the table
     bool mShowAddToGroupCheckbox;   //!< Whether to show the add to group checkbox
     QCheckBox *checkboxAddToGroup = nullptr;
+    //! Needed to parse Provider specific strings
+    //! @note added in 3.00
     ProviderType mProviderType;
 };
 

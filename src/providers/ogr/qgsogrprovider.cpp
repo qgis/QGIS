@@ -181,7 +181,7 @@ void QgsOgrProvider::repack()
       ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( mFilePath.toUtf8().constData(), true, nullptr );
       if ( ogrDataSource )
       {
-        ogrOrigLayer = OGRGetLayerWrapper( ogrDataSource, mLayerName, mLayerIndex );
+        ogrOrigLayer = OGRGetLayerWrapper( ogrDataSource, mLayerName, mGeometryName, mLayerIndex );
 
         if ( !ogrOrigLayer )
         {
@@ -354,6 +354,15 @@ static QString AnalyzeURI( QString const &uri,
       {
         geometryName = value;
       }
+      if ( geometryName == QString::null )
+      {
+        if ( ( layerName.contains( "(" ) ) && ( layerName.endsWith( QString( ")" ) ) ) )
+        {
+          // Extract GeometryName from sent 'table_name(field_name)' from layerName
+          QStringList sa_list_name = layerName.split( "(" );
+          geometryName = sa_list_name[1].replace( ")", "" );
+        }
+      }
     }
 
     return filePath;
@@ -369,6 +378,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   , mForceRecomputeExtent( false )
   , ogrLayer( nullptr )
   , ogrOrigLayer( nullptr )
+  , mOgrGetType(-1)
   , mLayerIndex( 0 )
   , mIsSubLayer( false )
   , mOgrGeometryTypeFilter( wkbUnknown )
@@ -499,7 +509,6 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   {
     uri += QStringLiteral( "|geometryname=%1" ).arg( mGeometryName );
   }
-
   setDataSourceUri( uri );
 
   OGR_L_ResetReading( ogrLayer );
@@ -530,7 +539,7 @@ QString QgsOgrProvider::subsetString() const
 
 QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
 {
-  QString geom=QgsWkbTypes::displayString( (QgsWkbTypes::Type)type );
+  QString geom = QgsWkbTypes::displayString( ( QgsWkbTypes::Type )type );
   // GDAL 2.1 can return M/ZM geometries
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
   if ( wkbHasM( type ) )
@@ -543,8 +552,8 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
     return geom;
   }
 #endif
-  if (!geom.isNull())
-   return  geom;
+  if ( !geom.isNull() )
+    return  geom;
 
   switch ( ( long )type )
   {
@@ -568,13 +577,23 @@ QString QgsOgrProviderUtils::wkbGeometryTypeName( OGRwkbGeometryType type )
 
 OGRwkbGeometryType QgsOgrProviderUtils::wkbGeometryTypeFromName( const QString &typeName )
 {
-  QgsWkbTypes::Type type= QgsWkbTypes::parseType( typeName);
+  QgsWkbTypes::Type type = QgsWkbTypes::parseType( typeName );
   return ( OGRwkbGeometryType ) type;
 }
 
 QStringList QgsOgrProvider::subLayers() const
 {
-   return QgsOgrProviderUtils::OGRGetSubLayersWrapper( ogrDataSource );
+  if ( !mValid )
+  {
+    return QStringList();
+  }
+  if ( !mSubLayerList.isEmpty() )
+  {
+    // no need to call QgsOgrProviderUtils::OGRGetSubLayersWrapper more than once in the lifetime of the class [was 3x]
+    return mSubLayerList;
+  }
+  mSubLayerList = QgsOgrProviderUtils::OGRGetSubLayersWrapper( ogrDataSource );
+  return mSubLayerList;
 }
 
 void QgsOgrProvider::setEncoding( const QString &e )
@@ -618,7 +637,8 @@ void QgsOgrProvider::loadFields()
   {
     int fieldCount = 0;
     if ( mLayerName.isNull() )
-    { // insure that we also have the name
+    {
+      // insure that we also have the name
       fieldCount = OGR_FD_GetGeomFieldCount( fdef );
       for ( int j = 0; j < fieldCount; j++ )
       {
@@ -2883,31 +2903,35 @@ OGRwkbGeometryType QgsOgrProviderUtils::getOgrGeomType( OGRLayerH ogrLayer )
       OGR_L_ResetReading( ogrLayer );
       OGRFeatureH layer_feature;
       QString layer_name_check = QString::fromUtf8( OGR_L_GetName( ogrLayer ) );
-      while (( layer_feature = OGR_L_GetNextFeature( ogrLayer ) ) )
+      while ( ( layer_feature = OGR_L_GetNextFeature( ogrLayer ) ) )
       {
         OGRGeometryH layer_geom = OGR_F_GetGeometryRef( layer_feature );
         if ( layer_geom )
         {
           layer_feature_type = OGR_G_GetGeometryType( layer_geom );
         }
-        if (( geomType_backup == wkbUnknown ) && ( layer_feature_type != wkbUnknown ) )
-        { // Use this backup value in case we cannot find the layer-name
+        if ( ( geomType_backup == wkbUnknown ) && ( layer_feature_type != wkbUnknown ) )
+        {
+          // Use this backup value in case we cannot find the layer-name
           geomType_backup = layer_feature_type;
         }
         QString layer_feature_name = QString::fromUtf8( OGR_F_GetFieldAsString( layer_feature, 0 ) );
         OGR_F_Destroy( layer_feature );
         // the feature-name is the same as the layer-name, use this value
         if ( layer_feature_name == layer_name_check )
-        {  // Note: with KML layer names may not be unique
+        {
+          // Note: with KML layer names may not be unique
           if ( layer_feature_type != wkbUnknown )
-          { // Note: with KML is is possible that there are different Geometries types in the layer
+          {
+            // Note: with KML is is possible that there are different Geometries types in the layer
             geomType = layer_feature_type;
             break;
           }
         }
       }
-      if (( geomType == wkbUnknown ) && ( geomType_backup != wkbUnknown ) )
-      { // Use this backup value in case we cannot find the layer-name
+      if ( ( geomType == wkbUnknown ) && ( geomType_backup != wkbUnknown ) )
+      {
+        // Use this backup value in case we cannot find the layer-name
         geomType = geomType_backup;
       }
     }
@@ -2926,7 +2950,7 @@ OGRwkbGeometryType QgsOgrProviderUtils::wkbSingleFlattenWrapper( OGRwkbGeometryT
       return wkbLineString;
     case wkbMultiPolygon:
       return wkbPolygon;
-      // no version-runtime checking needed here
+    // no version-runtime checking needed here
     case wkbMultiCurve:
       return wkbCompoundCurve;
     case wkbMultiSurface:
@@ -2949,9 +2973,15 @@ int QgsOgrProviderUtils::wkbHasZWrapper( OGRwkbGeometryType eType )
 
 int QgsOgrProviderUtils::wkbHasMWrapper( OGRwkbGeometryType eType )
 {
-  switch ( Qgis::GDAL_RUNTIME_VERSION_MAJOR )
+  switch ( Qgis::GDAL_RUNTIME_VERSION_MINOR )
   {
-    case 2:
+    case 0:
+      if ( eType >= 2000 && eType < 3000 ) /* ISO M */
+        return 1;
+      if ( eType >= 3000 && eType < 4000 ) /* ISO ZM */
+        return 1;
+      break;
+    case 1:
     default:
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
       return wkbHasM( eType );
@@ -2966,42 +2996,87 @@ int QgsOgrProviderUtils::wkbHasMWrapper( OGRwkbGeometryType eType )
   return 0;
 }
 
-OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QString sLayerName, long lLayerIndex )
+OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QString sLayerName, QString sGeometryName, long lLayerIndex )
 {
   OGRLayerH ogrLayer = nullptr;
   switch ( mOgrGetType )
   {
     case 0:
-      // default: attempt to open with Layer-Name
-      mSubLayerString = QString( "%1:%2:%3:%4:%5" ).arg( -1 ).arg( mLayerName ).arg( mFeaturesCounted ).arg( QgsOgrProviderUtils::wkbGeometryTypeName( mOgrGeometryTypeFilter ) ).arg( mOgrGetType );
+    case 2:
+      // default: attempt to open with Layer-Name or with Geometry-name
+      mSubLayerString = QString( "%1:%2:%3:%4:%5:%6" ).arg( mLayerIndex ).arg( mLayerName ).arg( mFeaturesCounted ).arg( QgsOgrProviderUtils::wkbGeometryTypeName( mOgrGeometryTypeFilter ) ).arg( sGeometryName ).arg( mOgrGetType );
       break;
     case 1:
       // non-unique-names need to be opened with the index value
-      mSubLayerString = QString( "%1:%2:%3:%4:%5" ).arg( mLayerIndex ).arg( mLayerName ).arg( mFeaturesCounted ).arg( QgsOgrProviderUtils::wkbGeometryTypeName( mOgrGeometryTypeFilter ) ).arg( mOgrGetType );
+      mSubLayerString = QString( "%1:%2:%3:%4:%5:%6" ).arg( mLayerIndex ).arg( mLayerName ).arg( mFeaturesCounted ).arg( QgsOgrProviderUtils::wkbGeometryTypeName( mOgrGeometryTypeFilter ) ).arg( sGeometryName ).arg( mOgrGetType );
       break;
     default:
-      mOgrGetType = -1;
+      if ( mLayerIndex >= 0 )
+      {
+        if ( mDriverName != "SQLite" )
+        {
+          if ( ( !mLayerName.contains( "(" ) ) && ( !mLayerName.endsWith( QString( ")" ) ) ) )
+          {
+            if ( ( mGeometryName.isNull() ) || ( mGeometryName.isEmpty() ) )
+            {
+              mOgrGetType = 1; // read by layer-index [KML, GML with one geometry]
+            }
+            else
+            {
+              mOgrGetType = 2; // read by layer and geomety-name [GML with more than one geometry]
+            }
+          }
+          else
+          {
+            if ( ( mLayerName.contains( "(" ) ) && ( mLayerName.endsWith( QString( ")" ) ) ) )
+            {
+              mOgrGetType = 2; // read by layer and geomety-name [GML with more than one geometry]
+            }
+            else
+            {
+              if ( ( mGeometryName.isNull() ) || ( mGeometryName.isEmpty() ) )
+              {
+                mOgrGetType = 1; // read by layer-index [KML, GML with one geometry]
+              }
+              else
+              {
+                mOgrGetType = 2; // read by layer and geomety-name [GML with more than one geometry]
+              }
+            }
+          }
+        }
+        else
+        {
+          // SQLite.  'table_name(geometry_column_name)'
+          mOgrGetType = 0; // read by layer-name
+        }
+      }
+      mSubLayerString = QString( "%1:%2:%3:%4:%5:%6" ).arg( mLayerIndex ).arg( mLayerName ).arg( mFeaturesCounted ).arg( QgsOgrProviderUtils::wkbGeometryTypeName( mOgrGeometryTypeFilter ) ).arg( sGeometryName ).arg( mOgrGetType );
       break;
   }
-  if (( ogrDataSource ) && ( !mSubLayerString.isNull() ) )
+  qDebug() << QString( "-I-> QgsOgrProvider::OGRGetLayerWrapper[%2]: mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
+  if ( ( ogrDataSource ) && ( !mSubLayerString.isNull() ) )
   {
     ogrLayer = QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( ogrDataSource, mSubLayerString );
     if ( ogrLayer )
     {
       return ogrLayer;
     }
-    // Retrieving the Layer has failed, attempt again reading the DataSource.
     mSubLayerString = QString::null;
     mOgrGetType = -1;
+    // qDebug() << QString( "-EEE-> QgsOgrProvider::OGRGetLayerWrapper[%2]: mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
   }
-  if (( ogrDataSource ) && ( mSubLayerString.isNull() ) )
+  if ( ( ogrDataSource ) && ( mSubLayerString.isNull() ) )
   {
+    // Retrieving the Layer has failed, attempting again to read the DataSource.
+    qDebug() << QString( "-W-> QgsOgrProvider::OGRGetLayerWrapper[%2]: mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
     long layer_count = 0;
     int i_count_id = 0;
     bool ok;
     QString s_sublayer = QString::null;
     if ( !mValid )
-    { // this is being opened the first time as a check, override the valid check
+    {
+      // this is being opened the first time as a check, override the valid check
       layer_count = QgsOgrProviderUtils::OGRGetLayerCountWrapper( ogrDataSource );
     }
     // Problem: since gdal 2.*, GetLayer with an index will not work as before 2.*
@@ -3029,17 +3104,21 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
       {
         s_sublayer = QgsOgrProviderUtils::OGRGetSubLayerWrapper( sLayerName, lLayerIndex, mSubLayerList );
         if ( !s_sublayer.isNull() )
-        { // index or layer-name may have been corrected
+        {
+          // index or layer-name may have been corrected
           mLayerIndex = lLayerIndex; // possible change in OGRGetSubLayerWrapper as reference
           QStringList sa_list_id_fields = s_sublayer.split( ":" );
           if ( sa_list_id_fields.size() > 1 )
-          { // Possilbly a former entry with an ogr naming convention was resolved, set value found
+          {
+            // Possilbly a former entry with an ogr naming convention was resolved, set value found
             sLayerName = sa_list_id_fields[1];
+            mGeometryName = sa_list_id_fields[4];
           }
           mLayerName = sLayerName;
         }
         else
-        { // the Layer being searched for could not be resolved
+        {
+          // the Layer being searched for could not be resolved
           return ogrLayer;
         }
       }
@@ -3050,10 +3129,12 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
         QStringList sa_list_id = mSubLayerList.filter( QRegExp( QString( "^%1:" ).arg( lLayerIndex ), Qt::CaseInsensitive ) );
         i_count_id = sa_list_id.size();
         if ( i_count_id == 0 )
-        { // there may be no valid layer 0 [qgis_bugreport_15168.zk.kmz],
+        {
+          // there may be no valid layer 0 [qgis_bugreport_15168.zk.kmz],
           QStringList sa_list_id_fields = mSubLayerList[0].split( ":" );
           if ( sa_list_id_fields.size() > 0 )
-          { // replace id from first mSubLayerList entry
+          {
+            // replace id from first mSubLayerList entry
             lLayerIndex = sa_list_id_fields[0].toLong( &ok, 10 );
             if ( ok )
             {
@@ -3067,9 +3148,11 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
           s_sublayer = sa_list_id[0];
           QStringList sa_list_id_fields = sa_list_id[0].split( ":" );
           if ( sa_list_id_fields.size() > 1 )
-          { // replace name from mSubLayerList entry
+          {
+            // replace name from mSubLayerList entry
             sLayerName = sa_list_id_fields[1];
             mLayerName = sLayerName;
+            mGeometryName = sa_list_id_fields[4];
             // The real id being used will be stored
             mLayerIndex = lLayerIndex;
           }
@@ -3077,39 +3160,64 @@ OGRLayerH QgsOgrProvider::OGRGetLayerWrapper( OGRDataSourceH ogrDataSource, QStr
       }
     }
     if ( !s_sublayer.isNull() )
-    { // QgsOgrProvider::setSubsetString will rebuild 'DataSourceUri(' based on the (possibly) changed values of mLayerName/Index
+    {
+      // QgsOgrProvider::setSubsetString will rebuild 'DataSourceUri(' based on the (possibly) changed values of mLayerName/Index
       QStringList sa_list_sublayer = s_sublayer.split( ":" );
       lLayerIndex = sa_list_sublayer[0].toLong( &ok, 10 );
       mFeaturesCounted = sa_list_sublayer[2].toLong( &ok, 10 );
+      mGeometryName = sa_list_sublayer[4];
       mOgrGeometryTypeFilter = QgsOgrProviderUtils::wkbGeometryTypeFromName( sa_list_sublayer[3] );
-      if (( !sLayerName.isNull() ) && ( lLayerIndex < 0 ) )
+      if ( ( !sLayerName.isNull() ) && ( lLayerIndex < 0 ) )
       {
         ogrLayer = QgsOgrProviderUtils::OGRGetLayerNameWrapper( ogrDataSource, sLayerName );
         if ( ogrLayer )
         {
           mOgrGetType = 0;
-          mSubLayerString = QString( "%1:%2:%3:%4:%5" ).arg( -1 ).arg( mLayerName ).arg( mFeaturesCounted ).arg( sa_list_sublayer[3] ).arg( mOgrGetType );
+          mSubLayerString = QString( "%1:%2:%3:%4:%5:%6" ).arg( -1 ).arg( mLayerName ).arg( mFeaturesCounted ).arg( sa_list_sublayer[3] ).arg( mGeometryName ).arg( mOgrGetType );
+          // qDebug() << QString( "-I-> QgsOgrProvider::OGRGetLayerWrapper[%2]: mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
           return ogrLayer;
         }
         // The loading as Name has failed, an attempt will be made to load with index
+        if ( !sGeometryName.isNull() )
+        {
+          //  GetGeomFieldIndex
+          ogrLayer = QgsOgrProviderUtils::OGRGetGeometryNameWrapper( ogrDataSource, sLayerName );
+          mOgrGetType = 2;
+          mSubLayerString = QString( "%1:%2:%3:%4:%5:%6" ).arg( -1 ).arg( mLayerName ).arg( mFeaturesCounted ).arg( sa_list_sublayer[3] ).arg( mGeometryName ).arg( mOgrGetType );
+          // qDebug() << QString( "-I-> QgsOgrProvider::OGRGetLayerWrapper[%2] GML : mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
+          return ogrLayer;
+        }
         sLayerName = QString::null;
       }
-      if (( lLayerIndex >= 1 ) || ( sLayerName.isNull() ) || ( ogrLayer == nullptr ) )
+      if ( ( lLayerIndex >= 1 ) || ( sLayerName.isNull() ) || ( ogrLayer == nullptr ) )
       {
         ogrLayer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( ogrDataSource, lLayerIndex );
         if ( ogrLayer )
         {
+          if ( sLayerName.isNull() )
+          {
+            // Retrieve the layer-name if unknown [old-projects with only layer-id]
+            OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+            if ( fdef )
+            {
+              // Note: retrieved in this way, the layer-name may not be unique
+              mLayerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
+            }
+          }
           mOgrGetType = 1;
-          mSubLayerString = QString( "%1:%2:%3:%4:%5" ).arg( mLayerIndex ).arg( mLayerName ).arg( mFeaturesCounted ).arg( sa_list_sublayer[3] ).arg( mOgrGetType );
+          mSubLayerString = QString( "%1:%2:%3:%4:%5:%6" ).arg( mLayerIndex ).arg( mLayerName ).arg( mFeaturesCounted ).arg( sa_list_sublayer[3] ).arg( mGeometryName ).arg( mOgrGetType );
+          // qDebug() << QString( "-I-> QgsOgrProvider::OGRGetLayerWrapper[%2]: mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
           return ogrLayer;
         }
       }
     }
   }
+  // qDebug() << QString( "-I-> QgsOgrProvider::OGRGetLayerWrapper[%2]: mSubLayerString[%1]" ).arg( mSubLayerString ).arg( mOgrGetType );
   return ogrLayer;
 }
-QString QgsOgrProviderUtils::OGRGetSubLayerWrapper( QString sLayerName, long& lLayerIndex , const QStringList& listSubLayers )
-{ // goal is to replace the found it with '-1' if GetLayerByName is to be used, otherwise GetLayer with index will be used
+QString QgsOgrProviderUtils::OGRGetSubLayerWrapper( QString sLayerName, long &lLayerIndex, const QStringList &listSubLayers )
+{
+  // goal is to replace the found it with '-1' if GetLayerByName is to be used, otherwise GetLayer with index will be used
   QString s_sublayer = QString::null;
   int i_count_name = 0;
   int i_count_id = 0;
@@ -3119,11 +3227,13 @@ QString QgsOgrProviderUtils::OGRGetSubLayerWrapper( QString sLayerName, long& lL
   // if a layer-name not unique (i_count_name > 1),
   //  we must rely on GetLayer with an index to retrieve the correct layer
   i_count_name = sa_list_name.size();
-  if (( i_count_name == 0 ) && ( sLayerName.contains( "(" ) ) && ( sLayerName.endsWith( QString( ")" ) ) ) )
-  { // Possilbly a former entry with an ogr naming convention 'table(field-name)' that no longer exists, try to resolve this
+  if ( ( i_count_name == 0 ) && ( sLayerName.contains( "(" ) ) && ( sLayerName.endsWith( QString( ")" ) ) ) )
+  {
+    // Possilbly a former entry with an ogr naming convention 'table(field-name)' that no longer exists, try to resolve this
     sa_list_name = sLayerName.split( "(" );
     if ( sa_list_name.size() > 0 )
-    { // remove '(field-name)' portion
+    {
+      // remove '(field-name)' portion
       sLayerName = sa_list_name[0];
       // search again, now only for the 'table' portion
       sa_list_name = listSubLayers.filter( QString( ":%1:" ).arg( sLayerName ) );
@@ -3131,35 +3241,36 @@ QString QgsOgrProviderUtils::OGRGetSubLayerWrapper( QString sLayerName, long& lL
     }
   }
   if ( i_count_name > 0 )
-  { // sublayer contains the present id returned by OGR
+  {
+    // sublayer contains the present id returned by OGR
     s_sublayer = sa_list_name[0];
   }
 
   if ( i_count_name > 1 )
-  { // layer-name not unique (GetLayer with index must be used)
+  {
+    // layer-name not unique (GetLayer with index must be used)
     replace_id = false;
   }
   // Searching for: 'starts with' '0:berlin_admin_segments' : 0:berlin_admin_segments:1116:LineString
   QStringList sa_list_id = listSubLayers.filter( QRegExp( QString( "^%1:%2" ).arg( lLayerIndex ).arg( sLayerName ), Qt::CaseInsensitive ) );
   i_count_id = sa_list_id.size();
   if ( i_count_id == 0 )
-  { // The given id was not found, in cases with duplicate names where the id was not stored in the project, the first will be used
+  {
+    // The given id was not found, in cases with duplicate names where the id was not stored in the project, the first will be used
     QStringList sa_list_id_fields = s_sublayer.split( ":" );
     if ( sa_list_id_fields.size() > 0 )
-    { // replace id from mSubLayerList entry
+    {
+      // replace id from mSubLayerList entry
       bool ok;
       lLayerIndex = sa_list_id_fields[0].toLong( &ok, 10 );
     }
   }
   else
-  { // In cases with duplicate names, the name with the given the id will be used
+  {
+    // In cases with duplicate names, the name with the given the id will be used
     s_sublayer = sa_list_id[0];
   }
-  if (( sLayerName.endsWith( QString( ")" ) ) ) && ( Qgis::GDAL_RUNTIME_VERSION_MAJOR < 2 ) )
-  { // the ogr naming convention 'table(field-name)' may only be used in gdal2.* with GetLayerByName
-    replace_id = false;
-  }
-  if (( replace_id ) && ( !sLayerName.isNull() ) )
+  if ( ( replace_id ) && ( !sLayerName.isNull() ) )
   {
     QStringList sa_list_id = s_sublayer.split( ":" );
     s_sublayer.replace( QRegExp( QString( "^%1:" ).arg( sa_list_id[0] ), Qt::CaseInsensitive ), "-1:" );
@@ -3175,21 +3286,24 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
     long layer_number = 0; // depending on the gdal-version being used, the final result may be different that the result of layerCount()
     int i_count_ogr_syntax = 0;
     int i_count_get_index = 0;
-    int mOgrGetType = 0;
-    for ( long i_layer = 0;i_layer < layer_count;i_layer++ )
+    // Note: the mOgrGetType value must be retainded until a SubLayer has been selected
+    // if 0 [unique-layername] : set layer_number to -1
+    // and remove from mOgrGetType [done in QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()]
+    int iOgrGetType = 0;
+    for ( long i_layer = 0; i_layer < layer_count; i_layer++ )
     {
       OGRLayerH layer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( ogrDataSource, i_layer );
       if ( layer )
       {
-        OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
-        if ( fdef )
+        OGRFeatureDefnH fdef_layer = OGR_L_GetLayerDefn( layer );
+        if ( fdef_layer )
         {
-          QString theLayerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
+          QString theLayerName = QString::fromUtf8( OGR_FD_GetName( fdef_layer ) );
           long layer_feature_count = QgsOgrProviderUtils::OGRGetFeatureCountWrapper( layer, 0 ); // Fetch the feature count in this layer.
-          int field_count = OGR_FD_GetGeomFieldCount( fdef ); // count of geometry fields
-          for ( int i_field = 0;i_field < field_count;i_field++ )
+          int field_count = OGR_FD_GetGeomFieldCount( fdef_layer ); // count of geometry fields
+          for ( int i_field = 0; i_field < field_count; i_field++ )
           {
-            OGRGeomFieldDefnH fdef_geom = OGR_FD_GetGeomFieldDefn( fdef, i_field );
+            OGRGeomFieldDefnH fdef_geom = OGR_FD_GetGeomFieldDefn( fdef_layer, i_field );
             int i_field_valid = 0;
             if ( fdef_geom )
             {
@@ -3197,8 +3311,10 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
               OGRwkbGeometryType layerGeomType = OGR_GFld_GetType( fdef_geom );
               QString geom = QgsOgrProviderUtils::wkbGeometryTypeName( layerGeomType );
               QString layer_name = QString( "%1(%2)" ).arg( theLayerName ).arg( theLayerFieldName );
-              if (( field_count == 1 )  || ( theLayerName.endsWith( QString( "(%1)" ).arg( theLayerFieldName ) ) ) )
-              { // gdal previous 2.0: on tables with 1 geometry, may not use the ogr-format 'table_name(field_name)' ; or already formatted in the  ogr-format 'table_name(field_name)'
+              QString layer_field_name = QString( "%1" ).arg( theLayerFieldName );
+              if ( ( field_count == 1 )  || ( theLayerName.endsWith( QString( "(%1)" ).arg( theLayerFieldName ) ) ) )
+              {
+                // gdal previous 2.0: on tables with 1 geometry, may not use the ogr-format 'table_name(field_name)' ; or already formatted in the  ogr-format 'table_name(field_name)'
                 layer_name = QString( "%1" ).arg( theLayerName );
               }
               if ( QgsOgrProviderUtils::wkbFlattenWrapper( layerGeomType ) != wkbUnknown )
@@ -3216,26 +3332,31 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
                 }
               }
               if ( i_field_valid > 0 )
-              { // Note: no checking is done for an valid Extent - which means the layer may not show anything (may also be empty). Empty Layers should be loaded.
-                if (( layer_name.contains( "(" ) ) && ( layer_name.endsWith( QString( ")" ) ) ) )
-                { // Note [Gdal 2.*]: if the ogr-syntax is used once, 'OGRGetLayerIndexWrapper' must never be used after that first accurance.
+              {
+                // Note: no checking is done for an valid Extent - which means the layer may not show anything (may also be empty). Empty Layers should be loaded.
+                if ( ( layer_name.contains( "(" ) ) && ( layer_name.endsWith( QString( ")" ) ) ) )
+                {
+                  // Note [Gdal 2.*]: if the ogr-syntax is used once, 'OGRGetLayerIndexWrapper' must never be used after that first accurance.
                   i_count_ogr_syntax++;
                 }
                 QStringList sa_list_name = mSubLayerList.filter( QString( ":%1:" ).arg( layer_name ) );
-                mOgrGetType = 0; // set to use 'OGRGetLayerNameWrapper'
+                iOgrGetType = 0; // set to use 'OGRGetLayerNameWrapper'
                 if ( sa_list_name.size() > 0 )
-                { // Layer-Name is not unique, set to use 'OGRGetLayerIndexWrapper'
-                  mOgrGetType = 1;
+                {
+                  // Layer-Name is not unique, set to use 'OGRGetLayerIndexWrapper'
+                  iOgrGetType = 1;
                   i_count_get_index++;
-                  for ( int i_list = 0;i_list < mSubLayerList.size();i_list++ )
+                  for ( int i_list = 0; i_list < mSubLayerList.size(); i_list++ )
                   {
-                    if (( mSubLayerList[i_list].contains( QString( ":%1:" ).arg( layer_name ) ) ) && ( mSubLayerList[i_list].endsWith( ":0" ) ) )
-                    { // adapt the other Layers of the same name also to use 'OGRGetLayerIndexWrapper'
-                      mSubLayerList[i_list].replace( QRegExp( QString( ":0$" ) ), QString( ":%1" ).arg( mOgrGetType ) );
+                    if ( ( mSubLayerList[i_list].contains( QString( ":%1:" ).arg( layer_name ) ) ) && ( mSubLayerList[i_list].endsWith( ":0" ) ) )
+                    {
+                      // adapt the other Layers of the same name also to use 'OGRGetLayerIndexWrapper'
+                      mSubLayerList[i_list].replace( QRegExp( QString( ":0$" ) ), QString( ":%1" ).arg( iOgrGetType ) );
                     }
                   }
                 }
-                QString s_SubLayer = QString( "%1:%2:%3:%4:%5" ).arg( layer_number ).arg( layer_name, layer_feature_count == -1 ?  "Unknown" : QString::number( layer_feature_count ), geom ).arg( mOgrGetType );
+                // iOgrGetType = 1;
+                QString s_SubLayer = QString( "%1:%2:%3:%4:%5:%6" ).arg( layer_number ).arg( layer_name, layer_feature_count == -1 ?  "Unknown" : QString::number( layer_feature_count ), geom ).arg( layer_field_name ).arg( iOgrGetType );
                 mSubLayerList << s_SubLayer;
               }
             }
@@ -3246,19 +3367,22 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
         }
       }
     }
-    mOgrGetType = 0; // set to use 'OGRGetLayerNameWrapper'
+    iOgrGetType = 0; // set to use 'OGRGetLayerNameWrapper'
     i_count_ogr_syntax = 0;
-    for ( int i_list = 0;i_list < mSubLayerList.size();i_list++ )
+    for ( int i_list = 0; i_list < mSubLayerList.size(); i_list++ )
     {
       QStringList sa_list_name = mSubLayerList[i_list].split( ":" );
-      if (( sa_list_name[1].contains( "(" ) ) && ( sa_list_name[1].endsWith( QString( ")" ) ) ) )
-      { // Note: if the ogr-syntax is used once, 'OGRGetLayerIndexWrapper' must never be used after that first accurance.
+      if ( ( sa_list_name[1].contains( "(" ) ) && ( sa_list_name[1].endsWith( QString( ")" ) ) ) )
+      {
+        // Note: if the ogr-syntax is used once, 'OGRGetLayerIndexWrapper' must never be used after that first accurance.
         i_count_ogr_syntax++;
       }
-      if (( i_count_ogr_syntax > 0 ) && ( mSubLayerList[i_list].endsWith( ":1" ) ) )
-      { // adapt the other Layers, after this accurance. to use 'OGRGetLayerNameWrapper'
-        mSubLayerList[i_list].replace( QRegExp( QString( ":1$" ) ), QString( ":%1" ).arg( mOgrGetType ) );
+      if ( ( i_count_ogr_syntax > 0 ) && ( mSubLayerList[i_list].endsWith( ":1" ) ) )
+      {
+        // adapt the other Layers, after this accurance. to use 'OGRGetLayerNameWrapper'
+        mSubLayerList[i_list].replace( QRegExp( QString( ":1$" ) ), QString( ":%1" ).arg( iOgrGetType ) );
       }
+      // qDebug() << QString( "-I-> QgsOgrProviderUtils::OGRGetSubLayersWrapper[%1]: mSubLayerString[%2]" ).arg( i_list ).arg( mSubLayerList[i_list] );
     }
   }
   return mSubLayerList;
@@ -3266,27 +3390,52 @@ QStringList QgsOgrProviderUtils::OGRGetSubLayersWrapper( OGRDataSourceH ogrDataS
 OGRLayerH QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( OGRDataSourceH ogrDataSource, QString sSubLayerString )
 {
   OGRLayerH ogrLayer = nullptr;
-  if (( ogrDataSource ) && ( !sSubLayerString.isNull() ) )
-  { // SubLayerString[-1:berlin_ortsteile_segmente:634:LineString]
+  if ( ( ogrDataSource ) && ( !sSubLayerString.isNull() ) )
+  {
+    // SubLayerString[-1:berlin_ortsteile_segmente:634:LineString]
     QStringList sa_list_sublayer = sSubLayerString.split( ":" );
     long iLayerIndex = 0;
+    int iOgrGetType = 0;
     QString sLayerName = "";
+    QString sGeometryName = "";
     if ( sa_list_sublayer.size() > 0 )
-    { // 'sSubLayerString' contains the information on how the Layers has been retrieved
+    {
+      // 'layer_id:layer_name:feature_count:geometry_type:geometry_name:ogr_get_type'
       bool ok;
       iLayerIndex = sa_list_sublayer[0].toLong( &ok, 10 );
       sLayerName = sa_list_sublayer[1];
-      if ( iLayerIndex < 0 )
-      { // GetLayer with name that was used
-        ogrLayer = QgsOgrProviderUtils::OGRGetLayerNameWrapper( ogrDataSource, sLayerName );
-      }
-      else
-      { // GetLayer with an index that was used
-        ogrLayer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( ogrDataSource, iLayerIndex );
-      }
-      if ( ogrLayer )
+      sGeometryName = sa_list_sublayer[4];
+      iOgrGetType = sa_list_sublayer[5].toInt( &ok );
+      switch ( iOgrGetType )
       {
-        return ogrLayer;
+        case 0:
+          // GetLayer with name that was used
+          ogrLayer = QgsOgrProviderUtils::OGRGetLayerNameWrapper( ogrDataSource, sLayerName );
+          break;
+        case 1:
+          // GetLayer with an index that was used
+          ogrLayer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( ogrDataSource, iLayerIndex );
+          break;
+        case 2:
+          // GetLayer with an layer and geometry name and was used
+          ogrLayer = QgsOgrProviderUtils::OGRGetGeometryNameWrapper( ogrDataSource, sLayerName, sGeometryName );
+          break;
+        default:
+          if ( iLayerIndex < 0 )
+          {
+            // GetLayer with name that was used
+            ogrLayer = QgsOgrProviderUtils::OGRGetLayerNameWrapper( ogrDataSource, sLayerName );
+          }
+          else
+          {
+            // GetLayer with an index that was used
+            ogrLayer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( ogrDataSource, iLayerIndex );
+          }
+          if ( ogrLayer )
+          {
+            return ogrLayer;
+          }
+          break;
       }
     }
   }
@@ -3307,6 +3456,66 @@ OGRLayerH QgsOgrProviderUtils::OGRGetLayerNameWrapper( OGRDataSourceH ogrDataSou
   if ( ogrDataSource )
   {
     ogrLayer = GDALDatasetGetLayerByName( ogrDataSource, sLayerName.toUtf8().constData() );
+  }
+  return ogrLayer;
+}
+OGRLayerH QgsOgrProviderUtils::OGRGetGeometryNameWrapper( OGRDataSourceH ogrDataSource, QString sLayerName, QString sGeometryName )
+{
+  OGRLayerH ogrLayer = nullptr;
+  QString new_LayerName = sLayerName;
+  if ( ( sLayerName.contains( "(" ) ) && ( sLayerName.endsWith( QString( ")" ) ) ) )
+  {
+    // Extract GeometryName from sent 'table_name(field_name)' from layerName
+    QStringList sa_list_name = sLayerName.split( "(" );
+    sLayerName = sa_list_name[0];
+    sGeometryName = sa_list_name[1].replace( ")", "" );
+  }
+  else
+  {
+    new_LayerName =  QString( "%1(%2)" ).arg( sLayerName ).arg( sGeometryName );
+  }
+  if ( ogrDataSource )
+  {
+    long layer_count = QgsOgrProviderUtils::OGRGetLayerCountWrapper( ogrDataSource );
+    int i_hit = 0;
+    for ( long i_layer = 0; i_layer < layer_count; i_layer++ )
+    {
+      OGRLayerH layer = QgsOgrProviderUtils::OGRGetLayerIndexWrapper( ogrDataSource, i_layer );
+      if ( layer )
+      {
+        OGRFeatureDefnH fdef_layer = OGR_L_GetLayerDefn( layer );
+        QString theLayerName = QString::fromUtf8( OGR_FD_GetName( fdef_layer ) );
+        if ( sLayerName == QString::fromUtf8( OGR_FD_GetName( fdef_layer ) ) )
+        {
+          int field_count = OGR_FD_GetGeomFieldCount( fdef_layer ); // count of geometry fields
+          // crashes: int i_field_geometry = OGR_F_GetGeomFieldIndex( fdef_layer, sGeometryName.toUtf8().constData() );
+          // qDebug() << QString( "-I-> QgsOgrProviderUtils::OGRGetGeometryNameWrapper[%1]: GeometryName[%2] " ).arg( i_field_geometry ).arg( sGeometryName );
+          for ( int i_field = 0; i_field < field_count; i_field++ )
+          {
+            OGRGeomFieldDefnH fdef_geom = OGR_FD_GetGeomFieldDefn( fdef_layer, i_field );
+            if ( fdef_geom )
+            {
+              QString theLayerFieldName = QString::fromUtf8( OGR_GFld_GetNameRef( fdef_geom ) );
+              if ( sGeometryName != theLayerFieldName )
+              {
+                OGR_GFld_SetIgnored( fdef_geom, 1 ); // The first geometry will still be 'activ'
+                // crash: OGR_GFld_Destroy( fdef_geom);
+                // crash: OGR_L_DeleteField( layer, i_field, theLayerFieldName.toUtf8().constData() );
+              }
+              else
+              {
+                i_hit = 1;
+              }
+            }
+          }
+          if ( i_hit )
+          {
+            return layer;
+          }
+          return ogrLayer;
+        }
+      }
+    }
   }
   return ogrLayer;
 }
@@ -3687,6 +3896,7 @@ void QgsOgrProvider::open( OpenMode mode )
   QgsDebugMsg( "mFilePath: " + mFilePath );
   QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
   QgsDebugMsg( "mLayerName: " + mLayerName );
+  QgsDebugMsg( "mGeometryName: " + mGeometryName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
@@ -3740,20 +3950,11 @@ void QgsOgrProvider::open( OpenMode mode )
 
   if ( ogrDataSource )
   {
-    QgsDebugMsg( "OGR opened using Driver " + QString( OGR_Dr_GetName( ogrDriver ) ) );
-
     ogrDriverName = OGR_Dr_GetName( ogrDriver );
+    mDriverName = QString( ogrDriverName ) ;
+    QgsDebugMsg( "OGR opened using Driver " + mDriverName );
 
-    // We get the layer which was requested by the uri. The layername
-    // has precedence over the layerid if both are given.
-    if ( mLayerName.isNull() )
-    {
-      ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
-    }
-    else
-    {
-      ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toUtf8().constData() );
-    }
+    ogrOrigLayer = OGRGetLayerWrapper( ogrDataSource, mLayerName, mGeometryName, mLayerIndex );
 
     ogrLayer = ogrOrigLayer;
     if ( ogrLayer )
@@ -3814,16 +4015,8 @@ void QgsOgrProvider::open( OpenMode mode )
 
     if ( ogrDataSource )
     {
-      // We get the layer which was requested by the uri. The layername
-      // has precedence over the layerid if both are given.
-      if ( mLayerName.isNull() )
-      {
-        ogrOrigLayer = OGR_DS_GetLayer( ogrDataSource, mLayerIndex );
-      }
-      else
-      {
-        ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toUtf8().constData() );
-      }
+      // mLayerIndex will be used if >= 0 [assumes duplicate mLayerName], otherwise mLayerName
+      ogrOrigLayer = OGRGetLayerWrapper( ogrDataSource, mLayerName, mGeometryName, mLayerIndex );
 
       ogrLayer = ogrOrigLayer;
     }
@@ -3843,12 +4036,13 @@ void QgsOgrProvider::open( OpenMode mode )
   }
 
   // For debug/testing purposes
+  QString s_open_mode = "read-only";
   if ( !mValid )
-    setProperty( "_debug_open_mode", "invalid" );
+    s_open_mode = "invalid";
   else if ( mWriteAccess )
-    setProperty( "_debug_open_mode", "read-write" );
-  else
-    setProperty( "_debug_open_mode", "read-only" );
+    s_open_mode = "read-write";
+  setProperty( "_debug_open_mode", s_open_mode );
+  qDebug() << QString( "-I-> QgsOgrProvider::open gdal[%1,%2,%3,%4,%5] open_mode[%6] SubLayerString[%7] dataSourceUri[%8]" ).arg( Qgis::GDAL_RUNTIME_VERSION_MAJOR ).arg( Qgis::GDAL_RUNTIME_VERSION_MINOR ).arg( Qgis::GDAL_RUNTIME_VERSION_REV ).arg( Qgis::GDAL_RUNTIME_VERSION ).arg( mDriverName ).arg( s_open_mode ).arg( SubLayerString() ).arg( dataSourceUri() );
 }
 
 void QgsOgrProvider::close()
