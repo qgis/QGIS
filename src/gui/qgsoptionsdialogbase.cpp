@@ -31,7 +31,8 @@
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTimer>
-
+#include <QTreeView>
+#include <QAbstractItemModel>
 
 #include "qgsfilterlineedit.h"
 
@@ -423,6 +424,10 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
     mStyleSheet = "QGroupBox::title { background-color: yellow; color: blue;}";
     mText = [ = ]() {return qobject_cast<QGroupBox *>( mWidget )->title();};
   }
+  else if ( qobject_cast<QTreeView *>( widget ) )
+  {
+    // TODO - style individual matching items
+  }
   else
   {
     mValid = false;
@@ -443,10 +448,18 @@ bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText 
 
   if ( !searchText.isEmpty() )
   {
-    QString origText = mText();
-    if ( origText.contains( searchText, Qt::CaseInsensitive ) )
+    if ( QTreeView *tree = qobject_cast<QTreeView *>( mWidget ) )
     {
-      found = true;
+      QModelIndexList hits = tree->model()->match( tree->model()->index( 0, 0 ), Qt::DisplayRole, searchText, 1, Qt::MatchContains | Qt::MatchRecursive );
+      found = !hits.isEmpty();
+    }
+    else
+    {
+      QString origText = mText();
+      if ( origText.contains( searchText, Qt::CaseInsensitive ) )
+      {
+        found = true;
+      }
     }
   }
 
