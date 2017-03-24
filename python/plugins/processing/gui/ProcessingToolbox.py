@@ -74,8 +74,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 self.txtTip.setVisible(False)
                 self.tipWasClosed = True
             else:
-                dlg = ConfigDialog(self)
-                dlg.exec_()
+                iface.showOptionsDialog(iface.mainWindow(), 'processingOptions')
                 self.txtTip.setVisible(self.disabledProviders())
         self.txtTip.linkActivated.connect(openSettings)
         if hasattr(self.searchBox, 'setPlaceholderText'):

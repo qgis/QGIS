@@ -418,6 +418,11 @@ void QgisAppInterface::closeComposer( QgsComposition *composition )
   }
 }
 
+void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )
+{
+  return qgis->showOptionsDialog( parent, currentPage );
+}
+
 QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
 {
   return qgis->styleSheetBuilder()->defaultOptions();

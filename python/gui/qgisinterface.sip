@@ -213,6 +213,7 @@ class QgisInterface : QObject
     virtual QList<QgsComposerInterface *> openComposers() = 0;
     virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
     virtual void closeComposer( QgsComposition *composition ) = 0;
+    virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 

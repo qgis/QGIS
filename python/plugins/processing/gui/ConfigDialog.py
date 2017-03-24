@@ -73,6 +73,7 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
         layout.setMargin(0)
         self.setLayout(layout)
         layout.addWidget(self.config_widget)
+        self.setObjectName('processingOptions')
 
     def apply(self):
         self.config_widget.accept()

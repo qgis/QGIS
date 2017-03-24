@@ -293,6 +293,13 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void closeComposer( QgsComposition *composition ) = 0;
 
+    /**
+     * Opens the options dialog. The \a currentPage argument can be used to force
+     * the dialog to open at a specific page.
+     * @note added in QGIS 3.0
+     */
+    virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
+
     //! Return changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
