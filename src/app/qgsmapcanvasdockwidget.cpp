@@ -53,6 +53,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   mExtentRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::PolygonGeometry );
   mExtentRubberBand->setStrokeColor( Qt::red );
+  mExtentRubberBand->setSecondaryStrokeColor( QColor( 255, 255, 255, 225 ) );
+  mExtentRubberBand->setFillColor( Qt::transparent );
 
   mPanTool = new QgsMapToolPan( mMapCanvas );
   mMapCanvas->setMapTool( mPanTool );

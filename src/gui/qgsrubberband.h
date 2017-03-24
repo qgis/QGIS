@@ -77,49 +77,88 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
-     * Set the color for the rubberband
+     * Sets the color for the rubberband
      *  @param color  The color used to render this rubberband
      */
     void setColor( const QColor &color );
 
     /**
-     * Set the fill color for the rubberband
+     * Sets the fill color for the rubberband
      *  @param color  The color used to render this rubberband
      *  @note Added in 2.6
      */
     void setFillColor( const QColor &color );
 
     /**
-     * Set the stroke color for the rubberband
+     * Returns the current fill color.
+     */
+    QColor fillColor() const { return mBrush.color(); }
+
+    /**
+     * Sets the stroke color for the rubberband
      *  @param color  The color used to render this rubberband
      *  @note Added in 2.6
      */
     void setStrokeColor( const QColor &color );
 
     /**
-     * Set the width of the line. Stroke width for polygon.
+     * Returns the current stroke color.
+     */
+    QColor strokeColor() const { return mPen.color(); }
+
+    /**
+     * Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
+     * Set to an invalid color to avoid drawing the secondary stroke.
+     *  @param color  The color used to render a secondary stroke color to this rubberband
+     *  @note Added in 3.0
+     */
+    void setSecondaryStrokeColor( const QColor &color );
+
+    /**
+     * Returns the current secondary stroke color.
+     */
+    QColor secondaryStrokeColor() const { return mSecondaryPen.color(); }
+
+    /**
+     * Sets the width of the line. Stroke width for polygon.
      *  @param width The width for any lines painted for this rubberband
      */
     void setWidth( int width );
 
     /**
-     * Set the icon type to highlight point geometries.
+     * Returns the current width of the line or stroke width for polygon.
+     */
+    int width() const { return mPen.width(); }
+
+    /**
+     * Sets the icon type to highlight point geometries.
      *  @param icon The icon to visualize point geometries
      */
     void setIcon( IconType icon );
 
+
     /**
-     * Set the size of the point icons
+     * Returns the current icon type to highlight point geometries.
+     */
+    IconType icon() const { return mIconType; }
+
+    /**
+     * Sets the size of the point icons
      */
     void setIconSize( int iconSize );
 
     /**
-     * Set the style of the line
+     * Returns the current icon size of the point icons.
+     */
+    int iconSize() const { return mIconSize; }
+
+    /**
+     * Sets the style of the line
      */
     void setLineStyle( Qt::PenStyle penStyle );
 
     /**
-     * Set the style of the brush
+     * Sets the style of the brush
      */
     void setBrushStyle( Qt::BrushStyle brushStyle );
 
@@ -131,7 +170,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void reset( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 
     /**
-     * Add a vertex to the rubberband and update canvas.
+     * Adds a vertex to the rubberband and update canvas.
      * The rendering of the vertex depends on the current GeometryType and icon.
      * If adding more points consider using update=false for better performance
      *  @param p             The vertex/point to add
@@ -149,7 +188,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void closePoints( bool doUpdate = true, int geometryIndex = 0 );
 
     /**
-     * Remove a vertex from the rubberband and (optionally) update canvas.
+     * Removes a vertex from the rubberband and (optionally) updates canvas.
      * @param index The index of the vertex/point to remove, negative indexes start at end
      * @param doUpdate Should the map canvas be updated immediately?
      * @param geometryIndex The index of the feature part (in case of multipart geometries)
@@ -197,7 +236,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void setToCanvasRectangle( QRect rect );
 
     /**
-     * Add the geometry of an existing feature to a rubberband
+     * Adds the geometry of an existing feature to a rubberband
      * This is useful for multi feature highlighting.
      * As of 2.0, this method does not change the GeometryType any more. You need to set the GeometryType
      * of the rubberband explicitly by calling {@link reset} or {@link setToGeometry} with appropriate arguments.
@@ -229,14 +268,14 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     int numberOfVertices() const;
 
     /**
-     * Return vertex
+     * Returns a vertex
      *  @param i   The geometry index
      *  @param j   The vertex index within geometry i
      */
     const QgsPoint *getPoint( int i, int j = 0 ) const;
 
     /**
-     * Returns the rubberband as a Geometry.
+     * Returns the rubberband as a Geometry
      *  @return A geometry object which reflects the current state of the rubberband.
      */
     QgsGeometry asGeometry() const;
@@ -244,14 +283,27 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     virtual void updatePosition() override;
 
   protected:
+
+    /**
+     * Paints the rubber band in response to an update event.
+     *  @param p The QPainter object
+     */
     virtual void paint( QPainter *p ) override;
 
-    //! recalculates needed rectangle
+    /**
+     * Draws shape of the rubber band.
+     *  @param p The QPainter object
+     *  @param pts A list of points used to draw the shape
+     */
+    void drawShape( QPainter *p, QVector<QPointF> &pts );
+
+    //! Recalculates needed rectangle
     void updateRect();
 
   private:
     QBrush mBrush;
     QPen mPen;
+    QPen mSecondaryPen;
 
     //! The size of the icon for points.
     int mIconSize;
