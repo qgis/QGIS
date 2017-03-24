@@ -59,7 +59,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLineEdit" name="mSearchLineEdit"/>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit"/>
        </item>
        <item>
         <widget class="QListWidget" name="mOptionsListWidget">
@@ -311,8 +311,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>652</width>
+                <height>541</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -777,8 +777,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>652</width>
-                <height>216</height>
+                <width>523</width>
+                <height>222</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1161,7 +1161,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>104</width>
-                <height>102</height>
+                <height>103</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1329,8 +1329,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>613</height>
+                <width>297</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -1926,6 +1926,11 @@
    <class>QgsCodeEditorHTML</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
