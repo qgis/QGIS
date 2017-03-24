@@ -41,6 +41,22 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   QgsDataSourceURI uri;
   uri.setEncodedUri( uriString );
 
+  // Setup authentication
+  mAuth.mUserName = uri.param( "username" );
+  QgsDebugMsg( "set username to " + mAuth.mUserName );
+
+  mAuth.mPassword = uri.param( "password" );
+  QgsDebugMsg( "set password to " + mAuth.mPassword );
+
+  if ( uri.hasParam( "authcfg" ) )
+  {
+    mAuth.mAuthCfg = uri.param( "authcfg" );
+  }
+  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
+
+  mAuth.mReferer = uri.param( "referer" );
+  QgsDebugMsg( "set referer to " + mAuth.mReferer );
+
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.param( "type" ) == "xyz" )
@@ -54,10 +70,6 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
     mMaxHeight = 0;
     mHttpUri = uri.param( "url" );
     mBaseUrl = mHttpUri;
-    mAuth.mUserName.clear();
-    mAuth.mPassword.clear();
-    mAuth.mReferer.clear();
-    mAuth.mAuthCfg.clear();
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = true;
@@ -86,21 +98,6 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
 
   mDpiMode = uri.hasParam( "dpiMode" ) ? static_cast< QgsWmsDpiMode >( uri.param( "dpiMode" ).toInt() ) : dpiAll;
-
-  mAuth.mUserName = uri.param( "username" );
-  QgsDebugMsg( "set username to " + mAuth.mUserName );
-
-  mAuth.mPassword = uri.param( "password" );
-  QgsDebugMsg( "set password to " + mAuth.mPassword );
-
-  if ( uri.hasParam( "authcfg" ) )
-  {
-    mAuth.mAuthCfg = uri.param( "authcfg" );
-  }
-  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
-
-  mAuth.mReferer = uri.param( "referer" );
-  QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
   mActiveSubLayers = uri.params( "layers" );
   mActiveSubStyles = uri.params( "styles" );
