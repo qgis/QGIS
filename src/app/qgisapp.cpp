@@ -1141,6 +1141,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mTray->hide();
 #endif
 
+#ifdef Q_OS_WIN
+  // We only want the system notifications, no need for constant menubar icon
+  mTray->hide();
+#endif
+
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
@@ -12418,8 +12423,16 @@ void QgisApp::showSystemNotification( const QString title, const QString message
   // Menubar icon is hidden on macOS, by default. Show to enable notification bubbles
   mTray->show();
 #endif
+#ifdef Q_OS_WIN
+  // Menubar icon is hidden on macOS, by default. Show to enable notification bubbles
+  mTray->show();
+#endif
   mTray->showMessage( title, message );
 #ifdef Q_OS_MAC
+  // Re-hide menubar icon
+  mTray->hide();
+#endif
+#ifdef Q_OS_WIN
   // Re-hide menubar icon
   mTray->hide();
 #endif
