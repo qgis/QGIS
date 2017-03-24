@@ -276,6 +276,10 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
         QgsDebugMsg( QString( "Registering: %1" ).arg( w->objectName() ) );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
+      else
+      {
+        delete shw;
+      }
     }
   }
 }
