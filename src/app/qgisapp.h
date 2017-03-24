@@ -437,6 +437,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
     QAction *actionDraw() { return mActionDraw; }
 
+    QAction *actionAddGeonodeLayer() { return mActionAddGeonodeLayer; }
+
     QAction *actionDataSourceManager() { return mActionDataSourceManager; }
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatiaLiteLayer; }
@@ -885,6 +887,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void sponsors();
     //! About QGIS
     void about();
+    //! Add a Geonode layer to the map
+    void addGeonodeLayer();
     //#ifdef HAVE_POSTGRESQL
     //! Add a databaselayer to the map
     void addDatabaseLayer();
@@ -1731,6 +1735,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *mActionPluginSeparator1 = nullptr;
     QAction *mActionPluginSeparator2 = nullptr;
     QAction *mActionRasterSeparator = nullptr;
+    QAction *mActionAddGeonodeLayer = nullptr;
 
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup = nullptr;
@@ -1743,6 +1748,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
     QMenu *mPanelMenu = nullptr;
     QMenu *mToolbarMenu = nullptr;
+    QMenu *mGeonodeMenu = nullptr;
 
     // docks ------------------------------------------
     QgsDockWidget *mLayerTreeDock = nullptr;

@@ -289,6 +289,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
 #include "qgsdatasourcemanagerdialog.h"
+#include "qgsgeonodesourceselect.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1048,6 +1049,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mActionShowPythonDialog = nullptr;
     mActionInstallFromZip = nullptr;
   }
+
+  // add geonode menu under web menu
+  mWebMenu->addMenu( mGeonodeMenu );
+  mActionAddGeonodeLayer = new QAction( tr( "Add GeoNode Layers..." ), this );
+  mGeonodeMenu->addAction( mActionAddGeonodeLayer );
 
   // Set icon size of toolbars
   if ( settings.contains( QStringLiteral( "IconSize" ) ) )
@@ -1904,6 +1910,10 @@ void QgisApp::createActions()
   connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
   connect( mActionStatisticalSummary, &QAction::triggered, this, &QgisApp::showStatisticsDockWidget );
 
+  // Web Menu Items
+
+  connect( mActionAddGeonodeLayer, &QAction::triggered, this, &QgisApp::addGeonodeLayer );
+
   // Layer Menu Items
 
   connect( mActionDataSourceManager, &QAction::triggered, this, [ = ]() { dataSourceManager(); } );
@@ -2203,6 +2213,10 @@ void QgisApp::createMenus()
   mPanelMenu->setObjectName( QStringLiteral( "mPanelMenu" ) );
   mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
   mToolbarMenu->setObjectName( QStringLiteral( "mToolbarMenu" ) );
+
+  // Geonode Submenu
+  mGeonodeMenu = new QMenu( tr( "GeoNode" ), this );
+  mGeonodeMenu->setObjectName( QStringLiteral( "mGeonodeMenu" ) );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
   QDialogButtonBox::ButtonLayout layout =
@@ -4554,6 +4568,11 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
         group->addLayer( l );
     }
   }
+}
+
+void QgisApp::addGeonodeLayer()
+{
+
 }
 
 void QgisApp::addDatabaseLayer()
