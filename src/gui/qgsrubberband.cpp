@@ -41,6 +41,7 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType
   setWidth( 1 );
   setLineStyle( Qt::SolidLine );
   setBrushStyle( Qt::SolidPattern );
+  setSecondaryStrokeColor( QColor() );
 }
 
 QgsRubberBand::QgsRubberBand()
@@ -67,8 +68,7 @@ void QgsRubberBand::setColor( const QColor &color )
   */
 void QgsRubberBand::setFillColor( const QColor &color )
 {
-  QColor fillColor( color.red(), color.green(), color.blue(), color.alpha() );
-  mBrush.setColor( fillColor );
+  mBrush.setColor( color );
 }
 
 /*!
@@ -76,10 +76,13 @@ void QgsRubberBand::setFillColor( const QColor &color )
   */
 void QgsRubberBand::setStrokeColor( const QColor &color )
 {
-  QColor penColor( color.red(), color.green(), color.blue(), color.alpha() );
-  mPen.setColor( penColor );
+  mPen.setColor( color );
 }
 
+void QgsRubberBand::setSecondaryStrokeColor( const QColor &color )
+{
+  mSecondaryPen.setColor( color );
+}
 
 /*!
   Set the stroke width.
@@ -436,15 +439,12 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
 }
 
 /*!
-  Draw the shape in response to an update event.
+  Paint the rubber band in response to an update event.
   */
 void QgsRubberBand::paint( QPainter *p )
 {
   if ( !mPoints.isEmpty() )
   {
-    p->setBrush( mBrush );
-    p->setPen( mPen );
-
     Q_FOREACH ( const QList<QgsPoint> &line, mPoints )
     {
       QVector<QPointF> pts;
@@ -455,65 +455,81 @@ void QgsRubberBand::paint( QPainter *p )
           pts.append( cur );
       }
 
-      switch ( mGeometryType )
+      if ( mSecondaryPen.color().isValid() )
       {
-        case QgsWkbTypes::PolygonGeometry:
+        mSecondaryPen.setWidth( mPen.width() + 2 );
+
+        p->setBrush( Qt::NoBrush );
+        p->setPen( mSecondaryPen );
+        drawShape( p, pts );
+      }
+
+      p->setBrush( mBrush );
+      p->setPen( mPen );
+      drawShape( p, pts );
+    }
+  }
+}
+
+void QgsRubberBand::drawShape( QPainter *p, QVector<QPointF> &pts )
+{
+  switch ( mGeometryType )
+  {
+    case QgsWkbTypes::PolygonGeometry:
+    {
+      p->drawPolygon( pts );
+    }
+    break;
+
+    case QgsWkbTypes::PointGeometry:
+    {
+      Q_FOREACH ( QPointF pt, pts )
+      {
+        double x = pt.x();
+        double y = pt.y();
+
+        qreal s = ( mIconSize - 1 ) / 2.0;
+
+        switch ( mIconType )
         {
-          p->drawPolygon( pts );
+          case ICON_NONE:
+            break;
+
+          case ICON_CROSS:
+            p->drawLine( QLineF( x - s, y, x + s, y ) );
+            p->drawLine( QLineF( x, y - s, x, y + s ) );
+            break;
+
+          case ICON_X:
+            p->drawLine( QLineF( x - s, y - s, x + s, y + s ) );
+            p->drawLine( QLineF( x - s, y + s, x + s, y - s ) );
+            break;
+
+          case ICON_BOX:
+            p->drawLine( QLineF( x - s, y - s, x + s, y - s ) );
+            p->drawLine( QLineF( x + s, y - s, x + s, y + s ) );
+            p->drawLine( QLineF( x + s, y + s, x - s, y + s ) );
+            p->drawLine( QLineF( x - s, y + s, x - s, y - s ) );
+            break;
+
+          case ICON_FULL_BOX:
+            p->drawRect( x - s, y - s, mIconSize, mIconSize );
+            break;
+
+          case ICON_CIRCLE:
+            p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
+            break;
         }
-        break;
-
-        case QgsWkbTypes::PointGeometry:
-        {
-          Q_FOREACH ( QPointF pt, pts )
-          {
-            double x = pt.x();
-            double y = pt.y();
-
-            qreal s = ( mIconSize - 1 ) / 2.0;
-
-            switch ( mIconType )
-            {
-              case ICON_NONE:
-                break;
-
-              case ICON_CROSS:
-                p->drawLine( QLineF( x - s, y, x + s, y ) );
-                p->drawLine( QLineF( x, y - s, x, y + s ) );
-                break;
-
-              case ICON_X:
-                p->drawLine( QLineF( x - s, y - s, x + s, y + s ) );
-                p->drawLine( QLineF( x - s, y + s, x + s, y - s ) );
-                break;
-
-              case ICON_BOX:
-                p->drawLine( QLineF( x - s, y - s, x + s, y - s ) );
-                p->drawLine( QLineF( x + s, y - s, x + s, y + s ) );
-                p->drawLine( QLineF( x + s, y + s, x - s, y + s ) );
-                p->drawLine( QLineF( x - s, y + s, x - s, y - s ) );
-                break;
-
-              case ICON_FULL_BOX:
-                p->drawRect( x - s, y - s, mIconSize, mIconSize );
-                break;
-
-              case ICON_CIRCLE:
-                p->drawEllipse( x - s, y - s, mIconSize, mIconSize );
-                break;
-            }
-          }
-        }
-        break;
-
-        case QgsWkbTypes::LineGeometry:
-        default:
-        {
-          p->drawPolyline( pts );
-        }
-        break;
       }
     }
+    break;
+
+    case QgsWkbTypes::LineGeometry:
+    default:
+    {
+      p->drawPolyline( pts );
+    }
+    break;
   }
 }
 
