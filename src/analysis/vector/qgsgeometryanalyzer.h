@@ -72,9 +72,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
      * @param dissolve if true, merge all the buffers to a big multipolygon
      * @param bufferDistanceField index of the attribute field that contains the buffer distance (or -1 if all features have the same buffer distance)
      * @param p progress dialog (or 0 if no progress dialog is to be shown)
+     * @param segmentsToApproximate the number of segments used to approximate a quarter-circle
      */
     bool buffer( QgsVectorLayer *layer, const QString &shapefileName, double bufferDistance,
-                 bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog *p = nullptr );
+                 bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog *p = nullptr, int segmentsToApproximate = 5 );
 
     /** Create convex hull(s) of a vector layer and write it to a new shape file
      * @param layer input vector layer
@@ -137,7 +138,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     void centroidFeature( QgsFeature &f, QgsVectorFileWriter *vfw );
     //! Helper function to buffer an individual feature
     void bufferFeature( QgsFeature &f, int nProcessedFeatures, QgsVectorFileWriter *vfw, bool dissolve, QgsGeometry &dissolveGeometry,
-                        double bufferDistance, int bufferDistanceField );
+                        double bufferDistance, int bufferDistanceField, int segmentsToApproximate = 5 );
     //! Helper function to get the convex hull of feature(s)
     void convexFeature( QgsFeature &f, int nProcessedFeatures, QgsGeometry &dissolveGeometry );
     //! Helper function to dissolve feature(s)
