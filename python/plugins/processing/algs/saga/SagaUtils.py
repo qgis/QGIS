@@ -95,12 +95,12 @@ def createSagaBatchJobFileFromSagaCommands(commands):
     fout = open(sagaBatchJobFilename(), 'w')
     if isWindows():
         fout.write('set SAGA=' + sagaPath() + '\n')
-        fout.write('set SAGA_MLB=' + sagaPath() + os.sep
-                   + 'modules' + '\n')
+        fout.write('set SAGA_MLB=' + sagaPath() + os.sep +
+                   'modules' + '\n')
         fout.write('PATH=%PATH%;%SAGA%;%SAGA_MLB%\n')
     elif isMac():
-        fout.write('export SAGA_MLB=' + sagaPath()
-                   + '/../lib/saga\n')
+        fout.write('export SAGA_MLB=' + sagaPath() +
+                   '/../lib/saga\n')
         fout.write('export PATH=' + sagaPath() + ':$PATH\n')
     else:
         pass
@@ -109,6 +109,7 @@ def createSagaBatchJobFileFromSagaCommands(commands):
 
     fout.write('exit')
     fout.close()
+
 
 _installedVersion = None
 _installedVersionFound = False
