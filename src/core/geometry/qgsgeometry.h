@@ -617,7 +617,7 @@ class CORE_EXPORT QgsGeometry
      * If the geometry has z or m values present then these will be linearly interpolated
      * at the added nodes.
      * Curved geometry types are automatically segmentized by this routine.
-     * @node added in QGIS 3.0
+     * @note added in QGIS 3.0
      * @see densifyByDistance()
      */
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
@@ -633,7 +633,7 @@ class CORE_EXPORT QgsGeometry
      * If the geometry has z or m values present then these will be linearly interpolated
      * at the added nodes.
      * Curved geometry types are automatically segmentized by this routine.
-     * @node added in QGIS 3.0
+     * @note added in QGIS 3.0
      * @see densifyByCount()
      */
     QgsGeometry densifyByDistance( double distance ) const;
