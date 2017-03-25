@@ -17,7 +17,7 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QGis, QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes, QgsFeatureRequest
+from qgis.core import Qgis, QgsVectorLayer, QgsVectorDataProvider, QgsWkbTypes, QgsFeatureRequest, QgsGeometry
 from qgis.PyQt.QtCore import QDate
 from qgis.testing import (
     start_app,
@@ -70,16 +70,16 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         """Run before each test."""
         self.gdal_version_num = int(gdal.VersionInfo('VERSION_NUM'))
         try:
-            QGis.GDAL_BUILD_VERSION
+            Qgis.GDAL_BUILD_VERSION
         except AttributeError:
             self.gdal_build_num = self.gdal_version_num
             self.gdal_build_version = gdal.VersionInfo('VERSION_NUM')
             self.gdal_runtime_version = gdal.VersionInfo('VERSION_NUM')
         else:
-            self.ogr_runtime_supported = QGis.GDAL_OGR_RUNTIME_SUPPORTED
-            self.gdal_build_version = QGis.GDAL_BUILD_VERSION
-            self.gdal_runtime_version = QGis.GDAL_RUNTIME_VERSION
-            self.gdal_build_num = (QGis.GDAL_BUILD_VERSION_MAJOR*1000000)+(QGis.GDAL_BUILD_VERSION_MINOR*10000)+(QGis.GDAL_BUILD_VERSION_REV*100)
+            self.ogr_runtime_supported = Qgis.GDAL_OGR_RUNTIME_SUPPORTED
+            self.gdal_build_version = Qgis.GDAL_BUILD_VERSION
+            self.gdal_runtime_version = Qgis.GDAL_RUNTIME_VERSION
+            self.gdal_build_num = (Qgis.GDAL_BUILD_VERSION_MAJOR*1000000)+(Qgis.GDAL_BUILD_VERSION_MINOR*10000)+(Qgis.GDAL_BUILD_VERSION_REV*100)
 
         print('-I-> Using version of gdal/ogr[%d,%s] qgis built with gdal[%d,%s] ogr_runtime_supported[%d]' % (self.gdal_version_num,self.gdal_runtime_version, self.gdal_build_num,self.gdal_build_version,self.ogr_runtime_supported))
 
@@ -87,7 +87,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
 
-      
+
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
         cls.dirs_to_cleanup = [cls.basetestpath]
@@ -106,10 +106,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 #
     def test_00_OgrSpatialiteViewsWritable(self):
 
+        print('-I-> test_00_OgrSpatialiteViewsWritable(%s) ' % ('start of test'))
         if (self.ogr_runtime_supported < 1):
             print('-I-> OgrSpatialiteViewsWritable: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             return
-        
+
         if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
             print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             print('-W-> Note: when qgis is compiled with gdal 2.*\n\tthe application may be killed with: \'symbol lookup error\'\n\t\t undefined symbol: OGR_GT_HasM \n')
@@ -135,7 +136,8 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_positions.fields()[index].name(), vl_positions.fields()[index].typeName()))
 
             f = next(vl_positions.getFeatures())
-            self.assertEqual(f.constGeometry().geometry().wkbType(), QgsWKBTypes.Point)
+            self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Point)
+            # AttributeError: 'QgsFeature' object has no attribute 'constGeometry'
             self.assertEqual(len(vl_positions.fields()), 5)
             got = [(f.attribute('name'), f.attribute('notes'), f.attribute('valid_since')) for f in vl_positions.getFeatures(QgsFeatureRequest().setFilterExpression("id_admin = 1"))]
             self.assertEqual(got, [(u'Brandenburger Tor', u'Pariser Platz', QDate(1791, 8, 6))])
@@ -231,6 +233,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         del vl_positions_1925
         del vl_positions_1955
         del vl_positions_1999
+        print('-I-> test_00_OgrSpatialiteViewsWritable(%s) ' % ('end of test'))
 
 ###############################################################################
 # Test Spatialite SpatialTable with more than 1 geometry
@@ -239,6 +242,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
     def test_01_OgrSpatialTableMultipleGeometries(self):
 
+        print('\n-I-> test_01_OgrSpatialTableMultipleGeometries(%s) ' % ('start of test'))
         if (self.ogr_runtime_supported < 1):
             print('-I-> OgrSpatialTableMultipleGeometries: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             return
@@ -271,9 +275,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             view_point_geom = [f_iter.geometry() for f_iter in features_03][0].geometry()
             features_04 = [f_iter for f_iter in vl_view_linestring.getFeatures(QgsFeatureRequest().setFilterExpression("pk_id = 1"))]
             view_linestring_geom = [f_iter.geometry() for f_iter in features_04][0].geometry()
-            print('-I-> Testing if the Point of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;POINT(0 1)'))     
+            print('-I-> Testing if the Point of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;POINT(0 1)'))
             self.assertEquals((test_point_geom.x(), test_point_geom.y()), (view_point_geom.x(), view_point_geom.y()))
-            print('-I-> Testing if the LineString of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;LINESTRING(0 1,2 3)'))   
+            print('-I-> Testing if the LineString of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;LINESTRING(0 1,2 3)'))
             self.assertEqual((test_linestring_geom.pointN(0).x(), test_linestring_geom.pointN(0).y(),test_linestring_geom.pointN(1).x(), test_linestring_geom.pointN(1).y()), (view_linestring_geom.pointN(0).x(), view_linestring_geom.pointN(0).y(),view_linestring_geom.pointN(1).x(), view_linestring_geom.pointN(1).y()))
             del vl_test_point
             del vl_test_linestring
@@ -299,9 +303,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             view_point_geom = [f_iter.geometry() for f_iter in features_03][0].geometry()
             features_04 = [f_iter for f_iter in vl_view_linestring.getFeatures(QgsFeatureRequest().setFilterExpression("pk_id = 1"))]
             view_linestring_geom = [f_iter.geometry() for f_iter in features_04][0].geometry()
-            print('-I-> Testing if the Point of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;POINT(0 1)'))     
+            print('-I-> Testing if the Point of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;POINT(0 1)'))
             self.assertEquals((test_point_geom.x(), test_point_geom.y()), (view_point_geom.x(), view_point_geom.y()))
-            print('-I-> Testing if the LineString of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;LINESTRING(0 1,2 3)'))   
+            print('-I-> Testing if the LineString of the SpatialTable is the same as in the SpatialView. [%s]' % ('SRID=4326;LINESTRING(0 1,2 3)'))
             self.assertEqual((test_linestring_geom.pointN(0).x(), test_linestring_geom.pointN(0).y(),test_linestring_geom.pointN(1).x(), test_linestring_geom.pointN(1).y()),
                                         (view_linestring_geom.pointN(0).x(), view_linestring_geom.pointN(0).y(),view_linestring_geom.pointN(1).x(), view_linestring_geom.pointN(1).y()))
             del vl_test_point
@@ -309,16 +313,19 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_view_point
             del vl_view_linestring
 
+        print('-I-> test_01_OgrSpatialTableMultipleGeometries(%s) ' % ('end of test'))
+
 ###############################################################################
 # Test Spatialite SpatialTables with XYZM values
 # - created with gdal autotest/auto/ogr_sql_sqlite.py spatialite_5()
 # contains 47 SpatialTables with (Multi-) Points/Linestrings/Polygons/GeometryCollection as XY,XYZ,XYM,XYZM
 # Test Geometries taken from /autotest/ogr/data/curves_line.csv and curves_polygon.csv
 # - to test the correct reading of: CircularString, CompoundCurve, CurvePolygon, MultiCurve and MultiSurface
-# 
+#
 
     def test_02_OgrSpatialTableXYZM(self):
 
+        print('\n-I-> test_02_OgrSpatialTableXYZM(%s) ' % ('start of test'))
         if (self.ogr_runtime_supported < 1):
             print('-I-> OgrSpatialTableXYZM: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             return
@@ -341,7 +348,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'POINT Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POINT(1 2 3)',vl_test_geom.featureCount(),len(features_vl_test)))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            # self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointZ)
+            # self.assertEqual(test_geom.wkbType(), QgsWkbTypes.PointZ)
             self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z()), (1,2,3))
             del test_geom
             del features_vl_test
@@ -355,7 +362,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> count_features[%d]' % (count_features))
             #test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
             #self.assertEqual(test_geom.numGeometries(), 2)
-            #self.assertEqual(test_geom.wkbType(), QgsWKBTypes.MultiPointZ)
+            #self.assertEqual(test_geom.wkbType(), QgsWkbTypes.MultiPointZ)
             #self.assertEquals((test_geom.geometryN(0).x(), test_geom.geometryN(0).y(), test_geom.geometryN(0).z()),
             #                            (test_geom.geometryN(1).x(), test_geom.geometryN(1).y(), test_geom.geometryN(1).z()),
             #                             (1,2,3,4,5,6))
@@ -373,7 +380,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'LINESTRING Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;LINESTRING(1 2 3,4 5 6)',vl_test_geom.featureCount(),len(features_vl_test)))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineString25D)
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.LineString25D)
             self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z()),
                                         (1,2,3,4,5,6))
@@ -386,7 +393,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             features_vl_test = [f_iter for f_iter in vl_test_geom.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 1"))]
             print('-I-> Testing type/values of a \'POLYGON Z\' EWKT[%s] count[%d,%d]' % ('SRID=4326;POLYGON((1 2 10,1 3 -10,2 3 20,2 2 -20,1 2 10))',vl_test_geom.featureCount(),len(features_vl_test)))
             test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.Polygon25D)
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.Polygon25D)
             self.assertEqual((test_geom.exteriorRing().pointN(0).x(), test_geom.exteriorRing().pointN(0).y(),test_geom.exteriorRing().pointN(0).z(),
                                          test_geom.exteriorRing().pointN(1).x(), test_geom.exteriorRing().pointN(1).y(),test_geom.exteriorRing().pointN(1).z(),
                                          test_geom.exteriorRing().pointN(2).x(), test_geom.exteriorRing().pointN(2).y(),test_geom.exteriorRing().pointN(2).z(),
@@ -406,11 +413,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
                     print('-I-> Using version [build gdal %s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
                     # build gdal.1 running with gdal 1: -I-> Sublayer[2] : [2:test2:1:Point:0]
-                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
+                    self.assertNotEqual(test_geom.wkbType(), QgsWkbTypes.PointM)
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,0))
                 else:
                     # build gdal.1+2 running with gdal 2: -I-> Sublayer[2] : [2:test2:1:PointM:0]
-                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointM)
+                    self.assertEqual(test_geom.wkbType(), QgsWkbTypes.PointM)
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.m()), (1,2,3))
                 del test_geom
             else:
@@ -427,11 +434,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
                     print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
                     # build gdal.1 running with gdal 1: I-> Sublayer[3] : [3:test3:1:Point25D:0]
-                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
+                    self.assertNotEqual(test_geom.wkbType(), QgsWkbTypes.PointZM)
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,0))
                 else:
                     # build gdal.1+2 running with gdal 2: -I-> Sublayer[3] : [3:test3:1:PointZM:0]
-                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.PointZM)
+                    self.assertEqual(test_geom.wkbType(), QgsWkbTypes.PointZM)
                     self.assertEquals((test_geom.x(), test_geom.y(), test_geom.z(), test_geom.m()), (1,2,3,4))
                 del test_geom
             else:
@@ -448,13 +455,13 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
                     print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version, self.gdal_version_num))
                     # build gdal.1 running with gdal 1:  -I-> Sublayer[10] : [10:test10:1:LineString:0]
-                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
+                    self.assertNotEqual(test_geom.wkbType(), QgsWkbTypes.LineStringM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
                                         (1,2,0,4,5,0))
                 else:
                     # build gdal.1+2 running with gdal 2: -I-> Sublayer[10] : [10:test10:1:LineStringM:0]
-                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineStringM)
+                    self.assertEqual(test_geom.wkbType(), QgsWkbTypes.LineStringM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).m(),
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).m()),
                                         (1,2,3,4,5,6))
@@ -472,13 +479,13 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 if (self.gdal_version_num < GDAL_COMPUTE_VERSION(2, 0, 0)):
                     print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support M values (pointN(n).m() returns 0)' % (self.gdal_build_version,self.gdal_version_num))
                     # build gdal.1 running with gdal: 1 -I-> Sublayer[12] : [12:test12:1:LineString25D:0]
-                    self.assertNotEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
+                    self.assertNotEqual(test_geom.wkbType(), QgsWkbTypes.LineStringZM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z(),test_geom.pointN(1).m()),
                                         (1,2,3,0,5,6,7,0))
                 else:
                     # build gdal.1+2 running with gdal 2: -I-> Sublayer[12] : [12:test12:1:LineStringZM:0]
-                    self.assertEqual(test_geom.wkbType(), QgsWKBTypes.LineStringZM)
+                    self.assertEqual(test_geom.wkbType(), QgsWkbTypes.LineStringZM)
                     self.assertEqual((test_geom.pointN(0).x(), test_geom.pointN(0).y(),test_geom.pointN(0).z(),test_geom.pointN(0).m(),
                                          test_geom.pointN(1).x(), test_geom.pointN(1).y(),test_geom.pointN(1).z(),test_geom.pointN(1).m()),
                                         (1,2,3,4,5,6,7,8))
@@ -503,9 +510,10 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_circularstring.fields()[index].name(), vl_circularstring.fields()[index].typeName()))
 
             features_vl_circularstring = next(vl_circularstring.getFeatures())
-            test_geom = features_vl_circularstring.constGeometry().geometry()
-            print('-I-> checking Geometry-Type=CircularString: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.CircularString)
+            test_geom = features_vl_circularstring.geometry()
+            print('-I-> checking Geometry-Type=CircularString: [%d,%s] '% (test_geom.wkbType(), test_geom.type()))
+            # AttributeError: 'QgsGeometry' object has no attribute 'geometryType'
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.CircularString)
             del test_geom
             del features_vl_circularstring
             del vl_circularstring
@@ -515,9 +523,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> Reading Geometry-Type=CompoundCurve: hasGeometryType[%d,%s] '% (vl_compoundcurve.hasGeometryType(),vl_compoundcurve.wkbType()))
             self.assertTrue(vl_compoundcurve.isValid())
             features_vl_compoundcurve = next(vl_compoundcurve.getFeatures())
-            test_geom = features_vl_compoundcurve.constGeometry().geometry()
-            print('-I-> checking Geometry-Type=CompoundCurve: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.CompoundCurve)
+            test_geom = features_vl_compoundcurve.geometry()
+            print('-I-> checking Geometry-Type=CompoundCurve: [%d,%s] '% (test_geom.wkbType(), test_geom.type()))
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.CompoundCurve)
             del test_geom
             del features_vl_compoundcurve
             del vl_compoundcurve
@@ -527,9 +535,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> Reading Geometry-Type=CurvePolygon: hasGeometryType[%d,%s] '% (vl_curvepolygon.hasGeometryType(),vl_curvepolygon.wkbType()))
             self.assertTrue(vl_curvepolygon.isValid())
             features_vl_curvepolygon = next(vl_curvepolygon.getFeatures())
-            test_geom = features_vl_curvepolygon.constGeometry().geometry()
-            print('-I-> checking Geometry-Type=CurvePolygon: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.CurvePolygon)
+            test_geom = features_vl_curvepolygon.geometry()
+            print('-I-> checking Geometry-Type=CurvePolygon: [%d,%s] '% (test_geom.wkbType(), test_geom.type()))
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.CurvePolygon)
             del test_geom
             del features_vl_curvepolygon
             del vl_curvepolygon
@@ -539,9 +547,9 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> Reading Geometry-Type=MultiCurve: hasGeometryType[%d,%s] '% (vl_multicurves.hasGeometryType(),vl_multicurves.wkbType()))
             self.assertTrue(vl_multicurves.isValid())
             features_vl_multicurves = next(vl_multicurves.getFeatures())
-            test_geom = features_vl_multicurves.constGeometry().geometry()
-            print('-I-> checking Geometry-Type=MultiCurve: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.MultiCurve)
+            test_geom = features_vl_multicurves.geometry()
+            print('-I-> checking Geometry-Type=MultiCurve: [%d,%s] '% (test_geom.wkbType(), test_geom.type()))
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.MultiCurve)
             del test_geom
             del features_vl_multicurves
             del vl_multicurves
@@ -551,32 +559,36 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             print('-I-> Reading Geometry-Type=MultiSurface: hasGeometryType[%d,%s] '% (vl_multisurface.hasGeometryType(),vl_multisurface.wkbType()))
             self.assertTrue(vl_multisurface.isValid())
             features_vl_multisurface = next(vl_multisurface.getFeatures())
-            test_geom = features_vl_multisurface.constGeometry().geometry()
-            print('-I-> checking Geometry-Type=MultiSurface: [%d,%s] '% (test_geom.wkbType(), test_geom.geometryType()))
-            self.assertEqual(test_geom.wkbType(), QgsWKBTypes.MultiSurface)
+            test_geom = features_vl_multisurface.geometry()
+            print('-I-> checking Geometry-Type=MultiSurface: [%d,%s] '% (test_geom.wkbType(), test_geom.type()))
+            self.assertEqual(test_geom.wkbType(), QgsWkbTypes.MultiSurface)
             del test_geom
             del features_vl_multisurface
             del vl_multisurface
         else:
              print('-I-> Using version [build gdal.%s] of gdal/ogr[%d] which does not support:\n\t CircularString, CompoundCurve, CurvePolygon, MultiCurve and MultiSurface geometries.' % (self.gdal_build_version, self.gdal_version_num))
 
+        print('-I-> test_02_OgrSpatialTableXYZM(%s) ' % ('end of test'))
+
 ###############################################################################
 # GML 2 MultiPolygon with InternalRings
 # - exported from Spatialite Database: SELECT AsGml(soldner_polygon)  FROM pg_bezirke_1938 WHERE id_admin=1902010800;
 # Contains border of the District of Spandau, Berlin between 1938-1945
-# - Spandau contains 7 Sub-Districts, some portions of 1 Sub-district contains 6 Exclaves and 3 Enclaves ; a 2nd Sub-District contains 1 Enclave
-# --> 7+6=13 Polygons and 4 InternalRings
+# - Spandau contains 7 Sub-Districts, some portions of 1 Sub-district contains 6 Exclaves and 4 Enclaves ; a 2nd Sub-District contains 1 Enclave
+# --> 7+6=13 Polygons and 5 InternalRings
 # Goal is to loop through all Polygons and caluclate the areas of the Polygons and InternalRings and compair the results returned by spatialite
-# --> 7+6=13 Polygons and 4 InternalRings
+# --> 7+6=13 Polygons and 5 InternalRings
+# -I-> the area of the MultiPolygon does not include the area of the 5 InternalRings, returning the same area value as Spatialite
 
     def test_03_OgrGMLMutiPolygon(self):
 
+        print('\n-I-> test_03_OgrGMLMutiPolygon(%s) ' % ('start of test'))
         if (self.ogr_runtime_supported < 1):
             print('-I-> OgrGMLMutiPolygon: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             return
 
         datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.ogr_bezirk_Spandau_1938.3068.gml')
-        print('\n-I-> Reading db(%s)' % (datasource))
+        print('\n-I-> Reading GML with 1 Geometry db(%s)' % (datasource))
         vl_spandau_1938 = QgsVectorLayer(u'{}'.format(datasource), u'spandau_1938', u'ogr')
         self.assertTrue(vl_spandau_1938.isValid())
         count_layers=len(vl_spandau_1938.dataProvider().subLayers())
@@ -585,7 +597,6 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                 print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_spandau_1938.dataProvider().subLayers()[index]))
 
         del vl_spandau_1938
-
         if (count_layers ==1):
             vl_test_geom = QgsVectorLayer(u'{}|layerid=0|layername=bezirk_Spandau_1938|featurescount=1|geometrytype=MultiPolygon|ogrgettype=0'.format(datasource), u'test_multipolygon', u'ogr')
             self.assertTrue(vl_test_geom.isValid())
@@ -598,27 +609,28 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             #pprint(getmembers(features_vl_test))
             count_features=len(features_vl_test)
             if (count_features > 0):
-                test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
-                count_polygons=test_geom.numGeometries()
-                geom_area=test_geom.area()
                 geom_area_sum=0
-                internal_ring_area_sum=0
+                internal_ring_area_sum_total=0
                 exterior_ring_area_sum=0
                 polygon_ring_area_sum=0
+                test_geom = [f_iter.geometry() for f_iter in features_vl_test][0].geometry()
+                count_polygons=test_geom.numGeometries()
+                geom_area=test_geom.area() # do not round
                 print('-I-> MultiPolygon count[%d] area[%2.6f]' % (count_polygons,geom_area))
                 self.assertEqual(round(geom_area,6), 87622761.119470)
-                # -I-> MultiPolygon count[13] area[87622761.1194697]
-                # SELECT ROUND(ST_Area(soldner_polygon),5) AS area_polygon, ST_Area(soldner_ring) AS area_polygon,* FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                # 87622761.119469	87622761.119469
                 self.assertEqual(count_polygons, 13)
-                self.assertEqual(test_geom.wkbType(), QgsWKBTypes.MultiPolygon)
+                self.assertEqual(test_geom.wkbType(), QgsWkbTypes.MultiPolygon)
                 for index in range(count_polygons):
                     test_polygon = test_geom.geometryN(index)
-                    self.assertEqual(test_polygon.wkbType(), QgsWKBTypes.Polygon)
+                    self.assertEqual(test_polygon.wkbType(), QgsWkbTypes.Polygon)
                     count_rings=test_polygon.numInteriorRings()
                     polygon_area=round(test_polygon.area(),6)
-                    geom_area_sum+=test_polygon.area()
-                    print('-I-> Polygon[%d] area[%2.6f]: InteriorRings[%d]'% (index, polygon_area, count_rings))
+                    geom_area_sum+=test_polygon.area() # do not round
+                    polygon_ring_area_sum+=polygon_area
+                    # Goal: Cast exterior/interiorRing to a Polygon properly to retrieve the area
+                    exterior_ring = test_polygon.exteriorRing()
+                    exterior_ring_area=round(QgsGeometry.fromQPolygonF(exterior_ring.toCurveType().asQPolygonF()).area(),6)
+                    exterior_ring_area_sum+=QgsGeometry.fromQPolygonF(exterior_ring.toCurveType().asQPolygonF()).area()
                     if index == 0:
                         # SELECT ROUND(ST_Area(ST_GeometryN(soldner_polygon,1)),6) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
                         self.assertEqual(polygon_area, 14916532.436051)
@@ -638,7 +650,7 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                         self.assertEqual(polygon_area, 515760.035517)
                     elif index == 8:
                         self.assertEqual(polygon_area, 35694.066539)
-                    elif index == 9:                        
+                    elif index == 9:
                         self.assertEqual(polygon_area, 81764.328820)
                     elif index == 10:
                         self.assertEqual(polygon_area, 139737.526688)
@@ -647,87 +659,93 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
                     else:
                         self.assertEqual(polygon_area, 9046358.699804)
                     if (count_rings > 0):
-                        polygon_ring_area_sum+=polygon_area
-                        exterior_ring = test_polygon.exteriorRing()
-                        print('-I-> Polygon[%d] : exteriorRing[%s] isClosed[%d] isRing[%d] '% (index, exterior_ring.geometryType(),exterior_ring.isClosed(),exterior_ring.isRing()))
-                        # TODO: Cast to Polygon properly and retrieve the area
-                        # i_rc=exterior_ring.convertTo(QgsWKBTypes.Polygon) # fails
-                        # print('-I-> Polygon[%d] : exteriorRing[%s]  rc=%d'% (index, exterior_ring.geometryType(), i_rc))
-                        exterior_ring_area=round(exterior_ring.area(),6)
-                        print('-I-> Polygon[%d] : exteriorRing[%s] exterior_ring_area[%2.6f] '% (index, exterior_ring.geometryType(),exterior_ring_area))
-                        # exterior_ring_polygon = exterior_ring.convertToType(QGis.Polygon, False)
-                        if exterior_ring_area == 0.0:
-                        # this is a hack until the area can be retrieved after 'exterior_ring ' cas been casted to Polygon
-                            if index == 11:
-                                exterior_ring_area=19803822.242665
-                            elif index == 12:
-                                exterior_ring_area=9058913.235604
-                        else:
-                            pass
-                        exterior_ring_area_sum+=exterior_ring_area
+                        polygon_area_check=0;
+                        internal_ring_area_sum=0
                         for index_ring in range(count_rings):
                             interior_ring = test_polygon.interiorRing(index_ring)
-                            #interior_ring_polygon = line.convertToType(QGis.Polygon, False)
-                            #print('\t InteriorRing[%d] type[%s]'% (index_ring,interior_ring_polygon.geometryType()))
-                            ring_area=0
-                            # self.assertEqual(interior_ring.wkbType(), QgsWKBTypes.LineString)
-                           # SELECT ROUND(ST_Area(ST_BuildArea(ST_InteriorRingN(ST_GeometryN(soldner_polygon,13),1))),6) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                           # SELECT ST_BuildArea(ST_InteriorRingN(ST_GeometryN(soldner_polygon,12),2)) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                            # TODO: convert to Polygon and calculate area [Linestring that is closed and is a ring]
-                            # line = QgsGeometry.fromWkt(interior_ring.asWkt())
-                            # print('\twkt[%s]'% (line.asWkt()))
-                            #interior_ring_polygon = line.convertToType(QGis.Polygon, False)
-                            #print('\t InteriorRing[%d] type[%s]'% (index_ring,interior_ring_polygon.geometryType()))
-                            # print('\t InteriorRing[%d] area[%2.7f]'% (index_ringinterior_ring_polygon.area()))
-                            if index == 11:
-                                # SELECT ROUND(ST_Area(ST_BuildArea(ST_ExteriorRing(ST_GeometryN(soldner_polygon,12)))),6) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                                # SELECT ST_BuildArea(ST_ExteriorRing(ST_GeometryN(soldner_polygon,12))) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                                 # SELECT ST_BuildArea(ST_ExteriorRing(ST_GeometryN(soldner_polygon,12))) AS ring_polygon, ST_GeometryN(soldner_polygon,12) AS sub_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                               # 12215,613079+405,937442+16171,310809+1787,355464=30580,216794+19773242,025871
-                                if index_ring == 0:
-                                    if ring_area == 0.0:
-                                        # this is a hack until the area can be retrieved after 'interior_ring ' cas been casted to Polygon
-                                        ring_area=12215.613079
-                                    self.assertEqual(ring_area, 12215.613079)
-                                elif index_ring == 1:
-                                    if ring_area == 0.0:
-                                        # this is a hack until the area can be retrieved after 'interior_ring ' cas been casted to Polygon
-                                        ring_area=405.937442
-                                    self.assertEqual(ring_area, 405.937442)
-                                elif index_ring == 2:
-                                    if ring_area == 0.0:
-                                        # this is a hack until the area can be retrieved after 'interior_ring ' cas been casted to Polygon
-                                        ring_area=16171.310809
-                                    self.assertEqual(ring_area, 16171.310809)
-                                elif index_ring == 3:
-                                    # SELECT ROUND(ST_Area(ST_BuildArea(ST_InteriorRingN(ST_GeometryN(soldner_polygon,12),4))),6) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                                    if ring_area == 0.0:
-                                        # this is a hack until the area can be retrieved after 'interior_ring ' cas been casted to Polygon
-                                        ring_area=1787.355464
-                                    self.assertEqual(ring_area, 1787.355464)
-                                else:
-                                   pass
-                            elif index == 12:
-                                # SELECT ROUND(ST_Area(ST_BuildArea(ST_ExteriorRing(ST_GeometryN(soldner_polygon,13)))),6) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                               # 9058913.235604-12554.535800=9046358.699804 [9046358,699804] 9058913,235604+19803822,242665=28862735,478269
-                                if index_ring == 0:
-                                    # SELECT ROUND(ST_Area(ST_BuildArea(ST_InteriorRingN(ST_GeometryN(soldner_polygon,13),1))),6) AS area_polygon FROM pg_bezirke_1938 WHERE id_admin=1902010800;
-                                    if ring_area == 0.0:
-                                        # this is a hack until the area can be retrieved after 'interior_ring ' cas been casted to Polygon
-                                        ring_area=12554.535800
-                                    self.assertEqual(ring_area, 12554.535800)
-                            else:
-                                pass
-                            internal_ring_area_sum+=ring_area
-                            print('\t InteriorRing[%d] type[%s] isClosed[%d] isRing[%d] area[%2.6f]'% (index_ring,interior_ring.geometryType(),interior_ring.isClosed(),interior_ring.isRing(),ring_area))
+                            ring_area=round(QgsGeometry.fromQPolygonF(interior_ring.toCurveType().asQPolygonF()).area(),6)
+                            internal_ring_area_sum+=QgsGeometry.fromQPolygonF(interior_ring.toCurveType().asQPolygonF()).area()
+                            print('\t-I-> InteriorRing[%d] type[%s] isClosed[%d] isRing[%d] area[%2.6f]'% (index_ring,interior_ring.geometryType(),interior_ring.isClosed(),interior_ring.isRing(),ring_area))
 
-                print('-I-> MultiPolygon count[%d] area[%2.6f]  sum_area[%2.6f] ring_area[%2.6f]' % (count_polygons,geom_area,geom_area_sum,internal_ring_area_sum))                        
+                        internal_ring_area_sum_total+=internal_ring_area_sum
+                        polygon_area_check=round(exterior_ring_area-internal_ring_area_sum,6)
+                        print('\t-I-> Testing if External-Ring[%2.6f] minus Internal-Rings[%2.6f] == Polygon-Area[%2.6f]' % (exterior_ring_area,internal_ring_area_sum,polygon_area))
+                        self.assertEqual(polygon_area, polygon_area_check)
+                        print('-I-> Polygon count[%d] polygon_area[%2.6f] = (exterior_ring_area[%2.6f] minus internal_ring_area_sum[%2.6f])' % (index, polygon_area,exterior_ring_area,internal_ring_area_sum))
+                    else:
+                        print('-I-> Polygon[%d] area[%2.6f]: ExternalRing-Area[%2.6f] ; InteriorRings[%d]'% (index, polygon_area, exterior_ring_area, count_rings))
+
+                geom_area_sum_check=exterior_ring_area_sum-internal_ring_area_sum_total
+                geom_area_sum_diff=geom_area_sum-geom_area_sum_check;
+                print('-I-> diff [%2.6f]  ' % (geom_area_sum_diff))
+                print('-I-> MultiPolygon geom_area_sum_check[%2.6f] = exterior_ring_area_sum_total[%2.6f] minus internal_ring_area_sum_total[%2.6f])' % (geom_area_sum_check, exterior_ring_area_sum, internal_ring_area_sum_total))
+                print('-I-> MultiPolygon count[%d] MultiPolygon-Area[%2.6f] Polygon-Areas[%2.6f] Ring-Areas[%2.6f] ' % (count_polygons,geom_area,geom_area_sum,geom_area_sum_check))
                 self.assertEqual(geom_area,geom_area_sum)
-                # 43134,752594
-                # -I-> MultiPolygon exterior_ring_area[9058913.235604] = [9089493.452398] (polygon_ring_area_sum[9046358.699804] + ring_area[43134.752594])
-               # 9046358,699804+43134,752594=9089493,452398
-                polygon_ring_area_check=polygon_ring_area_sum+internal_ring_area_sum
-                print('-I-> MultiPolygon exterior_ring_area[%2.6f] = [%2.6f] (polygon_ring_area_sum[%2.6f] + ring_area[%2.6f])' % (exterior_ring_area_sum,polygon_ring_area_check, polygon_ring_area_sum ,internal_ring_area_sum))
+                self.assertEqual(round(geom_area_sum,5),round(geom_area_sum_check,5))
+                # -I-> MultiPolygon count[13] MultiPolygon-Area[87622761.119470] Polygon-Areas[87622761.119470] Ring-Areas[87622761.119469]
+                # SELECT ROUND(ST_Area(soldner_polygon),5) AS area_polygon, ST_Area(soldner_ring) AS area_polygon,* FROM pg_bezirke_1938 WHERE id_admin=1902010800;
+                # 87622761.119469	87622761.119469
+                print('-I-> MultiPolygon-Area check correct [does not include the area of the Internal-Rings[%2.6f])' % (internal_ring_area_sum_total))
+
+        print('-I-> test_03_OgrGMLMutiPolygon(%s) ' % ('end of test'))
+
+###############################################################################
+# Test Spatialite SpatialTable with more than 1 geometry
+# - created with gdal autotest/auto/ogr_sql_sqlite.py spatialite_8()
+# contains 1 SpatialTable with 2 geometries and 2 SpatialViews showing each geometry
+
+    def test_04_OgrGMLMultipleGeometries(self):
+
+        print('\n-I-> test_04_OgrGMLMultipleGeometries(%s) ' % ('start of test'))
+        if (self.ogr_runtime_supported < 1):
+            print('-I-> OgrGMLMutiPolygon: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
+            return
+
+        datasource = os.path.join(TEST_DATA_DIR, 'provider/gdal_220.autotest.ogr_multiplegeomfields.gml')
+        print('\n-I-> Reading GML with 2 Geometries db(%s)' % (datasource))
+        geometry_name_01=u"geomfield1"
+        geometry_name_02=u"geomfield2"
+        vl_point_01 = QgsVectorLayer(u'{}'.format(datasource), u'layerid=0|layername=multiplegeomfields|geometryname={0}'.format(geometry_name_01), u'ogr')
+        self.assertTrue(vl_point_01.isValid())
+        count_fields=len(vl_point_01.fields())
+        print('-I-> Testing type/values of a \'POINT\' of first geometry layername[%s] count[%d] fields[%d] hasGeometry[%d]' % ('multiplegeomfields',vl_point_01.featureCount(),count_fields,vl_point_01.hasGeometryType()))
+        for index in range(count_fields):
+            print(u'-I-> Field[%d]: name[%s] type[%s]'% (index, vl_point_01.fields()[index].name(), vl_point_01.fields()[index].typeName()))
+        count_layers=len(vl_point_01.dataProvider().subLayers())
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
+        for index in range(count_layers):
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_point_01.dataProvider().subLayers()[index]))
+
+        features_vl_point_01 = [f_iter for f_iter in vl_point_01.getFeatures()]
+        # features_vl_point_01 = [f_iter for f_iter in vl_point_02.getFeatures(QgsFeatureRequest().setFilterExpression("fid='0'"))]
+        print('-I-> Testing type/values of a \'POINT\' EWKT[%s] count[%d,%d]' % ('SRID=-1;POINT(1 2)',vl_point_01.featureCount(),len(features_vl_point_01)))
+        test_geom_01 = [f_iter.geometry() for f_iter in features_vl_point_01][0].geometry()
+        print('-I-> point_01: WKT[%s]' % (test_geom_01.asWkt()))
+        # test_geom_01_02 = [f_iter.geometry() for f_iter in features_vl_point_01][1].geometry()
+        # print('-I-> point_01_02: WKT[%s]' % (test_geom_01_02.asWkt()))
+        # self.assertEqual(test_geom.wkbType(), QgsWkbTypes.PointZ)
+        self.assertEquals((test_geom_01.x(), test_geom_01.y()), (1,2))
+        vl_point_02 = QgsVectorLayer(u'{}'.format(datasource), u'layerid=1|layername=multiplegeomfields|geometryname={0}'.format(geometry_name_02), u'ogr')
+        self.assertTrue(vl_point_02.isValid())
+        count_layers=len(vl_point_02.dataProvider().subLayers())
+        print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], [%d] layers were found.' % (self.gdal_version_num, self.gdal_build_version,count_layers))
+        for index in range(count_layers):
+                print(u'-I-> Sublayer[{0}] : [{1}]'.format(index, vl_point_02.dataProvider().subLayers()[index]))
+
+        features_vl_point_02 = [f_iter for f_iter in vl_point_02.getFeatures(QgsFeatureRequest().setFilterExpression(u"fid='1'"))]
+        print('-I-> Testing type/values of a \'POINT\' EWKT[%s] count[%d,%d]' % ('SRID=-1;POINT(2 3)',vl_point_02.featureCount(),len(features_vl_point_02)))
+        # test_geom_02 = [f_iter.geometry() for f_iter in features_vl_point_02][0].geometry()
+        # print('-I-> point_02: WKT[%s]' % (test_geom_02.asWkt()))
+        # self.assertEqual(test_geom.wkbType(), QgsWkbTypes.PointZ)
+        # self.assertEquals((test_geom_02.x(), test_geom_02.y()), (2,3))
+        del test_geom_01
+        del features_vl_point_01
+        del vl_point_01
+        # del test_geom_02
+        del features_vl_point_02
+        del vl_point_02
+        print('-I-> test_04_OgrGMLMultipleGeometries(%s) ' % ('end of test'))
+
 
 ###############################################################################
 # Sample kmz file included in bug report 15168
@@ -737,10 +755,11 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 # which causes problems with gdal 2.*, where layerid logic has changed.
 #  Up to Gdal 2.* each geometry was 1 layer and could be retrieved using an index
 #  Starting with Gdal 2.0, each table is one layer, that can contain more than 1 geometry
-# 
+#
 
-    def test_04_OgrKMLDuplicatelayerNames(self):
+    def test_05_OgrKMLDuplicatelayerNames(self):
 
+        print('\n-I-> test_05_OgrKMLDuplicatelayerNames(%s) ' % ('start of test'))
         if (self.ogr_runtime_supported < 1):
             print('-I-> OgrKMLDuplicatelayerNames: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             return
@@ -777,13 +796,13 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del vl_layer_6
             # alternative way to retrieve geometry without need of Filter:
             # features_vl_layer_3 = next(vl_layer_3.getFeatures())
-            # geom_layer_3 = features_vl_layer_3.constGeometry().geometry()
+            # geom_layer_3 = features_vl_layer_3.geometry()
             features_vl_layer_3 = [f_iter for f_iter in vl_layer_3.getFeatures(QgsFeatureRequest().setFilterExpression(u"Name='{0}'".format(duplicate_layername)))]
             geom_layer_3 = [f_iter.geometry() for f_iter in features_vl_layer_3][0].geometry()
-            self.assertEqual(geom_layer_3.wkbType(), QgsWKBTypes.LineString25D)
+            self.assertEqual(geom_layer_3.wkbType(), QgsWkbTypes.LineString25D)
             features_vl_layer_5 = [f_iter for f_iter in vl_layer_5.getFeatures(QgsFeatureRequest().setFilterExpression(u"Name='{0}'".format(duplicate_layername)))]
             geom_layer_5 = [f_iter.geometry() for f_iter in features_vl_layer_5][0].geometry()
-            self.assertEqual(geom_layer_5.wkbType(), QgsWKBTypes.LineString25D)
+            self.assertEqual(geom_layer_5.wkbType(), QgsWkbTypes.LineString25D)
             print('-I-> Checking  first point layername[%s]\n\t geom_layer_3 x[%2.7f] y[%2.7f] z[%2.7f] \n\t geom_layer_5 x[%2.7f] y[%2.7f] z[%2.7f]' % ('Directions from 423, Taiwan',
                               geom_layer_3.pointN(0).x(), geom_layer_3.pointN(0).y(),geom_layer_3.pointN(0).z(),geom_layer_5.pointN(0).x(), geom_layer_5.pointN(0).y(),geom_layer_5.pointN(0).z()))
             self.assertNotEqual((geom_layer_3.pointN(0).x(), geom_layer_3.pointN(0).y(),geom_layer_3.pointN(0).z()),
@@ -809,14 +828,17 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
             del features_vl_layer_5
             del vl_layer_5
 
+        print('-I-> test_05_OgrKMLDuplicatelayerNames(%s) ' % ('end of test'))
+
 ###############################################################################
 # Test sqlite Integer64
 # - created [as 'sqlite_test.db'] and filled with gdal autotest/ogr/ogr_sql_sqlite.py ogr_sqlite_1, 2, 11, 12, 13, 14, 15 and 16
 # contains 13 tables, 7 layers (skipping: geometry_columns, spatial_ref_sys, a_layer, wgs84layer, wgs84layer_approx, testtypes)
 # Table 'tpoly' contains 2 fields with BIGINT (Integer64) which will be tested
 
-    def test_05_OgrInteger64(self):
+    def test_06_OgrInteger64(self):
 
+        print('\n-I-> test_06_OgrInteger64(%s) ' % ('start of test'))
         if (self.ogr_runtime_supported < 1):
             print('-I-> OgrInteger64: Deprecated  version of gdal/ogr[%d] qgis built with gdal[%s] ogr_runtime_supported[%d]' % (self.gdal_version_num, self.gdal_build_version,self.ogr_runtime_supported))
             return
@@ -855,16 +877,18 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
             self.assertTrue(vl_layer_tpoly.startEditing())
             self.assertTrue(vl_layer_tpoly.dataProvider().changeAttributeValues({8: {5: gdal_2_value_update}}))
-            # self.assertTrue(vl_positions_1955.commitChanges())
+            print('-I-> Retrieving record 8 of layername[%s], checking returned area and int64 test values [%2.3f,%ld]' % ('tpoly',1634833.375, gdal_2_value))
             got = [(f.attribute('ogc_fid'), f.attribute('area'), f.attribute('int64')) for f in vl_layer_tpoly.getFeatures(QgsFeatureRequest().setFilterExpression("ogc_fid = 8"))]
             if (self.gdal_version_num >= GDAL_COMPUTE_VERSION(2, 0, 0)):
                 self.assertEqual(got, [(8, 1634833.375, gdal_2_value_update)])
             else:
-                print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], result will be [%d] instead of [%ld].' % (self.gdal_version_num, self.gdal_build_version,720930609,gdal_2_value_update))
-                self.assertEqual(got, [(8, 1634833.375, 720930609)])
+               print('-I-> Using version of gdal/ogr[%d] qgis built with gdal[%s], result will be [%d] instead of [%ld].' % (self.gdal_version_num, self.gdal_build_version,720930609,gdal_2_value_update))
 
+            print('-I-> rollBack(%s)' % ('tpoly'))
             vl_layer_tpoly.rollBack(True)
+            del vl_layer_tpoly
 
+        print('-I-> test_06_OgrInteger64(%s) ' % ('end of test'))
 
 if __name__ == '__main__':
     unittest.main()
