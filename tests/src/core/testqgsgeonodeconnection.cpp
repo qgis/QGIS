@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgstest.h"
 #include <QtTest/QtTest>
+
 #include <QtTest/QSignalSpy>
 #include <QString>
 #include <QMultiMap>
@@ -71,7 +72,6 @@ void TestQgsGeoNodeConnection::initTestCase()
 
   // Testing real server, demo.geonode.org. Need to be changed later.
   settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), "demo.geonode.org" );
-
 }
 
 // Test the creation of geonode connection
