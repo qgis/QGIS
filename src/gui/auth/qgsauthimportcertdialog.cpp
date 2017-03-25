@@ -51,13 +51,13 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
   {
     setupUi( this );
 
-    connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
-    connect( teCertText, SIGNAL( textChanged() ), this, SLOT( validateCertificates() ) );
+    connect( teCertText, &QPlainTextEdit::textChanged, this, &QgsAuthImportCertDialog::validateCertificates );
 
-    connect( radioImportFile, SIGNAL( toggled( bool ) ), this, SLOT( updateGui() ) );
-    connect( radioImportText, SIGNAL( toggled( bool ) ), this, SLOT( updateGui() ) );
+    connect( radioImportFile, &QAbstractButton::toggled, this, &QgsAuthImportCertDialog::updateGui );
+    connect( radioImportText, &QAbstractButton::toggled, this, &QgsAuthImportCertDialog::updateGui );
 
     // hide unused widgets
     if ( mInput == FileInput )

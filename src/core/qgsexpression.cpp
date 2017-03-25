@@ -45,6 +45,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgspointv2.h"
 #include "qgspolygon.h"
+#include "qgstriangle.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgscurvepolygon.h"
@@ -905,10 +906,13 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   {
     QgsExpression groupByExp( groupBy );
     QVariant groupByValue = groupByExp.evaluate( context );
+    QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
+                            groupByValue.isNull() ? "is" : "=",
+                            QgsExpression::quotedValue( groupByValue ) );
     if ( !parameters.filter.isEmpty() )
-      parameters.filter = QStringLiteral( "(%1) AND (%2=%3)" ).arg( parameters.filter, groupBy, QgsExpression::quotedValue( groupByValue ) );
+      parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
     else
-      parameters.filter = QStringLiteral( "(%2 = %3)" ).arg( groupBy, QgsExpression::quotedValue( groupByValue ) );
+      parameters.filter = groupByClause;
   }
 
   QString cacheKey = QStringLiteral( "agg:%1:%2:%3:%4" ).arg( vl->id(),
@@ -2187,6 +2191,33 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   return QVariant::fromValue( QgsGeometry( polygon ) );
 }
 
+static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  std::unique_ptr<QgsTriangle> tr( new QgsTriangle() );
+  std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
+  lineString->clear();
+
+  Q_FOREACH ( const QVariant &value, values )
+  {
+    QgsGeometry geom = getGeometry( value, parent );
+    if ( geom.isNull() )
+      return QVariant();
+
+    if ( geom.type() != QgsWkbTypes::PointGeometry || geom.isMultipart() )
+      return QVariant();
+
+    QgsPointV2 *point = dynamic_cast< QgsPointV2 * >( geom.geometry() );
+    if ( !point )
+      return QVariant();
+
+    lineString->addVertex( *point );
+  }
+
+  tr->setExteriorRing( lineString.release() );
+
+  return QVariant::fromValue( QgsGeometry( tr.release() ) );
+}
+
 static QVariant pointAt( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) // helper function
 {
   FEAT_FROM_CONTEXT( context, f );
@@ -2232,7 +2263,7 @@ static QVariant fcnGeometry( const QVariantList &, const QgsExpressionContext *c
   if ( !geom.isNull() )
     return  QVariant::fromValue( geom );
   else
-    return QVariant();
+    return QVariant( QVariant::UserType );
 }
 static QVariant fcnGeomFromWKT( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -3996,6 +4027,10 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         << new StaticFunction( QStringLiteral( "make_point_m" ), 3, fcnMakePointM, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "make_line" ), -1, fcnMakeLine, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "make_polygon" ), -1, fcnMakePolygon, QStringLiteral( "GeometryGroup" ) )
+        << new StaticFunction( QStringLiteral( "make_triangle" ), ParameterList() << Parameter( QStringLiteral( "geometry" ) )
+                               << Parameter( QStringLiteral( "geometry" ) )
+                               << Parameter( QStringLiteral( "geometry" ) ),
+                               fcnMakeTriangle, QStringLiteral( "GeometryGroup" ) )
         << new StaticFunction( QStringLiteral( "$x_at" ), 1, fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) )
         << new StaticFunction( QStringLiteral( "$y_at" ), 1, fcnYat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "yat" ) << QStringLiteral( "y_at" ) )
         << new StaticFunction( QStringLiteral( "x_min" ), 1, fcnXMin, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "xmin" ) )
@@ -4124,7 +4159,7 @@ const QList<QgsExpression::Function *> &QgsExpression::Functions()
         << new StaticFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
 
         // functions for arrays
-        << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ) )
+        << new StaticFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new StaticFunction( QStringLiteral( "array_length" ), 1, fcnArrayLength, QStringLiteral( "Arrays" ) )
         << new StaticFunction( QStringLiteral( "array_contains" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayContains, QStringLiteral( "Arrays" ) )
         << new StaticFunction( QStringLiteral( "array_find" ), ParameterList() << Parameter( QStringLiteral( "array" ) ) << Parameter( QStringLiteral( "value" ) ), fcnArrayFind, QStringLiteral( "Arrays" ) )
@@ -5833,6 +5868,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
 
   //composition variables
+  sVariableHelpTexts.insert( QStringLiteral( "layout_name" ), QCoreApplication::translate( "variable_help", "Name of composition." ) );
   sVariableHelpTexts.insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
   sVariableHelpTexts.insert( QStringLiteral( "layout_page" ), QCoreApplication::translate( "variable_help", "Current page number in composition." ) );
   sVariableHelpTexts.insert( QStringLiteral( "layout_pageheight" ), QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );

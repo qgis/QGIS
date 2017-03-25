@@ -36,7 +36,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -335,7 +335,7 @@
              <string>Add to fields list</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../../images/images.qrc">
               <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
             </property>
             <property name="toolButtonStyle">
@@ -409,7 +409,7 @@
              <string>Remove field</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../../images/images.qrc">
               <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
             </property>
             <property name="toolButtonStyle">
@@ -437,6 +437,14 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>mPointRadioButton</tabstop>
@@ -458,7 +466,9 @@
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

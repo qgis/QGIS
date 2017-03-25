@@ -340,7 +340,7 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateLineStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpLineStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerArrowWidget::cleanUpLineStyleSelector );
   openPanel( d );
   mArrow->beginCommand( tr( "Arrow line style changed" ) );
 }

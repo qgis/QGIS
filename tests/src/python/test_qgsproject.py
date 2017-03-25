@@ -18,12 +18,17 @@ import os
 
 import qgis  # NOQA
 
-from qgis.core import QgsProject, QgsApplication, QgsUnitTypes, QgsCoordinateReferenceSystem
-
+from qgis.core import (QgsProject,
+                       QgsApplication,
+                       QgsUnitTypes,
+                       QgsCoordinateReferenceSystem,
+                       QgsVectorLayer)
+from qgis.gui import (QgsLayerTreeMapCanvasBridge,
+                      QgsMapCanvas)
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
 
-start_app()
+app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -157,6 +162,24 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(prj.readNumEntry("SpatialRefSys", "/ProjectionsEnabled", -1)[0], 0)
         # invalid key
         self.assertEqual(prj.readNumEntry("SpatialRefSys", "/InvalidKey", -1)[0], -1)
+
+    def testEmbeddedGroup(self):
+        testdata_path = unitTestDataPath('embedded_groups') + '/'
+
+        prj_path = os.path.join(testdata_path, "project2.qgs")
+        prj = QgsProject()
+        prj.read(prj_path)
+
+        layer_tree_group = prj.layerTreeRoot()
+        layers_ids = layer_tree_group.findLayerIds()
+
+        layers_names = []
+        for layer_id in layers_ids:
+            name = prj.mapLayer(layer_id).name()
+            layers_names.append(name)
+
+        expected = ['polys', 'lines']
+        self.assertEqual(sorted(layers_names), sorted(expected))
 
 
 if __name__ == '__main__':

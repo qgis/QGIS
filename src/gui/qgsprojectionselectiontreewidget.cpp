@@ -65,8 +65,8 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 
-  mNoProjItem = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "No projection" ) ) );
-  mNoProjItem->setHidden( true );
+  mCheckBoxNoProjection->setHidden( true );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, mFrameProjections, &QFrame::setDisabled );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
@@ -273,10 +273,11 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
 {
   if ( !crs.isValid() )
   {
-    lstCoordinateSystems->setCurrentItem( mNoProjItem );
+    mCheckBoxNoProjection->setChecked( true );
   }
   else
   {
+    mCheckBoxNoProjection->setChecked( false );
     applySelection( AuthidColumn, crs.authid() );
   }
 }
@@ -424,7 +425,7 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 {
-  if ( lstCoordinateSystems->currentItem() == mNoProjItem )
+  if ( mCheckBoxNoProjection->isChecked() )
     return QgsCoordinateReferenceSystem();
 
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
@@ -436,18 +437,18 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 
 void QgsProjectionSelectionTreeWidget::setShowNoProjection( bool show )
 {
-  mNoProjItem->setHidden( !show );
+  mCheckBoxNoProjection->setHidden( !show );
 }
 
 bool QgsProjectionSelectionTreeWidget::showNoProjection() const
 {
-  return !mNoProjItem->isHidden();
+  return !mCheckBoxNoProjection->isHidden();
 }
 
 bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
 {
   QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
-  if ( item == mNoProjItem )
+  if ( mCheckBoxNoProjection->isChecked() )
     return true;
   else
     return item && !item->text( QgisCrsIdColumn ).isEmpty();

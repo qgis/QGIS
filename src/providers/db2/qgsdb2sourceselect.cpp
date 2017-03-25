@@ -175,7 +175,7 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() ?
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -184,12 +184,12 @@ QgsDb2SourceSelect::QgsDb2SourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/Db2SourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/Db2SourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/Db2SourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/Db2SourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   //hide the search options by default
@@ -288,7 +288,7 @@ void QgsDb2SourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which database was selected.
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Db2/connections/selected" ), cmbConnections->currentText() );
+  settings.setValue( QStringLiteral( "Db2/connections/selected" ), cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
   cbxAllowGeometrylessTables->setChecked( settings.value( "/Db2/connections/" + cmbConnections->currentText() + "/allowGeometrylessTables", false ).toBool() );
@@ -313,7 +313,7 @@ void QgsDb2SourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 void QgsDb2SourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/addDb2DC" ), false ).toBool() )
+  if ( settings.value( QStringLiteral( "qgis/addDb2DC" ), false ).toBool() )
   {
     addTables();
   }
@@ -399,19 +399,19 @@ QgsDb2SourceSelect::~QgsDb2SourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "/Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/Db2SourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
 void QgsDb2SourceSelect::populateConnectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Db2/connections" ) );
+  settings.beginGroup( QStringLiteral( "Db2/connections" ) );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -640,7 +640,7 @@ void QgsDb2SourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
   QgsSettings settings;
-  QString toSelect = settings.value( QStringLiteral( "/Db2/connections/selected" ) ).toString();
+  QString toSelect = settings.value( QStringLiteral( "Db2/connections/selected" ) ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )

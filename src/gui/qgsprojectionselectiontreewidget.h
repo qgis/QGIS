@@ -213,8 +213,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QTreeWidgetItem *mGeoList = nullptr;
     //! PROJCS node
     QTreeWidgetItem *mProjList = nullptr;
-    //! "No projection" item
-    QTreeWidgetItem *mNoProjItem = nullptr;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;

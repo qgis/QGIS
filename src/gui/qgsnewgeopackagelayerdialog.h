@@ -35,6 +35,12 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewGeoPackageLayerDialog();
 
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * @note added in QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
   private slots:
     void on_mAddAttributeButton_clicked();
     void on_mRemoveAttributeButton_clicked();

@@ -104,8 +104,7 @@ class FieldsMapper(GeoAlgorithm):
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs())
         da.setEllipsoidalMode(True)
-        da.setEllipsoid(QgsProject.instance().readEntry(
-            'Measure', '/Ellipsoid', GEO_NONE)[0])
+        da.setEllipsoid(QgsProject.instance().ellipsoid())
 
         exp_context = layer.createExpressionContext()
 

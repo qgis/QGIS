@@ -43,7 +43,7 @@ QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   else
   {
     setupUi( this );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
     setupTable();
     populateTable();
@@ -141,8 +141,8 @@ void QgsAuthEditorWidgets::on_btnAuthPlugins_clicked()
 
 void QgsAuthEditorWidgets::setupUtilitiesMenu()
 {
-  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-           this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+  connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+           this, &QgsAuthEditorWidgets::authMessageOut );
 
   // set up utility actions menu
   mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
@@ -152,12 +152,12 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
   mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
 
-  connect( mActionSetMasterPassword, SIGNAL( triggered() ), this, SLOT( setMasterPassword() ) );
-  connect( mActionClearCachedMasterPassword, SIGNAL( triggered() ), this, SLOT( clearCachedMasterPassword() ) );
-  connect( mActionResetMasterPassword, SIGNAL( triggered() ), this, SLOT( resetMasterPassword() ) );
-  connect( mActionClearCachedAuthConfigs, SIGNAL( triggered() ), this, SLOT( clearCachedAuthenticationConfigs() ) );
-  connect( mActionRemoveAuthConfigs, SIGNAL( triggered() ), this, SLOT( removeAuthenticationConfigs() ) );
-  connect( mActionEraseAuthDatabase, SIGNAL( triggered() ), this, SLOT( eraseAuthenticationDatabase() ) );
+  connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::setMasterPassword );
+  connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedMasterPassword );
+  connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::resetMasterPassword );
+  connect( mActionClearCachedAuthConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedAuthenticationConfigs );
+  connect( mActionRemoveAuthConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::removeAuthenticationConfigs );
+  connect( mActionEraseAuthDatabase, &QAction::triggered, this, &QgsAuthEditorWidgets::eraseAuthenticationDatabase );
 
   mAuthUtilitiesMenu = new QMenu( this );
   mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
@@ -216,5 +216,5 @@ QgsMessageBar *QgsAuthEditorWidgets::messageBar()
 int QgsAuthEditorWidgets::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

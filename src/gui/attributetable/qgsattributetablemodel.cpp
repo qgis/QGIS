@@ -620,7 +620,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   if ( role == Qt::TextAlignmentRole )
   {
-    return mFieldFormatters.at( index.column() )->alignmentFlag( layer(), fieldId, mWidgetConfigs.at( index.column() ) );
+    return QVariant( mFieldFormatters.at( index.column() )->alignmentFlag( layer(), fieldId, mWidgetConfigs.at( index.column() ) ) | Qt::AlignVCenter );
   }
 
   if ( mFeat.id() != rowId || !mFeat.isValid() )

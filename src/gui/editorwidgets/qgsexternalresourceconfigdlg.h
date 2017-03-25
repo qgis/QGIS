@@ -48,16 +48,9 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     void enableRelativeDefault();
 
   private:
-    enum Properties
-    {
-      RootPath
-    };
 
-    void setRootPathExpression( const QString &expression );
+    void setRootPathExpression( const QgsProperty &property );
 
-    const QgsPropertiesDefinition &propertyDefinitions();
-
-    QgsPropertyCollection mPropertyCollection;
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

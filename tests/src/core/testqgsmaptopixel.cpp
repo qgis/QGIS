@@ -29,6 +29,7 @@ class TestQgsMapToPixel: public QObject
     void rotation();
     void getters();
     void fromScale();
+    void toMapPoint();
 };
 
 void TestQgsMapToPixel::rotation()
@@ -104,6 +105,19 @@ void TestQgsMapToPixel::fromScale()
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.352778, 0.000001 );
   m2p = QgsMapToPixel::fromScale( 0.001, QgsUnitTypes::DistanceKilometers, 96.0 );
   QGSCOMPARENEAR( m2p.mapUnitsPerPixel(), 0.000265, 0.000001 );
+}
+
+void TestQgsMapToPixel::toMapPoint()
+{
+  QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
+  QgsPoint p = m2p.toMapPoint( 5, 5 );
+  QCOMPARE( p, QgsPoint( 5, 5 ) );
+
+  p = m2p.toMapPoint( 10, 10 );
+  QCOMPARE( p, QgsPoint( 10, 10 ) );
+
+  p = m2p.toMapPoint( 20, 20 );
+  QCOMPARE( p, QgsPoint( 20, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsMapToPixel )

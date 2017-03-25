@@ -31,7 +31,7 @@ QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcf
 
   leAuthCfg->setReadOnly( true );
 
-  connect( this, SIGNAL( validityChanged( bool ) ), this, SLOT( updateValidityStyle( bool ) ) );
+  connect( this, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigIdEdit::updateValidityStyle );
 
   leAuthCfg->setText( authcfg );
   updateValidityStyle( validate() );

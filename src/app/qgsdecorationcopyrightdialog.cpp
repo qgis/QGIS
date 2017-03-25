@@ -30,7 +30,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationCopyright/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -63,7 +63,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
 QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationCopyright/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/DecorationCopyright/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationCopyrightDialog::on_buttonBox_accepted()

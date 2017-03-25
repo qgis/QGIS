@@ -80,8 +80,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
   treeView->setItemDelegate( new QgsSourceSelectItemDelegate( treeView ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
-  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SourceSelectDialog/geometry" ) ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( 0, new QStandardItem( QStringLiteral( "Title" ) ) );
@@ -111,8 +111,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
 QgsSourceSelectDialog::~QgsSourceSelectDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SourceSelectDialog/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
 
   delete mProjectionSelector;
   delete mModel;
@@ -220,7 +220,7 @@ QString QgsSourceSelectDialog::getPreferredCrs( const QSet<QString> &crsSet ) co
 void QgsSourceSelectDialog::addEntryToServerList()
 {
 
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a new %1 connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -232,7 +232,7 @@ void QgsSourceSelectDialog::addEntryToServerList()
 
 void QgsSourceSelectDialog::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )

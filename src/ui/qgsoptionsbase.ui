@@ -311,7 +311,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -328,7 +328,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_01">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_01">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -340,8 +340,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>702</height>
+                <width>856</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1014,7 +1014,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_03">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_03">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1026,8 +1026,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1110</height>
+                <width>839</width>
+                <height>1009</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1544,7 +1544,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_11">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_11">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1556,8 +1556,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>787</height>
+                <width>856</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1912,7 +1912,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_04">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_04">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1924,8 +1924,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>1110</height>
+                <width>839</width>
+                <height>827</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2663,7 +2663,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea">
+            <widget class="QgsScrollArea" name="scrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -2675,8 +2675,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>112</width>
+                <height>219</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2814,7 +2814,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_06">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_06">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -2826,8 +2826,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>453</width>
+                <height>281</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3157,7 +3157,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_05">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_05">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -3169,8 +3169,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>506</width>
+                <height>533</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3440,15 +3440,28 @@
                    </widget>
                   </item>
                   <item row="0" column="1">
-                   <widget class="QDoubleSpinBox" name="spinZoomFactor">
-                    <property name="decimals">
-                     <number>1</number>
+                   <widget class="QgsSpinBox" name="spinZoomFactor">
+                    <property name="toolTip">
+                     <string>Specifies the change in zoom level with each move of the mouse wheel.
+The bigger the number, the faster zooming with the mouse wheel will be.</string>
+                    </property>
+                    <property name="suffix">
+                     <string>%</string>
                     </property>
                     <property name="minimum">
-                     <double>1.100000000000000</double>
+                     <number>100</number>
+                    </property>
+                    <property name="maximum">
+                     <number>999999999</number>
+                    </property>
+                    <property name="singleStep">
+                     <number>100</number>
                     </property>
                     <property name="value">
-                     <double>2.000000000000000</double>
+                     <number>200</number>
+                    </property>
+                    <property name="showClearButton" stdset="0">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -3588,7 +3601,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_12">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_12">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -3600,8 +3613,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>393</width>
+                <height>530</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3857,7 +3870,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_07">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_07">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -3869,8 +3882,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>828</height>
+                <width>488</width>
+                <height>612</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4435,7 +4448,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_02">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_02">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -4447,8 +4460,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>345</width>
+                <height>350</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4574,7 +4587,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_08">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_08">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -4586,8 +4599,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>332</width>
+                <height>499</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4787,7 +4800,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_09">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_09">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -4799,8 +4812,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>674</height>
+                <width>221</width>
+                <height>201</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4896,7 +4909,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mOptionsScrollArea_10">
+            <widget class="QgsScrollArea" name="mOptionsScrollArea_10">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -4908,8 +4921,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>843</width>
-                <height>790</height>
+                <width>856</width>
+                <height>679</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5148,7 +5161,7 @@
                         </widget>
                        </item>
                        <item row="3" column="2">
-                        <widget class="QLineEdit" name="leProxyPassword">
+                        <widget class="QgsPasswordLineEdit" name="leProxyPassword">
                          <property name="toolTip">
                           <string>Leave this blank if no proxy username / password are required</string>
                          </property>
@@ -5423,6 +5436,17 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -5473,6 +5497,11 @@
    <extends>QTabWidget</extends>
    <header>qgsautheditorwidgets.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

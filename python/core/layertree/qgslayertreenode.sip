@@ -51,6 +51,8 @@ class QgsLayerTreeNode : QObject
     QgsLayerTreeNode* node = qobject_cast<QgsLayerTreeNode*>(sipCpp);
     if (QgsLayerTree::isLayer(node))
       sipType = sipType_QgsLayerTreeLayer;
+    else if (qobject_cast<QgsLayerTree*>(sipCpp))
+      sipType = sipType_QgsLayerTree;
     else if (QgsLayerTree::isGroup(node))
       sipType = sipType_QgsLayerTreeGroup;
   }
@@ -70,7 +72,7 @@ class QgsLayerTreeNode : QObject
     ~QgsLayerTreeNode();
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-    NodeType nodeType();
+    NodeType nodeType() const;
     //! Get pointer to the parent. If parent is a null pointer, the node is a root node
     QgsLayerTreeNode *parent();
     //! Get list of children of the node. Children are owned by the parent
@@ -132,8 +134,7 @@ class QgsLayerTreeNode : QObject
     //! Return whether this node is unchecked and all its children.
     //! @note added in 3.0
     bool isItemVisibilityUncheckedRecursive() const;
-
-    //! Return whether the node should be shown as expanded or collapsed in GUI
+    QList< QgsMapLayer * > checkedLayers() const;
     bool isExpanded() const;
     //! Set whether the node should be shown as expanded or collapsed in GUI
     void setExpanded( bool expanded );

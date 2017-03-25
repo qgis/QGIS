@@ -27,6 +27,7 @@
 #include "evisimagedisplaywidget.h"
 
 #include "qgsapplication.h"
+#include "qgsscrollarea.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -76,7 +77,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags
   myButtonBar->setLayout( myButtonBarLayout );
 
   //setup display area
-  mDisplayArea = new QScrollArea();
+  mDisplayArea = new QgsScrollArea();
 
   QVBoxLayout *myLayout = new QVBoxLayout;
   myLayout->addWidget( myButtonBar );

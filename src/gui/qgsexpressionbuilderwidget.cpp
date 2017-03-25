@@ -79,9 +79,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEditValues->setPlaceholderText( tr( "Search" ) );
 
   QgsSettings settings;
-  splitter->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
-  editorSplit->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/editorsplitter" ) ).toByteArray() );
-  functionsplit->restoreState( settings.value( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/functionsplitter" ) ).toByteArray() );
+  splitter->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/splitter" ) ).toByteArray() );
+  editorSplit->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/editorsplitter" ) ).toByteArray() );
+  functionsplit->restoreState( settings.value( QStringLiteral( "Windows/QgsExpressionBuilderWidget/functionsplitter" ) ).toByteArray() );
 
   txtExpressionString->setFoldingVisible( false );
 
@@ -110,9 +110,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/splitter" ), splitter->saveState() );
-  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/editorsplitter" ), editorSplit->saveState() );
-  settings.setValue( QStringLiteral( "/Windows/QgsExpressionBuilderWidget/functionsplitter" ), functionsplit->saveState() );
+  settings.setValue( QStringLiteral( "Windows/QgsExpressionBuilderWidget/splitter" ), splitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/QgsExpressionBuilderWidget/editorsplitter" ), editorSplit->saveState() );
+  settings.setValue( QStringLiteral( "Windows/QgsExpressionBuilderWidget/functionsplitter" ), functionsplit->saveState() );
 
   delete mModel;
   delete mProxyModel;

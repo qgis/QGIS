@@ -52,7 +52,7 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
 
   setGuiElementValues();
 }
@@ -60,7 +60,7 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
 QgsComposerTableBackgroundColorsDialog::~QgsComposerTableBackgroundColorsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsComposerTableBackgroundColorsDialog::apply()

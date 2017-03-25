@@ -809,7 +809,12 @@ int main( int argc, char *argv[] )
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
+#ifdef Q_OS_MAC
+  // Set 1024x1024 icon for dock, app switcher, etc., rendering
+  myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) ) );
+#else
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
+#endif
 
 
   //
@@ -907,12 +912,12 @@ int main( int argc, char *argv[] )
   // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
   if ( mySettings.contains( QStringLiteral( "/Themes" ) ) )
   {
-    QString theme = mySettings.value( QStringLiteral( "/Themes" ), "default" ).toString();
+    QString theme = mySettings.value( QStringLiteral( "Themes" ), "default" ).toString();
     if ( theme == QLatin1String( "gis" )
          || theme == QLatin1String( "classic" )
          || theme == QLatin1String( "nkids" ) )
     {
-      mySettings.setValue( QStringLiteral( "/Themes" ), QStringLiteral( "default" ) );
+      mySettings.setValue( QStringLiteral( "Themes" ), QStringLiteral( "default" ) );
     }
   }
 
@@ -976,11 +981,11 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString style = mySettings.value( QStringLiteral( "/qgis/style" ) ).toString();
+  QString style = mySettings.value( QStringLiteral( "qgis/style" ) ).toString();
   if ( !style.isNull() )
   {
     QApplication::setStyle( style );
-    mySettings.setValue( QStringLiteral( "/qgis/style" ), QApplication::style()->objectName() );
+    mySettings.setValue( QStringLiteral( "qgis/style" ), QApplication::style()->objectName() );
   }
 
   /* Translation file for QGIS.
@@ -1089,7 +1094,7 @@ int main( int argc, char *argv[] )
   int h = 300 * qApp->desktop()->logicalDpiY() / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-  if ( !myHideSplash && !mySettings.value( QStringLiteral( "/qgis/hideSplash" ) ).toBool() )
+  if ( !myHideSplash && !mySettings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
@@ -1098,7 +1103,7 @@ int main( int argc, char *argv[] )
 
   // optionally restore default window state
   // use restoreDefaultWindowState setting only if NOT using command line (then it is set already)
-  if ( myRestoreDefaultWindowState || mySettings.value( QStringLiteral( "/qgis/restoreDefaultWindowState" ), false ).toBool() )
+  if ( myRestoreDefaultWindowState || mySettings.value( QStringLiteral( "qgis/restoreDefaultWindowState" ), false ).toBool() )
   {
     QgsDebugMsg( "Resetting /UI/state settings!" );
     mySettings.remove( QStringLiteral( "/UI/state" ) );
@@ -1107,7 +1112,7 @@ int main( int argc, char *argv[] )
 
   // set max. thread count
   // this should be done in QgsApplication::init() but it doesn't know the settings dir.
-  QgsApplication::setMaxThreads( mySettings.value( QStringLiteral( "/qgis/max_threads" ), -1 ).toInt() );
+  QgsApplication::setMaxThreads( mySettings.value( QStringLiteral( "qgis/max_threads" ), -1 ).toInt() );
 
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins, mySkipVersionCheck ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( QStringLiteral( "QgisApp" ) );

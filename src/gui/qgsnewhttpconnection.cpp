@@ -69,7 +69,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QgsSettings settings;
 
     QString key = mBaseKey + connName;
-    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + connName;
+    QString credentialsKey = "qgis//" + mCredentialsBaseKey + '/' + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
@@ -124,10 +124,10 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     }
   }
 
-  if ( mBaseKey != QLatin1String( "/Qgis/connections-wms/" ) )
+  if ( mBaseKey != QLatin1String( "qgis//connections-wms/" ) )
   {
-    if ( mBaseKey != QLatin1String( "/Qgis/connections-wcs/" ) &&
-         mBaseKey != QLatin1String( "/Qgis/connections-wfs/" ) )
+    if ( mBaseKey != QLatin1String( "qgis//connections-wcs/" ) &&
+         mBaseKey != QLatin1String( "qgis//connections-wfs/" ) )
     {
       cbxIgnoreAxisOrientation->setVisible( false );
       cbxInvertAxisOrientation->setVisible( false );
@@ -135,12 +135,12 @@ QgsNewHttpConnection::QgsNewHttpConnection(
       mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
     }
 
-    if ( mBaseKey == QLatin1String( "/Qgis/connections-wfs/" ) )
+    if ( mBaseKey == QLatin1String( "qgis//connections-wfs/" ) )
     {
       cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation (WFS 1.1/WFS 2.0)" ) );
     }
 
-    if ( mBaseKey == QLatin1String( "/Qgis/connections-wcs/" ) )
+    if ( mBaseKey == QLatin1String( "qgis//connections-wcs/" ) )
     {
       cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
       cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
@@ -167,7 +167,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     mGroupBox->layout()->removeWidget( lblReferer );
   }
 
-  if ( mBaseKey != QLatin1String( "/Qgis/connections-wfs/" ) )
+  if ( mBaseKey != QLatin1String( "qgis//connections-wfs/" ) )
   {
     cmbVersion->setVisible( false );
     mGroupBox->layout()->removeWidget( cmbVersion );
@@ -201,7 +201,7 @@ void QgsNewHttpConnection::accept()
 {
   QgsSettings settings;
   QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + '/' + txtName->text();
+  QString credentialsKey = "qgis//" + mCredentialsBaseKey + '/' + txtName->text();
 
   // warn if entry was renamed to an existing connection
   if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
@@ -227,7 +227,7 @@ void QgsNewHttpConnection::accept()
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "/Qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
+    settings.remove( "qgis//" + mCredentialsBaseKey + '/' + mOriginalConnName );
     settings.sync();
   }
 
@@ -255,15 +255,15 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( key + "/url", url.toString() );
 
-  if ( mBaseKey == QLatin1String( "/Qgis/connections-wms/" ) ||
-       mBaseKey == QLatin1String( "/Qgis/connections-wcs/" ) ||
-       mBaseKey == QLatin1String( "/Qgis/connections-wfs/" ) )
+  if ( mBaseKey == QLatin1String( "qgis//connections-wms/" ) ||
+       mBaseKey == QLatin1String( "qgis//connections-wcs/" ) ||
+       mBaseKey == QLatin1String( "qgis//connections-wfs/" ) )
   {
     settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
     settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
   }
 
-  if ( mBaseKey == QLatin1String( "/Qgis/connections-wms/" ) || mBaseKey == QLatin1String( "/Qgis/connections-wcs/" ) )
+  if ( mBaseKey == QLatin1String( "qgis//connections-wms/" ) || mBaseKey == QLatin1String( "qgis//connections-wcs/" ) )
   {
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( key + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
@@ -290,11 +290,11 @@ void QgsNewHttpConnection::accept()
 
     settings.setValue( key + "/dpiMode", dpiMode );
   }
-  if ( mBaseKey == QLatin1String( "/Qgis/connections-wms/" ) )
+  if ( mBaseKey == QLatin1String( "qgis//connections-wms/" ) )
   {
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
   }
-  if ( mBaseKey == QLatin1String( "/Qgis/connections-wfs/" ) )
+  if ( mBaseKey == QLatin1String( "qgis//connections-wfs/" ) )
   {
     QString version = QStringLiteral( "auto" );
     switch ( cmbVersion->currentIndex() )

@@ -11,4 +11,5 @@ class QgsNewGeoPackageLayerDialog : QDialog
 
     ~QgsNewGeoPackageLayerDialog();
 
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 };

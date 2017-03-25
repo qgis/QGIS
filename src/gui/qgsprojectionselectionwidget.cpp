@@ -39,7 +39,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   addProjectCrsOption();
 
   QgsSettings settings;
-  QString defCrsString = settings.value( QStringLiteral( "/Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+  QString defCrsString = settings.value( QStringLiteral( "Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {

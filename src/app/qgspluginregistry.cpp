@@ -491,14 +491,14 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       // check if the plugin was active on last session
 
       QString baseName = QFileInfo( myFullPath ).baseName();
-      if ( mySettings.value( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
+      if ( mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
       {
         mQgisInterface->messageBar()->pushWarning( QObject::tr( "Plugin %1" ).arg( baseName ), QObject::tr( "The plugin will be disabled because it crashed QGIS during last startup. Please report an issue and re-enable the plugin when the problem has been solved." ) );
         mySettings.setValue( "/Plugins/" + baseName, false );
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
       {
-        mySettings.setValue( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ), true );
+        mySettings.setValue( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ), true );
         loadCppPlugin( myFullPath );
         mySettings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
       }

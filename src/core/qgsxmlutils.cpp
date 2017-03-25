@@ -119,6 +119,19 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       break;
     }
 
+    case QVariant::List:
+    {
+      QVariantList list = value.toList();
+
+      Q_FOREACH ( const QVariant &value, list )
+      {
+        QDomElement valueElement = writeVariant( value, doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "List" ) );
+      }
+      break;
+    }
+
     case QVariant::Int:
     case QVariant::Bool:
     case QVariant::Double:
@@ -168,6 +181,17 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
         map.insert( elem.attribute( QStringLiteral( "name" ) ), readVariant( elem ) );
     }
     return map;
+  }
+  else if ( type == QLatin1String( "List" ) )
+  {
+    QVariantList list;
+    QDomNodeList values = element.childNodes();
+    for ( int i = 0; i < values.count(); ++i )
+    {
+      QDomElement elem = values.at( i ).toElement();
+      list.append( readVariant( elem ) );
+    }
+    return list;
   }
   else
   {

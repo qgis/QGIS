@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <QNetworkReply>
 #include <QThreadStorage>
+#include <QAuthenticator>
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -214,13 +215,13 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   // uploadProgress.
   QTimer *timer = new QTimer( reply );
   timer->setObjectName( QStringLiteral( "timeoutTimer" ) );
-  connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
+  connect( timer, &QTimer::timeout, this, &QgsNetworkAccessManager::abortRequest );
   timer->setSingleShot( true );
   timer->start( s.value( QStringLiteral( "/qgis/networkAndProxy/networkTimeout" ), "60000" ).toInt() );
 
-  connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
-  connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), timer, SLOT( start() ) );
-  connect( reply, SIGNAL( finished( ) ), timer, SLOT( stop( ) ) );
+  connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
+  connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
+  connect( reply, &QNetworkReply::finished, timer, &QTimer::stop );
   QgsDebugMsgLevel( QString( "Created [reply:%1]" ).arg( ( qint64 ) reply, 0, 16 ), 3 );
 
   return reply;
@@ -291,20 +292,20 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
 
   if ( sMainNAM != this )
   {
-    connect( this, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
-             sMainNAM, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
+    connect( this, &QNetworkAccessManager::authenticationRequired,
+             sMainNAM, &QNetworkAccessManager::authenticationRequired,
              Qt::BlockingQueuedConnection );
 
-    connect( this, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
-             sMainNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
+    connect( this, &QNetworkAccessManager::proxyAuthenticationRequired,
+             sMainNAM, &QNetworkAccessManager::proxyAuthenticationRequired,
              Qt::BlockingQueuedConnection );
 
-    connect( this, SIGNAL( requestTimedOut( QNetworkReply * ) ),
-             sMainNAM, SIGNAL( requestTimedOut( QNetworkReply * ) ) );
+    connect( this, &QgsNetworkAccessManager::requestTimedOut,
+             sMainNAM, &QgsNetworkAccessManager::requestTimedOut );
 
 #ifndef QT_NO_SSL
-    connect( this, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
-             sMainNAM, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
+    connect( this, &QNetworkAccessManager::sslErrors,
+             sMainNAM, &QNetworkAccessManager::sslErrors,
              Qt::BlockingQueuedConnection );
 #endif
   }

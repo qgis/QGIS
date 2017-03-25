@@ -34,7 +34,6 @@ class CORE_EXPORT QgsRasterShader
 
   public:
     QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
-    ~QgsRasterShader();
 
     //! QgsRasterShader cannot be copied
     QgsRasterShader( const QgsRasterShader &rh ) = delete;
@@ -52,8 +51,8 @@ class CORE_EXPORT QgsRasterShader
     //! \brief Return the minimum value for the raster shader
     double minimumValue() { return mMinimumValue; }
 
-    QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction; }
-    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction; }
+    QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction.get(); }
+    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction.get(); }
 
     /*
      *
@@ -94,7 +93,7 @@ class CORE_EXPORT QgsRasterShader
     double mMaximumValue;
 
     //! \brief Pointer to the shader function
-    QgsRasterShaderFunction *mRasterShaderFunction = nullptr;
+    std::unique_ptr< QgsRasterShaderFunction > mRasterShaderFunction;
 
 };
 #endif

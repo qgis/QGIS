@@ -56,7 +56,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/eVis/browser-geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "eVis/browser-geometry" ) ).toByteArray() );
 
   mCurrentFeatureIndex = 0;
   mInterface = interface;
@@ -114,7 +114,7 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapC
 eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui()
 {
   QSettings settings;
-  settings.setValue( QStringLiteral( "/eVis/browser-geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "eVis/browser-geometry" ), saveGeometry() );
 
   //Clean up, disconnect the highlighting routine and refresh the canvas to clear highlighting symbol
   if ( mCanvas )
@@ -418,37 +418,37 @@ void eVisGenericEventBrowserGui::accept()
 
   if ( chkboxSaveEventImagePathData->isChecked() )
   {
-    myQSettings.setValue( QStringLiteral( "/eVis/eventimagepathfield" ), cboxEventImagePathField->currentText() );
-    myQSettings.setValue( QStringLiteral( "/eVis/eventimagepathrelative" ), chkboxEventImagePathRelative->isChecked() );
+    myQSettings.setValue( QStringLiteral( "eVis/eventimagepathfield" ), cboxEventImagePathField->currentText() );
+    myQSettings.setValue( QStringLiteral( "eVis/eventimagepathrelative" ), chkboxEventImagePathRelative->isChecked() );
   }
 
   if ( chkboxSaveCompassBearingData->isChecked() )
   {
-    myQSettings.setValue( QStringLiteral( "/eVis/compassbearingfield" ), cboxCompassBearingField->currentText() );
-    myQSettings.setValue( QStringLiteral( "/eVis/displaycompassbearing" ), chkboxDisplayCompassBearing->isChecked() );
+    myQSettings.setValue( QStringLiteral( "eVis/compassbearingfield" ), cboxCompassBearingField->currentText() );
+    myQSettings.setValue( QStringLiteral( "eVis/displaycompassbearing" ), chkboxDisplayCompassBearing->isChecked() );
   }
 
   if ( chkboxSaveCompassOffsetData->isChecked() )
   {
-    myQSettings.setValue( QStringLiteral( "/eVis/manualcompassoffset" ), rbtnManualCompassOffset->isChecked() );
-    myQSettings.setValue( QStringLiteral( "/eVis/compassoffset" ), dsboxCompassOffset->value() );
-    myQSettings.setValue( QStringLiteral( "/eVis/attributecompassoffset" ), rbtnAttributeCompassOffset->isChecked() );
-    myQSettings.setValue( QStringLiteral( "/eVis/compassoffsetfield" ), cboxCompassOffsetField->currentText() );
+    myQSettings.setValue( QStringLiteral( "eVis/manualcompassoffset" ), rbtnManualCompassOffset->isChecked() );
+    myQSettings.setValue( QStringLiteral( "eVis/compassoffset" ), dsboxCompassOffset->value() );
+    myQSettings.setValue( QStringLiteral( "eVis/attributecompassoffset" ), rbtnAttributeCompassOffset->isChecked() );
+    myQSettings.setValue( QStringLiteral( "eVis/compassoffsetfield" ), cboxCompassOffsetField->currentText() );
   }
 
   if ( chkboxSaveBasePathData->isChecked() )
   {
-    myQSettings.setValue( QStringLiteral( "/eVis/basepath" ), leBasePath->text() );
+    myQSettings.setValue( QStringLiteral( "eVis/basepath" ), leBasePath->text() );
   }
 
   if ( chkboxSaveUseOnlyFilenameData->isChecked() )
   {
-    myQSettings.setValue( QStringLiteral( "/eVis/useonlyfilename" ), chkboxUseOnlyFilename->isChecked() );
+    myQSettings.setValue( QStringLiteral( "eVis/useonlyfilename" ), chkboxUseOnlyFilename->isChecked() );
   }
 
   if ( chkboxSaveApplyPathRulesToDocs->isChecked() )
   {
-    myQSettings.setValue( QStringLiteral( "/eVis/applypathrulestodocs" ), chkboxApplyPathRulesToDocs->isChecked() );
+    myQSettings.setValue( QStringLiteral( "eVis/applypathrulestodocs" ), chkboxApplyPathRulesToDocs->isChecked() );
   }
 
   myQSettings.remove( QStringLiteral( "/eVis/filetypeassociations" ) );

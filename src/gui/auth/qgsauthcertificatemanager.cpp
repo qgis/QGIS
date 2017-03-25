@@ -40,7 +40,7 @@ QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
       Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   layout->addWidget( buttonBox );
 
   setLayout( layout );

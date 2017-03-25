@@ -1696,20 +1696,20 @@ QgsWkbTypes::Type QgsPostgresConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryTyp
 QStringList QgsPostgresConn::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
+  settings.beginGroup( QStringLiteral( "PostgreSQL/connections" ) );
   return settings.childGroups();
 }
 
 QString QgsPostgresConn::selectedConnection()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/PostgreSQL/connections/selected" ) ).toString();
+  return settings.value( QStringLiteral( "PostgreSQL/connections/selected" ) ).toString();
 }
 
 void QgsPostgresConn::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
-  return settings.setValue( QStringLiteral( "/PostgreSQL/connections/selected" ), name );
+  return settings.setValue( QStringLiteral( "PostgreSQL/connections/selected" ), name );
 }
 
 QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )

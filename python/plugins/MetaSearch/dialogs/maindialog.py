@@ -14,7 +14,7 @@ from builtins import range
 #                    Alexander Bruy (alexander.bruy@gmail.com),
 #                    Maxim Dubinin (sim@gis-lab.info)
 #
-# Copyright (C) 2014 Tom Kralidis (tomkralidis@gmail.com)
+# Copyright (C) 2017 Tom Kralidis (tomkralidis@gmail.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -77,6 +77,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings = QgsSettings()
         self.catalog = None
         self.catalog_url = None
+        self.catalog_username = None
+        self.catalog_password = None
         self.context = StaticContext()
 
         version = self.context.metadata.get('general', 'version')
@@ -126,9 +128,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnNext.clicked.connect(self.navigate)
         self.btnLast.clicked.connect(self.navigate)
 
-        self.btnAddToWms.clicked.connect(self.add_to_ows)
-        self.btnAddToWfs.clicked.connect(self.add_to_ows)
-        self.btnAddToWcs.clicked.connect(self.add_to_ows)
+        self.mActionAddWms.triggered.connect(self.add_to_ows)
+        self.mActionAddWfs.triggered.connect(self.add_to_ows)
+        self.mActionAddWcs.triggered.connect(self.add_to_ows)
         self.btnShowXml.clicked.connect(self.show_xml)
 
         # settings
@@ -149,6 +151,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         key = '/MetaSearch/%s' % self.cmbConnectionsSearch.currentText()
         self.catalog_url = self.settings.value('%s/url' % key)
+        self.catalog_username = self.settings.value('%s/username' % key)
+        self.catalog_password = self.settings.value('%s/password' % key)
 
         self.set_bbox_global()
 
@@ -252,6 +256,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         if caller == 'cmbConnectionsSearch':  # bind to service in search tab
             self.catalog_url = self.settings.value('%s/url' % key)
+            self.catalog_username = self.settings.value('%s/username' % key)
+            self.catalog_password = self.settings.value('%s/password' % key)
 
         if caller == 'cmbConnectionsServices':  # clear server metadata
             self.textMetadata.clear()
@@ -264,6 +270,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         current_text = self.cmbConnectionsServices.currentText()
         key = '/MetaSearch/%s' % current_text
         self.catalog_url = self.settings.value('%s/url' % key)
+        self.catalog_username = self.settings.value('%s/username' % key)
+        self.catalog_password = self.settings.value('%s/password' % key)
 
         # connect to the server
         if not self._get_csw():
@@ -301,6 +309,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         conn_edit.setWindowTitle(self.tr('Edit Catalogue service'))
         conn_edit.leName.setText(current_text)
         conn_edit.leURL.setText(url)
+        conn_edit.leUsername.setText(self.settings.value('/MetaSearch/%s/username' % current_text))
+        conn_edit.lePassword.setText(self.settings.value('/MetaSearch/%s/password' % current_text))
+
         if conn_edit.exec_() == QDialog.Accepted:  # update service list
             self.populate_connection_list()
 
@@ -433,6 +444,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         current_text = self.cmbConnectionsSearch.currentText()
         key = '/MetaSearch/%s' % current_text
         self.catalog_url = self.settings.value('%s/url' % key)
+        self.catalog_username = self.settings.value('%s/username' % key)
+        self.catalog_password = self.settings.value('%s/password' % key)
 
         # start position and number of records to return
         self.startfrom = 0
@@ -601,13 +614,14 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                     wcs_link_types]):
                 if link_type in wmswmst_link_types:
                     services['wms'] = link['url']
-                    self.btnAddToWms.setEnabled(True)
+                    self.mActionAddWms.setEnabled(True)
                 if link_type in wfs_link_types:
                     services['wfs'] = link['url']
-                    self.btnAddToWfs.setEnabled(True)
+                    self.mActionAddWfs.setEnabled(True)
                 if link_type in wcs_link_types:
                     services['wcs'] = link['url']
-                    self.btnAddToWcs.setEnabled(True)
+                    self.mActionAddWcs.setEnabled(True)
+                self.tbAddData.setEnabled(True)
 
             set_item_data(item, 'link', json.dumps(services))
 
@@ -682,13 +696,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         caller = self.sender().objectName()
 
         # stype = human name,/Qgis/connections-%s,providername
-        if caller == 'btnAddToWms':
+        if caller == 'mActionAddWms':
             stype = ['OGC:WMS/OGC:WMTS', 'wms', 'wms']
             data_url = item_data['wms']
-        elif caller == 'btnAddToWfs':
+        elif caller == 'mActionAddWfs':
             stype = ['OGC:WFS', 'wfs', 'WFS']
             data_url = item_data['wfs']
-        elif caller == 'btnAddToWcs':
+        elif caller == 'mActionAddWcs':
             stype = ['OGC:WCS', 'wcs', 'wcs']
             data_url = item_data['wcs']
 
@@ -771,7 +785,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout)
+            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout,
+                                      username=self.catalog_username,
+                                      password=self.catalog_password)
             cat.getrecordbyid(
                 [self.catalog.records[identifier].identifier])
         except ExceptionReport as err:
@@ -819,9 +835,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """Convenience function to disable WMS/WMTS|WFS|WCS buttons"""
 
         if services:
-            self.btnAddToWms.setEnabled(False)
-            self.btnAddToWfs.setEnabled(False)
-            self.btnAddToWcs.setEnabled(False)
+            self.tbAddData.setEnabled(False)
+            self.mActionAddWms.setEnabled(False)
+            self.mActionAddWfs.setEnabled(False)
+            self.mActionAddWcs.setEnabled(False)
 
         if xml:
             self.btnShowXml.setEnabled(False)
@@ -850,7 +867,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             self.catalog = CatalogueServiceWeb(self.catalog_url,
-                                               timeout=self.timeout)
+                                               timeout=self.timeout,
+                                               username=self.catalog_username,
+                                               password=self.catalog_password)
             return True
         except ExceptionReport as err:
             msg = self.tr('Error connecting to service: {0}').format(err)
@@ -859,8 +878,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         except Exception as err:
             msg = self.tr('Unknown Error: {0}').format(err)
 
-        QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         QApplication.restoreOverrideCursor()
+        QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         return False
 
     def install_proxy(self):

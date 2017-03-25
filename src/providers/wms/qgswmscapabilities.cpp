@@ -41,6 +41,22 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
+  // Setup authentication
+  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
+  QgsDebugMsg( "set username to " + mAuth.mUserName );
+
+  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+  QgsDebugMsg( "set password to " + mAuth.mPassword );
+
+  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  {
+    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+  }
+  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
+
+  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
+  QgsDebugMsg( "set referer to " + mAuth.mReferer );
+
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) )
@@ -54,10 +70,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mMaxHeight = 0;
     mHttpUri = uri.param( QStringLiteral( "url" ) );
     mBaseUrl = mHttpUri;
-    mAuth.mUserName.clear();
-    mAuth.mPassword.clear();
-    mAuth.mReferer.clear();
-    mAuth.mAuthCfg.clear();
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = true;
@@ -86,21 +98,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mSmoothPixmapTransform = uri.hasParam( QStringLiteral( "SmoothPixmapTransform" ) );
 
   mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast< QgsWmsDpiMode >( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : DpiAll;
-
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
-  QgsDebugMsg( "set username to " + mAuth.mUserName );
-
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
-  QgsDebugMsg( "set password to " + mAuth.mPassword );
-
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
-  {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
-  }
-  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
-
-  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
-  QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
   mActiveSubLayers = uri.params( QStringLiteral( "layers" ) );
   mActiveSubStyles = uri.params( QStringLiteral( "styles" ) );
@@ -2075,7 +2072,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           if ( cmd.expirationDate().isNull() )
           {
             QgsSettings s;
-            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
+            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
           }
 
           nam->cache()->updateMetaData( cmd );

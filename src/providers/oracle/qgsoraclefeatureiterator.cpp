@@ -142,9 +142,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
       //handled below
       break;
 
-    case QgsFeatureRequest::FilterRect:
-      // Handled in the if-statement above
-      break;
   }
 
   if ( mSource->mRequestedGeomType != QgsWkbTypes::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
@@ -169,7 +166,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   bool useFallback = false;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    if ( QgsSettings().value( "/qgis/compileExpressions", true ).toBool() )
+    if ( QgsSettings().value( "qgis/compileExpressions", true ).toBool() )
     {
       QgsOracleExpressionCompiler compiler( mSource );
       QgsSqlExpressionCompiler::Result result = compiler.compile( mRequest.filterExpression() );

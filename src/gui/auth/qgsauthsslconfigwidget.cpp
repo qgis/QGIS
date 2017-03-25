@@ -69,17 +69,17 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   {
     setupUi( this );
 
-    connect( grpbxSslConfig, SIGNAL( toggled( bool ) ), this, SIGNAL( configEnabledChanged( bool ) ) );
-    connect( this, SIGNAL( configEnabledChanged( bool ) ), this, SLOT( readyToSave() ) );
-    connect( this, SIGNAL( hostPortValidityChanged( bool ) ), this, SLOT( readyToSave() ) );
+    connect( grpbxSslConfig, &QGroupBox::toggled, this, &QgsAuthSslConfigWidget::configEnabledChanged );
+    connect( this, &QgsAuthSslConfigWidget::configEnabledChanged, this, &QgsAuthSslConfigWidget::readyToSave );
+    connect( this, &QgsAuthSslConfigWidget::hostPortValidityChanged, this, &QgsAuthSslConfigWidget::readyToSave );
 
     setUpSslConfigTree();
 
     lblLoadedConfig->setVisible( false );
     lblLoadedConfig->setText( QLatin1String( "" ) );
 
-    connect( leHost, SIGNAL( textChanged( QString ) ),
-             this, SLOT( validateHostPortText( QString ) ) );
+    connect( leHost, &QLineEdit::textChanged,
+             this, &QgsAuthSslConfigWidget::validateHostPortText );
 
     if ( !cert.isNull() )
     {
@@ -600,8 +600,8 @@ QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCerti
   layout->setMargin( 6 );
 
   mSslConfigWdgt = new QgsAuthSslConfigWidget( this, cert, hostport );
-  connect( mSslConfigWdgt, SIGNAL( readyToSaveChanged( bool ) ),
-           this, SLOT( checkCanSave( bool ) ) );
+  connect( mSslConfigWdgt, &QgsAuthSslConfigWidget::readyToSaveChanged,
+           this, &QgsAuthSslConfigDialog::checkCanSave );
   layout->addWidget( mSslConfigWdgt );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(
@@ -609,8 +609,8 @@ QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCerti
 
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   mSaveButton = buttonBox->button( QDialogButtonBox::Save );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthSslConfigDialog::accept );
   layout->addWidget( buttonBox );
 
   setLayout( layout );

@@ -186,16 +186,14 @@ class TestQgsComposerMap(unittest.TestCase):
         self.assertEqual(map.crs().authid(), 'EPSG:4326')
         self.assertFalse(map.presetCrs().isValid())
 
-    # Fails because addItemsFromXml has been commented out in sip
-    @unittest.expectedFailure
     def testuniqueId(self):
         doc = QDomDocument()
         documentElement = doc.createElement('ComposerItemClipboard')
         self.mComposition.writeXml(documentElement, doc)
-        self.mComposition.addItemsFromXml(documentElement, doc, 0, False)
+        self.mComposition.addItemsFromXml(documentElement, doc)
 
         # test if both composer maps have different ids
-        newMap = QgsComposerMap()
+        newMap = QgsComposerMap(self.mComposition, 0, 0, 10, 10)
         mapList = self.mComposition.composerMapItems()
 
         for mapIt in mapList:

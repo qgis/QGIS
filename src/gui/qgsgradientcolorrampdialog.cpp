@@ -87,7 +87,7 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   connect( mDeleteStopButton, SIGNAL( clicked() ), mStopEditor, SLOT( deleteSelectedStop() ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/GradientEditor/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/GradientEditor/geometry" ) ).toByteArray() );
 
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
@@ -139,10 +139,10 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   connect( mPlotFilter, SIGNAL( mouseRelease( QPointF ) ), this, SLOT( plotMouseRelease( QPointF ) ) );
   connect( mPlotFilter, SIGNAL( mouseMove( QPointF ) ), this, SLOT( plotMouseMove( QPointF ) ) );
 
-  mPlotHueCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotHue" ), false ).toBool() );
-  mPlotLightnessCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotLightness" ), true ).toBool() );
-  mPlotSaturationCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotSaturation" ), false ).toBool() );
-  mPlotAlphaCheckbox->setChecked( settings.value( QStringLiteral( "/GradientEditor/plotAlpha" ), false ).toBool() );
+  mPlotHueCheckbox->setChecked( settings.value( QStringLiteral( "GradientEditor/plotHue" ), false ).toBool() );
+  mPlotLightnessCheckbox->setChecked( settings.value( QStringLiteral( "GradientEditor/plotLightness" ), true ).toBool() );
+  mPlotSaturationCheckbox->setChecked( settings.value( QStringLiteral( "GradientEditor/plotSaturation" ), false ).toBool() );
+  mPlotAlphaCheckbox->setChecked( settings.value( QStringLiteral( "GradientEditor/plotAlpha" ), false ).toBool() );
 
   mHueCurve->setVisible( mPlotHueCheckbox->isChecked() );
   mLightnessCurve->setVisible( mPlotLightnessCheckbox->isChecked() );
@@ -156,11 +156,11 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 QgsGradientColorRampDialog::~QgsGradientColorRampDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/GradientEditor/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/GradientEditor/plotHue" ), mPlotHueCheckbox->isChecked() );
-  settings.setValue( QStringLiteral( "/GradientEditor/plotLightness" ), mPlotLightnessCheckbox->isChecked() );
-  settings.setValue( QStringLiteral( "/GradientEditor/plotSaturation" ), mPlotSaturationCheckbox->isChecked() );
-  settings.setValue( QStringLiteral( "/GradientEditor/plotAlpha" ), mPlotAlphaCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/GradientEditor/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "GradientEditor/plotHue" ), mPlotHueCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "GradientEditor/plotLightness" ), mPlotLightnessCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "GradientEditor/plotSaturation" ), mPlotSaturationCheckbox->isChecked() );
+  settings.setValue( QStringLiteral( "GradientEditor/plotAlpha" ), mPlotAlphaCheckbox->isChecked() );
 
 }
 

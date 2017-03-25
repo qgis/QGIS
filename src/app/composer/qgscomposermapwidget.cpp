@@ -908,6 +908,10 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
   // update map
   storeCurrentLayerSet();
   mComposerMap->setKeepLayerSet( state == Qt::Checked );
+  if ( state == Qt::Unchecked )
+  {
+    mComposerMap->setLayers( QList< QgsMapLayer * >() );
+  }
 
   // update gui
   if ( state == Qt::Checked )
@@ -1652,7 +1656,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateOverviewFrameStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpOverviewFrameStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
 }

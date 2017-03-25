@@ -253,6 +253,11 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      */
     void recalculateFrameRects();
 
+    /** Called before a frame is going to be removed. Updates frame list and recalculates
+     * content of remaining frames.
+     */
+    void handleFrameRemoval( QgsComposerItem *item );
+
   signals:
 
     /** Emitted when the properties of a multi frame have changed, and the GUI item widget
@@ -275,11 +280,6 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     bool mCreateUndoCommands;
 
   protected slots:
-
-    /** Called before a frame is going to be removed. Updates frame list and recalculates
-     * content of remaining frames.
-     */
-    void handleFrameRemoval( QgsComposerItem *item );
 
     /** Adapts to changed number of composition pages if resize type is RepeatOnEveryPage.
      */

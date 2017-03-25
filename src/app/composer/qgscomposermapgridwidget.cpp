@@ -641,8 +641,8 @@ void QgsComposerMapGridWidget::on_mGridLineStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateGridLineStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpGridLineStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerMapGridWidget::updateGridLineStyleFromWidget );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerMapGridWidget::cleanUpGridLineStyleSelector );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Grid line style changed" ) );
 }

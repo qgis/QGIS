@@ -26,8 +26,8 @@ struct QgsGPSInformation
   double pdop;
   double hdop;
   double vdop;
-  double hacc; //horizontal accurancy in meters
-  double vacc; //vertical accurancy in meters
+  double hacc; //horizontal accuracy in meters
+  double vacc; //vertical accuracy in meters
   QDateTime utcDateTime;
   QChar fixMode;
   int fixType;

@@ -51,8 +51,8 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
 //  setEditable( true );
 //  lineEdit()->setReadOnly( true );
 
-  connect( this, SIGNAL( currentIndexChanged( int ) ),
-           this, SLOT( highlightCurrentIndex( int ) ) );
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex );
 
   setTrustPolicy( policy );
   setDefaultTrustPolicy( defaultpolicy );

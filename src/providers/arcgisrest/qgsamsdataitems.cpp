@@ -20,6 +20,7 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 
+#include <QImageReader>
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
@@ -33,9 +34,9 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
+  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "arcgismapserver" ) )
   {
-    QgsOwsConnection connection( QStringLiteral( "ArcGisMapServer" ), connName );
+    QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connName );
     QString path = "ams:/" + connName;
     connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( QStringLiteral( "url" ) ) ) );
   }
@@ -64,8 +65,8 @@ void QgsAmsRootItem::connectionsChanged()
 
 void QgsAmsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0 );
-  nc.setWindowTitle( tr( "Create a new AMS connection" ) );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
+  nc.setWindowTitle( tr( "Create a new ArcGisMapServer connection" ) );
 
   if ( nc.exec() )
   {
@@ -79,7 +80,7 @@ QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUrl( url )
 {
-  mIconName = QStringLiteral( "mIconAms.png" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
@@ -145,8 +146,8 @@ QList<QAction *> QgsAmsConnectionItem::actions()
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-afs/" ), mName );
-  nc.setWindowTitle( tr( "Modify AMS connection" ) );
+  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
+  nc.setWindowTitle( tr( "Modify ArcGisMapServer connection" ) );
 
   if ( nc.exec() )
   {
@@ -156,7 +157,7 @@ void QgsAmsConnectionItem::editConnection()
 
 void QgsAmsConnectionItem::deleteConnection()
 {
-  QgsOwsConnection::deleteConnection( QStringLiteral( "ArcGisMapServer" ), mName );
+  QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
   mParent->refresh();
 }
 

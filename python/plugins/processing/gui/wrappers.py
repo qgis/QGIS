@@ -38,7 +38,9 @@ from qgis.core import (
     QgsExpression,
     QgsMapLayerProxyModel,
     QgsWkbTypes,
-    QgsSettings
+    QgsSettings,
+    QgsProject,
+    QgsMapLayer
 )
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -62,6 +64,7 @@ from qgis.gui import (
     QgsProjectionSelectionWidget,
 )
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant
+from qgis.utils import iface
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
@@ -304,7 +307,10 @@ class CrsWidgetWrapper(WidgetWrapper):
                 widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
 
             if self.param.default:
-                crs = QgsCoordinateReferenceSystem(self.param.default)
+                if self.param.default == 'ProjectCrs':
+                    crs = QgsProject.instance().crs()
+                else:
+                    crs = QgsCoordinateReferenceSystem(self.param.default)
                 widget.setCrs(crs)
             else:
                 widget.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
@@ -323,6 +329,8 @@ class CrsWidgetWrapper(WidgetWrapper):
     def setValue(self, value):
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value, self.combo)
+        elif value == 'ProjectCrs':
+            self.widget.setCrs(QgsProject.instance().crs())
         else:
             self.widget.setCrs(QgsCoordinateReferenceSystem(value))
 
@@ -622,6 +630,11 @@ class RasterWidgetWrapper(WidgetWrapper):
 
             self.combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
             self.combo.setExcludedProviders(['grass'])
+            try:
+                if iface.activeLayer().type() == QgsMapLayer.RasterLayer:
+                    self.combo.setLayer(iface.activeLayer())
+            except:
+                pass
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -748,6 +761,12 @@ class VectorWidgetWrapper(WidgetWrapper):
                 filters |= QgsMapLayerProxyModel.LineLayer
             if QgsWkbTypes.PolygonGeometry in self.param.datatype:
                 filters |= QgsMapLayerProxyModel.PolygonLayer
+
+            try:
+                if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+                    self.combo.setLayer(iface.activeLayer())
+            except:
+                pass
 
             if self.param.optional:
                 self.combo.setAllowEmptyLayer(True)
@@ -983,6 +1002,11 @@ class TableWidgetWrapper(WidgetWrapper):
 
             self.combo.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.combo.setExcludedProviders(['grass'])
+            try:
+                if iface.activeLayer().type() == QgsMapLayer.VectorLayer:
+                    self.combo.setLayer(iface.activeLayer())
+            except:
+                pass
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))

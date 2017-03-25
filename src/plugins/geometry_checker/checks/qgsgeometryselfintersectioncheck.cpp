@@ -25,8 +25,6 @@
 bool QgsGeometrySelfIntersectionCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
   return QgsGeometryCheckError::isEqual( other ) &&
-         other->featureId() == featureId() &&
-         other->vidx() == vidx() &&
          static_cast<QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 &&
          static_cast<QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
 }

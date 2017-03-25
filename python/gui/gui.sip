@@ -44,6 +44,7 @@
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip
 %Include qgscolorwidgets.sip
+%Include qgscomposerinterface.sip
 %Include qgscomposeritemcombobox.sip
 %Include qgscomposerruler.sip
 %Include qgscomposerview.sip
@@ -129,10 +130,12 @@
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnewgeopackagelayerdialog.sip
 %Include qgsoptionsdialogbase.sip
+%Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
 %Include qgspanelwidget.sip
 %Include qgspanelwidgetstack.sip
+%Include qgspasswordlineedit.sip
 %Include qgspixmaplabel.sip
 %Include qgspluginmanagerinterface.sip
 %Include qgspresetcolorrampdialog.sip
@@ -152,6 +155,7 @@
 %Include qgsscalerangewidget.sip
 %Include qgsscalevisibilitydialog.sip
 %Include qgsscalewidget.sip
+%Include qgsscrollarea.sip
 %Include qgssearchquerybuilder.sip
 %Include qgsshortcutsmanager.sip
 %Include qgsslider.sip

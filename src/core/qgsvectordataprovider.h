@@ -260,14 +260,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool truncate();
 
     /**
-     * Adds new attributes
-     * @param attributes list of new attributes
-     * @return true in case of success and false in case of failure
+     * Adds new \a attributes to the provider. Returns true in case of success and false in case of failure.
+     * If attributes are added using this method then QgsVectorLayer::updateFields() must be called
+     * manually to ensure that the layer's field are correctly reported.
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
     /**
-     * Deletes existing attributes
+     * Deletes existing \a attributes from the provider.
+     * If attributes are deleted using this method then QgsVectorLayer::updateFields() must be called
+     * manually to ensure that the layer's field are correctly reported.
      * @param attributes a set containing indices of attributes
      * @return true in case of success and false in case of failure
      */
@@ -275,6 +277,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Renames existing attributes.
+     * If attributes are renamed using this method then QgsVectorLayer::updateFields() must be called
+     * manually to ensure that the layer's field are correctly reported.
      * @param renamedAttributes map of attribute index to new attribute name
      * @return true in case of success and false in case of failure
      * @note added in QGIS 2.16

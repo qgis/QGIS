@@ -44,6 +44,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsprojectbadlayerhandler.h"
 #include "qgssettings.h"
+#include "qgsmaplayerlistutils.h"
+#include "qgslayoutmanager.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -324,7 +326,8 @@ QgsProject::QgsProject( QObject *parent )
   , mSnappingConfig( this )
   , mRelationManager( new QgsRelationManager( this ) )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
-  , mRootGroup( new QgsLayerTreeGroup )
+  , mLayoutManager( new QgsLayoutManager( this ) )
+  , mRootGroup( new QgsLayerTree )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -336,9 +339,9 @@ QgsProject::QgsProject( QObject *parent )
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this, this );
-  connect( this, SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( onMapLayersAdded( QList<QgsMapLayer *> ) ) );
-  connect( this, SIGNAL( layersRemoved( QStringList ) ), this, SLOT( cleanTransactionGroups() ) );
-  connect( this, SIGNAL( layersWillBeRemoved( QList<QgsMapLayer *> ) ), this, SLOT( onMapLayersRemoved( QList<QgsMapLayer *> ) ) );
+  connect( this, &QgsProject::layersAdded, this, &QgsProject::onMapLayersAdded );
+  connect( this, &QgsProject::layersRemoved, this, [ = ] { cleanTransactionGroups(); } );
+  connect( this, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *> & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsProject::onMapLayersRemoved );
 }
 
 
@@ -418,22 +421,17 @@ QFileInfo QgsProject::fileInfo() const
 
 QgsCoordinateReferenceSystem QgsProject::crs() const
 {
-  QgsCoordinateReferenceSystem projectCrs;
-  long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-  if ( currentCRS != -1 )
-  {
-    projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-  }
-  return projectCrs;
+  return mCrs;
 }
 
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
+  mCrs = crs;
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ), crs.toProj4() );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
+  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
   setDirty( true );
-
   emit crsChanged();
 }
 
@@ -464,13 +462,14 @@ void QgsProject::clear()
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mAnnotationManager->clear();
+  mLayoutManager->clear();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
 
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
 
-  mRootGroup->removeAllChildren();
+  mRootGroup->clear();
 
   // reset some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -814,6 +813,19 @@ bool QgsProject::read()
   // now get project title
   _getTitle( *doc, mTitle );
 
+  //crs
+  QgsCoordinateReferenceSystem projectCrs;
+  if ( QgsProject::instance()->readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
+  {
+    long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+    if ( currentCRS != -1 )
+    {
+      projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+    }
+  }
+  mCrs = projectCrs;
+  emit crsChanged();
+
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
   {
@@ -837,15 +849,12 @@ bool QgsProject::read()
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    // read the tree but do not resolve the references (we have not loaded the layers yet)
     mRootGroup->readChildrenFromXml( layerTreeElem );
   }
   else
   {
     QgsLayerTreeUtils::readOldLegend( mRootGroup, doc->documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
   }
-
-  QgsDebugMsg( "Loaded layer tree:\n " + mRootGroup->dump() );
 
   mLayerTreeRegistryBridge->setEnabled( false );
 
@@ -876,13 +885,25 @@ bool QgsProject::read()
       vl->resolveReferences( this );
   }
 
-  // now that layers are loaded, we can resolve layer tree's references to the layers
-  mRootGroup->resolveReferences( this );
-
   mLayerTreeRegistryBridge->setEnabled( true );
 
   // load embedded groups and layers
   loadEmbeddedNodes( mRootGroup );
+
+  // now that layers are loaded, we can resolve layer tree's references to the layers
+  mRootGroup->resolveReferences( this );
+
+
+  if ( !layerTreeElem.isNull() )
+  {
+    mRootGroup->readLayerOrderFromXml( layerTreeElem );
+  }
+  else
+  {
+    // Load pre 3.0 configuration
+    QDomElement elem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-canvas" ) );
+    mRootGroup->readLayerOrderFromXml( elem );
+  }
 
   // make sure the are just valid layers
   QgsLayerTreeUtils::removeInvalidLayers( mRootGroup );
@@ -894,6 +915,7 @@ bool QgsProject::read()
   mMapThemeCollection->readXml( *doc );
 
   mAnnotationManager->readXml( doc->documentElement(), *doc );
+  mLayoutManager->readXml( doc->documentElement(), *doc );
 
   // reassign change dependencies now that all layers are loaded
   QMap<QString, QgsMapLayer *> existingMaps = mapLayers();
@@ -1073,7 +1095,7 @@ void QgsProject::onMapLayersAdded( const QList<QgsMapLayer *> &layers )
     if ( tgChanged )
       emit transactionGroupsChanged();
 
-    connect( layer, SIGNAL( configChanged() ), this, SLOT( setDirty() ) );
+    connect( layer, &QgsMapLayer::configChanged, this, [ = ] { setDirty(); } );
 
     // check if we have to update connections for layers with dependencies
     for ( QMap<QString, QgsMapLayer *>::iterator it = existingMaps.begin(); it != existingMaps.end(); it++ )
@@ -1244,6 +1266,16 @@ bool QgsProject::write()
 
   qgisNode.appendChild( projectLayersNode );
 
+  QDomElement layerOrderNode = doc->createElement( QStringLiteral( "layerorder" ) );
+  Q_FOREACH ( QgsMapLayer *layer, mRootGroup->customLayerOrder() )
+  {
+    QDomElement mapLayerElem = doc->createElement( QStringLiteral( "layer" ) );
+    mapLayerElem.setAttribute( QStringLiteral( "id" ), layer->id() );
+    layerOrderNode.appendChild( mapLayerElem );
+  }
+  qgisNode.appendChild( layerOrderNode );
+
+
   // now add the optional extra properties
 
   dump_( mProperties );
@@ -1260,6 +1292,9 @@ bool QgsProject::write()
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc );
   qgisNode.appendChild( annotationsElem );
+
+  QDomElement layoutElem = mLayoutManager->writeXml( *doc );
+  qgisNode.appendChild( layoutElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -1924,7 +1959,17 @@ QgsRelationManager *QgsProject::relationManager() const
   return mRelationManager;
 }
 
-QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
+const QgsLayoutManager *QgsProject::layoutManager() const
+{
+  return mLayoutManager.get();
+}
+
+QgsLayoutManager *QgsProject::layoutManager()
+{
+  return mLayoutManager.get();
+}
+
+QgsLayerTree *QgsProject::layerTreeRoot() const
 {
   return mRootGroup;
 }
@@ -2048,7 +2093,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
       {
         myLayer->setParent( this );
       }
-      connect( myLayer, SIGNAL( destroyed( QObject * ) ), this, SLOT( onMapLayerDeleted( QObject * ) ) );
+      connect( myLayer, &QObject::destroyed, this, &QgsProject::onMapLayerDeleted );
       emit layerWasAdded( myLayer );
     }
   }

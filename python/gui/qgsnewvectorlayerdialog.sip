@@ -20,8 +20,9 @@ class QgsNewVectorLayerDialog : QDialog
     QString selectedFileFormat() const;
     /** Returns the file format for storage*/
     QString selectedFileEncoding() const;
-    /** Returns the selected crs id*/
-    int selectedCrsId() const;
+
+    QgsCoordinateReferenceSystem crs() const;
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
 
   protected slots:
     void on_mAddAttributeButton_clicked();

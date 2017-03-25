@@ -59,18 +59,18 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
   else
   {
     setupUi( this );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-    connect( buttonBox, SIGNAL( accepted() ), this, SLOT( saveConfig() ) );
-    connect( buttonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetConfig() ) );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthConfigEdit::saveConfig );
+    connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsAuthConfigEdit::resetConfig );
 
     populateAuthMethods();
 
-    connect( cmbAuthMethods, SIGNAL( currentIndexChanged( int ) ),
-             stkwAuthMethods, SLOT( setCurrentIndex( int ) ) );
-    connect( cmbAuthMethods, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( validateAuth() ) );
+    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             stkwAuthMethods, &QStackedWidget::setCurrentIndex );
+    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, [ = ] { validateAuth(); } );
 
-    connect( authCfgEdit, SIGNAL( validityChanged( bool ) ), this, SLOT( validateAuth() ) );
+    connect( authCfgEdit, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
 
     // needed (if only combobox is ever changed)?
     // connect( stkwAuthMethods, SIGNAL( currentChanged( int ) ),
@@ -119,7 +119,7 @@ void QgsAuthConfigEdit::populateAuthMethods()
       QgsDebugMsg( QString( "Load auth method edit widget FAILED for auth method key (%1)" ).arg( it.value()->key() ) );
       continue;
     }
-    connect( editWidget, SIGNAL( validityChanged( bool ) ), this, SLOT( validateAuth() ) );
+    connect( editWidget, &QgsAuthMethodEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
 
     cmbAuthMethods->addItem( it.key(), QVariant( it.value()->key() ) );
     stkwAuthMethods->addWidget( editWidget );

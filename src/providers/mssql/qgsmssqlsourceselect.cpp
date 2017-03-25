@@ -176,7 +176,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   connect( mTablesTreeView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & ) ) );
 
   QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "/qgis/addMSSQLDC" ), false ).toBool() ?
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -185,12 +185,12 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MSSQLSourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/MSSQLSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MSSQLSourceSelect/geometry" ) ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), false ).toBool() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/MSSQLSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/MSSQLSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   //hide the search options by default
@@ -287,7 +287,7 @@ void QgsMssqlSourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which database was selected.
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/MSSQL/connections/selected" ), cmbConnections->currentText() );
+  settings.setValue( QStringLiteral( "MSSQL/connections/selected" ), cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
   cbxAllowGeometrylessTables->setChecked( settings.value( "/MSSQL/connections/" + cmbConnections->currentText() + "/allowGeometrylessTables", false ).toBool() );
@@ -312,7 +312,7 @@ void QgsMssqlSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index 
 void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/addMSSQLDC" ), false ).toBool() )
+  if ( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() )
   {
     addTables();
   }
@@ -398,19 +398,19 @@ QgsMssqlSourceSelect::~QgsMssqlSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/MSSQLSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/MSSQLSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/MSSQLSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/MSSQLSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "/Windows/MSSQLSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/MSSQLSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
 void QgsMssqlSourceSelect::populateConnectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
+  settings.beginGroup( QStringLiteral( "MSSQL/connections" ) );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -718,7 +718,7 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
   QgsSettings settings;
-  QString toSelect = settings.value( QStringLiteral( "/MSSQL/connections/selected" ) ).toString();
+  QString toSelect = settings.value( QStringLiteral( "MSSQL/connections/selected" ) ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )

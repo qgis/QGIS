@@ -41,7 +41,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTreeGroup *rootNode, QObject *parent = nullptr );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
@@ -288,6 +288,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
 
   private slots:
+
+    void updateFilterByMapAndRedraw();
+
     void updateFilterByMap( bool redraw = true );
 
     //! update legend in case style of associated map has changed
@@ -303,7 +306,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegend(); //forbidden
 
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
-    void setCustomLayerTree( QgsLayerTreeGroup *rootGroup );
+    void setCustomLayerTree( QgsLayerTree *rootGroup );
 
     QgsLegendModel *mLegendModel = nullptr;
     QgsLayerTreeGroup *mCustomLayerTree = nullptr;

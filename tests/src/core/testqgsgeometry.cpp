@@ -34,6 +34,7 @@
 #include "qgspointv2.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
+#include "qgstriangle.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
@@ -70,6 +71,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void polygon(); //test QgsPolygonV2
+    void triangle();
     void compoundCurve(); //test QgsCompoundCurve
     void multiPoint();
     void multiLineString();
@@ -3181,6 +3183,434 @@ void TestQgsGeometry::polygon()
 
 }
 
+void TestQgsGeometry::triangle()
+{
+  //test constructor
+  QgsTriangle t1;
+  QVERIFY( t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 0 );
+  QCOMPARE( t1.ringCount(), 0 );
+  QCOMPARE( t1.partCount(), 0 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 0.0 );
+  QCOMPARE( t1.perimeter(), 0.0 );
+  QVERIFY( !t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+
+  //set exterior ring
+
+  //try with no ring
+  QgsLineString *ext = 0;
+  t1.setExteriorRing( ext );
+  QVERIFY( t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 0 );
+  QCOMPARE( t1.ringCount(), 0 );
+  QCOMPARE( t1.partCount(), 0 );
+  QVERIFY( !t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+
+  //valid exterior ring
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 )
+                  << QgsPointV2( 0, 0 ) );
+  QVERIFY( ext->isClosed() );
+  t1.setExteriorRing( ext );
+  QVERIFY( !t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 4 );
+  QCOMPARE( t1.ringCount(), 1 );
+  QCOMPARE( t1.partCount(), 1 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 50.0 );
+  QGSCOMPARENEAR( t1.perimeter(), 34.1421, 0.001 );
+  QVERIFY( t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+
+  //retrieve exterior ring and check
+  QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
+
+  //set new ExteriorRing
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 10 ) << QgsPointV2( 5, 5 ) << QgsPointV2( 10, 10 )
+                  << QgsPointV2( 0, 10 ) );
+  QVERIFY( ext->isClosed() );
+  t1.setExteriorRing( ext );
+  QVERIFY( !t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 4 );
+  QCOMPARE( t1.ringCount(), 1 );
+  QCOMPARE( t1.partCount(), 1 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 25.0 );
+  QGSCOMPARENEAR( t1.perimeter(), 24.1421, 0.001 );
+  QVERIFY( t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
+
+  //test that a non closed exterior ring will be automatically closed
+  QgsTriangle t2;
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) );
+  QVERIFY( !ext->isClosed() );
+  t2.setExteriorRing( ext );
+  QVERIFY( !t2.isEmpty() );
+  QVERIFY( t2.exteriorRing()->isClosed() );
+  QCOMPARE( t2.nCoordinates(), 4 );
+
+  // invalid number of points
+  ext = new QgsLineString();
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  ext = new QgsLineString();
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) << QgsPointV2( 5, 10 ) << QgsPointV2( 8, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  // invalid exterior ring
+  ext = new QgsLineString();
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) << QgsPointV2( 5, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  // circular ring
+  QgsCircularString *circularRing = new QgsCircularString();
+  t2.clear();
+  circularRing->setPoints( QgsPointSequence() << QgsPointV2( 0, 0 ) << QgsPointV2( 0, 10 ) << QgsPointV2( 10, 10 ) );
+  QVERIFY( circularRing->hasCurvedSegments() );
+  t2.setExteriorRing( circularRing );
+  QVERIFY( t2.isEmpty() );
+
+  //constructor with 3 points
+  // double points
+  QgsTriangle t3( QgsPointV2( 0, 0 ), QgsPointV2( 0, 0 ), QgsPointV2( 10, 10 ) );
+  QVERIFY( t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 0 );
+  QCOMPARE( t3.ringCount(), 0 );
+  QCOMPARE( t3.partCount(), 0 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 0.0 );
+  QCOMPARE( t3.perimeter(), 0.0 );
+  QVERIFY( !t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  // colinear
+  t3 = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 0, 10 ) );
+  QVERIFY( t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 0 );
+  QCOMPARE( t3.ringCount(), 0 );
+  QCOMPARE( t3.partCount(), 0 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 0.0 );
+  QCOMPARE( t3.perimeter(), 0.0 );
+  QVERIFY( !t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  t3 = QgsTriangle( QgsPointV2( 0, 0 ), QgsPointV2( 0, 10 ), QgsPointV2( 10, 10 ) );
+  QVERIFY( !t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 4 );
+  QCOMPARE( t3.ringCount(), 1 );
+  QCOMPARE( t3.partCount(), 1 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 50.0 );
+  QGSCOMPARENEAR( t3.perimeter(), 34.1421, 0.001 );
+  QVERIFY( t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  // clone
+  QgsTriangle *t4 = t3.clone();
+  QCOMPARE( t3, *t4 );
+  delete t4;
+
+  // constructor from QgsPoint and QPointF
+  QgsTriangle t_qgspoint = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
+  QVERIFY( t3 == t_qgspoint );
+  QgsTriangle t_pointf = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 10 ), QPointF( 10, 10 ) );
+  QVERIFY( t3 == t_pointf );
+
+  // fromWkt
+  QgsTriangle t5;
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPointV2( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPointV2( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  t5.setExteriorRing( ext );
+  QString wkt = t5.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsTriangle t6;
+  QVERIFY( t6.fromWkt( wkt ) );
+  QCOMPARE( t5, t6 );
+
+  // conversion
+  QgsPolygonV2 p1;
+  ext = new QgsLineString();
+  ext->setPoints( QgsPointSequence() << QgsPointV2( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPointV2( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPointV2( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  p1.setExteriorRing( ext );
+  //toPolygon
+  std::unique_ptr< QgsPolygonV2 > poly( t5.toPolygon() );
+  QCOMPARE( *poly, p1 );
+  //surfaceToPolygon
+  std::unique_ptr< QgsPolygonV2 > surface( t5.surfaceToPolygon() );
+  QCOMPARE( *surface, p1 );
+
+  //bad WKT
+  QVERIFY( !t6.fromWkt( "Point()" ) );
+  QVERIFY( t6.isEmpty() );
+  QVERIFY( !t6.exteriorRing() );
+  QCOMPARE( t6.numInteriorRings(), 0 );
+  QVERIFY( !t6.is3D() );
+  QVERIFY( !t6.isMeasure() );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  // WKB
+  QByteArray wkb = t5.asWkb();
+  t6.clear();
+  QgsConstWkbPtr wkb16ptr5( wkb );
+  t6.fromWkb( wkb16ptr5 );
+  QCOMPARE( t5.wkbType(), QgsWkbTypes::TriangleZM );
+  QCOMPARE( t5, t6 );
+
+  //bad WKB - check for no crash
+  t6.clear();
+  QgsConstWkbPtr nullPtr( nullptr, 0 );
+  QVERIFY( !t6.fromWkb( nullPtr ) );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+  QgsPointV2 point( 1, 2 );
+  QByteArray wkbPoint = point.asWkb();
+  QgsConstWkbPtr wkbPointPtr( wkbPoint );
+  QVERIFY( !t6.fromWkb( wkbPointPtr ) );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  // lengths and angles
+  QgsTriangle t7( QgsPointV2( 0, 0 ), QgsPointV2( 0, 5 ), QgsPointV2( 5, 5 ) );
+
+  QVector<double> a_tested, a_t7 = t7.angles();
+  a_tested.append( M_PI / 4.0 );
+  a_tested.append( M_PI / 2.0 );
+  a_tested.append( M_PI / 4.0 );
+  QGSCOMPARENEAR( a_tested.at( 0 ), a_t7.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 1 ), a_t7.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 2 ), a_t7.at( 2 ), 0.0001 );
+
+  QVector<double> l_tested, l_t7 = t7.lengths();
+  l_tested.append( 5 );
+  l_tested.append( 5 );
+  l_tested.append( sqrt( 5 * 5 + 5 * 5 ) );
+  QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
+
+  // type of triangle
+  QVERIFY( t7.isRight() );
+  QVERIFY( t7.isIsocele() );
+  QVERIFY( !t7.isScalene() );
+  QVERIFY( !t7.isEquilateral() );
+
+  QgsTriangle t8( QgsPointV2( 7.2825, 4.2368 ), QgsPointV2( 13.0058, 3.3218 ), QgsPointV2( 9.2145, 6.5242 ) );
+  // angles in radians 58.8978;31.1036;89.9985
+  // length 5.79598;4.96279;2.99413
+  QVERIFY( t8.isRight() );
+  QVERIFY( !t8.isIsocele() );
+  QVERIFY( t8.isScalene() );
+  QVERIFY( !t8.isEquilateral() );
+
+  QgsTriangle t9( QgsPointV2( 10, 10 ), QgsPointV2( 16, 10 ), QgsPointV2( 13, 15.1962 ) );
+  QVERIFY( !t9.isRight() );
+  QVERIFY( t9.isIsocele() );
+  QVERIFY( !t9.isScalene() );
+  QVERIFY( t9.isEquilateral() );
+
+  // vertex
+  QCOMPARE( t9.vertexAt( -1 ), QgsPointV2( 0, 0 ) );
+  QCOMPARE( t9.vertexAt( 0 ), QgsPointV2( 10, 10 ) );
+  QCOMPARE( t9.vertexAt( 1 ), QgsPointV2( 16, 10 ) );
+  QCOMPARE( t9.vertexAt( 2 ), QgsPointV2( 13, 15.1962 ) );
+  QCOMPARE( t9.vertexAt( 3 ), QgsPointV2( 10, 10 ) );
+  QCOMPARE( t9.vertexAt( 4 ), QgsPointV2( 0, 0 ) );
+
+  // altitudes
+  QgsTriangle t10( QgsPointV2( 20, 2 ), QgsPointV2( 16, 6 ), QgsPointV2( 26, 2 ) );
+  QVector<QgsLineString> alt = t10.altitudes();
+  QGSCOMPARENEARPOINT( alt.at( 0 ).pointN( 1 ), QgsPointV2( 20.8276, 4.0690 ), 0.0001 );
+  QGSCOMPARENEARPOINT( alt.at( 1 ).pointN( 1 ), QgsPointV2( 16, 2 ), 0.0001 );
+  QGSCOMPARENEARPOINT( alt.at( 2 ).pointN( 1 ), QgsPointV2( 23, -1 ), 0.0001 );
+
+  // orthocenter
+  QCOMPARE( QgsPointV2( 16, -8 ), t10.orthocenter() );
+  QCOMPARE( QgsPointV2( 0, 5 ), t7.orthocenter() );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.orthocenter(), 0.0001 );
+
+  // circumscribed circle
+  QCOMPARE( QgsPointV2( 2.5, 2.5 ), t7.circumscribedCenter() );
+  QGSCOMPARENEAR( 3.5355, t7.circumscribedRadius(), 0.0001 );
+  QCOMPARE( QgsPointV2( 23, 9 ), t10.circumscribedCenter() );
+  QGSCOMPARENEAR( 7.6158, t10.circumscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.circumscribedCenter(), 0.0001 );
+  QGSCOMPARENEAR( 3.4641, t9.circumscribedRadius(), 0.0001 );
+
+  // inscribed circle
+  QGSCOMPARENEARPOINT( QgsPointV2( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
+  QGSCOMPARENEAR( 1.4645, t7.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 20.4433, 3.0701 ), t10.inscribedCenter(), 0.001 );
+  QGSCOMPARENEAR( 1.0701, t10.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPointV2( 13, 11.7321 ), t9.inscribedCenter(), 0.0001 );
+  QGSCOMPARENEAR( 1.7321, t9.inscribedRadius(), 0.0001 );
+
+  // medians
+  QVector<QgsLineString> med = t7.medians();
+  QCOMPARE( med.at( 0 ).pointN( 0 ), t7.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), QgsPointV2( 2.5, 5 ), 0.0001 );
+  QCOMPARE( med.at( 1 ).pointN( 0 ), t7.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 1 ), QgsPointV2( 2.5, 2.5 ), 0.0001 );
+  QCOMPARE( med.at( 2 ).pointN( 0 ), t7.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), QgsPointV2( 0, 2.5 ), 0.0001 );
+  med.clear();
+
+  med = t10.medians();
+  QCOMPARE( med.at( 0 ).pointN( 0 ), t10.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), QgsPointV2( 21, 4 ), 0.0001 );
+  QCOMPARE( med.at( 1 ).pointN( 0 ), t10.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 1 ), QgsPointV2( 23, 2 ), 0.0001 );
+  QCOMPARE( med.at( 2 ).pointN( 0 ), t10.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), QgsPointV2( 18, 4 ), 0.0001 );
+  med.clear();
+  alt.clear();
+
+  med = t9.medians();
+  alt = t9.altitudes();
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), alt.at( 0 ).pointN( 1 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 1 ), alt.at( 1 ).pointN( 1 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 0 ), alt.at( 2 ).pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), alt.at( 2 ).pointN( 1 ), 0.0001 );
+
+  // medial
+  QCOMPARE( t7.medial(), QgsTriangle( QgsPointV2( 0, 2.5 ), QgsPointV2( 2.5, 5 ), QgsPointV2( 2.5, 2.5 ) ) );
+  QCOMPARE( t9.medial(), QgsTriangle( QgsGeometryUtils::midpoint( t9.vertexAt( 0 ), t9.vertexAt( 1 ) ),
+                                      QgsGeometryUtils::midpoint( t9.vertexAt( 1 ), t9.vertexAt( 2 ) ),
+                                      QgsGeometryUtils::midpoint( t9.vertexAt( 2 ), t9.vertexAt( 0 ) ) ) );
+
+  // bisectors
+  QVector<QgsLineString> bis = t7.bisectors();
+  QCOMPARE( bis.at( 0 ).pointN( 0 ), t7.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( bis.at( 0 ).pointN( 1 ), QgsPointV2( 2.0711, 5 ), 0.0001 );
+  QCOMPARE( bis.at( 1 ).pointN( 0 ), t7.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( bis.at( 1 ).pointN( 1 ), QgsPointV2( 2.5, 2.5 ), 0.0001 );
+  QCOMPARE( bis.at( 2 ).pointN( 0 ), t7.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( bis.at( 2 ).pointN( 1 ), QgsPointV2( 0, 2.9289 ), 0.0001 );
+
+  // "deleted" method
+  QgsTriangle t11( QgsPointV2( 0, 0 ), QgsPointV2( 100, 100 ), QgsPointV2( 0, 200 ) );
+  ext->setPoints( QgsPointSequence() << QgsPointV2( 5, 5 )
+                  << QgsPointV2( 50, 50 ) << QgsPointV2( 0, 25 )
+                  << QgsPointV2( 5, 5 ) );
+  t11.addInteriorRing( ext );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+
+  /* QList<QgsCurve *> lc;
+   lc.append(ext);
+   t11.setInteriorRings( lc );
+   QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );*/
+
+  QgsVertexId id( 0, 0, 1 );
+  QVERIFY( !t11.deleteVertex( id ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  QVERIFY( !t11.insertVertex( id, QgsPointV2( 5, 5 ) ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+
+  //move vertex
+  QgsPointV2 pt1( 5, 5 );
+  // invalid part
+  id.part = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.part = 1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  // invalid ring
+  id.part = 0;
+  id.ring = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.ring = 1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.ring = 0;
+  id.vertex = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.vertex = 5;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+
+  // valid vertex
+  id.vertex = 0;
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((5 5, 100 100, 0 200, 5 5))" ) );
+  pt1 = QgsPointV2();
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  id.vertex = 4;
+  pt1 = QgsPointV2( 5, 5 );
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((5 5, 100 100, 0 200, 5 5))" ) );
+  pt1 = QgsPointV2();
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  id.vertex = 1;
+  pt1 = QgsPointV2( 5, 5 );
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 5 5, 0 200, 0 0))" ) );
+  // colinear
+  pt1 = QgsPointV2( 0, 100 );
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  // duplicate point
+  pt1 = QgsPointV2( 0, 0 );
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+
+}
+
 void TestQgsGeometry::compoundCurve()
 {
   //test that area of a compound curve ring is equal to a closed linestring with the same vertices
@@ -4040,11 +4470,11 @@ void TestQgsGeometry::directionNeutralSegmentation()
 {
   //Tests, if segmentation of a circularstring is the same in both directions
   QString CWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 0.83 7.33 )" ) );
-  QgsCircularString *CWCircularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ) );
+  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ) );
   QgsLineString *CWLineString = CWCircularString->curveToLine();
 
   QString CCWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0.83 7.33, 0.5 0.5, 0 0 )" ) );
-  QgsCircularString *CCWCircularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ) );
+  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ) );
   QgsLineString *CCWLineString = CCWCircularString->curveToLine();
   QgsLineString *reversedCCWLineString = CCWLineString->reversed();
 

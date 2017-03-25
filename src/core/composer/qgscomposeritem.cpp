@@ -571,6 +571,14 @@ double QgsComposerItem::itemRotation( const PropertyValueType valueType ) const
   return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedItemRotation : mItemRotation;
 }
 
+void QgsComposerItem::updateItem()
+{
+  if ( !mUpdatesEnabled )
+    return;
+
+  QGraphicsRectItem::update();
+}
+
 void QgsComposerItem::move( double dx, double dy )
 {
   QRectF newSceneRect( pos().x() + dx, pos().y() + dy, rect().width(), rect().height() );

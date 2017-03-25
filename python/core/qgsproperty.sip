@@ -128,10 +128,8 @@ class QgsProperty
     int valueAsInt( const QgsExpressionContext& context, int defaultValue = 0, bool* ok /Out/ = nullptr ) const;
 
     bool valueAsBool( const QgsExpressionContext& context, bool defaultValue = false, bool* ok /Out/ = nullptr ) const;
-
-    virtual bool writeXml( QDomElement& propertyElem, QDomDocument& doc ) const;
-
-    virtual bool readXml( const QDomElement& propertyElem, const QDomDocument& doc );
+    QVariant toVariant() const;
+    bool loadVariant( const QVariant &property );
 
     void setTransformer( QgsPropertyTransformer* transformer /Transfer/ );
 

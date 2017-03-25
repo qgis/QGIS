@@ -38,6 +38,7 @@ struct QgsWFSConstants
   static const QString URI_PARAM_TYPENAME;
   static const QString URI_PARAM_SRSNAME;
   static const QString URI_PARAM_FILTER;
+  static const QString URI_PARAM_OUTPUTFORMAT;
   static const QString URI_PARAM_BBOX;
   static const QString URI_PARAM_RESTRICT_TO_REQUEST_BBOX;
   static const QString URI_PARAM_MAXNUMFEATURES;

@@ -206,6 +206,15 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
     case Section::Misc :
       prefix = "misc";
       break;
+    case Section::Auth :
+      prefix = "auth";
+      break;
+    case Section::App :
+      prefix = "app";
+      break;
+    case Section::Providers :
+      prefix = "providers";
+      break;
     case Section::NoSection:
     default:
       return sanitizeKey( key );

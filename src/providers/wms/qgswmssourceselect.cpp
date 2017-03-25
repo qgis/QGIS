@@ -146,14 +146,14 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, boo
 
   QgsSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WMSSourceSelect/geometry" ) ).toByteArray() );
 }
 
 QgsWMSSourceSelect::~QgsWMSSourceSelect()
 {
   QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( QStringLiteral( "/Windows/WMSSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/WMSSourceSelect/geometry" ), saveGeometry() );
 }
 
 
@@ -179,7 +179,7 @@ void QgsWMSSourceSelect::on_btnNew_clicked()
 
 void QgsWMSSourceSelect::on_btnEdit_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QStringLiteral( "/Qgis/connections-wms/" ), cmbConnections->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QStringLiteral( "qgis/connections-wms/" ), cmbConnections->currentText() );
 
   if ( nc->exec() )
   {
@@ -1102,7 +1102,7 @@ void QgsWMSSourceSelect::addDefaultServers()
   exampleServers[QStringLiteral( "GeoServer Demo - World" )] = QStringLiteral( "http://tiles.boundlessgeo.com/" );
 
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
+  settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {
@@ -1156,7 +1156,7 @@ void QgsWMSSourceSelect::on_btnSearch_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsSettings settings;
-  QString mySearchUrl = settings.value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
+  QString mySearchUrl = settings.value( QStringLiteral( "qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
   QUrl url( mySearchUrl.arg( leSearchTerm->text() ) );
   QgsDebugMsg( url.toString() );
 
@@ -1223,7 +1223,7 @@ void QgsWMSSourceSelect::on_btnAddWMS_clicked()
   QString wmsUrl = tableWidgetWMSList->item( selectedRow, 2 )->text();
 
   QgsSettings settings;
-  if ( settings.contains( QStringLiteral( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ) ) )
+  if ( settings.contains( QStringLiteral( "qgis/connections-wms/%1/url" ).arg( wmsTitle ) ) )
   {
     QString msg = tr( "The %1 connection already exists. Do you want to overwrite it?" ).arg( wmsTitle );
     QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
@@ -1234,7 +1234,7 @@ void QgsWMSSourceSelect::on_btnAddWMS_clicked()
   }
 
   // add selected WMS to config and mark as current
-  settings.setValue( QStringLiteral( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
+  settings.setValue( QStringLiteral( "qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
   QgsWMSConnection::setSelectedConnection( wmsTitle );
   populateConnectionList();
 

@@ -57,6 +57,7 @@
 #include "qgsstyle.h"
 
 #include "layertree/qgslayertreelayer.h"
+#include "qgslayertree.h"
 
 #include <QMessageBox>
 #include <QDir>
@@ -295,7 +296,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // this will be read by restoreOptionsBaseUi()
   if ( !settings.contains( QStringLiteral( "/Windows/VectorLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "/Windows/VectorLayerProperties/tab" ),
+    settings.setValue( QStringLiteral( "Windows/VectorLayerProperties/tab" ),
                        mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
@@ -1264,7 +1265,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog = new QgsRendererPropertiesDialog( mLayer, QgsStyle::defaultStyle(), true, this );
     mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
-    connect( mRendererDialog, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
+    connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
     connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );
 
     // display the menu to choose the output format (fix #5136)

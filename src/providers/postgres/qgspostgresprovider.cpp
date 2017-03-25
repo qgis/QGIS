@@ -4665,8 +4665,8 @@ QGISEXTERN bool deleteStyleById( const QString &uri, QString styleId, QString &e
     {
       deleted = true;
     }
+    conn->unref();
   }
-  conn->unref();
   return deleted;
 }
 

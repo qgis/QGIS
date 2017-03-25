@@ -84,10 +84,10 @@ void QgsComposerPicture::init()
 
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( refreshPicture() ) );
+  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, [ = ] { refreshPicture(); } );
 
   //connect to composer print resolution changing
-  connect( mComposition, SIGNAL( printResolutionChanged() ), this, SLOT( recalculateSize() ) );
+  connect( mComposition, &QgsComposition::printResolutionChanged, this, &QgsComposerPicture::recalculateSize );
 }
 
 void QgsComposerPicture::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -326,7 +326,7 @@ void QgsComposerPicture::loadRemotePicture( const QString &url )
   //pause until HTML fetch
   mLoaded = false;
   fetcher.fetchContent( QUrl( url ) );
-  connect( &fetcher, SIGNAL( finished() ), this, SLOT( remotePictureLoaded() ) );
+  connect( &fetcher, &QgsNetworkContentFetcher::finished, this, &QgsComposerPicture::remotePictureLoaded );
 
   while ( !mLoaded )
   {
@@ -666,8 +666,8 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
 
   if ( composerMapId == -1 ) //disable rotation from map
   {
-    disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-    disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+    disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+    disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
     mRotationMap = nullptr;
   }
 
@@ -678,12 +678,12 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
   }
   if ( mRotationMap )
   {
-    disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-    disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+    disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+    disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
   }
   mPictureRotation = map->mapRotation();
-  connect( map, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-  connect( map, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+  connect( map, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+  connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
   mRotationMap = map;
   updateMapRotation();
   emit pictureRotationChanged( mPictureRotation );
@@ -835,12 +835,12 @@ bool QgsComposerPicture::readXml( const QDomElement &itemElem, const QDomDocumen
 
     if ( mRotationMap )
     {
-      disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-      disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+      disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+      disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
     }
     mRotationMap = mComposition->getComposerMapById( rotationMapId );
-    connect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-    connect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+    connect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+    connect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
   }
 
   refreshPicture();

@@ -63,7 +63,7 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolylineWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );
 }
@@ -80,7 +80,7 @@ void QgsComposerPolylineWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol * >( w->symbol() ) );
+    mComposerPolyline->setPolylineStyleSymbol( static_cast< QgsLineSymbol * >( w->symbol() ) );
     mComposerPolyline->update();
   }
 }

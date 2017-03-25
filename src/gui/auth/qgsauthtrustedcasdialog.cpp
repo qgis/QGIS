@@ -48,16 +48,16 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
   {
     setupUi( this );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+             this, &QgsAuthTrustedCAsDialog::authMessageOut );
 
     setupCaCertsTree();
 
-    connect( treeTrustedCAs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( treeTrustedCAs->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthTrustedCAsDialog::selectionChanged );
 
-    connect( treeTrustedCAs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeTrustedCAs, &QTreeWidget::itemDoubleClicked,
+             this, &QgsAuthTrustedCAsDialog::handleDoubleClick );
 
 
     btnGroupByOrg->setChecked( false );
@@ -328,5 +328,5 @@ QgsMessageBar *QgsAuthTrustedCAsDialog::messageBar()
 int QgsAuthTrustedCAsDialog::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

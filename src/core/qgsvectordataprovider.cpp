@@ -39,7 +39,7 @@ QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri )
   , mCacheMinMaxDirty( true )
 {
   QgsSettings settings;
-  setEncoding( settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString() );
+  setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );
 }
 
 QString QgsVectorDataProvider::storageType() const

@@ -28,7 +28,7 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf
   setBackgroundEnabled( false );
 
   //repaint frame when multiframe content changes
-  connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
+  connect( mf, &QgsComposerMultiFrame::contentsChanged, this, &QgsComposerItem::repaint );
   if ( mf )
   {
     //force recalculation of rect, so that multiframe specified sizes can be applied

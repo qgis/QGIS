@@ -64,21 +64,21 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   {
     setupUi( this );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+             this, &QgsAuthAuthoritiesEditor::authMessageOut );
 
-    connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
-             this, SLOT( refreshCaCertsView() ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+             this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
     setupCaCertsTree();
 
-    connect( treeWidgetCAs->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( treeWidgetCAs->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthAuthoritiesEditor::selectionChanged );
 
-    connect( treeWidgetCAs, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeWidgetCAs, &QTreeWidget::itemDoubleClicked,
+             this, &QgsAuthAuthoritiesEditor::handleDoubleClick );
 
-    connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshCaCertsView() ) );
+    connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
     QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafile" ) );
     if ( !cafileval.isNull() )
@@ -336,10 +336,10 @@ void QgsAuthAuthoritiesEditor::updateCertTrustPolicyCache()
 void QgsAuthAuthoritiesEditor::populateUtilitiesMenu()
 {
   mActionDefaultTrustPolicy = new QAction( QStringLiteral( "Change default trust policy" ), this );
-  connect( mActionDefaultTrustPolicy, SIGNAL( triggered() ), this, SLOT( editDefaultTrustPolicy() ) );
+  connect( mActionDefaultTrustPolicy, &QAction::triggered, this, &QgsAuthAuthoritiesEditor::editDefaultTrustPolicy );
 
   mActionShowTrustedCAs = new QAction( QStringLiteral( "Show trusted authorities/issuers" ), this );
-  connect( mActionShowTrustedCAs, SIGNAL( triggered() ), this, SLOT( showTrustedCertificateAuthorities() ) );
+  connect( mActionShowTrustedCAs, &QAction::triggered, this, &QgsAuthAuthoritiesEditor::showTrustedCertificateAuthorities );
 
   mUtilitiesMenu = new QMenu( this );
   mUtilitiesMenu->addAction( mActionDefaultTrustPolicy );
@@ -621,8 +621,8 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 
   layout->addWidget( buttonBox );
 
-  connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), dlg, SLOT( close() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, dlg, &QWidget::close );
 
   dlg->setLayout( layout );
   dlg->setWindowModality( Qt::WindowModal );
@@ -788,5 +788,5 @@ QgsMessageBar *QgsAuthAuthoritiesEditor::messageBar()
 int QgsAuthAuthoritiesEditor::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

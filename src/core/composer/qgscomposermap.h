@@ -205,7 +205,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**
      * Getter for flag that determines if a stored layer set should be used
-     * or the current layer set of the QGIS map canvas.
+     * or the current layer set of the QGIS map canvas. This is just a GUI flag,
+     * and itself does not change which layers are rendered in the map.
+     * Instead, use setLayers() to control which layers are rendered.
      * @see setKeepLayerSet()
      * @see layers()
      */
@@ -213,23 +215,25 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**
      * Setter for flag that determines if the stored layer set should be used
-     * or the current layer set of the QGIS map canvas.
+     * or the current layer set of the QGIS map canvas. This is just a GUI flag,
+     * and itself does not change which layers are rendered in the map.
+     * Instead, use setLayers() to control which layers are rendered.
      * @see keepLayerSet()
      * @see layers()
      */
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
     /**
-     * Getter for stored layer set. This will usually be synchronized with the main app canvas
-     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * Getter for stored layer set. If empty, the current canvas layers will
+     * be used instead.
      * @see setLayers()
      * @see keepLayerSet()
      */
     QList<QgsMapLayer *> layers() const;
 
     /**
-     * Setter for stored layer set.  This will usually be synchronized with the main app canvas
-     * layer set (and layer order), unless the keepLayerSet() flag is true.
+     * Setter for stored layer set. If empty, the current canvas layers will
+     * be used instead.
      * @see layers()
      * @see keepLayerSet()
      */
@@ -421,12 +425,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
-    //! Sets whether updates to the composer map are enabled.
-    void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
-
-    //! Returns whether updates to the composer map are enabled.
-    bool updatesEnabled() const { return mUpdatesEnabled; }
-
     /** Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
@@ -519,7 +517,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool mCacheUpdated = false;
 
     //! \brief Preview style
-    PreviewMode mPreviewMode = QgsComposerMap::Rectangle;
+    PreviewMode mPreviewMode = QgsComposerMap::Cache;
 
     //! \brief Number of layers when cache was created
     int mNumCachedLayers;
@@ -557,9 +555,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
-
-    //! Whether updates to the map are enabled
-    bool mUpdatesEnabled = true;
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();

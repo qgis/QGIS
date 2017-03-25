@@ -1524,6 +1524,20 @@ tests:
         type: vector
 
   - algorithm: qgis:extractbyattribute
+    name: Extract by attribute (does not contain)
+    params:
+      FIELD: name
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '10'
+      VALUE: a
+    results:
+      OUTPUT:
+        name: expected/extract_by_attribute_does_not_contain.gml
+        type: vector
+
+  - algorithm: qgis:extractbyattribute
     name: Extract by attribute (greater)
     params:
       FIELD: floatval
@@ -2345,4 +2359,183 @@ tests:
     results:
       OUTPUT_LAYER:
         name: expected/topocolor_polys_min_dist.gml
+        type: vector
+
+  - algorithm: qgis:regularpoints
+    name: Regular point with standard extent
+    params:
+      EXTENT: -0.9182432432432436,10.208108108108108,-3.1266891891891904,5.480067567567567
+      INSET: 0.0
+      IS_SPACING: false
+      RANDOMIZE: false
+      SPACING: 100
+      CRS: EPSG:4326
+    results:
+      OUTPUT:
+        name: expected/regular_points.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Rectangular buffer shape
+    params:
+      HEIGHT: id
+      INPUT_LAYER:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '0'
+      WIDTH: id
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_rect.gml
+        type: vector
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Diamond buffer shape
+    params:
+      HEIGHT: id
+      INPUT_LAYER:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '1'
+      WIDTH: id
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_diamond.gml
+        type: vector
+
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Oval buffer shape
+    params:
+      HEIGHT: id
+      INPUT_LAYER:
+        name: custom/points_weighted.gml
+        type: vector
+      SEGMENTS: 36
+      SHAPE: '2'
+      WIDTH: id
+    results:
+      OUTPUT_LAYER:
+        name: expected/buffer_ovals.gml
+        type: vector
+
+  - algorithm: qgis:creategridlines
+    name: Lines grid 0.1 degree spacing
+    params:
+      CRS: EPSG:4326
+      EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
+      HOVERLAY: 0.0
+      HSPACING: 0.1
+      VOVERLAY: 0.0
+      VSPACING: 0.1
+    results:
+      OUTPUT:
+        name: expected/create_grid_lines.gml
+        type: vector
+
+  - algorithm: qgis:convertgeometrytype
+    name: polygon to centroid
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      TYPE: '0'
+    results:
+      OUTPUT:
+        name: expected/convert_poly_centroid.gml
+        type: vector
+
+  - algorithm: qgis:convertgeometrytype
+    name: polygon to multilinestring
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      TYPE: '3'
+    results:
+      OUTPUT:
+        name: expected/convert_poly_multiline.gml
+        type: vector
+
+  - algorithm: qgis:convertgeometrytype
+    name: polygon to nodes
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      TYPE: '1'
+    results:
+      OUTPUT:
+        name: expected/convert_poly_nodes.gml
+        type: vector
+
+  # - algorithm: qgis:extractbylocation
+  #   name: polygon intersecting points
+  #   params:
+  #     INPUT:
+  #       name: polys.gml
+  #       type: vector
+  #     INTERSECT:
+  #       name: custom/points.shp
+  #       type: vector
+  #     PRECISION: 0.0
+  #     PREDICATE: '[''intersects'']'
+  #   results:
+  #     OUTPUT:
+  #       name: expected/extract_by_location_intersection.gml
+  #       type: vector
+  #
+  # - algorithm: qgis:extractbylocation
+  #   name: points within polygons
+  #   params:
+  #     INPUT:
+  #       name: custom/points.shp
+  #       type: vector
+  #     INTERSECT:
+  #       name: polys.gml
+  #       type: vector
+  #     PRECISION: 0.0
+  #     PREDICATE: '[''within'']'
+  #   results:
+  #     OUTPUT:
+  #       name: expected/extract_by_location_within.gml
+  #       type: vector
+
+  - algorithm: qgis:addfieldtoattributestable
+    name: add float field
+    params:
+      FIELD_LENGTH: 10
+      FIELD_NAME: field
+      FIELD_PRECISION: 2
+      FIELD_TYPE: '1'
+      INPUT_LAYER:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/add_field.gml
+        type: vector
+
+  - algorithm: qgis:randompointsinextent
+    name: Random point in extent, don't check result
+    params:
+      CRS: EPSG:4326
+      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
+      MIN_DISTANCE: 0.0
+      POINT_NUMBER: 5
+    results: {}
+
+  - algorithm: script:selectbyattribute
+    name: Select by attribute
+    params:
+      INPUT_LAYER:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT_LAYER:
+        name: expected/selected_points.gml
         type: vector

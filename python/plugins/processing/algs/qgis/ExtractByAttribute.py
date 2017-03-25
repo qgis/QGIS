@@ -53,10 +53,12 @@ class ExtractByAttribute(GeoAlgorithm):
                  'begins with',
                  'contains',
                  'is null',
-                 'is not null'
+                 'is not null',
+                 'does not contain'
                  ]
     STRING_OPERATORS = ['begins with',
-                        'contains']
+                        'contains',
+                        'does not contain']
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract by attribute')
@@ -72,7 +74,9 @@ class ExtractByAttribute(GeoAlgorithm):
                                self.tr('begins with'),
                                self.tr('contains'),
                                self.tr('is null'),
-                               self.tr('is not null')]
+                               self.tr('is not null'),
+                               self.tr('does not contain')
+                               ]
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
@@ -112,6 +116,8 @@ class ExtractByAttribute(GeoAlgorithm):
             expr = """%s LIKE '%s%%'""" % (field_ref, value)
         elif operator == 'contains':
             expr = """%s LIKE '%%%s%%'""" % (field_ref, value)
+        elif operator == 'does not contain':
+            expr = """%s NOT LIKE '%%%s%%'""" % (field_ref, value)
         else:
             expr = '{} {} {}'.format(field_ref, operator, quoted_val)
 

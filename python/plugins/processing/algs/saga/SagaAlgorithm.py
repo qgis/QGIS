@@ -325,7 +325,7 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = getTempFilenameInTempFolder(filename + '.sgrd')
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        return 'io_gdal 0 -TRANSFORM -RESAMPLING 0 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
 
     def checkParameterValuesBeforeExecuting(self):
         """

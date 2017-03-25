@@ -405,12 +405,6 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   Q_UNUSED( event );
   QPainter painter( this );
 
-  //draw a frame
-  QStyleOptionFrame option = QStyleOptionFrame();
-  option.initFrom( this );
-  option.state = this->hasFocus() ? QStyle::State_Active : QStyle::State_None;
-  style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
-
   if ( !mWidgetImage || !mWheelImage || !mTriangleImage )
   {
     createImages( size() );
@@ -1430,7 +1424,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), 0 ).toInt();
+  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "ColorWidgets/textWidgetFormat" ), 0 ).toInt();
 
   updateText();
 }
@@ -1529,7 +1523,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/ColorWidgets/textWidgetFormat" ), ( int )mFormat );
+  settings.setValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), ( int )mFormat );
 
   updateText();
 }

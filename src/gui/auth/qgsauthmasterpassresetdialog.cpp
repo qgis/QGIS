@@ -80,16 +80,6 @@ void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString
   validatePasswords();
 }
 
-void QgsMasterPasswordResetDialog::on_chkPassShowCurrent_stateChanged( int state )
-{
-  leMasterPassCurrent->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-}
-
-void QgsMasterPasswordResetDialog::on_chkPassShowNew_stateChanged( int state )
-{
-  leMasterPassNew->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
-}
-
 void QgsMasterPasswordResetDialog::validatePasswords()
 {
   QString ss1 = mPassCurOk ? QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QLineEdit" ) )

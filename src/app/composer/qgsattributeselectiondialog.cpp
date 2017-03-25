@@ -29,7 +29,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QScrollArea>
 #include <QSpinBox>
 #include <QSortFilterProxyModel>
 
@@ -284,7 +283,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
 
   if ( mComposerTable )
   {
@@ -323,7 +322,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()

@@ -21,6 +21,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
+#include <memory>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band ):
   QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) ), mBand( band )
@@ -52,18 +53,17 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
 {
   Q_UNUSED( bandNo );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
-  QgsRasterBlock *inputBlock = mInput->block( mBand, extent, width, height, feedback );
+  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   bool hasTransparency = usesTransparency();
@@ -71,14 +71,12 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   {
     // Nothing to do, just retype if necessary
     inputBlock->convert( Qgis::ARGB32_Premultiplied );
-    delete outputBlock;
-    return inputBlock;
+    return inputBlock.release();
   }
 
   if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   // make sure input is also premultiplied!
@@ -92,8 +90,7 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
   }
 
-  delete inputBlock;
-  return outputBlock;
+  return outputBlock.release();
 }
 
 void QgsSingleBandColorDataRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const

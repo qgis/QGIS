@@ -58,7 +58,17 @@ class QgisInterface : QObject
 
     /* Exposed functions */
 
-    //! Zoom to full extent of map layers
+    virtual QList< QgsMapCanvas* > mapCanvases() = 0;
+
+    virtual QgsMapCanvas* createNewMapCanvas( const QString& name ) = 0;
+
+    virtual void closeMapCanvas( const QString &name ) = 0;
+
+  public slots:
+
+
+
+
     virtual void zoomFull() = 0;
 
     //! Zoom to previous view extent
@@ -200,28 +210,11 @@ class QgisInterface : QObject
     /** Adds a widget to the user input tool bar.*/
     virtual void addUserInputWidget( QWidget* widget ) = 0;
 
-    /** Return mainwindows / composer views of running composer instances (currently only one) */
-    virtual QList<QgsComposerView*> activeComposers() = 0;
+    virtual QList<QgsComposerInterface *> openComposers() = 0;
+    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
+    virtual void closeComposer( QgsComposition *composition ) = 0;
+    virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 
-    /** Create a new composer
-     * @param title window title for new composer (one will be generated if empty)
-     * @return pointer to composer's view
-     * @note new composer window will be shown and activated
-     */
-    virtual QgsComposerView* createNewComposer( const QString& title = QString() ) = 0;
-
-    /** Duplicate an existing parent composer from composer view
-     * @param composerView pointer to existing composer view
-     * @param title window title for duplicated composer (one will be generated if empty)
-     * @return pointer to duplicate composer's view
-     * @note duplicate composer window will be hidden until loaded, then shown and activated
-     */
-    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, const QString& title = QString() ) = 0;
-
-    /** Deletes parent composer of composer view, after closing composer window */
-    virtual void deleteComposer( QgsComposerView* composerView ) = 0;
-
-    /** Return changeable options built from settings and/or defaults */
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
     /** Generate stylesheet
@@ -296,53 +289,16 @@ class QgisInterface : QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
-    virtual bool registerMainWindowAction( QAction* action, const QString& defaultShortcut ) = 0;
+    virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
+    virtual bool unregisterMainWindowAction( QAction *action ) = 0;
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
-    virtual bool unregisterMainWindowAction( QAction* action ) = 0;
-
-    /** Register a new tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
-     * @note Ownership of the factory is not transferred, and the factory must
-     *       be unregistered when plugin is unloaded.
-     * @see unregisterMapLayerPropertiesFactory() */
-    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
-
-    /** Unregister a previously registered tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
-     * @see registerMapLayerPropertiesFactory()
-    */
-    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory* factory ) = 0;
-
-    /** Register a new custom drop handler.
-     * @note added in QGIS 3.0
-     * @note Ownership of the factory is not transferred, and the factory must
-     *       be unregistered when plugin is unloaded.
-     * @see unregisterCustomDropHandler() */
-    virtual void registerCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
-
-    /** Unregister a previously registered custom drop handler.
-     * @note added in QGIS 3.0
-     * @see registerCustomDropHandler() */
-    virtual void unregisterCustomDropHandler( QgsCustomDropHandler* handler ) = 0;
-
-    // @todo is this deprecated in favour of QgsContextHelp?
-    /** Open a url in the users browser. By default the QGIS doc directory is used
-     * as the base for the URL. To open a URL that is not relative to the installed
-     * QGIS documentation, set useQgisDocDirectory to false.
-     * @param url URL to open
-     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
-     * url to the QGIS documentation directory path (prefix/share/doc)
-     * @deprecated
-     */
-    virtual void openURL( const QString& url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
-
-    /** Accessors for inserting items into menus and toolbars.
-     * An item can be inserted before any existing action.
-     */
-
-    // Menus
     virtual QMenu *projectMenu() = 0;
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
@@ -554,29 +510,10 @@ class QgisInterface : QObject
     virtual int messageTimeout() = 0;
 
   signals:
-    /** Emitted whenever current (selected) layer changes.
-     *  The pointer to layer can be null if no layer is selected
-     */
-    void currentLayerChanged( QgsMapLayer * layer );
-
-    /**
-     * This signal is emitted when a new composer instance has been created
-     */
-    void composerAdded( QgsComposerView* v );
-
-    /**
-     * This signal is emitted before a new composer instance is going to be removed
-     */
-    void composerWillBeRemoved( QgsComposerView* v );
-
-    /** This signal is emitted when a composer instance has been removed
-     * @note added in version 2.9
-     */
-    void composerRemoved( QgsComposerView* v );
-
-    /**
-     * This signal is emitted when the initialization is complete
-     */
+    void currentLayerChanged( QgsMapLayer *layer );
+    void composerOpened( QgsComposerInterface *composer );
+    void composerWillBeClosed( QgsComposerInterface *composer );
+    void composerClosed( QgsComposerInterface *composer );
     void initializationCompleted();
     /** Emitted when a project file is successfully read
      * @note

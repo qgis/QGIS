@@ -48,6 +48,8 @@ class QgsAbstractGeometry
         sipType = sipType_QgsCircularString;
       else if (dynamic_cast<QgsCompoundCurve*>(sipCpp) != NULL )
         sipType = sipType_QgsCompoundCurve;
+      else if (dynamic_cast<QgsTriangle*>(sipCpp) != NULL )
+        sipType = sipType_QgsTriangle;
       else if (dynamic_cast<QgsPolygonV2*>(sipCpp) != NULL )
         sipType = sipType_QgsPolygonV2;
       else if (dynamic_cast<QgsCurvePolygon*>(sipCpp) != NULL )

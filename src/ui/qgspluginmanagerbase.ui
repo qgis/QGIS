@@ -569,7 +569,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QgsScrollArea" name="scrollArea">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
@@ -959,9 +959,10 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsWebView</class>
-   <extends>QWidget</extends>
-   <header>qgswebview.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -973,6 +974,11 @@ p, li { white-space: pre-wrap; }
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsWebView</class>
+   <extends>QWidget</extends>
+   <header>qgswebview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -68,7 +68,7 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolygonWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolygon->beginCommand( tr( "Polygon style changed" ) );
 }
@@ -87,7 +87,7 @@ void QgsComposerPolygonWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
+    mComposerPolygon->setPolygonStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
     mComposerPolygon->update();
   }
 }

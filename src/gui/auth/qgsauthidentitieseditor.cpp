@@ -49,21 +49,21 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   {
     setupUi( this );
 
-    connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-             this, SLOT( authMessageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+             this, &QgsAuthIdentitiesEditor::authMessageOut );
 
-    connect( QgsAuthManager::instance(), SIGNAL( authDatabaseChanged() ),
-             this, SLOT( refreshIdentitiesView() ) );
+    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+             this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     setupIdentitiesTree();
 
-    connect( treeIdentities->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ),
-             this, SLOT( selectionChanged( const QItemSelection &, const QItemSelection & ) ) );
+    connect( treeIdentities->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsAuthIdentitiesEditor::selectionChanged );
 
-    connect( treeIdentities, SIGNAL( itemDoubleClicked( QTreeWidgetItem *, int ) ),
-             this, SLOT( handleDoubleClick( QTreeWidgetItem *, int ) ) );
+    connect( treeIdentities, &QTreeWidget::itemDoubleClicked,
+             this, &QgsAuthIdentitiesEditor::handleDoubleClick );
 
-    connect( btnViewRefresh, SIGNAL( clicked() ), this, SLOT( refreshIdentitiesView() ) );
+    connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     btnGroupByOrg->setChecked( false );
     QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
@@ -402,5 +402,5 @@ QgsMessageBar *QgsAuthIdentitiesEditor::messageBar()
 int QgsAuthIdentitiesEditor::messageTimeout()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
 }

@@ -329,7 +329,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   else
     QgisApp::instance()->panelMenu()->addAction( mDock->toggleViewAction() );
 
-  int size = mySettings.value( QStringLiteral( "/IconSize" ), 16 ).toInt();
+  int size = mySettings.value( QStringLiteral( "IconSize" ), 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;
@@ -344,33 +344,33 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   }
   mIdentifyToolbar->setIconSize( QSize( size, size ) );
 
-  mExpandNewAction->setChecked( mySettings.value( QStringLiteral( "/Map/identifyExpand" ), false ).toBool() );
+  mExpandNewAction->setChecked( mySettings.value( QStringLiteral( "Map/identifyExpand" ), false ).toBool() );
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1 );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
-  int width = mySettings.value( QStringLiteral( "/Windows/Identify/columnWidth" ), "0" ).toInt();
+  int width = mySettings.value( QStringLiteral( "Windows/Identify/columnWidth" ), "0" ).toInt();
   if ( width > 0 )
   {
     lstResults->setColumnWidth( 0, width );
   }
-  width = mySettings.value( QStringLiteral( "/Windows/Identify/columnWidthTable" ), "0" ).toInt();
+  width = mySettings.value( QStringLiteral( "Windows/Identify/columnWidthTable" ), "0" ).toInt();
   if ( width > 0 )
   {
     tblResults->setColumnWidth( 0, width );
   }
 
   // retrieve mode before on_cmbIdentifyMode_currentIndexChanged resets it on addItem
-  int identifyMode = mySettings.value( QStringLiteral( "/Map/identifyMode" ), 0 ).toInt();
+  int identifyMode = mySettings.value( QStringLiteral( "Map/identifyMode" ), 0 ).toInt();
 
   cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
   cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
   cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
   cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
-  cbxAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "/Map/identifyAutoFeatureForm" ), false ).toBool() );
+  cbxAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 
   // view modes
   cmbViewMode->addItem( tr( "Tree" ), 0 );
@@ -409,7 +409,7 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
   clearHighlights();
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
+  settings.setValue( QStringLiteral( "Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
 
   if ( mActionPopup )
     delete mActionPopup;
@@ -1140,8 +1140,8 @@ void QgsIdentifyResultsDialog::saveWindowLocation()
 {
   QgsSettings settings;
   // first column width
-  settings.setValue( QStringLiteral( "/Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
-  settings.setValue( QStringLiteral( "/Windows/Identify/columnWidthTable" ), tblResults->columnWidth( 0 ) );
+  settings.setValue( QStringLiteral( "Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
+  settings.setValue( QStringLiteral( "Windows/Identify/columnWidthTable" ), tblResults->columnWidth( 0 ) );
 }
 
 void QgsIdentifyResultsDialog::setColumnText( int column, const QString &label )
@@ -1621,10 +1621,10 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   }
 
   QgsSettings settings;
-  QColor color = QColor( settings.value( QStringLiteral( "/Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-  int alpha = settings.value( QStringLiteral( "/Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-  double buffer = settings.value( QStringLiteral( "/Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-  double minWidth = settings.value( QStringLiteral( "/Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+  QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+  double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+  double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
 
   highlight->setColor( color ); // sets also fill with default alpha
   color.setAlpha( alpha );
@@ -1857,7 +1857,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Map/identifyMode" ), cmbIdentifyMode->itemData( index ).toInt() );
+  settings.setValue( QStringLiteral( "Map/identifyMode" ), cmbIdentifyMode->itemData( index ).toInt() );
 }
 
 void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
@@ -1868,13 +1868,13 @@ void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
 void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Map/identifyAutoFeatureForm" ), checked );
+  settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );
 }
 
 void QgsIdentifyResultsDialog::on_mExpandNewAction_triggered( bool checked )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Map/identifyExpand" ), checked );
+  settings.setValue( QStringLiteral( "Map/identifyExpand" ), checked );
 }
 
 void QgsIdentifyResultsDialog::on_mActionCopy_triggered( bool checked )

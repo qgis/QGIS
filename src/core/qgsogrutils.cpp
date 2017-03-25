@@ -21,6 +21,13 @@
 #include <QTextCodec>
 #include <QUuid>
 
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For QGIS purposes, both
+// states (unset/null) are equivalent.
+#ifndef OGRNullMarker
+#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
+#endif
+
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;
@@ -119,7 +126,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   if ( ok )
     *ok = true;
 
-  if ( OGR_F_IsFieldSet( ogrFet, attIndex ) )
+  if ( OGR_F_IsFieldSetAndNotNull( ogrFet, attIndex ) )
   {
     switch ( fields.at( attIndex ).type() )
     {

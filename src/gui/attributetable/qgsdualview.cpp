@@ -28,6 +28,7 @@
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgssettings.h"
+#include "qgsscrollarea.h"
 
 #include <QClipboard>
 #include <QDialog>
@@ -95,7 +96,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mAttributeForm = new QgsAttributeForm( mLayer, QgsFeature(), mEditorContext );
   if ( !context.parentContext() )
   {
-    mAttributeEditorScrollArea = new QScrollArea();
+    mAttributeEditorScrollArea = new QgsScrollArea();
     mAttributeEditorScrollArea->setWidgetResizable( true );
     mAttributeEditor->layout()->addWidget( mAttributeEditorScrollArea );
     mAttributeEditorScrollArea->setWidget( mAttributeForm );
@@ -245,8 +246,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
 
     case QgsAttributeTableFilterModel::ShowSelected:
       connect( masterModel()->layer(), &QgsVectorLayer::selectionChanged, this, &QgsDualView::updateSelectedFeatures );
-      if ( masterModel()->layer()->selectedFeatureCount() > 0 )
-        r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
+      r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
       break;
   }
 
@@ -271,7 +271,7 @@ void QgsDualView::initLayerCache( bool cacheGeometry )
 {
   // Initialize the cache
   QgsSettings settings;
-  int cacheSize = settings.value( QStringLiteral( "/qgis/attributeTableRowCache" ), "10000" ).toInt();
+  int cacheSize = settings.value( QStringLiteral( "qgis/attributeTableRowCache" ), "10000" ).toInt();
   mLayerCache = new QgsVectorLayerCache( mLayer, cacheSize, this );
   mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayer->dataProvider()->capabilities() ) )
@@ -718,10 +718,7 @@ void QgsDualView::updateSelectedFeatures()
   if ( r.filterType() == QgsFeatureRequest::FilterNone && r.filterRect().isNull() )
     return; // already requested all features
 
-  if ( masterModel()->layer()->selectedFeatureCount() > 0 )
-    r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
-  else
-    r.disableFilter();
+  r.setFilterFids( masterModel()->layer()->selectedFeatureIds() );
   mMasterModel->setRequest( r );
   mMasterModel->loadLayer();
   emit filterChanged();

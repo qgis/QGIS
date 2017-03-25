@@ -271,13 +271,13 @@ QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &data
     setWindowTitle( tr( "Authentication Config ID String Editor" ) );
 
     buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-    connect( buttonBox, SIGNAL( accepted() ), this, SLOT( saveChanges() ) );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthConfigUriEdit::saveChanges );
 
-    connect( buttonBox->button( QDialogButtonBox::Reset ), SIGNAL( clicked() ), this, SLOT( resetChanges() ) );
+    connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsAuthConfigUriEdit::resetChanges );
 
-    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdChanged( QString ) ), this, SLOT( authCfgUpdated( QString ) ) );
-    connect( wdgtAuthSelect, SIGNAL( selectedConfigIdRemoved( QString ) ), this, SLOT( authCfgRemoved( QString ) ) );
+    connect( wdgtAuthSelect, &QgsAuthConfigSelect::selectedConfigIdChanged, this, &QgsAuthConfigUriEdit::authCfgUpdated );
+    connect( wdgtAuthSelect, &QgsAuthConfigSelect::selectedConfigIdRemoved, this, &QgsAuthConfigUriEdit::authCfgRemoved );
 
     wdgtAuthSelect->setDataProviderKey( dataprovider );
     setDataSourceUri( datauri );

@@ -29,7 +29,7 @@
 class QgsFeatureRequest;
 class QSignalMapper;
 class QgsMapLayerAction;
-class QScrollArea;
+class QgsScrollArea;
 
 /** \ingroup gui
  * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
@@ -351,7 +351,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsDistanceArea mDistanceArea;
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
-    QScrollArea *mAttributeEditorScrollArea = nullptr;
+    QgsScrollArea *mAttributeEditorScrollArea = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 
     friend class TestQgsDualView;

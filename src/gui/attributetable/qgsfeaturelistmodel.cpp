@@ -42,13 +42,13 @@ void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceMo
   if ( mFilterModel )
   {
     // rewire (filter-)change events in the source model so this proxy reflects the changes
-    connect( mFilterModel, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ), SLOT( onBeginRemoveRows( const QModelIndex &, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ), SLOT( onEndRemoveRows( const QModelIndex &, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsAboutToBeInserted( const QModelIndex &, int, int ) ), SLOT( onBeginInsertRows( const QModelIndex &, int, int ) ) );
-    connect( mFilterModel, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ), SLOT( onEndInsertRows( const QModelIndex &, int, int ) ) );
+    connect( mFilterModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, &QgsFeatureListModel::onBeginRemoveRows );
+    connect( mFilterModel, &QAbstractItemModel::rowsRemoved, this, &QgsFeatureListModel::onEndRemoveRows );
+    connect( mFilterModel, &QAbstractItemModel::rowsAboutToBeInserted, this, &QgsFeatureListModel::onBeginInsertRows );
+    connect( mFilterModel, &QAbstractItemModel::rowsInserted, this, &QgsFeatureListModel::onEndInsertRows );
     // propagate sort order changes from source model to views connected to this model
-    connect( mFilterModel, SIGNAL( layoutAboutToBeChanged() ), this, SIGNAL( layoutAboutToBeChanged() ) );
-    connect( mFilterModel, SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
+    connect( mFilterModel, &QAbstractItemModel::layoutAboutToBeChanged, this, &QAbstractItemModel::layoutAboutToBeChanged );
+    connect( mFilterModel, &QAbstractItemModel::layoutChanged, this, &QAbstractItemModel::layoutChanged );
   }
 }
 
@@ -132,11 +132,10 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     return Qt::AlignLeft;
   }
 
-
   if ( role == Qt::BackgroundColorRole
-       || Qt::TextColorRole
-       || Qt::DecorationRole
-       || Qt::FontRole )
+       || role == Qt::TextColorRole
+       || role == Qt::DecorationRole
+       || role == Qt::FontRole )
   {
     QgsVectorLayer *layer = mFilterModel->layer();
     QgsFeature feat;

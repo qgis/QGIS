@@ -201,7 +201,7 @@ void QgsCompositionWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposition->setPageStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
+    mComposition->setPageStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
     mComposition->update();
   }
 }
@@ -548,7 +548,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsCompositionWidget::cleanUpStyleSelector );
   openPanel( d );
 }
 

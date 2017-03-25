@@ -259,6 +259,8 @@ class ParameterCrs(Parameter):
         (if the authority is EPSG) or proj4 string of the CRS (in case
         of other authorities or user defined projections).'''
         Parameter.__init__(self, name, description, default, optional, metadata)
+        if self.value == 'ProjectCrs':
+            self.value = QgsProject.instance().crs().authid()
 
     def setValue(self, value):
         if not bool(value):
@@ -280,6 +282,9 @@ class ParameterCrs(Parameter):
                 return True
         except:
             pass
+        if value == 'ProjectCrs':
+            self.value = QgsProject.instance().crs().authid()
+            return True
 
         # TODO: check it is a valid authid
         self.value = value

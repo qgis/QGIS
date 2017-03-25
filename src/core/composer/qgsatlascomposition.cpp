@@ -45,7 +45,7 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition *composition )
 {
 
   //listen out for layer removal
-  connect( mComposition->project(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( mComposition->project(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsAtlasComposition::removeLayers );
 }
 
 void QgsAtlasComposition::setEnabled( bool enabled )

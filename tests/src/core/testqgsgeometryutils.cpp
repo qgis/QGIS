@@ -52,6 +52,9 @@ class TestQgsGeometryUtils: public QObject
     void testSqrDistToLine();
     void testAngleThreePoints();
     void testMidPoint();
+    void testGradient();
+    void testCoefficients();
+    void testPerpendicularSegment();
 };
 
 
@@ -547,6 +550,87 @@ void TestQgsGeometryUtils::testMidPoint()
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZ, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZ, 3, 4, 1 ) );
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointM, 2, 2, 0, 2 ) ), QgsPointV2( QgsWkbTypes::PointM, 3, 4, 0, 1 ) );
   QCOMPARE( QgsGeometryUtils::midpoint( p1, QgsPointV2( QgsWkbTypes::PointZM, 2, 2, 2, 2 ) ), QgsPointV2( QgsWkbTypes::PointZM, 3, 4, 1, 1 ) );
+}
+
+void TestQgsGeometryUtils::testGradient()
+{
+  QVERIFY( QgsGeometryUtils::gradient( QgsPointV2( 4, 6 ), QgsPointV2( 4, 8 ) ) == INFINITY );
+  QGSCOMPARENEAR( QgsGeometryUtils::gradient( QgsPointV2( 2, 8 ), QgsPointV2( 3, 20 ) ), 12, 0.00000001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::gradient( QgsPointV2( 2, -88 ), QgsPointV2( 4, -4 ) ), 42, 0.00000001 );
+  QGSCOMPARENEAR( QgsGeometryUtils::gradient( QgsPointV2( 4, 6 ), QgsPointV2( 8, 6 ) ), 0, 0.00000001 );
+}
+
+void TestQgsGeometryUtils::testCoefficients()
+{
+  double a, b, c;
+
+  // pt1.x == pt2.x
+  QgsGeometryUtils::coefficients( QgsPointV2( 4, 6 ), QgsPointV2( 4, 8 ), a, b, c );
+  QGSCOMPARENEAR( a, 1, 0.00000001 );
+  QGSCOMPARENEAR( b, 0, 0.00000001 );
+  QGSCOMPARENEAR( c, -4, 0.00000001 );
+
+  // pt1.y == pt2.y
+  QgsGeometryUtils::coefficients( QgsPointV2( 6, 4 ), QgsPointV2( 8, 4 ), a, b, c );
+  QGSCOMPARENEAR( a, 0, 0.00000001 );
+  QGSCOMPARENEAR( b, 1, 0.00000001 );
+  QGSCOMPARENEAR( c, -4, 0.00000001 );
+
+  // else
+  QgsGeometryUtils::coefficients( QgsPointV2( 6, 4 ), QgsPointV2( 4, 8 ), a, b, c );
+  QGSCOMPARENEAR( a, -4, 0.00000001 );
+  QGSCOMPARENEAR( b, -2, 0.00000001 );
+  QGSCOMPARENEAR( c, 32, 0.00000001 );
+  QgsGeometryUtils::coefficients( QgsPointV2( -4, -2 ), QgsPointV2( 4, 2 ), a, b, c );
+  QGSCOMPARENEAR( a, -4, 0.00000001 );
+  QGSCOMPARENEAR( b, 8, 0.00000001 );
+  QGSCOMPARENEAR( c, 0, 0.00000001 );
+}
+void TestQgsGeometryUtils::testPerpendicularSegment()
+{
+  QgsPointV2 p1( 3, 13 );
+  QgsPointV2 s1( 2, 3 );
+  QgsPointV2 s2( 7, 11 );
+
+  QgsLineString line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
+
+  // default case
+  QgsLineString line;
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 6.7753, 10.6404 ) );
+  QGSCOMPARENEARPOINT( line.pointN( 0 ), line_r.pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( line.pointN( 1 ), line_r.pointN( 1 ), 0.0001 );
+
+  // perpendicular line don't intersect segment
+  line.clear();
+  p1 = QgsPointV2( 11, 11 );
+  line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 8.1236, 12.7978 ) );
+  QGSCOMPARENEARPOINT( line.pointN( 0 ), line_r.pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( line.pointN( 1 ), line_r.pointN( 1 ), 0.0001 );
+
+  // horizontal
+  s1 = QgsPointV2( -3, 3 );
+  s2 = QgsPointV2( 2, 3 );
+  line.clear();
+  p1 = QgsPointV2( 3, 13 );
+  line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 3, 3 ) );
+  QCOMPARE( line.pointN( 0 ), line_r.pointN( 0 ) );
+  QCOMPARE( line.pointN( 1 ), line_r.pointN( 1 ) );
+
+  // vertical
+  s1 = QgsPointV2( 3, 13 );
+  s2 = QgsPointV2( 3, 3 );
+  line.clear();
+  p1 = QgsPointV2( -7, 8 );
+  line_r = QgsGeometryUtils::perpendicularSegment( p1, s1, s2 );
+  line.addVertex( p1 );
+  line.addVertex( QgsPointV2( 3, 8 ) );
+  QCOMPARE( line.pointN( 0 ), line_r.pointN( 0 ) );
+  QCOMPARE( line.pointN( 1 ), line_r.pointN( 1 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

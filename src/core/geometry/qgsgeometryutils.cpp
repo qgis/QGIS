@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
 
+#include <memory>
 #include <QStringList>
 #include <QVector>
 #include <QRegularExpression>
@@ -832,6 +833,79 @@ QgsPointV2 QgsGeometryUtils::midpoint( const QgsPointV2 &pt1, const QgsPointV2 &
   }
 
   return QgsPointV2( pType, x, y, z, m );
+}
+
+double QgsGeometryUtils::gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 )
+{
+  double delta_x = pt2.x() - pt1.x();
+  double delta_y = pt2.y() - pt1.y();
+  if ( qgsDoubleNear( delta_x, 0.0 ) )
+  {
+    return INFINITY;
+  }
+
+  return delta_y / delta_x;
+}
+
+void QgsGeometryUtils::coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c )
+{
+  if ( qgsDoubleNear( pt1.x(), pt2.x() ) )
+  {
+    a = 1;
+    b = 0;
+    c = -pt1.x();
+  }
+  else if ( qgsDoubleNear( pt1.y(), pt2.y() ) )
+  {
+    a = 0;
+    b = 1;
+    c = -pt1.y();
+  }
+  else
+  {
+    a = pt1.y() - pt2.y();
+    b = pt2.x() - pt1.x();
+    c = pt1.x() * pt2.y() - pt1.y() * pt2.x();
+  }
+
+}
+
+QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 )
+{
+  QgsLineString line;
+  QgsPointV2 p2;
+
+  if ( ( p == s1 ) || ( p == s2 ) )
+  {
+    return line;
+  }
+
+  double a, b, c;
+  coefficients( s1, s2, a, b, c );
+
+  if ( qgsDoubleNear( a, 0 ) )
+  {
+    p2 = QgsPointV2( p.x(), s1.y() );
+  }
+  else if ( qgsDoubleNear( b, 0 ) )
+  {
+    p2 = QgsPointV2( s1.x(), p.y() );
+  }
+  else
+  {
+    double y = ( -c - a * p.x() ) / b;
+    double m = gradient( s1, s2 );
+    double d2 = 1 + m * m;
+    double H = p.y() - y;
+    double dx = m * H / d2;
+    double dy = m * dx;
+    p2 = QgsPointV2( p.x() + dx, y + dy );
+  }
+
+  line.addVertex( p );
+  line.addVertex( p2 );
+
+  return line;
 }
 
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )

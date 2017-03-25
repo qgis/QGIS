@@ -365,6 +365,14 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 - fileMenu() has been removed, use projectMenu() instead.
 - actionRemoveLayer was removed as it no longer exists.
 - actionTouch was removed, as the corresponding action no longer exists (see notes on QgsMapToolTouch)
+- activeComposers(), createNewComposer(), duplicateComposer(), deleteComposer(), composerAdded(),
+composerWillBeRemoved(), composerRemoved() were all removed. Composer windows are now only created
+on demand, and destroyed when the window is closed. The new interface methods openComposers(),
+openComposer(), closeComposer(), composerOpened(), composerWillBeClosed() and composerClosed()
+are similar, but only apply to composer windows when they are exist. To access all compositions
+from a project, the new QgsProject.instance().layoutManager() class should be used instead.
+Additionally, the new interface methods work with QgsComposerInterface objects instead
+of QgsComposerView objects.
 
 
 QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
@@ -720,7 +728,12 @@ were removed. Use setSnapTolerance() and snapTolerance() instead.
 - dataDefinedProperty() and setDataDefinedProperty() now use the QgsProperty framework instead
 of QgsDataDefined objects.
 - mapSettings() was removed. Use QgsComposerMap::mapSettings() instead.
-
+- The composerArrowAdded, composerPolygonAdded, composerPolylineAdded, composerHtmlFrameAdded, composerItemGroupAdded,
+composerLabelAdded, composerMapAdded, composerScaleBarAdded, composerLegendAdded, composerPictureAdded, 
+composerShapeAdded, and composerTableFrameAdded were removed. Use the general itemAdded signal instead to catch
+all these item added events.
+- addComposerMap no longer takes a setDefaultPreviewStyle argument.
+- the mapsToRestore parameter has been removed from addItemsFromXml
 
 QgsCoordinateReferenceSystem        {#qgis_api_break_3_0_QgsCoordinateReferenceSystem}
 ----------------------------
@@ -1049,6 +1062,9 @@ QgsFeatureRequest        {#qgis_api_break_3_0_QgsFeatureRequest}
 -----------------
 
 - AllAttributes was renamed to ALL_ATTRIBUTES
+- FilterRect was removed. This enum value was unused, and QgsFeatureRequest.filterRect() should be used
+instead. Check for a null rectangle returned by filterRect() to determine whether a filter rect
+is in place.
 
 QgsFieldCombobox        {#qgis_api_break_3_0_QgsFieldCombobox}
 ----------------
@@ -1153,9 +1169,9 @@ QgsEditorWidgetFactory         {#qgis_api_break_3_0_QgsEditorWidgetFactory}
 - `writeConfig` has been removed. The configuration is read and written
   from and to a QVariantMap automatically.
 - `representValue` has been removed. Use QgsFieldFormatter::representValue() instead
-- `sortValue` has been removed. Use QgsFieldFormatter::representValue() instead
-- `alignmentFlag` has been removed. Use QgsFieldFormatter::representValue() instead
-- `createCache` has been removed. Use QgsFieldFormatter::representValue() instead
+- `sortValue` has been removed. Use QgsFieldFormatter::sortValue() instead
+- `alignmentFlag` has been removed. Use QgsFieldFormatter::alignmentFlag() instead
+- `createCache` has been removed. Use QgsFieldFormatter::createCache() instead
 
 
 QgsFeedback            {#qgis_api_break_3_0_QgsFeedback}
@@ -1251,16 +1267,16 @@ QgsLayerTreeLayer        {#qgis_api_break_3_0_QgsLayerTreeLayer}
 - setVisible() is replaced by QgsLayerTreeNode::setItemVisibilityChecked()
 - readXml() does not resolve layer from the layer ID anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
 
-QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
-----------------
-
-- readXml() does not resolve layers from the layer IDs anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
-
-
 QgsLayerTreeMapCanvasBridge        {#qgis_api_break_3_0_QgsLayerTreeMapCanvasBridge}
 -----------------
 
 - setAutoEnableCrsTransform() and autoEnableCrsTransform() were removed. CRS transformation is now always enabled.
+- setCanvasLayers() now requires a third map layer list argument for storage of all layers in the layer tree order.
+- `setCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().setCustomLayerOrder()` instead
+- `customLayerOrder()` has been removed. Use `QgsProject::layerTree().customLayerOrder()` or `QgsProject::layerOrder()` instead
+- `hasCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().hasCustomLayerOrder()` instead
+- `setHasCustomLayerOrder()` has been removed. Use `QgsProject::layerTree().setHasCustomLayerOrder()` instead
+- `defaultLayerOrder()` has been removed.
 
 
 QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
@@ -1274,6 +1290,7 @@ QgsLayerTreeModel        {#qgis_api_break_3_0_QgsLayerTreeMode}
 - refreshLayerSymbology() was removed. Use refreshLayerLegend() instead.
 - setAutoCollapseSymbologyNodes() was removed. Use setAutoCollapseLegendNodes() instead.
 - autoCollapseSymbologyNodes() was removed. Use autoCollapseLegendNodes() instead.
+- the constructor takes a `QgsLayerTree*` instead of a `QgsLayerTreeGroup*`
 
 QgsLayerTreeModelLegendNode        {#qgis_api_break_3_0_QgsLayerTreeModelLegendNode}
 ---------------------------
@@ -1287,6 +1304,7 @@ QgsLayerTreeNode        {#qgis_api_break_3_0_QgsLayerTreeNode}
 - readCommonXML() has been renamed to readCommonXml()
 - writeCommonXML() has been renamed to writeCommonXml()
 - the signature of the visibilityChanged() signal is changed to visibilityChanged( QgsLayerTreeNode *node )
+- readXml() does not resolve layers from the layer IDs anymore. Call resolveReferences() or use readXml() override with QgsProject as the second argument.
 
 QgsLimitedRandomColorRampDialog        {#qgis_api_break_3_0_QgsLimitedRandomRampDialog}
 -------------------------------
@@ -1460,6 +1478,11 @@ QgsNetworkAccessManager        {#qgis_api_break_3_0_QgsNetworkAccessManager}
 - deleteReply() was removed. Use abort() and deleteLayer() on the reply directly.
 - requestSent signal was removed. This is no longer emitted.
 
+QgsNewVectorLayerDialog        {#qgis_api_break_3_0_QgsNewVectorLayerDialog}
+-----------------------
+
+- selectedCrsId() was removed. Use crs() instead.
+
 
 QgsOSMElement        {#qgis_api_break_3_0_QgsOSMElement}
 -------------
@@ -1622,7 +1645,7 @@ QgsRasterCalcNode        {#qgis_api_break_3_0_QgsRasterCalcNode}
 - QgsRasterCalcNode::calculate has been removed, use method with QgsRasterBlocks instead.
 
 
-QgsRasterCalculator     {#qgis_api_break_3_0_QgsRasterCalcNode}
+QgsRasterCalculator     {#qgis_api_break_3_0_QgsRasterCalculator}
 -------------------
 
 - Cancelled (Result enum value) has been renamed to Canceled  <!--#spellok-->

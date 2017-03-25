@@ -74,6 +74,8 @@ class QgsPaperItem;
 class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionContextGenerator
 {
     Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
+
   public:
 
     //! \brief Plot type
@@ -126,6 +128,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \note Added in QGIS 3.0
      */
     QgsProject *project() const;
+
+    /**
+     * Returns the composition's name.
+     * @see setName()
+     * @note added in QGIS 3.0
+     */
+    QString name() const { return mName; }
+
+    /**
+     * Sets the composition's name.
+     * @see name()
+     * @note added in QGIS 3.0
+     */
+    void setName( const QString &name );
 
     /** Changes size of paper item.
      * @param width page width in mm
@@ -468,13 +484,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
      * @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
      * @param doc xml document
-     * @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
      * @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
      * @param pos item position. Optional, take position from xml if 0
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
      * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
      */
-    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc, QMap< QgsComposerMap *, int > *mapsToRestore = nullptr,
+    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
                           bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false );
 
     //! Adds item to z list. Usually called from constructor of QgsComposerItem
@@ -586,7 +601,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Adds label to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerLabel( QgsComposerLabel *label );
     //! Adds map to the graphics scene and advises composer to create a widget for it (through signal)
-    void addComposerMap( QgsComposerMap *map, const bool setDefaultPreviewStyle = true );
+    void addComposerMap( QgsComposerMap *map );
     //! Adds scale bar to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerScaleBar( QgsComposerScaleBar *scaleBar );
     //! Adds legend to the graphics scene and advises composer to create a widget for it (through signal)
@@ -864,6 +879,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Pointer to associated project (not null)
     QgsProject *mProject = nullptr;
 
+    QString mName;
+
     QgsComposition::PlotStyle mPlotStyle;
     double mPageWidth;
     double mPageHeight;
@@ -994,6 +1011,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void prepareAllDataDefinedExpressions();
 
   signals:
+
+    /**
+     * Emitted when the composition's name is changed.
+     * @note added in QGIS 3.0
+     * @see setName()
+     */
+    void nameChanged( const QString &name );
+
     void paperSizeChanged();
     void nPagesChanged();
 
@@ -1002,30 +1027,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     //! Is emitted when selected item changed. If 0, no item is selected
     void selectedItemChanged( QgsComposerItem *selected );
-    //! Is emitted when new composer arrow has been added to the view
-    void composerArrowAdded( QgsComposerArrow *arrow );
-    //! Is emitted when new composer polygon has been added to the view
-    void composerPolygonAdded( QgsComposerPolygon *polygon );
-    //! Is emitted when new composer polyline has been added to the view
-    void composerPolylineAdded( QgsComposerPolyline *polyline );
-    //! Is emitted when a new composer html has been added to the view
-    void composerHtmlFrameAdded( QgsComposerHtml *html, QgsComposerFrame *frame );
+
+    /**
+      * Is emitted when a new composer item has been added to the composition.
+      * @note added in QGIS 3.0
+      */
+    void itemAdded( QgsComposerItem *item );
+
     //! Is emitted when a new item group has been added to the view
     void composerItemGroupAdded( QgsComposerItemGroup *group );
-    //! Is emitted when new composer label has been added to the view
-    void composerLabelAdded( QgsComposerLabel *label );
-    //! Is emitted when new composer map has been added to the view
-    void composerMapAdded( QgsComposerMap *map );
-    //! Is emitted when new composer scale bar has been added
-    void composerScaleBarAdded( QgsComposerScaleBar *scalebar );
-    //! Is emitted when a new composer legend has been added
-    void composerLegendAdded( QgsComposerLegend *legend );
-    //! Is emitted when a new composer picture has been added
-    void composerPictureAdded( QgsComposerPicture *picture );
-    //! Is emitted when a new composer shape has been added
-    void composerShapeAdded( QgsComposerShape *shape );
-    //! Is emitted when a new composer table frame has been added to the view
-    void composerTableFrameAdded( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
+
     //! Is emitted when a composer item has been removed from the scene
     void itemRemoved( QgsComposerItem * );
 

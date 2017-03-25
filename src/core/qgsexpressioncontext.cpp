@@ -910,6 +910,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   }
 
   //add known composition context variables
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), composition->name(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), composition->numPages(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), composition->paperHeight(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), composition->paperWidth(), true ) );

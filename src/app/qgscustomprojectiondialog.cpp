@@ -49,7 +49,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/CustomProjection/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/CustomProjection/geometry" ) ).toByteArray() );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -75,7 +75,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/CustomProjection/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/CustomProjection/geometry" ), saveGeometry() );
 }
 
 

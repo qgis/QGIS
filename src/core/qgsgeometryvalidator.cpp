@@ -216,7 +216,7 @@ void QgsGeometryValidator::run()
 {
   mErrorCount = 0;
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
+  if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 2 )
   {
     char *r = nullptr;
     GEOSGeometry *g0 = mG.exportToGeos();
@@ -354,7 +354,7 @@ void QgsGeometryValidator::addError( const QgsGeometry::Error &e )
 void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors )
 {
   QgsGeometryValidator *gv = new QgsGeometryValidator( g, &errors );
-  connect( gv, SIGNAL( errorFound( QgsGeometry::Error ) ), gv, SLOT( addError( QgsGeometry::Error ) ) );
+  connect( gv, &QgsGeometryValidator::errorFound, gv, &QgsGeometryValidator::addError );
   gv->run();
   gv->wait();
 }

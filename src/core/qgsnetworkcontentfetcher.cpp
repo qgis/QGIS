@@ -59,7 +59,7 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
-  connect( mReply, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
+  connect( mReply, &QNetworkReply::finished, this, [ = ] { contentLoaded(); } );
 }
 
 QNetworkReply *QgsNetworkContentFetcher::reply()

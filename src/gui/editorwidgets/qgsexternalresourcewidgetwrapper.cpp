@@ -79,14 +79,16 @@ bool QgsExternalResourceWidgetWrapper::valid() const
 
 void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
 {
-  if ( mQgsWidget && mDefaultRootExpression.isValid() )
+  if ( mQgsWidget && mPropertyCollection.isActive( QgsEditorWidgetWrapper::RootPath ) )
   {
-    QgsExpressionContext expressionContext = QgsExpressionContextUtils::createFeatureBasedContext( feature, layer()->fields() );
-
-    QVariant value = mDefaultRootExpression.evaluate( &expressionContext );
-    qWarning() << "Default root << " << value.toString();
-
-    mQgsWidget->setDefaultRoot( value.toString() );
+    QgsExpressionContext expressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer() ) );
+    expressionContext.setFeature( feature );
+    bool ok = false;
+    QString path = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::RootPath, expressionContext, QString(), &ok );
+    if ( ok )
+    {
+      mQgsWidget->setDefaultRoot( path );
+    }
   }
 
   QgsEditorWidgetWrapper::setFeature( feature );
@@ -129,12 +131,8 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
       mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
     }
 
-    qWarning() << "Default root style " << cfg.value( QStringLiteral( "DefaultRootStyle" ) );
-    if ( cfg.value( QStringLiteral( "DefaultRootStyle" ) ).toString() == QStringLiteral( "expression" ) )
-    {
-      mDefaultRootExpression = QgsExpression( cfg.value( QStringLiteral( "DefaultRootExpression" ) ).toString() );
-    }
-    else
+    mPropertyCollection.loadVariant( cfg.value( "PropertyCollection" ), propertyDefinitions() );
+    if ( !mPropertyCollection.isActive( QgsWidgetWrapper::RootPath ) )
     {
       mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
     }

@@ -29,7 +29,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
   , mAllowEmpty( false )
   , mShowCrs( false )
 {
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
 }
 
@@ -40,8 +40,8 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
   , mAllowEmpty( false )
   , mShowCrs( false )
 {
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( addLayers( QList<QgsMapLayer *> ) ) );
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( QgsProject::instance()->mapLayers().values() );
 }
 

@@ -39,6 +39,18 @@ class QgsSublayersDialog : QDialog
     //! @note added in 2.16
     QgsSublayersDialog::LayerDefinitionList selection();
 
+    //! Set if we should display the add to group checkbox
+    //! @note added in 3.0
+    void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox );
+
+    //! If we should display the add to group checkbox
+    //! @note added in 3.0
+    bool showAddToGroupCheckbox() const;
+
+    //! If we should add layers in a group
+    //! @note added in 3.0
+    bool addToGroupCheckbox() const;
+
   public slots:
     void on_buttonBox_helpRequested();
     int exec();

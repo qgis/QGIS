@@ -252,8 +252,8 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel *sourc
   disconnect( sourceModel, SIGNAL( columnsAboutToBeRemoved( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsAboutToBeRemoved( QModelIndex, int, int ) ) );
   disconnect( sourceModel, SIGNAL( columnsRemoved( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsRemoved( QModelIndex, int, int ) ) );
 
-  connect( mTableModel, SIGNAL( columnsAboutToBeInserted( QModelIndex, int, int ) ), this, SLOT( onColumnsChanged() ) );
-  connect( mTableModel, SIGNAL( columnsAboutToBeRemoved( QModelIndex, int, int ) ), this, SLOT( onColumnsChanged() ) );
+  connect( mTableModel, &QAbstractItemModel::columnsAboutToBeInserted, this, &QgsAttributeTableFilterModel::onColumnsChanged );
+  connect( mTableModel, &QAbstractItemModel::columnsAboutToBeRemoved, this, &QgsAttributeTableFilterModel::onColumnsChanged );
 }
 
 bool QgsAttributeTableFilterModel::selectedOnTop()
@@ -286,12 +286,12 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
   {
     if ( filterMode == ShowVisible )
     {
-      connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::extentsChanged );
       generateListOfVisibleFeatures();
     }
     else
     {
-      disconnect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::extentsChanged );
     }
 
     mFilterMode = filterMode;
@@ -311,7 +311,7 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowSelected:
-      return layer()->selectedFeatureIds().isEmpty() || layer()->selectedFeatureIds().contains( masterModel()->rowToId( sourceRow ) );
+      return layer()->selectedFeatureIds().contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowVisible:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );

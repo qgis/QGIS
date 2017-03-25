@@ -20,6 +20,7 @@
 %Include qgsactionscope.sip
 %Include qgsactionscoperegistry.sip
 %Include qgsaggregatecalculator.sip
+%Include qgsanimatedicon.sip
 %Include qgsattributetableconfig.sip
 %Include qgsattributeeditorelement.sip
 %Include qgsbearingutils.sip
@@ -224,6 +225,7 @@
 %Include composer/qgscomposerutils.sip
 %Include composer/qgscomposition.sip
 %Include composer/qgsdoubleboxscalebarstyle.sip
+%Include composer/qgslayoutmanager.sip
 %Include composer/qgsnumericscalebarstyle.sip
 %Include composer/qgspaperitem.sip
 %Include composer/qgsscalebarstyle.sip
@@ -368,5 +370,6 @@
 %Include geometry/qgspointv2.sip
 %Include geometry/qgspolygon.sip
 %Include geometry/qgssurface.sip
+%Include geometry/qgstriangle.sip
 %Include geometry/qgswkbtypes.sip
 %Include geometry/qgswkbptr.sip

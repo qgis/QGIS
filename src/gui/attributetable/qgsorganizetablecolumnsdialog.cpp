@@ -45,8 +45,8 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
 {
   setupUi( this );
 
-  connect( mShowAllButton, SIGNAL( clicked( bool ) ), this, SLOT( showAll() ) );
-  connect( mHideAllButton, SIGNAL( clicked( bool ) ), this, SLOT( hideAll() ) );
+  connect( mShowAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::showAll );
+  connect( mHideAllButton, &QAbstractButton::clicked, this, &QgsOrganizeTableColumnsDialog::hideAll );
 
   if ( vl )
   {
@@ -96,13 +96,13 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
   }
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsOrganizeTableColumnsDialog::~QgsOrganizeTableColumnsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsOrganizeTableColumnsDialog/geometry" ), saveGeometry() );
 }
 
 QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const

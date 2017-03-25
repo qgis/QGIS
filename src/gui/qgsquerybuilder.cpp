@@ -34,7 +34,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QueryBuilder/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QueryBuilder/geometry" ) ).toByteArray() );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -59,7 +59,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 QgsQueryBuilder::~QgsQueryBuilder()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QueryBuilder/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QueryBuilder/geometry" ), saveGeometry() );
 }
 
 void QgsQueryBuilder::showEvent( QShowEvent *event )

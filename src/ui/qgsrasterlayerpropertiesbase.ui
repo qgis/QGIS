@@ -55,7 +55,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLineEdit" name="mSearchLineEdit"/>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit"/>
        </item>
        <item>
         <widget class="QListWidget" name="mOptionsListWidget">
@@ -229,7 +229,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_3">
+            <widget class="QgsScrollArea" name="scrollArea_3">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -241,7 +241,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>266</width>
+                <width>355</width>
                 <height>233</height>
                </rect>
               </property>
@@ -500,7 +500,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea">
+            <widget class="QgsScrollArea" name="scrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -512,8 +512,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>617</width>
-                <height>547</height>
+                <width>616</width>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1131,7 +1131,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_2">
+            <widget class="QgsScrollArea" name="scrollArea_2">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1143,8 +1143,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>455</width>
-                <height>384</height>
+                <width>358</width>
+                <height>354</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1547,7 +1547,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_5">
+            <widget class="QgsScrollArea" name="scrollArea_5">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1559,8 +1559,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>559</width>
-                <height>189</height>
+                <width>457</width>
+                <height>169</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1623,7 +1623,7 @@
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
@@ -1717,7 +1717,7 @@ p, li { white-space: pre-wrap; }
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_6">
+            <widget class="QgsScrollArea" name="scrollArea_6">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1729,8 +1729,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
-                <height>41</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1776,7 +1776,7 @@ p, li { white-space: pre-wrap; }
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_4">
+            <widget class="QgsScrollArea" name="scrollArea_4">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1788,8 +1788,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>613</height>
+                <width>297</width>
+                <height>556</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2244,9 +2244,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2270,6 +2270,17 @@ p, li { white-space: pre-wrap; }
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -51,7 +51,7 @@ QList<QAction *> QgsGrassItemActions::actions()
   QList<QAction *> list;
 
   QAction *optionsAction = new QAction( tr( "GRASS Options" ), this );
-  connect( optionsAction, SIGNAL( triggered() ), QgsGrass::instance(), SLOT( openOptions() ) );
+  connect( optionsAction, &QAction::triggered, QgsGrass::instance(), &QgsGrass::openOptions );
   list << optionsAction;
 
   bool isMapsetOwner = QgsGrass::isOwner( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
@@ -61,14 +61,14 @@ QList<QAction *> QgsGrassItemActions::actions()
   if ( mGrassObject.type() == QgsGrassObject::Location )
   {
     QAction *newMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_new_mapset.png" ) ), tr( "New mapset" ), this );
-    connect( newMapsetAction, SIGNAL( triggered() ), SLOT( newMapset() ) );
+    connect( newMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::newMapset );
     list << newMapsetAction;
   }
 
   if ( mGrassObject.type() == QgsGrassObject::Mapset && isMapsetOwner )
   {
     QAction *openMapsetAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "grass_open_mapset.png" ) ), tr( "Open mapset" ), this );
-    connect( openMapsetAction, SIGNAL( triggered() ), SLOT( openMapset() ) );
+    connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::openMapset );
     list << openMapsetAction;
   }
 
@@ -78,13 +78,13 @@ QList<QAction *> QgsGrassItemActions::actions()
     if ( !QgsGrass::instance()->isMapsetInSearchPath( mGrassObject.mapset() ) )
     {
       QAction *openMapsetAction = new QAction( tr( "Add mapset to search path" ), this );
-      connect( openMapsetAction, SIGNAL( triggered() ), SLOT( addMapsetToSearchPath() ) );
+      connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::addMapsetToSearchPath );
       list << openMapsetAction;
     }
     else
     {
       QAction *openMapsetAction = new QAction( tr( "Remove mapset from search path" ), this );
-      connect( openMapsetAction, SIGNAL( triggered() ), SLOT( removeMapsetFromSearchPath() ) );
+      connect( openMapsetAction, &QAction::triggered, this, &QgsGrassItemActions::removeMapsetFromSearchPath );
       list << openMapsetAction;
     }
   }
@@ -93,11 +93,11 @@ QList<QAction *> QgsGrassItemActions::actions()
          ||  mGrassObject.type() == QgsGrassObject::Group ) && isMapsetOwner )
   {
     QAction *renameAction = new QAction( tr( "Rename" ), this );
-    connect( renameAction, SIGNAL( triggered() ), this, SLOT( renameGrassObject() ) );
+    connect( renameAction, &QAction::triggered, this, &QgsGrassItemActions::renameGrassObject );
     list << renameAction;
 
     QAction *deleteAction = new QAction( tr( "Delete" ), this );
-    connect( deleteAction, SIGNAL( triggered() ), this, SLOT( deleteGrassObject() ) );
+    connect( deleteAction, &QAction::triggered, this, &QgsGrassItemActions::deleteGrassObject );
     list << deleteAction;
   }
 
@@ -106,15 +106,15 @@ QList<QAction *> QgsGrassItemActions::actions()
   {
     // TODO: disable new layer actions on maps currently being edited
     QAction *newPointAction = new QAction( tr( "New Point Layer" ), this );
-    connect( newPointAction, SIGNAL( triggered() ), SLOT( newPointLayer() ) );
+    connect( newPointAction, &QAction::triggered, this, &QgsGrassItemActions::newPointLayer );
     list << newPointAction;
 
     QAction *newLineAction = new QAction( tr( "New Line Layer" ), this );
-    connect( newLineAction, SIGNAL( triggered() ), SLOT( newLineLayer() ) );
+    connect( newLineAction, &QAction::triggered, this, &QgsGrassItemActions::newLineLayer );
     list << newLineAction;
 
     QAction *newPolygonAction = new QAction( tr( "New Polygon Layer" ), this );
-    connect( newPolygonAction, SIGNAL( triggered() ), SLOT( newPolygonLayer() ) );
+    connect( newPolygonAction, &QAction::triggered, this, &QgsGrassItemActions::newPolygonLayer );
     list << newPolygonAction;
   }
 
@@ -386,8 +386,8 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QS
   mActions = new QgsGrassItemActions( mGrassObject, true, this );
 
   // emit data changed to possibly change icon
-  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), this, SLOT( emitDataChanged() ) );
-  connect( QgsGrass::instance(), SIGNAL( mapsetSearchPathChanged() ), this, SLOT( emitDataChanged() ) );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetChanged, this, &QgsGrassMapsetItem::updateIcon );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetSearchPathChanged, this, &QgsGrassMapsetItem::updateIcon );
 
   mIconName = QStringLiteral( "grass_mapset.png" );
 }
@@ -820,7 +820,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
 
-      bool settingsExternal = settings.value( QStringLiteral( "/GRASS/browser/import/external" ), true ).toBool();
+      bool settingsExternal = settings.value( QStringLiteral( "GRASS/browser/import/external" ), true ).toBool();
       QgsGrassObject rasterObject( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), destName, QgsGrassObject::Raster );
       if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs == mapsetCrs
            && rasterProvider->name() == QLatin1String( "gdal" ) && settingsExternal )
@@ -841,7 +841,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
                                        newExtent, newXSize, newYSize );
           }
-          QgsRasterProjector::Precision precision = ( QgsRasterProjector::Precision ) settings.value( QStringLiteral( "/GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate ).toInt();
+          QgsRasterProjector::Precision precision = ( QgsRasterProjector::Precision ) settings.value( QStringLiteral( "GRASS/browser/import/crsTransform" ), QgsRasterProjector::Approximate ).toInt();
           projector->setPrecision( precision );
 
           pipe->set( projector );
@@ -1155,12 +1155,12 @@ QgsGrassImportItem::QgsGrassImportItem( QgsDataItem *parent, const QString &name
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
   setState( Populated );
 
-  QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( emitDataChanged() ) );
+  QgsGrassImportIcon::instance()->connectFrameChanged( this, &QgsGrassImportItem::updateIcon );
 }
 
 QgsGrassImportItem::~QgsGrassImportItem()
 {
-  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, &QgsGrassImportItem::updateIcon );
 }
 
 QList<QAction *> QgsGrassImportItem::actions()
@@ -1168,7 +1168,7 @@ QList<QAction *> QgsGrassImportItem::actions()
   QList<QAction *> lst;
 
   QAction *actionRename = new QAction( tr( "Cancel" ), this );
-  connect( actionRename, SIGNAL( triggered() ), this, SLOT( cancel() ) );
+  connect( actionRename, &QAction::triggered, this, &QgsGrassImportItem::cancel );
   lst.append( actionRename );
 
   return lst;
@@ -1200,9 +1200,9 @@ void QgsGrassImportItem::cancel()
     return;
   }
   mImport->cancel();
-  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, &QgsGrassImportItem::updateIcon );
   setName( name() + " : " + tr( "canceling" ) );
-  emitDataChanged();
+  updateIcon();
 }
 
 QIcon QgsGrassImportItem::icon()

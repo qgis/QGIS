@@ -99,7 +99,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
 
   // DATABASE
   QgsSettings settings;
-  QString gisdbase = settings.value( QStringLiteral( "/GRASS/lastGisdbase" ) ).toString();
+  QString gisdbase = settings.value( QStringLiteral( "GRASS/lastGisdbase" ) ).toString();
   if ( gisdbase.isEmpty() )
   {
     gisdbase = QDir::homePath() + QDir::separator() + "grassdata";
@@ -120,16 +120,16 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   mMapsetsListView->header()->setResizeMode( QHeaderView::ResizeToContents );
 
   // FINISH
-  mOpenNewMapsetCheckBox->setChecked( settings.value( QStringLiteral( "/GRASS/newMapsetWizard/openMapset" ), true ).toBool() );
+  mOpenNewMapsetCheckBox->setChecked( settings.value( QStringLiteral( "GRASS/newMapsetWizard/openMapset" ), true ).toBool() );
   connect( this, SIGNAL( currentIdChanged( int ) ), SLOT( pageSelected( int ) ) );
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsGrassNewMapset/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsGrassNewMapset/geometry" ) ).toByteArray() );
 }
 
 QgsGrassNewMapset::~QgsGrassNewMapset()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsGrassNewMapset/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsGrassNewMapset/geometry" ), saveGeometry() );
   sRunning = false;
 }
 /*************************** DATABASE *******************************/
@@ -149,7 +149,7 @@ void QgsGrassNewMapset::databaseChanged()
 {
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/lastGisdbase" ), mDatabaseLineEdit->text() );
+  settings.setValue( QStringLiteral( "GRASS/lastGisdbase" ), mDatabaseLineEdit->text() );
 
   button( QWizard::NextButton )->setEnabled( false );
   setError( mDatabaseErrorLabel );
@@ -225,7 +225,7 @@ void QgsGrassNewMapset::setLocations()
   mLocationComboBox->clear();
 
   QgsSettings settings;
-  QString lastLocation = settings.value( QStringLiteral( "/GRASS/lastLocation" ) ).toString();
+  QString lastLocation = settings.value( QStringLiteral( "GRASS/lastLocation" ) ).toString();
 
   if ( gisdbaseExists() )
   {
@@ -1184,7 +1184,7 @@ void QgsGrassNewMapset::on_mOpenNewMapsetCheckBox_stateChanged( int state )
 {
   Q_UNUSED( state );
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/newMapsetWizard/openMapset" ), mOpenNewMapsetCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "GRASS/newMapsetWizard/openMapset" ), mOpenNewMapsetCheckBox->isChecked() );
 }
 
 void QgsGrassNewMapset::setFinishPage()

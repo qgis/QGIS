@@ -48,12 +48,12 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
 {
   mLegendModel = new QgsLegendModel( mComposition->project()->layerTreeRoot() );
 
-  connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
-  connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( onAtlasFeature( QgsFeature * ) ) );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsComposerLegend::onAtlasEnded );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLegend::onAtlasFeature );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
-  connect( mComposition->project()->layerTreeRoot(), SIGNAL( customPropertyChanged( QgsLayerTreeNode *, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode *, QString ) ) );
+  connect( mComposition->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsComposerLegend::nodeCustomPropertyChanged );
 }
 
 QgsComposerLegend::QgsComposerLegend()
@@ -223,7 +223,7 @@ bool QgsComposerLegend::resizeToContents() const
   return mSizeToContents;
 }
 
-void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup *rootGroup )
+void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 {
   mLegendModel->setRootGroup( rootGroup ? rootGroup : mComposition->project()->layerTreeRoot() );
 
@@ -237,7 +237,7 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : QgsLayerTree::toGroup( mComposition->project()->layerTreeRoot()->clone() ) );
+  setCustomLayerTree( autoUpdate ? nullptr : mComposition->project()->layerTreeRoot()->clone() );
   adjustBoxSize();
   updateItem();
 }
@@ -348,6 +348,9 @@ void QgsComposerLegend::updateLegend()
 
 void QgsComposerLegend::updateItem()
 {
+  if ( !updatesEnabled() )
+    return;
+
   updateFilterByMap( false );
   QgsComposerItem::updateItem();
 }
@@ -413,46 +416,6 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   }
 
   return _writeXml( composerLegendElem, doc );
-}
-
-static void _readOldLegendGroup( QDomElement &elem, QgsLayerTreeGroup *parentGroup, QgsProject *project )
-{
-  QDomElement itemElem = elem.firstChildElement();
-
-  while ( !itemElem.isNull() )
-  {
-
-    if ( itemElem.tagName() == QLatin1String( "LayerItem" ) )
-    {
-      QString layerId = itemElem.attribute( QStringLiteral( "layerId" ) );
-      if ( QgsMapLayer *layer = project->mapLayer( layerId ) )
-      {
-        QgsLayerTreeLayer *nodeLayer = parentGroup->addLayer( layer );
-        QString userText = itemElem.attribute( QStringLiteral( "userText" ) );
-        if ( !userText.isEmpty() )
-          nodeLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), userText );
-        QString style = itemElem.attribute( QStringLiteral( "style" ) );
-        if ( !style.isEmpty() )
-          nodeLayer->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
-        QString showFeatureCount = itemElem.attribute( QStringLiteral( "showFeatureCount" ) );
-        if ( showFeatureCount.toInt() )
-          nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
-
-        // support for individual legend items (user text, order) not implemented yet
-      }
-    }
-    else if ( itemElem.tagName() == QLatin1String( "GroupItem" ) )
-    {
-      QgsLayerTreeGroup *nodeGroup = parentGroup->addGroup( itemElem.attribute( QStringLiteral( "userText" ) ) );
-      QString style = itemElem.attribute( QStringLiteral( "style" ) );
-      if ( !style.isEmpty() )
-        nodeGroup->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
-
-      _readOldLegendGroup( itemElem, nodeGroup, project );
-    }
-
-    itemElem = itemElem.nextSiblingElement();
-  }
 }
 
 bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument &doc )
@@ -525,20 +488,12 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
   }
 
-  QDomElement oldLegendModelElem = itemElem.firstChildElement( QStringLiteral( "Model" ) );
-  if ( !oldLegendModelElem.isNull() )
-  {
-    // QGIS <= 2.4
-    QgsLayerTreeGroup *nodeRoot = new QgsLayerTreeGroup();
-    _readOldLegendGroup( oldLegendModelElem, nodeRoot, mComposition->project() );
-    setCustomLayerTree( nodeRoot );
-  }
-  else
-  {
-    // QGIS >= 2.6
-    QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
-    setCustomLayerTree( QgsLayerTreeGroup::readXml( layerTreeElem, mComposition->project() ) );
-  }
+  // QGIS >= 2.6
+  QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
+  if ( layerTreeElem.isNull() )
+    layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
+
+  setCustomLayerTree( QgsLayerTree::readXml( layerTreeElem ) );
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
@@ -621,20 +576,20 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
-    disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
+    disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    disconnect( mComposerMap, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
 
   mComposerMap = map;
 
   if ( map )
   {
-    QObject::connect( map, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
-    QObject::connect( map, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-    QObject::connect( map, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
+    connect( map, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    connect( map, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
 
   updateItem();
@@ -679,6 +634,11 @@ void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::Dat
   }
 
   QgsComposerObject::refreshDataDefinedProperty( property, context );
+}
+
+void QgsComposerLegend::updateFilterByMapAndRedraw()
+{
+  updateFilterByMap( true );
 }
 
 void QgsComposerLegend::mapLayerStyleOverridesChanged()
@@ -781,7 +741,7 @@ void QgsComposerLegend::onAtlasEnded()
 #include "qgslayertreemodellegendnode.h"
 #include "qgsvectorlayer.h"
 
-QgsLegendModel::QgsLegendModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );

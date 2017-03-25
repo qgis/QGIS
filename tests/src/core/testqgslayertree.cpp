@@ -300,7 +300,7 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
+  QgsLayerTree *root = new QgsLayerTree();
   QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
   root->addChildNode( n );
   QgsLayerTreeModel *m = new QgsLayerTreeModel( root, 0 );
@@ -350,7 +350,7 @@ void TestQgsLayerTree::testFindLegendNode()
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for categorized renderer
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
+  QgsLayerTree *root = new QgsLayerTree();
   QgsLayerTreeModel *m = new QgsLayerTreeModel( root, 0 );
   QVERIFY( !m->findLegendNode( QString( "id" ), QString( "rule" ) ) );
   QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
@@ -481,7 +481,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   vl->setRenderer( renderer );
 
   //create legend with symbology nodes for renderer
-  QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
+  QgsLayerTree *root = new QgsLayerTree();
   QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
   root->addChildNode( n );
   QgsLayerTreeModel *m = new QgsLayerTreeModel( root, 0 );

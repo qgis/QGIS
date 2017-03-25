@@ -78,7 +78,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
 
   // Restiore UI state for widgets not handled by QgsOptionsDialogBase
   QgsSettings settings;
-  mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "/Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
+  mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
 
   // load translated description strings from qgspluginmanager_texts
   initTabDescriptions();
@@ -140,7 +140,7 @@ QgsPluginManager::~QgsPluginManager()
   delete mModelPlugins;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
 }
 
 

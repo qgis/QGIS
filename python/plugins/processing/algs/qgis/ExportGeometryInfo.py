@@ -112,8 +112,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 2 - ellipsoidal
 
         if method == 2:
-            ellips = QgsProject.instance().readEntry('Measure', '/Ellipsoid',
-                                                     'NONE')[0]
+            ellips = QgsProject.instance().ellipsoid()
             crs = layer.crs().srsid()
         elif method == 1:
             mapCRS = iface.mapCanvas().mapSettings().destinationCrs()

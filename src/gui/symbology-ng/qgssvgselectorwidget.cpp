@@ -381,14 +381,14 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 
   QgsSettings settings;
   bool useRelativePath = ( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false )
-                           || settings.value( QStringLiteral( "/Windows/SvgSelectorWidget/RelativePath" ) ).toBool() );
+                           || settings.value( QStringLiteral( "Windows/SvgSelectorWidget/RelativePath" ) ).toBool() );
   mRelativePathChkBx->setChecked( useRelativePath );
 }
 
 QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SvgSelectorWidget/RelativePath" ), mRelativePathChkBx->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/SvgSelectorWidget/RelativePath" ), mRelativePathChkBx->isChecked() );
 }
 
 void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
@@ -471,7 +471,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
 void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
 {
   QgsSettings settings;
-  QString openDir = settings.value( QStringLiteral( "/UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
+  QString openDir = settings.value( QStringLiteral( "UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
 
   QString lineEditText = mFileLineEdit->text();
   if ( !lineEditText.isEmpty() )
@@ -497,7 +497,7 @@ void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
     updateLineEditFeedback( false );
     return;
   }
-  settings.setValue( QStringLiteral( "/UI/lastSVGMarkerDir" ), fi.absolutePath() );
+  settings.setValue( QStringLiteral( "UI/lastSVGMarkerDir" ), fi.absolutePath() );
   mFileLineEdit->setText( file );
   updateCurrentSvgPath( file );
 }
@@ -562,12 +562,12 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
   setLayout( mLayout );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ) ).toByteArray() );
 }
 
 QgsSvgSelectorDialog::~QgsSvgSelectorDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SvgSelectorDialog/geometry" ), saveGeometry() );
 }
 

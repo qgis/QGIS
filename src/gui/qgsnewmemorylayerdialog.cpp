@@ -30,9 +30,10 @@
 #include <QUuid>
 #include <QFileDialog>
 
-QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
+QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
   QgsNewMemoryLayerDialog dialog( parent );
+  dialog.setCrs( defaultCrs );
   if ( dialog.exec() == QDialog::Rejected )
   {
     return nullptr;
@@ -60,21 +61,16 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
 
   mPointRadioButton->setChecked( true );
-
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
-  defaultCrs.validate();
-  mCrsSelector->setCrs( defaultCrs );
-
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 }
 
 QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/NewMemoryLayer/geometry" ), saveGeometry() );
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
@@ -113,6 +109,11 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
     wkbType = QgsWkbTypes::zmType( wkbType, true, true );
 
   return wkbType;
+}
+
+void QgsNewMemoryLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrsSelector->setCrs( crs );
 }
 
 QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const

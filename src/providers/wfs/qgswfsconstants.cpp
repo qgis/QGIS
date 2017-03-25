@@ -31,6 +31,7 @@ const QString QgsWFSConstants::URI_PARAM_TYPENAME( QStringLiteral( "typename" ) 
 const QString QgsWFSConstants::URI_PARAM_SRSNAME( QStringLiteral( "srsname" ) );
 const QString QgsWFSConstants::URI_PARAM_BBOX( QStringLiteral( "bbox" ) );
 const QString QgsWFSConstants::URI_PARAM_FILTER( QStringLiteral( "filter" ) );
+const QString QgsWFSConstants::URI_PARAM_OUTPUTFORMAT( QStringLiteral( "outputformat" ) );
 const QString QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX( QStringLiteral( "restrictToRequestBBOX" ) );
 const QString QgsWFSConstants::URI_PARAM_MAXNUMFEATURES( QStringLiteral( "maxNumFeatures" ) );
 const QString QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION( QStringLiteral( "IgnoreAxisOrientation" ) );
@@ -40,7 +41,7 @@ const QString QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG( QStringLite
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
 
-const QString QgsWFSConstants::CONNECTIONS_WFS( QStringLiteral( "/Qgis/connections-wfs/" ) );
+const QString QgsWFSConstants::CONNECTIONS_WFS( QStringLiteral( "qgis/connections-wfs/" ) );
 const QString QgsWFSConstants::SETTINGS_VERSION( QStringLiteral( "version" ) );
 const QString QgsWFSConstants::SETTINGS_MAXNUMFEATURES( QStringLiteral( "maxnumfeatures" ) );
 

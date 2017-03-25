@@ -1,33 +1,3 @@
-/** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
-class QgsAnimatedIcon : QObject
-{
-%TypeHeaderCode
-#include <qgsdataitem.h>
-%End
-  public:
-
-    /** Constructor
-     * @param iconPath path to a movie, e.g. animated GIF */
-    QgsAnimatedIcon( const QString & iconPath = QString::null );
-
-    QString iconPath() const;
-    void setIconPath( const QString & iconPath );
-    QIcon icon() const;
-
-    /** Connect listener to frameChanged() signal */
-    void connectFrameChanged( const QObject * receiver, const char * method );
-    /** Disconnect listener from frameChanged() signal */
-    void disconnectFrameChanged( const QObject * receiver, const char * method );
-
-  public slots:
-    void onFrameChanged();
-
-  signals:
-    /** Emitted when icon changed */
-    void frameChanged();
-
-};
-
 /** Base class for all items in the model.
  *  Parent/children hierarchy is not based on QObject. */
 class QgsDataItem : QObject
@@ -236,7 +206,6 @@ class QgsDataItem : QObject
 
     virtual void refresh();
 
-    void emitDataChanged();
     virtual void childrenCreated();
 
   signals:
@@ -246,6 +215,9 @@ class QgsDataItem : QObject
     void endRemoveItems();
     void dataChanged( QgsDataItem * item );
     void stateChanged( QgsDataItem * item, QgsDataItem::State oldState );
+
+  protected slots:
+    void updateIcon();
 };
 
 QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<QgsDataItem::Capability> f2);

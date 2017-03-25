@@ -67,4 +67,10 @@ class QgsGeometryUtils
 
     static QgsPointV2 midpoint (const QgsPointV2& pt1, const QgsPointV2& pt2);
 
+    static double gradient( const QgsPointV2& pt1, const QgsPointV2& pt2 );
+
+    static void coefficients(const QgsPointV2 &pt1, const QgsPointV2 &pt2, double& a /Out/, double& b /Out/, double& c /Out/);
+
+    static QgsLineString perpendicularSegment( const QgsPointV2& p, const QgsPointV2& s1, const QgsPointV2& s2 );
+
 };

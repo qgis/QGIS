@@ -93,8 +93,8 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsSettings settings;
     config.setMode( QgsSnappingConfig::AllLayers );
     config.setType( QgsSnappingConfig::Segment );
-    config.setTolerance( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
-    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() ) );
+    config.setTolerance( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
+    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() ) );
     snapping->setConfig( config );
 
     QgsPointLocator::Match match = snapping->snapToMap( e->pos() );

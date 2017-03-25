@@ -69,8 +69,8 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   else
   {
     setupUi( this );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-    connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+    connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+    connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
 
     mIdentityType = identitytype;
 
@@ -107,15 +107,15 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
     cmbIdentityTypes->addItem( tr( "PKI PKCS#12 Certificate Bundle" ),
                                QVariant( QgsAuthImportIdentityDialog::PkiPkcs12 ) );
 
-    connect( cmbIdentityTypes, SIGNAL( currentIndexChanged( int ) ),
-             stkwBundleType, SLOT( setCurrentIndex( int ) ) );
-    connect( stkwBundleType, SIGNAL( currentChanged( int ) ),
-             cmbIdentityTypes, SLOT( setCurrentIndex( int ) ) );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             stkwBundleType, &QStackedWidget::setCurrentIndex );
+    connect( stkwBundleType, &QStackedWidget::currentChanged,
+             cmbIdentityTypes, &QComboBox::setCurrentIndex );
 
-    connect( cmbIdentityTypes, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( validateIdentity() ) );
-    connect( stkwBundleType, SIGNAL( currentChanged( int ) ),
-             this, SLOT( validateIdentity() ) );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, [ = ] { validateIdentity(); } );
+    connect( stkwBundleType, &QStackedWidget::currentChanged,
+             this, &QgsAuthImportIdentityDialog::validateIdentity );
 
     cmbIdentityTypes->setCurrentIndex( 0 );
     stkwBundleType->setCurrentIndex( 0 );

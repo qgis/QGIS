@@ -998,13 +998,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
       else
       {
         QgsComposerMap *composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        composition()->addComposerMap( composerMap );
         if ( mCanvas )
         {
           composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
-          composerMap->setLayers( mCanvas->mapSettings().layers() );
         }
-
-        composition()->addComposerMap( composerMap );
 
         composition()->setAllDeselected();
         composerMap->setSelected( true );
@@ -1543,7 +1541,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
           pt = mapToScene( viewport()->rect().center() );
         }
         bool pasteInPlace = ( mode == PasteModeInPlace );
-        composition()->addItemsFromXml( docElem, doc, nullptr, true, &pt, pasteInPlace );
+        composition()->addItemsFromXml( docElem, doc, true, &pt, pasteInPlace );
       }
     }
   }
@@ -1981,14 +1979,14 @@ void QgsComposerView::wheelEvent( QWheelEvent *event )
       {
         QgsSettings settings;
         //read zoom mode
-        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( QStringLiteral( "/qgis/wheel_action" ), 2 ).toInt();
+        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( QStringLiteral( "qgis/wheel_action" ), 2 ).toInt();
         if ( zoomMode == QgsComposerItem::NoZoom )
         {
           //do nothing
           return;
         }
 
-        double zoomFactor = settings.value( QStringLiteral( "/qgis/zoom_factor" ), 2.0 ).toDouble();
+        double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2.0 ).toDouble();
         if ( event->modifiers() & Qt::ControlModifier )
         {
           //holding ctrl while wheel zooming results in a finer zoom
@@ -2014,16 +2012,19 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings mySettings;
-  double zoomFactor = mySettings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
+  double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( event->angleDelta().y() );
 
   if ( event->modifiers() & Qt::ControlModifier )
   {
     //holding ctrl while wheel zooming results in a finer zoom
-    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
   }
 
   //calculate zoom scale factor
-  bool zoomIn = event->delta() > 0;
+  bool zoomIn = event->angleDelta().y() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
   //get current visible part of scene

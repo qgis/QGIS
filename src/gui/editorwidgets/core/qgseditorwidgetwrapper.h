@@ -285,6 +285,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     int mFieldIdx;
     QgsFeature mFeature;
     mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
+
 };
 
 // We'll use this class inside a QVariant in the widgets properties

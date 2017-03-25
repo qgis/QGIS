@@ -42,7 +42,7 @@ void QgsActionMenu::init()
 {
   setTitle( tr( "&Actions" ) );
 
-  connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( reloadActions() ) );
+  connect( QgsMapLayerActionRegistry::instance(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
 
   reloadActions();
 }

@@ -16,12 +16,4 @@ class QgsCustomLayerOrderWidget : QWidget
 
   public:
     explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge* bridge, QWidget *parent /TransferThis/ = 0 );
-
-  protected slots:
-    void bridgeHasCustomLayerOrderChanged( bool state );
-    void bridgeCustomLayerOrderChanged( const QStringList& order );
-    //! Slot triggered when the ivsibility of a node changes
-    void nodeVisibilityChanged( QgsLayerTreeNode* node );
-
-    void modelUpdated();
 };

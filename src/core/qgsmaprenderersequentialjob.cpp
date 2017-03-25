@@ -66,7 +66,7 @@ void QgsMapRendererSequentialJob::start()
   mInternalJob = new QgsMapRendererCustomPainterJob( mSettings, mPainter );
   mInternalJob->setCache( mCache );
 
-  connect( mInternalJob, SIGNAL( finished() ), SLOT( internalFinished() ) );
+  connect( mInternalJob, &QgsMapRendererJob::finished, this, &QgsMapRendererSequentialJob::internalFinished );
 
   mInternalJob->start();
 }

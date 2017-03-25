@@ -34,7 +34,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
 
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
@@ -70,7 +70,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
 QgsNewOgrConnection::~QgsNewOgrConnection()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ), saveGeometry() );
 }
 
 void QgsNewOgrConnection::testConnection()

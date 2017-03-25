@@ -376,7 +376,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
   dlg->setContext( context );
 
   connect( dlg, SIGNAL( widgetChanged() ), this, SLOT( updateCenterSymbolFromWidget() ) );
-  connect( dlg, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsPointDisplacementRendererWidget::cleanUpSymbolSelector );
   openPanel( dlg );
 }
 

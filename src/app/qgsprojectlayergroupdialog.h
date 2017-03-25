@@ -21,7 +21,7 @@
 
 class QDomElement;
 
-class QgsLayerTreeGroup;
+class QgsLayerTree;
 
 //! A dialog to select layers and groups from a qgs project
 class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
@@ -52,7 +52,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     QString mProjectPath;
     bool mShowEmbeddedContent;
 
-    QgsLayerTreeGroup *mRootGroup = nullptr;
+    QgsLayerTree *mRootGroup = nullptr;
 };
 
 #endif //QGSPROJECTLAYERGROUPDIALOG_H

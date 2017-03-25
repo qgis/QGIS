@@ -34,7 +34,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -45,7 +45,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-17</y>
         <width>467</width>
         <height>715</height>
        </rect>
@@ -325,62 +325,9 @@
           <string>Integrated document viewer</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Height</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QgsSpinBox" name="mDocumentViewerHeight">
-            <property name="specialValueText">
-             <string>Auto</string>
-            </property>
-            <property name="suffix">
-             <string> px</string>
-            </property>
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QgsSpinBox" name="mDocumentViewerWidth">
-            <property name="specialValueText">
-             <string>Auto</string>
-            </property>
-            <property name="suffix">
-             <string> px</string>
-            </property>
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3" rowspan="2">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Specify the size of the preview. If you leave it set to Auto, an optimal size will be calculated.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QLabel" name="label_3">
             <property name="text">
@@ -390,6 +337,103 @@
           </item>
           <item row="0" column="2">
            <widget class="QComboBox" name="mDocumentViewerContentComboBox"/>
+          </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <widget class="QWidget" name="mDocumentViewerContentSettingsWidget" native="true">
+            <layout class="QGridLayout" name="gridLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="2" rowspan="2">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Specify the size of the preview. If you leave it set to Auto, an optimal size will be calculated.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Width</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QgsSpinBox" name="mDocumentViewerHeight">
+               <property name="specialValueText">
+                <string>Auto</string>
+               </property>
+               <property name="suffix">
+                <string> px</string>
+               </property>
+               <property name="prefix">
+                <string/>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QgsSpinBox" name="mDocumentViewerWidth">
+               <property name="specialValueText">
+                <string>Auto</string>
+               </property>
+               <property name="suffix">
+                <string> px</string>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Height</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -415,14 +459,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -440,8 +490,6 @@
   <tabstop>mFullUrl</tabstop>
   <tabstop>mDocumentViewerGroupBox</tabstop>
   <tabstop>mDocumentViewerContentComboBox</tabstop>
-  <tabstop>mDocumentViewerWidth</tabstop>
-  <tabstop>mDocumentViewerHeight</tabstop>
  </tabstops>
  <resources/>
  <connections/>

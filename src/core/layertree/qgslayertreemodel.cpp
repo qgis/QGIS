@@ -63,7 +63,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
 
 ///@endcond
 
-QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( rootNode )
   , mFlags( ShowLegend | AllowLegendChangeState | DeferredLegendInvalidation )
@@ -78,7 +78,7 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *pare
 
   mFontLayer.setBold( true );
 
-  connect( &mDeferLegendInvalidationTimer, SIGNAL( timeout() ), this, SLOT( invalidateLegendMapBasedData() ) );
+  connect( &mDeferLegendInvalidationTimer, &QTimer::timeout, this, &QgsLayerTreeModel::invalidateLegendMapBasedData );
   mDeferLegendInvalidationTimer.setSingleShot( true );
 }
 
@@ -498,12 +498,12 @@ QList<QgsLayerTreeNode *> QgsLayerTreeModel::indexes2nodes( const QModelIndexLis
   return nodesFinal;
 }
 
-QgsLayerTreeGroup *QgsLayerTreeModel::rootGroup() const
+QgsLayerTree *QgsLayerTreeModel::rootGroup() const
 {
   return mRootNode;
 }
 
-void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup *newRootGroup )
+void QgsLayerTreeModel::setRootGroup( QgsLayerTree *newRootGroup )
 {
   beginResetModel();
 
@@ -784,7 +784,7 @@ void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
   disconnectFromLayer( nodeLayer );
 
   // wait for the layer to appear again
-  connect( nodeLayer, SIGNAL( layerLoaded() ), this, SLOT( nodeLayerLoaded() ) );
+  connect( nodeLayer, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeModel::nodeLayerLoaded );
 }
 
 void QgsLayerTreeModel::layerLegendChanged()
@@ -839,12 +839,12 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   {
     // in order to connect to layer, we need to have it loaded.
     // keep an eye on the layer ID: once loaded, we will use it
-    connect( nodeLayer, SIGNAL( layerLoaded() ), this, SLOT( nodeLayerLoaded() ) );
+    connect( nodeLayer, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeModel::nodeLayerLoaded );
     return;
   }
 
   // watch if the layer is getting removed
-  connect( nodeLayer, SIGNAL( layerWillBeUnloaded() ), this, SLOT( nodeLayerWillBeUnloaded() ) );
+  connect( nodeLayer, &QgsLayerTreeLayer::layerWillBeUnloaded, this, &QgsLayerTreeModel::nodeLayerWillBeUnloaded );
 
   if ( testFlag( ShowLegend ) )
   {
@@ -866,9 +866,10 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
     // using unique connection because there may be temporarily more nodes for a layer than just one
     // which would create multiple connections, however disconnect() would disconnect all multiple connections
     // even if we wanted to disconnect just one connection in each call.
-    connect( layer, SIGNAL( editingStarted() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
-    connect( layer, SIGNAL( editingStopped() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
-    connect( layer, SIGNAL( layerModified() ), this, SLOT( layerNeedsUpdate() ), Qt::UniqueConnection );
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+    connect( vl, &QgsVectorLayer::editingStarted, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( vl, &QgsVectorLayer::editingStopped, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
+    connect( vl, &QgsVectorLayer::layerModified, this, &QgsLayerTreeModel::layerNeedsUpdate, Qt::UniqueConnection );
   }
 }
 
@@ -936,14 +937,14 @@ void QgsLayerTreeModel::connectToRootNode()
 {
   Q_ASSERT( mRootNode );
 
-  connect( mRootNode, SIGNAL( willAddChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( nodeWillAddChildren( QgsLayerTreeNode *, int, int ) ) );
-  connect( mRootNode, SIGNAL( addedChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( nodeAddedChildren( QgsLayerTreeNode *, int, int ) ) );
-  connect( mRootNode, SIGNAL( willRemoveChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( nodeWillRemoveChildren( QgsLayerTreeNode *, int, int ) ) );
-  connect( mRootNode, SIGNAL( removedChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( nodeRemovedChildren() ) );
+  connect( mRootNode, &QgsLayerTreeNode::willAddChildren, this, &QgsLayerTreeModel::nodeWillAddChildren );
+  connect( mRootNode, &QgsLayerTreeNode::addedChildren, this, &QgsLayerTreeModel::nodeAddedChildren );
+  connect( mRootNode, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeModel::nodeWillRemoveChildren );
+  connect( mRootNode, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeModel::nodeRemovedChildren );
   connect( mRootNode, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeModel::nodeVisibilityChanged );
-  connect( mRootNode, SIGNAL( nameChanged( QgsLayerTreeNode *, QString ) ), this, SLOT( nodeNameChanged( QgsLayerTreeNode *, QString ) ) );
+  connect( mRootNode, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeModel::nodeNameChanged );
 
-  connect( mRootNode, SIGNAL( customPropertyChanged( QgsLayerTreeNode *, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode *, QString ) ) );
+  connect( mRootNode, &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeModel::nodeCustomPropertyChanged );
 
   connectToLayers( mRootNode );
 }
@@ -1219,7 +1220,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   Q_FOREACH ( QgsLayerTreeModelLegendNode *n, lstNew )
   {
     n->setParent( this );
-    connect( n, SIGNAL( dataChanged() ), this, SLOT( legendNodeDataChanged() ) );
+    connect( n, &QgsLayerTreeModelLegendNode::dataChanged, this, &QgsLayerTreeModel::legendNodeDataChanged );
   }
 
   // See if we have an embedded node - if we do, we will not use it among active nodes.

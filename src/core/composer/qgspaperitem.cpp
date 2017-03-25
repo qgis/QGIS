@@ -254,6 +254,6 @@ void QgsPaperItem::initialize()
 
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
   }
 }

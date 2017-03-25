@@ -295,10 +295,8 @@ void QgsComposerMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *,
   }
   else if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
-    //draw cached pixmap. This function does not call cache() any more because
-    //Qt 4.4.0 and 4.4.1 have problems with recursive paintings
-    //QgsComposerMap::cache() and QgsComposerMap::update() need to be called by
-    //client functions
+    if ( mCacheImage.isNull() )
+      cache();
 
     //Background color is already included in cached image, so no need to draw
 
@@ -475,11 +473,15 @@ QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
-      renderLayers = layers();
+      renderLayers =  mComposition->project()->mapThemeCollection()->masterVisibleLayers();
+  }
+  else if ( !layers().isEmpty() )
+  {
+    renderLayers = layers();
   }
   else
   {
-    renderLayers = layers();
+    renderLayers =  mComposition->project()->mapThemeCollection()->masterVisibleLayers();
   }
 
   bool ok = false;
@@ -1020,7 +1022,7 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
 
 void QgsComposerMap::updateItem()
 {
-  if ( !mUpdatesEnabled )
+  if ( !updatesEnabled() )
   {
     return;
   }
@@ -1119,6 +1121,7 @@ void QgsComposerMap::connectUpdateSlot()
     connect( project, &QgsProject::layersRemoved, this, &QgsComposerMap::renderModeUpdateCachedImage );
     connect( project, &QgsProject::legendLayersAdded, this, &QgsComposerMap::renderModeUpdateCachedImage );
   }
+  connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerMap::updateCachedImage );
 }
 
 bool QgsComposerMap::writeXml( QDomElement &elem, QDomDocument &doc ) const
@@ -1242,6 +1245,8 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
   {
     return false;
   }
+
+  setUpdatesEnabled( false );
 
   QString idRead = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "not found" ) );
   if ( idRead != QLatin1String( "not found" ) )
@@ -1485,6 +1490,8 @@ bool QgsComposerMap::readXml( const QDomElement &itemElem, const QDomDocument &d
   }
 
   updateBoundingRect();
+  setUpdatesEnabled( true );
+
   emit itemChanged();
   return true;
 }

@@ -27,7 +27,7 @@ class QWidget;
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
-class QgsComposerView;
+class QgsComposerInterface;
 class QgsCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
@@ -41,6 +41,7 @@ class QgsRasterLayer;
 class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsOptionsWidgetFactory;
 
 #include <QObject>
 #include <QFont>
@@ -102,6 +103,26 @@ class GUI_EXPORT QgisInterface : public QObject
      * @see addCustomActionForLayerType()
      */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
+
+    /**
+     * Returns a list of all map canvases open in the app.
+     * @note added in QGIS 3.0
+     */
+    virtual QList< QgsMapCanvas * > mapCanvases() = 0;
+
+    /**
+     * Create a new map canvas with the specified unique \a name.
+     * @note added in QGIS 3.0
+     * @see closeMapCanvas()
+     */
+    virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
+
+    /**
+     * Closes the additional map canvas with matching \a name.
+     * @note added in QGIS 3.0
+     * @see createNewMapCanvas()
+     */
+    virtual void closeMapCanvas( const QString &name ) = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -249,26 +270,35 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Adds a widget to the user input tool bar.
     virtual void addUserInputWidget( QWidget *widget ) = 0;
 
-    //! Return mainwindows / composer views of running composer instances (currently only one)
-    virtual QList<QgsComposerView *> activeComposers() = 0;
-
-    /** Create a new composer
-     * @param title window title for new composer (one will be generated if empty)
-     * @return pointer to composer's view
-     * @note new composer window will be shown and activated
+    /**
+     * Returns all currently open composer windows.
+     * @note added in QGIS 3.0
      */
-    virtual QgsComposerView *createNewComposer( const QString &title = QString() ) = 0;
+    virtual QList<QgsComposerInterface *> openComposers() = 0;
 
-    /** Duplicate an existing parent composer from composer view
-     * @param composerView pointer to existing composer view
-     * @param title window title for duplicated composer (one will be generated if empty)
-     * @return pointer to duplicate composer's view
-     * @note duplicate composer window will be hidden until loaded, then shown and activated
+    /**
+     * Opens a new composer window for the specified \a composition, or
+     * brings an already open composer window to the foreground if one
+     * is already created for the composition.
+     * @note added in QGIS 3.0
+     * @see closeComposer()
      */
-    virtual QgsComposerView *duplicateComposer( QgsComposerView *composerView, const QString &title = QString() ) = 0;
+    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
 
-    //! Deletes parent composer of composer view, after closing composer window
-    virtual void deleteComposer( QgsComposerView *composerView ) = 0;
+    /**
+     * Closes an open composer window showing the specified \a composition.
+     * The composition remains unaffected.
+     * @note added in QGIS 3.0
+     * @see openComposer()
+     */
+    virtual void closeComposer( QgsComposition *composition ) = 0;
+
+    /**
+     * Opens the options dialog. The \a currentPage argument can be used to force
+     * the dialog to open at a specific page.
+     * @note added in QGIS 3.0
+     */
+    virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
     //! Return changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
@@ -363,6 +393,19 @@ class GUI_EXPORT QgisInterface : public QObject
      * @see registerMapLayerPropertiesFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+
+    /** Register a new tab in the options dialog.
+     * @note added in QGIS 3.0
+     * @note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * @see unregisterOptionsWidgetFactory() */
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /** Unregister a previously registered tab in the options dialog.
+     * @note added in QGIS 3.0
+     * @see registerOptionsWidgetFactory()
+    */
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /** Register a new custom drop handler.
      * @note added in QGIS 3.0
@@ -616,19 +659,28 @@ class GUI_EXPORT QgisInterface : public QObject
     void currentLayerChanged( QgsMapLayer *layer );
 
     /**
-     * This signal is emitted when a new composer instance has been created
+     * This signal is emitted when a new composer window has been opened.
+     * @note added in QGIS 3.0
+     * @see composerWillBeClosed()
      */
-    void composerAdded( QgsComposerView *v );
+    void composerOpened( QgsComposerInterface *composer );
 
     /**
-     * This signal is emitted before a new composer instance is going to be removed
+     * This signal is emitted before a composer window is going to be closed
+     * and deleted.
+     * @note added in QGIS 3.0
+     * @see composerClosed()
+     * @see composerOpened()
      */
-    void composerWillBeRemoved( QgsComposerView *v );
+    void composerWillBeClosed( QgsComposerInterface *composer );
 
-    /** This signal is emitted when a composer instance has been removed
-     * @note added in version 2.9
+    /**
+     * This signal is emitted after a composer window is closed.
+     * @note added in version 3.0
+     * @see composerWillBeClosed()
+     * @see composerOpened()
      */
-    void composerRemoved( QgsComposerView *v );
+    void composerClosed( QgsComposerInterface *composer );
 
     /**
      * This signal is emitted when the initialization is complete

@@ -211,7 +211,7 @@ void QgsComposerMapOverview::setFrameMap( const int mapId )
     const QgsComposerMap *map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
     if ( map )
     {
-      QObject::disconnect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
+      disconnect( map, &QgsComposerMap::extentChanged, this, &QgsComposerMapOverview::overviewExtentChanged );
     }
   }
   mFrameMapId = mapId;
@@ -231,7 +231,7 @@ void QgsComposerMapOverview::connectSignals()
     const QgsComposerMap *map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
     if ( map )
     {
-      QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
+      connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerMapOverview::overviewExtentChanged );
     }
   }
 }

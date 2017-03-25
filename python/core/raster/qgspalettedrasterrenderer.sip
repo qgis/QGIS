@@ -27,7 +27,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
 
     void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
 
     QList<int> usesBands() const;
 

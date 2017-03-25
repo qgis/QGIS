@@ -276,6 +276,7 @@ SET(QGIS_GUI_SRCS
   qgssourceselectdialog.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
+  qgspasswordlineedit.cpp
   qgspixmaplabel.cpp
   qgspluginmanagerinterface.cpp
   qgspresetcolorrampdialog.cpp
@@ -295,6 +296,7 @@ SET(QGIS_GUI_SRCS
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
+  qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
   qgsshortcutsmanager.cpp
   qgsslider.cpp
@@ -340,6 +342,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
+  qgscomposerinterface.h
   qgscomposeritemcombobox.h
   qgscomposerruler.h
   qgscomposerview.h
@@ -416,11 +419,13 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewvectorlayerdialog.h
   qgsnewgeopackagelayerdialog.h
   qgsoptionsdialogbase.h
+  qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
   qgssourceselectdialog.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
+  qgspasswordlineedit.h
   qgspixmaplabel.h
   qgspluginmanagerinterface.h
   qgspresetcolorrampdialog.h
@@ -439,6 +444,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
+  qgsscrollarea.h
   qgssearchquerybuilder.h
   qgsshortcutsmanager.h
   qgsslider.h
@@ -804,6 +810,14 @@ ELSE(NOT APPLE)
     BUILD_WITH_INSTALL_RPATH TRUE
     PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
+  )
+  # generated export header does not get copied with PUBLIC_HEADER files
+  ADD_CUSTOM_COMMAND(TARGET qgis_gui
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy qgis_gui.h
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_gui.framework/Headers"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS qgis_gui.h
   )
 ENDIF(NOT APPLE)
 

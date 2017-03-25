@@ -117,25 +117,25 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
     radioFileImport->setChecked( false );
     frameFileImport->setEnabled( false );
 
-    connect( radioServerImport, SIGNAL( toggled( bool ) ),
-             this, SLOT( radioServerImportToggled( bool ) ) );
-    connect( radioFileImport, SIGNAL( toggled( bool ) ),
-             this, SLOT( radioFileImportToggled( bool ) ) );
+    connect( radioServerImport, &QAbstractButton::toggled,
+             this, &QgsAuthSslImportDialog::radioServerImportToggled );
+    connect( radioFileImport, &QAbstractButton::toggled,
+             this, &QgsAuthSslImportDialog::radioFileImportToggled );
 
-    connect( leServer, SIGNAL( textChanged( QString ) ),
-             this, SLOT( updateEnabledState() ) );
-    connect( btnConnect, SIGNAL( clicked() ),
-             this, SLOT( secureConnect() ) );
-    connect( leServer, SIGNAL( returnPressed() ),
-             btnConnect, SLOT( click() ) );
+    connect( leServer, &QLineEdit::textChanged,
+             this, &QgsAuthSslImportDialog::updateEnabledState );
+    connect( btnConnect, &QAbstractButton::clicked,
+             this, &QgsAuthSslImportDialog::secureConnect );
+    connect( leServer, &QLineEdit::returnPressed,
+             btnConnect, &QAbstractButton::click );
 
-    connect( buttonBox, SIGNAL( accepted() ),
-             this, SLOT( accept() ) );
-    connect( buttonBox, SIGNAL( rejected() ),
-             this, SLOT( reject() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted,
+             this, &QgsAuthSslImportDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected,
+             this, &QDialog::reject );
 
-    connect( wdgtSslConfig, SIGNAL( readyToSaveChanged( bool ) ),
-             this, SLOT( widgetReadyToSaveChanged( bool ) ) );
+    connect( wdgtSslConfig, &QgsAuthSslConfigWidget::readyToSaveChanged,
+             this, &QgsAuthSslImportDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setEnabled( false );
 
     mTrustedCAs = QgsAuthManager::instance()->getTrustedCaCertsCache();
@@ -181,20 +181,20 @@ void QgsAuthSslImportDialog::secureConnect()
   if ( !mSocket )
   {
     mSocket = new QSslSocket( this );
-    connect( mSocket, SIGNAL( stateChanged( QAbstractSocket::SocketState ) ),
-             this, SLOT( socketStateChanged( QAbstractSocket::SocketState ) ) );
-    connect( mSocket, SIGNAL( connected() ),
-             this, SLOT( socketConnected() ) );
-    connect( mSocket, SIGNAL( disconnected() ),
-             this, SLOT( socketDisconnected() ) );
-    connect( mSocket, SIGNAL( encrypted() ),
-             this, SLOT( socketEncrypted() ) );
-    connect( mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ),
-             this, SLOT( socketError( QAbstractSocket::SocketError ) ) );
-    connect( mSocket, SIGNAL( sslErrors( QList<QSslError> ) ),
-             this, SLOT( sslErrors( QList<QSslError> ) ) );
-    connect( mSocket, SIGNAL( readyRead() ),
-             this, SLOT( socketReadyRead() ) );
+    connect( mSocket, &QAbstractSocket::stateChanged,
+             this, &QgsAuthSslImportDialog::socketStateChanged );
+    connect( mSocket, &QAbstractSocket::connected,
+             this, &QgsAuthSslImportDialog::socketConnected );
+    connect( mSocket, &QAbstractSocket::disconnected,
+             this, &QgsAuthSslImportDialog::socketDisconnected );
+    connect( mSocket, &QSslSocket::encrypted,
+             this, &QgsAuthSslImportDialog::socketEncrypted );
+    connect( mSocket, static_cast<void ( QAbstractSocket::* )( QAbstractSocket::SocketError )>( &QAbstractSocket::error ),
+             this, &QgsAuthSslImportDialog::socketError );
+    connect( mSocket, static_cast<void ( QSslSocket::* )( const QList<QSslError> & )>( &QSslSocket::sslErrors ),
+             this, &QgsAuthSslImportDialog::sslErrors );
+    connect( mSocket, &QIODevice::readyRead,
+             this, &QgsAuthSslImportDialog::socketReadyRead );
   }
 
   mSocket->setCaCertificates( mTrustedCAs );
@@ -202,7 +202,7 @@ void QgsAuthSslImportDialog::secureConnect()
   if ( !mTimer )
   {
     mTimer = new QTimer( this );
-    connect( mTimer, SIGNAL( timeout() ), this, SLOT( destroySocket() ) );
+    connect( mTimer, &QTimer::timeout, this, &QgsAuthSslImportDialog::destroySocket );
   }
   mTimer->start( spinbxTimeout->value() * 1000 );
 
@@ -312,8 +312,8 @@ void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
   QDialog errorDialog( this );
   Ui_SslErrors ui;
   ui.setupUi( &errorDialog );
-  connect( ui.certificateChainButton, SIGNAL( clicked() ),
-           this, SLOT( showCertificateInfo() ) );
+  connect( ui.certificateChainButton, &QAbstractButton::clicked,
+           this, &QgsAuthSslImportDialog::showCertificateInfo );
 
   Q_FOREACH ( const QSslError &error, errors )
   {

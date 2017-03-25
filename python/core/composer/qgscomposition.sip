@@ -1,9 +1,3 @@
-/** \ingroup core
- * Graphics scene for map printing. The class manages the paper item which always
- * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
- * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
- * or to bring them to front/back.
- * */
 class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 {
 %TypeHeaderCode
@@ -12,15 +6,13 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 
   public:
 
-    /** \brief Plot type */
     enum PlotStyle
     {
-      Preview,     // Use cache etc
-      Print,       // Render well
-      Postscript   // Fonts need different scaling!
+      Preview,
+      Print,
+      Postscript
     };
 
-    /** Style to draw the snapping grid*/
     enum GridStyle
     {
       Solid,
@@ -40,153 +32,40 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
       Landscape
     };
 
-    explicit QgsComposition( QgsProject* project );
+    explicit QgsComposition( QgsProject *project );
 
-    /** Composition atlas modes*/
     enum AtlasMode
     {
-      AtlasOff,     // Composition is not being controlled by an atlas
-      PreviewAtlas, // An atlas composition is being previewed in the app
-      ExportAtlas   // The composition is being exported as an atlas
+      AtlasOff,
+      PreviewAtlas,
+      ExportAtlas
     };
 
     ~QgsComposition();
 
-    /**
-     * The project associated with the composition. Used to get access to layers, map themes,
-     * relations and various other bits. It is never null.
-     *
-     * \note Added in QGIS 3.0
-     */
-    QgsProject* project() const;
-
-    /** Changes size of paper item.
-     * @param width page width in mm
-     * @param height page height in mm
-     * @param keepRelativeItemPosition if true, all items and guides will be moved so that they retain
-     * their same relative position to the top left corner of their current page.
-     * @see paperHeight
-     * @see paperWidth
-     */
+    QgsProject *project() const;
+    QString name() const;
+    void setName( const QString &name );
     void setPaperSize( double width, double height,
                        bool keepRelativeItemPosition = true );
-
-    /** Height of paper item
-     * @returns height in mm
-     * @see paperWidth
-     * @see setPaperSize
-     */
     double paperHeight() const;
-
-    /** Width of paper item
-     * @returns width in mm
-     * @see paperHeight
-     * @see setPaperSize
-     */
     double paperWidth() const;
-
-    /** Resizes the composition page to fit the current contents of the composition.
-     * Calling this method resets the number of pages to 1, with the size set to the
-     * minimum size required to fit all existing composer items. Items will also be
-     * repositioned so that the new top-left bounds of the composition is at the point
-     * (marginLeft, marginTop). An optional margin can be specified.
-     * @param marginTop top margin (millimeters)
-     * @param marginRight right margin  (millimeters)
-     * @param marginBottom bottom margin  (millimeters)
-     * @param marginLeft left margin (millimeters)
-     * @note added in QGIS 2.12
-     * @see setResizeToContentsMargins()
-     * @see resizeToContentsMargins()
-     */
     void resizePageToContents( double marginTop = 0.0, double marginRight = 0.0,
                                double marginBottom = 0.0, double marginLeft = 0.0 );
-
-    /** Sets the resize to contents margins. These margins are saved in the composition
-     * so that they can be restored with the composer.
-     * @param marginTop top margin (millimeters)
-     * @param marginRight right margin  (millimeters)
-     * @param marginBottom bottom margin  (millimeters)
-     * @param marginLeft left margin (millimeters)
-     * @note added in QGIS 2.12
-     * @see resizePageToContents()
-     * @see resizeToContentsMargins()
-     */
     void setResizeToContentsMargins( double marginTop, double marginRight,
                                      double marginBottom, double marginLeft );
-
-    /** Returns the resize to contents margins. These margins are saved in the composition
-     * so that they can be restored with the composer.
-     * @param marginTop reference for top margin (millimeters)
-     * @param marginRight reference for right margin  (millimeters)
-     * @param marginBottom reference for bottom margin  (millimeters)
-     * @param marginLeft reference for left margin (millimeters)
-     * @note added in QGIS 2.12
-     * @see resizePageToContents()
-     * @see setResizeToContentsMargins()
-     */
-    void resizeToContentsMargins( double& marginTop /Out/, double& marginRight /Out/,
-                                  double& marginBottom /Out/, double& marginLeft /Out/ ) const;
-
-    /** Returns the vertical space between pages in a composer view
-     * @returns space between pages in mm
-     */
+    void resizeToContentsMargins( double &marginTop /Out/, double &marginRight /Out/,
+                                  double &marginBottom /Out/, double &marginLeft /Out/ ) const;
     double spaceBetweenPages() const;
-
-    /** Sets the number of pages for the composition.
-     * @param pages number of pages
-     * @see numPages
-     */
     void setNumPages( const int pages );
-
-    /** Returns the number of pages in the composition.
-     * @returns number of pages
-     * @see setNumPages
-     */
     int numPages() const;
-
-    /** Returns whether a page is empty, ie, it contains no items except for the background
-     * paper item.
-     * @param page page number, starting with 1
-     * @returns true if page is empty
-     * @note added in QGIS 2.5
-     * @see numPages
-     * @see setNumPages
-     * @see shouldExportPage
-     */
     bool pageIsEmpty( const int page ) const;
-
-    /** Returns whether a specified page number should be included in exports of the composition.
-     * @param page page number, starting with 1
-     * @returns true if page should be exported
-     * @note added in QGIS 2.5
-     * @see numPages
-     * @see pageIsEmpty
-     */
     bool shouldExportPage( const int page ) const;
-
-    /** Note: added in version 2.1*/
-    void setPageStyleSymbol( QgsFillSymbol* symbol );
-    /** Note: added in version 2.1*/
-    QgsFillSymbol* pageStyleSymbol();
-
-    /** Returns the position within a page of a point in the composition
-      @note Added in QGIS 2.1
-     */
+    void setPageStyleSymbol( QgsFillSymbol *symbol );
+    QgsFillSymbol *pageStyleSymbol();
     QPointF positionOnPage( QPointF position ) const;
-
-    /** Returns the page number corresponding to a point in the composition
-      @note Added in QGIS 2.1
-     */
     int pageNumberForPoint( QPointF position ) const;
-
-    /** Sets the status bar message for the composer window
-      @note Added in QGIS 2.1
-     */
-    void setStatusMessage( const QString & message );
-
-    /** Refreshes the composition when composer related options change
-     @note added in version 2.1
-     */
+    void setStatusMessage( const QString &message );
     void updateSettings();
 
     void setSnapToGridEnabled( const bool b );
@@ -195,7 +74,6 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     void setGridVisible( const bool b );
     bool gridVisible() const;
 
-    /** Hides / shows custom snap lines*/
     void setSnapLinesVisible( const bool visible );
     bool snapLinesVisible() const;
 
@@ -375,32 +253,16 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     /** Reads settings from xml file*/
     bool readXml( const QDomElement& compositionElem, const QDomDocument& doc );
 
-    /** Load a template document
-     * @param doc template document
-     * @param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
-     * @param addUndoCommands whether or not to add undo commands
-     * @param clearComposition set to true to clear the existing composition and read all composition and
-     * atlas properties from the template. Set to false to only add new items from the template, without
-     * overwriting the existing items or composition settings.
-     */
     bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0,
                            bool addUndoCommands = false, const bool clearComposition = true );
+    void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
+                          bool addUndoCommands = false, QPointF *pos = 0, bool pasteInPlace = false );
 
-    /** Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
-     * @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
-     * @param doc xml document
-     * @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
-     * @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
-     * @param pos item position. Optional, take position from xml if 0
-     * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
-     * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
-     */
-    void addItemsFromXml( const QDomElement& elem, const QDomDocument& doc );
 
-    /** Adds item to z list. Usually called from constructor of QgsComposerItem*/
-    void addItemToZList( QgsComposerItem* item );
-    /** Removes item from z list. Usually called from destructor of QgsComposerItem*/
-    void removeItemFromZList( QgsComposerItem* item );
+    void addItemToZList( QgsComposerItem *item );
+
+    void removeItemFromZList( QgsComposerItem *item );
+
 
     //functions to move selected items in hierarchy
     void raiseSelectedItems();
@@ -504,7 +366,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     /** Adds label to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
     /** Adds map to the graphics scene and advises composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map, const bool setDefaultPreviewStyle = true );
+    void addComposerMap( QgsComposerMap* map );
     /** Adds scale bar to the graphics scene and advises composer to create a widget for it (through signal)*/
     void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
     /** Adds legend to the graphics scene and advises composer to create a widget for it (through signal)*/
@@ -777,42 +639,14 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 
 
   signals:
+    void nameChanged( const QString& name );
     void paperSizeChanged();
     void nPagesChanged();
-
-    /** Is emitted when the compositions print resolution changes*/
     void printResolutionChanged();
-
-    /** Is emitted when selected item changed. If 0, no item is selected*/
-    void selectedItemChanged( QgsComposerItem* selected );
-    /** Is emitted when new composer arrow has been added to the view*/
-    void composerArrowAdded( QgsComposerArrow* arrow );
-    /** Is emitted when new composer polygon has been added to the view*/
-    void composerPolygonAdded( QgsComposerPolygon* polygon );
-    /** Is emitted when new composer polyline has been added to the view*/
-    void composerPolylineAdded( QgsComposerPolyline* polyline );
-    /** Is emitted when a new composer html has been added to the view*/
-    void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
-    /** Is emitted when a new item group has been added to the view*/
-    void composerItemGroupAdded( QgsComposerItemGroup* group );
-    /** Is emitted when new composer label has been added to the view*/
-    void composerLabelAdded( QgsComposerLabel* label );
-    /** Is emitted when new composer map has been added to the view*/
-    void composerMapAdded( QgsComposerMap* map );
-    /** Is emitted when new composer scale bar has been added*/
-    void composerScaleBarAdded( QgsComposerScaleBar* scalebar );
-    /** Is emitted when a new composer legend has been added*/
-    void composerLegendAdded( QgsComposerLegend* legend );
-    /** Is emitted when a new composer picture has been added*/
-    void composerPictureAdded( QgsComposerPicture* picture );
-    /** Is emitted when a new composer shape has been added*/
-    void composerShapeAdded( QgsComposerShape* shape );
-    /** Is emitted when a new composer table frame has been added to the view*/
-    void composerTableFrameAdded( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame );
-    /** Is emitted when a composer item has been removed from the scene*/
-    void itemRemoved( QgsComposerItem* );
-
-    /** Is emitted when item in the composition must be refreshed*/
+    void selectedItemChanged( QgsComposerItem *selected );
+    void itemAdded( QgsComposerItem *item );
+    void composerItemGroupAdded( QgsComposerItemGroup *group );
+    void itemRemoved( QgsComposerItem * );
     void refreshItemsTriggered();
 
     /** Is emitted when the composition has an updated status bar message for the composer window*/

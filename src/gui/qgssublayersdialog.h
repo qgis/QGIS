@@ -17,6 +17,7 @@
 #define QGSSUBLAYERSDIALOG_H
 
 #include <QDialog>
+#include <QCheckBox>
 #include <ui_qgssublayersdialogbase.h>
 #include "qgscontexthelp.h"
 #include "qgis_gui.h"
@@ -63,6 +64,18 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! @note added in 2.16
     LayerDefinitionList selection();
 
+    //! Set if we should display the add to group checkbox
+    //! @note added in 3.0
+    void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox ) { mShowAddToGroupCheckbox = showAddToGroupCheckbox; }
+
+    //! If we should display the add to group checkbox
+    //! @note added in 3.0
+    bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
+
+    //! If we should add layers in a group
+    //! @note added in 3.0
+    bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
+
   public slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     int exec();
@@ -70,8 +83,13 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   protected:
     QString mName;
     QStringList mSelectedSubLayers;
-    bool mShowCount;  //!< Whether to show number of features in the table
-    bool mShowType;   //!< Whether to show type in the table
+    bool mShowCount = false;  //!< Whether to show number of features in the table
+    bool mShowType = false;   //!< Whether to show type in the table
+
+  private:
+
+    bool mShowAddToGroupCheckbox = false;   //!< Whether to show the add to group checkbox
+    QCheckBox *mCheckboxAddToGroup = nullptr;
 };
 
 #endif

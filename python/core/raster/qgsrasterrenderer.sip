@@ -36,7 +36,7 @@ class QgsRasterRenderer : QgsRasterInterface
     int alphaBand() const;
 
     /** Get symbology items if provided by renderer*/
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems /Out/ ) const;
 
     /** Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXml( const QDomElement& rendererElem );

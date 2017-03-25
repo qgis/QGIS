@@ -26,17 +26,11 @@ email                : ersts@amnh.org
 #include <QDomElement>
 
 QgsRasterShader::QgsRasterShader( double minimumValue, double maximumValue )
+  : mMinimumValue( minimumValue )
+  , mMaximumValue( maximumValue )
+  , mRasterShaderFunction( new QgsRasterShaderFunction( mMinimumValue, mMaximumValue ) )
 {
   QgsDebugMsgLevel( "called.", 4 );
-
-  mMinimumValue = minimumValue;
-  mMaximumValue = maximumValue;
-  mRasterShaderFunction = new QgsRasterShaderFunction( mMinimumValue, mMaximumValue );
-}
-
-QgsRasterShader::~QgsRasterShader()
-{
-  delete mRasterShaderFunction;
 }
 
 /**
@@ -92,13 +86,12 @@ void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction *function
 {
   QgsDebugMsgLevel( "called.", 4 );
 
-  if ( mRasterShaderFunction == function )
+  if ( mRasterShaderFunction.get() == function )
     return;
 
   if ( function )
   {
-    delete mRasterShaderFunction;
-    mRasterShaderFunction = function;
+    mRasterShaderFunction.reset( function );
   }
 }
 
@@ -142,7 +135,7 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent ) const
   }
 
   QDomElement rasterShaderElem = doc.createElement( QStringLiteral( "rastershader" ) );
-  QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( mRasterShaderFunction );
+  QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( mRasterShaderFunction.get() );
   if ( colorRampShader )
   {
     QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );

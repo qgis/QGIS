@@ -43,8 +43,8 @@ QgsWMSConnection::QgsWMSConnection( const QString &connName )
 
   QgsSettings settings;
 
-  QString key = "/Qgis/connections-wms/" + mConnName;
-  QString credentialsKey = "/Qgis/WMS/" + mConnName;
+  QString key = "qgis/connections-wms/" + mConnName;
+  QString credentialsKey = "qgis/WMS/" + mConnName;
 
   QStringList connStringParts;
 
@@ -124,25 +124,25 @@ QgsDataSourceUri QgsWMSConnection::uri()
 QStringList QgsWMSConnection::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
+  settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
   return settings.childGroups();
 }
 
 QString QgsWMSConnection::selectedConnection()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "/Qgis/connections-wms/selected" ) ).toString();
+  return settings.value( QStringLiteral( "qgis/connections-wms/selected" ) ).toString();
 }
 
 void QgsWMSConnection::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Qgis/connections-wms/selected" ), name );
+  settings.setValue( QStringLiteral( "qgis/connections-wms/selected" ), name );
 }
 
 void QgsWMSConnection::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "/Qgis/connections-wms/" + name );
-  settings.remove( "/Qgis/WMS/" + name );
+  settings.remove( "qgis/connections-wms/" + name );
+  settings.remove( "qgis/WMS/" + name );
 }

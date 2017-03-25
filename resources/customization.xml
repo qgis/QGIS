@@ -502,8 +502,8 @@
               <widget objectName="mLblSatellitesUsed" class="QLabel" label="Satellites"/>
               <widget objectName="mTxtHacc" class="QLineEdit" label=""/>
               <widget objectName="mTxtVacc" class="QLineEdit" label=""/>
-              <widget objectName="mLblHacc" class="QLabel" label="H accurancy"/>
-              <widget objectName="mLblVacc" class="QLabel" label="V accurancy"/>
+              <widget objectName="mLblHacc" class="QLabel" label="H accuracy"/>
+              <widget objectName="mLblVacc" class="QLabel" label="V accuracy"/>
             </widget>
           </widget>
           <widget objectName="qt_scrollarea_hcontainer" class="QWidget" label=""/>

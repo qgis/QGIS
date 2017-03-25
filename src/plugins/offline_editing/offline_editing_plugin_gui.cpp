@@ -31,7 +31,7 @@
 #include <QMessageBox>
 
 
-QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::ShowLegend, false );
@@ -76,7 +76,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  QgsLayerTreeGroup *rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
+  QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
 

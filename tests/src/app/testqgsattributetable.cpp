@@ -45,6 +45,7 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculation();
     void testFieldCalculationArea();
     void testNoGeom();
+    void testSelected();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -207,6 +208,43 @@ void TestQgsAttributeTable::testNoGeom()
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 
+}
+
+void TestQgsAttributeTable::testSelected()
+{
+  // test attribute table opening in show selected mode
+  QgsSettings s;
+
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowSelected );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  //should be nothing - because no selection!
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+
+  // make a selection
+  tempLayer->selectByIds( QgsFeatureIds() << 1 << 3 );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
+
+  // another test - start with selection when dialog created
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
+  // remove selection
+  tempLayer->removeSelection();
+  QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
+  QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
 
 

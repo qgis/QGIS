@@ -117,7 +117,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   d->setContext( symbolContext );
 
   connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpSymbolSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerShapeWidget::cleanUpSymbolSelector );
   openPanel( d );
   mComposerShape->beginCommand( tr( "Shape style changed" ) );
 }
@@ -183,7 +183,7 @@ void QgsComposerShapeWidget::toggleRadiusSpin( const QString &shapeText )
 void QgsComposerShapeWidget::updateSymbolFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
-    mComposerShape->setShapeStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
+    mComposerShape->setShapeStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
 }
 
 void QgsComposerShapeWidget::cleanUpSymbolSelector( QgsPanelWidget *container )

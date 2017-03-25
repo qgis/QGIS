@@ -63,6 +63,7 @@ email                : sherman at mrcc.com
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgscursors.h"
+#include "qgsmapthemecollection.h"
 #include <cmath>
 
 
@@ -140,18 +141,21 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( QgsProject::instance(), &QgsProject::writeProject,
            this, &QgsMapCanvas::writeProject );
 
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
+
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
   mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
 
   //segmentation parameters
   QgsSettings settings;
-  double segmentationTolerance = settings.value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "/qgis/segmentationToleranceType" ), 0 ).toInt() );
+  double segmentationTolerance = settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble();
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "qgis/segmentationToleranceType" ), 0 ).toInt() );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
 
-  mWheelZoomFactor = settings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
+  mWheelZoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
 
   QSize s = viewport()->size();
   mSettings.setOutputSize( s );
@@ -213,8 +217,8 @@ QgsMapCanvas::~QgsMapCanvas()
 
   if ( mJob )
   {
-    mJob->cancel();
-    Q_ASSERT( !mJob );
+    whileBlocking( mJob )->cancel();
+    delete mJob;
   }
 
   delete mCache;
@@ -288,6 +292,15 @@ const QgsMapToPixel *QgsMapCanvas::getCoordinateTransform()
 }
 
 void QgsMapCanvas::setLayers( const QList<QgsMapLayer *> &layers )
+{
+  // following a theme => request denied!
+  if ( !mTheme.isEmpty() )
+    return;
+
+  setLayersPrivate( layers );
+}
+
+void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
 {
   QList<QgsMapLayer *> oldLayers = mSettings.layers();
 
@@ -482,6 +495,17 @@ void QgsMapCanvas::refreshMap()
 
   mSettings.setExpressionContext( expressionContext );
 
+  if ( !mTheme.isEmpty() )
+  {
+    // IMPORTANT: we MUST set the layer style overrides here! (At the time of writing this
+    // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
+    // current state of the style. If we had stored the style overrides earlier (such as in
+    // mapThemeChanged slot) then this xml could be out of date...
+    // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
+    // just return the style name, we can instead set the overrides in mapThemeChanged and not here
+    mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
+  }
+
   // create the renderer job
   Q_ASSERT( !mJob );
   mJobCanceled = false;
@@ -518,6 +542,26 @@ void QgsMapCanvas::refreshMap()
   emit renderStarting();
 }
 
+void QgsMapCanvas::mapThemeChanged( const QString &theme )
+{
+  if ( theme == mTheme )
+  {
+    // set the canvas layers to match the new layers contained in the map theme
+    // NOTE: we do this when the theme layers change and not when we are refreshing the map
+    // as setLayers() sets up necessary connections to handle changes to the layers
+    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    // IMPORTANT: we don't set the layer style overrides here! (At the time of writing this
+    // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
+    // current state of the style. If changes were made to the style then this xml
+    // snapshot goes out of sync...
+    // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
+    // just return the style name, we can instead set the overrides here and not in refreshMap()
+
+    clearCache();
+    refresh();
+  }
+}
+
 
 void QgsMapCanvas::rendererJobFinished()
 {
@@ -548,7 +592,7 @@ void QgsMapCanvas::rendererJobFinished()
     emit renderComplete( &p );
 
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() )
+    if ( settings.value( QStringLiteral( "Map/logCanvasRefreshEvent" ), false ).toBool() )
     {
       QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( mJob->renderingTime() );
       QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
@@ -596,8 +640,11 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
 
 void QgsMapCanvas::mapUpdateTimeout()
 {
-  const QImage &img = mJob->renderedImage();
-  mMap->setContent( img, imageRect( img, mSettings ) );
+  if ( mJob )
+  {
+    const QImage &img = mJob->renderedImage();
+    mMap->setContent( img, imageRect( img, mSettings ) );
+  }
 }
 
 void QgsMapCanvas::stopRendering()
@@ -1241,6 +1288,16 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
   }
+  else if ( e->button() == Qt::BackButton )
+  {
+    zoomToPreviousExtent();
+    return;
+  }
+  else if ( e->button() == Qt::ForwardButton )
+  {
+    zoomToNextExtent();
+    return;
+  }
   else
   {
     if ( mZoomDragging && e->button() == Qt::LeftButton )
@@ -1500,7 +1557,6 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
   }
 }
 
-//! Write property of QColor bgColor.
 void QgsMapCanvas::setCanvasColor( const QColor &color )
 {
   // background of map's pixmap
@@ -1517,7 +1573,7 @@ void QgsMapCanvas::setCanvasColor( const QColor &color )
 
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
-} // setBackgroundColor
+}
 
 QColor QgsMapCanvas::canvasColor() const
 {
@@ -1591,9 +1647,30 @@ void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString> &overrid
     return;
 
   mSettings.setLayerStyleOverrides( overrides );
+  clearCache();
   emit layerStyleOverridesChanged();
 }
 
+void QgsMapCanvas::setTheme( const QString &theme )
+{
+  if ( mTheme == theme )
+    return;
+
+  clearCache();
+  if ( theme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( theme ) )
+  {
+    mTheme.clear();
+    mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
+    setLayers( QgsProject::instance()->mapThemeCollection()->masterVisibleLayers() );
+    emit themeChanged( QString() );
+  }
+  else
+  {
+    mTheme = theme;
+    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    emit themeChanged( theme );
+  }
+}
 
 void QgsMapCanvas::setRenderFlag( bool flag )
 {
@@ -1669,6 +1746,19 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   {
     mAutoRefreshTimer.stop();
   }
+}
+
+void QgsMapCanvas::projectThemesChanged()
+{
+  if ( mTheme.isEmpty() )
+    return;
+
+  if ( !QgsProject::instance()->mapThemeCollection()->hasMapTheme( mTheme ) )
+  {
+    // theme has been removed - stop following
+    setTheme( QString() );
+  }
+
 }
 
 QgsMapTool *QgsMapCanvas::mapTool()
@@ -1780,15 +1870,44 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
   {
     QDomNode node = nodes.item( 0 );
 
+    // Search the specific MapCanvas node using the name
+    if ( nodes.count() > 1 )
+    {
+      for ( int i = 0; i < nodes.size(); ++i )
+      {
+        QDomElement elementNode = nodes.at( i ).toElement();
+
+        if ( elementNode.hasAttribute( QStringLiteral( "name" ) ) && elementNode.attribute( QStringLiteral( "name" ) ) == objectName() )
+        {
+          node = nodes.at( i );
+          break;
+        }
+      }
+    }
+
     QgsMapSettings tmpSettings;
     tmpSettings.readXml( node );
-    setDestinationCrs( tmpSettings.destinationCrs() );
+    if ( objectName() != QStringLiteral( "theMapCanvas" ) )
+    {
+      // never manually set the crs for the main canvas - this is instead connected to the project CRS
+      setDestinationCrs( tmpSettings.destinationCrs() );
+    }
     setExtent( tmpSettings.extent() );
     setRotation( tmpSettings.rotation() );
     mSettings.datumTransformStore() = tmpSettings.datumTransformStore();
     enableMapTileRendering( tmpSettings.testFlag( QgsMapSettings::RenderMapTile ) );
 
     clearExtentHistory(); // clear the extent history on project load
+
+    QDomElement elem = node.toElement();
+    if ( elem.hasAttribute( QStringLiteral( "theme" ) ) )
+    {
+      if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( elem.attribute( QStringLiteral( "theme" ) ) ) )
+      {
+        setTheme( elem.attribute( QStringLiteral( "theme" ) ) );
+      }
+    }
+    setAnnotationsVisible( elem.attribute( QStringLiteral( "annotationsVisible" ), QStringLiteral( "1" ) ).toInt() );
   }
   else
   {
@@ -1809,6 +1928,10 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
 
   QDomElement mapcanvasNode = doc.createElement( QStringLiteral( "mapcanvas" ) );
+  mapcanvasNode.setAttribute( QStringLiteral( "name" ), objectName() );
+  if ( !mTheme.isEmpty() )
+    mapcanvasNode.setAttribute( QStringLiteral( "theme" ), mTheme );
+  mapcanvasNode.setAttribute( QStringLiteral( "annotationsVisible" ), mAnnotationsVisible );
   qgisNode.appendChild( mapcanvasNode );
 
   mSettings.writeXml( mapcanvasNode, doc );
@@ -1953,6 +2076,14 @@ void QgsMapCanvas::refreshAllLayers()
   refresh();
 }
 
+void QgsMapCanvas::waitWhileRendering()
+{
+  while ( mRefreshScheduled || mJob )
+  {
+    QgsApplication::processEvents();
+  }
+}
+
 void QgsMapCanvas::setSegmentationTolerance( double tolerance )
 {
   mSettings.setSegmentationTolerance( tolerance );
@@ -1961,4 +2092,30 @@ void QgsMapCanvas::setSegmentationTolerance( double tolerance )
 void QgsMapCanvas::setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type )
 {
   mSettings.setSegmentationToleranceType( type );
+}
+
+QList<QgsMapCanvasAnnotationItem *> QgsMapCanvas::annotationItems() const
+{
+  QList<QgsMapCanvasAnnotationItem *> annotationItemList;
+  QList<QGraphicsItem *> itemList = mScene->items();
+  QList<QGraphicsItem *>::iterator it = itemList.begin();
+  for ( ; it != itemList.end(); ++it )
+  {
+    QgsMapCanvasAnnotationItem *aItem = dynamic_cast< QgsMapCanvasAnnotationItem *>( *it );
+    if ( aItem )
+    {
+      annotationItemList.push_back( aItem );
+    }
+  }
+
+  return annotationItemList;
+}
+
+void QgsMapCanvas::setAnnotationsVisible( bool show )
+{
+  mAnnotationsVisible = show;
+  Q_FOREACH ( QgsMapCanvasAnnotationItem *item, annotationItems() )
+  {
+    item->setVisible( show );
+  }
 }

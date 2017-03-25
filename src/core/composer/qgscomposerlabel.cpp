@@ -51,7 +51,6 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   , mFontColor( QColor( 0, 0, 0 ) )
   , mHAlignment( Qt::AlignLeft )
   , mVAlignment( Qt::AlignTop )
-  , mExpressionLayer( nullptr )
   , mDistanceArea( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
@@ -59,7 +58,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
 
   //get default composer font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -79,7 +78,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   {
     //connect to atlas feature changes
     //to update the expression context
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( refreshExpressionContext() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLabel::refreshExpressionContext );
+    connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerLabel::contentChanged );
   }
 
   mWebPage = new QgsWebPage( this );
@@ -96,7 +96,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  connect( mWebPage, SIGNAL( loadFinished( bool ) ), SLOT( loadingHtmlFinished( bool ) ) );
+  connect( mWebPage, &QWebPage::loadFinished, this, &QgsComposerLabel::loadingHtmlFinished );
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -131,6 +131,11 @@ void QgsComposerLabel::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
   if ( mHtmlState )
   {
+    if ( mFirstRender )
+    {
+      contentChanged();
+      mFirstRender = false;
+    }
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
     mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0 ) );
     mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
@@ -178,12 +183,12 @@ void QgsComposerLabel::contentChanged()
       QEventLoop loop;
 
       //Connect timeout and webpage loadFinished signals to loop
-      connect( mWebPage, SIGNAL( loadFinished( bool ) ), &loop, SLOT( quit() ) );
+      connect( mWebPage, &QWebPage::loadFinished, &loop, &QEventLoop::quit );
 
       // Start a 20 second timeout in case html loading will never complete
       QTimer timeoutTimer;
       timeoutTimer.setSingleShot( true );
-      connect( &timeoutTimer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
+      connect( &timeoutTimer, &QTimer::timeout, &loop, &QEventLoop::quit );
       timeoutTimer.start( 20000 );
 
       // Pause until html is loaded
@@ -243,9 +248,6 @@ void QgsComposerLabel::setHtmlState( int state )
 
 void QgsComposerLabel::refreshExpressionContext()
 {
-  mExpressionLayer = nullptr;
-  mExpressionFeature.reset();
-
   if ( !mComposition )
     return;
 
@@ -280,12 +282,6 @@ QString QgsComposerLabel::displayText() const
   replaceDateText( displayText );
 
   QgsExpressionContext context = createExpressionContext();
-  //overwrite layer/feature if they have been set via setExpressionContext
-  //TODO remove when setExpressionContext is removed
-  if ( mExpressionFeature.get() )
-    context.setFeature( *mExpressionFeature );
-  if ( mExpressionLayer )
-    context.setFields( mExpressionLayer->fields() );
 
   return QgsExpression::replaceExpressionText( displayText, &context, mDistanceArea );
 }
@@ -464,7 +460,6 @@ bool QgsComposerLabel::readXml( const QDomElement &itemElem, const QDomDocument 
     _readXml( composerItemElem, doc );
   }
   emit itemChanged();
-  contentChanged();
   return true;
 }
 

@@ -63,8 +63,8 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, 
 #endif
 
   QgsSettings settings;
-  mMeanCheckBox->setChecked( settings.value( QStringLiteral( "/HistogramWidget/showMean" ), false ).toBool() );
-  mStdevCheckBox->setChecked( settings.value( QStringLiteral( "/HistogramWidget/showStdev" ), false ).toBool() );
+  mMeanCheckBox->setChecked( settings.value( QStringLiteral( "HistogramWidget/showMean" ), false ).toBool() );
+  mStdevCheckBox->setChecked( settings.value( QStringLiteral( "HistogramWidget/showStdev" ), false ).toBool() );
 
   connect( mBinsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( refresh() ) );
   connect( mMeanCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refresh() ) );
@@ -86,8 +86,8 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, 
 QgsHistogramWidget::~QgsHistogramWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/HistogramWidget/showMean" ), mMeanCheckBox->isChecked() );
-  settings.setValue( QStringLiteral( "/HistogramWidget/showStdev" ), mStdevCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "HistogramWidget/showMean" ), mMeanCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "HistogramWidget/showStdev" ), mStdevCheckBox->isChecked() );
 }
 
 static bool _rangesByLower( const QgsRendererRange &a, const QgsRendererRange &b )

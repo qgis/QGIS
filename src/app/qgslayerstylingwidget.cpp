@@ -356,7 +356,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         connect( styleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
         QgsPanelWidgetWrapper *wrapper = new QgsPanelWidgetWrapper( styleWidget, mStackedWidget );
         wrapper->setDockMode( true );
-        connect( styleWidget, SIGNAL( showPanel( QgsPanelWidget * ) ), wrapper, SLOT( openPanel( QgsPanelWidget * ) ) );
+        connect( styleWidget, &QgsRendererPropertiesDialog::showPanel, wrapper, &QgsPanelWidget::openPanel );
         mWidgetStack->setMainPanel( wrapper );
         break;
       }
@@ -432,13 +432,11 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       {
         if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
         {
-          if ( mRasterStyleWidget )
+          if ( !mRasterStyleWidget )
           {
-            mRasterStyleWidget->deleteLater();
-            delete mRasterStyleWidget;
+            mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
+            mRasterStyleWidget->syncToLayer( rlayer );
           }
-          mRasterStyleWidget = new QgsRendererRasterPropertiesWidget( rlayer, mMapCanvas, mWidgetStack );
-          mRasterStyleWidget->syncToLayer( rlayer );
           connect( mRasterStyleWidget, SIGNAL( widgetChanged() ), this, SLOT( autoApply() ) );
 
           QgsRasterHistogramWidget *widget = new QgsRasterHistogramWidget( rlayer, mWidgetStack );
@@ -539,7 +537,7 @@ bool QgsMapLayerStyleCommand::mergeWith( const QUndoCommand *other )
   // only merge commands if they are created shortly after each other
   // (e.g. user keeps modifying one property)
   QgsSettings settings;
-  int timeout = settings.value( QStringLiteral( "/UI/styleUndoMergeTimeout" ), 500 ).toInt();
+  int timeout = settings.value( QStringLiteral( "UI/styleUndoMergeTimeout" ), 500 ).toInt();
   if ( mTime.msecsTo( otherCmd->mTime ) > timeout )
     return false;
 

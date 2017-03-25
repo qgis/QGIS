@@ -210,6 +210,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb );
 
     friend class QgsPolygonV2;
+    friend class QgsTriangle;
 
 };
 

@@ -69,6 +69,7 @@ SET(QGIS_CORE_SRCS
   layertree/qgslayertreenode.cpp
   layertree/qgslayertreeregistrybridge.cpp
   layertree/qgslayertreeutils.cpp
+  layertree/qgslayertree.cpp
 
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
@@ -93,6 +94,7 @@ SET(QGIS_CORE_SRCS
   qgsactionscoperegistry.cpp
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
+  qgsanimatedicon.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsbearingutils.cpp
@@ -296,6 +298,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposition.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
   composer/qgsgroupungroupitemscommand.cpp
+  composer/qgslayoutmanager.cpp
   composer/qgsnumericscalebarstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
@@ -381,6 +384,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsmultisurface.cpp
   geometry/qgspointv2.cpp
   geometry/qgspolygon.cpp
+  geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
 
@@ -482,6 +486,7 @@ ENDIF(NOT MSVC)
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
   qgsactionscoperegistry.h
+  qgsanimatedicon.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatereferencesystem.h
@@ -583,6 +588,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposertexttable.h
   composer/qgscomposition.h
   composer/qgsgroupungroupitemscommand.h
+  composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
   processing/qgsprocessingfeedback.h
@@ -600,6 +606,7 @@ SET(QGIS_CORE_MOC_HDRS
   symbology-ng/qgssvgcache.h
   symbology-ng/qgsstyle.h
 
+  layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
   layertree/qgslayertreelayer.h
   layertree/qgslayertreemodel.h
@@ -894,7 +901,6 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorfieldsymbollayer.h
   symbology-ng/qgsgeometrygeneratorsymbollayer.h
 
-  layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
 
   geometry/qgsabstractgeometry.h
@@ -918,6 +924,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultisurface.h
   geometry/qgspointv2.h
   geometry/qgspolygon.h
+  geometry/qgstriangle.h
   geometry/qgssurface.h
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
@@ -1007,6 +1014,14 @@ ELSE(NOT APPLE)
     BUILD_WITH_INSTALL_RPATH TRUE
     PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
+  )
+  # generated export header does not get copied with PUBLIC_HEADER files
+  ADD_CUSTOM_COMMAND(TARGET qgis_core
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy qgis_core.h
+            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_core.framework/Headers"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS qgis_core.h
   )
 ENDIF(NOT APPLE)
 

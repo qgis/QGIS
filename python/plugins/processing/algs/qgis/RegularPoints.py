@@ -33,13 +33,14 @@ from math import sqrt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsRectangle, QgsFields, QgsField, QgsFeature, QgsWkbTypes,
-                       QgsGeometry, QgsPoint)
+                       QgsGeometry, QgsPoint, QgsCoordinateReferenceSystem)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects
 
@@ -54,6 +55,7 @@ class RegularPoints(GeoAlgorithm):
     RANDOMIZE = 'RANDOMIZE'
     IS_SPACING = 'IS_SPACING'
     OUTPUT = 'OUTPUT'
+    CRS = 'CRS'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
@@ -72,6 +74,8 @@ class RegularPoints(GeoAlgorithm):
                                            self.tr('Apply random offset to point spacing'), False))
         self.addParameter(ParameterBoolean(self.IS_SPACING,
                                            self.tr('Use point spacing'), True))
+        self.addParameter(ParameterCrs(self.CRS,
+                                       self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
@@ -81,16 +85,18 @@ class RegularPoints(GeoAlgorithm):
         inset = float(self.getParameterValue(self.INSET))
         randomize = self.getParameterValue(self.RANDOMIZE)
         isSpacing = self.getParameterValue(self.IS_SPACING)
+        crsId = self.getParameterValue(self.CRS)
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromUserInput(crsId)
 
         extent = QgsRectangle(float(extent[0]), float(extent[2]),
                               float(extent[1]), float(extent[3]))
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, mapCRS)
+            fields, QgsWkbTypes.Point, crs)
 
         if randomize:
             seed()

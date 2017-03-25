@@ -28,7 +28,7 @@ class QgsLayerTreeModel : QAbstractItemModel
   public:
     //! Construct a new tree model with given layer tree (root node must not be null pointer).
     //! The root node is not transferred by the model.
-    explicit QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
+    explicit QgsLayerTreeModel( QgsLayerTree* rootNode, QObject *parent /TransferThis/ = 0 );
     ~QgsLayerTreeModel();
 
     // Implementation of virtual functions from QAbstractItemModel
@@ -104,7 +104,7 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! @see layerLegendNodes()
     QList<QgsLayerTreeModelLegendNode*> layerOriginalLegendNodes( QgsLayerTreeLayer* nodeLayer );
 
-    //! Return legend node that may be embbeded in parent (i.e. its icon will be used for layer's icon).
+    //! Return legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
     //! @note added in 2.18
     QgsLayerTreeModelLegendNode* legendNodeEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
 
@@ -118,10 +118,10 @@ class QgsLayerTreeModel : QAbstractItemModel
     QgsLayerTreeModelLegendNode* findLegendNode( const QString& layerId, const QString& ruleKey ) const;
 
     //! Return pointer to the root node of the layer tree. Always a non-null pointer.
-    QgsLayerTreeGroup* rootGroup() const;
+    QgsLayerTree* rootGroup() const;
     //! Reset the model and use a new root group node
     //! @note added in 2.6
-    void setRootGroup( QgsLayerTreeGroup* newRootGroup );
+    void setRootGroup( QgsLayerTree* newRootGroup );
 
     //! Force a refresh of legend nodes of a layer node.
     //! Not necessary to call when layer's renderer is changed as the model listens to these events.

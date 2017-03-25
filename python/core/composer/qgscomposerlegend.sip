@@ -13,7 +13,7 @@ class QgsLegendModel : QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTreeGroup* rootNode, QObject *parent /TransferThis/ = 0 );
+    QgsLegendModel( QgsLayerTree* rootNode, QObject *parent /TransferThis/ = 0 );
 
     QVariant data( const QModelIndex& index,  int role ) const;
 

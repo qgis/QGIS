@@ -179,6 +179,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Return a pointer to the map canvas used by qgisapp
     QgsMapCanvas *mapCanvas() override;
 
+    QList< QgsMapCanvas * > mapCanvases() override;
+    QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
+    virtual void closeMapCanvas( const QString &name ) override;
+
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
@@ -201,30 +205,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget *widget ) override;
 
-    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-    QList<QgsComposerView *> activeComposers() override;
-
-    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-
-    /** Create a new composer
-     * @param title window title for new composer (one will be generated if empty)
-     * @return pointer to composer's view
-     * @note new composer window will be shown and activated
-     */
-    QgsComposerView *createNewComposer( const QString &title = QString() ) override;
-
-    // ### QGIS 3: return QgsComposer*, not QgsComposerView*
-
-    /** Duplicate an existing parent composer from composer view
-     * @param composerView pointer to existing composer view
-     * @param title window title for duplicated composer (one will be generated if empty)
-     * @return pointer to duplicate composer's view
-     * @note duplicate composer window will be hidden until loaded, then shown and activated
-     */
-    QgsComposerView *duplicateComposer( QgsComposerView *composerView, const QString &title = QString() ) override;
-
-    //! Deletes parent composer of composer view, after closing composer window
-    void deleteComposer( QgsComposerView *composerView ) override;
+    QList<QgsComposerInterface *> openComposers() override;
+    QgsComposerInterface *openComposer( QgsComposition *composition ) override;
+    void closeComposer( QgsComposition *composition ) override;
+    virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
     //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
@@ -302,18 +286,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded.
     virtual bool unregisterMainWindowAction( QAction *action ) override;
 
-    /** Register a new tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
-     * @note Ownership of the factory is not transferred, and the factory must
-     *       be unregistered when plugin is unloaded.
-     * @see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
-
-    /** Unregister a previously registered tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
-     * @see registerMapLayerPropertiesFactory()
-    */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
+
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
 
     /** Register a new custom drop handler.
      * @note added in QGIS 3.0

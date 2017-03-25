@@ -166,7 +166,7 @@ void QgsGPSPlugin::run()
 void QgsGPSPlugin::createGPX()
 {
   QgsSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
                                   tr( "Save new GPX file as..." ),
@@ -188,7 +188,7 @@ void QgsGPSPlugin::createGPX()
                                 "directory." ) );
       return;
     }
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
 
     ofs << "<gpx></gpx>" << std::endl;
 
@@ -481,8 +481,8 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
 
   // everything was OK, remember the device and port for next time
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastdldevice" ), device );
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastdlport" ), port );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastdldevice" ), device );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastdlport" ), port );
 
   emit closeGui();
 }
@@ -560,8 +560,8 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
 
   // everything was OK, remember this device for next time
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastuldevice" ), device );
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastulport" ), port );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastuldevice" ), device );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastulport" ), port );
 
   emit closeGui();
 }
@@ -570,7 +570,7 @@ void QgsGPSPlugin::setupBabel()
 {
   // where is gpsbabel?
   QgsSettings settings;
-  mBabelPath = settings.value( QStringLiteral( "/Plugin-GPS/gpsbabelpath" ), QString() ).toString();
+  mBabelPath = settings.value( QStringLiteral( "Plugin-GPS/gpsbabelpath" ), QString() ).toString();
   if ( mBabelPath.isEmpty() )
     mBabelPath = QStringLiteral( "gpsbabel" );
   // the importable formats
@@ -643,7 +643,7 @@ void QgsGPSPlugin::setupBabel()
                       QStringLiteral( "%babel -r -i gpx -o garmin %in %out" ),
                       QStringLiteral( "%babel -t -i garmin -o gpx %in %out" ),
                       QStringLiteral( "%babel -t -i gpx -o garmin %in %out" ) );
-  QStringList deviceNames = settings.value( QStringLiteral( "/Plugin-GPS/devicelist" ) ).
+  QStringList deviceNames = settings.value( QStringLiteral( "Plugin-GPS/devicelist" ) ).
                             toStringList();
 
   QStringList::const_iterator iter;

@@ -103,7 +103,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   lstBookmarks->setModel( mModel.get() );
 
   QgsSettings settings;
-  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "/Windows/Bookmarks/headerstate" ) ).toByteArray() );
+  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "Windows/Bookmarks/headerstate" ) ).toByteArray() );
 
 #ifndef QGISDEBUG
   lstBookmarks->setColumnHidden( 0, true );
@@ -121,14 +121,14 @@ QgsBookmarks::~QgsBookmarks()
 void QgsBookmarks::restorePosition()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/Bookmarks/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/Bookmarks/geometry" ) ).toByteArray() );
 }
 
 void QgsBookmarks::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Bookmarks/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::addClicked()
@@ -251,7 +251,7 @@ void QgsBookmarks::importFromXml()
 {
   QgsSettings settings;
 
-  QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
@@ -326,7 +326,7 @@ void QgsBookmarks::exportToXml()
 {
   QgsSettings settings;
 
-  QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
@@ -389,7 +389,7 @@ void QgsBookmarks::exportToXml()
   doc.save( out, 2 );
   f.close();
 
-  settings.setValue( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
 
 QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel()

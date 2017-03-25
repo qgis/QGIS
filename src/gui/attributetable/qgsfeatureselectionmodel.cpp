@@ -82,7 +82,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     ids << id;
   }
 
-  disconnect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  disconnect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
 
   if ( command.testFlag( QItemSelectionModel::ClearAndSelect ) )
   {
@@ -137,7 +137,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     }
   }
 
-  connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  connect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
 
   QModelIndexList updatedIndexes;
   Q_FOREACH ( const QModelIndex &idx, selection.indexes() )
@@ -152,7 +152,7 @@ void QgsFeatureSelectionModel::setFeatureSelectionManager( QgsIFeatureSelectionM
 {
   mFeatureSelectionManager = featureSelectionManager;
 
-  connect( mFeatureSelectionManager, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  connect( mFeatureSelectionManager, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsFeatureSelectionModel::layerSelectionChanged );
 }
 
 void QgsFeatureSelectionModel::layerSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect )

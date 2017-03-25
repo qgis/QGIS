@@ -29,12 +29,12 @@
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mShowEmbeddedContent( false )
-  , mRootGroup( new QgsLayerTreeGroup )
+  , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/EmbedLayer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
 
   if ( !projectFile.isEmpty() )
   {
@@ -52,7 +52,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/EmbedLayer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/EmbedLayer/geometry" ), saveGeometry() );
 
   delete mRootGroup;
 }

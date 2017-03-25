@@ -334,7 +334,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
 
     QgsSettings settings;
-    QString enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+    QString enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )
     {
@@ -389,7 +389,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 
   QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() )
+  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
   {
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }

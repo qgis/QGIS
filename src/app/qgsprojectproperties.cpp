@@ -25,6 +25,7 @@
 #include "qgscomposer.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
+#include "qgslayoutmanager.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -53,6 +54,7 @@
 #include "qgslayertreemodel.h"
 #include "qgsunittypes.h"
 #include "qgstablewidgetitem.h"
+#include "qgslayertree.h"
 
 #include "qgsmessagelog.h"
 
@@ -197,10 +199,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   int myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 0 );
   int myAlphaInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
-  myRedInt = settings.value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
-  myGreenInt = settings.value( QStringLiteral( "/qgis/default_selection_color_green" ), 255 ).toInt();
-  myBlueInt = settings.value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
-  myAlphaInt = settings.value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
+  myRedInt = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  myGreenInt = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  myBlueInt = settings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  myAlphaInt = settings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
   QColor defaultSelectionColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   pbnSelectionColor->setContext( QStringLiteral( "gui" ) );
   pbnSelectionColor->setColor( myColor );
@@ -213,9 +215,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   myGreenInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
   myBlueInt = QgsProject::instance()->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  myRedInt = settings.value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
-  myGreenInt = settings.value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
-  myBlueInt = settings.value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
+  myRedInt = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  myGreenInt = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  myBlueInt = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
   QColor defaultCanvasColor = QColor( myRedInt, myGreenInt, myBlueInt );
 
   pbnCanvasColor->setContext( QStringLiteral( "gui" ) );
@@ -734,7 +736,6 @@ void QgsProjectProperties::apply()
   {
     QgsCoordinateReferenceSystem srs = projectionSelector->crs();
     QgsProject::instance()->setCrs( srs );
-    mMapCanvas->setDestinationCrs( srs );
     if ( srs.isValid() )
     {
       QgsDebugMsg( QString( "Selected CRS " ) + srs.description() );
@@ -812,21 +813,26 @@ void QgsProjectProperties::apply()
   }
 
   //set the color for selections
-  QColor myColor = pbnSelectionColor->color();
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), myColor.red() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), myColor.green() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), myColor.blue() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), myColor.alpha() );
-  mMapCanvas->setSelectionColor( myColor );
+  QColor selectionColor = pbnSelectionColor->color();
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), selectionColor.red() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), selectionColor.green() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), selectionColor.blue() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), selectionColor.alpha() );
+
 
   //set the color for canvas
-  myColor = pbnCanvasColor->color();
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), myColor.red() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), myColor.green() );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), myColor.blue() );
-  mMapCanvas->setCanvasColor( myColor );
-  QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( myColor );
-  QgisApp::instance()->mapOverviewCanvas()->refresh();
+  QColor canvasColor = pbnCanvasColor->color();
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), canvasColor.red() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), canvasColor.green() );
+  QgsProject::instance()->writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), canvasColor.blue() );
+
+  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  {
+    canvas->setCanvasColor( canvasColor );
+    canvas->setSelectionColor( selectionColor );
+    canvas->enableMapTileRendering( mMapTileRenderingCheckBox->isChecked() );
+  }
+  QgisApp::instance()->mapOverviewCanvas()->setBackgroundColor( canvasColor );
 
   //save project scales
   QStringList myScales;
@@ -1140,7 +1146,12 @@ void QgsProjectProperties::apply()
   //save variables
   QgsProject::instance()->setCustomVariables( mVariableEditor->variablesInActiveScope() );
 
-  emit refresh();
+  //refresh canvases to reflect new properties, eg background color and scale bar after changing display units.
+  Q_FOREACH ( QgsMapCanvas *canvas, QgisApp::instance()->mapCanvases() )
+  {
+    canvas->refresh();
+  }
+  QgisApp::instance()->mapOverviewCanvas()->refresh();
 }
 
 void QgsProjectProperties::showProjectionsTab()
@@ -1358,12 +1369,12 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
 void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
 {
-  QSet<QgsComposer *> projectComposers = QgisApp::instance()->printComposers();
+  QList<QgsComposition *> projectComposers = QgsProject::instance()->layoutManager()->compositions();
   QStringList composerTitles;
-  QSet<QgsComposer *>::const_iterator cIt = projectComposers.constBegin();
+  QList<QgsComposition *>::const_iterator cIt = projectComposers.constBegin();
   for ( ; cIt != projectComposers.constEnd(); ++cIt )
   {
-    composerTitles << ( *cIt )->title();
+    composerTitles << ( *cIt )->name();
   }
 
   bool ok;

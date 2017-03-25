@@ -85,8 +85,8 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
 
     treeHierarchy->setRootIsDecorated( false );
 
-    connect( treeHierarchy, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
-             this, SLOT( currentCertItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ) );
+    connect( treeHierarchy, &QTreeWidget::currentItemChanged,
+             this, &QgsAuthCertInfo::currentCertItemChanged );
 
     mCaCertsCache = QgsAuthManager::instance()->getCaCertsCache();
 
@@ -107,8 +107,8 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
     if ( res )
       setCertHierarchy();
 
-    connect( cmbbxTrust, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( currentPolicyIndexChanged( int ) ) );
+    connect( cmbbxTrust, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, &QgsAuthCertInfo::currentPolicyIndexChanged );
   }
 }
 
@@ -929,7 +929,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
       Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   layout->addWidget( buttonBox );
 
   setLayout( layout );

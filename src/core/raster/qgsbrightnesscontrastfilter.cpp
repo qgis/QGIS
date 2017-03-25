@@ -110,33 +110,30 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, width, height, feedback );
+  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   if ( mBrightness == 0 && mContrast == 0 )
   {
     QgsDebugMsgLevel( "No brightness changes.", 4 );
-    delete outputBlock;
-    return inputBlock;
+    return inputBlock.release();
   }
 
   if ( !outputBlock->reset( Qgis::ARGB32_Premultiplied, width, height ) )
   {
-    delete inputBlock;
-    return outputBlock;
+    return outputBlock.release();
   }
 
   // adjust image
@@ -164,8 +161,7 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
     outputBlock->setColor( i, qRgba( r, g, b, alpha ) );
   }
 
-  delete inputBlock;
-  return outputBlock;
+  return outputBlock.release();
 }
 
 int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const

@@ -88,10 +88,10 @@ class QextSerialRegistrationWidget : public QWidget
   \b Example
   \code
   QextSerialEnumerator* enumerator = new QextSerialEnumerator();
-  connect(enumerator, SIGNAL(deviceDiscovered(const QextPortInfo &)),
-             myClass, SLOT(onDeviceDiscovered(const QextPortInfo &)));
-  connect(enumerator, SIGNAL(deviceRemoved(const QextPortInfo &)),
-             myClass, SLOT(onDeviceRemoved(const QextPortInfo &)));
+  connect(enumerator, &QextSerialEnumerator::deviceDiscovered,
+             myClass, &MyObject::onDeviceDiscovered);
+  connect(enumerator, &QextSerialEnumerator::deviceRemoved,
+             myClass, &MyObject::onDeviceRemoved);
   \endcode
 
   \section Credits

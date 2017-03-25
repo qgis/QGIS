@@ -32,13 +32,15 @@ import random
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsWkbTypes,
-                       QgsField, QgsSpatialIndex, QgsPoint)
+                       QgsField, QgsSpatialIndex, QgsPoint,
+                       QgsCoordinateReferenceSystem)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
 from processing.tools import vector, dataobjects
 
@@ -51,6 +53,7 @@ class RandomPointsExtent(GeoAlgorithm):
     POINT_NUMBER = 'POINT_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
+    CRS = 'CRS'
 
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
@@ -64,13 +67,18 @@ class RandomPointsExtent(GeoAlgorithm):
                                           self.tr('Points number'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
-
+        self.addParameter(ParameterCrs(self.CRS,
+                                       self.tr('Output layer CRS'), 'ProjectCrs'))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):
         pointCount = int(self.getParameterValue(self.POINT_NUMBER))
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
+
+        crsId = self.getParameterValue(self.CRS)
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromUserInput(crsId)
 
         xMin = float(extent[0])
         xMax = float(extent[1])
@@ -81,9 +89,8 @@ class RandomPointsExtent(GeoAlgorithm):
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
-        mapCRS = iface.mapCanvas().mapSettings().destinationCrs()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, mapCRS)
+            fields, QgsWkbTypes.Point, crs)
 
         nPoints = 0
         nIterations = 0

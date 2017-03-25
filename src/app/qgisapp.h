@@ -46,6 +46,8 @@ class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
 class QgsComposer;
+class QgsComposerInterface;
+class QgsComposition;
 class QgsComposerManager;
 class QgsComposerView;
 class QgsContrastEnhancement;
@@ -60,12 +62,14 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsMapCanvas;
+class QgsMapCanvasDockWidget;
 class QgsMapLayer;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
+class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
@@ -87,6 +91,7 @@ class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsWelcomePage;
+class QgsOptionsWidgetFactory;
 
 class QDomDocument;
 class QNetworkReply;
@@ -128,6 +133,7 @@ class QgsDiagramProperties;
 #include "qgswelcomepageitemsmodel.h"
 #include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsmaplayeractionregistry.h"
 
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -230,6 +236,40 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Get the mapcanvas object from the app
     QgsMapCanvas *mapCanvas();
 
+    /**
+     * Returns a list of all map canvases open in the app.
+     */
+    QList< QgsMapCanvas * > mapCanvases();
+
+    /**
+     * Create a new map canvas with the specified unique \a name.
+     */
+    QgsMapCanvas *createNewMapCanvas( const QString &name );
+
+    /**
+     * Create a new map canvas dock widget with the specified unique \a name. The \a isFloating
+     * and \a dockGeometry arguments can be used to specify an initial floating state
+     * and widget geometry rect for the dock.
+     */
+    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
+        Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+
+    /**
+     * Closes the additional map canvas with matching \a name.
+     */
+    void closeMapCanvas( const QString &name );
+
+    /**
+     * Closes any additional map canvases. The main map canvas will not
+     * be affected.
+     */
+    void closeAdditionalMapCanvases();
+
+    /**
+     * Freezes all map canvases (or thaws them if the \a frozen argument is false).
+     */
+    void freezeCanvases( bool frozen = true );
+
     //! Return the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
 
@@ -246,6 +286,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Get stylesheet builder object for app and print composers
     QgisAppStyleSheet *styleSheetBuilder();
+
+    //! Populates a menu with actions for opening print composers
+    void populateComposerMenu( QMenu *menu );
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -301,6 +344,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
     //! Creates a new composer and returns a pointer to it
     QgsComposer *createNewComposer( QString title = QString() );
+
+    /**
+     * Opens a composer window for an existing \a composition.
+     */
+    QgsComposer *openComposer( QgsComposition *composition );
+
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
 
@@ -317,6 +366,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @return  The vector layer tools
      */
     QgsVectorLayerTools *vectorLayerTools() { return mVectorLayerTools; }
+
+    /** Notify the user by using the system tray notifications
+     *
+     * @note usage of the system tray notifications should be limited
+     *       to long running tasks and to when the user needs to be notified
+     *       about interaction with OS services, like the password manager.
+     *
+     * @param title
+     * @param message
+     */
+    void showSystemNotification( const QString title, const QString message );
+
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
@@ -536,6 +597,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered tab in the layer properties dialog
     void unregisterMapLayerPropertiesFactory( QgsMapLayerConfigWidgetFactory *factory );
 
+    //! Register a new tab in the options dialog
+    void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
+
+    //! Unregister a previously registered tab in the options dialog
+    void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
+
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
 
@@ -729,6 +796,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QMenu *panelMenu() { return mPanelMenu; }
 
+    void renameView();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -751,6 +820,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void onTaskCompleteShowNotify( long taskId, int status );
 
     void onTransactionGroupsChanged();
+
+    void transactionGroupCommitError( const QString &error );
 
     void onSnappingConfigChanged();
 
@@ -1017,6 +1088,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showAlignRasterTool();
     void embedLayers();
 
+    //! Creates a new map canvas view
+    void newMapCanvas();
+
     //! Create a new empty vector layer
     void newVectorLayer();
     //! Create a new memory layer
@@ -1197,7 +1271,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void displayMessage( const QString &title, const QString &message, QgsMessageBar::MessageLevel level );
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
-    void destinationCrsChanged();
     //    void debugHook();
     //! Add a Layer Definition file
     void addLayerDefinition();
@@ -1309,11 +1382,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    //! Creates the composer instances in a project file and adds them to the menu
-    bool loadComposersFromProject( const QDomDocument &doc );
-
     //! Slot to handle display of composers menu, e.g. sorting
-    void on_mPrintComposersMenu_aboutToShow();
+    void composerMenuAboutToShow();
+    void compositionAboutToBeRemoved( const QString &name );
 
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );
@@ -1389,6 +1460,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void annotationCreated( QgsAnnotation *annotation );
 
+    void updateCrsStatusBar();
+
   signals:
 
     /** Emitted when a key is pressed and we want non widget sublasses to be able
@@ -1417,17 +1490,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * can change there tool button icons. */
     void currentThemeChanged( const QString & );
 
-    /** This signal is emitted when a new composer instance has been created
-       */
-    void composerAdded( QgsComposerView *v );
+    /**
+     * This signal is emitted when a new composer window is opened
+     */
+    void composerOpened( QgsComposerInterface *composer );
 
-    /** This signal is emitted before a new composer instance is going to be removed
-      */
-    void composerWillBeRemoved( QgsComposerView *v );
+    /**
+     * This signal is emitted before a composer window is going to be closed
+     * and deleted.
+     */
+    void composerWillBeClosed( QgsComposerInterface *composer );
 
-    /** This signal is emitted when a composer instance has been removed
-       @note added in version 2.3*/
-    void composerRemoved( QgsComposerView *v );
+    /**
+     * This signal is emitted when a composer window has been closed.
+     */
+    void composerClosed( QgsComposerInterface *composer );
 
     //! This signal is emitted when QGIS' initialization is complete
     void initializationCompleted();
@@ -1496,6 +1573,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Deletes all the composer objects and clears mPrintComposers
     void deletePrintComposers();
 
+    void setupLayoutManagerConnections();
+
+    void setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction );
+
+    void setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat );
+
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
 
     /** Paste features from clipboard into a new memory layer.
@@ -1506,6 +1589,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns all annotation items in the canvas
     QList<QgsMapCanvasAnnotationItem *> annotationItems();
+
     //! Removes annotation items in the canvas
     void removeAnnotationItems();
 
@@ -1524,7 +1608,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createOverview();
     void createCanvasTools();
     void createMapTips();
-    void updateCrsStatusBar();
     void createDecorations();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
@@ -1538,6 +1621,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Loads the list of recent projects from settings
     void readRecentProjects();
+
+    /**
+     * Applies project map canvas settings to the specified canvas
+     */
+    void applyProjectSettingsToCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Applies global qgis settings to the specified canvas
+     */
+    void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
+
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
@@ -1634,7 +1729,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mZoomIn = nullptr;
         QgsMapTool *mZoomOut = nullptr;
         QgsMapTool *mPan = nullptr;
-        QgsMapTool *mIdentify = nullptr;
+        QgsMapToolIdentifyAction *mIdentify = nullptr;
         QgsMapTool *mFeatureAction = nullptr;
         QgsMapTool *mMeasureDist = nullptr;
         QgsMapTool *mMeasureArea = nullptr;
@@ -1742,6 +1837,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSplashScreen *mSplash = nullptr;
     //! list of recently opened/saved project files
     QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
+
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer *> mPrintComposers;
     //! QGIS-internal vector feature clipboard
@@ -1810,8 +1906,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsDecorationItem *> mDecorationItems;
 
-    int mLastComposerId;
-
     //! Persistent GPS toolbox
     QgsGPSInformationWidget *mpGpsWidget = nullptr;
 
@@ -1847,6 +1941,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsSnappingUtils *mSnappingUtils = nullptr;
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
+    QList<QgsOptionsWidgetFactory *> mOptionsWidgetFactories;
 
     QList<QgsCustomDropHandler *> mCustomDropHandlers;
 
@@ -1855,6 +1950,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsWelcomePage *mWelcomePage = nullptr;
 
     QStackedWidget *mCentralContainer = nullptr;
+
+    QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
 
     int mProjOpen;
 

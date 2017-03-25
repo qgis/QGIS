@@ -23,51 +23,36 @@
 const QString QgsFeatureRequest::ALL_ATTRIBUTES = QStringLiteral( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
-  : mFilter( FilterNone )
-  , mFilterFid( -1 )
-  , mFilterExpression( nullptr )
-  , mFlags( nullptr )
-  , mLimit( -1 )
+  : mFlags( nullptr )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
   : mFilter( FilterFid )
   , mFilterFid( fid )
-  , mFilterExpression( nullptr )
   , mFlags( nullptr )
-  , mLimit( -1 )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   : mFilter( FilterFids )
-  , mFilterFid( -1 )
   , mFilterFids( fids )
-  , mFilterExpression( nullptr )
   , mFlags( nullptr )
-  , mLimit( -1 )
 {
 
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
-  : mFilter( FilterRect )
-  , mFilterRect( rect )
-  , mFilterFid( -1 )
-  , mFilterExpression( nullptr )
+  : mFilterRect( rect )
   , mFlags( nullptr )
-  , mLimit( -1 )
 {
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context )
   : mFilter( FilterExpression )
-  , mFilterFid( -1 )
   , mFilterExpression( new QgsExpression( expr ) )
   , mExpressionContext( context )
   , mFlags( nullptr )
-  , mLimit( -1 )
 {
 }
 
@@ -85,11 +70,11 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mFilterFids = rh.mFilterFids;
   if ( rh.mFilterExpression )
   {
-    mFilterExpression = new QgsExpression( *rh.mFilterExpression );
+    mFilterExpression.reset( new QgsExpression( *rh.mFilterExpression ) );
   }
   else
   {
-    mFilterExpression = nullptr;
+    mFilterExpression.reset( nullptr );
   }
   mExpressionContext = rh.mExpressionContext;
   mAttrs = rh.mAttrs;
@@ -99,15 +84,8 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   return *this;
 }
 
-QgsFeatureRequest::~QgsFeatureRequest()
-{
-  delete mFilterExpression;
-}
-
 QgsFeatureRequest &QgsFeatureRequest::setFilterRect( const QgsRectangle &rect )
 {
-  if ( mFilter == FilterNone )
-    mFilter = FilterRect;
   mFilterRect = rect;
   return *this;
 }
@@ -129,8 +107,7 @@ QgsFeatureRequest &QgsFeatureRequest::setFilterFids( const QgsFeatureIds &fids )
 QgsFeatureRequest &QgsFeatureRequest::setFilterExpression( const QString &expression )
 {
   mFilter = FilterExpression;
-  delete mFilterExpression;
-  mFilterExpression = new QgsExpression( expression );
+  mFilterExpression.reset( new QgsExpression( expression ) );
   return *this;
 }
 
@@ -245,13 +222,16 @@ QgsFeatureRequest &QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
 
 bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
 {
+  if ( !mFilterRect.isNull() )
+  {
+    if ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) )
+      return false;
+  }
+
   switch ( mFilter )
   {
     case QgsFeatureRequest::FilterNone:
       return true;
-
-    case QgsFeatureRequest::FilterRect:
-      return ( feature.hasGeometry() && feature.geometry().intersects( mFilterRect ) );
 
     case QgsFeatureRequest::FilterFid:
       return ( feature.id() == mFilterFid );

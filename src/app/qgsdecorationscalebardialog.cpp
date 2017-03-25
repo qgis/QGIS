@@ -27,7 +27,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -79,7 +79,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
 void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()

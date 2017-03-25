@@ -11,6 +11,17 @@ class QgsUnitTypes
 %End
 
   public:
+    struct DistanceValue
+    {
+      double value;
+      QgsUnitTypes::DistanceUnit unit;
+    };
+
+    struct AreaValue
+    {
+      double value;
+      QgsUnitTypes::AreaUnit unit;
+    };
 
     //! Units of distance
     enum DistanceUnit
@@ -22,6 +33,8 @@ class QgsUnitTypes
       DistanceYards, /*!< imperial yards */
       DistanceMiles, /*!< terrestrial miles */
       DistanceDegrees, /*!< degrees, for planar geographic CRS distance measurements */
+      DistanceCentimeters,
+      DistanceMillimeters,
       DistanceUnknownUnit, /*!< unknown distance unit */
     };
 
@@ -46,7 +59,9 @@ class QgsUnitTypes
       AreaAcres, /*!< acres */
       AreaSquareNauticalMiles, /*!< square nautical miles */
       AreaSquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      AreaUnknownUnit, /*!< unknown areal unit */
+      AreaSquareCentimeters,
+      AreaSquareMillimeters,
+      AreaUnknownUnit,
     };
 
     //! Units of angles
@@ -190,6 +205,14 @@ class QgsUnitTypes
      * @returns formatted angle string
      */
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
+
+    static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
+
+    static QgsUnitTypes::AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
+
+    static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
+
+    static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 
     // RENDER UNITS
 

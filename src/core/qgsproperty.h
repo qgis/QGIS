@@ -396,20 +396,20 @@ class CORE_EXPORT QgsProperty
     bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const;
 
     /**
-     * Writes the current state of the property into an XML element
-     * @param propertyElem destination element for the property's state
-     * @param doc DOM document
-     * @see readXml()
-    */
-    bool writeXml( QDomElement &propertyElem, QDomDocument &doc ) const;
+     * Saves this property to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * @see loadVariant()
+     */
+    QVariant toVariant() const;
 
     /**
-     * Reads property state from an XML element.
-     * @param propertyElem source DOM element for property's state
-     * @param doc DOM document
-     * @see writeXml()
-    */
-    bool readXml( const QDomElement &propertyElem, const QDomDocument &doc );
+     * Loads this property from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     *
+     * @see toVariant()
+     */
+    bool loadVariant( const QVariant &property );
 
     /**
      * Sets an optional transformer to use for manipulating the calculated values for the property.

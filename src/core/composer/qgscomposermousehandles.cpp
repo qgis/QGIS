@@ -46,7 +46,7 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
   , mVAlignSnapItem( nullptr )
 {
   //listen for selection changes, and update handles accordingly
-  QObject::connect( mComposition, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
+  connect( mComposition, &QGraphicsScene::selectionChanged, this, &QgsComposerMouseHandles::selectionChanged );
 
   //accept hover events, required for changing cursor to resize cursors
   setAcceptHoverEvents( true );
@@ -211,17 +211,17 @@ void QgsComposerMouseHandles::selectionChanged()
     {
       if ( item->selected() )
       {
-        QObject::connect( item, SIGNAL( sizeChanged() ), this, SLOT( selectedItemSizeChanged() ) );
-        QObject::connect( item, SIGNAL( itemRotationChanged( double ) ), this, SLOT( selectedItemRotationChanged() ) );
-        QObject::connect( item, SIGNAL( frameChanged() ), this, SLOT( selectedItemSizeChanged() ) );
-        QObject::connect( item, SIGNAL( lockChanged() ), this, SLOT( selectedItemSizeChanged() ) );
+        connect( item, &QgsComposerItem::sizeChanged, this, &QgsComposerMouseHandles::selectedItemSizeChanged );
+        connect( item, &QgsComposerItem::itemRotationChanged, this, &QgsComposerMouseHandles::selectedItemRotationChanged );
+        connect( item, &QgsComposerItem::frameChanged, this, &QgsComposerMouseHandles::selectedItemSizeChanged );
+        connect( item, &QgsComposerItem::lockChanged, this, &QgsComposerMouseHandles::selectedItemSizeChanged );
       }
       else
       {
-        QObject::disconnect( item, SIGNAL( sizeChanged() ), this, nullptr );
-        QObject::disconnect( item, SIGNAL( itemRotationChanged( double ) ), this, nullptr );
-        QObject::disconnect( item, SIGNAL( frameChanged() ), this, nullptr );
-        QObject::disconnect( item, SIGNAL( lockChanged() ), this, nullptr );
+        disconnect( item, &QgsComposerItem::sizeChanged, this, &QgsComposerMouseHandles::selectedItemSizeChanged );
+        disconnect( item, &QgsComposerItem::itemRotationChanged, this, &QgsComposerMouseHandles::selectedItemRotationChanged );
+        disconnect( item, &QgsComposerItem::frameChanged, this, &QgsComposerMouseHandles::selectedItemSizeChanged );
+        disconnect( item, &QgsComposerItem::lockChanged, this, &QgsComposerMouseHandles::selectedItemSizeChanged );
       }
     }
   }

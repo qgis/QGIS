@@ -24,6 +24,7 @@
 class QDomElement;
 
 class QgsProject;
+class QgsMapLayer;
 
 /** \ingroup core
  * This class is a base class for nodes in a layer tree.
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     ~QgsLayerTreeNode();
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-    NodeType nodeType() { return mNodeType; }
+    NodeType nodeType() const { return mNodeType; }
     //! Get pointer to the parent. If parent is a null pointer, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Get list of children of the node. Children are owned by the parent
@@ -144,6 +145,13 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Return whether this node is unchecked and all its children.
     //! @note added in 3.0
     bool isItemVisibilityUncheckedRecursive() const;
+
+    /**
+     * Returns a list of any checked layers which belong to this node or its
+     * children.
+     * @note added in QGIS 3.0
+     */
+    QList< QgsMapLayer * > checkedLayers() const;
 
     //! Return whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;

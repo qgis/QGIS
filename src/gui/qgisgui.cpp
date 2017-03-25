@@ -106,12 +106,12 @@ namespace QgisGui
 #endif
 
     QgsSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedDir = settings.value( QStringLiteral( "/UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
     // Prefer "png" format unless the user previously chose a different format
     QString pngExtension = QStringLiteral( "png" );
     QString pngFilter = createFileFilter_( pngExtension );
-    QString selectedFilter = settings.value( QStringLiteral( "/UI/lastSaveAsImageFilter" ), pngFilter ).toString();
+    QString selectedFilter = settings.value( QStringLiteral( "UI/lastSaveAsImageFilter" ), pngFilter ).toString();
 
     QString initialPath;
     if ( defaultFilename.isNull() )
@@ -134,8 +134,8 @@ namespace QgisGui
     {
       ext = filterMap.value( selectedFilter, QString::null );
       if ( !ext.isNull() )
-        settings.setValue( QStringLiteral( "/UI/lastSaveAsImageFilter" ), selectedFilter );
-      settings.setValue( QStringLiteral( "/UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
+        settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), selectedFilter );
+      settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( outputFileName ).absolutePath() );
     }
 #else
 

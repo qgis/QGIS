@@ -71,7 +71,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.png" ) ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MergeAttributes/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
 
   connect( mSkipAllButton, SIGNAL( clicked() ), this, SLOT( setAllToSkip() ) );
   connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableWidgetCellChanged( int, int ) ) );
@@ -86,13 +86,13 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog()
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MergeAttributes/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
 }
 
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/MergeAttributes/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/MergeAttributes/geometry" ), saveGeometry() );
 
   delete mSelectionRubberBand;
 }

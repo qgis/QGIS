@@ -35,7 +35,7 @@ Optional dependencies:
   is not installed with rpath. The desired GRASS version is chosen on runtime by setting
   LD_LIBRARY_PATH or PATH.
 - for georeferencer - GSL >= 1.8
-- for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
+- for postgis support - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
 - for mapserver export and PyQGIS - Python >= 3.3
 - for python support - SIP >= 4.12, PyQt >= 5.3 must match Qt version, Qscintilla2

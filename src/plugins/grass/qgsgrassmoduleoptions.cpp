@@ -16,8 +16,6 @@
 
 #include <QDomElement>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QScrollArea>
 #include <QTextCodec>
 
 #include "qgisinterface.h"
@@ -30,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsscrollarea.h"
 
 #include "qgsgrass.h"
 #include "qgsgrassmodule.h"
@@ -90,7 +89,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   //
   QVBoxLayout *mypOuterLayout = new QVBoxLayout( this );
   mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
-  QScrollArea *mypScrollArea = new QScrollArea();
+  QgsScrollArea *mypScrollArea = new QgsScrollArea();
   //transfers scroll area ownership so no need to call delete
   mypOuterLayout->addWidget( mypScrollArea );
   QFrame *mypInnerFrame = new QFrame();

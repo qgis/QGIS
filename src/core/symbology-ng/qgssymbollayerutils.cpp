@@ -906,7 +906,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element )
     QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
     if ( !ddProps.isNull() )
     {
-      layer->dataDefinedProperties().readXml( ddProps, element.ownerDocument(), QgsSymbolLayer::propertyDefinitions() );
+      layer->dataDefinedProperties().readXml( ddProps, QgsSymbolLayer::propertyDefinitions() );
     }
 
     return layer;
@@ -957,7 +957,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
       layer->paintEffect()->saveProperties( doc, layerEl );
 
     QDomElement ddProps = doc.createElement( QStringLiteral( "data_defined_properties" ) );
-    layer->dataDefinedProperties().writeXml( ddProps, doc, QgsSymbolLayer::propertyDefinitions() );
+    layer->dataDefinedProperties().writeXml( ddProps, QgsSymbolLayer::propertyDefinitions() );
     layerEl.appendChild( ddProps );
 
     if ( layer->subSymbol() )
@@ -2808,6 +2808,57 @@ QDomElement QgsSymbolLayerUtils::saveColorRamp( const QString &name, QgsColorRam
 
   QgsSymbolLayerUtils::saveProperties( ramp->properties(), doc, rampEl );
   return rampEl;
+}
+
+QVariant QgsSymbolLayerUtils::colorRampToVariant( const QString &name, QgsColorRamp *ramp )
+{
+  QVariantMap rampMap;
+
+  rampMap.insert( QStringLiteral( "type" ), ramp->type() );
+  rampMap.insert( QStringLiteral( "name" ), name );
+
+  QgsStringMap properties = ramp->properties();
+
+  QVariantMap propertyMap;
+  for ( auto property = properties.constBegin(); property != properties.constEnd(); ++property )
+  {
+    propertyMap.insert( property.key(), property.value() );
+  }
+
+  rampMap.insert( QStringLiteral( "properties" ), propertyMap );
+  return rampMap;
+}
+
+QgsColorRamp *QgsSymbolLayerUtils::loadColorRamp( const QVariant &value )
+{
+  QVariantMap rampMap = value.toMap();
+
+  QString rampType = rampMap.value( QStringLiteral( "type" ) ).toString();
+
+  // parse properties
+  QVariantMap propertyMap = rampMap.value( QStringLiteral( "properties" ) ).toMap();
+  QgsStringMap props;
+
+  for ( auto property = propertyMap.constBegin(); property != propertyMap.constEnd(); ++property )
+  {
+    props.insert( property.key(), property.value().toString() );
+  }
+
+  if ( rampType == QLatin1String( "gradient" ) )
+    return QgsGradientColorRamp::create( props );
+  else if ( rampType == QLatin1String( "random" ) )
+    return QgsLimitedRandomColorRamp::create( props );
+  else if ( rampType == QLatin1String( "colorbrewer" ) )
+    return QgsColorBrewerColorRamp::create( props );
+  else if ( rampType == QLatin1String( "cpt-city" ) )
+    return QgsCptCityColorRamp::create( props );
+  else if ( rampType == QLatin1String( "preset" ) )
+    return QgsPresetSchemeColorRamp::create( props );
+  else
+  {
+    QgsDebugMsg( "unknown colorramp type " + rampType );
+    return nullptr;
+  }
 }
 
 QString QgsSymbolLayerUtils::colorToName( const QColor &color )

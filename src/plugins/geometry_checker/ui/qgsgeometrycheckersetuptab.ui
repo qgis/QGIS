@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-301</y>
-        <width>670</width>
-        <height>776</height>
+        <y>0</y>
+        <width>626</width>
+        <height>726</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -117,10 +117,7 @@
             <property name="flat">
              <bool>true</bool>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <property name="spacing">
-              <number>2</number>
-             </property>
+            <layout class="QGridLayout" name="gridLayout_8">
              <property name="leftMargin">
               <number>2</number>
              </property>
@@ -133,7 +130,7 @@
              <property name="bottomMargin">
               <number>2</number>
              </property>
-             <item>
+             <item row="0" column="0">
               <widget class="QCheckBox" name="checkBoxSelfIntersections">
                <property name="text">
                 <string>Self intersections</string>
@@ -143,7 +140,7 @@
                </property>
               </widget>
              </item>
-             <item>
+             <item row="1" column="0">
               <widget class="QCheckBox" name="checkBoxDuplicateNodes">
                <property name="text">
                 <string>Duplicate nodes</string>
@@ -153,10 +150,20 @@
                </property>
               </widget>
              </item>
-             <item>
+             <item row="1" column="1">
               <widget class="QCheckBox" name="checkBoxDegeneratePolygon">
                <property name="text">
                 <string>Polygon with less than 3 nodes</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="checkBoxSelfContacts">
+               <property name="text">
+                <string>Self contacts</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -717,6 +724,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header location="global">qgsmaplayercombobox.h</header>
@@ -728,7 +741,6 @@
   <tabstop>checkBoxInputSelectedOnly</tabstop>
   <tabstop>checkBoxSelfIntersections</tabstop>
   <tabstop>checkBoxDuplicateNodes</tabstop>
-  <tabstop>checkBoxDegeneratePolygon</tabstop>
   <tabstop>checkBoxPoint</tabstop>
   <tabstop>checkBoxMultipoint</tabstop>
   <tabstop>checkBoxLine</tabstop>

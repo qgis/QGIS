@@ -34,6 +34,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
+#include "qgslayertree.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -59,7 +60,7 @@ extern "C"
 
 QgsOfflineEditing::QgsOfflineEditing()
 {
-  connect( QgsProject::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( layerAdded( QgsMapLayer * ) ) );
+  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditing::layerAdded );
 }
 
 /**
@@ -258,6 +259,7 @@ void QgsOfflineEditing::synchronize()
       copySymbology( offlineLayer, remoteLayer );
       updateRelations( offlineLayer, remoteLayer );
       updateMapThemes( offlineLayer, remoteLayer );
+      updateLayerOrder( offlineLayer, remoteLayer );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -617,6 +619,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       updateRelations( layer, newLayer );
       updateMapThemes( layer, newLayer );
+      updateLayerOrder( layer, newLayer );
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -948,6 +951,32 @@ void QgsOfflineEditing::updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorL
 
     QgsProject::instance()->mapThemeCollection()->update( mapThemeName, record );
   }
+}
+
+void QgsOfflineEditing::updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
+{
+  QList<QgsMapLayer *>  layerOrder = QgsProject::instance()->layerTreeRoot()->customLayerOrder();
+
+  auto iterator = layerOrder.begin();
+
+  while ( iterator != layerOrder.end() )
+  {
+    if ( *iterator == targetLayer )
+    {
+      iterator = layerOrder.erase( iterator );
+      if ( iterator == layerOrder.end() )
+        break;
+    }
+
+    if ( *iterator == sourceLayer )
+    {
+      *iterator = targetLayer;
+    }
+
+    ++iterator;
+  }
+
+  QgsProject::instance()->layerTreeRoot()->setCustomLayerOrder( layerOrder );
 }
 
 // NOTE: use this to map column indices in case the remote geometry column is not last
@@ -1372,17 +1401,18 @@ void QgsOfflineEditing::startListenFeatureChanges()
   // enable logging, check if editBuffer is not null
   if ( vLayer->editBuffer() )
   {
-    connect( vLayer->editBuffer(), SIGNAL( committedAttributesAdded( const QString &, const QList<QgsField> & ) ),
-             this, SLOT( committedAttributesAdded( const QString &, const QList<QgsField> & ) ) );
-    connect( vLayer->editBuffer(), SIGNAL( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ),
-             this, SLOT( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ) );
-    connect( vLayer->editBuffer(), SIGNAL( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ),
-             this, SLOT( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ) );
+    QgsVectorLayerEditBuffer *editBuffer = vLayer->editBuffer();
+    connect( editBuffer, &QgsVectorLayerEditBuffer::committedAttributesAdded,
+             this, &QgsOfflineEditing::committedAttributesAdded );
+    connect( editBuffer, &QgsVectorLayerEditBuffer::committedAttributeValuesChanges,
+             this, &QgsOfflineEditing::committedAttributeValuesChanges );
+    connect( editBuffer, &QgsVectorLayerEditBuffer::committedGeometriesChanges,
+             this, &QgsOfflineEditing::committedGeometriesChanges );
   }
-  connect( vLayer, SIGNAL( committedFeaturesAdded( const QString &, const QgsFeatureList & ) ),
-           this, SLOT( committedFeaturesAdded( const QString &, const QgsFeatureList & ) ) );
-  connect( vLayer, SIGNAL( committedFeaturesRemoved( const QString &, const QgsFeatureIds & ) ),
-           this, SLOT( committedFeaturesRemoved( const QString &, const QgsFeatureIds & ) ) );
+  connect( vLayer, &QgsVectorLayer::committedFeaturesAdded,
+           this, &QgsOfflineEditing::committedFeaturesAdded );
+  connect( vLayer, &QgsVectorLayer::committedFeaturesRemoved,
+           this, &QgsOfflineEditing::committedFeaturesRemoved );
 }
 
 void QgsOfflineEditing::stopListenFeatureChanges()
@@ -1391,17 +1421,18 @@ void QgsOfflineEditing::stopListenFeatureChanges()
   // disable logging, check if editBuffer is not null
   if ( vLayer->editBuffer() )
   {
-    disconnect( vLayer->editBuffer(), SIGNAL( committedAttributesAdded( const QString &, const QList<QgsField> & ) ),
-                this, SLOT( committedAttributesAdded( const QString &, const QList<QgsField> & ) ) );
-    disconnect( vLayer->editBuffer(), SIGNAL( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ),
-                this, SLOT( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ) );
-    disconnect( vLayer->editBuffer(), SIGNAL( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ),
-                this, SLOT( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ) );
+    QgsVectorLayerEditBuffer *editBuffer = vLayer->editBuffer();
+    disconnect( editBuffer, &QgsVectorLayerEditBuffer::committedAttributesAdded,
+                this, &QgsOfflineEditing::committedAttributesAdded );
+    disconnect( editBuffer, &QgsVectorLayerEditBuffer::committedAttributeValuesChanges,
+                this, &QgsOfflineEditing::committedAttributeValuesChanges );
+    disconnect( editBuffer, &QgsVectorLayerEditBuffer::committedGeometriesChanges,
+                this, &QgsOfflineEditing::committedGeometriesChanges );
   }
-  disconnect( vLayer, SIGNAL( committedFeaturesAdded( const QString &, const QgsFeatureList & ) ),
-              this, SLOT( committedFeaturesAdded( const QString &, const QgsFeatureList & ) ) );
-  disconnect( vLayer, SIGNAL( committedFeaturesRemoved( const QString &, const QgsFeatureIds & ) ),
-              this, SLOT( committedFeaturesRemoved( const QString &, const QgsFeatureIds & ) ) );
+  disconnect( vLayer, &QgsVectorLayer::committedFeaturesAdded,
+              this, &QgsOfflineEditing::committedFeaturesAdded );
+  disconnect( vLayer, &QgsVectorLayer::committedFeaturesRemoved,
+              this, &QgsOfflineEditing::committedFeaturesRemoved );
 }
 
 void QgsOfflineEditing::layerAdded( QgsMapLayer *layer )
@@ -1410,8 +1441,8 @@ void QgsOfflineEditing::layerAdded( QgsMapLayer *layer )
   if ( layer->customProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, false ).toBool() )
   {
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
-    connect( vLayer, SIGNAL( editingStarted() ), this, SLOT( startListenFeatureChanges() ) );
-    connect( vLayer, SIGNAL( editingStopped() ), this, SLOT( stopListenFeatureChanges() ) );
+    connect( vLayer, &QgsVectorLayer::editingStarted, this, &QgsOfflineEditing::startListenFeatureChanges );
+    connect( vLayer, &QgsVectorLayer::editingStopped, this, &QgsOfflineEditing::stopListenFeatureChanges );
   }
 }
 

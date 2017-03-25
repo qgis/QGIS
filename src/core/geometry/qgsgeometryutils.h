@@ -291,6 +291,33 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPointV2 midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
+    /** Return the gradient of a line defined by points \a pt1 and \a pt2.
+     * @param pt1 first point.
+     * @param pt2 second point.
+     * @return The gradient of this linear entity, or infinity if vertical
+     * @note added in QGIS 3.0
+     */
+    static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
+
+    /** Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
+     * @param pt1 first point.
+     * @param pt2 second point.
+     * @param a Output parameter, a coefficient of the equation.
+     * @param b Output parameter, b coefficient of the equation.
+     * @param c Output parameter, c coefficient of the equation.
+     * @note added in QGIS 3.0
+     */
+    static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c );
+
+    /**
+     * @brief Create a perpendicular line segment from p to segment [s1, s2]
+     * @param p The point
+     * @param s1 The segment start point
+     * @param s2 The segment end point
+     * @return A line (segment) from p to perpendicular point on segment [s1, s2]
+     */
+    static QgsLineString perpendicularSegment( const QgsPointV2 &p, const QgsPointV2 &s1, const QgsPointV2 &s2 );
+
     //! @note not available in Python bindings
     enum ComponentType
     {

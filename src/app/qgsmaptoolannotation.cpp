@@ -123,6 +123,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
       {
         QgsPoint mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
         annotation->setMapPosition( mapPos );
+        annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
         annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
                                          e->posF().y() / mCanvas->height() ) );
         annotation->setFrameSize( QSizeF( 200, 100 ) );
@@ -335,24 +336,14 @@ QgsMapCanvasAnnotationItem *QgsMapToolAnnotation::selectedItem() const
 
 QList<QgsMapCanvasAnnotationItem *> QgsMapToolAnnotation::annotationItems() const
 {
-  QList<QgsMapCanvasAnnotationItem *> annotationItemList;
-  if ( !mCanvas || !mCanvas->scene() )
+  if ( !mCanvas )
   {
-    return annotationItemList;
+    return QList<QgsMapCanvasAnnotationItem *>();
   }
-
-  QList<QGraphicsItem *>  itemList = mCanvas->scene()->items();
-  QList<QGraphicsItem *>::iterator it = itemList.begin();
-  for ( ; it != itemList.end(); ++it )
+  else
   {
-    QgsMapCanvasAnnotationItem *aItem = dynamic_cast<QgsMapCanvasAnnotationItem *>( *it );
-    if ( aItem )
-    {
-      annotationItemList.push_back( aItem );
-    }
+    return mCanvas->annotationItems();
   }
-
-  return annotationItemList;
 }
 
 void QgsMapToolAnnotation::toggleTextItemVisibilities()

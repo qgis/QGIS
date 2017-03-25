@@ -30,13 +30,13 @@ QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidge
   connect( mClipToContentGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( clipToContentsToggled( bool ) ) );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerImageExportOptionsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerImageExportOptionsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsComposerImageExportOptionsDialog::~QgsComposerImageExportOptionsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ComposerImageExportOptionsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ComposerImageExportOptionsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsComposerImageExportOptionsDialog::setResolution( int resolution )

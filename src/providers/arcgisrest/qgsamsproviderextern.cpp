@@ -66,9 +66,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   if ( path.startsWith( QLatin1String( "ams:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( QStringLiteral( "ArcGisMapServer" ) ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgismapserver" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( QStringLiteral( "ArcGisMapServer" ), connectionName );
+      QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connectionName );
       return new QgsAmsConnectionItem( parentItem, QStringLiteral( "ArcGisMapServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
     }
   }

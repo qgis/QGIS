@@ -33,14 +33,14 @@ QString QgsXyzConnection::encodedUri() const
 QStringList QgsXyzConnectionUtils::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-xyz" ) );
+  settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
   return settings.childGroups();
 }
 
 QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 {
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-xyz/" + name );
+  settings.beginGroup( "qgis/connections-xyz/" + name );
 
   QgsXyzConnection conn;
   conn.name = name;
@@ -53,13 +53,13 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 void QgsXyzConnectionUtils::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "/Qgis/connections-xyz/" + name );
+  settings.remove( "qgis/connections-xyz/" + name );
 }
 
 void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
 {
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-xyz/" + conn.name );
+  settings.beginGroup( "qgis/connections-xyz/" + conn.name );
   settings.setValue( QStringLiteral( "url" ), conn.url );
   settings.setValue( QStringLiteral( "zmin" ), conn.zMin );
   settings.setValue( QStringLiteral( "zmax" ), conn.zMax );

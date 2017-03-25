@@ -156,8 +156,8 @@ void QgsLabelingWidget::labelModeChanged( int index )
 
     QgsRuleBasedLabelingWidget *ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
     ruleWidget->setDockMode( dockMode() );
-    connect( ruleWidget, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
-    connect( ruleWidget, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+    connect( ruleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
+    connect( ruleWidget, &QgsRuleBasedLabelingWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
     mWidget = ruleWidget;
     mStackedWidget->addWidget( mWidget );
     mStackedWidget->setCurrentWidget( mWidget );

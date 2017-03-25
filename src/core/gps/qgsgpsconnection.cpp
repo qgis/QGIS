@@ -32,7 +32,7 @@
 QgsGPSConnection::QgsGPSConnection( QIODevice *dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
 {
   clearLastGPSInformation();
-  QObject::connect( dev, SIGNAL( readyRead() ), this, SLOT( parseData() ) );
+  QObject::connect( dev, &QIODevice::readyRead, this, &QgsGPSConnection::parseData );
 }
 
 QgsGPSConnection::~QgsGPSConnection()

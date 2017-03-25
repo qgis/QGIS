@@ -21,7 +21,6 @@ class QgsFeatureRequest
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Obsolete, will be ignored. If a filterRect is set it will be used anyway. Filter using a rectangle, no need to set NoGeometry. Instead check for request.filterRect().isNull()
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature IDs

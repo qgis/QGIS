@@ -136,9 +136,9 @@ void QgsMapToolMeasureAngle::createRubberBand()
   mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
 
   QgsSettings settings;
-  int myRed = settings.value( QStringLiteral( "/qgis/default_measure_color_red" ), 180 ).toInt();
-  int myGreen = settings.value( QStringLiteral( "/qgis/default_measure_color_green" ), 180 ).toInt();
-  int myBlue = settings.value( QStringLiteral( "/qgis/default_measure_color_blue" ), 180 ).toInt();
+  int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 180 ).toInt();
+  int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 180 ).toInt();
+  int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
   mRubberBand->setWidth( 3 );
 }

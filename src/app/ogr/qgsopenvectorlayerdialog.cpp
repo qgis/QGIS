@@ -45,9 +45,9 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowF
   cmbEncodings->addItems( QgsVectorDataProvider::availableEncodings() );
 
   QgsSettings settings;
-  QString enc = settings.value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
+  QString enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
 
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/OpenVectorLayer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/OpenVectorLayer/geometry" ) ).toByteArray() );
 
   // The specified decoding is added if not existing alread, and then set current.
   // This should select it.
@@ -95,7 +95,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget *parent, Qt::WindowF
 QgsOpenVectorLayerDialog::~QgsOpenVectorLayerDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/OpenVectorLayer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/OpenVectorLayer/geometry" ), saveGeometry() );
 }
 
 QStringList QgsOpenVectorLayerDialog::openFile()
@@ -114,7 +114,7 @@ QString QgsOpenVectorLayerDialog::openDirectory()
   QgsSettings settings;
 
   bool haveLastUsedDir = settings.contains( QStringLiteral( "/UI/LastUsedDirectory" ) );
-  QString lastUsedDir = settings.value( QStringLiteral( "/UI/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/LastUsedDirectory" ), QDir::homePath() ).toString();
   if ( !haveLastUsedDir )
     lastUsedDir = QLatin1String( "" );
 
@@ -122,7 +122,7 @@ QString QgsOpenVectorLayerDialog::openDirectory()
                  tr( "Open Directory" ), lastUsedDir,
                  QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
 
-  settings.setValue( QStringLiteral( "/UI/LastUsedDirectory" ), path );
+  settings.setValue( QStringLiteral( "UI/LastUsedDirectory" ), path );
   //process path if it is grass
   if ( cmbDirectoryTypes->currentText() == QLatin1String( "Grass Vector" ) )
   {
@@ -241,7 +241,7 @@ void QgsOpenVectorLayerDialog::setConnectionTypeListPosition()
 {
   QgsSettings settings;
 
-  QString toSelect = settings.value( QStringLiteral( "/ogr/connections/selectedtype" ) ).toString();
+  QString toSelect = settings.value( QStringLiteral( "ogr/connections/selectedtype" ) ).toString();
   for ( int i = 0; i < cmbDatabaseTypes->count(); ++i )
     if ( cmbDatabaseTypes->itemText( i ) == toSelect )
     {
@@ -380,7 +380,7 @@ void QgsOpenVectorLayerDialog::accept()
   }
 
   // Save the used encoding
-  settings.setValue( QStringLiteral( "/UI/encoding" ), encoding() );
+  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
 
   QDialog::accept();
 }

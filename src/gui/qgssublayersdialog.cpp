@@ -25,8 +25,6 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
                                         QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mName( name )
-  , mShowCount( false )
-  , mShowType( false )
 {
   setupUi( this );
 
@@ -59,6 +57,15 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
 
   QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/" + mName + "SubLayers/geometry" ).toByteArray() );
+
+  // Checkbox about adding sublayers to a group
+  if ( mShowAddToGroupCheckbox )
+  {
+    mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ) );
+    bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
+    mCheckboxAddToGroup->setChecked( addToGroup );
+    buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
+  }
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
@@ -140,7 +147,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
 int QgsSublayersDialog::exec()
 {
   QgsSettings settings;
-  QString promptLayers = settings.value( QStringLiteral( "/qgis/promptForSublayers" ), 1 ).toString();
+  QString promptLayers = settings.value( QStringLiteral( "qgis/promptForSublayers" ), 1 ).toString();
 
   // make sure three are sublayers to choose
   if ( layersTable->topLevelItemCount() == 0 )
@@ -177,5 +184,8 @@ int QgsSublayersDialog::exec()
   int ret = QDialog::exec();
   if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
+
+  if ( mCheckboxAddToGroup )
+    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
   return ret;
 }

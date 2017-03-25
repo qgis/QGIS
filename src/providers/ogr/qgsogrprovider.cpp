@@ -56,6 +56,13 @@ email                : sherman at mrcc.com
 #include <sys/vfs.h>
 #endif
 
+// Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
+// whereas previously there was only unset fields. For QGIS purposes, both
+// states (unset/null) are equivalent.
+#ifndef OGRNullMarker
+#define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
+#endif
+
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
 static const QString TEXT_PROVIDER_DESCRIPTION =
   QStringLiteral( "OGR data provider" )
@@ -382,7 +389,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   QgsApplication::registerOgrDrivers();
 
   QgsSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
 
   // make connection to the data source
 
@@ -758,7 +765,7 @@ void QgsOgrProvider::setEncoding( const QString &e )
 {
 #if defined(OLCStringsAsUTF8)
   QgsSettings settings;
-  if ( ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() ) || !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  if ( ( ogrDriverName == QLatin1String( "ESRI Shapefile" ) && settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ) || !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
@@ -1319,6 +1326,8 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
 
+  const bool inTransaction = startTransaction();
+
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
   {
@@ -1326,6 +1335,11 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist )
     {
       returnvalue = false;
     }
+  }
+
+  if ( inTransaction )
+  {
+    commitTransaction();
   }
 
   if ( !syncToDisc() )
@@ -1520,6 +1534,31 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
   return result;
 }
 
+bool QgsOgrProvider::startTransaction()
+{
+  bool inTransaction = false;
+  if ( OGR_L_TestCapability( ogrLayer, OLCTransactions ) )
+  {
+    // A transaction might already be active, so be robust on failed
+    // StartTransaction.
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    inTransaction = ( OGR_L_StartTransaction( ogrLayer ) == OGRERR_NONE );
+    CPLPopErrorHandler();
+  }
+  return inTransaction;
+}
+
+
+bool QgsOgrProvider::commitTransaction()
+{
+  if ( OGR_L_CommitTransaction( ogrLayer ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error committing transaction: %1" ).arg( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+  return true;
+}
+
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
@@ -1532,6 +1571,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   clearMinMaxCache();
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
+
+  const bool inTransaction = startTransaction();
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -1646,6 +1687,11 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     OGR_F_Destroy( of );
   }
 
+  if ( inTransaction )
+  {
+    commitTransaction();
+  }
+
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
@@ -1660,6 +1706,8 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     return false;
 
   setRelevantFields( ogrLayer, true, attributeIndexes() );
+
+  const bool inTransaction = startTransaction();
 
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
@@ -1729,6 +1777,12 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
     OGR_F_Destroy( theOGRFeature );
   }
+
+  if ( inTransaction )
+  {
+    commitTransaction();
+  }
+
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
   return syncToDisc();
 }
@@ -1778,6 +1832,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
   if ( !doInitialActionsForEdition() )
     return false;
 
+  const bool inTransaction = startTransaction();
+
   bool returnvalue = true;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
@@ -1785,6 +1841,11 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
     {
       returnvalue = false;
     }
+  }
+
+  if ( inTransaction )
+  {
+    commitTransaction();
   }
 
   if ( !syncToDisc() )
@@ -2388,7 +2449,7 @@ QString createFilters( const QString &type )
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // This does not work for some file types, see VSIFileHandler doc.
     QgsSettings settings;
-    if ( settings.value( QStringLiteral( "/qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
+    if ( settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString() != QLatin1String( "no" ) )
     {
       sFileFilters.prepend( createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), QStringLiteral( "*.zip *.gz *.tar *.tar.gz *.tgz" ) ) );
       sExtensions << QStringLiteral( "zip" ) << QStringLiteral( "gz" ) << QStringLiteral( "tar" ) << QStringLiteral( "tar.gz" ) << QStringLiteral( "tgz" );
@@ -2666,7 +2727,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   CSLDestroy( papszOptions );
 
   QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() )
+  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
   {
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
@@ -2867,7 +2928,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   OGRFeatureH f;
   while ( ( f = OGR_L_GetNextFeature( l ) ) )
   {
-    uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
+    uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
 
     if ( limit >= 0 && uniqueValues.size() >= limit )
@@ -2913,7 +2974,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   OGRFeatureH f;
   while ( ( f = OGR_L_GetNextFeature( l ) ) )
   {
-    if ( OGR_F_IsFieldSet( f, 0 ) )
+    if ( OGR_F_IsFieldSetAndNotNull( f, 0 ) )
       results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
     OGR_F_Destroy( f );
 
@@ -2956,7 +3017,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
+  QVariant value = OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -2995,7 +3056,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
+  QVariant value = OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -3391,7 +3452,7 @@ void QgsOgrProvider::open( OpenMode mode )
     if ( QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 &&
          IsLocalFile( mFilePath ) &&
          !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) &&
-         QgsSettings().value( QStringLiteral( "/qgis/walForSqlite3" ), true ).toBool() )
+         QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
     {
       // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
       // mode so as to avoid readers blocking writer(s), and vice-versa.
@@ -3835,7 +3896,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   {
     QgsSettings settings;
     // Only used in tests. Do not define it for interactive implication
-    QVariant overwriteStyle = settings.value( QStringLiteral( "/qgis/overwriteStyle" ) );
+    QVariant overwriteStyle = settings.value( QStringLiteral( "qgis/overwriteStyle" ) );
     if ( ( !overwriteStyle.isNull() && !overwriteStyle.toBool() ) ||
          ( overwriteStyle.isNull() &&
            QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
