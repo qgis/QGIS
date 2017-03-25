@@ -76,7 +76,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
         QTime mLastPreview;           //!< When last preview has been generated
     };
 
-    //! feedback class for cancelation and preview generation
+    //! feedback class for cancellation and preview generation
     Feedback *mFeedback = nullptr;
 };
 

@@ -58,7 +58,7 @@ public:
     * adds the Block at the end of history.
     * This may drop other blocks.
     *
-    * The ownership on the block is transfered.
+    * The ownership on the block is transferred.
     * An unique index number is returned for accessing
     * it later (if not yet dropped then)
     *
