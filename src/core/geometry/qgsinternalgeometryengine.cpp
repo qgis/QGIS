@@ -476,3 +476,134 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     return QgsGeometry( orthogonalizeGeom( mGeometry, maxIterations, tolerance, lowerThreshold, upperThreshold ) );
   }
 }
+
+QgsLineString *doDensifyByCount( QgsLineString *ring, int extraNodesPerSegment )
+{
+  QgsPointSequence out;
+  double multiplier = 1.0 / double( extraNodesPerSegment + 1 );
+
+  int nPoints = ring->numPoints();
+  out.reserve( ( extraNodesPerSegment + 1 ) * nPoints );
+  bool withZ = ring->is3D();
+  bool withM = ring->isMeasure();
+  QgsWkbTypes::Type outType = QgsWkbTypes::Point;
+  if ( ring->is3D() )
+    outType = QgsWkbTypes::addZ( outType );
+  if ( ring->isMeasure() )
+    outType = QgsWkbTypes::addM( outType );
+  double x1 = 0;
+  double x2 = 0;
+  double y1 = 0;
+  double y2 = 0;
+  double z1 = 0;
+  double z2 = 0;
+  double m1 = 0;
+  double m2 = 0;
+  double xOut = 0;
+  double yOut = 0;
+  double zOut = 0;
+  double mOut = 0;
+  for ( int i = 0; i < nPoints - 1; ++i )
+  {
+    x1 = ring->xAt( i );
+    x2 = ring->xAt( i + 1 );
+    y1 = ring->yAt( i );
+    y2 = ring->yAt( i + 1 );
+    if ( withZ )
+    {
+      z1 = ring->zAt( i );
+      z2 = ring->zAt( i + 1 );
+    }
+    if ( withM )
+    {
+      m1 = ring->mAt( i );
+      m2 = ring->mAt( i + 1 );
+    }
+
+    out << QgsPointV2( outType, x1, y1, z1, m1 );
+    for ( int j = 0; j < extraNodesPerSegment; ++j )
+    {
+      double delta = multiplier * ( j + 1 );
+      xOut = x1 + delta * ( x2 - x1 );
+      yOut = y1 + delta * ( y2 - y1 );
+      if ( withZ )
+        zOut = z1 + delta * ( z2 - z1 );
+      if ( withM )
+        mOut = m1 + delta * ( m2 - m1 );
+
+      out << QgsPointV2( outType, xOut, yOut, zOut, mOut );
+    }
+  }
+  out << QgsPointV2( outType, ring->xAt( nPoints - 1 ), ring->yAt( nPoints - 1 ),
+                     withZ ? ring->zAt( nPoints - 1 ) : 0, withM ? ring->mAt( nPoints - 1 ) : 0 );
+
+  QgsLineString *result = new QgsLineString();
+  result->setPoints( out );
+  return result;
+}
+
+QgsAbstractGeometry *densifyGeometryByCount( const QgsAbstractGeometry *geom, int extraNodesPerSegment )
+{
+  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
+  {
+    segmentizedCopy.reset( geom->segmentize() );
+    geom = segmentizedCopy.get();
+  }
+
+  if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
+  {
+    return doDensifyByCount( static_cast< QgsLineString * >( geom->clone() ), extraNodesPerSegment );
+  }
+  else
+  {
+    // polygon
+    const QgsPolygonV2 *polygon = static_cast< const QgsPolygonV2 * >( geom );
+    QgsPolygonV2 *result = new QgsPolygonV2();
+
+    result->setExteriorRing( doDensifyByCount( static_cast< QgsLineString * >( polygon->exteriorRing()->clone() ),
+                             extraNodesPerSegment ) );
+    for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+    {
+      result->addInteriorRing( doDensifyByCount( static_cast< QgsLineString * >( polygon->interiorRing( i )->clone() ),
+                               extraNodesPerSegment ) );
+    }
+
+    return result;
+  }
+}
+
+QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment ) const
+{
+  if ( !mGeometry )
+  {
+    return QgsGeometry();
+  }
+
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == QgsWkbTypes::PointGeometry )
+  {
+    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+  }
+
+  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  {
+    int numGeom = gc->numGeometries();
+    QList< QgsAbstractGeometry * > geometryList;
+    geometryList.reserve( numGeom );
+    for ( int i = 0; i < numGeom; ++i )
+    {
+      geometryList << densifyGeometryByCount( gc->geometryN( i ), extraNodesPerSegment );
+    }
+
+    QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
+    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    {
+      first.addPart( g );
+    }
+    return first;
+  }
+  else
+  {
+    return QgsGeometry( densifyGeometryByCount( mGeometry, extraNodesPerSegment ) );
+  }
+}

@@ -1576,6 +1576,13 @@ QgsGeometry QgsGeometry::simplify( double tolerance ) const
   return QgsGeometry( simplifiedGeom );
 }
 
+QgsGeometry QgsGeometry::densifyByCount( int extraNodesPerSegment ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.densifyByCount( extraNodesPerSegment );
+}
+
 QgsGeometry QgsGeometry::centroid() const
 {
   if ( !d->geometry )

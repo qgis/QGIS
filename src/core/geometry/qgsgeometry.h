@@ -612,6 +612,16 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry simplify( double tolerance ) const;
 
     /**
+     * Returns a copy of the geometry which has been densified by adding the specified
+     * number of extra nodes within each segment of the geometry.
+     * If the geometry has z or m values present then these will be linearly interpolated
+     * at the added nodes.
+     * Curved geometry types are automatically segmentized by this routine.
+     * @node added in QGIS 3.0
+     */
+    QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
+
+    /**
      * Returns the center of mass of a geometry.
      * @note for line based geometries, the center point of the line is returned,
      * and for point based geometries, the point itself is returned

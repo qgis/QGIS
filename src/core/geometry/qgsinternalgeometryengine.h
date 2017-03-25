@@ -71,6 +71,16 @@ class QgsInternalGeometryEngine
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
+    /**
+     * Densifies the geometry by adding the specified number of extra nodes within each
+     * segment of the geometry.
+     * If the geometry has z or m values present then these will be linearly interpolated
+     * at the added nodes.
+     * Curved geometry types are automatically segmentized by this routine.
+     * @node added in QGIS 3.0
+     */
+    QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
+
   private:
     const QgsAbstractGeometry *mGeometry = nullptr;
 };
