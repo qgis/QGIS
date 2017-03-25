@@ -1723,7 +1723,7 @@ QgsExpressionContext QgsComposerMap::createExpressionContext() const
 {
   QgsExpressionContext context = QgsComposerItem::createExpressionContext();
 
-  //Can't utilise QgsExpressionContextUtils::mapSettingsScope as we don't always
+  //Can't utilize QgsExpressionContextUtils::mapSettingsScope as we don't always
   //have a QgsMapSettings object available when the context is required, so we manually
   //add the same variables here
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Map Settings" ) );

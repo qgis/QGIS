@@ -116,7 +116,7 @@ class QgsTask : QObject
      * time as the parent task. This behavior can be overridden through the subTaskDependency
      * argument.
      *
-     * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
+     * The parent task must be added to a QgsTaskManager for subtasks to be utilized.
      * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
      * task should be added to the manager.
      *

@@ -192,7 +192,7 @@ class QgsPaintEffect
      */
     void drawSource( QPainter& painter );
 
-    /** Returns the source QPicture. The @link draw @endlink member can utilise this when
+    /** Returns the source QPicture. The @link draw @endlink member can utilize this when
      * drawing the effect.
      * @returns source QPicture
      * @see drawSource
@@ -201,7 +201,7 @@ class QgsPaintEffect
     const QPicture* source() const;
 
     /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
-     * utilise this when drawing the effect. The image will be padded or cropped from the original
+     * utilize this when drawing the effect. The image will be padded or cropped from the original
      * source QPicture by the results of the @link boundingRect @endlink method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
      * @returns source QPicture rendered to an image

@@ -124,7 +124,7 @@ class QgsGlowEffect : QgsPaintEffect
     QColor color() const;
 
     /** Sets the color ramp for the glow. This only applies if the @link colorType @endlink
-     * is set to ColorRamp. The glow will utilise colors from the ramp.
+     * is set to ColorRamp. The glow will utilize colors from the ramp.
      * @param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
      * @see ramp
      * @see setColorType
@@ -132,7 +132,7 @@ class QgsGlowEffect : QgsPaintEffect
     void setRamp( QgsColorRamp* ramp /Transfer/ );
 
     /** Returns the color ramp used for the glow. This only applies if the @link colorType @endlink
-     * is set to ColorRamp. The glow will utilise colors from the ramp.
+     * is set to ColorRamp. The glow will utilize colors from the ramp.
      * @returns color ramp for glow
      * @see setRamp
      * @see colorType

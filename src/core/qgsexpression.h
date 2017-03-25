@@ -758,7 +758,7 @@ class CORE_EXPORT QgsExpression
     static QStringList sBuiltinFunctions;
     static const QStringList &BuiltinFunctions();
 
-    /** Registers a function to the expression engine. This is required to allow expressions to utilise the function.
+    /** Registers a function to the expression engine. This is required to allow expressions to utilize the function.
      * @param function function to register
      * @param transferOwnership set to true to transfer ownership of function to expression engine
      * @returns true on successful registration

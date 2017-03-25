@@ -2868,7 +2868,7 @@ QString QgsSymbolLayerUtils::colorToName( const QColor &color )
     return QString();
   }
 
-  //TODO - utilise a color names database (such as X11) to return nicer names
+  //TODO - utilize a color names database (such as X11) to return nicer names
   //for now, just return hex codes
   return color.name();
 }

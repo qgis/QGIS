@@ -657,7 +657,7 @@ class CORE_EXPORT QgsTextShadowSettings
      */
     int offsetAngle() const;
 
-    /** Sets the angle for offseting the position of the shadow from the text.
+    /** Sets the angle for offsetting the position of the shadow from the text.
      * @param angle offset angle in degrees
      * @see offsetAngle()
      * @see setOffsetDistance()

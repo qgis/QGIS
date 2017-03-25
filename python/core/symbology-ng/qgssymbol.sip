@@ -217,7 +217,7 @@ class QgsSymbol
      */
     QSet<QString> usedAttributes( const QgsRenderContext& context ) const;
 
-    /** Returns whether the symbol utilises any data defined properties.
+    /** Returns whether the symbol utilizes any data defined properties.
      * @note added in QGIS 2.12
      */
     bool hasDataDefinedProperties() const;
