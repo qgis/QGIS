@@ -23,6 +23,7 @@
 #include "qgsmapsettings.h"
 #include "qgspainting.h"
 #include "qgscomposerutils.h"
+#include "qgscsexception.h"
 
 #include <QPainter>
 
@@ -82,6 +83,25 @@ void QgsComposerMapOverview::draw( QPainter *painter )
 
   //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
   QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
+  if ( overviewFrameMap->crs() !=
+       mComposerMap->crs() )
+  {
+    QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
+
+    // reproject extent
+    QgsCoordinateTransform ct( overviewFrameMap->crs(),
+                               mComposerMap->crs() );
+    g = g.densifyByCount( 20 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+
+    otherExtent = g.asQPolygonF();
+  }
 
   //get current map's extent as a QPolygonF
   QPolygonF thisExtent = mComposerMap->visibleExtentPolygon();
