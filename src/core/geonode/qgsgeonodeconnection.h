@@ -1,9 +1,9 @@
 /***************************************************************************
-                        qgsabstractgeometry.h
-  -------------------------------------------------------------------
-Date                 : 15 March 2017
-Copyright            : (C) 2017 by Rohmat, Ismail Sunni
-email                : rohmat at kartoza dot com, ismail at kartoza dot com
+    qgsgeonodeconnection.h
+    ---------------------
+    begin                : Feb 2017
+    copyright            : (C) 2017 by Rohmat, Ismail Sunni
+    email                : rohmat at kartoza dot com, ismail at kartoza dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,80 +13,93 @@ email                : rohmat at kartoza dot com, ismail at kartoza dot com
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEONODECONNECTION_H
-#define QGSGEONODECONNECTION_H
+#ifndef QGSGEONODECLIENT_H
+#define QGSGEONODECLIENT_H
 
-#include "qgsgeonodedataitems.h"
-#include "../../providers/wfs/qgswfsdataitems.h"
-#include "../../providers/wms/qgswmsdataitems.h"
-#include "../../providers/wcs/qgswcsdataitems.h"
-#include "qgsauthconfig.h"
+#include "qgis_core.h"
 #include "qgsdatasourceuri.h"
-#include "../../providers/wfs/qgswfsconnection.h"
-#include "../../providers/wms/qgswmsconnection.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsstyle.h"
+//#include "../../providers/wms/qgswmsconnection.h"
+//#include "../../providers/wfs/qgswfsconnection.h"
 
-class QgsAuthMethodConfig;
+#include <QString>
 
-class QgsGeoNodeConnection
+
+/*!
+ * \brief   GeoNode Connections management
+ */
+class QgsGeoNodeConnection : public QObject
 {
-    //Constructor
-    QgsGeoNodeConnection( const QString &baseKey = "/Qgis/connections-geonode/", const QString &connName = QString::null );
+    Q_OBJECT
 
-    void saveConnection();
-    void editConnection();
-    void deleteConnection();
-    void refreshConnection();
-    void connectToServer();
-    void disconnectToServer();
+  public:
+    //! Constructor
+    explicit QgsGeoNodeConnection( const QString &connName );
 
-    QgsWfsConnection geonodeWfsConnection;
-    QgsWMSConnection geonodeWmsConnection;
+    //! Destructor
+    ~QgsGeoNodeConnection();
 
-    QgsWfsLayerItem wfsLayerItem;
-    QgsWMSLayerItem wmsLayerItem;
-    QgsWCSLayerItem wcsLayerItem;
+    //! Retrieve all geonode connection
+    static QStringList connectionList();
 
-    QString connectionName;
-    QgsDataSourceUri connectionUri;
-    QgsAuthMethodConfig connectionAuth;
+    //! Delete connection with name, name
+    static void deleteConnection( const QString &name );
+
+    //! Get selected connection
+    static QString selectedConnection();
+
+    //! Set selected connection
+    static void setSelectedConnection( const QString &name );
+
+    // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
+
+//    //! Get all layer IDs from the geonode instances
+//    QStringList layerIDs();
+
+//    //! Get all map IDs from the geonode instances
+//    QStringList mapIDs();
+
+//    //! Get all style IDs from the geonode instances
+//    QStringList styleIDs();
+
+//    //! Get all style IDs of a layer from the geonode instances
+//    QStringList layerStyleIDs( QString &layerID );
+
+//    QgsWMSConnection layerWMSConnection( QString &layerID );
+
+//    QgsWfsConnection layerWFSConnection( QString &layerID );
+
+//    QgsWMSConnection mapWMSConnection( QString &mapID );
+
+//    void downloadLayer( QString &layerID, QString &location );
+//    void downloadStyle( QString &styleID, QString &location );
+//    void downloadLayerMetadata( QString &layerID, QString &location );
+
+//    void downloadQGISProject( QString &mapID, QString &location );
+
+//    void publishLayerFile( QgsMapLayer &layer );
+//    void publishQGISProject( QgsProject &project );
+//    void publishStyle( QgsStyle &style );
+
+
+  public:
+    //! The connection name
+    QString mConnName;
+
+    //! Getter for mUri
+    QgsDataSourceUri uri();
+
+    //! Property of mUri
+    QgsDataSourceUri mUri;
+
+    //! List of wms connection of the geonode instance
+    QStringList wmsConnectionNames;
+
+    //! List of wfs connection of the geonode instance
+    QStringList wfsConnectionNames;
 };
 
-class QgsGeoNodeService
-{
-    //Constructor
-    QgsGeoNodeService();
 
-
-};
-
-class QgsGeoNodeWfsService
-{
-    //Constructor
-    QgsGeoNodeWfsService();
-
-    QgsGeoNodeWfsLayerItem wfsLayerItem;
-
-    QgsDataSourceUri geoNodeWfsUrl;
-};
-
-class QgsGeoNodeWmsService
-{
-    //Constructor
-    QgsGeoNodeWmsService();
-
-    QgsGeoNodeWmsLayerItem wmsLayerItem;
-
-    QgsDataSourceUri geoNodeWmsUrl;
-};
-
-class QgsGeoNodeWcsService
-{
-    //Constructor
-    QgsGeoNodeWcsService();
-
-    QgsGeoNodeWcsLayerItem wcsLayerItem;
-
-    QgsDataSourceUri geoNodeWcsUrl;
-};
-
-#endif //QGIS2_99_0_QGSGEONODECLIENT_H
+#endif //QGSGEONODECLIENT_H
