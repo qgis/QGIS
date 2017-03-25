@@ -66,6 +66,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 
   mCheckBoxNoProjection->setHidden( true );
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, &QgsProjectionSelectionTreeWidget::crsSelected );
   connect( mCheckBoxNoProjection, &QCheckBox::toggled, mFrameProjections, &QFrame::setDisabled );
 }
 
