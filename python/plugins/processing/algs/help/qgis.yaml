@@ -139,9 +139,13 @@ qgis:densifygeometries:
   The number of new vertices to add to each feature geometry is specified as an input parameter.
 
 qgis:densifygeometriesgivenaninterval:
-  This algorithm takes a polygon or line layer and generates a new one in which the geometries have a larger number of vertices than the original one.
+  This algorithm takes a polygon or line layer and generates a new one in which the geometries have a larger number of vertices than the original one. The geometries are densified by adding regularly placed extra nodes inside each segment so that the maximum distance between any two nodes does not exceed the specified distance.
 
-  The number of new vertices depends on the length of the geometry, and is specified as a distance between them. The distance is expressed in the same units used by the layer CRS.
+  E.g. specifying a distance 3 would cause the segment [0 0] -> [10 0] to be converted to [0 0] -> [2.5 0] -> [5 0] -> [7.5 0] -> [10 0], since 3 extra nodes are required on the segment and spacing these at 2.5 increments allows them to be evenly spaced over the segment.
+
+  If the geometries have z or m values present then these will be linearly interpolated at the added nodes.
+
+  The distance is expressed in the same units used by the layer CRS.
 
 qgis:difference: >
   This algorithm extracts features from the Input layer that fall outside, or partially overlap, features in the Difference layer. Input layer features that partially overlap the difference layer feature(s) are split along the boundary of the difference layer feature(s) and only the portions outside the difference layer features are retained.

@@ -543,6 +543,7 @@ class QgsGeometry
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
     QgsGeometry simplify( double tolerance ) const;
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
+    QgsGeometry densifyByDistance( double distance ) const;
     QgsGeometry centroid() const;
 
     /**

@@ -1583,6 +1583,13 @@ QgsGeometry QgsGeometry::densifyByCount( int extraNodesPerSegment ) const
   return engine.densifyByCount( extraNodesPerSegment );
 }
 
+QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.densifyByDistance( distance );
+}
+
 QgsGeometry QgsGeometry::centroid() const
 {
   if ( !d->geometry )
