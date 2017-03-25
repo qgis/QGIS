@@ -190,6 +190,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     static GEOSContextHandle_t getGEOSHandler();
 
+
   private:
     mutable GEOSGeometry *mGeos;
     const GEOSPreparedGeometry *mGeosPrepared = nullptr;
@@ -228,6 +229,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     static GEOSGeometry *createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms );
 
+    static GEOSGeometry *createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision );
     static GEOSGeometry *createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision );
     static GEOSGeometry *createGeosLinestring( const QgsAbstractGeometry *curve, double precision );
     static GEOSGeometry *createGeosPolygon( const QgsAbstractGeometry *poly, double precision );
