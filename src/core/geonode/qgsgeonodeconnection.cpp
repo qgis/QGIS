@@ -17,6 +17,8 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 
+const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode/";
+const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode/";
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
   : mConnName( connName )
@@ -25,8 +27,8 @@ QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
 
   QgsSettings settings;
 
-  QString key = "qgis/connections-geonode/" + mConnName;
-  QString credentialsKey = "qgis/GeoNode/" + mConnName;
+  QString key = pathGeoNodeConnection + "/" + mConnName;
+  QString credentialsKey = pathGeoNodeConnectionDetails + "/" + mConnName;
 
   QStringList connStringParts;
 
@@ -63,27 +65,27 @@ QgsDataSourceUri QgsGeoNodeConnection::uri()
 QStringList QgsGeoNodeConnection::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/connections-geonode" ) );
+  settings.beginGroup( pathGeoNodeConnection );
   return settings.childGroups();
 }
 
 void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "qgis/connections-geonode/" + name );
-  settings.remove( "qgis/GeoNode/" + name );
+  settings.remove( pathGeoNodeConnection + name );
+  settings.remove( pathGeoNodeConnectionDetails + name );
 }
 
 QString QgsGeoNodeConnection::selectedConnection()
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/connections-geonode/selected" ) ).toString();
+  return settings.value( pathGeoNodeConnection + QStringLiteral( "/selected" ) ).toString();
 }
 
 void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/connections-geonode/selected" ), name );
+  settings.setValue( pathGeoNodeConnection + QStringLiteral( "/selected" ), name );
 }
 
 

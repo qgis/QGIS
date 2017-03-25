@@ -99,6 +99,10 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
 
     //! List of wfs connection of the geonode instance
     QStringList wfsConnectionNames;
+
+    // Path in QSetting
+    static const QString pathGeoNodeConnection;// = "qgis/connections-geonode/";
+    static const QString pathGeoNodeConnectionDetails;// = "qgis/GeoNode/";
 };
 
 

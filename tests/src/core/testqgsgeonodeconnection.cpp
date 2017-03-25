@@ -64,7 +64,8 @@ void TestQgsGeoNodeConnection::testCreation()
 
   // Add new GeoNode Connection
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/connections-geonode/%1/url" ).arg( mGeoNodeConnectionName ), mGeoNodeConnectionURL );
+
+  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( mGeoNodeConnectionName ), mGeoNodeConnectionURL );
 
   QStringList newConnectionList = QgsGeoNodeConnection::connectionList();
   int newNumberOfConnection = newConnectionList.count();
