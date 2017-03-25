@@ -480,18 +480,21 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
 // if extraNodesPerSegment < 0, then use distance based mode
 QgsLineString *doDensify( QgsLineString *ring, int extraNodesPerSegment = -1, double distance = 1 )
 {
-  QgsPointSequence out;
+  QVector< double > outX;
+  QVector< double > outY;
+  QVector< double > outZ;
+  QVector< double > outM;
   double multiplier = 1.0 / double( extraNodesPerSegment + 1 );
 
   int nPoints = ring->numPoints();
-  out.reserve( ( extraNodesPerSegment + 1 ) * nPoints );
+  outX.reserve( ( extraNodesPerSegment + 1 ) * nPoints );
+  outY.reserve( ( extraNodesPerSegment + 1 ) * nPoints );
   bool withZ = ring->is3D();
+  if ( withZ )
+    outZ.reserve( ( extraNodesPerSegment + 1 ) * nPoints );
   bool withM = ring->isMeasure();
-  QgsWkbTypes::Type outType = QgsWkbTypes::Point;
-  if ( ring->is3D() )
-    outType = QgsWkbTypes::addZ( outType );
-  if ( ring->isMeasure() )
-    outType = QgsWkbTypes::addM( outType );
+  if ( withM )
+    outM.reserve( ( extraNodesPerSegment + 1 ) * nPoints );
   double x1 = 0;
   double x2 = 0;
   double y1 = 0;
@@ -522,7 +525,12 @@ QgsLineString *doDensify( QgsLineString *ring, int extraNodesPerSegment = -1, do
       m2 = ring->mAt( i + 1 );
     }
 
-    out << QgsPointV2( outType, x1, y1, z1, m1 );
+    outX << x1;
+    outY << y1;
+    if ( withZ )
+      outZ << z1;
+    if ( withM )
+      outM << m1;
 
     if ( extraNodesPerSegment < 0 )
     {
@@ -542,14 +550,22 @@ QgsLineString *doDensify( QgsLineString *ring, int extraNodesPerSegment = -1, do
       if ( withM )
         mOut = m1 + delta * ( m2 - m1 );
 
-      out << QgsPointV2( outType, xOut, yOut, zOut, mOut );
+      outX << xOut;
+      outY << yOut;
+      if ( withZ )
+        outZ << zOut;
+      if ( withM )
+        outM << mOut;
     }
   }
-  out << QgsPointV2( outType, ring->xAt( nPoints - 1 ), ring->yAt( nPoints - 1 ),
-                     withZ ? ring->zAt( nPoints - 1 ) : 0, withM ? ring->mAt( nPoints - 1 ) : 0 );
+  outX << ring->xAt( nPoints - 1 );
+  outY << ring->yAt( nPoints - 1 );
+  if ( withZ )
+    outZ << ring->zAt( nPoints - 1 );
+  if ( withM )
+    outM << ring->mAt( nPoints - 1 );
 
-  QgsLineString *result = new QgsLineString();
-  result->setPoints( out );
+  QgsLineString *result = new QgsLineString( outX, outY, outZ, outM );
   return result;
 }
 

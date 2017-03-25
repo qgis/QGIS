@@ -711,12 +711,7 @@ QList<QgsPoint> QgsMapToolCapture::points()
 
 void QgsMapToolCapture::setPoints( const QList<QgsPoint> &pointList )
 {
-  QgsPointSequence pts;
-  QgsGeometry::convertPointList( pointList, pts );
-
-  QgsLineString *line = new QgsLineString();
-  line->setPoints( pts );
-
+  QgsLineString *line = new QgsLineString( pointList );
   mCaptureCurve.clear();
   mCaptureCurve.addCurve( line );
 }

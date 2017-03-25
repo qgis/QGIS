@@ -987,17 +987,41 @@ QgsPolygonV2 *QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 
 QgsLineString *QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
-  QgsPointSequence pts;
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit.ctxt, cs, &nPoints );
-  pts.reserve( nPoints );
+  QVector< double > xOut;
+  xOut.reserve( nPoints );
+  QVector< double > yOut;
+  yOut.reserve( nPoints );
+  QVector< double > zOut;
+  if ( hasZ )
+    zOut.reserve( nPoints );
+  QVector< double > mOut;
+  if ( hasM )
+    mOut.reserve( nPoints );
+  double x = 0;
+  double y = 0;
+  double z = 0;
+  double m = 0;
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
-    pts.push_back( coordSeqPoint( cs, i, hasZ, hasM ) );
+    GEOSCoordSeq_getX_r( geosinit.ctxt, cs, i, &x );
+    xOut << x;
+    GEOSCoordSeq_getY_r( geosinit.ctxt, cs, i, &y );
+    yOut << y;
+    if ( hasZ )
+    {
+      GEOSCoordSeq_getZ_r( geosinit.ctxt, cs, i, &z );
+      zOut << z;
+    }
+    if ( hasM )
+    {
+      GEOSCoordSeq_getOrdinate_r( geosinit.ctxt, cs, i, 3, &m );
+      mOut << m;
+    }
   }
-  QgsLineString *line = new QgsLineString();
-  line->setPoints( pts );
+  QgsLineString *line = new QgsLineString( xOut, yOut, zOut, mOut );
   return line;
 }
 

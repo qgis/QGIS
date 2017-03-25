@@ -38,6 +38,26 @@ class CORE_EXPORT QgsLineString: public QgsCurve
   public:
     QgsLineString();
 
+    /**
+     * Construct a linestring from arrays of coordinates. If the z or m
+     * arrays are non-empty then the resultant linestring will have
+     * z and m types accordingly.
+     * This constructor is more efficient then calling setPoints()
+     * or repeatedly calling addVertex()
+     * @note added in QGIS 3.0
+     */
+    QgsLineString( const QVector<double> &x, const QVector<double> &y,
+                   const QVector<double> &z = QVector<double>(),
+                   const QVector<double> &m = QVector<double>() );
+
+    /**
+     * Construct a linestring from list of points.
+     * This constructor is more efficient then calling setPoints()
+     * or repeatedly calling addVertex()
+     * @note added in QGIS 3.0
+     */
+    QgsLineString( const QList<QgsPoint> &points );
+
     bool operator==( const QgsCurve &other ) const override;
     bool operator!=( const QgsCurve &other ) const override;
 

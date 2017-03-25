@@ -40,6 +40,64 @@ QgsLineString::QgsLineString(): QgsCurve()
   mWkbType = QgsWkbTypes::LineString;
 }
 
+QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y, const QVector<double> &z, const QVector<double> &m )
+{
+  mWkbType = QgsWkbTypes::LineString;
+  int pointCount = qMin( x.size(), y.size() );
+  if ( x.size() == pointCount )
+  {
+    mX = x;
+  }
+  else
+  {
+    mX = x.mid( 0, pointCount );
+  }
+  if ( y.size() == pointCount )
+  {
+    mY = y;
+  }
+  else
+  {
+    mY = y.mid( 0, pointCount );
+  }
+  if ( !z.isEmpty() && z.count() >= pointCount )
+  {
+    mWkbType = QgsWkbTypes::addZ( mWkbType );
+    if ( z.size() == pointCount )
+    {
+      mZ = z;
+    }
+    else
+    {
+      mZ = z.mid( 0, pointCount );
+    }
+  }
+  if ( !m.isEmpty() && m.count() >= pointCount )
+  {
+    mWkbType = QgsWkbTypes::addM( mWkbType );
+    if ( m.size() == pointCount )
+    {
+      mM = m;
+    }
+    else
+    {
+      mM = m.mid( 0, pointCount );
+    }
+  }
+}
+
+QgsLineString::QgsLineString( const QList<QgsPoint> &points )
+{
+  mWkbType = QgsWkbTypes::LineString;
+  mX.reserve( points.size() );
+  mY.reserve( points.size() );
+  Q_FOREACH ( const QgsPoint &p, points )
+  {
+    mX << p.x();
+    mY << p.y();
+  }
+}
+
 bool QgsLineString::operator==( const QgsCurve &other ) const
 {
   const QgsLineString *otherLine = dynamic_cast< const QgsLineString * >( &other );

@@ -630,10 +630,7 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
-  QgsLineString *ringLine = new QgsLineString();
-  QgsPointSequence ringPoints;
-  convertPointList( ring, ringPoints );
-  ringLine->setPoints( ringPoints );
+  QgsLineString *ringLine = new QgsLineString( ring );
   return addRing( ringLine );
 }
 
@@ -797,10 +794,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint> &splitLine, QList<QgsGeome
   }
 
   QList<QgsAbstractGeometry *> newGeoms;
-  QgsLineString splitLineString;
-  QgsPointSequence splitLinePointsV2;
-  convertPointList( splitLine, splitLinePointsV2 );
-  splitLineString.setPoints( splitLinePointsV2 );
+  QgsLineString splitLineString( splitLine );
   QgsPointSequence tp;
 
   QgsGeos geos( d->geometry );
@@ -830,10 +824,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint> &reshapeWithLine )
     return 0;
   }
 
-  QgsPointSequence reshapeLine;
-  convertPointList( reshapeWithLine, reshapeLine );
-  QgsLineString reshapeLineString;
-  reshapeLineString.setPoints( reshapeLine );
+  QgsLineString reshapeLineString( reshapeWithLine );
 
   QgsGeos geos( d->geometry );
   int errorCode = 0;
