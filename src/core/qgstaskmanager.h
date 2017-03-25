@@ -160,7 +160,7 @@ class CORE_EXPORT QgsTask : public QObject
      * argument. Note that subtasks should NEVER be dependent on their parent task, and violating
      * this constraint will prevent the task from completing successfully.
      *
-     * The parent task must be added to a QgsTaskManager for subtasks to be utilised.
+     * The parent task must be added to a QgsTaskManager for subtasks to be utilized.
      * Subtasks should not be added manually to a QgsTaskManager, rather, only the parent
      * task should be added to the manager.
      *

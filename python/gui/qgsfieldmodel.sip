@@ -13,7 +13,7 @@ class QgsFieldModel : QAbstractItemModel
 
   public:
 
-    //! Roles utilised by the model
+    //! Roles utilized by the model
     enum FieldRoles
     {
       FieldNameRole, /*!< return field name if index corresponds to a field */

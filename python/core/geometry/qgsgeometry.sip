@@ -541,17 +541,9 @@ class QgsGeometry
      * @note added in QGIS 3.0
      */
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
-
-    /** Returns a simplified version of this geometry using a specified tolerance value */
-    QgsGeometry simplify( double tolerance )  const;
-
-    /**
-     * Returns the center of mass of a geometry.
-     * @note for line based geometries, the center point of the line is returned,
-     * and for point based geometries, the point itself is returned
-     * @see pointOnSurface()
-     * @see poleOfInaccessibility()
-     */
+    QgsGeometry simplify( double tolerance ) const;
+    QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
+    QgsGeometry densifyByDistance( double distance ) const;
     QgsGeometry centroid() const;
 
     /**

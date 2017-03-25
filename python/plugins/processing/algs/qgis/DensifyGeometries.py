@@ -48,6 +48,7 @@ class DensifyGeometries(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Densify geometries')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.tags = self.tr('add,vertices,points')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
@@ -74,54 +75,9 @@ class DensifyGeometries(GeoAlgorithm):
         for current, f in enumerate(features):
             feature = f
             if feature.hasGeometry():
-                new_geometry = self.densifyGeometry(feature.geometry(), int(vertices),
-                                                    isPolygon)
+                new_geometry = feature.geometry().densifyByCount(int(vertices))
                 feature.setGeometry(new_geometry)
             writer.addFeature(feature)
             feedback.setProgress(int(current * total))
 
         del writer
-
-    def densifyGeometry(self, geometry, pointsNumber, isPolygon):
-        output = []
-        if isPolygon:
-            if geometry.isMultipart():
-                polygons = geometry.asMultiPolygon()
-                for poly in polygons:
-                    p = []
-                    for ring in poly:
-                        p.append(self.densify(ring, pointsNumber))
-                    output.append(p)
-                return QgsGeometry.fromMultiPolygon(output)
-            else:
-                rings = geometry.asPolygon()
-                for ring in rings:
-                    output.append(self.densify(ring, pointsNumber))
-                return QgsGeometry.fromPolygon(output)
-        else:
-            if geometry.isMultipart():
-                lines = geometry.asMultiPolyline()
-                for points in lines:
-                    output.append(self.densify(points, pointsNumber))
-                return QgsGeometry.fromMultiPolyline(output)
-            else:
-                points = geometry.asPolyline()
-                output = self.densify(points, pointsNumber)
-                return QgsGeometry.fromPolyline(output)
-
-    def densify(self, polyline, pointsNumber):
-        output = []
-        multiplier = 1.0 / float(pointsNumber + 1)
-        for i in range(len(polyline) - 1):
-            p1 = polyline[i]
-            p2 = polyline[i + 1]
-            output.append(p1)
-            for j in range(pointsNumber):
-                delta = multiplier * (j + 1)
-                x = p1.x() + delta * (p2.x() - p1.x())
-                y = p1.y() + delta * (p2.y() - p1.y())
-                output.append(QgsPoint(x, y))
-                if j + 1 == pointsNumber:
-                    break
-        output.append(polyline[len(polyline) - 1])
-        return output

@@ -300,11 +300,11 @@ QgsGeometry *QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &
     }
 
     //convert bounds to a geometry
-    QgsLineString *boundLineString = new QgsLineString();
-    boundLineString->addVertex( QgsPointV2( bounds.topLeft() ) );
-    boundLineString->addVertex( QgsPointV2( bounds.topRight() ) );
-    boundLineString->addVertex( QgsPointV2( bounds.bottomRight() ) );
-    boundLineString->addVertex( QgsPointV2( bounds.bottomLeft() ) );
+    QVector< double > bX;
+    bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
+    QVector< double > bY;
+    bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
+    QgsLineString *boundLineString = new QgsLineString( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units

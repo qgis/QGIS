@@ -138,14 +138,7 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
 
 int QgsVectorLayerEditUtils::addRing( const QList<QgsPoint> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
-  QgsLineString *ringLine = new QgsLineString();
-  QgsPointSequence ringPoints;
-  QList<QgsPoint>::const_iterator ringIt = ring.constBegin();
-  for ( ; ringIt != ring.constEnd(); ++ringIt )
-  {
-    ringPoints.append( QgsPointV2( ringIt->x(), ringIt->y() ) );
-  }
-  ringLine->setPoints( ringPoints );
+  QgsLineString *ringLine = new QgsLineString( ring );
   return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
 }
 

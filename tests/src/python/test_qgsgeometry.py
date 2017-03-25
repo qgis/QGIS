@@ -3894,6 +3894,175 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "delaunay: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testDensifyByCount(self):
+
+        empty = QgsGeometry()
+        o = empty.densifyByCount(4)
+        self.assertFalse(o)
+
+        # point
+        input = QgsGeometry.fromWkt("PointZ( 1 2 3 )")
+        o = input.densifyByCount(100)
+        exp = "PointZ( 1 2 3 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt(
+            "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))")
+        o = input.densifyByCount(100)
+        exp = "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # line
+        input = QgsGeometry.fromWkt("LineString( 0 0, 10 0, 10 10 )")
+        o = input.densifyByCount(0)
+        exp = "LineString( 0 0, 10 0, 10 10 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        o = input.densifyByCount(1)
+        exp = "LineString( 0 0, 5 0, 10 0, 10 5, 10 10 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        o = input.densifyByCount(3)
+        exp = "LineString( 0 0, 2.5 0, 5 0, 7.5 0, 10 0, 10 2.5, 10 5, 10 7.5, 10 10 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt("LineStringZ( 0 0 1, 10 0 2, 10 10 0)")
+        o = input.densifyByCount(1)
+        exp = "LineStringZ( 0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt("LineStringM( 0 0 0, 10 0 2, 10 10 0)")
+        o = input.densifyByCount(1)
+        exp = "LineStringM( 0 0 0, 5 0 1, 10 0 2, 10 5 1, 10 10 0 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt("LineStringZM( 0 0 1 10, 10 0 2 8, 10 10 0 4)")
+        o = input.densifyByCount(1)
+        exp = "LineStringZM( 0 0 1 10, 5 0 1.5 9, 10 0 2 8, 10 5 1 6, 10 10 0 4 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # polygon
+        input = QgsGeometry.fromWkt("Polygon(( 0 0, 10 0, 10 10, 0 0 ))")
+        o = input.densifyByCount(0)
+        exp = "Polygon(( 0 0, 10 0, 10 10, 0 0 ))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        input = QgsGeometry.fromWkt("PolygonZ(( 0 0 1, 10 0 2, 10 10 0, 0 0 1 ))")
+        o = input.densifyByCount(1)
+        exp = "PolygonZ(( 0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0, 5 5 0.5, 0 0 1 ))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        input = QgsGeometry.fromWkt("PolygonZM(( 0 0 1 4, 10 0 2 6, 10 10 0 8, 0 0 1 4 ))")
+        o = input.densifyByCount(1)
+        exp = "PolygonZM(( 0 0 1 4, 5 0 1.5 5, 10 0 2 6, 10 5 1 7, 10 10 0 8, 5 5 0.5 6, 0 0 1 4 ))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        # (not strictly valid, but shouldn't matter!
+        input = QgsGeometry.fromWkt("PolygonZM(( 0 0 1 4, 10 0 2 6, 10 10 0 8, 0 0 1 4 ), ( 0 0 1 4, 10 0 2 6, 10 10 0 8, 0 0 1 4 ) )")
+        o = input.densifyByCount(1)
+        exp = "PolygonZM(( 0 0 1 4, 5 0 1.5 5, 10 0 2 6, 10 5 1 7, 10 10 0 8, 5 5 0.5 6, 0 0 1 4 ),( 0 0 1 4, 5 0 1.5 5, 10 0 2 6, 10 5 1 7, 10 10 0 8, 5 5 0.5 6, 0 0 1 4 ))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # multi line
+        input = QgsGeometry.fromWkt("MultiLineString(( 0 0, 5 0, 10 0, 10 5, 10 10), (20 0, 25 0, 30 0, 30 5, 30 10 ) )")
+        o = input.densifyByCount(1)
+        exp = "MultiLineString(( 0 0, 2.5 0, 5 0, 7.5 0, 10 0, 10 2.5, 10 5, 10 7.5, 10 10 ),( 20 0, 22.5 0, 25 0, 27.5 0, 30 0, 30 2.5, 30 5, 30 7.5, 30 10 ))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # multipolygon
+        input = QgsGeometry.fromWkt("MultiPolygonZ(((  0 0 1, 10 0 2, 10 10 0, 0 0 1)),((  0 0 1, 10 0 2, 10 10 0, 0 0 1 )))")
+        o = input.densifyByCount(1)
+        exp = "MultiPolygonZ((( 0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0, 5 5 0.5, 0 0 1 )),(( 0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0, 5 5 0.5, 0 0 1 )))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testDensifyByDistance(self):
+        empty = QgsGeometry()
+        o = empty.densifyByDistance(4)
+        self.assertFalse(o)
+
+        # point
+        input = QgsGeometry.fromWkt("PointZ( 1 2 3 )")
+        o = input.densifyByDistance(0.1)
+        exp = "PointZ( 1 2 3 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt(
+            "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))")
+        o = input.densifyByDistance(0.1)
+        exp = "MULTIPOINT ((155 271), (150 360), (260 360), (271 265), (280 260), (270 370), (154 354), (150 260))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # line
+        input = QgsGeometry.fromWkt("LineString( 0 0, 10 0, 10 10 )")
+        o = input.densifyByDistance(100)
+        exp = "LineString( 0 0, 10 0, 10 10 )"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        o = input.densifyByDistance(3)
+        exp = "LineString (0 0, 2.5 0, 5 0, 7.5 0, 10 0, 10 2.5, 10 5, 10 7.5, 10 10)"
+
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt("LineStringZ( 0 0 1, 10 0 2, 10 10 0)")
+        o = input.densifyByDistance(6)
+        exp = "LineStringZ (0 0 1, 5 0 1.5, 10 0 2, 10 5 1, 10 10 0)"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt("LineStringM( 0 0 0, 10 0 2, 10 10 0)")
+        o = input.densifyByDistance(3)
+        exp = "LineStringM (0 0 0, 2.5 0 0.5, 5 0 1, 7.5 0 1.5, 10 0 2, 10 2.5 1.5, 10 5 1, 10 7.5 0.5, 10 10 0)"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        input = QgsGeometry.fromWkt("LineStringZM( 0 0 1 10, 10 0 2 8, 10 10 0 4)")
+        o = input.densifyByDistance(6)
+        exp = "LineStringZM (0 0 1 10, 5 0 1.5 9, 10 0 2 8, 10 5 1 6, 10 10 0 4)"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        # polygon
+        input = QgsGeometry.fromWkt("Polygon(( 0 0, 20 0, 20 20, 0 0 ))")
+        o = input.densifyByDistance(110)
+        exp = "Polygon(( 0 0, 20 0, 20 20, 0 0 ))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+        input = QgsGeometry.fromWkt("PolygonZ(( 0 0 1, 20 0 2, 20 20 0, 0 0 1 ))")
+        o = input.densifyByDistance(6)
+        exp = "PolygonZ ((0 0 1, 5 0 1.25, 10 0 1.5, 15 0 1.75, 20 0 2, 20 5 1.5, 20 10 1, 20 15 0.5, 20 20 0, 16 16 0.2, 12 12 0.4, 8 8 0.6, 4 4 0.8, 0 0 1))"
+        result = o.exportToWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
 
 if __name__ == '__main__':
     unittest.main()
