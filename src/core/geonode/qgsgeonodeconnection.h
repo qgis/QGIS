@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEONODECLIENT_H
-#define QGSGEONODECLIENT_H
+#ifndef QGSGEONODECONNECTION_H
+#define QGSGEONODECONNECTION_H
 
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
@@ -30,7 +30,7 @@
 /*!
  * \brief   GeoNode Connections management
  */
-class QgsGeoNodeConnection : public QObject
+class CORE_EXPORT QgsGeoNodeConnection : public QObject
 {
     Q_OBJECT
 
@@ -102,4 +102,4 @@ class QgsGeoNodeConnection : public QObject
 };
 
 
-#endif //QGSGEONODECLIENT_H
+#endif //QGSGEONODECONNECTION_H
