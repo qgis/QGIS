@@ -1192,9 +1192,8 @@ QgsPolyline QgsGeometry::asPolyline() const
   polyLine.resize( nVertices );
   for ( int i = 0; i < nVertices; ++i )
   {
-    QgsPointV2 pt = line->pointN( i );
-    polyLine[i].setX( pt.x() );
-    polyLine[i].setY( pt.y() );
+    polyLine[i].setX( line->xAt( i ) );
+    polyLine[i].setY( line->yAt( i ) );
   }
 
   if ( doSegmentation )
