@@ -4108,6 +4108,11 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertTrue(compareWkt(result, exp, 0.00001),
                             "centroid: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+            # QGIS native algorithms are bad!
+            if False:
+                result = QgsGeometry(input.geometry().centroid()).exportToWkt()
+                self.assertTrue(compareWkt(result, exp, 0.00001),
+                                "centroid: mismatch using QgsAbstractGeometry methods Input {} \n Expected:\n{}\nGot:\n{}\n".format(t[0], exp, result))
 
 if __name__ == '__main__':
     unittest.main()
