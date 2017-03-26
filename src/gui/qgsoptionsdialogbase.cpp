@@ -398,7 +398,8 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
 
 
 QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget )
-  : mWidget( widget )
+  : QObject( widget )
+  , mWidget( widget )
   , mStyleSheet( QString() )
   , mValid( true )
   , mChangedStyle( false )

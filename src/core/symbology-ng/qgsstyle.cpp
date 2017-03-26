@@ -745,6 +745,7 @@ bool QgsStyle::runEmptyQuery( char *query, bool freeQuery )
   if ( nErr != SQLITE_OK )
   {
     QgsDebugMsg( zErr );
+    sqlite3_free( zErr );
   }
 
   return zErr == SQLITE_OK;

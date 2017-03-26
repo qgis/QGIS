@@ -498,7 +498,8 @@ void QgsColorRampButton::setRandomColorRamp()
 {
   if ( !isRandomColorRamp() )
   {
-    setColorRamp( new QgsRandomColorRamp() );
+    std::unique_ptr< QgsRandomColorRamp > newRamp( new QgsRandomColorRamp() );
+    setColorRamp( newRamp.get() );
   }
 }
 

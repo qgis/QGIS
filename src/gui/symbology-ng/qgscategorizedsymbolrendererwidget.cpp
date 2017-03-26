@@ -756,7 +756,7 @@ void QgsCategorizedSymbolRendererWidget::applyColorRamp()
 {
   if ( !btnColorRamp->isNull() )
   {
-    mRenderer->updateColorRamp( btnColorRamp->colorRamp()->clone() );
+    mRenderer->updateColorRamp( btnColorRamp->colorRamp() );
   }
   mModel->updateSymbology();
 }

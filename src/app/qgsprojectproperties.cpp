@@ -455,7 +455,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mWMSPrecisionSpinBox->setValue( WMSprecision );
   }
 
-  bool ok;
+  bool ok = false;
   QStringList values;
 
   mWMSExtMinX->setValidator( new QDoubleValidator( mWMSExtMinX ) );
