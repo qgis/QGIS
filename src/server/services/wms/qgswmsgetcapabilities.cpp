@@ -42,12 +42,12 @@ namespace QgsWms
       cache = accessControl->fillCacheKey( cacheKeyList );
 #endif
 
+    QDomDocument doc;
     QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
     const QDomDocument *capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
     if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
     {
       QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
-      QDomDocument doc;
 
       doc = getCapabilities( serverIface, project, version, request, projectSettings );
 
