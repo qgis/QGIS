@@ -66,6 +66,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   QImage im = sourceAsImage( context )->copy();
 
   QgsColorRamp *ramp = nullptr;
+  std::unique_ptr< QgsGradientColorRamp > tempRamp;
   if ( mColorType == ColorRamp && mRamp )
   {
     ramp = mRamp;
@@ -75,7 +76,8 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     //create a temporary ramp
     QColor transparentColor = mColor;
     transparentColor.setAlpha( 0 );
-    ramp = new QgsGradientColorRamp( mColor, transparentColor );
+    tempRamp.reset( new QgsGradientColorRamp( mColor, transparentColor ) );
+    ramp = tempRamp.get();
   }
 
   QgsImageOperation::DistanceTransformProperties dtProps;
@@ -107,12 +109,6 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
   painter->restore();
-
-  if ( !mRamp )
-  {
-    //delete temporary ramp
-    delete ramp;
-  }
 }
 
 QgsStringMap QgsGlowEffect::properties() const

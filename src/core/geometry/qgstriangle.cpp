@@ -36,8 +36,11 @@ QgsTriangle::QgsTriangle( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsP
   {
     return;
   }
-  QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << p1 << p2 << p3 << p1 );
+  QVector< double > x;
+  x << p1.x() << p2.x() << p3.x();
+  QVector< double > y;
+  y << p1.y() << p2.y() << p3.y();
+  QgsLineString *ext = new QgsLineString( x, y );
   setExteriorRing( ext );
 
 }
@@ -54,8 +57,11 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
   {
     return;
   }
-  QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << pt1 << pt2 << pt3 << pt1 );
+  QVector< double > x;
+  x << p1.x() << p2.x() << p3.x();
+  QVector< double > y;
+  y << p1.y() << p2.y() << p3.y();
+  QgsLineString *ext = new QgsLineString( x, y );
   setExteriorRing( ext );
 }
 
@@ -71,8 +77,11 @@ QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
   {
     return;
   }
-  QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << pt1 << pt2 << pt3 << pt1 );
+  QVector< double > x;
+  x << p1.x() << p2.x() << p3.x();
+  QVector< double > y;
+  y << p1.y() << p2.y() << p3.y();
+  QgsLineString *ext = new QgsLineString( x, y );
   setExteriorRing( ext );
 }
 

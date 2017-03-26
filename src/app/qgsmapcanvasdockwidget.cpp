@@ -428,15 +428,20 @@ void QgsMapCanvasDockWidget::updateExtentRect()
   // close polygon
   mainCanvasPoly << mainCanvasPoly.at( 0 );
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
-  // reproject extent
-  QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                             mMapCanvas->mapSettings().destinationCrs() );
-  try
+  if ( mMainCanvas->mapSettings().destinationCrs() !=
+       mMapCanvas->mapSettings().destinationCrs() )
   {
-    g.transform( ct );
-  }
-  catch ( QgsCsException & )
-  {
+    // reproject extent
+    QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                               mMapCanvas->mapSettings().destinationCrs() );
+    g = g.densifyByCount( 5 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
   }
   mExtentRubberBand->setToGeometry( g, nullptr );
 }

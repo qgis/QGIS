@@ -11,14 +11,14 @@ class QgsLineString: public QgsCurve
 
   public:
     QgsLineString();
-    ~QgsLineString();
+    QgsLineString( const QVector<double> &x, const QVector<double> &y,
+                   const QVector<double> &z = QVector<double>(),
+                   const QVector<double> &m = QVector<double>() );
+    QgsLineString( const QList<QgsPoint> &points );
 
-    bool operator==( const QgsCurve& other ) const;
-    bool operator!=( const QgsCurve& other ) const;
+    bool operator==( const QgsCurve &other ) const;
+    bool operator!=( const QgsCurve &other ) const;
 
-    /** Returns the specified point from inside the line string.
-     * @param i index of point, starting at 0 for the first point
-     */
     QgsPointV2 pointN( int i ) const;
 
     /** Returns the z-coordinate of the specified node in the line string.

@@ -630,10 +630,7 @@ int QgsGeometry::addRing( const QList<QgsPoint> &ring )
 {
   detach( true );
 
-  QgsLineString *ringLine = new QgsLineString();
-  QgsPointSequence ringPoints;
-  convertPointList( ring, ringPoints );
-  ringLine->setPoints( ringPoints );
+  QgsLineString *ringLine = new QgsLineString( ring );
   return addRing( ringLine );
 }
 
@@ -797,10 +794,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint> &splitLine, QList<QgsGeome
   }
 
   QList<QgsAbstractGeometry *> newGeoms;
-  QgsLineString splitLineString;
-  QgsPointSequence splitLinePointsV2;
-  convertPointList( splitLine, splitLinePointsV2 );
-  splitLineString.setPoints( splitLinePointsV2 );
+  QgsLineString splitLineString( splitLine );
   QgsPointSequence tp;
 
   QgsGeos geos( d->geometry );
@@ -830,10 +824,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint> &reshapeWithLine )
     return 0;
   }
 
-  QgsPointSequence reshapeLine;
-  convertPointList( reshapeWithLine, reshapeLine );
-  QgsLineString reshapeLineString;
-  reshapeLineString.setPoints( reshapeLine );
+  QgsLineString reshapeLineString( reshapeWithLine );
 
   QgsGeos geos( d->geometry );
   int errorCode = 0;
@@ -1201,9 +1192,8 @@ QgsPolyline QgsGeometry::asPolyline() const
   polyLine.resize( nVertices );
   for ( int i = 0; i < nVertices; ++i )
   {
-    QgsPointV2 pt = line->pointN( i );
-    polyLine[i].setX( pt.x() );
-    polyLine[i].setY( pt.y() );
+    polyLine[i].setX( line->xAt( i ) );
+    polyLine[i].setY( line->yAt( i ) );
   }
 
   if ( doSegmentation )
@@ -1574,6 +1564,20 @@ QgsGeometry QgsGeometry::simplify( double tolerance ) const
     return QgsGeometry();
   }
   return QgsGeometry( simplifiedGeom );
+}
+
+QgsGeometry QgsGeometry::densifyByCount( int extraNodesPerSegment ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.densifyByCount( extraNodesPerSegment );
+}
+
+QgsGeometry QgsGeometry::densifyByDistance( double distance ) const
+{
+  QgsInternalGeometryEngine engine( *this );
+
+  return engine.densifyByDistance( distance );
 }
 
 QgsGeometry QgsGeometry::centroid() const

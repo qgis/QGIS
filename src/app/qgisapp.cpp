@@ -3348,9 +3348,6 @@ void QgisApp::initLayerTreeView()
   actionCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
-  QWidget *spacer = new QWidget();
-  spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-
   QToolBar *toolbar = new QToolBar();
   toolbar->setIconSize( QSize( 16, 16 ) );
   toolbar->addAction( mActionStyleDock );

@@ -349,7 +349,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
 
   private:
 
-    /** Renders a marker by offseting a vertex along the line by a specified distance.
+    /** Renders a marker by offsetting a vertex along the line by a specified distance.
      * @param points vertices making up the line
      * @param vertex vertex number to begin offset at
      * @param distance distance to offset from vertex. If distance is positive, offset is calculated

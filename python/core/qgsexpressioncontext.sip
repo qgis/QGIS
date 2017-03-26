@@ -206,7 +206,7 @@ class QgsExpressionContextScope
 /** \ingroup core
  * \class QgsExpressionContext
  * \brief Expression contexts are used to encapsulate the parameters around which a QgsExpression should
- * be evaluated. QgsExpressions can then utilise the information stored within a context to contextualise
+ * be evaluated. QgsExpressions can then utilize the information stored within a context to contextualise
  * their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
  * where scopes added later to the stack will override conflicting variables and functions from scopes
  * lower in the stack.

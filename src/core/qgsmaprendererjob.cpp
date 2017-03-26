@@ -462,6 +462,9 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
     if ( job.layer && job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue; // skip layer for now, it will be rendered after labels
 
+    if ( !job.imageInitialized )
+      continue; // img not safe to compose
+
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );
 
@@ -487,6 +490,9 @@ QImage QgsMapRendererJob::composeImage( const QgsMapSettings &settings, const La
 
     if ( !job.layer || !job.layer->customProperty( QStringLiteral( "rendering/renderAboveLabels" ) ).toBool() )
       continue;
+
+    if ( !job.imageInitialized )
+      continue; // img not safe to compose
 
     painter.setCompositionMode( job.blendMode );
     painter.setOpacity( job.opacity );

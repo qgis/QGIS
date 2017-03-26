@@ -1964,7 +1964,7 @@ Implemented a new map cursor type : Capture Point (little pencil icon on your to
    are placed into the system clipboard. 
 
   In release 0.5 this will be extended to provide simple point vector file data capture / 
-  digitizing facility. This will be implemented by means of a plugin which will utilise the 
+  digitizing facility. This will be implemented by means of a plugin which will utilize the 
   aforementioned xyClickCoordinate(QgsPoint) signal.
 
 2004-06-12 [gsherman] 0.3.0devel30

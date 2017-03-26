@@ -2127,7 +2127,7 @@ Processing        {#qgis_api_break_3_0_Processing}
 - Algorithm providers now subclass the c++ QgsProcessingProvider class, and must be adapted to the API for QgsProcessingProvider. Specifically,
 getName() should be replaced with id(), getDescription() with name(), and getIcon with icon().
 - Algorithm's processAlgorithm method now passes a QgsProcessingFeedback object instead of the loosely defined progress parameter. Algorithms will
-need to update their use of the progress argument to utilise the QgsProcessingFeedback API.
+need to update their use of the progress argument to utilize the QgsProcessingFeedback API.
 - Similarly, Python processing scripts no longer have access to a progress variable for reporting their progress. Instead they have a feedback
 object of type QgsProcessingFeedback, and will need to adapt their use of progress reporting to the QgsProcessingFeedback API.
 - SilentProgress was removed. Use the base QgsProcessingFeedback class instead.

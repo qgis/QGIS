@@ -41,7 +41,7 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
   public:
 
-    //! Roles utilised by the model
+    //! Roles utilized by the model
     enum FieldRoles
     {
       FieldNameRole = Qt::UserRole + 1,  //!< Return field name if index corresponds to a field

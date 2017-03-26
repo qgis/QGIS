@@ -508,7 +508,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   updateUiFromRenderer();
 
   // menus for data-defined rotation/size
-  QMenu *advMenu = new QMenu;
+  QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 

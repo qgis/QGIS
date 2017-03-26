@@ -244,7 +244,10 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     return;
 
   if ( job.img )
+  {
     job.img->fill( 0 );
+    job.imageInitialized = true;
+  }
 
   QTime t;
   t.start();
