@@ -257,7 +257,10 @@ void QgsMapRendererCustomPainterJob::doRender()
       layerTime.start();
 
       if ( job.img )
+      {
         job.img->fill( 0 );
+        job.imageInitialized = true;
+      }
 
       job.renderer->render();
 

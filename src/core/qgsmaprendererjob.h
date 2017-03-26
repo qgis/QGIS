@@ -46,6 +46,8 @@ struct LayerRenderJob
 {
   QgsRenderContext context;
   QImage *img; // may be null if it is not necessary to draw to separate image (e.g. sequential rendering)
+  //! True when img has been initialized (filled with transparent pixels) and is safe to compose
+  bool imageInitialized = false;
   QgsMapLayerRenderer *renderer; // must be deleted
   QPainter::CompositionMode blendMode;
   double opacity;
