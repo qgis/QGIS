@@ -33,16 +33,16 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
 {
   setupUi( this );
 
-  connect( btnBrowseDb, SIGNAL( clicked() ), this, SLOT( onBrowse() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( onClose() ) );
-  connect( editDbFileName, SIGNAL( textChanged( QString ) ), this, SLOT( updateLayerName() ) );
-  connect( radPoints, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
-  connect( radPolylines, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
-  connect( radPolygons, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
-  connect( btnLoadTags, SIGNAL( clicked() ), this, SLOT( onLoadTags() ) );
-  connect( btnSelectAll, SIGNAL( clicked() ), this, SLOT( onSelectAll() ) );
-  connect( btnDeselectAll, SIGNAL( clicked() ), this, SLOT( onDeselectAll() ) );
+  connect( btnBrowseDb, &QAbstractButton::clicked, this, &QgsOSMExportDialog::onBrowse );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOSMExportDialog::onOK );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOSMExportDialog::onClose );
+  connect( editDbFileName, &QLineEdit::textChanged, this, &QgsOSMExportDialog::updateLayerName );
+  connect( radPoints, &QAbstractButton::clicked, this, &QgsOSMExportDialog::updateLayerName );
+  connect( radPolylines, &QAbstractButton::clicked, this, &QgsOSMExportDialog::updateLayerName );
+  connect( radPolygons, &QAbstractButton::clicked, this, &QgsOSMExportDialog::updateLayerName );
+  connect( btnLoadTags, &QAbstractButton::clicked, this, &QgsOSMExportDialog::onLoadTags );
+  connect( btnSelectAll, &QAbstractButton::clicked, this, &QgsOSMExportDialog::onSelectAll );
+  connect( btnDeselectAll, &QAbstractButton::clicked, this, &QgsOSMExportDialog::onDeselectAll );
 
   mTagsModel = new QStandardItemModel( this );
   mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) << tr( "Not null" ) );

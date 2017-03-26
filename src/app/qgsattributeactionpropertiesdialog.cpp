@@ -207,11 +207,11 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
   mFieldExpression->setGeomCalculator( myDa );
   mFieldExpression->registerExpressionContextGenerator( this );
 
-  connect( mBrowseButton, SIGNAL( clicked( bool ) ), this, SLOT( browse() ) );
-  connect( mInsertFieldOrExpression, SIGNAL( clicked( bool ) ), this, SLOT( insertExpressionOrField() ) );
-  connect( mActionName, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
-  connect( mActionText, SIGNAL( textChanged() ), this, SLOT( updateButtons() ) );
-  connect( mChooseIconButton, SIGNAL( clicked( bool ) ), this, SLOT( chooseIcon() ) );
+  connect( mBrowseButton, &QAbstractButton::clicked, this, &QgsAttributeActionPropertiesDialog::browse );
+  connect( mInsertFieldOrExpression, &QAbstractButton::clicked, this, &QgsAttributeActionPropertiesDialog::insertExpressionOrField );
+  connect( mActionName, &QLineEdit::textChanged, this, &QgsAttributeActionPropertiesDialog::updateButtons );
+  connect( mActionText, &QsciScintilla::textChanged, this, &QgsAttributeActionPropertiesDialog::updateButtons );
+  connect( mChooseIconButton, &QAbstractButton::clicked, this, &QgsAttributeActionPropertiesDialog::chooseIcon );
 
   updateButtons();
 }

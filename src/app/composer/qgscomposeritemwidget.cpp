@@ -24,6 +24,7 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontext.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
 #include <QColorDialog>
 #include <QPen>
 
@@ -34,9 +35,9 @@ QgsComposerConfigObject::QgsComposerConfigObject( QWidget *parent, QgsComposerOb
   : QObject( parent )
   , mComposerObject( composerObject )
 {
-  connect( atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ),
-           this, SLOT( updateDataDefinedButtons() ) );
-  connect( atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateDataDefinedButtons() ) );
+  connect( atlasComposition(), &QgsAtlasComposition::coverageLayerChanged,
+           this, [ = ] { updateDataDefinedButtons(); } );
+  connect( atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsComposerConfigObject::updateDataDefinedButtons );
 }
 
 QgsComposerConfigObject::~QgsComposerConfigObject()
@@ -165,20 +166,20 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
   initializeDataDefinedButtons();
 
   setValuesForGuiElements();
-  connect( mItem->composition(), SIGNAL( paperSizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
-  connect( mItem, SIGNAL( sizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
-  connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
+  connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
+  connect( mItem, &QgsComposerItem::sizeChanged, this, &QgsComposerItemWidget::setValuesForGuiPositionElements );
+  connect( mItem, &QgsComposerObject::itemChanged, this, &QgsComposerItemWidget::setValuesForGuiNonPositionElements );
 
-  connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
+  connect( mTransparencySlider, &QAbstractSlider::valueChanged, mTransparencySpnBx, &QSpinBox::setValue );
 
   updateVariables();
-  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsComposerItemWidget::variablesChanged );
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsComposerItemWidget::updateVariables );
   connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsComposerItemWidget::updateVariables );
 
   if ( mItem->composition() )
-    connect( mItem->composition(), SIGNAL( variablesChanged() ), this, SLOT( updateVariables() ) );
+    connect( mItem->composition(), &QgsComposition::variablesChanged, this, &QgsComposerItemWidget::updateVariables );
 }
 
 QgsComposerItemWidget::~QgsComposerItemWidget()

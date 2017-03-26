@@ -49,13 +49,13 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &acti
   mAttributeActionTable->setCornerButtonEnabled( false );
   mAttributeActionTable->setEditTriggers( QAbstractItemView::AnyKeyPressed | QAbstractItemView::SelectedClicked );
 
-  connect( mAttributeActionTable, SIGNAL( itemDoubleClicked( QTableWidgetItem * ) ), this, SLOT( itemDoubleClicked( QTableWidgetItem * ) ) );
-  connect( mAttributeActionTable, SIGNAL( itemSelectionChanged() ), this, SLOT( updateButtons() ) );
-  connect( mMoveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
-  connect( mMoveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
-  connect( mRemoveButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
-  connect( mAddButton, SIGNAL( clicked( bool ) ), this, SLOT( insert() ) );
-  connect( mAddDefaultActionsButton, SIGNAL( clicked() ), this, SLOT( addDefaultActions() ) );
+  connect( mAttributeActionTable, &QTableWidget::itemDoubleClicked, this, &QgsAttributeActionDialog::itemDoubleClicked );
+  connect( mAttributeActionTable, &QTableWidget::itemSelectionChanged, this, &QgsAttributeActionDialog::updateButtons );
+  connect( mMoveUpButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::moveUp );
+  connect( mMoveDownButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::moveDown );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::remove );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::insert );
+  connect( mAddDefaultActionsButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::addDefaultActions );
 
   init( actions, mLayer->attributeTableConfig() );
 }

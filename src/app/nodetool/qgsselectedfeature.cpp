@@ -94,27 +94,27 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   mGeometry = nullptr;
 
   // signal changing of current layer
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
+  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsSelectedFeature::currentLayerChanged );
 
   // feature was deleted
-  connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+  connect( mVlayer, &QgsVectorLayer::featureDeleted, this, &QgsSelectedFeature::featureDeleted );
 
   // rolling back
-  connect( mVlayer, SIGNAL( beforeRollBack() ), this, SLOT( beforeRollBack() ) );
+  connect( mVlayer, &QgsVectorLayer::beforeRollBack, this, &QgsSelectedFeature::beforeRollBack );
 
   // projection or extents changed
-  connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
-  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
+  connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsSelectedFeature::updateVertexMarkersPosition );
 
   // geometry was changed
-  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  connect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 
   replaceVertexMap();
 }
 
 void QgsSelectedFeature::beforeRollBack()
 {
-  disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  disconnect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
   deleteVertexMap();
 }
 
@@ -123,7 +123,7 @@ void QgsSelectedFeature::beginGeometryChange()
   Q_ASSERT( !mChangingGeometry );
   mChangingGeometry = true;
 
-  disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  disconnect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 }
 
 void QgsSelectedFeature::endGeometryChange()
@@ -131,7 +131,7 @@ void QgsSelectedFeature::endGeometryChange()
   Q_ASSERT( mChangingGeometry );
   mChangingGeometry = false;
 
-  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  connect( mVlayer, &QgsVectorLayer::geometryChanged, this, &QgsSelectedFeature::geometryChanged );
 }
 
 void QgsSelectedFeature::canvasLayersChanged()
@@ -185,8 +185,8 @@ void QgsSelectedFeature::validateGeometry( QgsGeometry *g )
   }
 
   mValidator = new QgsGeometryValidator( g );
-  connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
-  connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
+  connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsSelectedFeature::addError );
+  connect( mValidator, &QThread::finished, this, &QgsSelectedFeature::validationFinished );
   mValidator->start();
 
   QStatusBar *sb = QgisApp::instance()->statusBar();

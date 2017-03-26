@@ -170,7 +170,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             colorWheel->setColor( singleRenderer->symbol()->color() );
             QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, menuStyleManager, menuStyleManager );
             colorAction->setDismissOnColorSelection( false );
-            connect( colorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setVectorSymbolColor( const QColor & ) ) );
+            connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor );
             //store the layer id in action, so we can later retrieve the corresponding layer
             colorAction->setProperty( "layerId", vlayer->id() );
             menuStyleManager->addAction( colorAction );
@@ -184,14 +184,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               recentColorAction->setProperty( "layerId", vlayer->id() );
               recentColorAction->setDismissOnColorSelection( false );
               menuStyleManager->addAction( recentColorAction );
-              connect( recentColorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setVectorSymbolColor( const QColor & ) ) );
+              connect( recentColorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor );
             }
 
             menuStyleManager->addSeparator();
             QAction *editSymbolAction = new QAction( tr( "Edit Symbol..." ), menuStyleManager );
             //store the layer id in action, so we can later retrieve the corresponding layer
             editSymbolAction->setProperty( "layerId", vlayer->id() );
-            connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editVectorSymbol() ) );
+            connect( editSymbolAction, &QAction::triggered, this, &QgsAppLayerTreeViewMenuProvider::editVectorSymbol );
             menuStyleManager->addAction( editSymbolAction );
           }
         }
@@ -305,7 +305,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         colorWheel->setColor( symbolNode->symbol()->color() );
         QgsColorWidgetAction *colorAction = new QgsColorWidgetAction( colorWheel, menu, menu );
         colorAction->setDismissOnColorSelection( false );
-        connect( colorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setSymbolLegendNodeColor( const QColor & ) ) );
+        connect( colorAction, &QgsColorWidgetAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor );
         //store the layer id and rule key in action, so we can later retrieve the corresponding
         //legend node, if it still exists
         colorAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
@@ -322,7 +322,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           recentColorAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
           recentColorAction->setDismissOnColorSelection( false );
           menu->addAction( recentColorAction );
-          connect( recentColorAction, SIGNAL( colorChanged( const QColor & ) ), this, SLOT( setSymbolLegendNodeColor( const QColor & ) ) );
+          connect( recentColorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor );
         }
 
         menu->addSeparator();
@@ -333,7 +333,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       //legend node, if it still exists
       editSymbolAction->setProperty( "layerId", symbolNode->layerNode()->layerId() );
       editSymbolAction->setProperty( "ruleKey", symbolNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString() );
-      connect( editSymbolAction, SIGNAL( triggered() ), this, SLOT( editSymbolLegendNodeSymbol() ) );
+      connect( editSymbolAction, &QAction::triggered, this, &QgsAppLayerTreeViewMenuProvider::editSymbolLegendNodeSymbol );
       menu->addAction( editSymbolAction );
     }
   }

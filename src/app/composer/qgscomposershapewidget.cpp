@@ -51,7 +51,7 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape 
 
   if ( mComposerShape )
   {
-    connect( mComposerShape, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerShape, &QgsComposerObject::itemChanged, this, &QgsComposerShapeWidget::setGuiElementValues );
   }
 }
 
@@ -116,7 +116,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateSymbolFromWidget() ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerShapeWidget::updateSymbolFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerShapeWidget::cleanUpSymbolSelector );
   openPanel( d );
   mComposerShape->beginCommand( tr( "Shape style changed" ) );

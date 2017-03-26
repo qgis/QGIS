@@ -106,9 +106,9 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mOptionsListWidget->setCurrentRow( 0 );
 
   // Connect other signals
-  connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentTab( int ) ) );
-  connect( vwPlugins->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( currentPluginChanged( const QModelIndex & ) ) );
-  connect( mModelPlugins, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( pluginItemChanged( QStandardItem * ) ) );
+  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsPluginManager::setCurrentTab );
+  connect( vwPlugins->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsPluginManager::currentPluginChanged );
+  connect( mModelPlugins, &QStandardItemModel::itemChanged, this, &QgsPluginManager::pluginItemChanged );
   // Force setting the status filter (if the active tab was 0, the setCurrentRow( 0 ) above doesn't take any action)
   setCurrentTab( 0 );
 
@@ -180,10 +180,10 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   vwPlugins->addAction( actionSortByVote );
   vwPlugins->addAction( actionSortByStatus );
   vwPlugins->setContextMenuPolicy( Qt::ActionsContextMenu );
-  connect( actionSortByName, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByName() ) );
-  connect( actionSortByDownloads, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByDownloads() ) );
-  connect( actionSortByVote, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByVote() ) );
-  connect( actionSortByStatus, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByStatus() ) );
+  connect( actionSortByName, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByName );
+  connect( actionSortByDownloads, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDownloads );
+  connect( actionSortByVote, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByVote );
+  connect( actionSortByStatus, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByStatus );
 
   // get the QgsSettings group from the installer
   QString settingsGroup;
@@ -1010,12 +1010,12 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
     buttonRefreshRepos->setText( tr( "Reload all repositories" ) );
     QAction *actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
     treeRepositories->addAction( actionEnableThisRepositoryOnly );
-    connect( actionEnableThisRepositoryOnly, SIGNAL( triggered() ), this, SLOT( setRepositoryFilter() ) );
+    connect( actionEnableThisRepositoryOnly, &QAction::triggered, this, &QgsPluginManager::setRepositoryFilter );
     treeRepositories->setContextMenuPolicy( Qt::ActionsContextMenu );
     QAction *actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
     actionClearFilter->setEnabled( repository.value( QStringLiteral( "inspection_filter" ) ) == QLatin1String( "true" ) );
     treeRepositories->addAction( actionClearFilter );
-    connect( actionClearFilter, SIGNAL( triggered() ), this, SLOT( clearRepositoryFilter() ) );
+    connect( actionClearFilter, &QAction::triggered, this, &QgsPluginManager::clearRepositoryFilter );
   }
 
   QString key = repository.value( QStringLiteral( "name" ) );

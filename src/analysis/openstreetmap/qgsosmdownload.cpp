@@ -84,10 +84,10 @@ bool QgsOSMDownload::start()
 
   mReply = nwam->get( request );
 
-  connect( mReply, SIGNAL( readyRead() ), this, SLOT( onReadyRead() ) );
-  connect( mReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onError( QNetworkReply::NetworkError ) ) );
-  connect( mReply, SIGNAL( finished() ), this, SLOT( onFinished() ) );
-  connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SIGNAL( downloadProgress( qint64, qint64 ) ) );
+  connect( mReply, &QIODevice::readyRead, this, &QgsOSMDownload::onReadyRead );
+  connect( mReply, static_cast < void ( QNetworkReply::* )( QNetworkReply::NetworkError ) >( &QNetworkReply::error ), this, &QgsOSMDownload::onError );
+  connect( mReply, &QNetworkReply::finished, this, &QgsOSMDownload::onFinished );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsOSMDownload::downloadProgress );
 
   return true;
 }

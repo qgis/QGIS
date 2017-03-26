@@ -170,41 +170,41 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mActionEditedFilter->setIcon( filterIcon );
 
   // Connect filter signals
-  connect( mActionAdvancedFilter, SIGNAL( triggered() ), SLOT( filterExpressionBuilder() ) );
-  connect( mActionShowAllFilter, SIGNAL( triggered() ), SLOT( filterShowAll() ) );
-  connect( mActionSelectedFilter, SIGNAL( triggered() ), SLOT( filterSelected() ) );
-  connect( mActionVisibleFilter, SIGNAL( triggered() ), SLOT( filterVisible() ) );
-  connect( mActionEditedFilter, SIGNAL( triggered() ), SLOT( filterEdited() ) );
+  connect( mActionAdvancedFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterExpressionBuilder );
+  connect( mActionShowAllFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterShowAll );
+  connect( mActionSelectedFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterSelected );
+  connect( mActionVisibleFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterVisible );
+  connect( mActionEditedFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterEdited );
   connect( mFilterActionMapper, SIGNAL( mapped( QObject * ) ), SLOT( filterColumnChanged( QObject * ) ) );
-  connect( mFilterQuery, SIGNAL( returnPressed() ), SLOT( filterQueryAccepted() ) );
-  connect( mActionApplyFilter, SIGNAL( triggered() ), SLOT( filterQueryAccepted() ) );
-  connect( mActionSetStyles, SIGNAL( triggered() ), SLOT( openConditionalStyles() ) );
+  connect( mFilterQuery, &QLineEdit::returnPressed, this, &QgsAttributeTableDialog::filterQueryAccepted );
+  connect( mActionApplyFilter, &QAction::triggered, this, &QgsAttributeTableDialog::filterQueryAccepted );
+  connect( mActionSetStyles, &QAction::triggered, this, &QgsAttributeTableDialog::openConditionalStyles );
 
   // info from layer to table
-  connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-  connect( mLayer, SIGNAL( destroyed() ), this, SLOT( close() ) );
+  connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsAttributeTableDialog::editingToggled );
+  connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsAttributeTableDialog::editingToggled );
+  connect( mLayer, &QObject::destroyed, this, &QWidget::close );
   connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableDialog::updateTitle );
-  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( updateTitle() ) );
-  connect( mLayer, SIGNAL( featuresDeleted( QgsFeatureIds ) ), this, SLOT( updateTitle() ) );
-  connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( columnBoxInit() ) );
-  connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( columnBoxInit() ) );
+  connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsAttributeTableDialog::updateTitle );
+  connect( mLayer, &QgsVectorLayer::featuresDeleted, this, &QgsAttributeTableDialog::updateTitle );
+  connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsAttributeTableDialog::columnBoxInit );
+  connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsAttributeTableDialog::columnBoxInit );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableDialog::editingToggled );
 
   // connect table info to window
-  connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );
-  connect( mMainView, SIGNAL( filterExpressionSet( QString, QgsAttributeForm::FilterType ) ), this, SLOT( formFilterSet( QString, QgsAttributeForm::FilterType ) ) );
-  connect( mMainView, SIGNAL( formModeChanged( QgsAttributeForm::Mode ) ), this, SLOT( viewModeChanged( QgsAttributeForm::Mode ) ) );
+  connect( mMainView, &QgsDualView::filterChanged, this, &QgsAttributeTableDialog::updateTitle );
+  connect( mMainView, &QgsDualView::filterExpressionSet, this, &QgsAttributeTableDialog::formFilterSet );
+  connect( mMainView, &QgsDualView::formModeChanged, this, &QgsAttributeTableDialog::viewModeChanged );
 
   // info from table to application
-  connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
+  connect( this, &QgsAttributeTableDialog::saveEdits, this, [ = ] { QgisApp::instance()->saveEdits(); } );
 
   bool myDockFlag = settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
   if ( myDockFlag )
   {
     mDock = new QgsAttributeTableDock( tr( "%1 (%n Feature(s))", "feature count", mMainView->featureCount() ).arg( mLayer->name() ), QgisApp::instance() );
     mDock->setWidget( this );
-    connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
+    connect( this, &QObject::destroyed, mDock, &QWidget::close );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
 
@@ -283,11 +283,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mFieldCombo->setFilters( QgsFieldProxyModel::AllTypes | QgsFieldProxyModel::HideReadOnly );
   mFieldCombo->setLayer( mLayer );
 
-  connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
-  connect( mRunFieldCalcSelected, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpressionSelected() ) );
+  connect( mRunFieldCalc, &QAbstractButton::clicked, this, &QgsAttributeTableDialog::updateFieldFromExpression );
+  connect( mRunFieldCalcSelected, &QAbstractButton::clicked, this, &QgsAttributeTableDialog::updateFieldFromExpressionSelected );
   // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
 //  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
-  connect( mUpdateExpressionText, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( updateButtonStatus( QString, bool ) ) );
+  connect( mUpdateExpressionText, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsAttributeTableDialog::updateButtonStatus );
   mUpdateExpressionText->setLayer( mLayer );
   mUpdateExpressionText->setLeftHandButtonStyle( true );
 
@@ -299,8 +299,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
   mMainView->setView( static_cast< QgsDualView::ViewMode >( initialView ) );
   mMainViewButtonGroup->button( initialView )->setChecked( true );
 
-  connect( mActionToggleMultiEdit, SIGNAL( toggled( bool ) ), mMainView, SLOT( setMultiEditEnabled( bool ) ) );
-  connect( mActionSearchForm, SIGNAL( toggled( bool ) ), mMainView, SLOT( toggleSearchMode( bool ) ) );
+  connect( mActionToggleMultiEdit, &QAction::toggled, mMainView, &QgsDualView::setMultiEditEnabled );
+  connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
   updateMultiEditButtonState();
 
   if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout )
@@ -566,12 +566,12 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject *filterAction )
                                 createSearchWidget( setup.type(), mLayer, fldIdx, setup.config(), mFilterContainer, mEditorContext );
   if ( mCurrentSearchWidgetWrapper->applyDirectly() )
   {
-    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryChanged( QString ) ) );
+    connect( mCurrentSearchWidgetWrapper, &QgsSearchWidgetWrapper::expressionChanged, this, &QgsAttributeTableDialog::filterQueryChanged );
     mApplyFilterButton->setVisible( false );
   }
   else
   {
-    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryAccepted() ) );
+    connect( mCurrentSearchWidgetWrapper, &QgsSearchWidgetWrapper::expressionChanged, this, &QgsAttributeTableDialog::filterQueryAccepted );
     mApplyFilterButton->setVisible( true );
   }
 

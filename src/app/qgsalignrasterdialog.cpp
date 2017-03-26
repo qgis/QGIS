@@ -83,31 +83,31 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   mAlign = new QgsAlignRaster;
   mAlign->setProgressHandler( new QgsAlignRasterDialogProgress( mProgress ) );
 
-  connect( mBtnAdd, SIGNAL( clicked( bool ) ), this, SLOT( addLayer() ) );
-  connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( removeLayer() ) );
-  connect( mBtnEdit, SIGNAL( clicked( bool ) ), this, SLOT( editLayer() ) );
+  connect( mBtnAdd, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::addLayer );
+  connect( mBtnRemove, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::removeLayer );
+  connect( mBtnEdit, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::editLayer );
 
-  connect( mCboReferenceLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( referenceLayerChanged() ) );
-  connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ), this, SLOT( destinationCrsChanged() ) );
-  connect( mSpinCellSizeX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
-  connect( mSpinCellSizeY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
-  connect( mSpinGridOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
-  connect( mSpinGridOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
+  connect( mCboReferenceLayer, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ] { referenceLayerChanged(); } );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsAlignRasterDialog::destinationCrsChanged );
+  connect( mSpinCellSizeX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
+  connect( mSpinCellSizeY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
+  connect( mSpinGridOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
+  connect( mSpinGridOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
 
-  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCrs() ) );
-  connect( mChkCustomCellSize, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCellSize() ) );
-  connect( mChkCustomGridOffset, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomGridOffset() ) );
+  connect( mChkCustomCRS, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::updateCustomCrs );
+  connect( mChkCustomCellSize, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::updateCustomCellSize );
+  connect( mChkCustomGridOffset, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::updateCustomGridOffset );
 
   mClipExtentGroupBox->setChecked( false );
   mClipExtentGroupBox->setCollapsed( true );
   mClipExtentGroupBox->setTitleBase( tr( "Clip to Extent" ) );
   QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
   mClipExtentGroupBox->setCurrentExtent( mc->extent(), mc->mapSettings().destinationCrs() );
-  connect( mClipExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( clipExtentChanged() ) );
+  connect( mClipExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsAlignRasterDialog::clipExtentChanged );
 
   // TODO: auto-detect reference layer
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( runAlign() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAlignRasterDialog::runAlign );
 
   populateLayersView();
 
@@ -402,7 +402,7 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
 
   editOutput = new QLineEdit( this );
   btnBrowse = new QPushButton( tr( "Browse..." ), this );
-  connect( btnBrowse, SIGNAL( clicked( bool ) ), this, SLOT( browseOutputFilename() ) );
+  connect( btnBrowse, &QAbstractButton::clicked, this, &QgsAlignRasterLayerConfigDialog::browseOutputFilename );
 
   QHBoxLayout *layoutOutput = new QHBoxLayout();
   layoutOutput->addWidget( editOutput );
@@ -411,8 +411,8 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
   chkRescale = new QCheckBox( tr( "Rescale values according to the cell size" ), this );
 
   btnBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  connect( btnBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( btnBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( btnBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( btnBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   layout->addWidget( new QLabel( tr( "Input raster layer:" ), this ) );
   layout->addWidget( cboLayers );

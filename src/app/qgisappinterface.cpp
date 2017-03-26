@@ -51,21 +51,21 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
-  connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-           this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
-  connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
-           this, SIGNAL( currentThemeChanged( QString ) ) );
+  connect( qgis->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+           this, &QgisInterface::currentLayerChanged );
+  connect( qgis, &QgisApp::currentThemeChanged,
+           this, &QgisAppInterface::currentThemeChanged );
   connect( qgis, &QgisApp::composerOpened, this, &QgisAppInterface::composerOpened );
   connect( qgis, &QgisApp::composerWillBeClosed, this, &QgisAppInterface::composerWillBeClosed );
   connect( qgis, &QgisApp::composerClosed, this, &QgisAppInterface::composerClosed );
-  connect( qgis, SIGNAL( initializationCompleted() ),
-           this, SIGNAL( initializationCompleted() ) );
-  connect( qgis, SIGNAL( newProject() ),
-           this, SIGNAL( newProjectCreated() ) );
-  connect( qgis, SIGNAL( projectRead() ),
-           this, SIGNAL( projectRead() ) );
-  connect( qgis, SIGNAL( layerSavedAs( QgsMapLayer *, QString ) ),
-           this, SIGNAL( layerSavedAs( QgsMapLayer *, QString ) ) );
+  connect( qgis, &QgisApp::initializationCompleted,
+           this, &QgisInterface::initializationCompleted );
+  connect( qgis, &QgisApp::newProject,
+           this, &QgisInterface::newProjectCreated );
+  connect( qgis, &QgisApp::projectRead,
+           this, &QgisInterface::projectRead );
+  connect( qgis, &QgisApp::layerSavedAs,
+           this, &QgisInterface::layerSavedAs );
 }
 
 QgsPluginManagerInterface *QgisAppInterface::pluginManagerInterface()

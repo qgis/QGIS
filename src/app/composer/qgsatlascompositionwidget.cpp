@@ -34,16 +34,16 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget *parent, QgsCompos
 
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortFeatureKeyComboBox, &QgsFieldComboBox::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );
-  connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SLOT( changeCoverageLayer( QgsMapLayer * ) ) );
-  connect( mAtlasSortFeatureKeyComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( changesSortFeatureField( QString ) ) );
-  connect( mPageNameWidget, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( pageNameExpressionChanged( QString, bool ) ) );
+  connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsAtlasCompositionWidget::changeCoverageLayer );
+  connect( mAtlasSortFeatureKeyComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsAtlasCompositionWidget::changesSortFeatureField );
+  connect( mPageNameWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsAtlasCompositionWidget::pageNameExpressionChanged );
 
   // Sort direction
   mAtlasSortFeatureDirectionButton->setEnabled( false );
   mAtlasSortFeatureKeyComboBox->setEnabled( false );
 
   // connect to updates
-  connect( &mComposition->atlasComposition(), SIGNAL( parameterChanged() ), this, SLOT( updateGuiElements() ) );
+  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::parameterChanged, this, &QgsAtlasCompositionWidget::updateGuiElements );
 
   mPageNameWidget->registerExpressionContextGenerator( mComposition );
 

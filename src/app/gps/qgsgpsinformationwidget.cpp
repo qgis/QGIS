@@ -241,8 +241,8 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   //SLM - added functionality
   mLogFile = nullptr;
 
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-           this, SLOT( updateCloseFeatureButton( QgsMapLayer * ) ) );
+  connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
+           this, &QgsGPSInformationWidget::updateCloseFeatureButton );
 
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
@@ -423,8 +423,8 @@ void QgsGPSInformationWidget::connectGps()
   showStatusBarMessage( tr( "Connecting to GPS device..." ) );
 
   QgsGPSDetector *detector = new QgsGPSDetector( port );
-  connect( detector, SIGNAL( detected( QgsGPSConnection * ) ), this, SLOT( connected( QgsGPSConnection * ) ) );
-  connect( detector, SIGNAL( detectionFailed() ), this, SLOT( timedout() ) );
+  connect( detector, static_cast < void ( QgsGPSDetector::* )( QgsGPSConnection * ) > ( &QgsGPSDetector::detected ), this, &QgsGPSInformationWidget::connected );
+  connect( detector, &QgsGPSDetector::detectionFailed, this, &QgsGPSInformationWidget::timedout );
   detector->advance();   // start the detection process
 }
 
@@ -439,8 +439,8 @@ void QgsGPSInformationWidget::timedout()
 void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
 {
   mNmea = conn;
-  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation & ) ),
-           this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
+  connect( mNmea, &QgsGPSConnection::stateChanged,
+           this, &QgsGPSInformationWidget::displayGPSInformation );
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Dis&connect" ) );
   //insert connection into registry such that it can also be used by other dialogs or plugins
@@ -461,7 +461,7 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
       // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
       mLogFileTextStream << "====" << "\r\n";
 
-      connect( mNmea, SIGNAL( nmeaSentenceReceived( const QString & ) ), this, SLOT( logNmeaSentence( const QString & ) ) ); // added to handle raw data
+      connect( mNmea, &QgsGPSConnection::nmeaSentenceReceived, this, &QgsGPSInformationWidget::logNmeaSentence ); // added to handle raw data
     }
     else  // error opening file
     {
@@ -478,7 +478,7 @@ void QgsGPSInformationWidget::disconnectGps()
 {
   if ( mLogFile && mLogFile->isOpen() )
   {
-    disconnect( mNmea, SIGNAL( nmeaSentenceReceived( const QString & ) ), this, SLOT( logNmeaSentence( const QString & ) ) );
+    disconnect( mNmea, &QgsGPSConnection::nmeaSentenceReceived, this, &QgsGPSInformationWidget::logNmeaSentence );
     mLogFile->close();
     delete mLogFile;
     mLogFile = nullptr;
@@ -980,8 +980,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
 
 void QgsGPSInformationWidget::connectGpsSlot()
 {
-  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation & ) ),
-           this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
+  connect( mNmea, &QgsGPSConnection::stateChanged,
+           this, &QgsGPSInformationWidget::displayGPSInformation );
 }
 
 void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked()
@@ -1065,17 +1065,17 @@ void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer *lyr )
   {
     if ( mpLastLayer )  // disconnect previous layer
     {
-      disconnect( mpLastLayer, SIGNAL( editingStarted() ),
-                  this, SLOT( layerEditStateChanged() ) );
-      disconnect( mpLastLayer, SIGNAL( editingStopped() ),
-                  this, SLOT( layerEditStateChanged() ) );
+      disconnect( mpLastLayer, &QgsVectorLayer::editingStarted,
+                  this, &QgsGPSInformationWidget::layerEditStateChanged );
+      disconnect( mpLastLayer, &QgsVectorLayer::editingStopped,
+                  this, &QgsGPSInformationWidget::layerEditStateChanged );
     }
     if ( vlayer ) // connect new layer
     {
-      connect( vlayer, SIGNAL( editingStarted() ),
-               this, SLOT( layerEditStateChanged() ) );
-      connect( vlayer, SIGNAL( editingStopped() ),
-               this, SLOT( layerEditStateChanged() ) );
+      connect( vlayer, &QgsVectorLayer::editingStarted,
+               this, &QgsGPSInformationWidget::layerEditStateChanged );
+      connect( vlayer, &QgsVectorLayer::editingStopped,
+               this, &QgsGPSInformationWidget::layerEditStateChanged );
     }
     mpLastLayer = vlayer;
   }

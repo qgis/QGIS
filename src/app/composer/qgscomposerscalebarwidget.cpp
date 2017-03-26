@@ -37,7 +37,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
 
   mSegmentSizeRadioGroup.addButton( mFixedSizeRadio );
   mSegmentSizeRadioGroup.addButton( mFitWidthRadio );
-  connect( &mSegmentSizeRadioGroup, SIGNAL( buttonClicked( QAbstractButton * ) ), this, SLOT( segmentSizeRadioChanged( QAbstractButton * ) ) );
+  connect( &mSegmentSizeRadioGroup, static_cast < void ( QButtonGroup::* )( QAbstractButton * ) > ( &QButtonGroup::buttonClicked ), this, &QgsComposerScaleBarWidget::segmentSizeRadioChanged );
 
   blockMemberSignals( true );
 
@@ -89,7 +89,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
     mMapItemComboBox->setItemType( QgsComposerItem::ComposerMap );
   }
 
-  connect( mMapItemComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
+  connect( mMapItemComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerScaleBarWidget::composerMapChanged );
 
   registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::ScalebarFillColor );
   registerDataDefinedButton( mFillColor2DDBtn, QgsComposerObject::ScalebarFillColor2 );
@@ -567,7 +567,7 @@ void QgsComposerScaleBarWidget::connectUpdateSignal()
 {
   if ( mComposerScaleBar )
   {
-    QObject::connect( mComposerScaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+    connect( mComposerScaleBar, &QgsComposerObject::itemChanged, this, &QgsComposerScaleBarWidget::setGuiElements );
   }
 }
 
@@ -575,7 +575,7 @@ void QgsComposerScaleBarWidget::disconnectUpdateSignal()
 {
   if ( mComposerScaleBar )
   {
-    QObject::disconnect( mComposerScaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+    disconnect( mComposerScaleBar, &QgsComposerObject::itemChanged, this, &QgsComposerScaleBarWidget::setGuiElements );
   }
 }
 

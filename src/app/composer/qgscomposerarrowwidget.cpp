@@ -57,7 +57,7 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow *arrow ): QgsCo
 
   if ( arrow )
   {
-    connect( arrow, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( arrow, &QgsComposerObject::itemChanged, this, &QgsComposerArrowWidget::setGuiElementValues );
   }
 }
 
@@ -339,7 +339,7 @@ void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateLineStyleFromWidget() ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerArrowWidget::updateLineStyleFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerArrowWidget::cleanUpLineStyleSelector );
   openPanel( d );
   mArrow->beginCommand( tr( "Arrow line style changed" ) );

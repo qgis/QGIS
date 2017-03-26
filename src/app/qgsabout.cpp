@@ -65,7 +65,7 @@ void QgsAbout::init()
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
 
-  connect( developersMapView, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
+  connect( developersMapView, &QWebView::linkClicked, this, &QgsAbout::openUrl );
 
   // set the 60x60 icon pixmap
   qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );

@@ -49,7 +49,7 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
   mColorButtonMap.insert( QgsComposerTableV2::FirstRow, mFirstRowColorButton );
   mColorButtonMap.insert( QgsComposerTableV2::LastRow, mLastRowColorButton );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsComposerTableBackgroundColorsDialog::apply );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );

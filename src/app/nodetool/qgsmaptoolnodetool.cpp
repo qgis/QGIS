@@ -250,14 +250,14 @@ void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent *e )
       mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
       updateSelectFeature();
     }
-    connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
-    connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
-    connect( vlayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
-    connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+    connect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsMapToolNodeTool::currentLayerChanged );
+    connect( mSelectedFeature, &QObject::destroyed, this, &QgsMapToolNodeTool::selectedFeatureDestroyed );
+    connect( vlayer, &QgsVectorLayer::geometryChanged, this, &QgsMapToolNodeTool::geometryChanged );
+    connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsMapToolNodeTool::editingToggled );
     mIsPoint = vlayer->geometryType() == QgsWkbTypes::PointGeometry;
     mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
     QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor );
-    connect( mNodeEditor, SIGNAL( deleteSelectedRequested() ), this, SLOT( deleteNodeSelection() ) );
+    connect( mNodeEditor, &QgsNodeEditor::deleteSelectedRequested, this, &QgsMapToolNodeTool::deleteNodeSelection );
   }
   else
   {
@@ -581,9 +581,9 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     Q_ASSERT( vlayer );
 
-    disconnect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ), this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
-    disconnect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
-    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+    disconnect( QgisApp::instance()->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsMapToolNodeTool::currentLayerChanged );
+    disconnect( mSelectedFeature, &QObject::destroyed, this, &QgsMapToolNodeTool::selectedFeatureDestroyed );
+    disconnect( vlayer, &QgsVectorLayer::editingStopped, this, &QgsMapToolNodeTool::editingToggled );
 
     if ( deleteSelectedFeature )
       delete mSelectedFeature;

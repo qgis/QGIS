@@ -120,7 +120,7 @@ QWidget *QgsComposerColumnSourceDelegate::createEditor( QWidget *parent, const Q
   fieldExpression->registerExpressionContextGenerator( this );
 
   //listen out for field changes
-  connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( commitAndCloseEditor() ) );
+  connect( fieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ] { const_cast< QgsComposerColumnSourceDelegate * >( this )->commitAndCloseEditor(); } );
   return fieldExpression;
 }
 

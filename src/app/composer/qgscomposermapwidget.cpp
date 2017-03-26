@@ -69,9 +69,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
 
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
-  connect( mFollowVisibilityPresetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( followVisibilityPresetSelected( int ) ) );
-  connect( QgsProject::instance()->mapThemeCollection(), SIGNAL( mapThemesChanged() ),
-           this, SLOT( onMapThemesChanged() ) );
+  connect( mFollowVisibilityPresetCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerMapWidget::followVisibilityPresetSelected );
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged,
+           this, &QgsComposerMapWidget::onMapThemesChanged );
   onMapThemesChanged();
 
   // keep layers from preset button
@@ -79,20 +79,20 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   mLayerListFromPresetButton->setMenu( menuKeepLayers );
   mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
-  connect( menuKeepLayers, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowKeepLayersVisibilityPresetsMenu() ) );
+  connect( menuKeepLayers, &QMenu::aboutToShow, this, &QgsComposerMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu );
 
   if ( composerMap )
   {
     mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
 
-    connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( composerMap, &QgsComposerObject::itemChanged, this, &QgsComposerMapWidget::setGuiElementValues );
 
     QgsAtlasComposition *atlas = atlasComposition();
     if ( atlas )
     {
-      connect( atlas, SIGNAL( coverageLayerChanged( QgsVectorLayer * ) ),
-               this, SLOT( atlasLayerChanged( QgsVectorLayer * ) ) );
-      connect( atlas, SIGNAL( toggled( bool ) ), this, SLOT( compositionAtlasToggled( bool ) ) );
+      connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
+               this, &QgsComposerMapWidget::atlasLayerChanged );
+      connect( atlas, &QgsAtlasComposition::toggled, this, &QgsComposerMapWidget::compositionAtlasToggled );
 
       compositionAtlasToggled( atlas->enabled() );
     }
@@ -100,7 +100,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
     mOverviewFrameMapComboBox->setComposition( composerMap->composition() );
     mOverviewFrameMapComboBox->setItemType( QgsComposerItem::ComposerMap );
     mOverviewFrameMapComboBox->setExceptedItemList( QList< QgsComposerItem * >() << composerMap );
-    connect( mOverviewFrameMapComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( overviewMapChanged( QgsComposerItem * ) ) );
+    connect( mOverviewFrameMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerMapWidget::overviewMapChanged );
   }
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsComposerMapWidget::mapCrsChanged );
@@ -1655,7 +1655,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateOverviewFrameStyleFromWidget() ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerMapWidget::updateOverviewFrameStyleFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerMapWidget::cleanUpOverviewFrameStyleSelector );
   openPanel( d );
   mComposerMap->beginCommand( tr( "Overview frame style changed" ) );

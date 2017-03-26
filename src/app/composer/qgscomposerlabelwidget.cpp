@@ -44,7 +44,7 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel *label ): QgsCo
   if ( mComposerLabel )
   {
     setGuiElementValues();
-    connect( mComposerLabel, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerLabel, &QgsComposerObject::itemChanged, this, &QgsComposerLabelWidget::setGuiElementValues );
   }
 }
 
