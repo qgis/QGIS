@@ -158,10 +158,13 @@ bool QgsCurvePolygonV2::fromWkt( const QString& wkt )
   {
     QPair<QgsWKBTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
-    if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::LineString )
+    QgsWKBTypes::Type flatCurveType = QgsWKBTypes::flatType( childParts.first );
+    if ( flatCurveType == QgsWKBTypes::LineString )
       mInteriorRings.append( new QgsLineStringV2() );
-    else if ( QgsWKBTypes::flatType( childParts.first ) == QgsWKBTypes::CircularString )
+    else if ( flatCurveType == QgsWKBTypes::CircularString )
       mInteriorRings.append( new QgsCircularStringV2() );
+    else if ( flatCurveType == QgsWKBTypes::CompoundCurve )
+      mInteriorRings.append( new QgsCompoundCurveV2() );
     else
     {
       clear();
