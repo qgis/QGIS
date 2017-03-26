@@ -34,6 +34,8 @@
 #include <QImageReader>
 #include <QMessageBox>
 
+#include <QtQml/QQmlApplicationEngine>
+
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
@@ -425,6 +427,14 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #define APP_EXPORT __declspec(dllexport)
 #endif
 
+int showWelcome(int argc, char *argv[] )
+{
+  QGuiApplication app(argc, argv);
+  QQmlApplicationEngine engine;
+  engine.load(QUrl(QLatin1String("qrc:/WelcomeApp.qml")));
+  return app.exec();
+}
+
 #if defined(ANDROID) || defined(Q_OS_WIN)
 // On Android, there there is a libqgis.so instead of a qgis executable.
 // The main method symbol of this library needs to be exported so it can be called by java
@@ -792,6 +802,8 @@ int main( int argc, char *argv[] )
               ).toUtf8().constData();
     exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
+
+  showWelcome( argc, argv);
 
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {

@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>WelcomeApp.qml</file>
+        <file>WelcomePage.qml</file>
+        <file>WelcomePageForm.ui.qml</file>
+        <file>qgis-logo.svg</file>
+        <file>OptionPage.qml</file>
+        <file>WhatsNew.qml</file>
+        <file>Theme.qml</file>
+    </qresource>
+</RCC>
