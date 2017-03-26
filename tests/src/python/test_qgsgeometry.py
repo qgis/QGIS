@@ -4063,6 +4063,51 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "densify by count: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testCentroid(self):
+        tests = [["POINT(10 0)", "POINT(10 0)"],
+                 ["POINT(10 10)", "POINT(10 10)"],
+                 ["MULTIPOINT((10 10), (20 20) )", "POINT(15 15)"],
+                 [" MULTIPOINT((10 10), (20 20), (10 20), (20 10))", "POINT(15 15)"],
+                 ["LINESTRING(10 10, 20 20)", "POINT(15 15)"],
+                 ["LINESTRING(0 0, 10 0)", "POINT(5 0 )"],
+                 ["LINESTRING (10 10, 10 10)", "POINT (10 10)"], # zero length line
+                 ["MULTILINESTRING ((10 10, 10 10), (20 20, 20 20))", "POINT (15 15)"], # zero length multiline
+                 ["LINESTRING (60 180, 120 100, 180 180)", "POINT (120 140)"],
+                 ["LINESTRING (80 0, 80 120, 120 120, 120 0))", "POINT (100 68.57142857142857)"],
+                 ["MULTILINESTRING ((0 0, 0 100), (100 0, 100 100))", "POINT (50 50)"],
+                 [" MULTILINESTRING ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180))", "POINT (90 110)"],
+                 ["MULTILINESTRING ((20 20, 60 60),(20 -20, 60 -60),(-20 -20, -60 -60),(-20 20, -60 60),(-80 0, 0 80, 80 0, 0 -80, -80 0),(-40 20, -40 -20),(-20 40, 20 40),(40 20, 40 -20),(20 -40, -20 -40))", "POINT (0 0)"],
+                 ["POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", "POINT (5 5)"],
+                 ["POLYGON ((40 160, 160 160, 160 40, 40 40, 40 160))", "POINT (100 100)"],
+                 ["POLYGON ((0 200, 200 200, 200 0, 0 0, 0 200), (20 180, 80 180, 80 20, 20 20, 20 180))", "POINT (115.78947368421052 100)"],
+                 ["POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180))", "POINT (102.5 97.5)"],
+                 ["POLYGON ((0 0, 0 200, 200 200, 200 0, 0 0),(60 180, 20 180, 20 140, 60 140, 60 180),(180 60, 140 60, 140 20, 180 20, 180 60))", "POINT (100 100)"],
+                 ["MULTIPOLYGON (((0 40, 0 140, 140 140, 140 120, 20 120, 20 40, 0 40)),((0 0, 0 20, 120 20, 120 100, 140 100, 140 0, 0 0)))", "POINT (70 70)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((0 200, 20 180, 20 140, 60 140, 200 0, 0 0, 0 200)),POLYGON ((200 200, 0 200, 20 180, 60 180, 60 140, 200 0, 200 200)))", "POINT (102.5 97.5)"],
+                 ["GEOMETRYCOLLECTION (LINESTRING (80 0, 80 120, 120 120, 120 0),MULTIPOINT ((20 60), (40 80), (60 60)))", "POINT (100 68.57142857142857)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((0 40, 40 40, 40 0, 0 0, 0 40)),LINESTRING (80 0, 80 80, 120 40))", "POINT (20 20)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((0 40, 40 40, 40 0, 0 0, 0 40)),LINESTRING (80 0, 80 80, 120 40),MULTIPOINT ((20 60), (40 80), (60 60)))", "POINT (20 20)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 30 30))", "POINT (25 25)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20))", "POINT (15 15)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),MULTIPOINT ((20 10), (10 20)) )", "POINT (15 15)"],
+                 #["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING (20 20, 20 20),POINT EMPTY )","POINT (15 15)"],
+                 #["GEOMETRYCOLLECTION (POLYGON ((10 10, 10 10, 10 10, 10 10)),LINESTRING EMPTY,POINT EMPTY )","POINT (10 10)"],
+                 ["GEOMETRYCOLLECTION (POLYGON ((20 100, 20 -20, 60 -20, 60 100, 20 100)),POLYGON ((-20 60, 100 60, 100 20, -20 20, -20 60)))", "POINT (40 40)"],
+                 ["POLYGON ((40 160, 160 160, 160 160, 40 160, 40 160))", "POINT (100 160)"],
+                 ["POLYGON ((10 10, 100 100, 100 100, 10 10))", "POINT (55 55)"],
+                 #["POLYGON EMPTY","POINT EMPTY"],
+                 #["MULTIPOLYGON(EMPTY,((0 0,1 0,1 1,0 1, 0 0)))","POINT (0.5 0.5)"],
+                 ["POLYGON((56.528666666700 25.2101666667,56.529000000000 25.2105000000,56.528833333300 25.2103333333,56.528666666700 25.2101666667))", "POINT (56.52883333335 25.21033333335)"],
+                 ["POLYGON((56.528666666700 25.2101666667,56.529000000000 25.2105000000,56.528833333300 25.2103333333,56.528666666700 25.2101666667))", "POINT (56.528833 25.210333)"]
+                 ]
+        for t in tests:
+            input = QgsGeometry.fromWkt(t[0])
+            o = input.centroid()
+            exp = t[1]
+            result = o.exportToWkt()
+            self.assertTrue(compareWkt(result, exp, 0.00001),
+                            "centroid: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
 
 if __name__ == '__main__':
     unittest.main()
