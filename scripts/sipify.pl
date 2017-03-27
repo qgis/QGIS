@@ -16,7 +16,7 @@ my $SIP_RUN = 0;
 my $HEADER_CODE = 0;
 my $PRIVATE_SECTION = 0;
 
-my $comment;
+my $comment = '';
 my $nesting_index = 0;
 my $private_section_line = '';
 
@@ -131,10 +131,10 @@ while(!eof $header) {
 
     # Detect comment block
     if ($line =~ m/\s*\/\*\*/) {
-        $comment = "";
+        $comment = '';
         while(!eof $header) {
             $line = readline $header;
-            $line =~ m/\s*\*?(.*)/;
+            $line =~ m/\s*\*?(.*?)(\/)?$/;
             $comment .= "$1\n";
             if ( $line =~ m/\*\/$/ ) {
                 last;
@@ -237,7 +237,7 @@ while(!eof $header) {
 
     # deleted functions
     if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( const)?)\s*= delete;$/ ) {
-      $line = readline $header;
+      $line =~ s/^/\/\//;
     }
 
     $line =~ s/SIP_FACTORY/\/Factory\//;
