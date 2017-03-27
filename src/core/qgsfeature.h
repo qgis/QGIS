@@ -25,12 +25,19 @@ email                : sherman at mrcc.com
 #include <QSet>
 #include <QExplicitlySharedDataPointer>
 
+
 #include "qgsfields.h"
 
 class QgsGeometry;
 class QgsRectangle;
 class QgsFeature;
 class QgsFeaturePrivate;
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 // feature id class (currently 64 bit)
 
@@ -44,14 +51,83 @@ typedef qint64 QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
-#ifdef SIP_RUN
+/** \ingroup core
+ * A vector of attributes. Mostly equal to QVector<QVariant>.
+ @note QgsAttributes is implemented as a Python list of Python objects.
+ */
+#ifndef SIP_RUN
+class CORE_EXPORT QgsAttributes : public QVector<QVariant>
+{
+  public:
+    QgsAttributes()
+      : QVector<QVariant>()
+    {}
+
+    /**
+     * Create a new vector of attributes with the given size
+     *
+     * @param size Number of attributes
+     */
+    QgsAttributes( int size )
+      : QVector<QVariant>( size )
+    {}
+
+    /**
+     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
+     * @param size Number of elements
+     * @param v    Initial value
+     */
+    QgsAttributes( int size, const QVariant &v )
+      : QVector<QVariant>( size, v )
+    {}
+
+    /**
+     * Copies another vector of attributes
+     * @param v Attributes to copy
+     */
+    QgsAttributes( const QVector<QVariant> &v )
+      : QVector<QVariant>( v )
+    {}
+
+    /**
+     * @brief Compares two vectors of attributes.
+     * They are considered equal if all their members contain the same value and NULL flag.
+     * This was introduced because the default Qt implementation of QVariant comparison does not
+     * handle NULL values for certain types (like int).
+     *
+     * @param v The attributes to compare
+     * @return True if v is equal
+     */
+    bool operator==( const QgsAttributes &v ) const
+    {
+      if ( size() != v.size() )
+        return false;
+      const QVariant *b = constData();
+      const QVariant *i = b + size();
+      const QVariant *j = v.constData() + size();
+      while ( i != b )
+        if ( !( *--i == *--j && i->isNull() == j->isNull() ) )
+          return false;
+      return true;
+    }
+
+    /**
+     * Returns a QgsAttributeMap of the attribute values. Null values are
+     * excluded from the map.
+     * @note added in QGIS 3.0
+     * @note not available in Python bindings
+     */
+    QgsAttributeMap toMap() const; // SIP_SKIP
+
+    inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
+};
+#else
 typedef QVector<QVariant> QgsAttributes;
 
-// QgsAttributes is implemented as a Python list of Python objects.
 % MappedType QgsAttributes
 {
   % TypeHeaderCode
-#include <qgsfeature.h> // NO_SIPIFY
+#include <qgsfeature.h>
   % End
 
   % ConvertFromTypeCode
@@ -131,81 +207,6 @@ typedef QVector<QVariant> QgsAttributes;
 };
 #endif
 
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfeature.cpp.
- * See details in QEP #17
- ****************************************************************************/
-
-/** \ingroup core
- * A vector of attributes. Mostly equal to QVector<QVariant>.
- */
-class CORE_EXPORT QgsAttributes : public QVector<QVariant>
-{
-  public:
-    QgsAttributes()
-      : QVector<QVariant>()
-    {}
-
-    /**
-     * Create a new vector of attributes with the given size
-     *
-     * @param size Number of attributes
-     */
-    QgsAttributes( int size )
-      : QVector<QVariant>( size )
-    {}
-
-    /**
-     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
-     * @param size Number of elements
-     * @param v    Initial value
-     */
-    QgsAttributes( int size, const QVariant &v )
-      : QVector<QVariant>( size, v )
-    {}
-
-    /**
-     * Copies another vector of attributes
-     * @param v Attributes to copy
-     */
-    QgsAttributes( const QVector<QVariant> &v )
-      : QVector<QVariant>( v )
-    {}
-
-    /**
-     * @brief Compares two vectors of attributes.
-     * They are considered equal if all their members contain the same value and NULL flag.
-     * This was introduced because the default Qt implementation of QVariant comparison does not
-     * handle NULL values for certain types (like int).
-     *
-     * @param v The attributes to compare
-     * @return True if v is equal
-     */
-    bool operator==( const QgsAttributes &v ) const
-    {
-      if ( size() != v.size() )
-        return false;
-      const QVariant *b = constData();
-      const QVariant *i = b + size();
-      const QVariant *j = v.constData() + size();
-      while ( i != b )
-        if ( !( *--i == *--j && i->isNull() == j->isNull() ) )
-          return false;
-      return true;
-    }
-
-    /**
-     * Returns a QgsAttributeMap of the attribute values. Null values are
-     * excluded from the map.
-     * @note added in QGIS 3.0
-     * @note not available in Python bindings
-     */
-    QgsAttributeMap toMap() const;
-
-    inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
-};
-
 class QgsField;
 
 /***************************************************************************
@@ -222,6 +223,11 @@ class QgsField;
  */
 class CORE_EXPORT QgsFeature
 {
+#ifdef SIP_RUN
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
+#define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
+#endif
     Q_GADGET
 
     Q_PROPERTY( QgsFeatureId id READ id WRITE setId )
@@ -230,16 +236,127 @@ class CORE_EXPORT QgsFeature
 
   public:
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __iter__();
+    % MethodCode
+    QgsAttributes attributes = sipCpp->attributes();
+    PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
+    sipRes = PyObject_GetIter( attrs );
+    % End
+
+    SIP_PYOBJECT __getitem__( int key );
+    % MethodCode
+    QgsAttributes attrs = sipCpp->attributes();
+    if ( a0 < 0 || a0 >= attrs.count() )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariant *v = new QVariant( attrs.at( a0 ) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+    }
+    % End
+
+    SIP_PYOBJECT __getitem__( const QString &name );
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariant *v = new QVariant( sipCpp->attribute( fieldIdx ) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+    }
+    % End
+
+    void __setitem__( int key, QVariant value / GetWrapper / );
+    % MethodCode
+    bool rv;
+
+    if ( a1Wrapper == Py_None )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( QVariant::Int ) );
+    }
+    else
+    {
+      rv = sipCpp->setAttribute( a0, *a1 );
+    }
+
+    if ( !rv )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+
+    void __setitem__( const QString &key, QVariant value / GetWrapper / );
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      if ( a1Wrapper == Py_None )
+      {
+        sipCpp->setAttribute( *a0, QVariant( QVariant::Int ) );
+      }
+      else
+      {
+        sipCpp->setAttribute( fieldIdx, *a1 );
+      }
+    }
+    % End
+
+    void __delitem__( int key );
+    % MethodCode
+    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+      sipCpp->deleteAttribute( a0 );
+    else
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+
+    void __delitem__( const QString &name );
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+      sipCpp->deleteAttribute( fieldIdx );
+    % End
+#endif
+
     /** Constructor for QgsFeature
      * @param id feature id
      */
+#ifndef SIP_RUN
     QgsFeature( QgsFeatureId id = QgsFeatureId() );
+#else
+    QgsFeature( qint64 id = 0 );
+#endif
 
     /** Constructor for QgsFeature
      * @param fields feature's fields
      * @param id feature id
      */
+#ifndef SIP_RUN
     QgsFeature( const QgsFields &fields, QgsFeatureId id = QgsFeatureId() );
+#else
+    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+#endif
 
     /** Copy constructor
      */
@@ -247,17 +364,17 @@ class CORE_EXPORT QgsFeature
 
     /** Assignment operator
      */
-    QgsFeature &operator=( const QgsFeature &rhs );
+    QgsFeature &operator=( const QgsFeature &rhs );  // SIP_SKIP
 
     /**
      * Compares two features
      */
-    bool operator==( const QgsFeature &other ) const;
+    bool operator==( const QgsFeature &other ) const;  // SIP_SKIP
 
     /**
      * Compares two features
      */
-    bool operator!=( const QgsFeature &other ) const;
+    bool operator!=( const QgsFeature &other ) const; // SIP_SKIP
 
     virtual ~QgsFeature();
 
@@ -299,7 +416,31 @@ class CORE_EXPORT QgsFeature
      * @note Alternatively in Python: @code feature[field] = attr @endcode
      * @see setAttributes
      */
+#ifndef SIP_RUN
     bool setAttribute( int field, const QVariant &attr );
+#else
+    bool setAttribute( int field, const QVariant &attr / GetWrapper / );
+    % MethodCode
+    bool rv;
+
+    if ( a1Wrapper == Py_None )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( QVariant::Int ) );
+    }
+    else
+    {
+      rv = sipCpp->setAttribute( a0, *a1 );
+    }
+
+    if ( !rv )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+
+    sipRes = rv;
+    % End
+#endif
 
     /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * @param fieldCount Number of fields to initialize
@@ -313,6 +454,17 @@ class CORE_EXPORT QgsFeature
      * @note Alternatively in Python: @code del feature[field] @endcode
      */
     void deleteAttribute( int field );
+#ifdef SIP_RUN
+    % MethodCode
+    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+      sipCpp->deleteAttribute( a0 );
+    else
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    % End
+#endif
 
     /** Returns the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
@@ -362,7 +514,11 @@ class CORE_EXPORT QgsFeature
      * @note added in QGIS 2.9
      * @see fields
      */
+#ifndef SIP_RUN
     void setFields( const QgsFields &fields, bool initAttributes = false );
+#else
+    void setFields( const QgsFields &fields, bool initAttributes = true );
+#endif
 
     /** Returns the field map associated with the feature.
      * @see setFields
@@ -379,7 +535,30 @@ class CORE_EXPORT QgsFeature
      *  @note Alternatively in Python: @code feature[name] = attr @endcode
      *  @see setFields
      */
+#ifndef SIP_RUN
     bool setAttribute( const QString &name, const QVariant &value );
+#else
+    void setAttribute( const QString &name, const QVariant &value / GetWrapper / );
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      if ( a1Wrapper == Py_None )
+      {
+        sipCpp->setAttribute( *a0, QVariant( QVariant::Int ) );
+      }
+      else
+      {
+        sipCpp->setAttribute( fieldIdx, *a1 );
+      }
+    }
+    % End
+#endif
 
     /** Removes an attribute value by field name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
@@ -390,6 +569,22 @@ class CORE_EXPORT QgsFeature
      *  @see setFields
      */
     bool deleteAttribute( const QString &name );
+#ifdef SIP_RUN
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+      sipRes = false;
+    }
+    else
+    {
+      sipCpp->deleteAttribute( fieldIdx );
+      sipRes = true;
+    }
+    % End
+#endif
 
     /** Lookup attribute value from attribute name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
@@ -399,7 +594,24 @@ class CORE_EXPORT QgsFeature
      *  @note Alternatively in Python: @code feature[name] @endcode
      *  @see setFields
      */
+#ifndef SIP_RUN
     QVariant attribute( const QString &name ) const;
+#else
+    SIP_PYOBJECT attribute( const QString &name ) const;
+    % MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariant *v = new QVariant( sipCpp->attribute( fieldIdx ) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+    }
+    % End
+#endif
 
     /** Lookup attribute value from its index. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
@@ -409,7 +621,25 @@ class CORE_EXPORT QgsFeature
      *  @note Alternatively in Python: @code feature[fieldIdx] @endcode
      *  @see setFields
      */
+#ifndef SIP_RUN
     QVariant attribute( int fieldIdx ) const;
+#else
+    SIP_PYOBJECT attribute( int fieldIdx ) const;
+    % MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        QVariant *v = new QVariant( sipCpp->attribute( a0 ) );
+        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      }
+    }
+    % End
+#endif
 
     /** Utility method to get attribute index from name. Field map must be associated using @link setFields @endlink
      *  before this method can be used.
@@ -432,24 +662,41 @@ class CORE_EXPORT QgsFeature
 }; // class QgsFeature
 
 //! Writes the feature to stream out. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature );
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature ); // SIP_SKIP
 //! Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature );
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature ); // SIP_SKIP
 
 // key = feature id, value = changed attributes
+#ifndef SIP_RUN
 typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;
+#else
+typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
+#endif
 
 // key = feature id, value = changed geometry
+#ifndef SIP_RUN
 typedef QMap<QgsFeatureId, QgsGeometry> QgsGeometryMap;
+#else
+typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
+#endif
 
+#ifndef SIP_RUN
 typedef QSet<QgsFeatureId> QgsFeatureIds;
+#else
+typedef QSet<qint64> QgsFeatureIds;
+#endif
 
 // key = field index, value = field name
 typedef QMap<int, QString> QgsFieldNameMap;
 
+
+#ifdef SIP_RUN
+typedef QMap<int, QgsField> QgsFieldMap;
+#endif
+
 typedef QList<QgsFeature> QgsFeatureList;
 
-uint qHash( const QgsFeature &key, uint seed = 0 );
+uint qHash( const QgsFeature &key, uint seed = 0 ); // SIP_SKIP
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )
