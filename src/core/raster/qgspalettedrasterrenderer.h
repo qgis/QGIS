@@ -60,7 +60,6 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * Constructor for QgsPalettedRasterRenderer.
      */
     QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
-    ~QgsPalettedRasterRenderer();
 
     //! QgsPalettedRasterRenderer cannot be copied. Use clone() instead.
     QgsPalettedRasterRenderer( const QgsPalettedRasterRenderer & ) = delete;
@@ -146,15 +145,13 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
   private:
 
     int mBand;
-    int mMaxColorIndex = -INT_MAX;
     ClassData mClassData;
 
     //! Source color ramp
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
-    //! Premultiplied color array
-    QRgb *mColors = nullptr;
-    bool *mIsNoData = nullptr;
+    //! Premultiplied color map
+    QMap< int, QRgb > mColors;
     void updateArrays();
 };
 

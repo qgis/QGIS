@@ -589,8 +589,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[9].label, '10')
 
         # bad band
-        with self.assertRaises(Exception):
-            classes = QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 10101010)
+        self.assertFalse(QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 10101010))
 
         # with ramp
         r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
@@ -617,6 +616,32 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(len(classes), 30)
         expected = [11, 21, 22, 24, 31, 82, 2002, 2004, 2014, 2019, 2027, 2029, 2030, 2080, 2081, 2082, 2088, 2092, 2097, 2098, 2099, 2105, 2108, 2110, 2114, 2118, 2126, 2152, 2184, 2220]
         self.assertEqual([c.value for c in classes], expected)
+
+        # bad layer
+        path = os.path.join(unitTestDataPath('raster'),
+                            'hub13263.vrt')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        classes = QgsPalettedRasterRenderer.classDataFromRaster(layer.dataProvider(), 1)
+        self.assertFalse(classes)
+
+    def testPalettedRendererWithNegativeColorValue(self):
+        """ test paletted raster renderer with negative values in color table"""
+
+        path = os.path.join(unitTestDataPath('raster'),
+                            'hub13263.vrt')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+
+        renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 1,
+                                             [QgsPalettedRasterRenderer.Class(-1, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')])
+
+        self.assertEqual(renderer.nColors(), 2)
+        self.assertEqual(renderer.usesBands(), [1])
 
 
 if __name__ == '__main__':

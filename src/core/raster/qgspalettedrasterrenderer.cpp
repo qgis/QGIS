@@ -35,12 +35,6 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
   updateArrays();
 }
 
-QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
-{
-  delete[] mColors;
-  delete[] mIsNoData;
-}
-
 QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
 {
   QgsPalettedRasterRenderer *renderer = new QgsPalettedRasterRenderer( nullptr, mBand, mClassData );
@@ -181,7 +175,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
       continue;
     }
     int val = ( int ) inputBlock->value( i );
-    if ( val > mMaxColorIndex || mIsNoData[ val ] )
+    if ( !mColors.contains( val ) )
     {
       outputData[i] = myDefaultColor;
       continue;
@@ -189,7 +183,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
 
     if ( !hasTransparency )
     {
-      outputData[i] = mColors[val];
+      outputData[i] = mColors.value( val );
     }
     else
     {
@@ -203,7 +197,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  cons
         currentOpacity *= alphaBlock->value( i ) / 255.0;
       }
 
-      QRgb c = mColors[val];
+      QRgb c = mColors.value( val );
       outputData[i] = qRgba( currentOpacity * qRed( c ), currentOpacity * qGreen( c ), currentOpacity * qBlue( c ), currentOpacity * qAlpha( c ) );
     }
   }
@@ -415,6 +409,8 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
   double max = stats.maximumValue;
   // need count of every individual value
   int bins = ceil( max - min ) + 1;
+  if ( bins <= 0 )
+    return ClassData();
 
   QgsRasterHistogram histogram = raster->histogram( bandNumber, bins, min, max, QgsRectangle(), 0, false, feedback );
   if ( feedback && feedback->isCanceled() )
@@ -453,26 +449,12 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
 
 void QgsPalettedRasterRenderer::updateArrays()
 {
-  // find maximum color index
-  ClassData::const_iterator mIt = mClassData.constBegin();
-  for ( ; mIt != mClassData.constEnd(); ++mIt )
-  {
-    mMaxColorIndex = qMax( mMaxColorIndex, mIt->value );
-  }
-  mMaxColorIndex = qMax( 0, mMaxColorIndex );
-
-  delete [] mColors;
-  delete [] mIsNoData;
-  mColors = new QRgb[mMaxColorIndex + 1];
-  mIsNoData = new bool[mMaxColorIndex + 1];
-  std::fill( mIsNoData, mIsNoData + mMaxColorIndex, true );
-
+  mColors.clear();
   int i = 0;
   ClassData::const_iterator it = mClassData.constBegin();
   for ( ; it != mClassData.constEnd(); ++it )
   {
-    mColors[ it->value] = qPremultiply( it->color.rgba() );
-    mIsNoData[it->value] = false;
+    mColors[it->value] = qPremultiply( it->color.rgba() );
     i++;
   }
 }
