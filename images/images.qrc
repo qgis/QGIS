@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.jpg">developers/essen-2014.jpg</file>
+        <file alias="last-hackfest.png">splash/dev-splash.png</file>
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
@@ -506,8 +506,6 @@
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
         <file>flags/zh.png</file>
-        <file>icons/qgis-icon-16x16_xmas.png</file>
-        <file>icons/qgis-icon-60x60_xmas.png</file>
         <file>themes/default/vector_grid.png</file>
         <file>themes/default/legend.svg</file>
         <file>themes/default/multieditChangedValues.svg</file>
