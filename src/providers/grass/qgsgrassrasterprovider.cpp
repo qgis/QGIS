@@ -284,7 +284,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
   memcpy( block, data.data(), size );
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
 {
   QgsDebugMsg( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ) );
   QgsRasterBandStats myRasterBandStats;

@@ -1671,6 +1671,7 @@ QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 - srcDataType() has been renamed to sourceDataType()
 - srcInput() has been renamed to sourceInput()
 - block() has new "feedback" argument.
+- The signature of histogram() and bandStatistics() now takes a QgsRasterBlockFeedback pointer argument.
 
 
 QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}

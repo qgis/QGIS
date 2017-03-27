@@ -62,6 +62,7 @@ struct QgsGdalProgress
 {
   int type;
   QgsGdalProvider *provider = nullptr;
+  QgsRasterBlockFeedback *feedback = nullptr;
 };
 //
 // global callback function
@@ -87,10 +88,12 @@ int CPL_STDCALL progressCallback( double dfComplete,
   {
     mypProvider->emitProgress( prog->type, dfComplete * 100, QString( pszMessage ) );
     mypProvider->emitProgressUpdate( dfComplete * 100 );
+    if ( prog->feedback )
+      prog->feedback->setProgress( dfComplete * 100 );
   }
   sDfLastComplete = dfComplete;
 
-  return true;
+  return prog->feedback ? !prog->feedback->isCanceled() : true;
 }
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
@@ -1295,7 +1298,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
     double minimum, double maximum,
     const QgsRectangle &boundingBox,
     int sampleSize,
-    bool includeOutOfRange )
+    bool includeOutOfRange, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsg( QString( "theBandNo = %1 binCount = %2 minimum = %3 maximum = %4 sampleSize = %5" ).arg( bandNo ).arg( binCount ).arg( minimum ).arg( maximum ).arg( sampleSize ) );
 
@@ -1316,13 +1319,13 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
        !userNoDataValues( bandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values, using generic histogram." );
-    return QgsRasterDataProvider::histogram( bandNo, binCount, minimum, maximum, boundingBox, sampleSize, includeOutOfRange );
+    return QgsRasterDataProvider::histogram( bandNo, binCount, minimum, maximum, boundingBox, sampleSize, includeOutOfRange, feedback );
   }
 
   if ( myHistogram.extent != extent() )
   {
     QgsDebugMsg( "Not full extent, using generic histogram." );
-    return QgsRasterDataProvider::histogram( bandNo, binCount, minimum, maximum, boundingBox, sampleSize, includeOutOfRange );
+    return QgsRasterDataProvider::histogram( bandNo, binCount, minimum, maximum, boundingBox, sampleSize, includeOutOfRange, feedback );
   }
 
   QgsDebugMsg( "Computing GDAL histogram" );
@@ -1345,6 +1348,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
   QgsGdalProgress myProg;
   myProg.type = QgsRaster::ProgressHistogram;
   myProg.provider = this;
+  myProg.feedback = feedback;
 
 #if 0 // this is the old method
 
@@ -1409,7 +1413,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
                    includeOutOfRange, bApproxOK, progressCallback,
                    &myProg ); //this is the arg for our custom gdal progress callback
 
-  if ( myError != CE_None )
+  if ( myError != CE_None || ( feedback && feedback->isCanceled() ) )
   {
     QgsDebugMsg( "Cannot get histogram" );
     delete [] myHistogramArray;
@@ -2264,7 +2268,7 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
   return false;
 }
 
-QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize )
+QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsg( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ) );
 
@@ -2293,7 +2297,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
        !userNoDataValues( bandNo ).isEmpty() )
   {
     QgsDebugMsg( "Custom no data values, using generic statistics." );
-    return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize );
+    return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize, feedback );
   }
 
   int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
@@ -2306,7 +2310,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
        ( stats & ( ~supportedStats ) ) )
   {
     QgsDebugMsg( "Statistics not supported by provider, using generic statistics." );
-    return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize );
+    return QgsRasterDataProvider::bandStatistics( bandNo, stats, boundingBox, sampleSize, feedback );
   }
 
   QgsDebugMsg( "Using GDAL statistics." );
@@ -2334,6 +2338,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   QgsGdalProgress myProg;
   myProg.type = QgsRaster::ProgressHistogram;
   myProg.provider = this;
+  myProg.feedback = feedback;
 
   // try to fetch the cached stats (bForce=FALSE)
   // GDALGetRasterStatistics() do not work correctly with bApproxOK=false and bForce=false/true
@@ -2357,6 +2362,9 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   {
     QgsDebugMsg( "Using GDAL cached statistics" );
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return myRasterBandStats;
 
   // if stats are found populate the QgsRasterBandStats object
   if ( CE_None == myerval )

@@ -115,7 +115,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
                                        const QgsRectangle &boundingBox = QgsRectangle(),
-                                       int sampleSize = 0 ) override;
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     bool hasHistogram( int bandNo,
                        int binCount = 0,
@@ -131,7 +131,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   double maximum = std::numeric_limits<double>::quiet_NaN(),
                                   const QgsRectangle &boundingBox = QgsRectangle(),
                                   int sampleSize = 0,
-                                  bool includeOutOfRange = false ) override;
+                                  bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                            const QString &resamplingMethod = "NEAREST",
