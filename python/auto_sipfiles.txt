@@ -1,0 +1,2 @@
+core/qgsfeature.h
+core/qgsvectorlayer.h
