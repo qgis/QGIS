@@ -6,10 +6,10 @@
 import processing
 
 result = processing.run("qgis:selectbyexpression",
-                           INPUT_LAYER,
-                           '"id2" = 0 and "id" > 7',
-                           "1")
+                        INPUT_LAYER,
+                        '"id2" = 0 and "id" > 7',
+                        "1")
 
 processing.run("qgis:saveselectedfeatures",
-                  result["RESULT"],
-                  OUTPUT_LAYER)
+               result["RESULT"],
+               OUTPUT_LAYER)
