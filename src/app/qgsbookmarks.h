@@ -84,8 +84,8 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
     void moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row );
 
   private slots:
-    void projectRead() { mProjectOpen = true; };
-    void allLayoutChanged() { emit layoutChanged(); };
+    void projectRead() { mProjectOpen = true; }
+    void allLayoutChanged() { emit layoutChanged(); }
     void qgisDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
     {
       emit dataChanged( topLeft, bottomRight );

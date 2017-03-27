@@ -334,16 +334,16 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
 
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
-  QObject::connect( mDistanceWidget, SIGNAL( valueChanged( double ) ), this, SLOT( placeOffsetCurveToValue() ) );
-  QObject::connect( mDistanceWidget, SIGNAL( editingFinished() ), this, SLOT( applyOffset() ) );
+  connect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
+  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
 }
 
 void QgsMapToolOffsetCurve::deleteDistanceWidget()
 {
   if ( mDistanceWidget )
   {
-    QObject::disconnect( mDistanceWidget, SIGNAL( valueChanged( double ) ), this, SLOT( placeOffsetCurveToValue() ) );
-    QObject::disconnect( mDistanceWidget, SIGNAL( editingFinished() ), this, SLOT( applyOffset() ) );
+    disconnect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
+    disconnect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }

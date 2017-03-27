@@ -798,6 +798,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void renameView();
 
+    void showProgress( int progress, int totalSteps );
+    void showStatusMessage( const QString &message );
+
+    //! set the active layer
+    bool setActiveLayer( QgsMapLayer * );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1118,8 +1124,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showSelectedLayers();
     //! Return pointer to the active layer
     QgsMapLayer *activeLayer();
-    //! set the active layer
-    bool setActiveLayer( QgsMapLayer * );
     //! Open the help contents in a browser
     void helpContents();
     //! Open the API documentation in a browser
@@ -1263,10 +1267,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void selectionChanged( QgsMapLayer *layer );
 
-    void showProgress( int progress, int totalSteps );
     void extentChanged();
     void showRotation();
-    void showStatusMessage( const QString &message );
+
     void displayMapToolMessage( const QString &message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
     void displayMessage( const QString &title, const QString &message, QgsMessageBar::MessageLevel level );
     void removeMapToolMessage();

@@ -34,7 +34,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
 {
   if ( mCanvas )
   {
-    connect( mCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ), this, SLOT( setParentTool( QgsMapTool *, QgsMapTool * ) ) );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
   }
 }
 
@@ -48,7 +48,7 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas *canvas )
 {
   if ( mCanvas )
   {
-    connect( mCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ), this, SLOT( setParentTool( QgsMapTool *, QgsMapTool * ) ) );
+    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
   }
 }
 

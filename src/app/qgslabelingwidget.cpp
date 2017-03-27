@@ -33,14 +33,14 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
 {
   setupUi( this );
 
-  connect( mEngineSettingsButton, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
+  connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialog );
 
   mLabelModeComboBox->setCurrentIndex( -1 );
   mLabelGui = new QgsLabelingGui( nullptr, mCanvas, nullptr, this );
   mStackedWidget->addWidget( mLabelGui );
 
-  connect( mLabelModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( labelModeChanged( int ) ) );
-  connect( mLabelGui, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingWidget::labelModeChanged );
+  connect( mLabelGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
   setLayer( layer );
 }
 

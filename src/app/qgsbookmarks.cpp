@@ -56,13 +56,13 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   QAction *btnImport = share->addAction( tr( "&Import" ) );
   btnExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ) );
   btnImport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ) );
-  connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXml() ) );
-  connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXml() ) );
+  connect( btnExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
+  connect( btnImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
   btnImpExp->setMenu( share );
 
-  connect( actionAdd, SIGNAL( triggered() ), this, SLOT( addClicked() ) );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteClicked() ) );
-  connect( actionZoomTo, SIGNAL( triggered() ), this, SLOT( zoomToBookmark() ) );
+  connect( actionAdd, &QAction::triggered, this, &QgsBookmarks::addClicked );
+  connect( actionDelete, &QAction::triggered, this, &QgsBookmarks::deleteClicked );
+  connect( actionZoomTo, &QAction::triggered, this, &QgsBookmarks::zoomToBookmark );
 
   mBookmarkToolbar->addWidget( btnImpExp );
 
@@ -394,9 +394,9 @@ void QgsBookmarks::exportToXml()
 
 QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel()
 {
-  QObject::connect(
-    QgisApp::instance(), SIGNAL( projectRead() ),
-    this, SLOT( projectRead() ) );
+  connect(
+    QgisApp::instance(), &QgisApp::projectRead,
+    this, &QgsProjectBookmarksTableModel::projectRead );
 }
 
 int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
@@ -507,25 +507,25 @@ QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel 
   , mProjectOpen( false )
 {
   connect(
-    QgisApp::instance(), SIGNAL( projectRead() ),
-    this, SLOT( projectRead() ) );
+    QgisApp::instance(), &QgisApp::projectRead,
+    this, &QgsMergedBookmarksTableModel::projectRead );
 
   connect(
-    &mQgisTableModel, SIGNAL( layoutChanged() ),
-    this, SLOT( allLayoutChanged() ) );
+    &mQgisTableModel, &QAbstractTableModel::layoutChanged,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
   connect(
-    &mQgisTableModel, SIGNAL( dataChanged( const QModelIndex &, const QModelIndex & ) ),
-    this, SLOT( qgisDataChanged( const QModelIndex &, const QModelIndex & ) ) );
+    &mQgisTableModel, &QAbstractTableModel::dataChanged,
+    this, &QgsMergedBookmarksTableModel::qgisDataChanged );
   connect(
-    &mQgisTableModel, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ),
-    this, SLOT( allLayoutChanged() ) );
+    &mQgisTableModel, &QAbstractTableModel::rowsInserted,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
   connect(
-    &mQgisTableModel, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ),
-    this, SLOT( allLayoutChanged() ) );
+    &mQgisTableModel, &QAbstractTableModel::rowsRemoved,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
 
   connect(
-    &projectTableModel, SIGNAL( layoutChanged() ),
-    this, SLOT( allLayoutChanged() ) );
+    &projectTableModel, &QAbstractTableModel::layoutChanged,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
 }
 
 int QgsMergedBookmarksTableModel::rowCount( const QModelIndex &parent ) const

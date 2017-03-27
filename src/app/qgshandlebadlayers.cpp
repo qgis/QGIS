@@ -72,9 +72,9 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   buttonBox->addButton( mBrowseButton, QDialogButtonBox::ActionRole );
   mBrowseButton->setDisabled( true );
 
-  connect( mLayerList, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  connect( mBrowseButton, SIGNAL( clicked() ), this, SLOT( browseClicked() ) );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( mLayerList, &QTableWidget::itemSelectionChanged, this, &QgsHandleBadLayers::selectionChanged );
+  connect( mBrowseButton, &QAbstractButton::clicked, this, &QgsHandleBadLayers::browseClicked );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsHandleBadLayers::apply );
 
   mLayerList->clear();
   mLayerList->setSortingEnabled( true );
@@ -133,7 +133,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
       btn->setMinimumHeight( 24 );
       btn->setText( tr( "Edit" ) );
       btn->setProperty( "row", j );
-      connect( btn, SIGNAL( clicked() ), this, SLOT( editAuthCfg() ) );
+      connect( btn, &QAbstractButton::clicked, this, &QgsHandleBadLayers::editAuthCfg );
       mLayerList->setCellWidget( j, 3, btn );
     }
     else
