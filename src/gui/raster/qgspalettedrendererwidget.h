@@ -110,6 +110,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void loadColorTable();
     void saveColorTable();
     void classify();
+    void loadFromLayer();
 
 };
 

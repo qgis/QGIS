@@ -94,6 +94,17 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mLoadFromFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadColorTable );
   connect( mExportToFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::saveColorTable );
   connect( mClassifyButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::classify );
+  connect( mButtonLoadFromLayer, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadFromLayer );
+
+  QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
+  if ( provider )
+  {
+    mButtonLoadFromLayer->setEnabled( !provider->colorTable( mBandComboBox->currentData().toInt() ).isEmpty() );
+  }
+  else
+  {
+    mButtonLoadFromLayer->setEnabled( false );
+  }
 }
 
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
@@ -130,13 +141,7 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
   }
   else
   {
-    //read default palette settings from layer
-    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
-    if ( provider )
-    {
-      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
-      mModel->setClassData( classes );
-    }
+    loadFromLayer();
     QgsSettings settings;
     QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
     whileBlocking( btnColorRamp )->setColorRampFromName( defaultPalette );
@@ -381,6 +386,18 @@ void QgsPalettedRendererWidget::classify()
     std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
     QgsPalettedRasterRenderer::ClassData data = QgsPalettedRasterRenderer::classDataFromRaster( provider, mBandComboBox->currentData().toInt(), ramp.get() );
     mModel->setClassData( data );
+    emit widgetChanged();
+  }
+}
+
+void QgsPalettedRendererWidget::loadFromLayer()
+{
+  //read default palette settings from layer
+  QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
+  if ( provider )
+  {
+    QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
+    mModel->setClassData( classes );
     emit widgetChanged();
   }
 }
