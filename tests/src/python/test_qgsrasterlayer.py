@@ -35,7 +35,8 @@ from qgis.core import (QgsRaster,
                        QgsPalettedRasterRenderer,
                        QgsSingleBandGrayRenderer,
                        QgsSingleBandPseudoColorRenderer,
-                       QgsLimitedRandomColorRamp)
+                       QgsLimitedRandomColorRamp,
+                       QgsGradientColorRamp)
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 
@@ -552,6 +553,70 @@ class TestQgsRasterLayer(unittest.TestCase):
                    QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')]
         self.assertEqual(QgsPalettedRasterRenderer.classDataToString(classes),
                          '3 255 0 0 255 class 1\n4 0 255 0 255 class 2')
+
+    def testPalettedClassDataFromLayer(self):
+        # no layer
+        classes = QgsPalettedRasterRenderer.classDataFromRaster(None, 1)
+        self.assertFalse(classes)
+
+        # 10 class layer
+        path = os.path.join(unitTestDataPath('raster'),
+                            'with_color_table.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer10 = QgsRasterLayer(path, base_name)
+        classes = QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 1)
+        self.assertEqual(len(classes), 10)
+        self.assertEqual(classes[0].value, 1)
+        self.assertEqual(classes[0].label, '1')
+        self.assertEqual(classes[1].value, 2)
+        self.assertEqual(classes[1].label, '2')
+        self.assertEqual(classes[2].value, 3)
+        self.assertEqual(classes[2].label, '3')
+        self.assertEqual(classes[3].value, 4)
+        self.assertEqual(classes[3].label, '4')
+        self.assertEqual(classes[4].value, 5)
+        self.assertEqual(classes[4].label, '5')
+        self.assertEqual(classes[5].value, 6)
+        self.assertEqual(classes[5].label, '6')
+        self.assertEqual(classes[6].value, 7)
+        self.assertEqual(classes[6].label, '7')
+        self.assertEqual(classes[7].value, 8)
+        self.assertEqual(classes[7].label, '8')
+        self.assertEqual(classes[8].value, 9)
+        self.assertEqual(classes[8].label, '9')
+        self.assertEqual(classes[9].value, 10)
+        self.assertEqual(classes[9].label, '10')
+
+        # bad band
+        with self.assertRaises(Exception):
+            classes = QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 10101010)
+
+        # with ramp
+        r = QgsGradientColorRamp(QColor(200, 0, 0, 100), QColor(0, 200, 0, 200))
+        classes = QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 1, r)
+        self.assertEqual(len(classes), 10)
+        self.assertEqual(classes[0].color.name(), '#c80000')
+        self.assertEqual(classes[1].color.name(), '#b41400')
+        self.assertEqual(classes[2].color.name(), '#a02800')
+        self.assertEqual(classes[3].color.name(), '#8c3c00')
+        self.assertEqual(classes[4].color.name(), '#785000')
+        self.assertEqual(classes[5].color.name(), '#646400')
+        self.assertEqual(classes[6].color.name(), '#507800')
+        self.assertEqual(classes[7].color.name(), '#3c8c00')
+        self.assertEqual(classes[8].color.name(), '#28a000')
+        self.assertEqual(classes[9].color.name(), '#14b400')
+
+        # 30 class layer
+        path = os.path.join(unitTestDataPath('raster'),
+                            'unique_1.tif')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer10 = QgsRasterLayer(path, base_name)
+        classes = QgsPalettedRasterRenderer.classDataFromRaster(layer10.dataProvider(), 1)
+        self.assertEqual(len(classes), 30)
+        expected = [11, 21, 22, 24, 31, 82, 2002, 2004, 2014, 2019, 2027, 2029, 2030, 2080, 2081, 2082, 2088, 2092, 2097, 2098, 2099, 2105, 2108, 2110, 2114, 2118, 2126, 2152, 2184, 2220]
+        self.assertEqual([c.value for c in classes], expected)
 
 
 if __name__ == '__main__':

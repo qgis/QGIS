@@ -93,6 +93,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mAddEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::addEntry );
   connect( mLoadFromFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadColorTable );
   connect( mExportToFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::saveColorTable );
+  connect( mClassifyButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::classify );
 }
 
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
@@ -364,6 +365,23 @@ void QgsPalettedRendererWidget::saveColorTable()
     {
       QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
     }
+  }
+}
+
+void QgsPalettedRendererWidget::classify()
+{
+  if ( mRasterLayer )
+  {
+    QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
+    if ( !provider )
+    {
+      return;
+    }
+
+    std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
+    QgsPalettedRasterRenderer::ClassData data = QgsPalettedRasterRenderer::classDataFromRaster( provider, mBandComboBox->currentData().toInt(), ramp.get() );
+    mModel->setClassData( data );
+    emit widgetChanged();
   }
 }
 

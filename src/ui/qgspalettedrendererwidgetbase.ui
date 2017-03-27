@@ -61,6 +61,13 @@
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
+      <widget class="QPushButton" name="mClassifyButton">
+       <property name="text">
+        <string>Classify</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="mAddEntryButton">
        <property name="toolTip">
         <string>Add values manually</string>

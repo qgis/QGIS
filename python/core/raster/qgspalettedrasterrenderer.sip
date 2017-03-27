@@ -40,6 +40,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
     static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
     static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0 );
 
   private:
 

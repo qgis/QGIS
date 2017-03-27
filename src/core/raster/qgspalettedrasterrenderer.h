@@ -135,6 +135,13 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
 
+    /**
+     * Generates class data from a \a raster, for the specified \a bandNumber. An optional
+     * color \a ramp can be specified to automatically assign colors from the ramp.
+     * @note added in QGIS 3.0
+     */
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr );
+
   private:
 
     int mBand;

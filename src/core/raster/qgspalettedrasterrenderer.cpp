@@ -401,6 +401,50 @@ QString QgsPalettedRasterRenderer::classDataToString( const QgsPalettedRasterRen
   return out.join( '\n' );
 }
 
+QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp )
+{
+  if ( !raster )
+    return ClassData();
+
+  // get min and max value from raster
+  QgsRasterBandStats stats = raster->bandStatistics( bandNumber, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+  double min = stats.minimumValue;
+  double max = stats.maximumValue;
+  // need count of every individual value
+  int bins = ceil( max - min ) + 1;
+
+  QgsRasterHistogram histogram = raster->histogram( bandNumber, bins, min, max );
+  double interval = ( histogram.maximum - histogram.minimum + 1 ) / histogram.binCount;
+
+  ClassData data;
+
+  double currentValue = histogram.minimum;
+  double presentValues = 0;
+  for ( int idx = 0; idx < histogram.binCount; ++idx )
+  {
+    int count = histogram.histogramVector.at( idx );
+    if ( count > 0 )
+    {
+      data << Class( currentValue, QColor(), QString::number( currentValue ) );
+      presentValues++;
+    }
+    currentValue += interval;
+  }
+
+  // assign colors from ramp
+  if ( ramp )
+  {
+    int i = 0;
+    QgsPalettedRasterRenderer::ClassData::iterator cIt = data.begin();
+    for ( ; cIt != data.end(); ++cIt )
+    {
+      cIt->color = ramp->color( i / presentValues );
+      i++;
+    }
+  }
+  return data;
+}
+
 void QgsPalettedRasterRenderer::updateArrays()
 {
   // find maximum color index
