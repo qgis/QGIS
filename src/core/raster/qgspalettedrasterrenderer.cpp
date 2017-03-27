@@ -291,6 +291,77 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClas
   return classes;
 }
 
+QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromString( const QString &string )
+{
+  QgsPalettedRasterRenderer::ClassData classes;
+
+  QRegularExpression linePartRx( "[\\s,:]+" );
+
+  QStringList parts = string.split( '\n', QString::SkipEmptyParts );
+  Q_FOREACH ( const QString &part, parts )
+  {
+    QStringList lineParts = part.split( linePartRx, QString::SkipEmptyParts );
+    bool ok = false;
+    switch ( lineParts.count() )
+    {
+      case 1:
+      {
+        int value = lineParts.at( 0 ).toInt( &ok );
+        if ( !ok )
+          continue;
+
+        classes << Class( value );
+        break;
+      }
+
+      case 2:
+      {
+        int value = lineParts.at( 0 ).toInt( &ok );
+        if ( !ok )
+          continue;
+
+        QColor c( lineParts.at( 1 ) );
+
+        classes << Class( value, c );
+        break;
+      }
+
+      case 4:
+      case 5:
+      {
+        int value = lineParts.at( 0 ).toInt( &ok );
+        if ( !ok )
+          continue;
+
+        bool rOk = false;
+        double r = lineParts.at( 1 ).toDouble( &rOk );
+        bool gOk = false;
+        double g = lineParts.at( 2 ).toDouble( &gOk );
+        bool bOk = false;
+        double b = lineParts.at( 3 ).toDouble( &bOk );
+
+        QColor c;
+        if ( rOk && gOk && bOk )
+        {
+          c = QColor( r, g, b );
+        }
+
+        if ( lineParts.count() == 5 )
+        {
+          double alpha = lineParts.at( 4 ).toDouble( &ok );
+          if ( ok )
+            c.setAlpha( alpha );
+        }
+
+        classes << Class( value, c );
+        break;
+      }
+    }
+
+  }
+  return classes;
+}
+
 void QgsPalettedRasterRenderer::updateArrays()
 {
   // find maximum color index

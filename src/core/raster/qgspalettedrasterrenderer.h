@@ -113,6 +113,12 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
 
+    /**
+     * Converts a \a string containing a color table or class data to to paletted renderer class data.
+     * @note added in QGIS 3.0
+     */
+    static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
+
   private:
 
     int mBand;

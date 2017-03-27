@@ -299,8 +299,8 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
 
         renderer = QgsPalettedRasterRenderer(layer.dataProvider(), 1,
-                                             {3: QgsPalettedRasterRenderer.Class(QColor(255, 0, 0), 'class 1'),
-                                              1: QgsPalettedRasterRenderer.Class(QColor(0, 255, 0), 'class 2')})
+                                             [QgsPalettedRasterRenderer.Class(1, QColor(0, 255, 0), 'class 2'),
+                                              QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')])
 
         self.assertEqual(renderer.nColors(), 2)
         self.assertEqual(renderer.usesBands(), [1])
@@ -319,10 +319,12 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         # test retrieving classes
         classes = renderer.classes()
-        self.assertEqual(classes[1].label, 'class 2')
-        self.assertEqual(classes[3].label, 'class 1')
-        self.assertEqual(classes[1].color.name(), '#00ff00')
-        self.assertEqual(classes[3].color.name(), '#ff0000')
+        self.assertEqual(classes[0].value, 1)
+        self.assertEqual(classes[1].value, 3)
+        self.assertEqual(classes[0].label, 'class 2')
+        self.assertEqual(classes[1].label, 'class 1')
+        self.assertEqual(classes[0].color.name(), '#00ff00')
+        self.assertEqual(classes[1].color.name(), '#ff0000')
 
         # test set label
         # bad index
@@ -339,10 +341,12 @@ class TestQgsRasterLayer(unittest.TestCase):
         # clone
         new_renderer = renderer.clone()
         classes = new_renderer.classes()
-        self.assertEqual(classes[1].label, 'class 2')
-        self.assertEqual(classes[3].label, 'new class')
-        self.assertEqual(classes[1].color.name(), '#00ff00')
-        self.assertEqual(classes[3].color.name(), '#ff0000')
+        self.assertEqual(classes[0].value, 1)
+        self.assertEqual(classes[1].value, 3)
+        self.assertEqual(classes[0].label, 'class 2')
+        self.assertEqual(classes[1].label, 'new class')
+        self.assertEqual(classes[0].color.name(), '#00ff00')
+        self.assertEqual(classes[1].color.name(), '#ff0000')
         self.assertEqual(new_renderer.sourceColorRamp().type(), 'random')
         self.assertEqual(new_renderer.sourceColorRamp().count(), 5)
 
@@ -355,10 +359,12 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(restored.usesBands(), [1])
         classes = restored.classes()
         self.assertTrue(classes)
-        self.assertEqual(classes[1].label, 'class 2')
-        self.assertEqual(classes[3].label, 'new class')
-        self.assertEqual(classes[1].color.name(), '#00ff00')
-        self.assertEqual(classes[3].color.name(), '#ff0000')
+        self.assertEqual(classes[0].value, 1)
+        self.assertEqual(classes[1].value, 3)
+        self.assertEqual(classes[0].label, 'class 2')
+        self.assertEqual(classes[1].label, 'new class')
+        self.assertEqual(classes[0].color.name(), '#00ff00')
+        self.assertEqual(classes[1].color.name(), '#ff0000')
         self.assertEqual(restored.sourceColorRamp().type(), 'random')
         self.assertEqual(restored.sourceColorRamp().count(), 5)
 
@@ -380,12 +386,119 @@ class TestQgsRasterLayer(unittest.TestCase):
                    QgsColorRampShader.ColorRampItem(6, QColor(0, 0, 255), 'item3'),
                    ]
         classes = QgsPalettedRasterRenderer.colorTableToClassData(entries)
-        self.assertEqual(classes[5].label, 'item1')
-        self.assertEqual(classes[3].label, 'item2')
-        self.assertEqual(classes[6].label, 'item3')
-        self.assertEqual(classes[5].color.name(), '#ff0000')
+        self.assertEqual(classes[0].value, 5)
+        self.assertEqual(classes[1].value, 3)
+        self.assertEqual(classes[2].value, 6)
+        self.assertEqual(classes[0].label, 'item1')
+        self.assertEqual(classes[1].label, 'item2')
+        self.assertEqual(classes[2].label, 'item3')
+        self.assertEqual(classes[0].color.name(), '#ff0000')
+        self.assertEqual(classes[1].color.name(), '#00ff00')
+        self.assertEqual(classes[2].color.name(), '#0000ff')
+
+    def testLoadPalettedColorDataFromString(self):
+        """
+        Test interpreting a bunch of color data format strings
+        """
+        esri_clr_format = '1 255 255 0\n2 64 0 128\n3 255 32 32\n4 0 255 0\n5 0 0 255'
+        esri_clr_format_win = '1 255 255 0\r\n2 64 0 128\r\n3 255 32 32\r\n4 0 255 0\r\n5 0 0 255'
+        esri_clr_format_tab = '1\t255\t255\t0\n2\t64\t0\t128\n3\t255\t32\t32\n4\t0\t255\t0\n5\t0\t0\t255'
+        esri_clr_spaces = '1    255    255    0\n2    64    0    128\n3    255   32    32\n4   0   255   0\n5   0   0   255'
+        gdal_clr_comma = '1,255,255,0\n2,64,0,128\n3,255,32,32\n4,0,255,0\n5,0,0,255'
+        gdal_clr_colon = '1:255:255:0\n2:64:0:128\n3:255:32:32\n4:0:255:0\n5:0:0:255'
+        for f in [esri_clr_format,
+                  esri_clr_format_win,
+                  esri_clr_format_tab,
+                  esri_clr_spaces,
+                  gdal_clr_comma,
+                  gdal_clr_colon]:
+            classes = QgsPalettedRasterRenderer.classDataFromString(f)
+            self.assertEqual(len(classes), 5)
+            self.assertEqual(classes[0].value, 1)
+            self.assertEqual(classes[0].color.name(), '#ffff00')
+            self.assertEqual(classes[1].value, 2)
+            self.assertEqual(classes[1].color.name(), '#400080')
+            self.assertEqual(classes[2].value, 3)
+            self.assertEqual(classes[2].color.name(), '#ff2020')
+            self.assertEqual(classes[3].value, 4)
+            self.assertEqual(classes[3].color.name(), '#00ff00')
+            self.assertEqual(classes[4].value, 5)
+            self.assertEqual(classes[4].color.name(), '#0000ff')
+
+        grass_named_colors = '0 white\n1 yellow\n3 black\n6 blue\n9 magenta\n11 aqua\n13 grey\n14 gray\n15 orange\n19 brown\n21 purple\n22 violet\n24 indigo\n90 green\n180 cyan\n270 red\n'
+        classes = QgsPalettedRasterRenderer.classDataFromString(grass_named_colors)
+        self.assertEqual(len(classes), 16)
+        self.assertEqual(classes[0].value, 0)
+        self.assertEqual(classes[0].color.name(), '#ffffff')
+        self.assertEqual(classes[1].value, 1)
+        self.assertEqual(classes[1].color.name(), '#ffff00')
+        self.assertEqual(classes[2].value, 3)
+        self.assertEqual(classes[2].color.name(), '#000000')
+        self.assertEqual(classes[3].value, 6)
+        self.assertEqual(classes[3].color.name(), '#0000ff')
+        self.assertEqual(classes[4].value, 9)
+        self.assertEqual(classes[4].color.name(), '#ff00ff')
+        self.assertEqual(classes[5].value, 11)
+        self.assertEqual(classes[5].color.name(), '#00ffff')
+        self.assertEqual(classes[6].value, 13)
+        self.assertEqual(classes[6].color.name(), '#808080')
+        self.assertEqual(classes[7].value, 14)
+        self.assertEqual(classes[7].color.name(), '#808080')
+        self.assertEqual(classes[8].value, 15)
+        self.assertEqual(classes[8].color.name(), '#ffa500')
+        self.assertEqual(classes[9].value, 19)
+        self.assertEqual(classes[9].color.name(), '#a52a2a')
+        self.assertEqual(classes[10].value, 21)
+        self.assertEqual(classes[10].color.name(), '#800080')
+        self.assertEqual(classes[11].value, 22)
+        self.assertEqual(classes[11].color.name(), '#ee82ee')
+        self.assertEqual(classes[12].value, 24)
+        self.assertEqual(classes[12].color.name(), '#4b0082')
+        self.assertEqual(classes[13].value, 90)
+        self.assertEqual(classes[13].color.name(), '#008000')
+        self.assertEqual(classes[14].value, 180)
+        self.assertEqual(classes[14].color.name(), '#00ffff')
+        self.assertEqual(classes[15].value, 270)
+        self.assertEqual(classes[15].color.name(), '#ff0000')
+
+        gdal_alpha = '1:255:255:0:0\n2:64:0:128:50\n3:255:32:32:122\n4:0:255:0:200\n5:0:0:255:255'
+        classes = QgsPalettedRasterRenderer.classDataFromString(gdal_alpha)
+        self.assertEqual(len(classes), 5)
+        self.assertEqual(classes[0].value, 1)
+        self.assertEqual(classes[0].color.name(), '#ffff00')
+        self.assertEqual(classes[0].color.alpha(), 0)
+        self.assertEqual(classes[1].value, 2)
+        self.assertEqual(classes[1].color.name(), '#400080')
+        self.assertEqual(classes[1].color.alpha(), 50)
+        self.assertEqual(classes[2].value, 3)
+        self.assertEqual(classes[2].color.name(), '#ff2020')
+        self.assertEqual(classes[2].color.alpha(), 122)
+        self.assertEqual(classes[3].value, 4)
         self.assertEqual(classes[3].color.name(), '#00ff00')
-        self.assertEqual(classes[6].color.name(), '#0000ff')
+        self.assertEqual(classes[3].color.alpha(), 200)
+        self.assertEqual(classes[4].value, 5)
+        self.assertEqual(classes[4].color.name(), '#0000ff')
+        self.assertEqual(classes[4].color.alpha(), 255)
+
+        # some bad inputs
+        bad = ''
+        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
+        self.assertEqual(len(classes), 0)
+        bad = '\n\n\n'
+        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
+        self.assertEqual(len(classes), 0)
+        bad = 'x x x x'
+        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
+        self.assertEqual(len(classes), 0)
+        bad = '1 255 0 0\n2 255 255\n3 255 0 255'
+        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
+        self.assertEqual(len(classes), 2)
+        bad = '1 255 a 0'
+        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
+        self.assertEqual(len(classes), 1)
+        bad = '1 255 255 0 0 0 0 0 0 0'
+        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
+        self.assertEqual(len(classes), 0)
 
 
 if __name__ == '__main__':

@@ -37,6 +37,7 @@ class QgsPalettedRasterRenderer : QgsRasterRenderer
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
     QgsColorRamp *sourceColorRamp() const;
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
+    static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
 
   private:
 
