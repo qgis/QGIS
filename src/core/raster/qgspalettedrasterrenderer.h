@@ -116,8 +116,16 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**
      * Converts a \a string containing a color table or class data to to paletted renderer class data.
      * @note added in QGIS 3.0
+     * @see classDataFromFile()
      */
     static QgsPalettedRasterRenderer::ClassData classDataFromString( const QString &string );
+
+    /**
+     * Opens a color table file and returns corresponding paletted renderer class data.
+     * @note added in QGIS 3.0
+     * @see classDataFromString()
+     */
+    static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
 
   private:
 

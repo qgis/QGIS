@@ -362,6 +362,19 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
   return classes;
 }
 
+QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromFile( const QString &path )
+{
+  QFile inputFile( path );
+  QString input;
+  if ( inputFile.open( QIODevice::ReadOnly ) )
+  {
+    QTextStream in( &inputFile );
+    input = in.readAll();
+    inputFile.close();
+  }
+  return classDataFromString( input );
+}
+
 void QgsPalettedRasterRenderer::updateArrays()
 {
   // find maximum color index

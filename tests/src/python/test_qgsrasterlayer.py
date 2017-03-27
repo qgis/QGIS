@@ -500,6 +500,38 @@ class TestQgsRasterLayer(unittest.TestCase):
         classes = QgsPalettedRasterRenderer.classDataFromString(bad)
         self.assertEqual(len(classes), 0)
 
+    def testLoadPalettedClassDataFromFile(self):
+        # bad file
+        classes = QgsPalettedRasterRenderer.classDataFromFile('ajdhjashjkdh kjahjkdhk')
+        self.assertEqual(len(classes), 0)
+
+        # good file!
+        path = os.path.join(unitTestDataPath('raster'),
+                            'test.clr')
+        classes = QgsPalettedRasterRenderer.classDataFromFile(path)
+        self.assertEqual(len(classes), 10)
+        self.assertEqual(classes[0].value, 1)
+        self.assertEqual(classes[0].color.name(), '#000000')
+        self.assertEqual(classes[0].color.alpha(), 255)
+        self.assertEqual(classes[1].value, 2)
+        self.assertEqual(classes[1].color.name(), '#c8c8c8')
+        self.assertEqual(classes[2].value, 3)
+        self.assertEqual(classes[2].color.name(), '#006e00')
+        self.assertEqual(classes[3].value, 4)
+        self.assertEqual(classes[3].color.name(), '#6e4100')
+        self.assertEqual(classes[4].value, 5)
+        self.assertEqual(classes[4].color.name(), '#0000ff')
+        self.assertEqual(classes[4].color.alpha(), 255)
+        self.assertEqual(classes[5].value, 6)
+        self.assertEqual(classes[5].color.name(), '#0059ff')
+        self.assertEqual(classes[6].value, 7)
+        self.assertEqual(classes[6].color.name(), '#00aeff')
+        self.assertEqual(classes[7].value, 8)
+        self.assertEqual(classes[7].color.name(), '#00fff6')
+        self.assertEqual(classes[8].value, 9)
+        self.assertEqual(classes[8].color.name(), '#eeff00')
+        self.assertEqual(classes[9].value, 10)
+        self.assertEqual(classes[9].color.name(), '#ffb600')
 
 if __name__ == '__main__':
     unittest.main()
