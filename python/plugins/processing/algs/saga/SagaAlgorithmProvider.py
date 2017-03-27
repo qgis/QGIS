@@ -53,7 +53,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                          "2.2.2": ("2.2.2", SagaAlgorithm214),
                          "2.2.3": ("2.2.3", SagaAlgorithm214),
                          "2.3.0": ("2.3.0", SagaAlgorithm230),
-                         "2.3.1": ("2.3.1", SagaAlgorithm230)}
+                         "2.3.1": ("2.3.0", SagaAlgorithm230)}
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
