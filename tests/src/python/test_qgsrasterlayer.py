@@ -480,6 +480,19 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[4].color.name(), '#0000ff')
         self.assertEqual(classes[4].color.alpha(), 255)
 
+        # qgis style, with labels
+        qgis = '3 255 0 0 255 class 1\n4 0 255 0 200 class 2'
+        classes = QgsPalettedRasterRenderer.classDataFromString(qgis)
+        self.assertEqual(len(classes), 2)
+        self.assertEqual(classes[0].value, 3)
+        self.assertEqual(classes[0].color.name(), '#ff0000')
+        self.assertEqual(classes[0].color.alpha(), 255)
+        self.assertEqual(classes[0].label, 'class 1')
+        self.assertEqual(classes[1].value, 4)
+        self.assertEqual(classes[1].color.name(), '#00ff00')
+        self.assertEqual(classes[1].color.alpha(), 200)
+        self.assertEqual(classes[1].label, 'class 2')
+
         # some bad inputs
         bad = ''
         classes = QgsPalettedRasterRenderer.classDataFromString(bad)
@@ -496,9 +509,6 @@ class TestQgsRasterLayer(unittest.TestCase):
         bad = '1 255 a 0'
         classes = QgsPalettedRasterRenderer.classDataFromString(bad)
         self.assertEqual(len(classes), 1)
-        bad = '1 255 255 0 0 0 0 0 0 0'
-        classes = QgsPalettedRasterRenderer.classDataFromString(bad)
-        self.assertEqual(len(classes), 0)
 
     def testLoadPalettedClassDataFromFile(self):
         # bad file
@@ -532,6 +542,17 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[8].color.name(), '#eeff00')
         self.assertEqual(classes[9].value, 10)
         self.assertEqual(classes[9].color.name(), '#ffb600')
+
+    def testPalettedClassDataToString(self):
+        classes = [QgsPalettedRasterRenderer.Class(1, QColor(0, 255, 0), 'class 2'),
+                   QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')]
+        self.assertEqual(QgsPalettedRasterRenderer.classDataToString(classes), '1 0 255 0 255 class 2\n3 255 0 0 255 class 1')
+        # must be sorted by value to work OK in ArcMap
+        classes = [QgsPalettedRasterRenderer.Class(4, QColor(0, 255, 0), 'class 2'),
+                   QgsPalettedRasterRenderer.Class(3, QColor(255, 0, 0), 'class 1')]
+        self.assertEqual(QgsPalettedRasterRenderer.classDataToString(classes),
+                         '3 255 0 0 255 class 1\n4 0 255 0 255 class 2')
+
 
 if __name__ == '__main__':
     unittest.main()

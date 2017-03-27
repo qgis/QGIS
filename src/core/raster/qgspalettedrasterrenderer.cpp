@@ -326,9 +326,11 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
         break;
       }
 
-      case 4:
-      case 5:
+      default:
       {
+        if ( lineParts.count() < 4 )
+          continue;
+
         int value = lineParts.at( 0 ).toInt( &ok );
         if ( !ok )
           continue;
@@ -346,14 +348,20 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
           c = QColor( r, g, b );
         }
 
-        if ( lineParts.count() == 5 )
+        if ( lineParts.count() >= 5 )
         {
           double alpha = lineParts.at( 4 ).toDouble( &ok );
           if ( ok )
             c.setAlpha( alpha );
         }
 
-        classes << Class( value, c );
+        QString label;
+        if ( lineParts.count() > 5 )
+        {
+          label = lineParts.mid( 5 ).join( ' ' );
+        }
+
+        classes << Class( value, c, label );
         break;
       }
     }
@@ -373,6 +381,24 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromFil
     inputFile.close();
   }
   return classDataFromString( input );
+}
+
+QString QgsPalettedRasterRenderer::classDataToString( const QgsPalettedRasterRenderer::ClassData &classes )
+{
+  QStringList out;
+  // must be sorted
+  QgsPalettedRasterRenderer::ClassData cd = classes;
+  std::sort( cd.begin(), cd.end(), []( const Class & a, const Class & b ) -> bool
+  {
+    return a.value < b.value;
+  } );
+
+  Q_FOREACH ( const Class &c, cd )
+  {
+    out << QString( "%1 %2 %3 %4 %5 %6" ).arg( c.value ).arg( c.color.red() )
+        .arg( c.color.green() ).arg( c.color.blue() ).arg( c.color.alpha() ).arg( c.label );
+  }
+  return out.join( '\n' );
 }
 
 void QgsPalettedRasterRenderer::updateArrays()

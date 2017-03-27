@@ -108,6 +108,8 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void changeLabel();
     void applyColorRamp();
     void loadColorTable();
+    void saveColorTable();
+
 };
 
 #endif // QGSPALETTEDRENDERERWIDGET_H

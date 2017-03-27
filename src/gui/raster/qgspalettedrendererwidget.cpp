@@ -92,6 +92,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mDeleteEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::deleteEntry );
   connect( mAddEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::addEntry );
   connect( mLoadFromFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadColorTable );
+  connect( mExportToFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::saveColorTable );
 }
 
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
@@ -332,6 +333,36 @@ void QgsPalettedRendererWidget::loadColorTable()
     else
     {
       QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Could not interpret file as a raster color table." ) );
+    }
+  }
+}
+
+void QgsPalettedRendererWidget::saveColorTable()
+{
+  QgsSettings settings;
+  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Text (*.clr)" ) );
+  if ( !fileName.isEmpty() )
+  {
+    if ( !fileName.endsWith( QLatin1String( ".clr" ), Qt::CaseInsensitive ) )
+    {
+      fileName = fileName + ".clr";
+    }
+
+    QFile outputFile( fileName );
+    if ( outputFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
+    {
+      QTextStream outputStream( &outputFile );
+      outputStream << QgsPalettedRasterRenderer::classDataToString( mModel->classData() );
+      outputStream.flush();
+      outputFile.close();
+
+      QFileInfo fileInfo( fileName );
+      settings.setValue( QStringLiteral( "lastColorMapDir" ), fileInfo.absoluteDir().absolutePath() );
+    }
+    else
+    {
+      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
     }
   }
 }
