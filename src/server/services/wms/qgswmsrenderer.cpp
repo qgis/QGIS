@@ -1219,7 +1219,7 @@ namespace QgsWms
       {
         mapExtent.invert();
       }
-      if ( !mapExtent.isEmpty() )
+      if ( !mapExtent.isEmpty() && height > 0 )
       {
         double mapWidthHeightRatio = mapExtent.width() / mapExtent.height();
         double imageWidthHeightRatio = ( double )width / ( double )height;
@@ -1233,7 +1233,7 @@ namespace QgsWms
       }
     }
 
-    if ( width < 0 || height < 0 )
+    if ( width <= 0 || height <= 0 )
     {
       throw QgsException( QStringLiteral( "createImage: Invalid width / height parameters" ) );
     }
