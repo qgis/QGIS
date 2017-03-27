@@ -301,6 +301,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
     {
       job.cached = true;
+      job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
       job.renderer = nullptr;
       job.context.setPainter( nullptr );
