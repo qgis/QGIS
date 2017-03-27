@@ -445,7 +445,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Returns the data provider in a const-correct manner
      * @note not available in python bindings
      */
-    const QgsVectorDataProvider *dataProvider() const;
+    const QgsVectorDataProvider *dataProvider() const;  // SIP_SKIP
 
     //! Sets the textencoding of the data provider
     void setProviderEncoding( const QString &encoding );
@@ -669,7 +669,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Return const renderer.
      * @note not available in python bindings
      */
-    const QgsFeatureRenderer *renderer() const { return mRenderer; }
+    const QgsFeatureRenderer *renderer() const { return mRenderer; } // SIP_SKIP
 
     /**
      * Set renderer which will be invoked to represent this layer.
@@ -714,7 +714,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError );
+                                      QString &msgError SIP_OUT );
 
     /**
      * Lists all the style in db split into related to the layer and not related to
@@ -724,13 +724,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param msgError
      * @return the number of styles related to current layer
      */
-    virtual int listStylesInDatabase( QStringList &ids, QStringList &names,
-                                      QStringList &descriptions, QString &msgError );
+    virtual int listStylesInDatabase( QStringList &ids SIP_OUT, QStringList &names SIP_OUT,
+                                      QStringList &descriptions SIP_OUT, QString &msgError SIP_OUT );
 
     /**
      * Will return the named style corresponding to style id provided
      */
-    virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError );
+    virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
     /**
      * Delete a style from the database
@@ -739,7 +739,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param msgError reference to string that will be updated with any error messages
      * @return true in case of success
      */
-    virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError );
+    virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
     /**
      * Load a named style from file/local db/datasource db
@@ -747,13 +747,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param resultFlag will be set to true if a named style is correctly loaded
      * @param loadFromLocalDb if true forces to load from local db instead of datasource one
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDb );
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT, bool loadFromLocalDb );
 
     /**
      * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag ) override;
+    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param layerNode node that will contain the symbology definition for this layer.
@@ -911,14 +911,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      */
-    bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
+    bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
     /** Moves the vertex at the given position number,
      * ring and item (first number is index 0), and feature
      * to the given coordinates
      * @note available in python as moveVertexV2
      */
-    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex );
+    bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
@@ -990,7 +990,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     int addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
     //! @note available in python as addCurvedPart
-    int addPart( QgsCurve *ring ) SIP_PYNAME( addCurvedPart );
+    int addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
     /** Translates feature by dx, dy
      *  @param featureId id of the feature to translate
@@ -1047,13 +1047,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @note added in 2.12
      * @note not available in Python bindings
      */
-    const QgsAbstractVectorLayerLabeling *labeling() const { return mLabeling; }
+    const QgsAbstractVectorLayerLabeling *labeling() const { return mLabeling; } // SIP_SKIP
 
     /** Set labeling configuration. Takes ownership of the object.
      * @note added in 2.12
      * @note not available in Python bindings
      */
-    void setLabeling( QgsAbstractVectorLayerLabeling *labeling );
+    void setLabeling( QgsAbstractVectorLayerLabeling *labeling ); // SIP_SKIP
 
     //! Returns true if the provider is in editing mode
     virtual bool isEditable() const override;
@@ -1298,7 +1298,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
-    const QgsVectorLayerEditBuffer *editBuffer() const { return mEditBuffer; }
+    //! @note not available in python bindings
+    const QgsVectorLayerEditBuffer *editBuffer() const { return mEditBuffer; } // SIP_SKIP
 
     /**
      * Create edit command for undo/redo operations
@@ -1442,7 +1443,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @see minimumValue()
      * @see maximumValue()
      */
-    void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const;
+    void uniqueValues( int index, QList<QVariant> &uniqueValues SIP_OUT, int limit = -1 ) const;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -1530,7 +1531,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString metadata() const override;
 
     //! @note not available in python bindings
-    inline QgsGeometryCache *cache() { return mCache; }
+    inline QgsGeometryCache *cache() { return mCache; } // SIP_SKIP
 
     /** Set the simplification settings for fast rendering of features
      *  @note added in 2.2
@@ -1938,6 +1939,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
+
+#ifdef SIP_RUN
+    QgsVectorLayer( const QgsVectorLayer &rhs );
+#endif
 
   private:                       // Private attributes
 
