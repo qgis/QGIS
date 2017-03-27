@@ -301,8 +301,8 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
     {
       return;
     }
-    QgsLineString *lineString = dynamic_cast< QgsLineString *>( ring );
-    if ( lineString && !lineString->isClosed() )
+    QgsLineString *lineString = static_cast< QgsLineString *>( ring );
+    if ( !lineString->isClosed() )
     {
       lineString->close();
     }
