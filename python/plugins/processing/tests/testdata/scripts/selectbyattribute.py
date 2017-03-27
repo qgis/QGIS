@@ -5,12 +5,12 @@
 
 import processing
 
-result = processing.runalg("qgis:selectbyattribute",
-                           INPUT_LAYER,
-                           "id2",
-                           0,
-                           "2")
+result = processing.run("qgis:selectbyattribute",
+                        INPUT_LAYER,
+                        "id2",
+                        0,
+                        "2")
 
-processing.runalg("qgis:saveselectedfeatures",
-                  result["OUTPUT"],
-                  OUTPUT_LAYER)
+processing.run("qgis:saveselectedfeatures",
+               result["OUTPUT"],
+               OUTPUT_LAYER)

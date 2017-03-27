@@ -524,7 +524,7 @@ class GeoAlgorithm(object):
         console.
         """
 
-        s = 'processing.runalg("' + self.commandLineName() + '",'
+        s = 'processing.run("' + self.commandLineName() + '",'
         for param in self.parameters:
             s += param.getValueAsCommandLineParameter() + ','
         for out in self.outputs:

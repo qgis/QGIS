@@ -384,8 +384,8 @@ class Grass7Utils(object):
             if Grass7Utils.isGrass7Installed:
                 return
         try:
-            from processing import runalg
-            result = runalg(
+            from processing import run
+            result = run(
                 'grass7:v.voronoi',
                 points(),
                 False,

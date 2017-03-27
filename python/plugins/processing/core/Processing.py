@@ -49,7 +49,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.core.alglist import algList
 
@@ -195,10 +195,6 @@ class Processing(object):
         return dataobjects.getObjectFromUri(uri)
 
     @staticmethod
-    def runandload(name, *args):
-        Processing.runAlgorithm(name, handleAlgorithmResults, *args)
-
-    @staticmethod
     def runAlgorithm(algOrName, onFinish, *args, **kwargs):
         if isinstance(algOrName, GeoAlgorithm):
             alg = algOrName
@@ -251,7 +247,7 @@ class Processing(object):
                 # fix_print_with_import
                 print('Error: Wrong number of parameters')
                 QgsMessageLog.logMessage(Processing.tr('Error: Wrong number of parameters'), Processing.tr("Processing"))
-                processing.alghelp(algOrName)
+                processing.algorithmHelp(algOrName)
                 return
             i = 0
             for param in alg.parameters:
@@ -302,7 +298,7 @@ class Processing(object):
         elif iface is not None:
             feedback = MessageBarProgress(alg.name)
 
-        ret = runalg(alg, feedback)
+        ret = execute(alg, feedback)
         if ret:
             if onFinish is not None:
                 onFinish(alg, feedback)

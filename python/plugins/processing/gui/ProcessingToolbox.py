@@ -45,7 +45,7 @@ from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.MessageBarProgress import MessageBarProgress
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -274,7 +274,7 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
-                runalg(alg, feedback)
+                execute(alg, feedback)
                 handleAlgorithmResults(alg, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):

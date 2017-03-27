@@ -34,7 +34,7 @@ from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.ProcessingResults import ProcessingResults
@@ -121,7 +121,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         for count, alg in enumerate(self.algs):
             self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(self.algs)))
             self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(alg.name))
-            if runalg(alg, self.feedback) and not self.canceled:
+            if execute(alg, self.feedback) and not self.canceled:
                 if self.load[count]:
                     handleAlgorithmResults(alg, self.feedback, False)
                 self.setInfo(self.tr('Algorithm {0} correctly executed...').format(alg.name))

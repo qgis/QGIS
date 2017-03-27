@@ -40,7 +40,7 @@ from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
 
@@ -232,7 +232,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                                        self.alg.getAsCommand())
 
-                self.executed = runalg(self.alg, self.feedback)
+                self.executed = execute(self.alg, self.feedback)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
                                            self.feedback,

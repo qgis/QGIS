@@ -69,7 +69,7 @@ class ProcessingLog(object):
                 with codecs.open(ProcessingLog.logFilename(), 'a',
                                  encoding='utf-8') as logfile:
                     logfile.write(line)
-                algname = msg[len('Processing.runalg("'):]
+                algname = msg[len('processing.run("'):]
                 algname = algname[:algname.index('"')]
                 if algname not in ProcessingLog.recentAlgs:
                     ProcessingLog.recentAlgs.append(algname)

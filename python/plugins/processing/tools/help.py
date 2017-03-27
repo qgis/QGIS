@@ -89,7 +89,7 @@ def baseHelpForAlgorithm(alg, folder):
         f.write('Console usage\n')
         f.write('-------------\n')
         f.write('\n::\n\n')
-        cmd = "  processing.runalg('{}', ".format(alg.commandLineName())
+        cmd = "  processing.run('{}', ".format(alg.commandLineName())
         for p in alg.parameters:
             cmd += '{}, '.format(p.name.lower().strip())
 

@@ -39,7 +39,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import runalg, runalgIterating
+from processing.gui.AlgorithmExecutor import execute, executeIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.parameters import ParameterRaster
@@ -198,7 +198,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.name))
 
             if self.iterateParam:
-                if runalgIterating(self.alg, self.iterateParam, self.feedback):
+                if executeIterating(self.alg, self.iterateParam, self.feedback):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
@@ -208,7 +208,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if command:
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ALGORITHM, command)
-                if runalg(self.alg, self.feedback):
+                if execute(self.alg, self.feedback):
                     self.finish()
                 else:
                     QApplication.restoreOverrideCursor()
