@@ -401,19 +401,25 @@ QString QgsPalettedRasterRenderer::classDataToString( const QgsPalettedRasterRen
   return out.join( '\n' );
 }
 
-QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp )
+QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp, QgsRasterBlockFeedback *feedback )
 {
   if ( !raster )
     return ClassData();
 
   // get min and max value from raster
-  QgsRasterBandStats stats = raster->bandStatistics( bandNumber, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+  QgsRasterBandStats stats = raster->bandStatistics( bandNumber, QgsRasterBandStats::Min | QgsRasterBandStats::Max, QgsRectangle(), 0, feedback );
+  if ( feedback && feedback->isCanceled() )
+    return ClassData();
+
   double min = stats.minimumValue;
   double max = stats.maximumValue;
   // need count of every individual value
   int bins = ceil( max - min ) + 1;
 
-  QgsRasterHistogram histogram = raster->histogram( bandNumber, bins, min, max );
+  QgsRasterHistogram histogram = raster->histogram( bandNumber, bins, min, max, QgsRectangle(), 0, false, feedback );
+  if ( feedback && feedback->isCanceled() )
+    return ClassData();
+
   double interval = ( histogram.maximum - histogram.minimum + 1 ) / histogram.binCount;
 
   ClassData data;

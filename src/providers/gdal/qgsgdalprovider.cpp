@@ -93,7 +93,10 @@ int CPL_STDCALL progressCallback( double dfComplete,
   }
   sDfLastComplete = dfComplete;
 
-  return prog->feedback ? !prog->feedback->isCanceled() : true;
+  if ( prog->feedback && prog->feedback->isCanceled() )
+    return false;
+
+  return true;
 }
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )

@@ -21,6 +21,7 @@
 #include "qgsrasterlayer.h"
 #include "qgscolordialog.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QColorDialog>
 #include <QInputDialog>
@@ -35,6 +36,9 @@
 QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
+
+  mCalculatingProgressBar->hide();
+  mCancelButton->hide();
 
   contextMenu = new QMenu( tr( "Options" ), this );
   contextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
@@ -104,6 +108,17 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   else
   {
     mButtonLoadFromLayer->setEnabled( false );
+  }
+
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
+}
+
+QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
+{
+  if ( mGatherer )
+  {
+    mGatherer->stop();
+    mGatherer->wait(); // mGatherer is deleted when wait completes
   }
 }
 
@@ -383,10 +398,24 @@ void QgsPalettedRendererWidget::classify()
       return;
     }
 
-    std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
-    QgsPalettedRasterRenderer::ClassData data = QgsPalettedRasterRenderer::classDataFromRaster( provider, mBandComboBox->currentData().toInt(), ramp.get() );
-    mModel->setClassData( data );
-    emit widgetChanged();
+    if ( mGatherer )
+    {
+      mGatherer->stop();
+      return;
+    }
+
+    mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer,  mBandComboBox->currentData().toInt(), btnColorRamp->colorRamp() );
+
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
+    mCalculatingProgressBar->show();
+    mCancelButton->show();
+    connect( mCancelButton, &QPushButton::clicked, mGatherer, &QgsPalettedRendererClassGatherer::stop );
+
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::collectedClasses, this, &QgsPalettedRendererWidget::gatheredClasses );
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::finished, this, &QgsPalettedRendererWidget::gathererThreadFinished );
+    mClassifyButton->setText( tr( "Calculating..." ) );
+    mClassifyButton->setEnabled( false );
+    mGatherer->start();
   }
 }
 
@@ -399,6 +428,34 @@ void QgsPalettedRendererWidget::loadFromLayer()
     QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
     mModel->setClassData( classes );
     emit widgetChanged();
+  }
+}
+
+void QgsPalettedRendererWidget::gatheredClasses()
+{
+  if ( mGatherer && mGatherer->wasCanceled() )
+    return;
+
+  mModel->setClassData( mGatherer->classes() );
+  emit widgetChanged();
+}
+
+void QgsPalettedRendererWidget::gathererThreadFinished()
+{
+  mGatherer->deleteLater();
+  mGatherer = nullptr;
+  mClassifyButton->setText( tr( "Add Unique Values" ) );
+  mClassifyButton->setEnabled( true );
+  mCalculatingProgressBar->hide();
+  mCancelButton->hide();
+}
+
+void QgsPalettedRendererWidget::layerWillBeRemoved( QgsMapLayer *layer )
+{
+  if ( mGatherer && mRasterLayer == layer )
+  {
+    mGatherer->stop();
+    mGatherer->wait();
   }
 }
 

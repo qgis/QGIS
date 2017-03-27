@@ -21,12 +21,90 @@
 #include "qgsrasterrendererwidget.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgscolorschemelist.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterdataprovider.h"
 #include "ui_qgspalettedrendererwidgetbase.h"
 #include "qgis_gui.h"
 
 class QgsRasterLayer;
 
 /// @cond PRIVATE
+
+/** \class QgsPalettedRendererClassGatherer
+* Calculated raster stats for paletted renderer in a thread
+*/
+class QgsPalettedRendererClassGatherer: public QThread
+{
+    Q_OBJECT
+
+  public:
+    QgsPalettedRendererClassGatherer( QgsRasterLayer *layer, int bandNumber, QgsColorRamp *ramp = nullptr )
+      : mLayer( layer )
+      , mBandNumber( bandNumber )
+      , mRamp( ramp )
+      , mFeedback( nullptr )
+      , mWasCanceled( false )
+    {}
+
+    virtual void run() override
+    {
+      mWasCanceled = false;
+
+      // allow responsive cancelation
+      mFeedback = new QgsRasterBlockFeedback();
+      connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
+
+      mClasses = QgsPalettedRasterRenderer::classDataFromRaster( mLayer->dataProvider(), mBandNumber, mRamp.get(), mFeedback );
+      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
+      mFeedbackMutex.lock();
+      delete mFeedback;
+      mFeedback = nullptr;
+      mFeedbackMutex.unlock();
+
+      emit collectedClasses();
+    }
+
+    //! Informs the gatherer to immediately stop collecting values
+    void stop()
+    {
+      // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
+      mFeedbackMutex.lock();
+      if ( mFeedback )
+        mFeedback->cancel();
+      mFeedbackMutex.unlock();
+
+      mWasCanceled = true;
+    }
+
+    //! Returns true if collection was canceled before completion
+    bool wasCanceled() const { return mWasCanceled; }
+
+    QgsPalettedRasterRenderer::ClassData classes() const { return mClasses; }
+
+  signals:
+
+    /** Emitted when classes have been collected
+     */
+    void collectedClasses();
+
+  signals:
+    //! Internal routines can connect to this signal if they use event loop
+    void canceled();
+
+    void progressChanged( double progress );
+
+  private:
+
+    QgsRasterLayer *mLayer = nullptr;
+    int mBandNumber;
+    std::unique_ptr< QgsColorRamp > mRamp;
+    QString mSubstring;
+    QgsPalettedRasterRenderer::ClassData mClasses;
+    QgsRasterBlockFeedback *mFeedback = nullptr;
+    QMutex mFeedbackMutex;
+    bool mWasCanceled;
+};
+
 class QgsPalettedRendererModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -85,6 +163,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
   public:
 
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    ~QgsPalettedRendererWidget();
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsPalettedRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;
@@ -96,6 +175,9 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     QMenu *contextMenu = nullptr;
     QgsPalettedRendererModel *mModel = nullptr;
     QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
+
+    //! Background class gatherer thread
+    QgsPalettedRendererClassGatherer *mGatherer = nullptr;
 
     void setSelectionColor( const QItemSelection &selection, const QColor &color );
 
@@ -111,6 +193,10 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void saveColorTable();
     void classify();
     void loadFromLayer();
+
+    void gatheredClasses();
+    void gathererThreadFinished();
+    void layerWillBeRemoved( QgsMapLayer *layer );
 
 };
 

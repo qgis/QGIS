@@ -140,7 +140,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * color \a ramp can be specified to automatically assign colors from the ramp.
      * @note added in QGIS 3.0
      */
-    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr );
+    static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr,
+        QgsRasterBlockFeedback *feedback = nullptr );
 
   private:
 
