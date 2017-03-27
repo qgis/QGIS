@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
+set -e
+
 DIR=$(git rev-parse --show-toplevel)
 
-code=0
+# GNU prefix command for mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
 
-while read -r line; do
-  header="src/$line"
-  sipfile=$(sed -E 's/(.*)\.h/python\/\1.sip/' <<< $line)
-  outdiff=$(${DIR}/scripts/sipify.pl ${DIR}/$header | diff ${DIR}/$sipfile -)
+pushd ${DIR} > /dev/null
+
+EXCLUDE=$(cat ${DIR}/python/auto_sip.blacklist | tr '\n' '|' | ${GP}sed -e 's/|$//')
+FILES=$( find src -iname "*.h" \( -path 'src/core/*' -or -path 'src/gui/*' -or -path 'src/analysis/*' \) -type f | tr -s '[[:blank:]]' '\n' | egrep -iv "$EXCLUDE" | tr ' ' '\n')
+
+code=0
+for header in $FILES; do
+  sipfile=$(sed -E 's/src\/(.*)\.h/python\/\1.sip/' <<< $header)
+  outdiff=$(./scripts/sipify.pl $header | diff $sipfile -)
   if [[ -n $outdiff ]]; then
     if [[ $code == 0 ]]; then
       echo "some sip files are not up to date:"
@@ -15,6 +26,8 @@ while read -r line; do
     fi
     echo "$sipfile"
   fi
-done < ${DIR}/python/auto_sipfiles.txt
+done
+
+popd > /dev/null
 
 exit $code
