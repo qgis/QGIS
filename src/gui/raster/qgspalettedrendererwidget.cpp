@@ -24,6 +24,8 @@
 
 #include <QColorDialog>
 #include <QInputDialog>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QMenu>
 
 #ifdef ENABLE_MODELTEST
@@ -89,6 +91,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   connect( mDeleteEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::deleteEntry );
   connect( mAddEntryButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::addEntry );
+  connect( mLoadFromFileButton, &QPushButton::clicked, this, &QgsPalettedRendererWidget::loadColorTable );
 }
 
 QgsRasterRenderer *QgsPalettedRendererWidget::renderer()
@@ -309,6 +312,28 @@ void QgsPalettedRendererWidget::applyColorRamp()
 
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
   emit widgetChanged();
+}
+
+void QgsPalettedRendererWidget::loadColorTable()
+{
+  QgsSettings settings;
+  QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir );
+  if ( !fileName.isEmpty() )
+  {
+    QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::classDataFromFile( fileName );
+    if ( !classes.isEmpty() )
+    {
+      disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
+      mModel->setClassData( classes );
+      emit widgetChanged();
+      connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
+    }
+    else
+    {
+      QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Could not interpret file as a raster color table." ) );
+    }
+  }
 }
 
 //

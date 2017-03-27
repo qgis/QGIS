@@ -26,25 +26,15 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="mBandLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Band</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mBandComboBox"/>
-     </item>
-    </layout>
+   <item row="2" column="0">
+    <widget class="QTreeView" name="mTreeView">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>280</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QgsColorRampButton" name="btnColorRamp">
@@ -93,6 +83,28 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="mLoadFromFileButton">
+       <property name="toolTip">
+        <string>Load color map from file</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mExportToFileButton">
+       <property name="toolTip">
+        <string>Export color map to file</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -107,15 +119,25 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="QTreeView" name="mTreeView">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>280</height>
-      </size>
-     </property>
-    </widget>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="mBandLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Band</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mBandComboBox"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
