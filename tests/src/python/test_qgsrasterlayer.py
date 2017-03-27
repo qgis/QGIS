@@ -397,6 +397,18 @@ class TestQgsRasterLayer(unittest.TestCase):
         self.assertEqual(classes[1].color.name(), '#00ff00')
         self.assertEqual(classes[2].color.name(), '#0000ff')
 
+        # test #13263
+        path = os.path.join(unitTestDataPath('raster'),
+                            'hub13263.vrt')
+        info = QFileInfo(path)
+        base_name = info.baseName()
+        layer = QgsRasterLayer(path, base_name)
+        self.assertTrue(layer.isValid(), 'Raster not loaded: {}'.format(path))
+        classes = QgsPalettedRasterRenderer.colorTableToClassData(layer.dataProvider().colorTable(1))
+        self.assertEqual(len(classes), 4)
+        classes = QgsPalettedRasterRenderer.colorTableToClassData(layer.dataProvider().colorTable(15))
+        self.assertEqual(len(classes), 256)
+
     def testLoadPalettedColorDataFromString(self):
         """
         Test interpreting a bunch of color data format strings
