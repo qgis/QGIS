@@ -25,6 +25,7 @@ class QgsMapCanvas : QGraphicsView
     void setCurrentLayer( QgsMapLayer *layer );
     const QgsMapSettings &mapSettings() const /KeepReference/;
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+    void setMapSettingsFlags( QgsMapSettings::Flags flags );
     const QgsLabelingResults *labelingResults() const;
     void setCachingEnabled( bool enabled );
     bool isCachingEnabled() const;

@@ -385,6 +385,13 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
+void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
+{
+  mSettings.setFlags( flags );
+  clearCache();
+  refresh();
+}
+
 const QgsLabelingResults *QgsMapCanvas::labelingResults() const
 {
   return mLabelingResults;

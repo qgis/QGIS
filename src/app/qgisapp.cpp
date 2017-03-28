@@ -11851,6 +11851,7 @@ void QgisApp::writeProject( QDomDocument &doc )
     node.setAttribute( QStringLiteral( "showExtent" ), w->isMainCanvasExtentVisible() );
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
+    node.setAttribute( QStringLiteral( "showLabels" ), w->labelsVisible() );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
@@ -11890,6 +11891,7 @@ void QgisApp::readProject( const QDomDocument &doc )
       bool showExtent = elementNode.attribute( QStringLiteral( "showExtent" ), QStringLiteral( "0" ) ).toInt();
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
+      bool showLabels = elementNode.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) ).toInt();
       Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elementNode.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
       QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, floating, QRect( x, y, w, h ), area );
@@ -11901,6 +11903,7 @@ void QgisApp::readProject( const QDomDocument &doc )
       mapCanvasDock->setScaleFactor( scaleFactor );
       mapCanvasDock->setViewScaleSynchronized( scaleSynced );
       mapCanvasDock->setMainCanvasExtentVisible( showExtent );
+      mapCanvasDock->setLabelsVisible( showLabels );
     }
   }
 }

@@ -105,6 +105,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsMenu->addAction( mActionShowAnnotations );
   settingsMenu->addAction( mActionShowCursor );
   settingsMenu->addAction( mActionShowExtent );
+  settingsMenu->addAction( mActionShowLabels );
   settingsMenu->addSeparator();
   settingsMenu->addAction( mActionSetCrs );
   settingsMenu->addAction( mActionRename );
@@ -118,6 +119,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mActionShowCursor, &QAction::toggled, this, [ = ]( bool checked ) { mXyMarker->setVisible( checked ); } );
   mActionShowExtent->setChecked( false );
   connect( mActionShowExtent, &QAction::toggled, this, [ = ]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
+  mActionShowLabels->setChecked( true );
+  connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
@@ -271,6 +274,16 @@ void QgsMapCanvasDockWidget::setViewScaleSynchronized( bool enabled )
 bool QgsMapCanvasDockWidget::isViewScaleSynchronized() const
 {
   return mSyncScaleCheckBox->isChecked();
+}
+
+void QgsMapCanvasDockWidget::setLabelsVisible( bool enabled )
+{
+  mActionShowLabels->setChecked( enabled );
+}
+
+bool QgsMapCanvasDockWidget::labelsVisible() const
+{
+  return mActionShowLabels->isChecked();
 }
 
 double QgsMapCanvasDockWidget::scaleFactor() const
@@ -444,6 +457,16 @@ void QgsMapCanvasDockWidget::updateExtentRect()
     }
   }
   mExtentRubberBand->setToGeometry( g, nullptr );
+}
+
+void QgsMapCanvasDockWidget::showLabels( bool show )
+{
+  QgsMapSettings::Flags flags = mMapCanvas->mapSettings().flags();
+  if ( show )
+    flags = flags | QgsMapSettings::DrawLabeling;
+  else
+    flags = flags & ~QgsMapSettings::DrawLabeling;
+  mMapCanvas->setMapSettingsFlags( flags );
 }
 
 QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )

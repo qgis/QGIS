@@ -118,6 +118,18 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
      */
     bool isViewScaleSynchronized() const;
 
+    /**
+     * Sets whether labels should be rendered in the view.
+     * @see labelsVisible()
+     */
+    void setLabelsVisible( bool enabled );
+
+    /**
+     * Returns whether labels are rendered in the view.
+     * @see setLabelsVisible()
+     */
+    bool labelsVisible() const;
+
   signals:
 
     void renameTriggered();
@@ -136,6 +148,8 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void syncMarker( const QgsPoint &p );
     void mapScaleChanged();
     void updateExtentRect();
+    void showLabels( bool show );
+
 
   private:
 

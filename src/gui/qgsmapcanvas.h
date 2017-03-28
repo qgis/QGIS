@@ -108,6 +108,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Resets the \a flags for the canvas' map settings.
+     * @note added in QGIS 3.0
+     */
+    void setMapSettingsFlags( QgsMapSettings::Flags flags );
+
     //! Get access to the labeling results (may be null)
     //! @note added in 2.4
     const QgsLabelingResults *labelingResults() const;
