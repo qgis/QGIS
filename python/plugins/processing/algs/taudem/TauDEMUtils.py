@@ -102,7 +102,7 @@ class TauDEMUtils:
     def executeTauDEM(command, progress):
         loglines = []
         loglines.append(TauDEMUtils.tr('TauDEM execution console output'))
-        command = escapeAndJoin(command)
+        command = TauDEMUtils.escapeAndJoin(command)
         fused_command = ''.join(['"%s" ' % c for c in command])
         progress.setInfo(TauDEMUtils.tr('TauDEM command:'))
         progress.setCommand(fused_command.replace('" "', ' ').strip('"'))
@@ -124,3 +124,15 @@ class TauDEMUtils:
         if context == '':
             context = 'TauDEMUtils'
         return QCoreApplication.translate(context, string)
+
+    @staticmethod
+    def escapeAndJoin(strList):
+        joined = ''
+        for s in strList:
+            if s[0] != '-' and ' ' in s:
+                escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
+                    + '"'
+            else:
+                escaped = s
+            joined += escaped + ' '
+        return joined.strip()
