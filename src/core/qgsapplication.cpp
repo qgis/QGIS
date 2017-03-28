@@ -37,6 +37,7 @@
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
+#include "qgsgeos.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -310,6 +311,12 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   catch ( QgsException &e )
   {
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
+    if ( qApp->thread() == QThread::currentThread() )
+      QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+  }
+  catch ( GEOSException &e )
+  {
+    QgsDebugMsg( "Caught unhandled GEOSException: " + e.what() );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
