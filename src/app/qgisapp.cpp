@@ -3141,8 +3141,12 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name );
   if ( !dock )
     return nullptr;
-  else
-    return dock->mapCanvas();
+
+  dock->mapCanvas()->setLayers( mMapCanvas->layers() );
+  dock->mapCanvas()->setExtent( mMapCanvas->extent() );
+  dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
+  dock->mapCanvas()->freeze( false );
+  return dock->mapCanvas();
 }
 
 QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
@@ -3170,12 +3174,6 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   applyProjectSettingsToCanvas( mapCanvas );
   applyDefaultSettingsToCanvas( mapCanvas );
 
-  mapCanvas->setLayers( mMapCanvas->layers() );
-  mapCanvas->setExtent( mMapCanvas->extent() );
-
-  mapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
-
-
   // add existing annotations to canvas
   Q_FOREACH ( QgsAnnotation *annotation, QgsProject::instance()->annotationManager()->annotations() )
   {
@@ -3183,7 +3181,6 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
     Q_UNUSED( canvasItem ); //item is already added automatically to canvas scene
   }
 
-  mapCanvas->freeze( false );
   markDirty();
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
@@ -9809,7 +9806,14 @@ void QgisApp::newMapCanvas()
     }
   }
 
-  createNewMapCanvasDock( name, true );
+  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name, true );
+  if ( dock )
+  {
+    dock->mapCanvas()->setLayers( mMapCanvas->layers() );
+    dock->mapCanvas()->setExtent( mMapCanvas->extent() );
+    dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
+    dock->mapCanvas()->freeze( false );
+  }
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )
@@ -11873,6 +11877,7 @@ void QgisApp::readProject( const QDomDocument &doc )
     mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
 
   QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapViewDocks" ) );
+  QList< QgsMapCanvas * > views;
   if ( !nodes.isEmpty() )
   {
     QDomNode viewNode = nodes.at( 0 );
@@ -11896,15 +11901,22 @@ void QgisApp::readProject( const QDomDocument &doc )
 
       QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, floating, QRect( x, y, w, h ), area );
       QgsMapCanvas *mapCanvas = mapCanvasDock->mapCanvas();
-      mapCanvas->readProject( doc );
-
       mapCanvasDock->setViewCenterSynchronized( synced );
       mapCanvasDock->setCursorMarkerVisible( showCursor );
       mapCanvasDock->setScaleFactor( scaleFactor );
       mapCanvasDock->setViewScaleSynchronized( scaleSynced );
       mapCanvasDock->setMainCanvasExtentVisible( showExtent );
       mapCanvasDock->setLabelsVisible( showLabels );
+      mapCanvas->readProject( doc );
+      views << mapCanvas;
     }
+  }
+  // unfreeze all new views at once. We don't do this as they are created since additional
+  // views which may exist in project could rearrange the docks and cause the canvases to resize
+  // resulting in multiple redraws
+  Q_FOREACH ( QgsMapCanvas *c, views )
+  {
+    c->freeze( false );
   }
 }
 

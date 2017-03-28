@@ -250,6 +250,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Create a new map canvas dock widget with the specified unique \a name. The \a isFloating
      * and \a dockGeometry arguments can be used to specify an initial floating state
      * and widget geometry rect for the dock.
+     * \note the mapCanvas() inside the dock widget will initially be frozen to avoid multiple
+     * unwanted map redraws. Callers must manually unfreeze the map canvas when they have finished
+     * setting the initial state of the canvas and are ready for it to begin rendering.
      */
     QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
         Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
