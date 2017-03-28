@@ -34,7 +34,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsProcessingFeedback,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingAlgorithm)
 
 from builtins import str
 from builtins import object
@@ -49,9 +50,10 @@ from processing.tools import dataobjects, vector
 from processing.algs.help import shortHelp
 
 
-class GeoAlgorithm(object):
+class GeoAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self):
+        super().__init__()
         self._icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         # Parameters needed by the algorithm
         self.parameters = list()
