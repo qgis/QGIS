@@ -250,42 +250,14 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 /// @cond PRIVATE
 
-class GEOSException // clazy:exclude=rule-of-three
+
+class GEOSException : public std::runtime_error
 {
   public:
     explicit GEOSException( const QString &message )
+      : std::runtime_error( message.toUtf8().constData() )
     {
-      if ( message == QLatin1String( "Unknown exception thrown" ) && lastMsg().isNull() )
-      {
-        msg = message;
-      }
-      else
-      {
-        msg = message;
-        lastMsg() = msg;
-      }
     }
-
-    // copy constructor
-    GEOSException( const GEOSException &rhs )
-    {
-      *this = rhs;
-    }
-
-    ~GEOSException()
-    {
-      if ( lastMsg() == msg )
-        lastMsg() = QString::null;
-    }
-
-    QString what()
-    {
-      return msg;
-    }
-
-  private:
-    QString msg;
-    static QString &lastMsg() { static QString sLastMsg; return sLastMsg; }
 };
 
 /// @endcond
