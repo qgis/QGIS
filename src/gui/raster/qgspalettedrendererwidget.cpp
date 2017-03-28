@@ -89,7 +89,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
     }
 
     setFromRenderer( mRasterLayer->renderer() );
-    connect( mBandComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   }
 
   connect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
@@ -111,6 +111,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   }
 
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
+  connect( mBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPalettedRendererWidget::loadFromLayer );
 }
 
 QgsPalettedRendererWidget::~QgsPalettedRendererWidget()
@@ -425,9 +426,13 @@ void QgsPalettedRendererWidget::loadFromLayer()
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( provider )
   {
-    QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
-    mModel->setClassData( classes );
-    emit widgetChanged();
+    QList<QgsColorRampShader::ColorRampItem> table = provider->colorTable( mBandComboBox->currentData().toInt() );
+    if ( !table.isEmpty() )
+    {
+      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( mBandComboBox->currentData().toInt() ) );
+      mModel->setClassData( classes );
+      emit widgetChanged();
+    }
   }
 }
 
