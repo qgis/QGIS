@@ -102,7 +102,6 @@ class TauDEMUtils:
     def executeTauDEM(command, progress):
         loglines = []
         loglines.append(TauDEMUtils.tr('TauDEM execution console output'))
-        command = TauDEMUtils.escapeAndJoin(command)
         fused_command = ''.join(['"%s" ' % c for c in command])
         progress.setInfo(TauDEMUtils.tr('TauDEM command:'))
         progress.setCommand(fused_command.replace('" "', ' ').strip('"'))
