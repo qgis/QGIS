@@ -63,9 +63,6 @@ class AlgorithmDialogFeedback(QgsProcessingFeedback):
     def setProgressText(self, text):
         self.dialog.setText(text)
 
-    def setProgress(self, i):
-        self.dialog.setPercentage(i)
-
     def pushInfo(self, msg):
         self.dialog.setInfo(msg)
 
@@ -86,6 +83,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self.setupUi(self)
 
         self.feedback = AlgorithmDialogFeedback(self)
+        self.feedback.progressChanged.connect(self.setPercentage)
 
         self.settings = QgsSettings()
         self.restoreGeometry(self.settings.value("/Processing/dialogBase", QByteArray()))

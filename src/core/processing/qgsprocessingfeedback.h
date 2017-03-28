@@ -38,14 +38,6 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
   public:
 
     /**
-     * Sets the algorithm's progress. The progress
-     * argument is limited to the range 0-100 and reflects the percentage
-     * progress through the task.
-     * @see setProgressText()
-     */
-    virtual void setProgress( double progress ) { Q_UNUSED( progress ); }
-
-    /**
      * Sets a progress report text string. This can be used in conjunction with
      * setProgress() to provide detailed progress reports, such as "Transformed
      * 4 of 5 layers".

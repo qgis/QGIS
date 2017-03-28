@@ -61,9 +61,6 @@ class FieldCalculatorFeedback(QgsProcessingFeedback):
     def reportError(self, msg):
         self.dialog.error(msg)
 
-    def setProgress(self, i):
-        self.dialog.setPercentage(i)
-
 
 class FieldsCalculatorDialog(BASE, WIDGET):
 
@@ -72,6 +69,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.setupUi(self)
 
         self.feedback = FieldCalculatorFeedback(self)
+        self.feedback.progressChanged.connect(self.setPercentage)
 
         self.executed = False
         self.alg = alg
