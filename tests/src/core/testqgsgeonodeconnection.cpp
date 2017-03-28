@@ -47,6 +47,7 @@ class TestQgsGeoNodeConnection: public QObject
     // Check if we can create geonode connection from database.
     void testCreation();
     void testGetLayers();
+    void testGetMaps();
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
@@ -93,6 +94,26 @@ void TestQgsGeoNodeConnection::testGetLayers()
   QgsGeoNodeConnection geonodeConnection( "Demo GeoNode" );
 
   QVariantList layers = geonodeConnection.getLayers();
+
+  QVERIFY( layers.count() > 0 );
+  // Example how to access it
+  QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
+  QList<QString> keys = layer1.keys();
+  QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
+}
+
+// Test retrieveng layers
+void TestQgsGeoNodeConnection::testGetMaps()
+{
+  // Add Demo GeoNode Connection
+  QgsSettings settings;
+
+  // Testing real server, demo.geonode.org. Need to be changed later.
+  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( "Demo GeoNode" ), "demo.geonode.org" );
+
+  QgsGeoNodeConnection geonodeConnection( "Demo GeoNode" );
+
+  QVariantList layers = geonodeConnection.getMaps();
 
   QVERIFY( layers.count() > 0 );
   // Example how to access it

@@ -125,3 +125,32 @@ QVariantList QgsGeoNodeConnection::getLayers()
 
   return layerList;
 }
+
+// Currently copy and paste from getLayers. It can be refactored easily, difference in url only.
+QVariantList QgsGeoNodeConnection::getMaps()
+{
+  // Construct URL. I need to prepend http in the begining to make it work.
+  // setScheme doesn't really help.
+  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/maps" );
+  QUrl layerUrl( url );
+  layerUrl.setScheme( "http" );
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
+
+  QNetworkRequest request( layerUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json" );
+  // Handle redirect
+  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+
+  QNetworkReply *reply = networkManager->get( request );
+  while ( !reply->isFinished() )
+  {
+    qApp->processEvents();
+  }
+  QByteArray response_data = reply->readAll();
+  QJsonDocument jsonDocument = QJsonDocument::fromJson( response_data );
+  QJsonObject jsonObject = jsonDocument.object();
+  QVariantMap jsonVariantMap = jsonObject.toVariantMap();
+  QVariantList layerList = jsonVariantMap["objects"].toList();
+
+  return layerList;
+}
