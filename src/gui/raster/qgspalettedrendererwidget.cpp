@@ -68,9 +68,10 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   connect( mTreeView, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
          );
 
-  QgsSettings settings;
-  QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), QString() ).toString();
-  btnColorRamp->setColorRampFromName( defaultPalette );
+  btnColorRamp->setShowRandomColorRamp( true );
+
+  std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
+  btnColorRamp->setDefaultColorRamp( ramp.get() );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsPalettedRendererWidget::applyColorRamp );
 
   if ( mRasterLayer )
@@ -150,17 +151,15 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
     }
     else
     {
-      QgsSettings settings;
-      QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
-      whileBlocking( btnColorRamp )->setColorRampFromName( defaultPalette );
+      std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
+      whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
     }
   }
   else
   {
     loadFromLayer();
-    QgsSettings settings;
-    QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
-    whileBlocking( btnColorRamp )->setColorRampFromName( defaultPalette );
+    std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
+    whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
   }
 }
 
@@ -310,13 +309,6 @@ void QgsPalettedRendererWidget::applyColorRamp()
   if ( !ramp )
   {
     return;
-  }
-
-  if ( !btnColorRamp->colorRampName().isEmpty() )
-  {
-    // Remember last used color ramp
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "Raster/defaultPalette" ), btnColorRamp->colorRampName() );
   }
 
   disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
