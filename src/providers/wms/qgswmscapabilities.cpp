@@ -43,20 +43,14 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
 
   // Setup authentication
   mAuth.mUserName = uri.param( "username" );
-  QgsDebugMsg( "set username to " + mAuth.mUserName );
-
   mAuth.mPassword = uri.param( "password" );
-  QgsDebugMsg( "set password to " + mAuth.mPassword );
 
   if ( uri.hasParam( "authcfg" ) )
   {
     mAuth.mAuthCfg = uri.param( "authcfg" );
   }
-  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
 
   mAuth.mReferer = uri.param( "referer" );
-  QgsDebugMsg( "set referer to " + mAuth.mReferer );
-
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.param( "type" ) == "xyz" )
