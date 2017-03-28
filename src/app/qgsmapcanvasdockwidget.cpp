@@ -201,7 +201,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
   {
     mBlockExtentSync = false;
-    syncViewCenter( mMainCanvas );
+    if ( mActionSyncView->isChecked() )
+      syncViewCenter( mMainCanvas );
   } );
 }
 
