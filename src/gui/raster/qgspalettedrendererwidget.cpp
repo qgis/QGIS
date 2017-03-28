@@ -318,6 +318,17 @@ void QgsPalettedRendererWidget::applyColorRamp()
 
   double numberOfEntries = data.count();
   int i = 0;
+
+  if ( QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( ramp.get() ) )
+  {
+    //ramp is a random colors ramp, so inform it of the total number of required colors
+    //this allows the ramp to pregenerate a set of visually distinctive colors
+    randomRamp->setTotalColorCount( numberOfEntries );
+  }
+
+  if ( numberOfEntries > 1 )
+    numberOfEntries -= 1; //avoid duplicate first color
+
   for ( ; cIt != data.end(); ++cIt )
   {
     cIt->color = ramp->color( i / numberOfEntries );
