@@ -25,6 +25,8 @@
 //#include "../../providers/wfs/qgswfsconnection.h"
 
 #include <QString>
+#include <QMultiMap>
+#include <QNetworkReply>
 
 
 /*!
@@ -52,6 +54,9 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
 
     //! Set selected connection
     static void setSelectedConnection( const QString &name );
+
+    //! Return list of available layers
+    QVariantList getLayers();
 
     // Methods below can be moved to another class. I will put here first until I decide. (Ismail)
 
@@ -93,6 +98,10 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
 
     //! Property of mUri
     QgsDataSourceUri mUri;
+
+    QMultiMap<QString, QString> mLayers;
+    QMultiMap<QString, QString> mMaps;
+    QString mData;
 
     //! List of wms connection of the geonode instance
     QStringList wmsConnectionNames;

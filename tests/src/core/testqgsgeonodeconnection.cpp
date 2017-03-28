@@ -14,7 +14,9 @@
  ***************************************************************************/
 #include "qgstest.h"
 #include <QtTest/QtTest>
+#include <QtTest/QSignalSpy>
 #include <QString>
+#include <QMultiMap>
 
 //#include "qgis_core.h"
 #include "qgsgeonodeconnection.h"
@@ -39,10 +41,12 @@ class TestQgsGeoNodeConnection: public QObject
     void cleanup()
     {
       QgsGeoNodeConnection::deleteConnection( mGeoNodeConnectionName );
+      QgsGeoNodeConnection::deleteConnection( "Demo GeoNode" );
     }
 
     // Check if we can create geonode connection from database.
     void testCreation();
+    void testGetLayers();
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
@@ -75,6 +79,26 @@ void TestQgsGeoNodeConnection::testCreation()
 
   // Verify if the new connection is created properly
   QVERIFY( newConnectionList.contains( mGeoNodeConnectionName ) );
+}
+
+// Test retrieveng layers
+void TestQgsGeoNodeConnection::testGetLayers()
+{
+  // Add Demo GeoNode Connection
+  QgsSettings settings;
+
+  // Testing real server, demo.geonode.org. Need to be changed later.
+  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection + QStringLiteral( "/%1/url" ).arg( "Demo GeoNode" ), "demo.geonode.org" );
+
+  QgsGeoNodeConnection geonodeConnection( "Demo GeoNode" );
+
+  QVariantList layers = geonodeConnection.getLayers();
+
+  QVERIFY( layers.count() > 0 );
+  // Example how to access it
+  QVariantMap layer1 = layers[0].toMap();  // Need to convert to map
+  QList<QString> keys = layer1.keys();
+  QVERIFY( keys.indexOf( "title" ) != -1 ); // Check if title is in the keys
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )

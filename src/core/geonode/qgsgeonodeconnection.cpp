@@ -16,6 +16,16 @@
 #include "qgsgeonodeconnection.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qurl"
+
+#include <QMultiMap>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QByteArray>
+#include <QJsonDocument>
+#include <QDebug>
+
 
 const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode/";
 const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode/";
@@ -88,4 +98,30 @@ void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
   settings.setValue( pathGeoNodeConnection + QStringLiteral( "/selected" ), name );
 }
 
+QVariantList QgsGeoNodeConnection::getLayers()
+{
+  // Construct URL. I need to prepend http in the begining to make it work.
+  // setScheme doesn't really help.
+  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/layers" );
+  QUrl layerUrl( url );
+  layerUrl.setScheme( "http" );
+  QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
 
+  QNetworkRequest request( layerUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json" );
+  // Handle redirect
+  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+
+  QNetworkReply *reply = networkManager->get( request );
+  while ( !reply->isFinished() )
+  {
+    qApp->processEvents();
+  }
+  QByteArray response_data = reply->readAll();
+  QJsonDocument jsonDocument = QJsonDocument::fromJson( response_data );
+  QJsonObject jsonObject = jsonDocument.object();
+  QVariantMap jsonVariantMap = jsonObject.toVariantMap();
+  QVariantList layerList = jsonVariantMap["objects"].toList();
+
+  return layerList;
+}
