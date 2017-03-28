@@ -41,10 +41,12 @@ class Orthogonalize(GeoAlgorithm):
     DISTANCE_THRESHOLD = 'DISTANCE_THRESHOLD'
     ANGLE_TOLERANCE = 'ANGLE_TOLERANCE'
 
+    def tags(self):
+        return self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Orthogonalize')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,

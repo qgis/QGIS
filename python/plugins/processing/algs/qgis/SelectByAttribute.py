@@ -60,10 +60,12 @@ class SelectByAttribute(GeoAlgorithm):
                         'contains',
                         'does not contain']
 
+    def tags(self):
+        return self.tr('select,attribute,value,contains,null,field').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by attribute')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
-        self.tags = self.tr('select,attribute,value,contains,null,field')
 
         self.i18n_operators = ['=',
                                '!=',

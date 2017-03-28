@@ -68,10 +68,12 @@ class BasicStatisticsStrings(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
+    def tags(self):
+        return self.tr('stats,statistics,string,table,layer').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for text fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('stats,statistics,string,table,layer')
 
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))

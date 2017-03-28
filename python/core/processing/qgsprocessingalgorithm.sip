@@ -8,6 +8,6 @@ class QgsProcessingAlgorithm
 
     QgsProcessingAlgorithm();
     virtual ~QgsProcessingAlgorithm();
-
+    virtual QStringList tags() const;
 };
 

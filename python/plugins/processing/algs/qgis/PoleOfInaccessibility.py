@@ -50,10 +50,12 @@ class PoleOfInaccessibility(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
+    def tags(self):
+        return self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Pole of Inaccessibility')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),

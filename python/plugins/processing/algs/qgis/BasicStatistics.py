@@ -77,11 +77,13 @@ class BasicStatisticsForField(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
+    def tags(self):
+        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for fields')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
-                            'count,distinct,unique,variance,median,quartile,range,majority,minority')
 
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input table')))

@@ -619,7 +619,7 @@ class ModelerDialog(BASE, WIDGET):
                     continue
 
                 item_text = [alg.name.lower()]
-                item_text.extend(alg.tags.split(','))
+                item_text.extend(alg.tags())
 
                 show = not search_strings or all(
                     any(part in t for t in item_text)

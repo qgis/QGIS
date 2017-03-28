@@ -47,10 +47,12 @@ class ReprojectLayer(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
+    def tags(self):
+        return self.tr('transform,reproject,crs,srs,warp').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('transform,reproject,crs,srs,warp')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))

@@ -40,6 +40,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm() = default;
 
+    /**
+     * Returns a list of tags which relate to the algorithm, and are used to assist users in searching
+     * for suitable algorithms. These tags should be localised.
+    */
+    virtual QStringList tags() const { return QStringList(); }
+
 };
 
 #endif // QGSPROCESSINGALGORITHM_H

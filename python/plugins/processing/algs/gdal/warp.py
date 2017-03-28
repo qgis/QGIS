@@ -63,11 +63,12 @@ class warp(GdalAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
+    def tags(self):
+        return self.tr('transform,reproject,crs,srs').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
         self.group, self.i18n_group = self.trAlgorithm('Raster projections')
-
-        self.tags = self.tr('transform,reproject,crs,srs')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
                                        self.tr('Source SRS'),

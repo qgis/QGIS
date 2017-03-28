@@ -45,10 +45,12 @@ class DensifyGeometries(GeoAlgorithm):
     VERTICES = 'VERTICES'
     OUTPUT = 'OUTPUT'
 
+    def tags(self):
+        return self.tr('add,vertices,points').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Densify geometries')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('add,vertices,points')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),

@@ -56,10 +56,12 @@ class TopoColor(GeoAlgorithm):
     BALANCE = 'BALANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
+    def tags(self):
+        return self.tr('topocolor,colors,graph,adjacent,assign').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Topological coloring')
         self.group, self.i18n_group = self.trAlgorithm('Cartographic tools')
-        self.tags = self.tr('topocolor,colors,graph,adjacent,assign')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))

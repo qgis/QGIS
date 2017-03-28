@@ -51,10 +51,12 @@ class ExtentFromLayer(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
 
+    def tags(self):
+        return self.tr('extent,envelope,bounds,bounding,boundary,layer').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Polygon from layer extent')
         self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('extent,envelope,bounds,bounding,boundary,layer')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))

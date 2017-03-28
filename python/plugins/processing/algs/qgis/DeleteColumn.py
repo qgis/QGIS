@@ -38,10 +38,12 @@ class DeleteColumn(GeoAlgorithm):
     COLUMNS = 'COLUMN'
     OUTPUT = 'OUTPUT'
 
+    def tags(self):
+        return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Delete column')
         self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.tags = self.tr('drop,delete,remove,fields,columns,attributes')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))

@@ -42,10 +42,12 @@ class ExtractByLocation(GeoAlgorithm):
     PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
 
+    def tags(self):
+        return self.tr('extract,filter,location,intersects,contains,within').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract by location')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
-        self.tags = self.tr('extract,filter,location,intersects,contains,within')
 
         self.predicates = (
             ('intersects', self.tr('intersects')),

@@ -55,6 +55,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
     def __init__(self):
         super().__init__()
         self._icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
+
         # Parameters needed by the algorithm
         self.parameters = list()
 
@@ -64,9 +65,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         # Name and group for normal toolbox display
         self.name, self.i18n_name = '', ''
         self.group, self.i18n_group = '', ''
-
-        # Tags
-        self.tags = ''
 
         # The crs taken from input layers (if possible), and used when
         # loading output layers

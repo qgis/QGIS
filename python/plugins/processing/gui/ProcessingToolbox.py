@@ -357,7 +357,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.setToolTip(0, name)
         self.setText(0, name)
         self.setData(0, Qt.UserRole, nameEn)
-        self.setData(0, Qt.UserRole + 1, alg.tags.split(','))
+        self.setData(0, Qt.UserRole + 1, alg.tags())
 
 
 class TreeActionItem(QTreeWidgetItem):

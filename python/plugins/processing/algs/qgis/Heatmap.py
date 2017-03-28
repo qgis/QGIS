@@ -71,10 +71,12 @@ class Heatmap(GeoAlgorithm):
     def getIcon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'heatmap.png'))
 
+    def tags(self):
+        return self.tr('heatmap,kde,hotspot').split(',')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Heatmap (Kernel Density Estimation)')
         self.group, self.i18n_group = self.trAlgorithm('Interpolation')
-        self.tags = self.tr('heatmap,kde,hotspot')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Point layer'), [dataobjects.TYPE_VECTOR_POINT]))
