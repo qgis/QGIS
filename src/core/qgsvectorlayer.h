@@ -349,8 +349,6 @@ typedef QList<QgsPointV2> QgsPointSequence;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * @see QgsVectorLayerUtils()
  */
-
-
 class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator
 {
     Q_OBJECT
