@@ -70,8 +70,6 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
 
   btnColorRamp->setShowRandomColorRamp( true );
 
-  std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
-  btnColorRamp->setDefaultColorRamp( ramp.get() );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsPalettedRendererWidget::applyColorRamp );
 
   if ( mRasterLayer )
