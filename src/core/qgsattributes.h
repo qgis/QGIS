@@ -19,6 +19,8 @@
 #define QGSATTRIBUTES_H
 
 #include "qgis_core.h"
+#include "qgis.h"
+
 #include <QMap>
 #include <QString>
 #include <QVariant>
@@ -113,7 +115,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
      * @note added in QGIS 3.0
      * @note not available in Python bindings
      */
-    QgsAttributeMap toMap() const; // SIP_SKIP
+    QgsAttributeMap toMap() const SIP_SKIP;
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };

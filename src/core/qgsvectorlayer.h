@@ -443,7 +443,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Returns the data provider in a const-correct manner
      * @note not available in python bindings
      */
-    const QgsVectorDataProvider *dataProvider() const;  // SIP_SKIP
+    const QgsVectorDataProvider *dataProvider() const SIP_SKIP;
 
     //! Sets the textencoding of the data provider
     void setProviderEncoding( const QString &encoding );
@@ -667,7 +667,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Return const renderer.
      * @note not available in python bindings
      */
-    const QgsFeatureRenderer *renderer() const { return mRenderer; } // SIP_SKIP
+    const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer; }
 
     /**
      * Set renderer which will be invoked to represent this layer.
@@ -1045,13 +1045,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @note added in 2.12
      * @note not available in Python bindings
      */
-    const QgsAbstractVectorLayerLabeling *labeling() const { return mLabeling; } // SIP_SKIP
+    const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /** Set labeling configuration. Takes ownership of the object.
      * @note added in 2.12
      * @note not available in Python bindings
      */
-    void setLabeling( QgsAbstractVectorLayerLabeling *labeling ); // SIP_SKIP
+    void setLabeling( QgsAbstractVectorLayerLabeling *labeling )  SIP_SKIP;
 
     //! Returns true if the provider is in editing mode
     virtual bool isEditable() const override;
@@ -1297,7 +1297,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     //! @note not available in python bindings
-    const QgsVectorLayerEditBuffer *editBuffer() const { return mEditBuffer; } // SIP_SKIP
+    const QgsVectorLayerEditBuffer *editBuffer() const SIP_SKIP { return mEditBuffer; }
 
     /**
      * Create edit command for undo/redo operations
@@ -1529,7 +1529,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString metadata() const override;
 
     //! @note not available in python bindings
-    inline QgsGeometryCache *cache() { return mCache; } // SIP_SKIP
+    inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }
 
     /** Set the simplification settings for fast rendering of features
      *  @note added in 2.2
