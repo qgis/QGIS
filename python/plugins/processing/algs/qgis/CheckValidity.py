@@ -49,7 +49,7 @@ class CheckValidity(GeoAlgorithm):
     INVALID_OUTPUT = 'INVALID_OUTPUT'
     ERROR_OUTPUT = 'ERROR_OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
 
     def defineCharacteristics(self):

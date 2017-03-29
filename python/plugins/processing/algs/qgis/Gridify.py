@@ -25,7 +25,11 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsGeometry, QgsFeature, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsGeometry,
+                       QgsFeature,
+                       QgsPoint,
+                       QgsWkbTypes,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
@@ -41,6 +45,12 @@ class Gridify(GeoAlgorithm):
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Snap points to grid')

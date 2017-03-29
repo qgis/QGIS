@@ -53,7 +53,7 @@ class sieve(GdalAlgorithm):
 
     PIXEL_CONNECTIONS = ['4', '8']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'sieve.png'))
 
     def defineCharacteristics(self):

@@ -51,7 +51,7 @@ class contour(GdalAlgorithm):
     FIELD_NAME = 'FIELD_NAME'
     EXTRA = 'EXTRA'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'contour.png'))
 
     def defineCharacteristics(self):

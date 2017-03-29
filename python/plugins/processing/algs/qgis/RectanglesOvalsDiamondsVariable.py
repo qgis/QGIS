@@ -28,7 +28,11 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -49,6 +53,12 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
     ROTATION = 'ROTATION'
     SEGMENTS = 'SEGMENTS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Rectangles, ovals, diamonds (variable)')

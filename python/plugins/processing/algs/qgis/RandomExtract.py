@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import random
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
@@ -43,6 +44,12 @@ class RandomExtract(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Random extract')

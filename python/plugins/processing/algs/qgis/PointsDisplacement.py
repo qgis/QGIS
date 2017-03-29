@@ -27,7 +27,11 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import math
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint)
 from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -42,6 +46,12 @@ class PointsDisplacement(GeoAlgorithm):
     DISTANCE = 'DISTANCE'
     HORIZONTAL = 'HORIZONTAL'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Points displacement')

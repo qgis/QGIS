@@ -25,7 +25,9 @@ __copyright__ = '(C) 2017, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsGeometry
+from qgis.core import (QgsWkbTypes,
+                       QgsGeometry,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -39,6 +41,12 @@ class FixGeometry(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('repair,invalid,geometry').split(',')

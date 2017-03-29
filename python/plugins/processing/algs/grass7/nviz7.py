@@ -59,7 +59,7 @@ class nviz7(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.showInModeler = False
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def defineCharacteristics(self):

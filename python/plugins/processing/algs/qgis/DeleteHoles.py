@@ -24,6 +24,7 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import (ParameterVector,
                                         ParameterNumber)
@@ -36,6 +37,12 @@ class DeleteHoles(GeoAlgorithm):
     INPUT = 'INPUT'
     MIN_AREA = 'MIN_AREA'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')

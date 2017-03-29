@@ -51,7 +51,7 @@ class ConvexHull(GeoAlgorithm):
     FIELD = 'FIELD'
     METHOD = 'METHOD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
 
     def defineCharacteristics(self):

@@ -71,7 +71,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
     TOLERANCE = 'TOLERANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
     def defineCharacteristics(self):

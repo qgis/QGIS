@@ -44,7 +44,7 @@ class MultipartToSingleparts(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'multi_to_single.png'))
 
     def defineCharacteristics(self):

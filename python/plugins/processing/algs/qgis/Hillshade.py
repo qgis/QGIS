@@ -48,7 +48,7 @@ class Hillshade(GeoAlgorithm):
     V_ANGLE = 'V_ANGLE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
     def defineCharacteristics(self):

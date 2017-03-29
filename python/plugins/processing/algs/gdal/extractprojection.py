@@ -44,7 +44,7 @@ class ExtractProjection(GdalAlgorithm):
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-export.png'))
 
     def defineCharacteristics(self):

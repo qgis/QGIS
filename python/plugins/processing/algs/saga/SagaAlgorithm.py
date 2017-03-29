@@ -79,7 +79,7 @@ class SagaAlgorithm(GeoAlgorithm):
         newone.provider = self.provider
         return newone
 
-    def getIcon(self):
+    def icon(self):
         if self._icon is None:
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
         return self._icon

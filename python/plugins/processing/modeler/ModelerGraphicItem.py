@@ -67,7 +67,7 @@ class ModelerGraphicItem(QGraphicsItem):
             self.text = element.description
         else:
             self.text = element.description
-            self.pixmap = element.algorithm.getIcon().pixmap(15, 15)
+            self.pixmap = element.algorithm.icon().pixmap(15, 15)
         self.arrows = []
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)

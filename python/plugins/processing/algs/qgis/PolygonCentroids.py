@@ -50,7 +50,7 @@ class PolygonCentroids(GeoAlgorithm):
         # this algorithm is deprecated - use Centroids instead
         self.showInToolbox = False
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
     def defineCharacteristics(self):

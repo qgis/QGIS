@@ -46,7 +46,7 @@ class Difference(GeoAlgorithm):
     IGNORE_INVALID = 'IGNORE_INVALID'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'difference.png'))
 
     def defineCharacteristics(self):

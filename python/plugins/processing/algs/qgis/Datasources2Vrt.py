@@ -30,7 +30,8 @@ import codecs
 import xml.sax.saxutils
 
 from osgeo import ogr
-from qgis.core import QgsProcessingFeedback
+from qgis.core import (QgsProcessingFeedback,
+                       QgsApplication)
 from processing.tools import dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -46,6 +47,12 @@ class Datasources2Vrt(GeoAlgorithm):
 
     VRT_FILE = 'VRT_FILE'
     VRT_STRING = 'VRT_STRING'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Build virtual vector')

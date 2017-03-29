@@ -32,13 +32,20 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.tools import spatialite
 
-from qgis.core import QgsDataSourceUri
+from qgis.core import (QgsApplication,
+                       QgsDataSourceUri)
 
 
 class SpatialiteExecuteSQL(GeoAlgorithm):
 
     DATABASE = 'DATABASE'
     SQL = 'SQL'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Spatialite execute SQL')

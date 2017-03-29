@@ -26,7 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsField,
+                       QgsFeatureRequest,
+                       QgsFeature,
+                       QgsGeometry)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -42,6 +46,12 @@ class PointsInPolygonUnique(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
     CLASSFIELD = 'CLASSFIELD'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Count unique points in polygon')

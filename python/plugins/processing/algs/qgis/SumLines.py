@@ -48,7 +48,7 @@ class SumLines(GeoAlgorithm):
     COUNT_FIELD = 'COUNT_FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
 
     def defineCharacteristics(self):

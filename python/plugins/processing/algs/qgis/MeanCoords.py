@@ -51,7 +51,7 @@ class MeanCoords(GeoAlgorithm):
     UID = 'UID'
     WEIGHT = 'WEIGHT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'mean.png'))
 
     def defineCharacteristics(self):

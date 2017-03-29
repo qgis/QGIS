@@ -84,7 +84,6 @@ class Grass7Algorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self._icon = None
         self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
@@ -99,10 +98,11 @@ class Grass7Algorithm(GeoAlgorithm):
         newone.provider = self.provider
         return newone
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerGrass.svg")
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerGrass.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerGrass.svg")
 
     def help(self):
         helpPath = Grass7Utils.grassHelpPath()

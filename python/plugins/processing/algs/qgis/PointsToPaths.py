@@ -30,7 +30,13 @@ import os
 from datetime import datetime
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea, QgsWkbTypes
+from qgis.core import (QgsApplication,
+                       QgsFeature,
+                       QgsFields,
+                       QgsField,
+                       QgsGeometry,
+                       QgsDistanceArea,
+                       QgsWkbTypes)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -50,6 +56,12 @@ class PointsToPaths(GeoAlgorithm):
     #GAP_PERIOD = 'GAP_PERIOD'
     OUTPUT_LINES = 'OUTPUT_LINES'
     OUTPUT_TEXT = 'OUTPUT_TEXT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Points to path')

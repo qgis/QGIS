@@ -34,7 +34,8 @@ from processing.core.parameters import ParameterMultipleInput, ParameterExtent, 
 from processing.core.outputs import OutputRaster
 from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
-from qgis.core import QgsRectangle
+from qgis.core import (QgsApplication,
+                       QgsRectangle)
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.algs.qgis.ui.RasterCalculatorWidgets import LayersListWidgetWrapper, ExpressionWidgetWrapper
@@ -47,6 +48,12 @@ class RasterCalculator(GeoAlgorithm):
     CELLSIZE = 'CELLSIZE'
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster calculator')

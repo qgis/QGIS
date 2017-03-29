@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsFeature
+from qgis.core import (QgsFeature,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -47,6 +48,12 @@ class JoinAttributes(GeoAlgorithm):
     INPUT_LAYER_2 = 'INPUT_LAYER_2'
     TABLE_FIELD = 'TABLE_FIELD'
     TABLE_FIELD_2 = 'TABLE_FIELD_2'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes table')

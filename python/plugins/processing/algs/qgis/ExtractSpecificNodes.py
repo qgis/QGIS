@@ -32,7 +32,11 @@ from processing.core.parameters import ParameterVector, ParameterString
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
-from qgis.core import QgsWkbTypes, QgsFeature, QgsGeometry, QgsField
+from qgis.core import (QgsWkbTypes,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsField,
+                       QgsApplication)
 from qgis.PyQt.QtCore import QVariant
 
 
@@ -41,6 +45,12 @@ class ExtractSpecificNodes(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     NODES = 'NODES'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Extract specific nodes')

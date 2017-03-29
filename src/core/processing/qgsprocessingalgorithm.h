@@ -46,6 +46,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
     */
     virtual QStringList tags() const { return QStringList(); }
 
+    /**
+     * Returns an icon for the algorithm.
+     * @see svgIconPath()
+    */
+    virtual QIcon icon() const;
+
+    /**
+     * Returns a path to an SVG version of the algorithm's icon.
+     * @see icon()
+     */
+    virtual QString svgIconPath() const;
 };
 
 #endif // QGSPROCESSINGALGORITHM_H

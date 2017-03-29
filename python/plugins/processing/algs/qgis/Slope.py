@@ -46,7 +46,7 @@ class Slope(GeoAlgorithm):
     Z_FACTOR = 'Z_FACTOR'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
     def defineCharacteristics(self):

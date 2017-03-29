@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import math
 import codecs
 
+from qgis.core import (QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputNumber
@@ -49,6 +50,12 @@ class RasterLayerStatistics(GeoAlgorithm):
     NO_DATA_COUNT = 'NO_DATA_COUNT'
     STD_DEV = 'STD_DEV'
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')

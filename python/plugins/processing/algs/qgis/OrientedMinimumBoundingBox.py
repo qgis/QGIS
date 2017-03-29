@@ -26,7 +26,13 @@ __copyright__ = '(C) 2015, Loïc BARTOLETTI'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsField, QgsFields, QgsGeometry, QgsFeature, QgsWkbTypes, QgsFeatureRequest
+from qgis.core import (QgsField,
+                       QgsFields,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsWkbTypes,
+                       QgsFeatureRequest,
+                       QgsApplication)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -41,6 +47,12 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     BY_FEATURE = 'BY_FEATURE'
 
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Oriented minimum bounding box')

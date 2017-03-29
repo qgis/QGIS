@@ -46,7 +46,7 @@ class polygonize(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
     def commandLineName(self):

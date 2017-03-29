@@ -48,7 +48,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
 
     def tags(self):

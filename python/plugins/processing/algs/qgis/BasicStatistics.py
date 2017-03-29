@@ -74,7 +74,7 @@ class BasicStatisticsForField(GeoAlgorithm):
     THIRDQUARTILE = 'THIRDQUARTILE'
     IQR = 'IQR'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def tags(self):

@@ -24,7 +24,9 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import (QgsExpression,
+                       QgsFeatureRequest,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
@@ -39,6 +41,12 @@ class ExtractByExpression(GeoAlgorithm):
     INPUT = 'INPUT'
     EXPRESSION = 'EXPRESSION'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('extract,filter,expression,field').split(',')

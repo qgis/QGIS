@@ -51,7 +51,7 @@ class buildvrt(GdalAlgorithm):
 
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'vrt.png'))
 
     def defineCharacteristics(self):

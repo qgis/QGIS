@@ -55,7 +55,7 @@ class VectorGridPolygons(GeoAlgorithm):
         # this algorithm is deprecated - use GridPolygon instead
         self.showInToolbox = False
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def defineCharacteristics(self):

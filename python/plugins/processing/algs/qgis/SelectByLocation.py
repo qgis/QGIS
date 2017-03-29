@@ -50,7 +50,7 @@ class SelectByLocation(GeoAlgorithm):
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'select_location.png'))
 
     def defineCharacteristics(self):

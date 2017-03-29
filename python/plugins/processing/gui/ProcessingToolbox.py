@@ -350,7 +350,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
-        icon = alg.getIcon()
+        icon = alg.icon()
         nameEn, name = alg.displayNames()
         name = name if name != '' else nameEn
         self.setIcon(0, icon)

@@ -46,7 +46,7 @@ class ExtractNodes(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
     def defineCharacteristics(self):

@@ -55,7 +55,7 @@ class RandomPointsExtent(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     CRS = 'CRS'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def defineCharacteristics(self):

@@ -50,7 +50,7 @@ class LinesIntersection(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'lines_intersection.png'))
 
     def defineCharacteristics(self):

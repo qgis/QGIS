@@ -57,7 +57,7 @@ class RegularPoints(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     CRS = 'CRS'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
 
     def defineCharacteristics(self):

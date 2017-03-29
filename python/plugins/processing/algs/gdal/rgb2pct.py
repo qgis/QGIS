@@ -47,7 +47,7 @@ class rgb2pct(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
     def defineCharacteristics(self):

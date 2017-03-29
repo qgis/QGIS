@@ -26,7 +26,8 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields,
+from qgis.core import (QgsApplication,
+                       QgsFields,
                        QgsField,
                        QgsFeature,
                        QgsGeometry,
@@ -46,6 +47,12 @@ class Polygonize(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELDS = 'FIELDS'
     GEOMETRY = 'GEOMETRY'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('create,lines,polygons,convert').split(',')

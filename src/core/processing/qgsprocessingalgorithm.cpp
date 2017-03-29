@@ -16,3 +16,14 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithm.h"
+#include "qgsapplication.h"
+
+QIcon QgsProcessingAlgorithm::icon() const
+{
+  return QgsApplication::getThemeIcon( "/processingAlgorithm.svg" );
+}
+
+QString QgsProcessingAlgorithm::svgIconPath() const
+{
+  return QgsApplication::iconPath( "processingAlgorithm.svg" );
+}

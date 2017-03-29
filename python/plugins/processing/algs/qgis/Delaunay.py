@@ -49,7 +49,7 @@ class Delaunay(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'delaunay.png'))
 
     def defineCharacteristics(self):

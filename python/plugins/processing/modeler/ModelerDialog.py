@@ -659,7 +659,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
-        icon = alg.getIcon()
+        icon = alg.icon()
         name = alg.displayName()
         self.setIcon(0, icon)
         self.setToolTip(0, name)

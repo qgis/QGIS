@@ -74,6 +74,9 @@ class ScriptAlgorithm(GeoAlgorithm):
     def icon(self):
         return self._icon
 
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
+
     def defineCharacteristicsFromFile(self):
         self.error = None
         self.script = ''

@@ -29,7 +29,10 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from qgis.core import QgsPoint, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsPoint,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -43,6 +46,12 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     INPUT = 'INPUT'
     INTERVAL = 'INTERVAL'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')

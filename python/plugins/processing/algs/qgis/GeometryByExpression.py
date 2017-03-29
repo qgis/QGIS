@@ -25,7 +25,12 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsGeometry
+from qgis.core import (QgsWkbTypes,
+                       QgsExpression,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsGeometry,
+                       QgsApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,6 +47,12 @@ class GeometryByExpression(GeoAlgorithm):
     WITH_Z = 'WITH_Z'
     WITH_M = 'WITH_M'
     EXPRESSION = 'EXPRESSION'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Geometry by expression')

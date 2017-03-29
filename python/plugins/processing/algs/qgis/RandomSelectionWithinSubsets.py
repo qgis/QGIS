@@ -53,7 +53,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
 
     def defineCharacteristics(self):

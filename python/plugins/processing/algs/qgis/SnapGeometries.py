@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
-from qgis.core import QgsFeature
+from qgis.core import (QgsApplication,
+                       QgsFeature)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector, ParameterNumber, ParameterSelection
@@ -43,8 +44,13 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     BEHAVIOR = 'BEHAVIOR'
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Snap geometries')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))

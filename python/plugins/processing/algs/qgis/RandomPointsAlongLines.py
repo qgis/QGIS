@@ -29,8 +29,15 @@ __revision__ = '$Format:%H$'
 import random
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsWkbTypes,
-                       QgsDistanceArea, QgsFeatureRequest, QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFields,
+                       QgsField,
+                       QgsGeometry,
+                       QgsSpatialIndex,
+                       QgsWkbTypes,
+                       QgsDistanceArea,
+                       QgsFeatureRequest,
+                       QgsFeature,
                        QgsPoint)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -47,6 +54,12 @@ class RandomPointsAlongLines(GeoAlgorithm):
     POINT_NUMBER = 'POINT_NUMBER'
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Random points along line')

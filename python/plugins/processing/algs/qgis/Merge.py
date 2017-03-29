@@ -44,7 +44,7 @@ class Merge(GeoAlgorithm):
     LAYERS = 'LAYERS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'merge_shapes.png'))
 
     def defineCharacteristics(self):

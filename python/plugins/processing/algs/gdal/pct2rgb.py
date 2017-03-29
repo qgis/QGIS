@@ -47,7 +47,7 @@ class pct2rgb(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NBAND = 'NBAND'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '8-to-24-bits.png'))
 
     def defineCharacteristics(self):

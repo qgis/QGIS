@@ -25,7 +25,11 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsWkbTypes, QgsPointV2, QgsCoordinateReferenceSystem, QgsGeometry
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
+                       QgsPointV2,
+                       QgsCoordinateReferenceSystem,
+                       QgsGeometry)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -43,6 +47,12 @@ class PointsLayerFromTable(GeoAlgorithm):
     MFIELD = 'MFIELD'
     OUTPUT = 'OUTPUT'
     TARGET_CRS = 'TARGET_CRS'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('points,create,values,attributes').split(',')

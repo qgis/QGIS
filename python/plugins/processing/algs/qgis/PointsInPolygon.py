@@ -48,7 +48,7 @@ class PointsInPolygon(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
 
     def defineCharacteristics(self):

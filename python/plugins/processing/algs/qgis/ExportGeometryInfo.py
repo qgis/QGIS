@@ -48,7 +48,7 @@ class ExportGeometryInfo(GeoAlgorithm):
     METHOD = 'CALC_METHOD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
 
     def tags(self):

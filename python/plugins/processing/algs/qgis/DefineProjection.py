@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.core import QgsCoordinateReferenceSystem
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsApplication)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -49,6 +50,12 @@ class DefineProjection(GeoAlgorithm):
 
     #def getIcon(self):
     #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Define current projection')

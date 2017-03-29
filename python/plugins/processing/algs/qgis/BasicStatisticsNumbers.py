@@ -73,7 +73,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         # this algorithm is deprecated - use BasicStatistics instead
         self.showInToolbox = False
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
 
     def tags(self):

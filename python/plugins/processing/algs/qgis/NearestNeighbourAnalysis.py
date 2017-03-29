@@ -54,7 +54,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     POINT_COUNT = 'POINT_COUNT'
     Z_SCORE = 'Z_SCORE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
 
     def defineCharacteristics(self):

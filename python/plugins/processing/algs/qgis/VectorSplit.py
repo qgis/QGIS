@@ -46,7 +46,7 @@ class VectorSplit(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
 
     def defineCharacteristics(self):

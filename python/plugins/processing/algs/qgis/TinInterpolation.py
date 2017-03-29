@@ -64,7 +64,7 @@ class TinInterpolation(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     TRIANULATION_FILE = 'TRIANULATION_FILE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
     def defineCharacteristics(self):

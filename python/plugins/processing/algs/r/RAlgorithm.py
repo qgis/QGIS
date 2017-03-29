@@ -82,12 +82,12 @@ class RAlgorithm(GeoAlgorithm):
             self.defineCharacteristicsFromScript()
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
-        self._icon = None
 
-    def getIcon(self):
-        if self._icon is None:
-            self._icon = QgsApplication.getThemeIcon("/providerR.svg")
-        return self._icon
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerR.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerR.svg")
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')

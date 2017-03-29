@@ -54,7 +54,7 @@ class Relief(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     FREQUENCY_DISTRIBUTION = 'FREQUENCY_DISTRIBUTION'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
     def defineCharacteristics(self):

@@ -57,7 +57,7 @@ class proximity(GdalAlgorithm):
 
     DISTUNITS = ['GEO', 'PIXEL']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'proximity.png'))
 
     def commandLineName(self):

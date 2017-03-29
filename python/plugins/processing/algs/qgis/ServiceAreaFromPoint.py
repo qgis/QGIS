@@ -71,7 +71,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
     OUTPUT_POINTS = 'OUTPUT_POINTS'
     OUTPUT_POLYGON = 'OUTPUT_POLYGON'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
     def defineCharacteristics(self):

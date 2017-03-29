@@ -49,7 +49,7 @@ class PointsAlongGeometry(GeoAlgorithm):
     START_OFFSET = 'START_OFFSET'
     END_OFFSET = 'END_OFFSET'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
     def tags(self):

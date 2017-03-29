@@ -49,7 +49,7 @@ class SimplifyGeometries(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     METHOD = 'METHOD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'simplify.png'))
 
     def defineCharacteristics(self):

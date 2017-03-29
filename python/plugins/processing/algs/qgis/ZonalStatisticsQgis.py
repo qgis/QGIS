@@ -52,7 +52,7 @@ class ZonalStatisticsQgis(GeoAlgorithm):
     STATISTICS = 'STATS'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
 
     def defineCharacteristics(self):

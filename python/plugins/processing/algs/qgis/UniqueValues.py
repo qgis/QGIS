@@ -50,7 +50,7 @@ class UniqueValues(GeoAlgorithm):
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
 
     def defineCharacteristics(self):

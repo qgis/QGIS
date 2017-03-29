@@ -45,7 +45,7 @@ class SymmetricalDifference(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sym_difference.png'))
 
     def defineCharacteristics(self):

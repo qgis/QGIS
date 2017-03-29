@@ -51,7 +51,7 @@ class Dissolve(GeoAlgorithm):
     FIELD = 'FIELD'
     DISSOLVE_ALL = 'DISSOLVE_ALL'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'dissolve.png'))
 
     def defineCharacteristics(self):

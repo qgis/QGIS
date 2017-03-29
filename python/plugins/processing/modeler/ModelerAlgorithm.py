@@ -255,8 +255,11 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.inputs = {}
         GeoAlgorithm.__init__(self)
 
-    def getIcon(self):
+    def icon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingModel.svg")
 
     def defineCharacteristics(self):
         classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,

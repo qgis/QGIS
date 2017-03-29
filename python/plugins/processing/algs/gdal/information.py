@@ -46,7 +46,7 @@ class information(GdalAlgorithm):
     NOGCP = 'NOGCP'
     NOMETADATA = 'NOMETADATA'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
     def commandLineName(self):

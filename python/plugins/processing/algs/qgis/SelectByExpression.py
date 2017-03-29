@@ -24,7 +24,9 @@ __copyright__ = '(C) 2014, Michael Douchin'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsExpression, QgsVectorLayer
+from qgis.core import (QgsApplication,
+                       QgsExpression,
+                       QgsVectorLayer)
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
@@ -40,6 +42,12 @@ class SelectByExpression(GeoAlgorithm):
     EXPRESSION = 'EXPRESSION'
     RESULT = 'RESULT'
     METHOD = 'METHOD'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by expression')

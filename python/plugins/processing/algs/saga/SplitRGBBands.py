@@ -46,7 +46,7 @@ class SplitRGBBands(GeoAlgorithm):
     G = 'G'
     B = 'B'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def defineCharacteristics(self):

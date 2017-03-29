@@ -68,7 +68,7 @@ class Heatmap(GeoAlgorithm):
     OUTPUT_VALUE = 'OUTPUT_VALUE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'heatmap.png'))
 
     def tags(self):

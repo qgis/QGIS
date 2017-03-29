@@ -26,7 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsStatisticalSummary
+from qgis.core import (QgsApplication,
+                       QgsStatisticalSummary)
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
@@ -40,6 +41,12 @@ class StatisticsByCategories(GeoAlgorithm):
     VALUES_FIELD_NAME = 'VALUES_FIELD_NAME'
     CATEGORIES_FIELD_NAME = 'CATEGORIES_FIELD_NAME'
     OUTPUT = 'OUTPUT'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Statistics by categories')

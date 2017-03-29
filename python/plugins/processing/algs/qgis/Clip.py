@@ -46,7 +46,7 @@ class Clip(GeoAlgorithm):
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'clip.png'))
 
     def defineCharacteristics(self):

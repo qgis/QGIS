@@ -49,7 +49,7 @@ class RandomSelection(GeoAlgorithm):
     METHOD = 'METHOD'
     NUMBER = 'NUMBER'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def defineCharacteristics(self):

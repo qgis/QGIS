@@ -48,7 +48,7 @@ class gdaltindex(GdalAlgorithm):
     FIELD_NAME = 'FIELD_NAME'
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'tiles.png'))
 
     def defineCharacteristics(self):

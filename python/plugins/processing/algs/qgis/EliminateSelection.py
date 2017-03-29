@@ -53,7 +53,7 @@ class EliminateSelection(GeoAlgorithm):
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
     def defineCharacteristics(self):

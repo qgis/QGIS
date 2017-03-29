@@ -54,7 +54,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self._icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
         # Parameters needed by the algorithm
         self.parameters = list()
@@ -99,13 +98,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         return newone
 
     # methods to overwrite when creating a custom geoalgorithm
-
-    def getIcon(self):
-        return self._icon
-
-    @staticmethod
-    def getDefaultIcon():
-        return GeoAlgorithm._icon
 
     def _formatHelp(self, text):
         return "<h2>%s</h2>%s" % (self.name, "".join(["<p>%s</p>" % s for s in text.split("\n")]))

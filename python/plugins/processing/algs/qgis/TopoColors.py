@@ -31,7 +31,8 @@ import sys
 
 from collections import defaultdict
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointV2,
@@ -55,6 +56,12 @@ class TopoColor(GeoAlgorithm):
     MIN_DISTANCE = 'MIN_DISTANCE'
     BALANCE = 'BALANCE'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerQgis.svg")
 
     def tags(self):
         return self.tr('topocolor,colors,graph,adjacent,assign').split(',')

@@ -63,7 +63,7 @@ class gdaladdo(GdalAlgorithm):
     FORMATS = ['Internal (if possible)', 'External (GTiff .ovr)',
                'External (ERDAS Imagine .aux)']
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 
     def commandLineName(self):

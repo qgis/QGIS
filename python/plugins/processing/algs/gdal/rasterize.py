@@ -62,7 +62,7 @@ class rasterize(GdalAlgorithm):
 
     RAST_EXT = 'RAST_EXT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
     def commandLineName(self):

@@ -50,7 +50,7 @@ class VoronoiPolygons(GeoAlgorithm):
     BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'voronoi.png'))
 
     def defineCharacteristics(self):

@@ -56,7 +56,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
     JOIN_STYLE = 'JOIN_STYLE'
     MITRE_LIMIT = 'MITRE_LIMIT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
     def defineCharacteristics(self):

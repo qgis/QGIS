@@ -44,7 +44,7 @@ class ReprojectLayer(GeoAlgorithm):
     TARGET_CRS = 'TARGET_CRS'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
     def tags(self):

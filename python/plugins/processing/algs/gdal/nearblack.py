@@ -47,7 +47,7 @@ class nearblack(GdalAlgorithm):
     NEAR = 'NEAR'
     WHITE = 'WHITE'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'nearblack.png'))
 
     def defineCharacteristics(self):
