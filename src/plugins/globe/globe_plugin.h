@@ -125,6 +125,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osgEarth::QtGui::ViewerWidget *mViewerWidget = nullptr;
     QgsGlobeWidget *mDockWidget = nullptr;
     QgsGlobePluginDialog *mSettingsDialog = nullptr;
+
     QString mBaseLayerUrl;
     QList<QgsGlobePluginDialog::LayerDataSource> mImagerySources;
     QList<QgsGlobePluginDialog::LayerDataSource> mElevationSources;
