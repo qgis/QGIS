@@ -53,9 +53,11 @@ class SelectByLocation(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'select_location.png'))
 
+    def group(self):
+        return self.tr('Vector selection tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.predicates = (
             ('intersects', self.tr('intersects')),

@@ -81,9 +81,11 @@ class BasicStatisticsForField(GeoAlgorithm):
         return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
                        'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input table')))

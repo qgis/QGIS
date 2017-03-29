@@ -64,9 +64,11 @@ class GridLine(GeoAlgorithm):
     def tags(self):
         return self.tr('grid,lines,vector,create,fishnet').split(',')
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create grid (lines)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))

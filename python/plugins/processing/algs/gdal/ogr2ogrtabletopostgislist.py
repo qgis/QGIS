@@ -75,9 +75,11 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
 
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import layer/table as geometryless table into PostgreSQL database')
-        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))

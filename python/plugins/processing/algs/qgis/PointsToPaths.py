@@ -63,9 +63,11 @@ class PointsToPaths(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Points to path')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,

@@ -61,9 +61,11 @@ class FindProjection(GeoAlgorithm):
     def tags(self):
         return self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine').split(',')
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Find projection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))

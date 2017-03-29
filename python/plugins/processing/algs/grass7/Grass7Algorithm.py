@@ -80,6 +80,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self._group = ''
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
@@ -97,6 +98,9 @@ class Grass7Algorithm(GeoAlgorithm):
         newone = Grass7Algorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone
+
+    def group(self):
+        return self._group
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGrass.svg")
@@ -144,8 +148,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 self.name = self.grass7Name + " - " + self.name
                 self.i18n_name = self.grass7Name + " - " + self.i18n_name
             line = lines.readline().strip('\n').strip()
-            self.group = line
-            self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
+            self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
             hasVectorInput = False
             vectorOutputs = 0

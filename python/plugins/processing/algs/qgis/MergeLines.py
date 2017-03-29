@@ -51,9 +51,11 @@ class MergeLines(GeoAlgorithm):
     def tags(self):
         return self.tr('line,merge,join,parts').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Merge lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))

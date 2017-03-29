@@ -66,9 +66,11 @@ class HubDistancePoints(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub (points)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),

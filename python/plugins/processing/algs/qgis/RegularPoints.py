@@ -60,9 +60,11 @@ class RegularPoints(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Regular points')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Input extent'), optional=False))

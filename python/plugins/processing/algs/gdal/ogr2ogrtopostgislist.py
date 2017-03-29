@@ -84,9 +84,11 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.__init__(self)
         self.processing = False
 
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (available connections)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database (connection name)'),

@@ -54,9 +54,11 @@ class Dissolve(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'dissolve.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name = 'Dissolve'
-        self.group = 'Vector geometry tools'
         self.addParameter(ParameterVector(Dissolve.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))

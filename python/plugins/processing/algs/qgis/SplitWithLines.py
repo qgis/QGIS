@@ -53,9 +53,11 @@ class SplitWithLines(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector overlay tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split with lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer, single geometries only'), [dataobjects.TYPE_VECTOR_POLYGON,
                                                                                            dataobjects.TYPE_VECTOR_LINE]))

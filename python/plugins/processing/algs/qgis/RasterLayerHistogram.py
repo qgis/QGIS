@@ -48,9 +48,11 @@ class RasterLayerHistogram(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Graphics')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster layer histogram')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer')))

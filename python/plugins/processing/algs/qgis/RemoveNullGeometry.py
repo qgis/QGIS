@@ -46,9 +46,11 @@ class RemoveNullGeometry(GeoAlgorithm):
     def tags(self):
         return self.tr('remove,drop,delete,empty,geometry').split(',')
 
+    def group(self):
+        return self.tr('Vector selection tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Remove null geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))

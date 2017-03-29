@@ -47,13 +47,11 @@ class ColorRelief(GdalAlgorithm):
 
     MATCHING_MODES = ['"0,0,0,0" RGBA', 'Exact color', 'Nearest color']
 
-    #def getIcon(self):
-    #    filepath = os.path.dirname(__file__) + '/icons/dem.png'
-    #    return QIcon(filepath)
+    def group(self):
+        return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Color relief')
-        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))

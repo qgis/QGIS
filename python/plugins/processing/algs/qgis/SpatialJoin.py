@@ -59,9 +59,11 @@ class SpatialJoin(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.predicates = (
             ('intersects', self.tr('intersects')),

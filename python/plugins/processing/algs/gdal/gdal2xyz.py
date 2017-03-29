@@ -43,9 +43,11 @@ class gdal2xyz(GdalAlgorithm):
     BAND = 'BAND'
     OUTPUT = 'OUTPUT'
 
+    def group(self):
+        return self.tr('Raster conversion')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('gdal2xyz')
-        self.group, self.i18n_group = self.trAlgorithm('Raster conversion')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.BAND,

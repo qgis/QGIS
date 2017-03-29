@@ -54,9 +54,11 @@ class OffsetLine(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Offset line')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))

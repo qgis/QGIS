@@ -56,9 +56,11 @@ class EliminateSelection(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Eliminate selected polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.modes = [self.tr('Largest area'),
                       self.tr('Smallest Area'),

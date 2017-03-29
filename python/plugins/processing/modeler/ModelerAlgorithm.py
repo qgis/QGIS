@@ -236,7 +236,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone.inputs = copy.deepcopy(self.inputs)
         newone.defineCharacteristics()
         newone.name = self.name
-        newone.group = self.group
+        newone._group = self._group
         newone.descriptionFile = self.descriptionFile
         newone.helpContent = copy.deepcopy(self.helpContent)
         return newone
@@ -247,6 +247,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.modelerdialog = None
         self.descriptionFile = None
         self.helpContent = {}
+        self._group = ''
 
         # Geoalgorithms in this model. A dict of Algorithm objects, with names as keys
         self.algs = {}
@@ -254,6 +255,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         # Input parameters. A dict of Input objects, with names as keys
         self.inputs = {}
         GeoAlgorithm.__init__(self)
+
+    def group(self):
+        return self._group
 
     def icon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
@@ -609,6 +613,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                 clazz = getattr(module, className)
                 instance = clazz()
                 for k, v in list(values.items()):
+                    # upgrade old model files
+                    if k == 'group':
+                        k = '_group'
                     instance.__dict__[k] = v
                 return instance
             except KeyError:

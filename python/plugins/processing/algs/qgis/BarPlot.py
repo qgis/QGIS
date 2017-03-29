@@ -51,9 +51,11 @@ class BarPlot(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Graphics')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Bar plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,

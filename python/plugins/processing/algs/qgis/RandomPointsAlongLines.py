@@ -61,9 +61,11 @@ class RandomPointsAlongLines(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Random points along line')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,

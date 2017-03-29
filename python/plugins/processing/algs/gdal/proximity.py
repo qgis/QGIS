@@ -63,9 +63,11 @@ class proximity(GdalAlgorithm):
     def commandLineName(self):
         return "gdal:proximity"
 
+    def group(self):
+        return self.tr('Raster analysis')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Proximity (raster distance)')
-        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.VALUES,

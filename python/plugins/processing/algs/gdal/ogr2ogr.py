@@ -100,9 +100,11 @@ class Ogr2Ogr(GdalAlgorithm):
     FORMAT = 'FORMAT'
     OPTIONS = 'OPTIONS'
 
+    def group(self):
+        return self.tr('Vector conversion')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Convert format')
-        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))

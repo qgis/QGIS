@@ -51,9 +51,11 @@ class hillshade(GdalAlgorithm):
     ALTITUDE = 'ALTITUDE'
     OUTPUT = 'OUTPUT'
 
+    def group(self):
+        return self.tr('Raster analysis')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Hillshade')
-        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.BAND,
                                           self.tr('Band number'), 1, 99, 1))

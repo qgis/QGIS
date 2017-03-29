@@ -59,9 +59,11 @@ class PointDistance(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Distance matrix')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.mat_types = [self.tr('Linear (N*k x 3) distance matrix'),
                           self.tr('Standard (N x T) distance matrix'),

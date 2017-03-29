@@ -48,9 +48,11 @@ class StatisticsByCategories(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector table tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Statistics by categories')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input vector layer')))

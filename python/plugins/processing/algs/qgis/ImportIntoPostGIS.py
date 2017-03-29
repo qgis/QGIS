@@ -59,9 +59,11 @@ class ImportIntoPostGIS(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Database')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import into PostGIS')
-        self.group, self.i18n_group = self.trAlgorithm('Database')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Layer to import')))
         self.addParameter(ParameterString(

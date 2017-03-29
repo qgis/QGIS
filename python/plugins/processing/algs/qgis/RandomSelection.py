@@ -52,9 +52,11 @@ class RandomSelection(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
+    def group(self):
+        return self.tr('Vector selection tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Random selection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]

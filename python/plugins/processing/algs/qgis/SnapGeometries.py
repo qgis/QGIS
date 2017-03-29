@@ -50,8 +50,11 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+        self.name, self.i18n_name = self.trAlgorithm('Snap geometries to layer')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))

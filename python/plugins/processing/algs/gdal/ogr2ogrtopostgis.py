@@ -78,9 +78,11 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
     PROMOTETOMULTI = 'PROMOTETOMULTI'
     OPTIONS = 'OPTIONS'
 
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (new connection)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterString(self.SHAPE_ENCODING,

@@ -54,9 +54,11 @@ class ConvexHull(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Convex hull')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.methods = [self.tr('Create single minimum convex hull'),
                         self.tr('Create convex hulls based on field')]

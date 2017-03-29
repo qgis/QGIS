@@ -54,9 +54,11 @@ class VariableDistanceBuffer(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Variable distance buffer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))

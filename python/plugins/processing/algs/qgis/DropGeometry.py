@@ -49,9 +49,11 @@ class DropGeometry(GeoAlgorithm):
     def tags(self):
         return self.tr('remove,drop,delete,geometry,objects').split(',')
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Drop geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT,

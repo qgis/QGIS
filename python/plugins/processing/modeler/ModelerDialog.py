@@ -229,7 +229,7 @@ class ModelerDialog(BASE, WIDGET):
 
         if alg is not None:
             self.alg = alg
-            self.textGroup.setText(alg.group)
+            self.textGroup.setText(alg._group)
             self.textName.setText(alg.name)
             self.repaintModel()
 
@@ -438,7 +438,7 @@ class ModelerDialog(BASE, WIDGET):
             )
             return
         self.alg.name = str(self.textName.text())
-        self.alg.group = str(self.textGroup.text())
+        self.alg._group = str(self.textGroup.text())
         if self.alg.descriptionFile is not None and not saveAs:
             filename = self.alg.descriptionFile
         else:
@@ -481,7 +481,7 @@ class ModelerDialog(BASE, WIDGET):
                 alg = ModelerAlgorithm.fromFile(filename)
                 self.alg = alg
                 self.alg.setModelerView(self)
-                self.textGroup.setText(alg.group)
+                self.textGroup.setText(alg._group)
                 self.textName.setText(alg.name)
                 self.repaintModel()
 
@@ -626,14 +626,14 @@ class ModelerDialog(BASE, WIDGET):
                     for part in search_strings)
 
                 if show:
-                    if alg.group in groups:
-                        groupItem = groups[alg.group]
+                    if alg.group() in groups:
+                        groupItem = groups[alg.group()]
                     else:
                         groupItem = QTreeWidgetItem()
-                        name = alg.i18n_group or alg.group
+                        name = alg.group()
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
-                        groups[alg.group] = groupItem
+                        groups[alg.group()] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
 

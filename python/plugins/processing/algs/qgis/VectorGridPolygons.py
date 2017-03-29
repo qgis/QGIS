@@ -58,9 +58,11 @@ class VectorGridPolygons(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Vector grid (polygons)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))

@@ -50,9 +50,11 @@ class ReprojectLayer(GeoAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs,warp').split(',')
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))

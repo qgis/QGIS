@@ -84,6 +84,9 @@ class SagaAlgorithm(GeoAlgorithm):
             self._icon = QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
         return self._icon
 
+    def group(self):
+        return self._group
+
     def defineCharacteristicsFromFile(self):
         with open(self.descriptionFile) as lines:
             line = lines.readline().strip('\n').strip()
@@ -105,8 +108,7 @@ class SagaAlgorithm(GeoAlgorithm):
             self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", str(self.name))
             line = lines.readline().strip('\n').strip()
             self.undecoratedGroup = line
-            self.group = decoratedGroupName(self.undecoratedGroup)
-            self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
+            self._group = QCoreApplication.translate("SAGAAlgorithm", decoratedGroupName(self.undecoratedGroup))
             line = lines.readline().strip('\n').strip()
             while line != '':
                 if line.startswith('Hardcoded'):

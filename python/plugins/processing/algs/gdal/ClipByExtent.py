@@ -56,9 +56,11 @@ class ClipByExtent(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
+    def group(self):
+        return self.tr('Raster extraction')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Clip raster by extent')
-        self.group, self.i18n_group = self.trAlgorithm('Raster extraction')
 
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterString(self.NO_DATA,

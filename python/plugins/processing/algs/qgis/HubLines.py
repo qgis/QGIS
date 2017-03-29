@@ -53,9 +53,11 @@ class HubLines(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Hub lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.HUBS,
                                           self.tr('Hub layer')))

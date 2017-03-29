@@ -35,7 +35,7 @@ def baseHelpForAlgorithm(alg, folder):
     baseDir = os.path.join(folder, alg.provider.id().lower())
     mkdir(baseDir)
 
-    groupName = alg.group.lower()
+    groupName = alg.group().lower()
     groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
     groupName = groupName.replace(' ', '_')
     cmdLineName = alg.commandLineName()

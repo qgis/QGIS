@@ -48,9 +48,11 @@ class CreateConstantRaster(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Raster tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create constant raster layer')
-        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Reference layer')))

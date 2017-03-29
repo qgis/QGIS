@@ -49,9 +49,11 @@ class Aspect(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
+    def group(self):
+        return self.tr('Raster terrain analysis')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Aspect')
-        self.group, self.i18n_group = self.trAlgorithm('Raster terrain analysis')
 
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))

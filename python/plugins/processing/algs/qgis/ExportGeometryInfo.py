@@ -54,9 +54,11 @@ class ExportGeometryInfo(GeoAlgorithm):
     def tags(self):
         return self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),

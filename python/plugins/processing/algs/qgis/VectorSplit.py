@@ -49,9 +49,11 @@ class VectorSplit(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'split_layer.png'))
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,

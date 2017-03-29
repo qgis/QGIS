@@ -62,9 +62,11 @@ class IdwInterpolation(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
+    def group(self):
+        return self.tr('Interpolation')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('IDW interpolation')
-        self.group, self.i18n_group = self.trAlgorithm('Interpolation')
 
         class ParameterInterpolationData(Parameter):
             default_metadata = {

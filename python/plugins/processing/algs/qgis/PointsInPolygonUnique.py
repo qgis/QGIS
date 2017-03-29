@@ -53,9 +53,11 @@ class PointsInPolygonUnique(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Count unique points in polygon')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,

@@ -51,9 +51,11 @@ class FixGeometry(GeoAlgorithm):
     def tags(self):
         return self.tr('repair,invalid,geometry').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Fix geometries')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer'),

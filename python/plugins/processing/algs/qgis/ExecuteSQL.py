@@ -62,9 +62,11 @@ class ExecuteSQL(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Execute SQL')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),

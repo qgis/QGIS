@@ -79,9 +79,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     def tags(self):
         return self.tr('stats,statistics,number,table,layer').split(',')
 
+    def group(self):
+        return self.tr('Vector table tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))

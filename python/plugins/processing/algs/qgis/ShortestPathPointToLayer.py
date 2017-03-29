@@ -74,6 +74,9 @@ class ShortestPathPointToLayer(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
+    def group(self):
+        return self.tr('Network analysis')
+
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -85,7 +88,6 @@ class ShortestPathPointToLayer(GeoAlgorithm):
                            ]
 
         self.name, self.i18n_name = self.trAlgorithm('Shortest path (point to layer)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),

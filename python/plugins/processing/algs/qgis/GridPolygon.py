@@ -60,9 +60,11 @@ class GridPolygon(GeoAlgorithm):
     def tags(self):
         return self.tr('grid,lines,vector,create,fishnet').split(',')
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create grid (polygon)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.types = [self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),

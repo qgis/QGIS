@@ -67,9 +67,11 @@ class FieldsCalculator(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector table tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Field calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.type_names = [self.tr('Float'),
                            self.tr('Integer'),

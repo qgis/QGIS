@@ -52,9 +52,11 @@ class CheckValidity(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Check validity')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.methods = [self.tr('The one selected in digitizing settings'),
                         'QGIS',

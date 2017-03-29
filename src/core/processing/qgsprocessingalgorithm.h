@@ -57,6 +57,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * @see icon()
      */
     virtual QString svgIconPath() const;
+
+    /**
+     * Returns the name of the group this algorithm belongs to. This string
+     * should be localised.
+     * @see tags()
+    */
+    virtual QString group() const { return QString(); }
+
 };
 
 #endif // QGSPROCESSINGALGORITHM_H

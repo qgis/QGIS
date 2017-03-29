@@ -50,9 +50,11 @@ class SetRasterStyle(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Raster general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Set style for raster layer')
-        self.group, self.i18n_group = self.trAlgorithm('Raster general tools')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,

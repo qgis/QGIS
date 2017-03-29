@@ -47,9 +47,11 @@ class DeleteHoles(GeoAlgorithm):
     def tags(self):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Delete holes')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))

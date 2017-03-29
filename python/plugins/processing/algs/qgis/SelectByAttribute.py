@@ -70,9 +70,11 @@ class SelectByAttribute(GeoAlgorithm):
     def tags(self):
         return self.tr('select,attribute,value,contains,null,field').split(',')
 
+    def group(self):
+        return self.tr('Vector selection tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by attribute')
-        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.i18n_operators = ['=',
                                '!=',

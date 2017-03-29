@@ -56,9 +56,11 @@ class sieve(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'sieve.png'))
 
+    def group(self):
+        return self.tr('Raster analysis')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Sieve')
-        self.group, self.i18n_group = self.trAlgorithm('Raster analysis')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.THRESHOLD,
                                           self.tr('Threshold'), 0, 9999, 2))

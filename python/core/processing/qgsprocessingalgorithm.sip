@@ -11,5 +11,7 @@ class QgsProcessingAlgorithm
     virtual QStringList tags() const;
     virtual QIcon icon() const;
     virtual QString svgIconPath() const;
+    virtual QString group() const;
+
 };
 

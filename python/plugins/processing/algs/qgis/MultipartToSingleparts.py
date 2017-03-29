@@ -47,9 +47,11 @@ class MultipartToSingleparts(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'multi_to_single.png'))
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Multipart to singleparts')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))

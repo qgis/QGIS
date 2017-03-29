@@ -57,9 +57,11 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Nearest neighbour analysis')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))

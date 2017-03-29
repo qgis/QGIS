@@ -58,9 +58,11 @@ class ImportIntoSpatialite(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Database')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Import into Spatialite')
-        self.group, self.i18n_group = self.trAlgorithm('Database')
         self.addParameter(ParameterVector(self.INPUT, self.tr('Layer to import')))
         self.addParameter(ParameterVector(self.DATABASE, self.tr('File database'), False, False))
         self.addParameter(ParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))

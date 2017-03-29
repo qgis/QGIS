@@ -53,9 +53,11 @@ class PoleOfInaccessibility(GeoAlgorithm):
     def tags(self):
         return self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre').split(',')
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Pole of Inaccessibility')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),

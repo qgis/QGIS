@@ -39,13 +39,17 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
         with open(self.descriptionFile) as f:
             self.description = json.load(f)
         GeoAlgorithm.__init__(self)
+        self._group = ''
+
+    def group(self):
+        return self._group
 
     def getCopy(self):
         newone = PreconfiguredAlgorithm(self.descriptionFile)
         newone.outputs = []
         newone.provider = self.provider
         newone.name = self.name
-        newone.group = self.group
+        newone._group = self._group
         return newone
 
     def commandLineName(self):
@@ -53,7 +57,7 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = self.description["name"]
-        self.group = self.description["group"]
+        self._group = self.description["group"]
         self.canRunInBatchMode = False
         self.showInModeler = False
 

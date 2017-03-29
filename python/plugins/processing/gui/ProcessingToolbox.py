@@ -399,16 +399,16 @@ class TreeProviderItem(QTreeWidgetItem):
         for alg in algs:
             if not alg.showInToolbox:
                 continue
-            if alg.group in groups:
-                groupItem = groups[alg.group]
+            if alg.group() in groups:
+                groupItem = groups[alg.group()]
             else:
                 groupItem = QTreeWidgetItem()
-                name = alg.i18n_group or alg.group
+                name = alg.group()
                 if not active:
                     groupItem.setForeground(0, Qt.darkGray)
                 groupItem.setText(0, name)
                 groupItem.setToolTip(0, name)
-                groups[alg.group] = groupItem
+                groups[alg.group()] = groupItem
             algItem = TreeAlgorithmItem(alg)
             if not active:
                 algItem.setForeground(0, Qt.darkGray)

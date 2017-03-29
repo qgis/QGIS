@@ -55,9 +55,11 @@ class RasterCalculator(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Raster')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
-        self.group, self.i18n_group = self.trAlgorithm('Raster')
 
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Input layers'),

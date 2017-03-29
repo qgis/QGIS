@@ -60,9 +60,11 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector geometry tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Rectangles, ovals, diamonds (variable)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 

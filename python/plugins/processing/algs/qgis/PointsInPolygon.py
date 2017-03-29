@@ -51,9 +51,11 @@ class PointsInPolygon(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Count points in polygon')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
         self.addParameter(ParameterVector(self.POLYGONS,
                                           self.tr('Polygons'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterVector(self.POINTS,

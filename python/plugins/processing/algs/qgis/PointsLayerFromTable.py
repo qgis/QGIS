@@ -57,9 +57,11 @@ class PointsLayerFromTable(GeoAlgorithm):
     def tags(self):
         return self.tr('points,create,values,attributes').split(',')
 
+    def group(self):
+        return self.tr('Vector creation tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Create points layer from table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,

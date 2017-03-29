@@ -51,9 +51,11 @@ class SumLines(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
 
+    def group(self):
+        return self.tr('Vector analysis tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Sum line lengths')
-        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.LINES,
                                           self.tr('Lines'), [dataobjects.TYPE_VECTOR_LINE]))

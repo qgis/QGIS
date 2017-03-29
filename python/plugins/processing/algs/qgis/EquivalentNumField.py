@@ -48,9 +48,11 @@ class EquivalentNumField(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector table tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Add unique value index field')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,

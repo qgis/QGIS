@@ -65,8 +65,8 @@ def updateTranslations():
                 f.write("    QCoreApplication.translate(\"{}\", \"{}\")\n"
                         .format(alg.__class__.__name__,
                                 display_name.replace('"', '\\"')))
-                if alg.group not in groups:
-                    groups[alg.group] = 'AlgorithmClassification'
+                if alg.group() not in groups:
+                    groups[alg.group()] = 'AlgorithmClassification'
                 group, subgroup = getClassificationEn(alg)
                 if group is not None and group not in groups:
                     groups[group] = 'AlgorithmClassification'

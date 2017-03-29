@@ -55,9 +55,11 @@ class JoinAttributes(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerQgis.svg")
 
+    def group(self):
+        return self.tr('Vector general tools')
+
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Join attributes table')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTable(self.INPUT_LAYER_2,
