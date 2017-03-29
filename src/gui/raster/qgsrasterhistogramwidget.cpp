@@ -963,7 +963,7 @@ void QgsRasterHistogramWidget::applyHistoMin()
     if ( bandNo == mRendererWidget->selectedBand( i ) )
     {
       min = leHistoMin->text();
-      if ( mHistoUpdateStyleToMinMax )
+      if ( mHistoUpdateStyleToMinMax && mRendererWidget->min( i ) != min )
       {
         mRendererWidget->setMin( min, i );
         if ( mRendererWidget->minMaxWidget() )
@@ -998,7 +998,7 @@ void QgsRasterHistogramWidget::applyHistoMax()
     if ( bandNo == mRendererWidget->selectedBand( i ) )
     {
       max = leHistoMax->text();
-      if ( mHistoUpdateStyleToMinMax )
+      if ( mHistoUpdateStyleToMinMax && mRendererWidget->max( i ) != max )
       {
         mRendererWidget->setMax( max, i );
         if ( mRendererWidget->minMaxWidget() )

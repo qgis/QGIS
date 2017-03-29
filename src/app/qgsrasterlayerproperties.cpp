@@ -370,6 +370,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
+  mDisableRenderTypeComboBoxCurrentIndexChanged = true;
   Q_FOREACH ( const QString &name, QgsApplication::rasterRendererRegistry()->renderersList() )
   {
     if ( QgsApplication::rasterRendererRegistry()->rendererData( name, entry ) )
@@ -381,28 +382,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       }
     }
   }
+  mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 
+  int widgetIndex = 0;
   if ( renderer )
   {
     QString rendererType = renderer->type();
-    int widgetIndex = mRenderTypeComboBox->findData( rendererType );
+    widgetIndex = mRenderTypeComboBox->findData( rendererType );
     if ( widgetIndex != -1 )
     {
+      mDisableRenderTypeComboBoxCurrentIndexChanged = true;
       mRenderTypeComboBox->setCurrentIndex( widgetIndex );
+      mDisableRenderTypeComboBoxCurrentIndexChanged = false;
     }
 
-    //prevent change between singleband color renderer and the other renderers
-    // No more necessary, combo entries according to layer type
-#if 0
-    if ( rendererType == "singlebandcolordata" )
-    {
-      mRenderTypeComboBox->setEnabled( false );
-    }
-    else
-    {
-      mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
-    }
-#endif
     if ( rendererType == QLatin1String( "singlebandcolordata" ) && mRenderTypeComboBox->count() == 1 )
     {
       // no band rendering options for singlebandcolordata, so minimize group box
@@ -413,7 +406,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mBandRenderingGrpBx->updateGeometry();
     }
   }
-  on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
+
+  on_mRenderTypeComboBox_currentIndexChanged( widgetIndex );
 
   // update based on lyr's current state
   sync();
@@ -560,7 +554,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       QgsDebugMsg( "renderer has widgetCreateFunction" );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
-      if ( oldWidget )
+      if ( oldWidget && ( !oldRenderer || rendererName != oldRenderer->type() ) )
       {
         if ( rendererName == "singlebandgray" )
         {
@@ -1138,7 +1132,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
 void QgsRasterLayerProperties::on_mRenderTypeComboBox_currentIndexChanged( int index )
 {
-  if ( index < 0 )
+  if ( index < 0 || mDisableRenderTypeComboBoxCurrentIndexChanged )
   {
     return;
   }

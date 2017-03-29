@@ -194,5 +194,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
+
+    bool mDisableRenderTypeComboBoxCurrentIndexChanged = false;
 };
 #endif
