@@ -10,6 +10,7 @@
 
 
 
+
 typedef qint64 QgsFeatureId;
 
 
@@ -152,13 +153,7 @@ class QgsFeature
  Copy constructor
 %End
 
-    // QgsFeature &operator=( const QgsFeature &rhs );  // SIP_SKIP
 
-
-    // bool operator==( const QgsFeature &other ) const;  // SIP_SKIP
-
-
-    // bool operator!=( const QgsFeature &other ) const; // SIP_SKIP
 
 
     virtual ~QgsFeature();
@@ -437,10 +432,6 @@ Allows direct construction of QVariants from features.
 
 }; // class QgsFeature
 
-// CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature ); // SIP_SKIP
-
-// CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature ); // SIP_SKIP
-
 
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
@@ -449,8 +440,6 @@ typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 typedef QSet<qint64> QgsFeatureIds;
 
 typedef QList<QgsFeature> QgsFeatureList;
-
-// uint qHash( const QgsFeature &key, uint seed = 0 ); // SIP_SKIP
 
 
 

@@ -17,6 +17,8 @@ email                : sherman at mrcc.com
 #define QGSFEATURE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
+
 #include <QExplicitlySharedDataPointer>
 #include <QList>
 #include <QMap>
@@ -200,17 +202,17 @@ class CORE_EXPORT QgsFeature
 
     /** Assignment operator
      */
-    QgsFeature &operator=( const QgsFeature &rhs );  // SIP_SKIP
+    QgsFeature &operator=( const QgsFeature &rhs ) SIP_SKIP;
 
     /**
      * Compares two features
      */
-    bool operator==( const QgsFeature &other ) const;  // SIP_SKIP
+    bool operator==( const QgsFeature &other ) const SIP_SKIP;
 
     /**
      * Compares two features
      */
-    bool operator!=( const QgsFeature &other ) const; // SIP_SKIP
+    bool operator!=( const QgsFeature &other ) const SIP_SKIP;
 
     virtual ~QgsFeature();
 
@@ -498,9 +500,9 @@ class CORE_EXPORT QgsFeature
 }; // class QgsFeature
 
 //! Writes the feature to stream out. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature ); // SIP_SKIP
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature )  SIP_SKIP;
 //! Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature ); // SIP_SKIP
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature )  SIP_SKIP;
 
 // key = feature id, value = changed attributes
 #ifndef SIP_RUN
@@ -524,7 +526,7 @@ typedef QSet<qint64> QgsFeatureIds;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
-uint qHash( const QgsFeature &key, uint seed = 0 ); // SIP_SKIP
+uint qHash( const QgsFeature &key, uint seed = 0 )  SIP_SKIP;
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )

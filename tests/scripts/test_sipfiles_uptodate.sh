@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 DIR=$(git rev-parse --show-toplevel)
 
 # GNU prefix command for mac os support (gsed, gsplit)

@@ -335,8 +335,6 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 
     virtual ~QgsVectorLayer();
 
-//    QgsVectorLayer( const QgsVectorLayer &rhs ) = delete;
-//    QgsVectorLayer &operator=( QgsVectorLayer const &rhs ) = delete;
 
     QString storageType() const;
 %Docstring
@@ -383,8 +381,6 @@ Returns a comment for the data in the layer
 %Docstring
 Returns the data provider
 %End
-
-    // const QgsVectorDataProvider *dataProvider() const;  // SIP_SKIP
 
 
     void setProviderEncoding( const QString &encoding );
@@ -629,8 +625,6 @@ Sets diagram rendering object (takes ownership)
 %Docstring
 Return renderer.
 %End
-
-    // const QgsFeatureRenderer *renderer() const { return mRenderer; } // SIP_SKIP
 
 
     void setRenderer( QgsFeatureRenderer *r /Transfer/ );
@@ -973,10 +967,6 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
  @return 0 in case of success
 %End
 
-    // const QgsAbstractVectorLayerLabeling *labeling() const { return mLabeling; } // SIP_SKIP
-
-
-    // void setLabeling( QgsAbstractVectorLayerLabeling *labeling ); // SIP_SKIP
 
 
     virtual bool isEditable() const;
@@ -1256,8 +1246,6 @@ Set annotation form for layer
 Buffer with uncommitted editing operations. Only valid after editing has been turned on.
 %End
 
-    // const QgsVectorLayerEditBuffer *editBuffer() const { return mEditBuffer; } // SIP_SKIP
-
 
     void beginEditCommand( const QString &text );
 %Docstring
@@ -1511,8 +1499,6 @@ Returns the current transparency for the vector layer
 %End
 
     QString metadata() const;
-
-    // inline QgsGeometryCache *cache() { return mCache; } // SIP_SKIP
 
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );

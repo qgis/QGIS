@@ -10,6 +10,7 @@
 
 
 
+
 typedef QMap<int, QVariant> QgsAttributeMap;
 
 typedef QMap<int, QString> QgsFieldNameMap;
