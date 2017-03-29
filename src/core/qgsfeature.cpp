@@ -30,18 +30,6 @@ email                : sherman at mrcc.com
  ****************************************************************************/
 
 
-QgsAttributeMap QgsAttributes::toMap() const
-{
-  QgsAttributeMap map;
-  for ( int idx = 0; idx < count(); ++idx )
-  {
-    QVariant v = at( idx );
-    if ( v.isValid() )
-      map.insert( idx, v );
-  }
-  return map;
-}
-
 //
 // QgsFeature
 //
