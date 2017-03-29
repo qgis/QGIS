@@ -52,9 +52,13 @@ class Aspect(GeoAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Aspect')
+    def name(self):
+        return 'Aspect'
 
+    def displayName(self):
+        return self.tr('Aspect')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,

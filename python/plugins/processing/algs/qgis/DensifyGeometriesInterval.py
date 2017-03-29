@@ -56,9 +56,13 @@ class DensifyGeometriesInterval(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')
+    def name(self):
+        return 'Densify geometries given an interval'
 
+    def displayName(self):
+        return self.tr('Densify geometries given an interval')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))

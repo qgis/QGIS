@@ -52,9 +52,13 @@ class GeometryConvert(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Convert geometry type')
+    def name(self):
+        return 'Convert geometry type'
 
+    def displayName(self):
+        return self.tr('Convert geometry type')
+
+    def defineCharacteristics(self):
         self.types = [self.tr('Centroids'),
                       self.tr('Nodes'),
                       self.tr('Linestrings'),

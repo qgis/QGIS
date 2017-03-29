@@ -50,8 +50,13 @@ class SetVectorStyle(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
+    def name(self):
+        return 'Set style for vector layer'
+
+    def displayName(self):
+        return self.tr('Set style for vector layer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Vector layer')))
         self.addParameter(ParameterFile(self.STYLE,

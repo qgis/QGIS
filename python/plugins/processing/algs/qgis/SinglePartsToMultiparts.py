@@ -53,9 +53,13 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Singleparts to multipart')
+    def name(self):
+        return 'Singleparts to multipart'
 
+    def displayName(self):
+        return self.tr('Singleparts to multipart')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))

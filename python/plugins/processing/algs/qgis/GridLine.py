@@ -67,9 +67,13 @@ class GridLine(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create grid (lines)')
+    def name(self):
+        return 'Create grid (lines)'
 
+    def displayName(self):
+        return self.tr('Create grid (lines)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.HSPACING,

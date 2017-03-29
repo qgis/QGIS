@@ -51,9 +51,13 @@ class PointOnSurface(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Point on surface')
+    def name(self):
+        return 'Point on surface'
 
+    def displayName(self):
+        return self.tr('Point on surface')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))

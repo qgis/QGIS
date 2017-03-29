@@ -19,7 +19,6 @@
 from processing.modeler.ModelerAlgorithm import ValueFromInput, ValueFromOutput
 import os
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
@@ -58,9 +57,13 @@ class RasterCalculator(GeoAlgorithm):
     def group(self):
         return self.tr('Raster')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
+    def name(self):
+        return 'Raster calculator'
 
+    def displayName(self):
+        return self.tr('Raster calculator')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Input layers'),
                                                  datatype=dataobjects.TYPE_RASTER,
@@ -82,7 +85,7 @@ class RasterCalculator(GeoAlgorithm):
                             if isinstance(out, OutputRaster):
                                 if out.value:
                                     new = "{}@".format(os.path.basename(out.value))
-                                    old = "{}:{}@".format(alg.name, out.name)
+                                    old = "{}:{}@".format(alg.modeler_name, out.name)
                                     value = value.replace(old, new)
                 return value
 
@@ -165,10 +168,10 @@ class RasterCalculator(GeoAlgorithm):
         else:
             dependent = []
         for alg in list(model.algs.values()):
-            if alg.name not in dependent:
+            if alg.modeler_name not in dependent:
                 for out in alg.algorithm.outputs:
                     if (isinstance(out, OutputRaster) and
-                            "{}:{}@".format(alg.name, out.name) in expression):
-                        values.append(ValueFromOutput(alg.name, out.name))
+                            "{}:{}@".format(alg.modeler_name, out.name) in expression):
+                        values.append(ValueFromOutput(alg.modeler_name, out.name))
 
         algorithm.params[self.LAYERS] = values

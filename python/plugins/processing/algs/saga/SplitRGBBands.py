@@ -49,11 +49,16 @@ class SplitRGBBands(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
+    def name(self):
+        return 'Split RGB bands'
+
+    def displayName(self):
+        return self.tr('Split RGB bands')
+
     def group(self):
         return self.tr('Image tools')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Split RGB bands')
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
                                           self.tr('Input layer'), False))
         self.addOutput(OutputRaster(SplitRGBBands.R,

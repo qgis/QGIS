@@ -61,13 +61,17 @@ class SplitLinesWithLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
+    def name(self):
+        return 'Split lines with lines'
+
+    def displayName(self):
+        return self.tr('Split lines with lines')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Split lines with lines')
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
                                           self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Split'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
 
     def processAlgorithm(self, feedback):

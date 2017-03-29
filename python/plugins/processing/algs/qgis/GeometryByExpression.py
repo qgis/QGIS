@@ -57,9 +57,13 @@ class GeometryByExpression(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Geometry by expression')
+    def name(self):
+        return 'Geometry by expression'
 
+    def displayName(self):
+        return self.tr('Geometry by expression')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 

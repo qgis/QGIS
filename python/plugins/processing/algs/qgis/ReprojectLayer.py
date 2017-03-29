@@ -53,9 +53,13 @@ class ReprojectLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Reproject layer')
+    def name(self):
+        return 'Reproject layer'
 
+    def displayName(self):
+        return self.tr('Reproject layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterCrs(self.TARGET_CRS,

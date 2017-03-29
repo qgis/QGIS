@@ -55,9 +55,13 @@ class Gridify(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Snap points to grid')
+    def name(self):
+        return 'Snap points to grid'
 
+    def displayName(self):
+        return self.tr('Snap points to grid')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterNumber(self.HSPACING,

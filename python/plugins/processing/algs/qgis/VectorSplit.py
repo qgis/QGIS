@@ -52,13 +52,17 @@ class VectorSplit(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
+    def name(self):
+        return 'Split vector layer'
+
+    def displayName(self):
+        return self.tr('Split vector layer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Split vector layer')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Unique ID field'), self.INPUT))
-
         self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
     def processAlgorithm(self, feedback):

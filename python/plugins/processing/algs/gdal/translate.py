@@ -66,12 +66,16 @@ class translate(GdalAlgorithm):
     def commandLineName(self):
         return "gdal:translate"
 
+    def name(self):
+        return 'Translate (convert format)'
+
+    def displayName(self):
+        return self.tr('Translate (convert format)')
+
     def group(self):
         return self.tr('Raster conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Translate (convert format)')
-
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.OUTSIZE,
                                           self.tr('Set the size of the output file (In pixels or %)'),

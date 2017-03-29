@@ -55,9 +55,13 @@ class CheckValidity(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Check validity')
+    def name(self):
+        return 'Check validity'
 
+    def displayName(self):
+        return self.tr('Check validity')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('The one selected in digitizing settings'),
                         'QGIS',
                         'GEOS']

@@ -232,7 +232,7 @@ class ConfigDialog(BASE, WIDGET):
             groupItem.setEditable(False)
 
             for alg in provider.algs:
-                algItem = QStandardItem(alg.i18n_name or alg.name)
+                algItem = QStandardItem(alg.displayName())
                 algItem.setIcon(icon)
                 algItem.setEditable(False)
                 try:

@@ -171,11 +171,11 @@ class ModelerGraphicItem(QGraphicsItem):
         popupmenu.exec_(event.screenPos())
 
     def deactivateAlgorithm(self):
-        self.model.deactivateAlgorithm(self.element.name)
+        self.model.deactivateAlgorithm(self.element.modeler_name)
         self.model.updateModelerView()
 
     def activateAlgorithm(self):
-        if self.model.activateAlgorithm(self.element.name):
+        if self.model.activateAlgorithm(self.element.modeler_name):
             self.model.updateModelerView()
         else:
             QMessageBox.warning(None, 'Could not activate Algorithm',
@@ -193,12 +193,12 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.text = dlg.param.description
                 self.update()
         elif isinstance(self.element, Algorithm):
-            dlg = self.element.algorithm.getCustomModelerParametersDialog(self.model, self.element.name)
+            dlg = self.element.algorithm.getCustomModelerParametersDialog(self.model, self.element.modeler_name)
             if not dlg:
-                dlg = ModelerParametersDialog(self.element.algorithm, self.model, self.element.name)
+                dlg = ModelerParametersDialog(self.element.algorithm, self.model, self.element.modeler_name)
             dlg.exec_()
             if dlg.alg is not None:
-                dlg.alg.name = self.element.name
+                dlg.alg.modeler_name = self.element.modeler_name
                 self.model.updateAlgorithm(dlg.alg)
                 self.model.updateModelerView()
 
@@ -211,7 +211,7 @@ class ModelerGraphicItem(QGraphicsItem):
             else:
                 self.model.updateModelerView()
         elif isinstance(self.element, Algorithm):
-            if not self.model.removeAlgorithm(self.element.name):
+            if not self.model.removeAlgorithm(self.element.modeler_name):
                 QMessageBox.warning(None, 'Could not remove element',
                                     'Other elements depend on the selected one.\n'
                                     'Remove them before trying to remove it.')

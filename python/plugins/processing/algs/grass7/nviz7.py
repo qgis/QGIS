@@ -62,11 +62,16 @@ class nviz7(GeoAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
+    def name(self):
+        return 'nviz7'
+
+    def displayName(self):
+        return self.tr('nviz7')
+
     def group(self):
-        return self.tr('Visualization (NVIZ)')
+        return self.tr('Visualization(NVIZ)')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('nviz7')
         self.addParameter(ParameterMultipleInput(
             nviz7.ELEVATION,
             self.tr('Raster file(s) for elevation'),

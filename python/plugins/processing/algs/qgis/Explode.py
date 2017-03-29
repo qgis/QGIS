@@ -50,8 +50,13 @@ class Explode(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'Explode lines'
+
+    def displayName(self):
+        return self.tr('Explode lines')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Explode lines')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_LINE]))

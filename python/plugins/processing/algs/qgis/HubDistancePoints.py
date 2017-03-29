@@ -69,9 +69,13 @@ class HubDistancePoints(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub (points)')
+    def name(self):
+        return 'Distance to nearest hub (points)'
 
+    def displayName(self):
+        return self.tr('Distance to nearest hub (points)')
+
+    def defineCharacteristics(self):
         self.units = [self.tr('Meters'),
                       self.tr('Feet'),
                       self.tr('Miles'),

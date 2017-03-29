@@ -26,7 +26,6 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-
 import os
 
 import numpy
@@ -63,9 +62,13 @@ class HypsometricCurves(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Hypsometric curves')
+    def name(self):
+        return 'Hypsometric curves'
 
+    def displayName(self):
+        return self.tr('Hypsometric curves')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_DEM,
                                           self.tr('DEM to analyze')))
         self.addParameter(ParameterVector(self.BOUNDARY_LAYER,

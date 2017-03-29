@@ -57,9 +57,13 @@ class VariableDistanceBuffer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Variable distance buffer')
+    def name(self):
+        return 'Variable distance buffer'
 
+    def displayName(self):
+        return self.tr('Variable distance buffer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,

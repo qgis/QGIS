@@ -47,8 +47,13 @@ class PostGISExecuteSQL(GeoAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def name(self):
+        return 'PostGIS execute SQL'
+
+    def displayName(self):
+        return self.tr('PostGIS execute SQL')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('PostGIS execute SQL')
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database'),

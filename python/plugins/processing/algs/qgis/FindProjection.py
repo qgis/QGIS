@@ -41,7 +41,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.outputs import OutputHTML
 from processing.tools import dataobjects
 
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -64,9 +63,13 @@ class FindProjection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Find projection')
+    def name(self):
+        return 'Find projection'
 
+    def displayName(self):
+        return self.tr('Find projection')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         extent_parameter = ParameterExtent(self.TARGET_AREA,

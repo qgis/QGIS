@@ -53,6 +53,12 @@ class ClipByExtent(GdalAlgorithm):
     RTYPE = 'RTYPE'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
+    def name(self):
+        return 'Clip raster by extent'
+
+    def displayName(self):
+        return self.tr('Clip raster by extent')
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
@@ -60,8 +66,6 @@ class ClipByExtent(GdalAlgorithm):
         return self.tr('Raster extraction')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Clip raster by extent')
-
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr("Nodata value, leave blank to take the nodata value from input"),

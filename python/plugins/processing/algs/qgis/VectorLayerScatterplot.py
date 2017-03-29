@@ -54,9 +54,13 @@ class VectorLayerScatterplot(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Vector layer scatterplot')
+    def name(self):
+        return 'Vector layer scatterplot'
 
+    def displayName(self):
+        return self.tr('Vector layer scatterplot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,

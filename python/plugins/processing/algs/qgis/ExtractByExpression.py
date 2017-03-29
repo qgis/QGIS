@@ -54,9 +54,13 @@ class ExtractByExpression(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract by expression')
+    def name(self):
+        return 'Extract by expression'
 
+    def displayName(self):
+        return self.tr('Extract by expression')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterExpression(self.EXPRESSION,

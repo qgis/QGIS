@@ -53,9 +53,13 @@ class LinesToPolygons(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Lines to polygons')
+    def name(self):
+        return 'Lines to polygons'
 
+    def displayName(self):
+        return self.tr('Lines to polygons')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_LINE]))

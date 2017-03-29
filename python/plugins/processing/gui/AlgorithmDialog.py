@@ -195,7 +195,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
             self.setInfo(
-                self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.name))
+                self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()))
 
             if self.iterateParam:
                 if executeIterating(self.alg, self.iterateParam, self.feedback):
@@ -235,7 +235,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 return
 
         self.executed = True
-        self.setInfo(self.tr('Algorithm {0} finished').format(self.alg.name))
+        self.setInfo(self.tr('Algorithm {0} finished').format(self.alg.displayName()))
         QApplication.restoreOverrideCursor()
 
         if not keepOpen:

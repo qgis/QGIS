@@ -82,7 +82,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = Grass7Algorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != '':
+                    if alg.name().strip() != '':
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(

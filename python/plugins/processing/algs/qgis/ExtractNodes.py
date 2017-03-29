@@ -52,9 +52,13 @@ class ExtractNodes(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract nodes')
+    def name(self):
+        return 'Extract nodes'
 
+    def displayName(self):
+        return self.tr('Extract nodes')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON,

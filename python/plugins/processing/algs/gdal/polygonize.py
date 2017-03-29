@@ -49,6 +49,12 @@ class polygonize(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
+    def name(self):
+        return 'Polygonize (raster to vector)'
+
+    def displayName(self):
+        return self.tr('Polygonize (raster to vector)')
+
     def commandLineName(self):
         return "gdal:polygonize"
 
@@ -56,7 +62,6 @@ class polygonize(GdalAlgorithm):
         return self.tr('Raster conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygonize (raster to vector)')
         self.addParameter(ParameterRaster(polygonize.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(polygonize.FIELD,

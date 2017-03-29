@@ -59,9 +59,13 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random selection within subsets')
+    def name(self):
+        return 'Random selection within subsets'
 
+    def displayName(self):
+        return self.tr('Random selection within subsets')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 

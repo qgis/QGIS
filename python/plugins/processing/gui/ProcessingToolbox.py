@@ -116,7 +116,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 name = 'ACTIVATE_' + provider_id.upper().replace(' ', '_')
                 if not ProcessingConfig.getSetting(name):
                     for alg in list(provider.values()):
-                        if text in alg.name:
+                        if text in alg.name():
                             self.disabledWithMatchingAlgs.append(provider_id)
                             break
             showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
@@ -351,7 +351,8 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.icon()
-        nameEn, name = alg.displayNames()
+        nameEn = alg.name()
+        name = alg.displayName()
         name = name if name != '' else nameEn
         self.setIcon(0, icon)
         self.setToolTip(0, name)

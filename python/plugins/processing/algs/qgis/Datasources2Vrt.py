@@ -57,9 +57,13 @@ class Datasources2Vrt(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Build virtual vector')
+    def name(self):
+        return 'Build virtual vector'
 
+    def displayName(self):
+        return self.tr('Build virtual vector')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.DATASOURCES,
                                                  self.tr('Input datasources'),
                                                  dataobjects.TYPE_TABLE))

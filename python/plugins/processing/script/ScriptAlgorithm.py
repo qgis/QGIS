@@ -56,6 +56,8 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         GeoAlgorithm.__init__(self)
         self._icon = QgsApplication.getThemeIcon("/processingScript.svg")
+        self._name = ''
+        self._display_name = ''
         self._group = ''
 
         self.script = script
@@ -75,6 +77,12 @@ class ScriptAlgorithm(GeoAlgorithm):
     def icon(self):
         return self._icon
 
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
     def group(self):
         return self._group
 
@@ -85,7 +93,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         self.error = None
         self.script = ''
         filename = os.path.basename(self.descriptionFile)
-        self.name = filename[:filename.rfind('.')].replace('_', ' ')
+        self._name = filename[:filename.rfind('.')].replace('_', ' ')
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
         with open(self.descriptionFile) as lines:
             line = lines.readline()
@@ -104,7 +112,8 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self._name = '[Unnamed algorithm]'
+        self._display_name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
@@ -141,7 +150,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             self._group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = self.i18n_name = tokens[0]
+            self._name = self._display_name = tokens[0]
             return
 
         out = getOutputFromString(line)

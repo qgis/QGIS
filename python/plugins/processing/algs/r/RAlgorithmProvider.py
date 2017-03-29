@@ -115,7 +115,7 @@ class RAlgorithmProvider(AlgorithmProvider):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = RAlgorithm(fullpath)
-                        if alg.name.strip() != '':
+                        if alg.name().strip() != '':
                             self.algs.append(alg)
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)

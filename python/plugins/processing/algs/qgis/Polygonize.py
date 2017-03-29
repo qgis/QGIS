@@ -60,8 +60,13 @@ class Polygonize(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'Polygonize'
+
+    def displayName(self):
+        return self.tr('Polygonize')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygonize')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterBoolean(self.FIELDS,

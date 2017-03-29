@@ -55,9 +55,13 @@ class SimplifyGeometries(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Simplify geometries')
+    def name(self):
+        return 'Simplify geometries'
 
+    def displayName(self):
+        return self.tr('Simplify geometries')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))

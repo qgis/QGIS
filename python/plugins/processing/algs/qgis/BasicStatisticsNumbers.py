@@ -41,7 +41,6 @@ from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputNumber
 from processing.tools import dataobjects, vector
 
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -82,9 +81,13 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
+    def name(self):
+        return 'Basic statistics for numeric fields'
 
+    def displayName(self):
+        return self.tr('Basic statistics for numeric fields')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,

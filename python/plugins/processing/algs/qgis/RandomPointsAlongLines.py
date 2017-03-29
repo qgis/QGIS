@@ -64,15 +64,19 @@ class RandomPointsAlongLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
+    def name(self):
+        return 'Random points along line'
+
+    def displayName(self):
+        return self.tr('Random points along line')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points along line')
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,
                                           self.tr('Number of points'), 1, None, 1))
         self.addParameter(ParameterNumber(self.MIN_DISTANCE,
                                           self.tr('Minimum distance'), 0.0, None, 0.0))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
 
     def processAlgorithm(self, feedback):

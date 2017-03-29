@@ -50,11 +50,16 @@ class nearblack(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'nearblack.png'))
 
+    def name(self):
+        return 'Near black'
+
+    def displayName(self):
+        return self.tr('Near black')
+
     def group(self):
         return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Near black')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.NEAR,

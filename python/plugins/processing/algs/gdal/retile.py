@@ -66,12 +66,16 @@ class retile(GdalAlgorithm):
     def commandName(self):
         return "gdal_retile"
 
+    def name(self):
+        return 'Retile'
+
+    def displayName(self):
+        return self.tr('Retile')
+
     def group(self):
         return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Retile')
-
         # Required parameters
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),

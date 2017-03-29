@@ -46,9 +46,13 @@ class SaveSelectedFeatures(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Save selected features')
+    def name(self):
+        return 'Save selected features'
 
+    def displayName(self):
+        return self.tr('Save selected features')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
 

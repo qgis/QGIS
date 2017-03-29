@@ -58,8 +58,13 @@ class AddTableField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def name(self):
+        return 'Add field to attributes table'
+
+    def displayName(self):
+        return self.tr('Add field to attributes table')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add field to attributes table')
 
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),

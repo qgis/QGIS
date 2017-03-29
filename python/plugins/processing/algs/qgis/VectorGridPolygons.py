@@ -61,9 +61,13 @@ class VectorGridPolygons(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Vector grid (polygons)')
+    def name(self):
+        return 'Vector grid (polygons)'
 
+    def displayName(self):
+        return self.tr('Vector grid (polygons)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterExtent(self.EXTENT,
                                           self.tr('Grid extent'), optional=False))
         self.addParameter(ParameterNumber(self.STEP_X,

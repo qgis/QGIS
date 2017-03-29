@@ -55,9 +55,13 @@ class Delaunay(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delaunay triangulation')
+    def name(self):
+        return 'Delaunay triangulation'
 
+    def displayName(self):
+        return self.tr('Delaunay triangulation')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
 

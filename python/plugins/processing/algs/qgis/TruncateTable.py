@@ -50,9 +50,13 @@ class TruncateTable(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Truncate table')
+    def name(self):
+        return 'Truncate table'
 
+    def displayName(self):
+        return self.tr('Truncate table')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input Layer')))
         self.addOutput(OutputVector(self.OUTPUT,

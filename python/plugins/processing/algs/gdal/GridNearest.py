@@ -62,11 +62,16 @@ class GridNearest(GdalAlgorithm):
     def commandLineName(self):
         return "gdal:gridnearestneighbor"
 
+    def name(self):
+        return 'Grid (Nearest neighbor)'
+
+    def displayName(self):
+        return self.tr('Grid (Nearest neighbor)')
+
     def group(self):
         return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Grid (Nearest neighbor)')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,

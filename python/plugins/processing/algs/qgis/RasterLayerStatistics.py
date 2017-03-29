@@ -60,9 +60,13 @@ class RasterLayerStatistics(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')
+    def name(self):
+        return 'Raster layer statistics'
 
+    def displayName(self):
+        return self.tr('Raster layer statistics')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))

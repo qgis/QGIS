@@ -67,7 +67,7 @@ class ScriptUtils(object):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = ScriptAlgorithm(fullpath)
-                        if alg.name.strip() != '':
+                        if alg.name().strip() != '':
                             algs.append(alg)
                     except WrongScriptException as e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)

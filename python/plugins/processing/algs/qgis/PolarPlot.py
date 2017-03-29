@@ -53,9 +53,13 @@ class PolarPlot(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polar plot')
+    def name(self):
+        return 'Polar plot'
 
+    def displayName(self):
+        return self.tr('Polar plot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,

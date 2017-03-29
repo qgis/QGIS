@@ -53,9 +53,13 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Snap geometries to layer')
+    def name(self):
+        return 'Snap geometries to layer'
 
+    def displayName(self):
+        return self.tr('Snap geometries to layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterVector(self.REFERENCE_LAYER, self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))

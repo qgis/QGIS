@@ -87,7 +87,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = ModelerAlgorithm.fromFile(fullpath)
-                        if alg.name:
+                        if alg.name():
                             alg.provider = self
                             alg.descriptionFile = fullpath
                             self.algs.append(alg)

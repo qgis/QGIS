@@ -62,8 +62,13 @@ class FixedDistanceBuffer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'Fixed distance buffer'
+
+    def displayName(self):
+        return self.tr('Fixed distance buffer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Fixed distance buffer')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DISTANCE,
@@ -88,7 +93,6 @@ class FixedDistanceBuffer(GeoAlgorithm):
             self.join_styles, default=0))
         self.addParameter(ParameterNumber(self.MITRE_LIMIT,
                                           self.tr('Mitre limit'), 1, default=2))
-
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):

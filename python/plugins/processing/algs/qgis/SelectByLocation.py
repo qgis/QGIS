@@ -56,9 +56,13 @@ class SelectByLocation(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by location')
+    def name(self):
+        return 'Select by location'
 
+    def displayName(self):
+        return self.tr('Select by location')
+
+    def defineCharacteristics(self):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),

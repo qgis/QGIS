@@ -50,11 +50,16 @@ class pct2rgb(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '8-to-24-bits.png'))
 
+    def name(self):
+        return 'PCT to RGB'
+
+    def displayName(self):
+        return self.tr('PCT to RGB')
+
     def group(self):
         return self.tr('Raster conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('PCT to RGB')
         self.addParameter(ParameterRaster(pct2rgb.INPUT,
                                           self.tr('Input layer'), False))
         options = []

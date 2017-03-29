@@ -53,9 +53,13 @@ class Translate(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Translate geometry')
+    def name(self):
+        return 'Translate geometry'
 
+    def displayName(self):
+        return self.tr('Translate geometry')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterNumber(self.DELTA_X,

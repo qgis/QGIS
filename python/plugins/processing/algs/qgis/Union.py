@@ -61,8 +61,13 @@ class Union(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
+    def name(self):
+        return 'Union'
+
+    def displayName(self):
+        return self.tr('Union')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Union')
         self.addParameter(ParameterVector(Union.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(Union.INPUT2,

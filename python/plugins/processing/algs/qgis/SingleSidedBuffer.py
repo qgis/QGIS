@@ -59,9 +59,13 @@ class SingleSidedBuffer(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Single sided buffer')
+    def name(self):
+        return 'Single sided buffer'
 
+    def displayName(self):
+        return self.tr('Single sided buffer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.DISTANCE,

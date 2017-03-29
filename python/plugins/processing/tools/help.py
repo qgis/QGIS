@@ -49,8 +49,8 @@ def baseHelpForAlgorithm(alg, folder):
     filePath = os.path.join(dirName, safeAlgName + '.rst')
 
     with codecs.open(filePath, 'w', encoding='utf-8') as f:
-        f.write('{}\n'.format(alg.name))
-        f.write('{}\n\n'.format('=' * len(alg.name)))
+        f.write('{}\n'.format(alg.name()))
+        f.write('{}\n\n'.format('=' * len(alg.name())))
         f.write('Description\n')
         f.write('-----------\n\n<put algorithm description here>\n\n')
 

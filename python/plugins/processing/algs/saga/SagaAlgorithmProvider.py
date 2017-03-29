@@ -92,7 +92,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
             if descriptionFile.endswith('txt'):
                 try:
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != '':
+                    if alg.name().strip() != '':
                         self.algs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,

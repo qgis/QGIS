@@ -50,9 +50,13 @@ class Merge(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Merge vector layers')
+    def name(self):
+        return 'Merge vector layers'
 
+    def displayName(self):
+        return self.tr('Merge vector layers')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(self.LAYERS,
                                                  self.tr('Layers to merge'),
                                                  datatype=dataobjects.TYPE_VECTOR_ANY))

@@ -55,9 +55,13 @@ class ExtractSpecificNodes(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract specific nodes')
+    def name(self):
+        return 'Extract specific nodes'
 
+    def displayName(self):
+        return self.tr('Extract specific nodes')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
         self.addParameter(ParameterString(self.NODES,

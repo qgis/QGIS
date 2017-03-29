@@ -51,9 +51,13 @@ class DeleteColumn(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete column')
+    def name(self):
+        return 'Delete column'
 
+    def displayName(self):
+        return self.tr('Delete column')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.COLUMNS,

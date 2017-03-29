@@ -54,9 +54,13 @@ class BarPlot(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Bar plot')
+    def name(self):
+        return 'Bar plot'
 
+    def displayName(self):
+        return self.tr('Bar plot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
                                               self.tr('Category name field'),

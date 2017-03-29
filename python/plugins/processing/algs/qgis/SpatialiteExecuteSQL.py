@@ -50,8 +50,13 @@ class SpatialiteExecuteSQL(GeoAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def name(self):
+        return 'Spatialite execute SQL'
+
+    def displayName(self):
+        return self.tr('Spatialite execute SQL')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Spatialite execute SQL')
         self.addParameter(ParameterVector(self.DATABASE, self.tr('File Database'), False, False))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))
 

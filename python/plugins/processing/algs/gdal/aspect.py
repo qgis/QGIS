@@ -48,11 +48,16 @@ class aspect(GdalAlgorithm):
     ZERO_FLAT = 'ZERO_FLAT'
     OUTPUT = 'OUTPUT'
 
+    def name(self):
+        return 'Aspect'
+
+    def displayName(self):
+        return self.tr('Aspect')
+
     def group(self):
         return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Aspect')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))

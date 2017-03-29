@@ -52,9 +52,13 @@ class CreateAttributeIndex(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create attribute index')
+    def name(self):
+        return 'Create attribute index'
 
+    def displayName(self):
+        return self.tr('Create attribute index')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input Layer')))
         self.addParameter(ParameterTableField(self.FIELD,

@@ -57,9 +57,13 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Oriented minimum bounding box')
+    def name(self):
+        return 'Oriented minimum bounding box'
 
+    def displayName(self):
+        return self.tr('Oriented minimum bounding box')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,

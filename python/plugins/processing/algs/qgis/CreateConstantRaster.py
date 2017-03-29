@@ -51,9 +51,13 @@ class CreateConstantRaster(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create constant raster layer')
+    def name(self):
+        return 'Create constant raster layer'
 
+    def displayName(self):
+        return self.tr('Create constant raster layer')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Reference layer')))
         self.addParameter(ParameterNumber(self.NUMBER,

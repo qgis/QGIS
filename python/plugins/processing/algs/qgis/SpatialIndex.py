@@ -53,9 +53,13 @@ class SpatialIndex(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create spatial index')
+    def name(self):
+        return 'Create spatial index'
 
+    def displayName(self):
+        return self.tr('Create spatial index')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addOutput(OutputVector(self.OUTPUT,

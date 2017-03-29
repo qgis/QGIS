@@ -77,6 +77,8 @@ class RAlgorithm(GeoAlgorithm):
     def __init__(self, descriptionFile, script=None):
         GeoAlgorithm.__init__(self)
         self.script = script
+        self._name = ''
+        self._display_name = ''
         self._group = ''
         self.descriptionFile = descriptionFile
         if script is not None:
@@ -90,12 +92,18 @@ class RAlgorithm(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerR.svg")
 
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
     def group(self):
         return self._group
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]')
+        self._name, self._display_name = self.trAlgorithm('[Unnamed algorithm]')
         self._group = self.tr('User R scripts')
         self.parseDescription(iter(lines))
 
@@ -168,7 +176,7 @@ class RAlgorithm(GeoAlgorithm):
             self._group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = self.i18n_name = tokens[0]
+            self._name = self._display_name = tokens[0]
             return
 
         out = getOutputFromString(line)

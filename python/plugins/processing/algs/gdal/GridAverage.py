@@ -56,6 +56,12 @@ class GridAverage(GdalAlgorithm):
 
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
+    def name(self):
+        return 'Grid (Moving average)'
+
+    def displayName(self):
+        return self.tr('Grid (Moving average)')
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
@@ -66,7 +72,6 @@ class GridAverage(GdalAlgorithm):
         return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Grid (Moving average)')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,

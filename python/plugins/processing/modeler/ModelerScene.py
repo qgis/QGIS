@@ -75,7 +75,8 @@ class ModelerScene(QGraphicsScene):
             for i, out in enumerate(outputs):
                 if out.name == value.output:
                     break
-            items.append((self.algItems[value.alg], i))
+            if value.alg in self.algItems:
+                items.append((self.algItems[value.alg], i))
         return items
 
     def paintModel(self, model, controls=True):
@@ -96,7 +97,7 @@ class ModelerScene(QGraphicsScene):
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
             item.setPos(alg.pos.x(), alg.pos.y())
-            self.algItems[alg.name] = item
+            self.algItems[alg.modeler_name] = item
 
         # And then the arrows
         for alg in list(model.algs.values()):
@@ -109,17 +110,17 @@ class ModelerScene(QGraphicsScene):
                         value = None
                     sourceItems = self.getItemsFromParamValue(value)
                     for sourceItem, sourceIdx in sourceItems:
-                        arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.name], idx)
+                        arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.modeler_name], idx)
                         sourceItem.addArrow(arrow)
-                        self.algItems[alg.name].addArrow(arrow)
+                        self.algItems[alg.modeler_name].addArrow(arrow)
                         arrow.updatePath()
                         self.addItem(arrow)
                     idx += 1
             for depend in alg.dependencies:
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
-                                         self.algItems[alg.name], -1)
+                                         self.algItems[alg.modeler_name], -1)
                 self.algItems[depend].addArrow(arrow)
-                self.algItems[alg.name].addArrow(arrow)
+                self.algItems[alg.modeler_name].addArrow(arrow)
                 arrow.updatePath()
                 self.addItem(arrow)
 
@@ -138,19 +139,19 @@ class ModelerScene(QGraphicsScene):
                     pos = alg.outputs[key].pos
                     if pos is None:
                         pos = (alg.pos + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
-                               self.algItems[alg.name].getLinkPointForOutput(idx))
+                               self.algItems[alg.modeler_name].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
-                    arrow = ModelerArrowItem(self.algItems[alg.name], idx, item,
+                    arrow = ModelerArrowItem(self.algItems[alg.modeler_name], idx, item,
                                              -1)
-                    self.algItems[alg.name].addArrow(arrow)
+                    self.algItems[alg.modeler_name].addArrow(arrow)
                     item.addArrow(arrow)
                     arrow.updatePath()
                     self.addItem(arrow)
                     idx += 1
                 else:
                     outputItems[key] = None
-            self.outputItems[alg.name] = outputItems
+            self.outputItems[alg.modeler_name] = outputItems
 
     def mousePressEvent(self, mouseEvent):
         if mouseEvent.button() != Qt.LeftButton:

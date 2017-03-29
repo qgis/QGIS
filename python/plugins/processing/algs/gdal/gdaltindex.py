@@ -48,6 +48,12 @@ class gdaltindex(GdalAlgorithm):
     FIELD_NAME = 'FIELD_NAME'
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
 
+    def name(self):
+        return 'Tile Index'
+
+    def displayName(self):
+        return self.tr('Tile Index')
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'tiles.png'))
 
@@ -55,7 +61,6 @@ class gdaltindex(GdalAlgorithm):
         return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Tile Index')
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterString(self.FIELD_NAME,

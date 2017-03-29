@@ -47,9 +47,13 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete duplicate geometries')
+    def name(self):
+        return 'Delete duplicate geometries'
 
+    def displayName(self):
+        return self.tr('Delete duplicate geometries')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))

@@ -56,9 +56,13 @@ class LinesIntersection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Line intersections')
+    def name(self):
+        return 'Line intersections'
 
+    def displayName(self):
+        return self.tr('Line intersections')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_A,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,

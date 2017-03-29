@@ -51,8 +51,13 @@ class SymmetricalDifference(GeoAlgorithm):
     def group(self):
         return self.tr('Vector overlay tools')
 
+    def name(self):
+        return 'Symmetrical difference'
+
+    def displayName(self):
+        return self.tr('Symmetrical difference')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Symmetrical difference')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.OVERLAY,

@@ -59,8 +59,13 @@ class ConcaveHull(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'Concave hull'
+
+    def displayName(self):
+        return self.tr('Concave hull')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Concave hull')
         self.addParameter(ParameterVector(ConcaveHull.INPUT,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.ALPHA,
@@ -70,7 +75,8 @@ class ConcaveHull(GeoAlgorithm):
                                            self.tr('Allow holes'), True))
         self.addParameter(ParameterBoolean(self.NO_MULTIGEOMETRY,
                                            self.tr('Split multipart geometry into singleparts geometries'), False))
-        self.addOutput(OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addOutput(
+            OutputVector(ConcaveHull.OUTPUT, self.tr('Concave hull'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
 
     def processAlgorithm(self, feedback):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(ConcaveHull.INPUT))

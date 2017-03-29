@@ -28,7 +28,6 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
-
 from qgis.core import (QgsField,
                        QgsExpression,
                        QgsDistanceArea,
@@ -63,8 +62,13 @@ class FieldsMapper(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def name(self):
+        return 'Refactor fields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input layer'),
                                          False))

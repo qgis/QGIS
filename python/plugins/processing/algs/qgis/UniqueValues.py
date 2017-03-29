@@ -56,8 +56,13 @@ class UniqueValues(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def name(self):
+        return 'List unique values'
+
+    def displayName(self):
+        return self.tr('List unique values')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('List unique values')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,

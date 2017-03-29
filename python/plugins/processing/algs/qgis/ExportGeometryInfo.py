@@ -57,9 +57,13 @@ class ExportGeometryInfo(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
+    def name(self):
+        return 'Export/Add geometry columns'
 
+    def displayName(self):
+        return self.tr('Export/Add geometry columns')
+
+    def defineCharacteristics(self):
         self.calc_methods = [self.tr('Layer CRS'),
                              self.tr('Project CRS'),
                              self.tr('Ellipsoidal')]

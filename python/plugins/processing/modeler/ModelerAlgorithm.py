@@ -41,7 +41,8 @@ from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import (ParameterRaster,
+from processing.core.parameters import (Parameter,
+                                        ParameterRaster,
                                         ParameterVector,
                                         ParameterTable,
                                         ParameterTableField,
@@ -235,14 +236,14 @@ class ModelerAlgorithm(GeoAlgorithm):
             newone.algs[algname].__dict__.update(copy.deepcopy(alg.todict()))
         newone.inputs = copy.deepcopy(self.inputs)
         newone.defineCharacteristics()
-        newone.name = self.name
+        newone._name = self._name
         newone._group = self._group
         newone.descriptionFile = self.descriptionFile
         newone.helpContent = copy.deepcopy(self.helpContent)
         return newone
 
     def __init__(self):
-        self.name = self.tr('Model', 'ModelerAlgorithm')
+        self._name = self.tr('Model', 'ModelerAlgorithm')
         # The dialog where this model is being edited
         self.modelerdialog = None
         self.descriptionFile = None
@@ -255,6 +256,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         # Input parameters. A dict of Input objects, with names as keys
         self.inputs = {}
         GeoAlgorithm.__init__(self)
+
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._name
 
     def group(self):
         return self._group
@@ -283,7 +290,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             if alg.active:
                 for out in alg.outputs:
                     modelOutput = copy.deepcopy(alg.algorithm.getOutputFromName(out))
-                    modelOutput.name = self.getSafeNameForOutput(alg.name, out)
+                    modelOutput.name = self.getSafeNameForOutput(alg.modeler_name, out)
                     modelOutput.description = alg.outputs[out].description
                     self.outputs.append(modelOutput)
         self.outputs.sort(key=attrgetter("description"))
@@ -296,7 +303,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def addAlgorithm(self, alg):
         name = self.getNameForAlgorithm(alg)
-        alg.name = name
+        alg.modeler_name = name
         self.algs[name] = alg
 
     def getNameForAlgorithm(self, alg):
@@ -306,10 +313,10 @@ class ModelerAlgorithm(GeoAlgorithm):
         return alg.consoleName.upper().replace(":", "") + "_" + str(i)
 
     def updateAlgorithm(self, alg):
-        alg.pos = self.algs[alg.name].pos
-        alg.paramsFolded = self.algs[alg.name].paramsFolded
-        alg.outputsFolded = self.algs[alg.name].outputsFolded
-        self.algs[alg.name] = alg
+        alg.pos = self.algs[alg.modeler_name].pos
+        alg.paramsFolded = self.algs[alg.modeler_name].paramsFolded
+        alg.outputsFolded = self.algs[alg.modeler_name].outputsFolded
+        self.algs[alg.modeler_name] = alg
 
         from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
         for i, out in enumerate(alg.outputs):
@@ -360,7 +367,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 elif isinstance(value, ValueFromOutput):
                     if value.alg == name:
                         return True
-            if alg.name != name:
+            if alg.modeler_name != name:
                 for dep in alg.dependencies:
                     if (dep == name):
                         return True
@@ -405,9 +412,9 @@ class ModelerAlgorithm(GeoAlgorithm):
                 if isinstance(value, list):
                     for v in value:
                         if isinstance(v, ValueFromOutput) and v.alg == name:
-                            algs.update(self.getDependentAlgorithms(alg.name))
+                            algs.update(self.getDependentAlgorithms(alg.modeler_name))
                 elif isinstance(value, ValueFromOutput) and value.alg == name:
-                    algs.update(self.getDependentAlgorithms(alg.name))
+                    algs.update(self.getDependentAlgorithms(alg.modeler_name))
 
         return algs
 
@@ -429,7 +436,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 else:
                     if iface is not None:
                         iface.messageBar().pushMessage(self.tr("Warning"),
-                                                       self.tr("Parameter {0} in algorithm {1} in the model is run with default value! Edit the model to make sure that this is correct.").format(param.name, alg.name),
+                                                       self.tr("Parameter {0} in algorithm {1} in the model is run with default value! Edit the model to make sure that this is correct.").format(param.name, alg.displayName()),
                                                        QgsMessageBar.WARNING, 4)
                     value = param.default
                 # We allow unexistent filepaths, since that allows
@@ -445,7 +452,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         for out in algInstance.outputs:
             if not out.hidden:
                 if out.name in alg.outputs:
-                    name = self.getSafeNameForOutput(alg.name, out.name)
+                    name = self.getSafeNameForOutput(alg.modeler_name, out.name)
                     modelOut = self.getOutputFromName(name)
                     if modelOut:
                         out.value = modelOut.value
@@ -490,17 +497,17 @@ class ModelerAlgorithm(GeoAlgorithm):
         toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
             for alg in toExecute:
-                if alg.name not in executed:
+                if alg.modeler_name not in executed:
                     canExecute = True
-                    required = self.getDependsOnAlgorithms(alg.name)
+                    required = self.getDependsOnAlgorithms(alg.modeler_name)
                     for requiredAlg in required:
-                        if requiredAlg != alg.name and requiredAlg not in executed:
+                        if requiredAlg != alg.modeler_name and requiredAlg not in executed:
                             canExecute = False
                             break
                     if canExecute:
                         try:
                             feedback.pushDebugInfo(
-                                self.tr('Prepare algorithm: {0}', 'ModelerAlgorithm').format(alg.name))
+                                self.tr('Prepare algorithm: {0}', 'ModelerAlgorithm').format(alg.modeler_name))
                             self.prepareAlgorithm(alg)
                             feedback.setProgressText(
                                 self.tr('Running {0} [{1}/{2}]', 'ModelerAlgorithm').format(alg.description, len(executed) + 1, len(toExecute)))
@@ -514,11 +521,11 @@ class ModelerAlgorithm(GeoAlgorithm):
                             for out in alg.algorithm.outputs:
                                 if not out.hidden:
                                     if out.name in alg.outputs:
-                                        modelOut = self.getOutputFromName(self.getSafeNameForOutput(alg.name, out.name))
+                                        modelOut = self.getOutputFromName(self.getSafeNameForOutput(alg.modeler_name, out.name))
                                         if modelOut:
                                             modelOut.value = out.value
 
-                            executed.append(alg.name)
+                            executed.append(alg.modeler_name)
                             feedback.pushDebugInfo(
                                 self.tr('OK. Execution took %{0:.3f} ms ({1} outputs).', 'ModelerAlgorithm').format(dt, len(alg.algorithm.outputs)))
                         except GeoAlgorithmExecutionException as e:
@@ -616,16 +623,24 @@ class ModelerAlgorithm(GeoAlgorithm):
                     # upgrade old model files
                     if k == 'group':
                         k = '_group'
+                    elif k == 'name':
+                        instance.__dict__['_name'] = v
+                        k = 'modeler_name'
+                        if not issubclass(clazz, GeoAlgorithm):
+                            instance.__dict__['name'] = v
                     instance.__dict__[k] = v
                 return instance
             except KeyError:
                 return d
             except Exception as e:
                 raise e
+
         try:
             model = json.loads(s, object_hook=fromdict)
         except Exception as e:
             raise WrongModelException(e.args[0])
+
+        model._name = model.modeler_name
         return model
 
     @staticmethod
@@ -633,11 +648,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         with open(filename) as f:
             s = f.read()
         alg = ModelerAlgorithm.fromJson(s)
-        alg.descriptionFile = filename
+        if alg:
+            alg.descriptionFile = filename
         return alg
 
     def toPython(self):
-        s = ['##%s=name' % self.name]
+        s = ['##%s=name' % self.name()]
         for param in list(self.inputs.values()):
             s.append(param.param.getAsScriptCode())
         for alg in list(self.algs.values()):
@@ -648,16 +664,16 @@ class ModelerAlgorithm(GeoAlgorithm):
         toExecute = [alg for alg in list(self.algs.values()) if alg.active]
         while len(executed) < len(toExecute):
             for alg in toExecute:
-                if alg.name not in executed:
+                if alg.modeler_name not in executed:
                     canExecute = True
-                    required = self.getDependsOnAlgorithms(alg.name)
+                    required = self.getDependsOnAlgorithms(alg.modeler_name)
                     for requiredAlg in required:
-                        if requiredAlg != alg.name and requiredAlg not in executed:
+                        if requiredAlg != alg.modeler_name and requiredAlg not in executed:
                             canExecute = False
                             break
                     if canExecute:
                         s.extend(alg.toPython())
-                        executed.append(alg.name)
+                        executed.append(alg.modeler_name)
 
         return '\n'.join(s)
 

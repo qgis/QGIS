@@ -51,8 +51,13 @@ class EquivalentNumField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def name(self):
+        return 'Add unique value index field'
+
+    def displayName(self):
+        return self.tr('Add unique value index field')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add unique value index field')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,

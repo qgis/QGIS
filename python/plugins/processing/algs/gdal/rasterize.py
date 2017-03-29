@@ -68,12 +68,16 @@ class rasterize(GdalAlgorithm):
     def commandLineName(self):
         return "gdal:rasterize"
 
+    def name(self):
+        return 'Rasterize (vector to raster)'
+
+    def displayName(self):
+        return self.tr('Rasterize (vector to raster)')
+
     def group(self):
         return self.tr('Vector conversion')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rasterize (vector to raster)')
-
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))

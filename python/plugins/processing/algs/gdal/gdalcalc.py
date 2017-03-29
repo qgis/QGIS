@@ -59,11 +59,16 @@ class gdalcalc(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
     #DEBUG = 'DEBUG'
 
+    def name(self):
+        return 'Raster calculator'
+
+    def displayName(self):
+        return self.tr('Raster calculator')
+
     def group(self):
         return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
         self.addParameter(ParameterRaster(
             self.INPUT_A, self.tr('Input layer A'), False))
         self.addParameter(ParameterString(self.BAND_A,

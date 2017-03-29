@@ -69,9 +69,13 @@ class TopoColor(GeoAlgorithm):
     def group(self):
         return self.tr('Cartographic tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Topological coloring')
+    def name(self):
+        return 'Topological coloring'
 
+    def displayName(self):
+        return self.tr('Topological coloring')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
         self.addParameter(ParameterNumber(self.MIN_COLORS,

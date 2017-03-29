@@ -65,9 +65,13 @@ class FieldsPyculator(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Advanced Python field calculator')
+    def name(self):
+        return 'Advanced Python field calculator'
 
+    def displayName(self):
+        return self.tr('Advanced Python field calculator')
+
+    def defineCharacteristics(self):
         self.type_names = [self.tr('Integer'),
                            self.tr('Float'),
                            self.tr('String')]

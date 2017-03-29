@@ -54,9 +54,13 @@ class MeanAndStdDevPlot(GeoAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Mean and standard deviation plot')
+    def name(self):
+        return 'Mean and standard deviation plot'
 
+    def displayName(self):
+        return self.tr('Mean and standard deviation plot')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,

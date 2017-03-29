@@ -47,11 +47,16 @@ class ColorRelief(GdalAlgorithm):
 
     MATCHING_MODES = ['"0,0,0,0" RGBA', 'Exact color', 'Nearest color']
 
+    def name(self):
+        return 'Color relief'
+
+    def displayName(self):
+        return self.tr('Color relief')
+
     def group(self):
         return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Color relief')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterNumber(
             self.BAND, self.tr('Band number'), 1, 99, 1))

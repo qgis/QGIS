@@ -65,9 +65,13 @@ class ExecuteSQL(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Execute SQL')
+    def name(self):
+        return 'Execute SQL'
 
+    def displayName(self):
+        return self.tr('Execute SQL')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterMultipleInput(name=self.INPUT_DATASOURCES,
                                                  description=self.tr('Additional input datasources (called input1, .., inputN in the query)'),
                                                  optional=True))

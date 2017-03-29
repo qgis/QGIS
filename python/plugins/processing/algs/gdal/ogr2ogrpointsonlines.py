@@ -47,12 +47,16 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
     GEOMETRY = 'GEOMETRY'
     OPTIONS = 'OPTIONS'
 
+    def name(self):
+        return 'Create points along lines'
+
+    def displayName(self):
+        return self.tr('Create points along lines')
+
     def group(self):
         return self.tr('Vector geoprocessing')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create points along lines')
-
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
         self.addParameter(ParameterString(self.GEOMETRY,

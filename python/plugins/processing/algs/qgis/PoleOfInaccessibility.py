@@ -56,9 +56,13 @@ class PoleOfInaccessibility(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Pole of Inaccessibility')
+    def name(self):
+        return 'Pole of Inaccessibility'
 
+    def displayName(self):
+        return self.tr('Pole of Inaccessibility')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON]))

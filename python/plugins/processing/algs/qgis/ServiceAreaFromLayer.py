@@ -76,6 +76,12 @@ class ServiceAreaFromLayer(GeoAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def name(self):
+        return 'Service area (from layer)'
+
+    def displayName(self):
+        return self.tr('Service area (from layer)')
+
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -85,8 +91,6 @@ class ServiceAreaFromLayer(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Service area (from layer)')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),

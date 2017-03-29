@@ -58,6 +58,12 @@ class ZonalStatisticsQgis(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
+    def name(self):
+        return 'Zonal Statistics (QGIS)'
+
+    def displayName(self):
+        return self.tr('Zonal Statistics (QGIS)')
+
     def defineCharacteristics(self):
         self.STATS = {self.tr('Count'): QgsZonalStatistics.Count,
                       self.tr('Sum'): QgsZonalStatistics.Sum,
@@ -72,8 +78,6 @@ class ZonalStatisticsQgis(GeoAlgorithm):
                       self.tr('Variety'): QgsZonalStatistics.Variety,
                       self.tr('All'): QgsZonalStatistics.All
                       }
-
-        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics (QGIS)')
 
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))

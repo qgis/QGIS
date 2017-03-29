@@ -70,9 +70,13 @@ class TinInterpolation(GeoAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('TIN interpolation')
+    def name(self):
+        return 'TIN interpolation'
 
+    def displayName(self):
+        return self.tr('TIN interpolation')
+
+    def defineCharacteristics(self):
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]

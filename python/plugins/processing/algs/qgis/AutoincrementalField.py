@@ -49,8 +49,13 @@ class AutoincrementalField(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
+    def name(self):
+        return 'Add autoincremental field'
+
+    def displayName(self):
+        return self.tr('Add autoincremental field')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Add autoincremental field')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))

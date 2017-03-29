@@ -52,9 +52,13 @@ class Slope(GeoAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Slope')
+    def name(self):
+        return 'Slope'
 
+    def displayName(self):
+        return self.tr('Slope')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,

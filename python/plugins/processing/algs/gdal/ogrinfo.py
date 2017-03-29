@@ -46,12 +46,16 @@ class OgrInfo(GdalAlgorithm):
     def commandLineName(self):
         return "gdal:ogrinfo"
 
+    def name(self):
+        return 'Information'
+
+    def displayName(self):
+        return self.tr('Information')
+
     def group(self):
         return self.tr('Vector miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Information')
-
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterBoolean(self.SUMMARY_ONLY,
                                            self.tr('Summary output only'),

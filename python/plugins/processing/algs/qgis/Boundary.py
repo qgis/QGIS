@@ -51,9 +51,13 @@ class Boundary(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Boundary')
+    def name(self):
+        return 'Boundary'
 
+    def displayName(self):
+        return self.tr('Boundary')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
                                                                    dataobjects.TYPE_VECTOR_POLYGON]))

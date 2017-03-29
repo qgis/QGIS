@@ -74,9 +74,13 @@ class BasicStatisticsStrings(GeoAlgorithm):
     def group(self):
         return self.tr('Vector table tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for text fields')
+    def name(self):
+        return 'Basic statistics for text fields'
 
+    def displayName(self):
+        return self.tr('Basic statistics for text fields')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterTable(self.INPUT_LAYER,
                                          self.tr('Input vector layer')))
         self.addParameter(ParameterTableField(self.FIELD_NAME,

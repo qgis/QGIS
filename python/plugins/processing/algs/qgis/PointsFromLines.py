@@ -59,9 +59,13 @@ class PointsFromLines(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Generate points (pixel centroids) along line')
+    def name(self):
+        return 'Generate points (pixel centroids) along line'
 
+    def displayName(self):
+        return self.tr('Generate points (pixel centroids) along line')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,

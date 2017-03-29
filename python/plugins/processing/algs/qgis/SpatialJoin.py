@@ -62,9 +62,13 @@ class SpatialJoin(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
+    def name(self):
+        return 'Join attributes by location'
 
+    def displayName(self):
+        return self.tr('Join attributes by location')
+
+    def defineCharacteristics(self):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),

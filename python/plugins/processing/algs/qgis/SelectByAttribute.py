@@ -73,9 +73,13 @@ class SelectByAttribute(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by attribute')
+    def name(self):
+        return 'Select by attribute'
 
+    def displayName(self):
+        return self.tr('Select by attribute')
+
+    def defineCharacteristics(self):
         self.i18n_operators = ['=',
                                '!=',
                                '>',

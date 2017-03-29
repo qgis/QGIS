@@ -50,9 +50,13 @@ class MultipartToSingleparts(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Multipart to singleparts')
+    def name(self):
+        return 'Multipart to singleparts'
 
+    def displayName(self):
+        return self.tr('Multipart to singleparts')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 

@@ -57,9 +57,13 @@ class ConvexHull(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Convex hull')
+    def name(self):
+        return 'Convex hull'
 
+    def displayName(self):
+        return self.tr('Convex hull')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('Create single minimum convex hull'),
                         self.tr('Create convex hulls based on field')]
 

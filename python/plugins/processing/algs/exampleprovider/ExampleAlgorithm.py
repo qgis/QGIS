@@ -54,6 +54,14 @@ class ExampleAlgorithm(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
 
+    def name(self):
+        # Unique (non-user visible) name of algorithm
+        return 'create_copy_of_layer'
+
+    def displayName(self):
+        # The name that the user will see in the toolbox
+        return self.tr('Create copy of layer')
+
     def group(self):
         return self.tr('Algorithms for vector layers')
 
@@ -61,9 +69,6 @@ class ExampleAlgorithm(GeoAlgorithm):
         """Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
-
-        # The name that the user will see in the toolbox
-        self.name, self.i18n_name = self.trAlgorithm('Create copy of layer')
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument

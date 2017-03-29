@@ -57,9 +57,13 @@ class OffsetLine(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Offset line')
+    def name(self):
+        return 'Offset line'
 
+    def displayName(self):
+        return self.tr('Offset line')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.DISTANCE,

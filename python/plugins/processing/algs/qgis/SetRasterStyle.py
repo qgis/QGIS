@@ -53,8 +53,13 @@ class SetRasterStyle(GeoAlgorithm):
     def group(self):
         return self.tr('Raster general tools')
 
+    def name(self):
+        return 'Set style for raster layer'
+
+    def displayName(self):
+        return self.tr('Set style for raster layer')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Set style for raster layer')
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,

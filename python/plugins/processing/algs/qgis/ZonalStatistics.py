@@ -69,9 +69,13 @@ class ZonalStatistics(GeoAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Zonal Statistics')
+    def name(self):
+        return 'Zonal Statistics'
 
+    def displayName(self):
+        return self.tr('Zonal Statistics')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Raster layer')))
         self.addParameter(ParameterNumber(self.RASTER_BAND,

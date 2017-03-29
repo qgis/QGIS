@@ -61,6 +61,12 @@ class GridDataMetrics(GdalAlgorithm):
     DATA_METRICS = ['Minimum', 'Maximum', 'Range', 'Count', 'Average distance',
                     'Average distance between points']
 
+    def name(self):
+        return 'Grid (Data metrics)'
+
+    def displayName(self):
+        return self.tr('Grid (Data metrics)')
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
@@ -71,7 +77,6 @@ class GridDataMetrics(GdalAlgorithm):
         return self.tr('Raster analysis')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Grid (Data metrics)')
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,

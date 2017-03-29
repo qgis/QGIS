@@ -57,8 +57,13 @@ class Dissolve(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
+    def name(self):
+        return 'Dissolve'
+
+    def displayName(self):
+        return self.tr('Dissolve')
+
     def defineCharacteristics(self):
-        self.name = 'Dissolve'
         self.addParameter(ParameterVector(Dissolve.INPUT,
                                           self.tr('Input layer'),
                                           [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))

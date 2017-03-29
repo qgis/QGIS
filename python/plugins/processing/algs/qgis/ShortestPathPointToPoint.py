@@ -80,6 +80,12 @@ class ShortestPathPointToPoint(GeoAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def name(self):
+        return 'Shortest path (point to point)'
+
+    def displayName(self):
+        return self.tr('Shortest path (point to point)')
+
     def defineCharacteristics(self):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
@@ -89,8 +95,6 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
-
-        self.name, self.i18n_name = self.trAlgorithm('Shortest path (point to point)')
 
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
                                           self.tr('Vector layer representing network'),

@@ -66,11 +66,16 @@ class warp(GdalAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
+    def name(self):
+        return 'Warp (reproject)'
+
+    def displayName(self):
+        return self.tr('Warp (reproject)')
+
     def group(self):
         return self.tr('Raster projections')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
                                        self.tr('Source SRS'),

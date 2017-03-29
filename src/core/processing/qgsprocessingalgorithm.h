@@ -41,6 +41,23 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual ~QgsProcessingAlgorithm() = default;
 
     /**
+     * Returns the algorithm name, used for identifying the algorithm. This string
+     * should be fixed for the algorithm, and must not be localised. The name should
+     * be unique within each provider.
+     * @see displayName()
+     * @see group()
+     * @see tags()
+    */
+    virtual QString name() const = 0;
+
+    /**
+     * Returns the translated algorithm name, which should be used for any user-visible display
+     * of the algorithm name.
+     * @see name()
+     */
+    virtual QString displayName() const = 0;
+
+    /**
      * Returns a list of tags which relate to the algorithm, and are used to assist users in searching
      * for suitable algorithms. These tags should be localised.
     */

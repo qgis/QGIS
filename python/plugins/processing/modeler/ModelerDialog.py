@@ -230,7 +230,7 @@ class ModelerDialog(BASE, WIDGET):
         if alg is not None:
             self.alg = alg
             self.textGroup.setText(alg._group)
-            self.textName.setText(alg.name)
+            self.textName.setText(alg.displayName())
             self.repaintModel()
 
         else:
@@ -405,7 +405,7 @@ class ModelerDialog(BASE, WIDGET):
         svg.setFileName(filename)
         svg.setSize(QSize(totalRect.width(), totalRect.height()))
         svg.setViewBox(svgRect)
-        svg.setTitle(self.alg.name)
+        svg.setTitle(self.alg.displayName())
 
         painter = QPainter(svg)
         self.scene.render(painter, svgRect, totalRect)
@@ -437,7 +437,7 @@ class ModelerDialog(BASE, WIDGET):
                 self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
             )
             return
-        self.alg.name = str(self.textName.text())
+        self.alg._name = str(self.textName.text())
         self.alg._group = str(self.textGroup.text())
         if self.alg.descriptionFile is not None and not saveAs:
             filename = self.alg.descriptionFile
@@ -482,7 +482,7 @@ class ModelerDialog(BASE, WIDGET):
                 self.alg = alg
                 self.alg.setModelerView(self)
                 self.textGroup.setText(alg._group)
-                self.textName.setText(alg.name)
+                self.textName.setText(alg._name)
                 self.repaintModel()
 
                 self.view.centerOn(0, 0)
@@ -618,7 +618,7 @@ class ModelerDialog(BASE, WIDGET):
                 if alg.commandLineName() == self.alg.commandLineName():
                     continue
 
-                item_text = [alg.name.lower()]
+                item_text = [alg.displayName().lower()]
                 item_text.extend(alg.tags())
 
                 show = not search_strings or all(

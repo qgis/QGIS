@@ -59,9 +59,13 @@ class EliminateSelection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Eliminate selected polygons')
+    def name(self):
+        return 'Eliminate selected polygons'
 
+    def displayName(self):
+        return self.tr('Eliminate selected polygons')
+
+    def defineCharacteristics(self):
         self.modes = [self.tr('Largest area'),
                       self.tr('Smallest Area'),
                       self.tr('Largest common boundary')]

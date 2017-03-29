@@ -77,9 +77,13 @@ class Heatmap(GeoAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Heatmap (Kernel Density Estimation)')
+    def name(self):
+        return 'Heatmap (Kernel Density Estimation)'
 
+    def displayName(self):
+        return self.tr('Heatmap (Kernel Density Estimation)')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.RADIUS,

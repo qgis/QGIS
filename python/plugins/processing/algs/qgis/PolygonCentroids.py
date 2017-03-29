@@ -56,9 +56,13 @@ class PolygonCentroids(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygon centroids')
+    def name(self):
+        return 'Polygon centroids'
 
+    def displayName(self):
+        return self.tr('Polygon centroids')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
 

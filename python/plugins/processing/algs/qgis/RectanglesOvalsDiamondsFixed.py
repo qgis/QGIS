@@ -61,9 +61,13 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rectangles, ovals, diamonds (fixed)')
+    def name(self):
+        return 'Rectangles, ovals, diamonds (fixed)'
 
+    def displayName(self):
+        return self.tr('Rectangles, ovals, diamonds (fixed)')
+
+    def defineCharacteristics(self):
         self.shapes = [self.tr('Rectangles'), self.tr('Diamonds'), self.tr('Ovals')]
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,

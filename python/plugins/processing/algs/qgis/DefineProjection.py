@@ -60,9 +60,13 @@ class DefineProjection(GeoAlgorithm):
     def group(self):
         return self.tr('Vector general tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Define current projection')
+    def name(self):
+        return 'Define current projection'
 
+    def displayName(self):
+        return self.tr('Define current projection')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input Layer')))
         self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))

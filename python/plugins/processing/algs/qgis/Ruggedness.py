@@ -52,9 +52,13 @@ class Ruggedness(GeoAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Ruggedness index')
+    def name(self):
+        return 'Ruggedness index'
 
+    def displayName(self):
+        return self.tr('Ruggedness index')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterRaster(self.INPUT_LAYER,
                                           self.tr('Elevation layer')))
         self.addParameter(ParameterNumber(self.Z_FACTOR,

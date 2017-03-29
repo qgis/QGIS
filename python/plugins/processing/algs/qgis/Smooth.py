@@ -50,9 +50,13 @@ class Smooth(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Smooth geometry')
+    def name(self):
+        return 'Smooth geometry'
 
+    def displayName(self):
+        return self.tr('Smooth geometry')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
         self.addParameter(ParameterNumber(self.ITERATIONS,

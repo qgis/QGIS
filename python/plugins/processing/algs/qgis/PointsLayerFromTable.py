@@ -60,8 +60,13 @@ class PointsLayerFromTable(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
+    def name(self):
+        return 'Create points layer from table'
+
+    def displayName(self):
+        return self.tr('Create points layer from table')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create points layer from table')
         self.addParameter(ParameterTable(self.INPUT,
                                          self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,

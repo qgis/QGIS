@@ -54,12 +54,16 @@ class OneSideBuffer(GdalAlgorithm):
     MULTI = 'MULTI'
     OPTIONS = 'OPTIONS'
 
+    def name(self):
+        return 'Single sided buffer for lines'
+
+    def displayName(self):
+        return self.tr('Single sided buffer for lines')
+
     def group(self):
         return self.tr('Vector geoprocessing')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Single sided buffer for lines')
-
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE], False))
         self.addParameter(ParameterString(self.GEOMETRY,

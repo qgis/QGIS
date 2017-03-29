@@ -66,8 +66,13 @@ class PointsToPaths(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
+    def name(self):
+        return 'Points to path'
+
+    def displayName(self):
+        return self.tr('Points to path')
+
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Points to path')
         self.addParameter(ParameterVector(self.VECTOR,
                                           self.tr('Input point layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterTableField(self.GROUP_FIELD,

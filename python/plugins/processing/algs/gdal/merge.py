@@ -57,11 +57,16 @@ class merge(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
 
+    def name(self):
+        return 'Merge'
+
+    def displayName(self):
+        return self.tr('Merge')
+
     def group(self):
         return self.tr('Raster miscellaneous')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Merge')
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
                                                  dataobjects.TYPE_RASTER))

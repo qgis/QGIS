@@ -46,6 +46,12 @@ class AssignProjection(GdalAlgorithm):
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
+    def name(self):
+        return 'Assign projection'
+
+    def displayName(self):
+        return self.tr('Assign projection')
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-add.png'))
 
@@ -53,8 +59,6 @@ class AssignProjection(GdalAlgorithm):
         return self.tr('Raster projections')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Assign projection')
-
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.CRS,
                                        self.tr('Desired CRS'), ''))

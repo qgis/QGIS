@@ -60,9 +60,13 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     def group(self):
         return self.tr('Vector analysis tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Nearest neighbour analysis')
+    def name(self):
+        return 'Nearest neighbour analysis'
 
+    def displayName(self):
+        return self.tr('Nearest neighbour analysis')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.POINTS,
                                           self.tr('Points'), [dataobjects.TYPE_VECTOR_POINT]))
 

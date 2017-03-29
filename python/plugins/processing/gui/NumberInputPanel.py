@@ -125,8 +125,8 @@ class ModellerNumberInputPanel(BASE, WIDGET):
                     values.append(ValueFromInput(param.name))
         for alg in list(self.modelParametersDialog.model.algs.values()):
             for out in alg.algorithm.outputs:
-                if isinstance(out, OutputNumber) and "@%s_%s" % (alg.name, out.name) in value:
-                    values.append(ValueFromOutput(alg.name, out.name))
+                if isinstance(out, OutputNumber) and "@%s_%s" % (alg.name(), out.name) in value:
+                    values.append(ValueFromOutput(alg.name(), out.name))
         if values:
             return CompoundValue(values, value)
         else:

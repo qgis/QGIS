@@ -51,6 +51,12 @@ class contour(GdalAlgorithm):
     FIELD_NAME = 'FIELD_NAME'
     EXTRA = 'EXTRA'
 
+    def name(self):
+        return 'Contour'
+
+    def displayName(self):
+        return self.tr('Contour')
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'contour.png'))
 
@@ -58,7 +64,6 @@ class contour(GdalAlgorithm):
         return self.tr('Raster extraction')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Contour')
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,

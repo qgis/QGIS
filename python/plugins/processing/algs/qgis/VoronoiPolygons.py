@@ -56,9 +56,13 @@ class VoronoiPolygons(GeoAlgorithm):
     def group(self):
         return self.tr('Vector geometry tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Voronoi polygons')
+    def name(self):
+        return 'Voronoi polygons'
 
+    def displayName(self):
+        return self.tr('Voronoi polygons')
+
+    def defineCharacteristics(self):
         self.addParameter(ParameterVector(self.INPUT,
                                           self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POINT]))
         self.addParameter(ParameterNumber(self.BUFFER,

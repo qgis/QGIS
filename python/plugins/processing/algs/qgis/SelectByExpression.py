@@ -52,9 +52,13 @@ class SelectByExpression(GeoAlgorithm):
     def group(self):
         return self.tr('Vector selection tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Select by expression')
+    def name(self):
+        return 'Select by expression'
 
+    def displayName(self):
+        return self.tr('Select by expression')
+
+    def defineCharacteristics(self):
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection'),

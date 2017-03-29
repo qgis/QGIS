@@ -8,6 +8,9 @@ class QgsProcessingAlgorithm
 
     QgsProcessingAlgorithm();
     virtual ~QgsProcessingAlgorithm();
+
+    virtual QString name() const = 0;
+    virtual QString displayName() const = 0;
     virtual QStringList tags() const;
     virtual QIcon icon() const;
     virtual QString svgIconPath() const;

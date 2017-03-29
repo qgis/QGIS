@@ -45,12 +45,16 @@ class Ogr2OgrClip(GdalAlgorithm):
     CLIP_LAYER = 'CLIP_LAYER'
     OPTIONS = 'OPTIONS'
 
+    def name(self):
+        return 'Clip vectors by polygon'
+
+    def displayName(self):
+        return self.tr('Clip vectors by polygon')
+
     def group(self):
         return self.tr('Vector geoprocessing')
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Clip vectors by polygon')
-
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.CLIP_LAYER,

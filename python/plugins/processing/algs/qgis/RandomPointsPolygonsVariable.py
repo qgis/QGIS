@@ -59,9 +59,13 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
     def group(self):
         return self.tr('Vector creation tools')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Random points inside polygons (variable)')
+    def name(self):
+        return 'Random points inside polygons (variable)'
 
+    def displayName(self):
+        return self.tr('Random points inside polygons (variable)')
+
+    def defineCharacteristics(self):
         self.strategies = [self.tr('Points count'),
                            self.tr('Points density')]
 

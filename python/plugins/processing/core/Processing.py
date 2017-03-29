@@ -225,7 +225,7 @@ class Processing(object):
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
                     Processing.tr('Error in {0}. Wrong parameter value {1} for parameter {2}.').format(
-                        alg.name, value, name
+                        alg.name(), value, name
                     )
                 )
                 return
@@ -239,7 +239,7 @@ class Processing(object):
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             Processing.tr('Error in {0}. Missing parameter value for parameter {1}.').format(
-                                alg.name, param.name)
+                                alg.name(), param.name)
                         )
                         return
         else:
@@ -296,7 +296,7 @@ class Processing(object):
         if kwargs is not None and "feedback" in list(kwargs.keys()):
             feedback = kwargs["feedback"]
         elif iface is not None:
-            feedback = MessageBarProgress(alg.name)
+            feedback = MessageBarProgress(alg.displayName())
 
         ret = execute(alg, feedback)
         if ret:
