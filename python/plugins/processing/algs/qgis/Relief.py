@@ -61,7 +61,7 @@ class Relief(GeoAlgorithm):
         return self.tr('Raster terrain analysis')
 
     def name(self):
-        return 'Relief'
+        return 'relief'
 
     def displayName(self):
         return self.tr('Relief')

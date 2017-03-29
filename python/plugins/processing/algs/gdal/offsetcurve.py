@@ -47,7 +47,7 @@ class OffsetCurve(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Offset lines for lines'
+        return 'offsetlinesforlines'
 
     def displayName(self):
         return self.tr('Offset lines for lines')

@@ -52,7 +52,7 @@ class Centroids(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Centroids'
+        return 'centroids'
 
     def displayName(self):
         return self.tr('Centroids')

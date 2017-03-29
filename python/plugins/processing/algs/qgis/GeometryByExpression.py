@@ -58,7 +58,7 @@ class GeometryByExpression(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Geometry by expression'
+        return 'geometrybyexpression'
 
     def displayName(self):
         return self.tr('Geometry by expression')

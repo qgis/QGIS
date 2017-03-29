@@ -63,11 +63,8 @@ class GridInvDist(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def commandLineName(self):
-        return "gdal:gridinvdist"
-
     def name(self):
-        return 'Grid (Inverse distance to a power)'
+        return 'gridinvdist'
 
     def displayName(self):
         return self.tr('Grid (Inverse distance to a power)')

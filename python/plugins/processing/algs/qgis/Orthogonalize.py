@@ -54,7 +54,7 @@ class Orthogonalize(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Orthogonalize'
+        return 'orthogonalize'
 
     def displayName(self):
         return self.tr('Orthogonalize')

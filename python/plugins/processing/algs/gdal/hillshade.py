@@ -52,7 +52,7 @@ class hillshade(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def name(self):
-        return 'Hillshade'
+        return 'hillshade'
 
     def displayName(self):
         return self.tr('Hillshade')

@@ -51,7 +51,7 @@ class SpatialiteExecuteSQL(GeoAlgorithm):
         return self.tr('Database')
 
     def name(self):
-        return 'Spatialite execute SQL'
+        return 'spatialiteexecutesql'
 
     def displayName(self):
         return self.tr('Spatialite execute SQL')

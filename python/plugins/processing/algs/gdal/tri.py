@@ -47,7 +47,7 @@ class tri(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def name(self):
-        return 'TRI (Terrain Ruggedness Index)'
+        return 'triterrainruggednessindex'
 
     def displayName(self):
         return self.tr('TRI (Terrain Ruggedness Index)')

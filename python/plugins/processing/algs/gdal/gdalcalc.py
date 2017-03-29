@@ -60,7 +60,7 @@ class gdalcalc(GdalAlgorithm):
     #DEBUG = 'DEBUG'
 
     def name(self):
-        return 'Raster calculator'
+        return 'rastercalculator'
 
     def displayName(self):
         return self.tr('Raster calculator')

@@ -51,7 +51,7 @@ class pct2rgb(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '8-to-24-bits.png'))
 
     def name(self):
-        return 'PCT to RGB'
+        return 'pcttorgb'
 
     def displayName(self):
         return self.tr('PCT to RGB')

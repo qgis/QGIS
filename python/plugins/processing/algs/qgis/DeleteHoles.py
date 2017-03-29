@@ -51,7 +51,7 @@ class DeleteHoles(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Delete holes'
+        return 'deleteholes'
 
     def displayName(self):
         return self.tr('Delete holes')

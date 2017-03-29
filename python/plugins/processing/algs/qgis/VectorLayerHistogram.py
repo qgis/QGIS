@@ -54,7 +54,7 @@ class VectorLayerHistogram(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'Vector layer histogram'
+        return 'vectorlayerhistogram'
 
     def displayName(self):
         return self.tr('Vector layer histogram')

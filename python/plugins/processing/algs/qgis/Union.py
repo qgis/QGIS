@@ -62,7 +62,7 @@ class Union(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Union'
+        return 'union'
 
     def displayName(self):
         return self.tr('Union')

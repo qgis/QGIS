@@ -57,7 +57,7 @@ class HubLines(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Hub lines'
+        return 'hublines'
 
     def displayName(self):
         return self.tr('Hub lines')

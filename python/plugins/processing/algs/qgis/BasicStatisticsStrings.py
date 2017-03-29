@@ -75,7 +75,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Basic statistics for text fields'
+        return 'basicstatisticsfortextfields'
 
     def displayName(self):
         return self.tr('Basic statistics for text fields')

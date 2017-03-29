@@ -54,7 +54,7 @@ class ReprojectLayer(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Reproject layer'
+        return 'reprojectlayer'
 
     def displayName(self):
         return self.tr('Reproject layer')

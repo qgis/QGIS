@@ -78,7 +78,7 @@ class ServiceAreaFromPoint(GeoAlgorithm):
         return self.tr('Network analysis')
 
     def name(self):
-        return 'Service area (from point))'
+        return 'serviceareafrompoint'
 
     def displayName(self):
         return self.tr('Service area (from point)')

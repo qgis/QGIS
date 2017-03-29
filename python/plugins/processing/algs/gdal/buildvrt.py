@@ -52,7 +52,7 @@ class buildvrt(GdalAlgorithm):
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
     def name(self):
-        return 'Build Virtual Raster'
+        return 'buildvirtualraster'
 
     def displayName(self):
         return self.tr('Build Virtual Raster')

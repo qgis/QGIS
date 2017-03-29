@@ -63,7 +63,7 @@ class PointDistance(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Distance matrix'
+        return 'distancematrix'
 
     def displayName(self):
         return self.tr('Distance matrix')

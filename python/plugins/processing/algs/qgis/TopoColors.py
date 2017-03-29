@@ -70,7 +70,7 @@ class TopoColor(GeoAlgorithm):
         return self.tr('Cartographic tools')
 
     def name(self):
-        return 'Topological coloring'
+        return 'topologicalcoloring'
 
     def displayName(self):
         return self.tr('Topological coloring')

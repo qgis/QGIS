@@ -60,9 +60,6 @@ class gdal2tiles(GdalAlgorithm):
     RESAMPLINGS = ['average', 'near', 'bilinear', 'cubic', 'cubicspline', 'lanczos', 'antialias']
     WEBVIEWERS = ['all', 'google', 'openlayers', 'leaflet', 'none']
 
-    def commandLineName(self):
-        return "gdal:gdal2tiles"
-
     def name(self):
         return 'gdal2tiles'
 

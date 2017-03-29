@@ -60,7 +60,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Random points inside polygons (variable)'
+        return 'randompointsinsidepolygonsvariable'
 
     def displayName(self):
         return self.tr('Random points inside polygons (variable)')

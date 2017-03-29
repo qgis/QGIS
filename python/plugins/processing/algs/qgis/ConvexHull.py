@@ -58,7 +58,7 @@ class ConvexHull(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Convex hull'
+        return 'convexhull'
 
     def displayName(self):
         return self.tr('Convex hull')

@@ -56,7 +56,7 @@ class SimplifyGeometries(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Simplify geometries'
+        return 'simplifygeometries'
 
     def displayName(self):
         return self.tr('Simplify geometries')

@@ -50,7 +50,7 @@ class TextToFloat(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Text to float'
+        return 'texttofloat'
 
     def displayName(self):
         return self.tr('Text to float')

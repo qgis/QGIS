@@ -61,7 +61,7 @@ class DensifyGeometries(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Densify geometries'
+        return 'densifygeometries'
 
     def displayName(self):
         return self.tr('Densify geometries')

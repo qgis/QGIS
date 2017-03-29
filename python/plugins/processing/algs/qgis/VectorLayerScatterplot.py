@@ -55,7 +55,7 @@ class VectorLayerScatterplot(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'Vector layer scatterplot'
+        return 'vectorlayerscatterplot'
 
     def displayName(self):
         return self.tr('Vector layer scatterplot')

@@ -57,7 +57,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Count unique points in polygon'
+        return 'countuniquepointsinpolygon'
 
     def displayName(self):
         return self.tr('Count unique points in polygon')

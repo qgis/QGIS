@@ -51,7 +51,7 @@ class SetVectorStyle(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Set style for vector layer'
+        return 'setstyleforvectorlayer'
 
     def displayName(self):
         return self.tr('Set style for vector layer')

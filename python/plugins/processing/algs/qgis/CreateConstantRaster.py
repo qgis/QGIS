@@ -52,7 +52,7 @@ class CreateConstantRaster(GeoAlgorithm):
         return self.tr('Raster tools')
 
     def name(self):
-        return 'Create constant raster layer'
+        return 'createconstantrasterlayer'
 
     def displayName(self):
         return self.tr('Create constant raster layer')

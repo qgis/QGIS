@@ -51,7 +51,7 @@ class TruncateTable(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Truncate table'
+        return 'truncatetable'
 
     def displayName(self):
         return self.tr('Truncate table')

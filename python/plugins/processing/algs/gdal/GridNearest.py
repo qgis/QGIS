@@ -59,11 +59,8 @@ class GridNearest(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def commandLineName(self):
-        return "gdal:gridnearestneighbor"
-
     def name(self):
-        return 'Grid (Nearest neighbor)'
+        return 'gridnearestneighbor'
 
     def displayName(self):
         return self.tr('Grid (Nearest neighbor)')

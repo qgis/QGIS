@@ -54,7 +54,7 @@ class rgb2pct(GdalAlgorithm):
         return self.tr('Raster conversion')
 
     def name(self):
-        return 'RGB to PCT'
+        return 'rgbtopct'
 
     def displayName(self):
         return self.tr('RGB to PCT')

@@ -58,7 +58,7 @@ class Dissolve(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Dissolve'
+        return 'dissolve'
 
     def displayName(self):
         return self.tr('Dissolve')

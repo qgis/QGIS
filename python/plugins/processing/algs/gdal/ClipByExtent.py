@@ -54,7 +54,7 @@ class ClipByExtent(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
     def name(self):
-        return 'Clip raster by extent'
+        return 'cliprasterbyextent'
 
     def displayName(self):
         return self.tr('Clip raster by extent')

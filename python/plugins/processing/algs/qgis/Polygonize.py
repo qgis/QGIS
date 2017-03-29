@@ -61,7 +61,7 @@ class Polygonize(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Polygonize'
+        return 'polygonize'
 
     def displayName(self):
         return self.tr('Polygonize')

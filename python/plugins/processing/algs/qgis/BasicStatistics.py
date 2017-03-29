@@ -84,7 +84,7 @@ class BasicStatisticsForField(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Basic statistics for fields'
+        return 'basicstatisticsforfields'
 
     def displayName(self):
         return self.tr('Basic statistics for fields')

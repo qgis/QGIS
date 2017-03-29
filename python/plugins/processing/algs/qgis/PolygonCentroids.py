@@ -59,7 +59,7 @@ class PolygonCentroids(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Polygon centroids'
+        return 'polygoncentroids'
 
     def displayName(self):
         return self.tr('Polygon centroids')

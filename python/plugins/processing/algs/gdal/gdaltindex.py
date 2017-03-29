@@ -49,7 +49,7 @@ class gdaltindex(GdalAlgorithm):
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
 
     def name(self):
-        return 'Tile Index'
+        return 'tileindex'
 
     def displayName(self):
         return self.tr('Tile Index')

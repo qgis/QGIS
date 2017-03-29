@@ -53,7 +53,7 @@ class Ruggedness(GeoAlgorithm):
         return self.tr('Raster terrain analysis')
 
     def name(self):
-        return 'Ruggedness index'
+        return 'ruggednessindex'
 
     def displayName(self):
         return self.tr('Ruggedness index')

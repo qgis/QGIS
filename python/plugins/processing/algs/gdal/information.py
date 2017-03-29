@@ -49,11 +49,8 @@ class information(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
-    def commandLineName(self):
-        return "gdal:gdalinfo"
-
     def name(self):
-        return 'Information'
+        return 'gdalinfo'
 
     def displayName(self):
         return self.tr('Information')

@@ -52,7 +52,7 @@ class DeleteColumn(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Delete column'
+        return 'deletecolumn'
 
     def displayName(self):
         return self.tr('Delete column')

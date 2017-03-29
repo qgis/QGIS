@@ -65,7 +65,7 @@ class RandomPointsAlongLines(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Random points along line'
+        return 'randompointsalongline'
 
     def displayName(self):
         return self.tr('Random points along line')

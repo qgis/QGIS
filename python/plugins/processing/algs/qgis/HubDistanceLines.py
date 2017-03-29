@@ -70,7 +70,7 @@ class HubDistanceLines(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Distance to nearest hub (line to hub)'
+        return 'distancetonearesthublinetohub'
 
     def displayName(self):
         return self.tr('Distance to nearest hub (line to hub)')

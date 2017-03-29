@@ -58,7 +58,7 @@ class RasterCalculator(GeoAlgorithm):
         return self.tr('Raster')
 
     def name(self):
-        return 'Raster calculator'
+        return 'rastercalculator'
 
     def displayName(self):
         return self.tr('Raster calculator')

@@ -57,7 +57,7 @@ class PointsDisplacement(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Points displacement'
+        return 'pointsdisplacement'
 
     def displayName(self):
         return self.tr('Points displacement')

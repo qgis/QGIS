@@ -54,7 +54,7 @@ class Translate(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Translate geometry'
+        return 'translategeometry'
 
     def displayName(self):
         return self.tr('Translate geometry')

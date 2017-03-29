@@ -43,11 +43,8 @@ class OgrInfo(GdalAlgorithm):
     SUMMARY_ONLY = 'SUMMARY_ONLY'
     OUTPUT = 'OUTPUT'
 
-    def commandLineName(self):
-        return "gdal:ogrinfo"
-
     def name(self):
-        return 'Information'
+        return 'ogrinfo'
 
     def displayName(self):
         return self.tr('Information')

@@ -58,7 +58,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Export/Add geometry columns'
+        return 'exportaddgeometrycolumns'
 
     def displayName(self):
         return self.tr('Export/Add geometry columns')

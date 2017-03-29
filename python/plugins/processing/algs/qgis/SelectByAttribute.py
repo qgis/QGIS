@@ -74,7 +74,7 @@ class SelectByAttribute(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Select by attribute'
+        return 'selectbyattribute'
 
     def displayName(self):
         return self.tr('Select by attribute')

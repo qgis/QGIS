@@ -53,7 +53,7 @@ class ExtractNodes(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Extract nodes'
+        return 'extractnodes'
 
     def displayName(self):
         return self.tr('Extract nodes')

@@ -60,7 +60,7 @@ class PointsFromPolygons(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Generate points (pixel centroids) inside polygons'
+        return 'generatepointspixelcentroidsinsidepolygons'
 
     def displayName(self):
         return self.tr('Generate points (pixel centroids) inside polygons')

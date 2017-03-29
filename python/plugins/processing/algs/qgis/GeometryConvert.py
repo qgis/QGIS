@@ -53,7 +53,7 @@ class GeometryConvert(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Convert geometry type'
+        return 'convertgeometrytype'
 
     def displayName(self):
         return self.tr('Convert geometry type')

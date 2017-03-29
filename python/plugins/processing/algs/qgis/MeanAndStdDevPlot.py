@@ -55,7 +55,7 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'Mean and standard deviation plot'
+        return 'meanandstandarddeviationplot'
 
     def displayName(self):
         return self.tr('Mean and standard deviation plot')

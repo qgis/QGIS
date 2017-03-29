@@ -56,7 +56,7 @@ class ExtractSpecificNodes(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Extract specific nodes'
+        return 'extractspecificnodes'
 
     def displayName(self):
         return self.tr('Extract specific nodes')

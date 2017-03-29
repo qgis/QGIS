@@ -63,7 +63,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Count points in polygon(weighted)'
+        return 'countpointsinpolygonweighted'
 
     def displayName(self):
         return self.tr('Count points in polygon(weighted)')

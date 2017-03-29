@@ -66,7 +66,7 @@ class IdwInterpolation(GeoAlgorithm):
         return self.tr('Interpolation')
 
     def name(self):
-        return 'IDW interpolation'
+        return 'idwinterpolation'
 
     def displayName(self):
         return self.tr('IDW interpolation')

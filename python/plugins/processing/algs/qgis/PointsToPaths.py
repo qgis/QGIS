@@ -67,7 +67,7 @@ class PointsToPaths(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Points to path'
+        return 'pointstopath'
 
     def displayName(self):
         return self.tr('Points to path')

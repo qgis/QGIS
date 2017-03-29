@@ -60,7 +60,7 @@ class PointsFromLines(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Generate points (pixel centroids) along line'
+        return 'generatepointspixelcentroidsalongline'
 
     def displayName(self):
         return self.tr('Generate points (pixel centroids) along line')

@@ -55,7 +55,7 @@ class SumLines(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Sum line lengths'
+        return 'sumlinelengths'
 
     def displayName(self):
         return self.tr('Sum line lengths')

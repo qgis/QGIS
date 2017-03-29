@@ -46,7 +46,7 @@ class Ogr2OgrClip(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Clip vectors by polygon'
+        return 'clipvectorsbypolygon'
 
     def displayName(self):
         return self.tr('Clip vectors by polygon')

@@ -61,7 +61,7 @@ class DefineProjection(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Define current projection'
+        return 'definecurrentprojection'
 
     def displayName(self):
         return self.tr('Define current projection')

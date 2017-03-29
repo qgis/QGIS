@@ -81,7 +81,7 @@ class ShortestPathPointToPoint(GeoAlgorithm):
         return self.tr('Network analysis')
 
     def name(self):
-        return 'Shortest path (point to point)'
+        return 'shortestpathpointtopoint'
 
     def displayName(self):
         return self.tr('Shortest path (point to point)')

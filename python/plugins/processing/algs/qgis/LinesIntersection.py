@@ -57,7 +57,7 @@ class LinesIntersection(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Line intersections'
+        return 'lineintersections'
 
     def displayName(self):
         return self.tr('Line intersections')

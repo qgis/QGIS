@@ -52,7 +52,7 @@ class PointOnSurface(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Point on surface'
+        return 'pointonsurface'
 
     def displayName(self):
         return self.tr('Point on surface')

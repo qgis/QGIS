@@ -66,7 +66,7 @@ class ExecuteSQL(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Execute SQL'
+        return 'executesql'
 
     def displayName(self):
         return self.tr('Execute SQL')

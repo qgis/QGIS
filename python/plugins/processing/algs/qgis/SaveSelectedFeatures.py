@@ -47,7 +47,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Save selected features'
+        return 'saveselectedfeatures'
 
     def displayName(self):
         return self.tr('Save selected features')

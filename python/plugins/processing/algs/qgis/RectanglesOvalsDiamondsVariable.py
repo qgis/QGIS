@@ -64,7 +64,7 @@ class RectanglesOvalsDiamondsVariable(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Rectangles, ovals, diamonds (variable)'
+        return 'rectanglesovalsdiamondsvariable'
 
     def displayName(self):
         return self.tr('Rectangles, ovals, diamonds (variable)')

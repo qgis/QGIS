@@ -67,7 +67,7 @@ class warp(GdalAlgorithm):
         return self.tr('transform,reproject,crs,srs').split(',')
 
     def name(self):
-        return 'Warp (reproject)'
+        return 'warpreproject'
 
     def displayName(self):
         return self.tr('Warp (reproject)')

@@ -54,7 +54,7 @@ class SetRasterStyle(GeoAlgorithm):
         return self.tr('Raster general tools')
 
     def name(self):
-        return 'Set style for raster layer'
+        return 'setstyleforrasterlayer'
 
     def displayName(self):
         return self.tr('Set style for raster layer')

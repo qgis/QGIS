@@ -115,6 +115,12 @@ class SagaAlgorithm(GeoAlgorithm):
             self._commandLineName = self.createCommandLineName(self._name)
             self._name = decoratedAlgorithmName(self._name)
             self._display_name = QCoreApplication.translate("SAGAAlgorithm", str(self._name))
+
+            self._name = self._name.lower()
+            validChars = \
+                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._name = ''.join(c for c in self._name if c in validChars)
+
             line = lines.readline().strip('\n').strip()
             self.undecoratedGroup = line
             self._group = QCoreApplication.translate("SAGAAlgorithm", decoratedGroupName(self.undecoratedGroup))

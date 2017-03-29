@@ -58,7 +58,7 @@ class ExtentFromLayer(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Polygon from layer extent'
+        return 'polygonfromlayerextent'
 
     def displayName(self):
         return self.tr('Polygon from layer extent')

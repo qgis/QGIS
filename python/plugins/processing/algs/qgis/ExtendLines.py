@@ -50,7 +50,7 @@ class ExtendLines(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Extend lines'
+        return 'extendlines'
 
     def displayName(self):
         return self.tr('Extend lines')

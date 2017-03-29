@@ -56,7 +56,7 @@ class CheckValidity(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Check validity'
+        return 'checkvalidity'
 
     def displayName(self):
         return self.tr('Check validity')

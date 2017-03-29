@@ -55,7 +55,7 @@ class MergeLines(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Merge lines'
+        return 'mergelines'
 
     def displayName(self):
         return self.tr('Merge lines')

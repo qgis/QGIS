@@ -51,7 +51,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Multipart to singleparts'
+        return 'multiparttosingleparts'
 
     def displayName(self):
         return self.tr('Multipart to singleparts')

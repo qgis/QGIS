@@ -60,7 +60,7 @@ class ConcaveHull(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Concave hull'
+        return 'concavehull'
 
     def displayName(self):
         return self.tr('Concave hull')

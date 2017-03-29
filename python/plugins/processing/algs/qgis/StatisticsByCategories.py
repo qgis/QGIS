@@ -52,7 +52,7 @@ class StatisticsByCategories(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Statistics by categories'
+        return 'statisticsbycategories'
 
     def displayName(self):
         return self.tr('Statistics by categories')

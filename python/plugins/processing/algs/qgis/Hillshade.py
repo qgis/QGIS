@@ -55,7 +55,7 @@ class Hillshade(GeoAlgorithm):
         return self.tr('Raster terrain analysis')
 
     def name(self):
-        return 'Hillshade'
+        return 'hillshade'
 
     def displayName(self):
         return self.tr('Hillshade')

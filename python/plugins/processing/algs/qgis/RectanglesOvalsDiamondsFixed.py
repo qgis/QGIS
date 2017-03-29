@@ -62,7 +62,7 @@ class RectanglesOvalsDiamondsFixed(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Rectangles, ovals, diamonds (fixed)'
+        return 'rectanglesovalsdiamondsfixed'
 
     def displayName(self):
         return self.tr('Rectangles, ovals, diamonds (fixed)')

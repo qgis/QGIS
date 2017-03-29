@@ -76,7 +76,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         return settings.childGroups()
 
     def name(self):
-        return 'Import layer/table as geometryless table into PostgreSQL database'
+        return 'importlayertableasgeometrylesstableintopostgresqldatabase'
 
     def displayName(self):
         return self.tr('Import layer/table as geometryless table into PostgreSQL database')

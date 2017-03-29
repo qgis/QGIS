@@ -62,7 +62,7 @@ class ImportIntoSpatialite(GeoAlgorithm):
         return self.tr('Database')
 
     def name(self):
-        return 'Import into Spatialite'
+        return 'importintospatialite'
 
     def displayName(self):
         return self.tr('Import into Spatialite')

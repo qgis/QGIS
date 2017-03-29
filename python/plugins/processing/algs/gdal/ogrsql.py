@@ -48,7 +48,7 @@ class OgrSql(GdalAlgorithm):
     DIALECT = 'DIALECT'
 
     def name(self):
-        return 'Execute SQL'
+        return 'executesql'
 
     def displayName(self):
         return self.tr('Execute SQL')

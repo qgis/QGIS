@@ -56,7 +56,7 @@ class ExtractByLocation(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Extract by location'
+        return 'extractbylocation'
 
     def displayName(self):
         return self.tr('Extract by location')

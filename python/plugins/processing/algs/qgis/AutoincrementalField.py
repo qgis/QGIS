@@ -50,7 +50,7 @@ class AutoincrementalField(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Add autoincremental field'
+        return 'addautoincrementalfield'
 
     def displayName(self):
         return self.tr('Add autoincremental field')

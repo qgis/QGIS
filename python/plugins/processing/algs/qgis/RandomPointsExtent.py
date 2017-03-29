@@ -62,7 +62,7 @@ class RandomPointsExtent(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Random points in extent'
+        return 'randompointsinextent'
 
     def displayName(self):
         return self.tr('Random points in extent')

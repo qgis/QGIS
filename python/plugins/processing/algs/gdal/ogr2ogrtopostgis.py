@@ -79,7 +79,7 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Import Vector into PostGIS database (new connection)'
+        return 'importvectorintopostgisdatabasenewconnection'
 
     def displayName(self):
         return self.tr('Import Vector into PostGIS database (new connection)')

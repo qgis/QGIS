@@ -59,7 +59,7 @@ class ZonalStatisticsQgis(GeoAlgorithm):
         return self.tr('Raster tools')
 
     def name(self):
-        return 'Zonal Statistics (QGIS)'
+        return 'zonalstatisticsqgis'
 
     def displayName(self):
         return self.tr('Zonal Statistics (QGIS)')

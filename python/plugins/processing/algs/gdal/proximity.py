@@ -60,11 +60,8 @@ class proximity(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'proximity.png'))
 
-    def commandLineName(self):
-        return "gdal:proximity"
-
     def name(self):
-        return 'Proximity (raster distance)'
+        return 'proximity'
 
     def displayName(self):
         return self.tr('Proximity (raster distance)')

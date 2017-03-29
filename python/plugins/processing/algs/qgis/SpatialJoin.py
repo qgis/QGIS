@@ -63,7 +63,7 @@ class SpatialJoin(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Join attributes by location'
+        return 'joinattributesbylocation'
 
     def displayName(self):
         return self.tr('Join attributes by location')

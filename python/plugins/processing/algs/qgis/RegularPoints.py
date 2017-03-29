@@ -64,7 +64,7 @@ class RegularPoints(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Regular points'
+        return 'regularpoints'
 
     def displayName(self):
         return self.tr('Regular points')

@@ -48,7 +48,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Delete duplicate geometries'
+        return 'deleteduplicategeometries'
 
     def displayName(self):
         return self.tr('Delete duplicate geometries')

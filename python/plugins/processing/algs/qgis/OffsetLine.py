@@ -58,7 +58,7 @@ class OffsetLine(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Offset line'
+        return 'offsetline'
 
     def displayName(self):
         return self.tr('Offset line')

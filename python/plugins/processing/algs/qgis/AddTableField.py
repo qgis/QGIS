@@ -59,7 +59,7 @@ class AddTableField(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Add field to attributes table'
+        return 'addfieldtoattributestable'
 
     def displayName(self):
         return self.tr('Add field to attributes table')

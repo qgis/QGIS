@@ -52,7 +52,7 @@ class SymmetricalDifference(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Symmetrical difference'
+        return 'symmetricaldifference'
 
     def displayName(self):
         return self.tr('Symmetrical difference')

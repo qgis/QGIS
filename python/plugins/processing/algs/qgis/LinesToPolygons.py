@@ -54,7 +54,7 @@ class LinesToPolygons(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Lines to polygons'
+        return 'linestopolygons'
 
     def displayName(self):
         return self.tr('Lines to polygons')

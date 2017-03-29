@@ -51,7 +51,7 @@ class Explode(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Explode lines'
+        return 'explodelines'
 
     def displayName(self):
         return self.tr('Explode lines')

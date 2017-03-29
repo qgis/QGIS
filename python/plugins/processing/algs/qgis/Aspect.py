@@ -53,7 +53,7 @@ class Aspect(GeoAlgorithm):
         return self.tr('Raster terrain analysis')
 
     def name(self):
-        return 'Aspect'
+        return 'aspect'
 
     def displayName(self):
         return self.tr('Aspect')

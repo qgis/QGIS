@@ -50,7 +50,7 @@ class SplitRGBBands(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def name(self):
-        return 'Split RGB bands'
+        return 'splitrgbbands'
 
     def displayName(self):
         return self.tr('Split RGB bands')

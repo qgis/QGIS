@@ -58,7 +58,7 @@ class MeanCoords(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Mean coordinate(s)'
+        return 'meancoordinates'
 
     def displayName(self):
         return self.tr('Mean coordinate(s)')

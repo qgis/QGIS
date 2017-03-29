@@ -54,7 +54,7 @@ class PolarPlot(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'Polar plot'
+        return 'polarplot'
 
     def displayName(self):
         return self.tr('Polar plot')

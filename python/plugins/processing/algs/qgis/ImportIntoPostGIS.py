@@ -63,7 +63,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
         return self.tr('Database')
 
     def name(self):
-        return 'Import into PostGIS'
+        return 'importintopostgis'
 
     def displayName(self):
         return self.tr('Import into PostGIS')

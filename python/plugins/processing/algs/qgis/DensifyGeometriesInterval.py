@@ -57,7 +57,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Densify geometries given an interval'
+        return 'densifygeometriesgivenaninterval'
 
     def displayName(self):
         return self.tr('Densify geometries given an interval')

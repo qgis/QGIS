@@ -48,7 +48,7 @@ class ColorRelief(GdalAlgorithm):
     MATCHING_MODES = ['"0,0,0,0" RGBA', 'Exact color', 'Nearest color']
 
     def name(self):
-        return 'Color relief'
+        return 'colorrelief'
 
     def displayName(self):
         return self.tr('Color relief')

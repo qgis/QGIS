@@ -53,7 +53,7 @@ class Slope(GeoAlgorithm):
         return self.tr('Raster terrain analysis')
 
     def name(self):
-        return 'Slope'
+        return 'slope'
 
     def displayName(self):
         return self.tr('Slope')

@@ -58,7 +58,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Oriented minimum bounding box'
+        return 'orientedminimumboundingbox'
 
     def displayName(self):
         return self.tr('Oriented minimum bounding box')

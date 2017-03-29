@@ -50,7 +50,7 @@ class ReverseLineDirection(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Reverse line direction'
+        return 'reverselinedirection'
 
     def displayName(self):
         return self.tr('Reverse line direction')

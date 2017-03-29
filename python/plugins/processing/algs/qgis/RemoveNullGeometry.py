@@ -50,7 +50,7 @@ class RemoveNullGeometry(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Remove null geometries'
+        return 'removenullgeometries'
 
     def displayName(self):
         return self.tr('Remove null geometries')

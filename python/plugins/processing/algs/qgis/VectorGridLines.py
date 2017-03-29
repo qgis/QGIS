@@ -68,7 +68,7 @@ class VectorGridLines(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Vector grid (lines)'
+        return 'vectorgridlines'
 
     def displayName(self):
         return self.tr('Vector grid (lines)')

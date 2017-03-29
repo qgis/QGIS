@@ -61,7 +61,7 @@ class PointsLayerFromTable(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Create points layer from table'
+        return 'createpointslayerfromtable'
 
     def displayName(self):
         return self.tr('Create points layer from table')

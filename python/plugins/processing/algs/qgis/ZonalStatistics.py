@@ -70,7 +70,7 @@ class ZonalStatistics(GeoAlgorithm):
         return self.tr('Raster tools')
 
     def name(self):
-        return 'Zonal Statistics'
+        return 'zonalstatistics'
 
     def displayName(self):
         return self.tr('Zonal Statistics')

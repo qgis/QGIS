@@ -51,7 +51,7 @@ class nearblack(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'nearblack.png'))
 
     def name(self):
-        return 'Near black'
+        return 'nearblack'
 
     def displayName(self):
         return self.tr('Near black')

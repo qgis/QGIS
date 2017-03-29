@@ -57,7 +57,7 @@ class UniqueValues(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'List unique values'
+        return 'listuniquevalues'
 
     def displayName(self):
         return self.tr('List unique values')

@@ -49,7 +49,7 @@ class aspect(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def name(self):
-        return 'Aspect'
+        return 'aspect'
 
     def displayName(self):
         return self.tr('Aspect')

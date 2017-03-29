@@ -45,7 +45,7 @@ class ExtractProjection(GdalAlgorithm):
     PRJ_FILE = 'PRJ_FILE'
 
     def name(self):
-        return 'Extract projection'
+        return 'extractprojection'
 
     def displayName(self):
         return self.tr('Extract projection')

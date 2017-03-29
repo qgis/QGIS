@@ -62,7 +62,7 @@ class GridDataMetrics(GdalAlgorithm):
                     'Average distance between points']
 
     def name(self):
-        return 'Grid (Data metrics)'
+        return 'griddatametrics'
 
     def displayName(self):
         return self.tr('Grid (Data metrics)')

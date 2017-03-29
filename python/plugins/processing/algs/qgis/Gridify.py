@@ -56,7 +56,7 @@ class Gridify(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Snap points to grid'
+        return 'snappointstogrid'
 
     def displayName(self):
         return self.tr('Snap points to grid')

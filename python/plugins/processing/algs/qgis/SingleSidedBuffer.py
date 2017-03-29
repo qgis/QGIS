@@ -60,7 +60,7 @@ class SingleSidedBuffer(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Single sided buffer'
+        return 'singlesidedbuffer'
 
     def displayName(self):
         return self.tr('Single sided buffer')

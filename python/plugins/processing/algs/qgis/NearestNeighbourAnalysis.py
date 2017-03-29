@@ -61,7 +61,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         return self.tr('Vector analysis tools')
 
     def name(self):
-        return 'Nearest neighbour analysis'
+        return 'nearestneighbouranalysis'
 
     def displayName(self):
         return self.tr('Nearest neighbour analysis')

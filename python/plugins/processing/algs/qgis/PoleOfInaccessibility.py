@@ -57,7 +57,7 @@ class PoleOfInaccessibility(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Pole of Inaccessibility'
+        return 'poleofinaccessibility'
 
     def displayName(self):
         return self.tr('Pole of Inaccessibility')

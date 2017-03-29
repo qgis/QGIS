@@ -51,7 +51,7 @@ class Smooth(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Smooth geometry'
+        return 'smoothgeometry'
 
     def displayName(self):
         return self.tr('Smooth geometry')

@@ -59,7 +59,7 @@ class JoinAttributes(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Join attributes table'
+        return 'joinattributestable'
 
     def displayName(self):
         return self.tr('Join attributes table')

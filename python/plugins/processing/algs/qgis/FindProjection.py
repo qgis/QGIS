@@ -64,7 +64,7 @@ class FindProjection(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Find projection'
+        return 'findprojection'
 
     def displayName(self):
         return self.tr('Find projection')

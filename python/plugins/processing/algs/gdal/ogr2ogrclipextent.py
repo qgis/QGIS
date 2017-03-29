@@ -46,7 +46,7 @@ class Ogr2OgrClipExtent(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Clip vectors by extent'
+        return 'clipvectorsbyextent'
 
     def displayName(self):
         return self.tr('Clip vectors by extent')

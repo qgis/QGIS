@@ -155,6 +155,9 @@ class Grass7Algorithm(GeoAlgorithm):
             if " - " not in self._name:
                 self._name = self.grass7Name + " - " + self._name
                 self._display_name = self.grass7Name + " - " + self._display_name
+
+            self._name = self._name[:self._name.find(' ')].lower()
+
             line = lines.readline().strip('\n').strip()
             self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
@@ -573,7 +576,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return system.getTempFilename()
 
     def commandLineName(self):
-        return 'grass7:' + self.name[:self.name.find(' ')]
+        return 'grass7:' + self.name()
 
     def checkBeforeOpeningParametersDialog(self):
         return Grass7Utils.checkGrass7IsInstalled()

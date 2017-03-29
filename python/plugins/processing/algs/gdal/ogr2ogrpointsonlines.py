@@ -48,7 +48,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Create points along lines'
+        return 'createpointsalonglines'
 
     def displayName(self):
         return self.tr('Create points along lines')

@@ -54,7 +54,7 @@ class SpatialIndex(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Create spatial index'
+        return 'createspatialindex'
 
     def displayName(self):
         return self.tr('Create spatial index')

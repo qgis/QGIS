@@ -53,7 +53,7 @@ class DropGeometry(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Drop geometries'
+        return 'dropgeometries'
 
     def displayName(self):
         return self.tr('Drop geometries')

@@ -78,7 +78,7 @@ class ShortestPathLayerToPoint(GeoAlgorithm):
         return self.tr('Network analysis')
 
     def name(self):
-        return 'Shortest path (layer to point)'
+        return 'shortestpathlayertopoint'
 
     def displayName(self):
         return self.tr('Shortest path (layer to point)')

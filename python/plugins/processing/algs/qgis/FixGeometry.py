@@ -55,7 +55,7 @@ class FixGeometry(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Fix geometries'
+        return 'fixgeometries'
 
     def displayName(self):
         return self.tr('Fix geometries')

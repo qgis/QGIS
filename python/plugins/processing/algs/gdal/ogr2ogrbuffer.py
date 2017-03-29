@@ -52,7 +52,7 @@ class Ogr2OgrBuffer(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Buffer vectors'
+        return 'buffervectors'
 
     def displayName(self):
         return self.tr('Buffer vectors')

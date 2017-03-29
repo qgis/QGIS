@@ -52,7 +52,7 @@ class EquivalentNumField(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Add unique value index field'
+        return 'adduniquevalueindexfield'
 
     def displayName(self):
         return self.tr('Add unique value index field')

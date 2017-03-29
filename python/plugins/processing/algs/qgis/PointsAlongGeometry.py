@@ -59,7 +59,7 @@ class PointsAlongGeometry(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Points along lines'
+        return 'pointsalonglines'
 
     def displayName(self):
         return self.tr('Points along lines')

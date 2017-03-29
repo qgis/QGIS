@@ -75,7 +75,7 @@ class ExtractByAttribute(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Extract by attribute'
+        return 'extractbyattribute'
 
     def displayName(self):
         return self.tr('Extract by attribute')

@@ -57,7 +57,7 @@ class VoronoiPolygons(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Voronoi polygons'
+        return 'voronoipolygons'
 
     def displayName(self):
         return self.tr('Voronoi polygons')

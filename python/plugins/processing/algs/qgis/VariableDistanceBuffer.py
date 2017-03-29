@@ -58,7 +58,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Variable distance buffer'
+        return 'variabledistancebuffer'
 
     def displayName(self):
         return self.tr('Variable distance buffer')

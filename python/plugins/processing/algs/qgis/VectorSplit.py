@@ -53,7 +53,7 @@ class VectorSplit(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Split vector layer'
+        return 'splitvectorlayer'
 
     def displayName(self):
         return self.tr('Split vector layer')

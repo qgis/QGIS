@@ -53,7 +53,7 @@ class Difference(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Difference'
+        return 'difference'
 
     def displayName(self):
         return self.tr('Difference')

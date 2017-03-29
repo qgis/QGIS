@@ -63,7 +63,7 @@ class FieldsMapper(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Refactor fields'
+        return 'refactorfields'
 
     def displayName(self):
         return self.tr('Refactor fields')

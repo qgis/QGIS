@@ -56,7 +56,7 @@ class Delaunay(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Delaunay triangulation'
+        return 'delaunaytriangulation'
 
     def displayName(self):
         return self.tr('Delaunay triangulation')

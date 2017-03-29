@@ -66,7 +66,7 @@ class FieldsPyculator(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Advanced Python field calculator'
+        return 'advancedpythonfieldcalculator'
 
     def displayName(self):
         return self.tr('Advanced Python field calculator')

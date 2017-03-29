@@ -55,7 +55,7 @@ class OneSideBuffer(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Single sided buffer for lines'
+        return 'singlesidedbufferforlines'
 
     def displayName(self):
         return self.tr('Single sided buffer for lines')

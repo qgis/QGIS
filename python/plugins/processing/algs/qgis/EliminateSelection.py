@@ -60,7 +60,7 @@ class EliminateSelection(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Eliminate selected polygons'
+        return 'eliminateselectedpolygons'
 
     def displayName(self):
         return self.tr('Eliminate selected polygons')
@@ -84,7 +84,7 @@ class EliminateSelection(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.commandLineName(), self.getParameterValue(self.INPUT)))
+                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), self.getParameterValue(self.INPUT)))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()

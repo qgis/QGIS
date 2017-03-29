@@ -53,7 +53,7 @@ class CreateAttributeIndex(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Create attribute index'
+        return 'createattributeindex'
 
     def displayName(self):
         return self.tr('Create attribute index')

@@ -63,7 +63,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Fixed distance buffer'
+        return 'fixeddistancebuffer'
 
     def displayName(self):
         return self.tr('Fixed distance buffer')

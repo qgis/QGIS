@@ -51,7 +51,7 @@ class Merge(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Merge vector layers'
+        return 'mergevectorlayers'
 
     def displayName(self):
         return self.tr('Merge vector layers')

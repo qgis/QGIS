@@ -101,7 +101,7 @@ class Ogr2Ogr(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Convert format'
+        return 'convertformat'
 
     def displayName(self):
         return self.tr('Convert format')

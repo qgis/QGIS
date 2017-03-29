@@ -55,7 +55,7 @@ class BarPlot(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'Bar plot'
+        return 'barplot'
 
     def displayName(self):
         return self.tr('Bar plot')

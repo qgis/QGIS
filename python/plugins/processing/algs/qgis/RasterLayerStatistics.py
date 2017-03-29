@@ -61,7 +61,7 @@ class RasterLayerStatistics(GeoAlgorithm):
         return self.tr('Raster tools')
 
     def name(self):
-        return 'Raster layer statistics'
+        return 'rasterlayerstatistics'
 
     def displayName(self):
         return self.tr('Raster layer statistics')

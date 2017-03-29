@@ -463,11 +463,7 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         return s
 
     def commandLineName(self):
-        name = self.provider.id().lower() + ':' + self.name().lower()
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
-        name = ''.join(c for c in name if c in validChars)
-        return name
+        return self.provider.id().lower() + ':' + self.name()
 
     def removeOutputFromName(self, name):
         for out in self.outputs:

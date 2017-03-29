@@ -85,7 +85,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.processing = False
 
     def name(self):
-        return 'Import Vector into PostGIS database (available connections)'
+        return 'importvectorintopostgisdatabaseavailableconnections'
 
     def displayName(self):
         return self.tr('Import Vector into PostGIS database (available connections)')

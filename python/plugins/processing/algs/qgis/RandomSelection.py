@@ -56,7 +56,7 @@ class RandomSelection(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Random selection'
+        return 'randomselection'
 
     def displayName(self):
         return self.tr('Random selection')

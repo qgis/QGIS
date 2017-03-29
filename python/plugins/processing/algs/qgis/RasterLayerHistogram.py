@@ -52,7 +52,7 @@ class RasterLayerHistogram(GeoAlgorithm):
         return self.tr('Graphics')
 
     def name(self):
-        return 'Raster layer histogram'
+        return 'rasterlayerhistogram'
 
     def displayName(self):
         return self.tr('Raster layer histogram')

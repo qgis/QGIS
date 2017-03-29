@@ -54,7 +54,7 @@ class Ogr2OgrDissolve(GdalAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def name(self):
-        return 'Dissolve polygons'
+        return 'dissolvepolygons'
 
     def displayName(self):
         return self.tr('Dissolve polygons')

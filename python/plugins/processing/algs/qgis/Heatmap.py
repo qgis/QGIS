@@ -78,7 +78,7 @@ class Heatmap(GeoAlgorithm):
         return self.tr('Interpolation')
 
     def name(self):
-        return 'Heatmap (Kernel Density Estimation)'
+        return 'heatmapkerneldensityestimation'
 
     def displayName(self):
         return self.tr('Heatmap (Kernel Density Estimation)')

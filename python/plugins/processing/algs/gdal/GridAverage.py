@@ -57,7 +57,7 @@ class GridAverage(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
     def name(self):
-        return 'Grid (Moving average)'
+        return 'gridmovingaverage'
 
     def displayName(self):
         return self.tr('Grid (Moving average)')

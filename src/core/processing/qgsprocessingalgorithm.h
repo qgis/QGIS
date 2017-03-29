@@ -53,7 +53,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
      * should be fixed for the algorithm, and must not be localised. The name should
-     * be unique within each provider.
+     * be unique within each provider. Names should contain lowercase alphanumeric characters
+     * only and no spaces or other formatting characters.
      * @see displayName()
      * @see group()
      * @see tags()

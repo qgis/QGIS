@@ -53,7 +53,7 @@ class fillnodata(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def name(self):
-        return 'Fill nodata'
+        return 'fillnodata'
 
     def displayName(self):
         return self.tr('Fill nodata')

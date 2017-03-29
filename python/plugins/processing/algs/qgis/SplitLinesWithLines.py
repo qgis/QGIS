@@ -62,7 +62,7 @@ class SplitLinesWithLines(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Split lines with lines'
+        return 'splitlineswithlines'
 
     def displayName(self):
         return self.tr('Split lines with lines')

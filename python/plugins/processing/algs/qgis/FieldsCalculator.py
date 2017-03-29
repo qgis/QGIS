@@ -71,7 +71,7 @@ class FieldsCalculator(GeoAlgorithm):
         return self.tr('Vector table tools')
 
     def name(self):
-        return 'Field calculator'
+        return 'fieldcalculator'
 
     def displayName(self):
         return self.tr('Field calculator')

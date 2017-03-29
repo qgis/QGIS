@@ -49,7 +49,7 @@ class roughness(GdalAlgorithm):
         return self.tr('Raster analysis')
 
     def name(self):
-        return 'Roughness'
+        return 'roughness'
 
     def displayName(self):
         return self.tr('Roughness')

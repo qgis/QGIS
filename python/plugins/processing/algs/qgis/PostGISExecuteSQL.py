@@ -48,7 +48,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
         return self.tr('Database')
 
     def name(self):
-        return 'PostGIS execute SQL'
+        return 'postgisexecutesql'
 
     def displayName(self):
         return self.tr('PostGIS execute SQL')

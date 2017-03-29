@@ -59,7 +59,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Random points inside polygons (fixed)'
+        return 'randompointsinsidepolygonsfixed'
 
     def displayName(self):
         return self.tr('Random points inside polygons (fixed)')

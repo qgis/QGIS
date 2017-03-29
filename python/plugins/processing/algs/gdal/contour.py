@@ -52,7 +52,7 @@ class contour(GdalAlgorithm):
     EXTRA = 'EXTRA'
 
     def name(self):
-        return 'Contour'
+        return 'contour'
 
     def displayName(self):
         return self.tr('Contour')

@@ -52,7 +52,7 @@ class Boundary(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Boundary'
+        return 'boundary'
 
     def displayName(self):
         return self.tr('Boundary')

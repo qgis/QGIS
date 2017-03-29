@@ -57,7 +57,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Random extract within subsets'
+        return 'randomextractwithinsubsets'
 
     def displayName(self):
         return self.tr('Random extract within subsets')

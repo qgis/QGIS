@@ -47,7 +47,7 @@ class AssignProjection(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def name(self):
-        return 'Assign projection'
+        return 'assignprojection'
 
     def displayName(self):
         return self.tr('Assign projection')

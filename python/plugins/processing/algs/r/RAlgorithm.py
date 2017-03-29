@@ -103,7 +103,8 @@ class RAlgorithm(GeoAlgorithm):
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self._name, self._display_name = self.trAlgorithm('[Unnamed algorithm]')
+        self._name = 'unnamedalgorithm'
+        self._display_name = self.trAlgorithm('[Unnamed algorithm]')
         self._group = self.tr('User R scripts')
         self.parseDescription(iter(lines))
 
@@ -177,6 +178,10 @@ class RAlgorithm(GeoAlgorithm):
             return
         if tokens[1].lower().strip() == 'name':
             self._name = self._display_name = tokens[0]
+            self._name = self._name.lower()
+            validChars = \
+                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._name = ''.join(c for c in self._name if c in validChars)
             return
 
         out = getOutputFromString(line)

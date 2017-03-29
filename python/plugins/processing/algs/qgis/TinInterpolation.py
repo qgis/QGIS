@@ -71,7 +71,7 @@ class TinInterpolation(GeoAlgorithm):
         return self.tr('Interpolation')
 
     def name(self):
-        return 'TIN interpolation'
+        return 'tininterpolation'
 
     def displayName(self):
         return self.tr('TIN interpolation')

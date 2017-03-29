@@ -53,7 +53,7 @@ class slope(GdalAlgorithm):
         return self.tr('Raster analysis')
 
     def name(self):
-        return 'Slope'
+        return 'slope'
 
     def displayName(self):
         return self.tr('Slope')

@@ -58,7 +58,7 @@ class merge(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
 
     def name(self):
-        return 'Merge'
+        return 'merge'
 
     def displayName(self):
         return self.tr('Merge')

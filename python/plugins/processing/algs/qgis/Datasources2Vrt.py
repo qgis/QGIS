@@ -58,7 +58,7 @@ class Datasources2Vrt(GeoAlgorithm):
         return self.tr('Vector general tools')
 
     def name(self):
-        return 'Build virtual vector'
+        return 'buildvirtualvector'
 
     def displayName(self):
         return self.tr('Build virtual vector')

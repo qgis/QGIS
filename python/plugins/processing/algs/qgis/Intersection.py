@@ -62,7 +62,7 @@ class Intersection(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Intersection'
+        return 'intersection'
 
     def displayName(self):
         return self.tr('Intersection')

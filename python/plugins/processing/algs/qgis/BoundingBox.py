@@ -52,7 +52,7 @@ class BoundingBox(GeoAlgorithm):
         return self.tr('Vector geometry tools')
 
     def name(self):
-        return 'Bounding boxes'
+        return 'boundingboxes'
 
     def displayName(self):
         return self.tr('Bounding boxes')

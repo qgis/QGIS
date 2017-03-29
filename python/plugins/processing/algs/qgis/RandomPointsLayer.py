@@ -57,7 +57,7 @@ class RandomPointsLayer(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Random points in layer bounds'
+        return 'randompointsinlayerbounds'
 
     def displayName(self):
         return self.tr('Random points in layer bounds')

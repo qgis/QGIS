@@ -63,7 +63,7 @@ class HypsometricCurves(GeoAlgorithm):
         return self.tr('Raster tools')
 
     def name(self):
-        return 'Hypsometric curves'
+        return 'hypsometriccurves'
 
     def displayName(self):
         return self.tr('Hypsometric curves')

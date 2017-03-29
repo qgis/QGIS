@@ -64,7 +64,7 @@ class GridPolygon(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Create grid (polygon)'
+        return 'creategridpolygon'
 
     def displayName(self):
         return self.tr('Create grid (polygon)')

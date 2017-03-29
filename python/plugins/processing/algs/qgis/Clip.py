@@ -53,7 +53,7 @@ class Clip(GeoAlgorithm):
         return self.tr('Vector overlay tools')
 
     def name(self):
-        return 'Clip'
+        return 'clip'
 
     def displayName(self):
         return self.tr('Clip')

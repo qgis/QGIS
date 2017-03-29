@@ -68,7 +68,7 @@ class VectorGridPolygons(GeoAlgorithm):
         return self.tr('Vector creation tools')
 
     def name(self):
-        return 'Vector grid (polygons)'
+        return 'vectorgridpolygons'
 
     def displayName(self):
         return self.tr('Vector grid (polygons)')

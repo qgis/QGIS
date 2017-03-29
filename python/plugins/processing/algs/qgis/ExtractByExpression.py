@@ -55,7 +55,7 @@ class ExtractByExpression(GeoAlgorithm):
         return self.tr('Vector selection tools')
 
     def name(self):
-        return 'Extract by expression'
+        return 'extractbyexpression'
 
     def displayName(self):
         return self.tr('Extract by expression')
