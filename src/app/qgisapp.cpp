@@ -5178,6 +5178,9 @@ bool QgisApp::addProject( const QString &projectFile )
   // close the previous opened project if any
   closeProject();
 
+  bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
+  mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
+
   if ( !QgsProject::instance()->read( projectFile ) )
   {
     QString backupFile = projectFile + "~";
@@ -5293,6 +5296,9 @@ bool QgisApp::addProject( const QString &projectFile )
   saveRecentProjectPath( projectFile, false );
 
   QApplication::restoreOverrideCursor();
+
+  if ( autoSetupOnFirstLayer )
+    mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( true );
 
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
