@@ -74,13 +74,22 @@ class TestQgsNodeTool : public QObject
       mNodeTool->cadCanvasMoveEvent( &e );
     }
 
-    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
     {
       QgsMapMouseEvent e1( mCanvas, QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
       mNodeTool->cadCanvasPressEvent( &e1 );
+    }
 
+    void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    {
       QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, mapToScreen( mapX, mapY ), button, Qt::MouseButton(), stateKey );
       mNodeTool->cadCanvasReleaseEvent( &e2 );
+    }
+
+    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
+    {
+      mousePress( mapX, mapY, button, stateKey );
+      mouseRelease( mapX, mapY, button, stateKey );
     }
 
     void keyClick( int key )
@@ -420,6 +429,21 @@ void TestQgsNodeTool::testDeleteVertex()
   mLayerPoint->undoStack()->undo();
 
   QCOMPARE( mLayerPoint->getFeature( mFidPointF1 ).geometry(), QgsGeometry::fromWkt( "POINT(2 3)" ) );
+
+  // delete a vertex by dragging a selection rect
+
+  mousePress( 0.5, 2.5, Qt::LeftButton );
+  mouseMove( 1.5, 3.5 );
+  mouseRelease( 1.5, 3.5, Qt::LeftButton );
+  keyClick( Qt::Key_Delete );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 
   // no other unexpected changes happened
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
