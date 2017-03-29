@@ -4643,7 +4643,7 @@ void QgisApp::addAfsLayer()
   }
   afss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
   connect( afss, &QgsSourceSelectDialog::addLayer,
-           this, [ = ] { addAfsLayer(); } );
+  this, [ = ]( const QString & uri, const QString & typeName ) { addAfsLayer( uri, typeName ); } );
 
   bool wasFrozen = mapCanvas()->isFrozen();
   freezeCanvases();
@@ -4677,7 +4677,7 @@ void QgisApp::addAmsLayer()
   }
   amss->setCurrentExtentAndCrs( mapCanvas()->extent(), mapCanvas()->mapSettings().destinationCrs() );
   connect( amss, &QgsSourceSelectDialog::addLayer,
-           this, [ = ] { addAmsLayer(); } );
+  this, [ = ]( const QString & uri, const QString & typeName ) { addAmsLayer( uri, typeName ); } );
 
   bool wasFrozen = mapCanvas()->isFrozen();
   freezeCanvases();
