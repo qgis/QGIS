@@ -170,6 +170,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString filePath() const { return mFilePath; }
 
     int layerIndex() const { return mLayerIndex; }
+    int geometryIndex() const { return mGeometryIndex; }
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
 
@@ -269,6 +270,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! layer index
     int mLayerIndex;
+
+    //! geometry field index as returned from OGR_FD_GetGeomFieldIndex
+    int mGeometryIndex;
 
     //! was a sub layer requested?
     bool mIsSubLayer;
@@ -473,7 +477,7 @@ class QgsOgrProviderUtils
      * - duplicate layer-names can exist, therefore all layers must be listed to check againt duplicate Layer-Names
      *-- the skipping-logic, when searching for a specific layer has been removed.
      * The created SubLayer string now has 6 fields (ogr_get_type was added)
-     * - layer_id:layer_name:feature_count:geometry_type:geometry_name:ogr_get_type
+     * - layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
      * -- ogr_get_type=0: OGRGetLayerNameWrapper() ; 1: OGRGetLayerIndexWrapper
      * Goal: avoid (the costly) calling of this function when not needed
      * - QgsOgrProvider::OGRGetLayerWrapper should be able to open a Layer without any further checks
@@ -607,7 +611,7 @@ class QgsOgrProviderUtils
      * - OGR_DS_GetLayer will always be used
      *
      */
-    static OGRLayerH OGRGetLayerIndexWrapper( OGRDataSourceH ogrDataSource, long mLayerIndex );
+    static OGRLayerH OGRGetLayerIndexWrapper( OGRDataSourceH ogrDataSource, long lLayerIndex );
 
     /** Retrieves OgrLayer with an layer-name, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source
@@ -639,7 +643,7 @@ class QgsOgrProviderUtils
      * - OGR_DS_GetLayerByName will always be used
      *
      */
-    static OGRLayerH OGRGetLayerNameWrapper( OGRDataSourceH ogrDataSource, QString mLayerName );
+    static OGRLayerH OGRGetLayerNameWrapper( OGRDataSourceH ogrDataSource, QString sLayerName );
 
     /** Retrieves OgrLayer with an layer-name and Geomertry field-name
      * 'table_name(field_name)' format is only valid as a OGR layer name for the SQLite driver
@@ -653,7 +657,22 @@ class QgsOgrProviderUtils
      * If the mLayerName contains a name in the 'table_name(field_name)' format
      * - the 'table_name' will extracted to mLayerName and 'field_name' to mGeometryName
      */
-    static OGRLayerH OGRGetGeometryNameWrapper( OGRDataSourceH ogrDataSource, QString mLayerName, QString mGeometryName = QString::null );
+    static OGRLayerH OGRGetGeometryNameWrapper( OGRDataSourceH ogrDataSource, QString sLayerName, int &iGeometryIndex, QString iGeometryName = QString::null );
+
+    /** Retrieves OgrGeometry from OgrFeaturer with an layer-name and Geomertry field-name
+     *  - different Drivers store the Geometry(s) differently when more than one Geometry exist in a TABLE or File
+     * -> if the mGeometryIndex is not contained in thesSubLayerString an attemt will be made to retrieved it using the GeomertyName
+     * @note
+     * - a SQlite [spatialite] table with two geometries will always have OGR_F_GetGeomFieldCount(fetch_feature) == 1 (not 2)
+     * --> the mGeometryIndex should NOT be used, since the Feature only contains 1 Geometry
+     * - a GML file with two geometries will always have OGR_F_GetGeomFieldCount(fetch_feature) == 2
+     * --> and the mGeometryIndex must be used  when > 0 [0 can use by both methods]
+     * @param fetch_feature Ogr-Feature to retrieve the Information from
+     * @param sSubLayerString Collected Data from the Data-Source
+     * @returns OGRGeometryH if found
+     * @see QgsOgrFeatureIterator::readFeature
+     */
+    static OGRGeometryH OGRGetGeometryFeatureWrapper( OGRFeatureH fetch_feature, QString sSubLayerString );
 
     /** Retrieves amount of Layers found in the Datasource, using different Gdal versions (compile,runtime) pre 2.0 and after
      * @param ogrDataSource Data Source

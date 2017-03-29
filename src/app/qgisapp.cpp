@@ -4246,20 +4246,21 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
     QStringList elements = sublayer.split( QStringLiteral( ":" ) );
     // merge back parts of the name that may have been split
-    while ( elements.size() > 6 )
+    while ( elements.size() > 7 )
     {
       elements[1] += ":" + elements[2];
       elements.removeAt( 2 );
     }
-    if ( elements.count() == 6 )
-    { //  layer_id:layer_name:feature_count:geometry_type:geometry_name:ogr_get_type
+    if ( elements.count() == 7 )
+    { //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
       QgsSublayersDialog::LayerDefinition def;
       def.layerId = elements[0].toInt();
       def.layerName = elements[1];
       def.count = elements[2].toInt();
       def.type = elements[3];
       def.geometryName = elements[4];
-      def.getType = elements[5].toInt();
+      def.geometryId = elements[5].toInt();
+      def.getType = elements[6].toInt();
       list << def;
     }
     else
@@ -4299,7 +4300,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   {
     QString layerGeometryType = def.type;
     QString composedURI = uri + "|layerid=" + QString::number( def.layerId ) + "|layername=" + def.layerName;
-
+    // 'layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type'
     if ( !layerGeometryType.isEmpty() )
     {
       composedURI += "|geometrytype=" + layerGeometryType;
@@ -4307,6 +4308,22 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     if ( !def.geometryName.isEmpty() )
     {
       composedURI += "|geometryname=" + def.geometryName;
+    }
+    if ( def.geometryId >= 0 )
+    {
+      composedURI += "|geometryid=" + QString::number(def.geometryId);
+    }
+    if ( !def.type.isEmpty() )
+    {
+      composedURI += "|geometrytype=" + def.type;
+    }
+    if ( def.count >= 0 )
+    {
+      composedURI += "|featurescounted=" + QString::number(def.count);
+    }
+    if ( def.getType >= 0 )
+    {
+      composedURI += "|ogrtype=" + QString::number(def.getType);
     }
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );

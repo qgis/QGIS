@@ -109,12 +109,14 @@ QgsSublayersDialog::LayerDefinitionList QgsSublayersDialog::selection()
     }
     if ( mProviderType == QgsSublayersDialog::Ogr )
     { // Ogr-Internal use only - no needed to show to user
-     def.geometryName = item->text(  mShowCount ? 4 : 3 );
-     int mOgrGetType = item->text(  mShowCount ? 5 : 4 ).toInt();
-     if (mOgrGetType == 0)
-     { // Layer-Name is unique, set layerId to -1
-      // def.layerId=-1;
+     def.count = item->text( 2 ).toInt();
+     if (item->text( 3 ) != "Unknown")
+     {
+      def.type = item->text( 3 );
      }
+     def.geometryName = item->text(  mShowCount ? 4 : 3 );
+     def.geometryId = item->text(  mShowCount ? 5 : 4 ).toInt();
+     def.getType = item->text(  mShowCount ? 6 : 5 ).toInt();
     }
 
     list << def;
@@ -134,8 +136,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     if ( mShowType )
       elements << item.type;
     if ( mProviderType == QgsSublayersDialog::Ogr )
-    {  //  layer_id:layer_name:feature_count:geometry_type:geometry_name:ogr_get_type
+    {  //  layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type
      elements << item.geometryName;
+     elements << QString::number( item.geometryId );
      elements << QString::number( item.getType );
     }
     layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );

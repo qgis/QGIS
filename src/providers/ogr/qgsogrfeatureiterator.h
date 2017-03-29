@@ -38,6 +38,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QString mLayerName;
     QString mGeometryName;
     int mLayerIndex;
+    int mGeometryIndex;
     QString mSubsetString;
     QTextCodec *mEncoding = nullptr;
     QgsFields mFields;

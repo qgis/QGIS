@@ -41,13 +41,14 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! @note added in 2.16
     typedef struct LayerDefinition
     {
-      LayerDefinition() : layerId( -1 ), count( -1 ), getType(-1) {}
-
+      LayerDefinition() : layerId( -1 ), count( -1 ), geometryId(-1), getType(-1){}
+      // 'layer_id:layer_name:feature_count:geometry_type:geometry_name:field_geometry_id:ogr_get_type'
       int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
       QString geometryName;  //!< Name of the geometry (not necessarily unique)
+      int geometryId;        //!< Identifier of the layer-geometry
       int getType;          //!< ogr retrievel method, internal use only
     } LayerDefinition;
 

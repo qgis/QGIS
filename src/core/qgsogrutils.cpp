@@ -201,7 +201,7 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &featur
 {
   if ( !ogrFet )
     return false;
-
+  // Note: this will not work correctly with features that contain more than 1 geometry (GML)
   OGRGeometryH geom = OGR_F_GetGeometryRef( ogrFet );
   if ( !geom )
     feature.clearGeometry();

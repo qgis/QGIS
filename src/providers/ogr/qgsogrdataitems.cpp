@@ -113,7 +113,7 @@ QString QgsOgrLayerItem::layerName() const
 
 static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
 {
-  OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
+  OGRLayerH hLayer = QgsOgrProviderUtils::OGRGetSubLayerStringWrapper( hDataSource, name );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
@@ -158,7 +158,8 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
     name = QString::fromUtf8( OGR_FD_GetName( hDef ) );
     QgsDebugMsg( "OGR layer name : " + name );
 
-    layerUri += "|layerid=" + QString::number( layerId );
+    // Since the layer-id returned by OGR may change [source has been externaly changed], the Layer-Name should always be included
+    layerUri += "|layerid=" + QString::number( layerId ) + "|layername=" + name;
 
     path += '/' + name;
   }
@@ -183,12 +184,19 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
   if ( !hDataSource )
     return children;
-  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+  QStringList listSubLayers = QgsOgrProviderUtils::OGRGetSubLayersWrapper( hDataSource );
+  int numLayers = listSubLayers.size();
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
+    QStringList sa_list_id_fields = listSubLayers[i].split( ":" );
+    bool ok;
+    long lLayerIndex = sa_list_id_fields[0].toLong( &ok, 10 );
+    QString sLayerName = sa_list_id_fields[1];
+    // 's_sublayer' result will determin how the the layer should be opened (depending on duplicate-layers, layer-name conventions)
+    QString s_sublayer = QgsOgrProviderUtils::OGRGetSubLayerWrapper( sLayerName, lLayerIndex, listSubLayers );
+    QgsOgrLayerItem *item = dataItemForLayer( this, s_sublayer, mPath, hDataSource, i );
     children.append( item );
   }
 

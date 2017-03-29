@@ -734,10 +734,10 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
 
         features_vl_point_02 = [f_iter for f_iter in vl_point_02.getFeatures(QgsFeatureRequest().setFilterExpression(u"fid='1'"))]
         print('-I-> Testing type/values of a \'POINT\' EWKT[%s] count[%d,%d]' % ('SRID=-1;POINT(2 3)',vl_point_02.featureCount(),len(features_vl_point_02)))
-        # test_geom_02 = [f_iter.geometry() for f_iter in features_vl_point_02][0].geometry()
-        # print('-I-> point_02: WKT[%s]' % (test_geom_02.asWkt()))
-        # self.assertEqual(test_geom.wkbType(), QgsWkbTypes.PointZ)
-        # self.assertEquals((test_geom_02.x(), test_geom_02.y()), (2,3))
+        test_geom_02 = [f_iter.geometry() for f_iter in features_vl_point_02][0].geometry()
+        print('-I-> point_02: WKT[%s]' % (test_geom_02.asWkt()))
+        self.assertEqual(test_geom.wkbType(), QgsWkbTypes.Point)
+        self.assertEquals((test_geom_02.x(), test_geom_02.y()), (2,3))
         del test_geom_01
         del features_vl_point_01
         del vl_point_01
@@ -745,7 +745,6 @@ class TestPyQgsOGRProviderGeneral(unittest.TestCase):
         del features_vl_point_02
         del vl_point_02
         print('-I-> test_04_OgrGMLMultipleGeometries(%s) ' % ('end of test'))
-
 
 ###############################################################################
 # Sample kmz file included in bug report 15168

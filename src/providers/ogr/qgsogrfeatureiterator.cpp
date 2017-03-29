@@ -299,7 +299,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
   bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;
   if ( mFetchGeometry || useIntersect || geometryTypeFilter )
   {
-    OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+    OGRGeometryH geom = QgsOgrProviderUtils::OGRGetGeometryFeatureWrapper( fet, mSource->mSubLayerString );
 
     if ( geom )
     {
@@ -314,7 +314,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
       // OK
     }
     else if ( ( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mRequest.filterRect() ) ) )
-              || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten( ( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
+              || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProviderUtils::wkbSingleFlattenWrapper( ( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
       OGR_F_Destroy( fet );
       return false;
@@ -325,7 +325,6 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
   {
     feature.clearGeometry();
   }
-
   // fetch attributes
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
@@ -353,8 +352,13 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
 {
   mDataSource = p->dataSourceUri();
   mLayerName = p->layerName();
-  mGeometryName = p->layerName();
+  mGeometryName = p->geometryName();
+  if ( mGeometryName.isEmpty() )
+  {
+    mGeometryName = QString::null;
+  }
   mLayerIndex = p->layerIndex();
+  mGeometryIndex = p->geometryIndex();
   mSubsetString = p->mSubsetString;
   mEncoding = p->textEncoding(); // no copying - this is a borrowed pointer from Qt
   mFields = p->mAttributeFields;
@@ -362,8 +366,12 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
     mFieldsWithoutFid.append( mFields.at( i ) );
   mDriverName = p->ogrDriverName;
   mFirstFieldIsFid = p->mFirstFieldIsFid;
-  mOgrGeometryTypeFilter = QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter );
+  mOgrGeometryTypeFilter = QgsOgrProviderUtils::wkbSingleFlattenWrapper( p->mOgrGeometryTypeFilter );
   mSubLayerString = p->SubLayerString();
+  if ( mSubLayerString.isEmpty() )
+  {
+    mSubLayerString = QString::null;
+  }
   QgsOgrConnPool::instance()->ref( mDataSource );
 }
 
