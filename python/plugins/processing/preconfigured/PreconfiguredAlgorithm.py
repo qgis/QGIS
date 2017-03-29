@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 
 import os
+from qgis.core import (QgsProcessingAlgorithm)
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.alglist import algList
 import json
@@ -44,6 +45,9 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
     def group(self):
         return self._group
 
+    def flags(self):
+        return QgsProcessingAlgorithm.FlagHideFromModeler
+
     def getCopy(self):
         newone = PreconfiguredAlgorithm(self.descriptionFile)
         newone.outputs = []
@@ -58,8 +62,6 @@ class PreconfiguredAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = self.description["name"]
         self._group = self.description["group"]
-        self.canRunInBatchMode = False
-        self.showInModeler = False
 
     def execute(self, feedback):
         self.alg = algList.getAlgorithm(self.description["algname"]).getCopy()

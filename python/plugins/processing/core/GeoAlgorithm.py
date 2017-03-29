@@ -65,14 +65,6 @@ class GeoAlgorithm(QgsProcessingAlgorithm):
         # loading output layers
         self.crs = None
 
-        # Change any of the following if your algorithm should not
-        # appear in the toolbox or modeler
-        self.showInToolbox = True
-        self.showInModeler = True
-
-        # False if it should not be run a a batch process
-        self.canRunInBatchMode = True
-
         # To be set by the provider when it loads the algorithm
         self.provider = None
 

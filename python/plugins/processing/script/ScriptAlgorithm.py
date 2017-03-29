@@ -31,6 +31,7 @@ import re
 import json
 from qgis.core import (QgsExpressionContextUtils,
                        QgsExpressionContext,
+                       QgsProcessingAlgorithm,
                        QgsProject,
                        QgsApplication)
 
@@ -59,6 +60,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self._flags = 0
 
         self.script = script
         self.allowEdit = True
@@ -86,6 +88,9 @@ class ScriptAlgorithm(GeoAlgorithm):
     def group(self):
         return self._group
 
+    def flags(self):
+        return self._flags
+
     def svgIconPath(self):
         return QgsApplication.iconPath("processingScript.svg")
 
@@ -107,8 +112,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 self.script += line
                 line = lines.readline()
         if self._group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
-            self.showInModeler = False
-            self.showInToolbox = False
+            self._flags = QgsProcessingAlgorithm.FlagHideFromToolbox | QgsProcessingAlgorithm.FlagHideFromModeler
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
@@ -139,7 +143,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         line = line.replace('#', '')
 
         if line == "nomodeler":
-            self.showInModeler = False
+            self._flags = self._flags | QgsProcessingAlgorithm.FlagHideFromModeler
             return
         if line == "nocrswarning":
             self.noCRSWarning = True

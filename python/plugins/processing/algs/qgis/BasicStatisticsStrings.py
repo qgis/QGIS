@@ -31,7 +31,8 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsStringStatisticalSummary,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsStringStatisticalSummary,
                        QgsFeatureRequest)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -60,10 +61,9 @@ class BasicStatisticsStrings(GeoAlgorithm):
     MIN_VALUE = 'MIN_VALUE'
     MAX_VALUE = 'MAX_VALUE'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use BasicStatistics instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))

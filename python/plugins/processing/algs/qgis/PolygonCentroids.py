@@ -29,7 +29,10 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsFeature, QgsWkbTypes
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsGeometry,
+                       QgsFeature,
+                       QgsWkbTypes)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -45,10 +48,9 @@ class PolygonCentroids(GeoAlgorithm):
     INPUT_LAYER = 'INPUT_LAYER'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use Centroids instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))

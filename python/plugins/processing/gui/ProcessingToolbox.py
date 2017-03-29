@@ -33,7 +33,8 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm)
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
@@ -193,7 +194,7 @@ class ProcessingToolbox(BASE, WIDGET):
             executeAction = QAction(self.tr('Execute'), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            if alg.canRunInBatchMode:
+            if alg.flags() & QgsProcessingAlgorithm.FlagSupportsBatch:
                 executeBatchAction = QAction(
                     self.tr('Execute as batch process'),
                     self.algorithmTree)
@@ -398,7 +399,7 @@ class TreeProviderItem(QTreeWidgetItem):
 
         # Add algorithms
         for alg in algs:
-            if not alg.showInToolbox:
+            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
             if alg.group() in groups:
                 groupItem = groups[alg.group()]

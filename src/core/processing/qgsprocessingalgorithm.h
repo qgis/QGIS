@@ -33,6 +33,16 @@ class CORE_EXPORT QgsProcessingAlgorithm
 {
   public:
 
+    //! Flags indicating how and when an algorithm operates and should be exposed to users
+    enum Flag
+    {
+      FlagHideFromToolbox = 1 << 1, //!< Algorithm should be hidden from the toolbox
+      FlagHideFromModeler = 1 << 2, //!< Algorithm should be hidden from the modeler
+      FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
+      FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsProcessingAlgorithm.
      */
@@ -82,7 +92,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     */
     virtual QString group() const { return QString(); }
 
+    /**
+     * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
+     */
+    virtual Flags flags() const;
+
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingAlgorithm::Flags )
 
 #endif // QGSPROCESSINGALGORITHM_H
 

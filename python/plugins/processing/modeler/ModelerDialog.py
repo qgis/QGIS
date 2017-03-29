@@ -36,7 +36,9 @@ from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDi
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm,
+                       QgsSettings)
 from qgis.gui import QgsMessageBar
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -613,7 +615,7 @@ class ModelerDialog(BASE, WIDGET):
 
             # Add algorithms
             for alg in algs:
-                if not alg.showInModeler:
+                if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                     continue
                 if alg.commandLineName() == self.alg.commandLineName():
                     continue

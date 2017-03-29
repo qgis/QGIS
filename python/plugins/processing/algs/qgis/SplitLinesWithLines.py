@@ -27,7 +27,8 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsApplication,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsGeometry,
@@ -47,10 +48,9 @@ class SplitLinesWithLines(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use SplitWithLines instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerQgis.svg")

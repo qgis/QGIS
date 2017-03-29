@@ -32,7 +32,8 @@ import codecs
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsStatisticalSummary,
-                       QgsFeatureRequest)
+                       QgsFeatureRequest,
+                       QgsProcessingAlgorithm)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
@@ -67,10 +68,9 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     NULLVALUES = 'NULLVALUES'
     IQR = 'IQR'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use BasicStatistics instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))

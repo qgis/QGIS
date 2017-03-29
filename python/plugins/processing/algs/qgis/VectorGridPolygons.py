@@ -31,7 +31,14 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint, QgsWkbTypes
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsRectangle,
+                       QgsFields,
+                       QgsField,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsWkbTypes)
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -50,10 +57,9 @@ class VectorGridPolygons(GeoAlgorithm):
     STEP_Y = 'STEP_Y'
     OUTPUT = 'OUTPUT'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
+    def flags(self):
         # this algorithm is deprecated - use GridPolygon instead
-        self.showInToolbox = False
+        return QgsProcessingAlgorithm.FlagDeprecated
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))

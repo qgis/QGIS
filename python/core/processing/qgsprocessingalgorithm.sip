@@ -6,6 +6,15 @@ class QgsProcessingAlgorithm
 
   public:
 
+     enum Flag
+    {
+      FlagHideFromToolbox,
+      FlagHideFromModeler,
+      FlagSupportsBatch,
+      FlagDeprecated,
+    };
+    typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
+
     QgsProcessingAlgorithm();
     virtual ~QgsProcessingAlgorithm();
 
@@ -15,6 +24,6 @@ class QgsProcessingAlgorithm
     virtual QIcon icon() const;
     virtual QString svgIconPath() const;
     virtual QString group() const;
-
+    virtual Flags flags() const;
 };
-
+QFlags<QgsProcessingAlgorithm::Flag> operator|(QgsProcessingAlgorithm::Flag f1, QFlags<QgsProcessingAlgorithm::Flag> f2);

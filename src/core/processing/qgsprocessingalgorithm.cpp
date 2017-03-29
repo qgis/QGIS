@@ -27,3 +27,8 @@ QString QgsProcessingAlgorithm::svgIconPath() const
 {
   return QgsApplication::iconPath( "processingAlgorithm.svg" );
 }
+
+QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
+{
+  return FlagSupportsBatch;
+}
