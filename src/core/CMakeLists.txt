@@ -95,6 +95,7 @@ SET(QGIS_CORE_SRCS
   qgsactionmanager.cpp
   qgsaggregatecalculator.cpp
   qgsanimatedicon.cpp
+  qgsattributes.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
   qgsbearingutils.cpp
@@ -663,6 +664,7 @@ SET(QGIS_CORE_HDRS
   qgsactionscope.h
   qgsactionmanager.h
   qgsaggregatecalculator.h
+  qgsattributes.h
   qgsattributetableconfig.h
   qgsattributeeditorelement.h
   qgsbearingutils.h

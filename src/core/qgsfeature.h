@@ -17,21 +17,23 @@ email                : sherman at mrcc.com
 #define QGSFEATURE_H
 
 #include "qgis_core.h"
+#include <QExplicitlySharedDataPointer>
+#include <QList>
 #include <QMap>
+#include <QSet>
 #include <QString>
 #include <QVariant>
-#include <QList>
 #include <QVector>
-#include <QSet>
-#include <QExplicitlySharedDataPointer>
 
-
+#include "qgsattributes.h"
 #include "qgsfields.h"
 
-class QgsGeometry;
-class QgsRectangle;
 class QgsFeature;
 class QgsFeaturePrivate;
+class QgsField;
+class QgsGeometry;
+class QgsRectangle;
+
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -48,172 +50,6 @@ typedef qint64 QgsFeatureId;
 #define FID_TO_STRING(fid)  QString::number( fid )
 #define STRING_TO_FID(str)  (str).toLongLong()
 
-// key = field index, value = field value
-typedef QMap<int, QVariant> QgsAttributeMap;
-
-/** \ingroup core
- * A vector of attributes. Mostly equal to QVector<QVariant>.
- @note QgsAttributes is implemented as a Python list of Python objects.
- */
-#ifndef SIP_RUN
-class CORE_EXPORT QgsAttributes : public QVector<QVariant>
-{
-  public:
-    QgsAttributes()
-      : QVector<QVariant>()
-    {}
-
-    /**
-     * Create a new vector of attributes with the given size
-     *
-     * @param size Number of attributes
-     */
-    QgsAttributes( int size )
-      : QVector<QVariant>( size )
-    {}
-
-    /**
-     * Constructs a vector with an initial size of size elements. Each element is initialized with value.
-     * @param size Number of elements
-     * @param v    Initial value
-     */
-    QgsAttributes( int size, const QVariant &v )
-      : QVector<QVariant>( size, v )
-    {}
-
-    /**
-     * Copies another vector of attributes
-     * @param v Attributes to copy
-     */
-    QgsAttributes( const QVector<QVariant> &v )
-      : QVector<QVariant>( v )
-    {}
-
-    /**
-     * @brief Compares two vectors of attributes.
-     * They are considered equal if all their members contain the same value and NULL flag.
-     * This was introduced because the default Qt implementation of QVariant comparison does not
-     * handle NULL values for certain types (like int).
-     *
-     * @param v The attributes to compare
-     * @return True if v is equal
-     */
-    bool operator==( const QgsAttributes &v ) const
-    {
-      if ( size() != v.size() )
-        return false;
-      const QVariant *b = constData();
-      const QVariant *i = b + size();
-      const QVariant *j = v.constData() + size();
-      while ( i != b )
-        if ( !( *--i == *--j && i->isNull() == j->isNull() ) )
-          return false;
-      return true;
-    }
-
-    /**
-     * Returns a QgsAttributeMap of the attribute values. Null values are
-     * excluded from the map.
-     * @note added in QGIS 3.0
-     * @note not available in Python bindings
-     */
-    QgsAttributeMap toMap() const; // SIP_SKIP
-
-    inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
-};
-#else
-typedef QVector<QVariant> QgsAttributes;
-
-% MappedType QgsAttributes
-{
-  % TypeHeaderCode
-#include <qgsfeature.h>
-  % End
-
-  % ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
-
-  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
-    return NULL;
-
-  // Set the list elements.
-  for ( int i = 0; i < sipCpp->size(); ++i )
-  {
-    QVariant *v = new QVariant( sipCpp->at( i ) );
-    PyObject *tobj;
-
-    if ( ( tobj = sipConvertFromNewType( v, sipType_QVariant, Py_None ) ) == NULL )
-    {
-      Py_DECREF( l );
-      delete v;
-
-      return NULL;
-    }
-
-    PyList_SET_ITEM( l, i, tobj );
-  }
-
-  return l;
-  % End
-
-  % ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
-  {
-    if ( !PyList_Check( sipPy ) )
-      return 0;
-
-    for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
-      if ( !sipCanConvertToType( PyList_GET_ITEM( sipPy, i ), sipType_QVariant, SIP_NOT_NONE ) )
-        return 0;
-
-    return 1;
-  }
-
-  QgsAttributes *qv = new QgsAttributes;
-
-  for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
-  {
-    int state;
-    PyObject *obj = PyList_GET_ITEM( sipPy, i );
-    QVariant *t;
-    if ( obj == Py_None )
-    {
-      t = new QVariant( QVariant::Int );
-    }
-    else
-    {
-      t = reinterpret_cast<QVariant *>( sipConvertToType( obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
-
-      if ( *sipIsErr )
-      {
-        sipReleaseType( t, sipType_QVariant, state );
-
-        delete qv;
-        return 0;
-      }
-    }
-
-    qv->append( *t );
-
-    sipReleaseType( t, sipType_QVariant, state );
-  }
-
-  *sipCppPtr = qv;
-
-  return sipGetState( sipTransferObj );
-  % End
-};
-#endif
-
-class QgsField;
-
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfeature.cpp.
- * See details in QEP #17
- ****************************************************************************/
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
@@ -684,14 +520,6 @@ typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 typedef QSet<QgsFeatureId> QgsFeatureIds;
 #else
 typedef QSet<qint64> QgsFeatureIds;
-#endif
-
-// key = field index, value = field name
-typedef QMap<int, QString> QgsFieldNameMap;
-
-
-#ifdef SIP_RUN
-typedef QMap<int, QgsField> QgsFieldMap;
 #endif
 
 typedef QList<QgsFeature> QgsFeatureList;
