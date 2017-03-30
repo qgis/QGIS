@@ -23,28 +23,52 @@
 #include <QSortFilterProxyModel>
 #include "ui_qgsgeonodesourceselectbase.h"
 
-class QgsGeonodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelectBase
+class QgsGeonodeItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsGeonodeItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
+};
+
+class QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
-    QgsGeonodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
-    ~QgsGeonodeSourceSelect();
+    QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    ~QgsGeoNodeSourceSelect();
+
+  signals:
+    void connectionsChanged();
 
   private:
-    QgsGeonodeSourceSelect(); //default constructor is forbidden
+    QgsGeoNodeSourceSelect(); //default constructor is forbidden
 
     /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
     QString mUri;            // data source URI
+    QgsGeonodeItemDelegate *mItemDelegate = nullptr;
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
     QPushButton *mAddButton = nullptr;
     QModelIndex mSQLIndex;
+
+  private slots:
+    void addConnectionsEntryList();
+    void modifyConnectionsEntryList();
+    void deleteConnectionsEntryList();
+    void connectToGeonodeConnection();
+    void saveGeonodeConnection();
+    void loadGeonodeConnection();
+    void filterChanged( const QString &text );
+
+    void populateConnectionList();
+    void setConnectionListPosition();
 
 };
 

@@ -17,7 +17,6 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qurl"
 
 #include <QMultiMap>
 #include <QNetworkRequest>
@@ -25,10 +24,11 @@
 #include <QByteArray>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QUrl>
 
 
-const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode/";
-const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode/";
+const QString QgsGeoNodeConnection::pathGeoNodeConnection = "qgis/connections-geonode";
+const QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails = "qgis/GeoNode";
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
   : mConnName( connName )
@@ -82,8 +82,8 @@ QStringList QgsGeoNodeConnection::connectionList()
 void QgsGeoNodeConnection::deleteConnection( const QString &name )
 {
   QgsSettings settings;
-  settings.remove( pathGeoNodeConnection + name );
-  settings.remove( pathGeoNodeConnectionDetails + name );
+  settings.remove( pathGeoNodeConnection + '/' + name );
+  settings.remove( pathGeoNodeConnectionDetails + '/' + name );
 }
 
 QString QgsGeoNodeConnection::selectedConnection()
@@ -100,9 +100,9 @@ void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 
 QVariantList QgsGeoNodeConnection::getLayers()
 {
-  // Construct URL. I need to prepend http in the begining to make it work.
+  // Construct URL. I need to prepend http in the beginning to make it work.
   // setScheme doesn't really help.
-  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/layers" );
+  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/layers/" );
   QUrl layerUrl( url );
   layerUrl.setScheme( "http" );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
@@ -110,7 +110,7 @@ QVariantList QgsGeoNodeConnection::getLayers()
   QNetworkRequest request( layerUrl );
   request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json" );
   // Handle redirect
-  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+  // request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
 
   QNetworkReply *reply = networkManager->get( request );
   while ( !reply->isFinished() )
@@ -129,9 +129,9 @@ QVariantList QgsGeoNodeConnection::getLayers()
 // Currently copy and paste from getLayers. It can be refactored easily, difference in url only.
 QVariantList QgsGeoNodeConnection::getMaps()
 {
-  // Construct URL. I need to prepend http in the begining to make it work.
+  // Construct URL. I need to prepend http in the beginning to make it work.
   // setScheme doesn't really help.
-  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/maps" );
+  QString url = "http://" + uri().param( "url" ) + QStringLiteral( "/api/maps/" );
   QUrl layerUrl( url );
   layerUrl.setScheme( "http" );
   QgsNetworkAccessManager *networkManager = QgsNetworkAccessManager::instance();
@@ -139,7 +139,7 @@ QVariantList QgsGeoNodeConnection::getMaps()
   QNetworkRequest request( layerUrl );
   request.setHeader( QNetworkRequest::ContentTypeHeader, "application/json" );
   // Handle redirect
-  request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
+  // request.setAttribute( QNetworkRequest::FollowRedirectsAttribute, true );
 
   QNetworkReply *reply = networkManager->get( request );
   while ( !reply->isFinished() )

@@ -180,6 +180,7 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginitemdelegate.cpp
 
   geonode/qgsgeonodesourceselect.cpp
+  geonode/qgsgeonodenewconnection.cpp
 
   qgsnewspatialitelayerdialog.cpp
 
@@ -359,6 +360,7 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginitemdelegate.h
 
   geonode/qgsgeonodesourceselect.h
+  geonode/qgsgeonodenewconnection.h
 
   qgsnewspatialitelayerdialog.h
 
@@ -550,6 +552,7 @@ INCLUDE_DIRECTORIES(
   ../core/dxf
   ../core/geometry
   ../core/layout
+  ../core/geonode
   ../core/metadata
   ../core/layertree
   ../core/providers/memory
