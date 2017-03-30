@@ -226,13 +226,13 @@ void QgsNodeTool2::addDragBand( const QgsPoint &v1, const QgsPoint &v2 )
   QgsRubberBand *dragBand = createRubberBand( QgsWkbTypes::LineGeometry, true );
   dragBand->addPoint( v1 );
   dragBand->addPoint( v2 );
-  drag_bands << dragBand;
+  mDragBands << dragBand;
 }
 
 void QgsNodeTool2::clearDragBands()
 {
-  qDeleteAll( drag_bands );
-  drag_bands.clear();
+  qDeleteAll( mDragBands );
+  mDragBands.clear();
 
   // for the case when standalone point geometry is being dragged
   mDragPointMarker->setVisible( false );
@@ -396,7 +396,7 @@ void QgsNodeTool2::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
 
   mEdgeCenterMarker->setVisible( false );
 
-  Q_FOREACH ( QgsRubberBand *band, drag_bands )
+  Q_FOREACH ( QgsRubberBand *band, mDragBands )
     band->movePoint( 1, e->mapPoint() );
 
   // in case of moving of standalone point geometry
@@ -864,7 +864,7 @@ void QgsNodeTool2::startDraggingAddVertex( const QgsPointLocator::Match &m )
   mOverrideCadPoints << m.point() << m.point();
 }
 
-void QgsNodeTool2::startDraggingAddVertexAtEndpoint( const QgsPoint &map_point )
+void QgsNodeTool2::startDraggingAddVertexAtEndpoint( const QgsPoint &mapPoint )
 {
   Q_ASSERT( mMouseAtEndpoint );
 
@@ -879,7 +879,7 @@ void QgsNodeTool2::startDraggingAddVertexAtEndpoint( const QgsPoint &map_point )
   QgsPoint v0 = geom.vertexAt( mMouseAtEndpoint->vertexId );
   QgsPoint map_v0 = toMapCoordinates( mMouseAtEndpoint->layer, v0 );
 
-  addDragBand( map_v0, map_point );
+  addDragBand( map_v0, mapPoint );
 
   // setup CAD dock previous points to endpoint and the previous point
   QgsPoint pt0 = geom.vertexAt( adjacentVertexIndexToEndpoint( geom, mMouseAtEndpoint->vertexId ) );
@@ -888,14 +888,14 @@ void QgsNodeTool2::startDraggingAddVertexAtEndpoint( const QgsPoint &map_point )
   mOverrideCadPoints << pt0 << pt1;
 }
 
-void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const QgsPoint &map_point )
+void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const QgsPoint &mapPoint )
 {
   Q_ASSERT( m.hasEdge() );
 
   // activate advanced digitizing
   setMode( CaptureLine );
 
-  mDraggingEdge.reset( new Edge( m.layer(), m.featureId(), m.vertexIndex(), map_point ) );
+  mDraggingEdge.reset( new Edge( m.layer(), m.featureId(), m.vertexIndex(), mapPoint ) );
   mDraggingTopo.clear();
 
   QgsPoint edge_p0, edge_p1;
@@ -912,17 +912,17 @@ void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const Qgs
     QgsPoint layerPoint0 = geom.vertexAt( v0idx );
     QgsPoint mapPoint0 = toMapCoordinates( m.layer(), layerPoint0 );
     addDragBand( mapPoint0, edge_p0 );
-    mDraggingEdge->bandsTo0 << drag_bands.last();
+    mDraggingEdge->bandsTo0 << mDragBands.last();
   }
   if ( v1idx != -1 )
   {
     QgsPoint layerPoint1 = geom.vertexAt( v1idx );
     QgsPoint mapPoint1 = toMapCoordinates( m.layer(), layerPoint1 );
     addDragBand( mapPoint1, edge_p1 );
-    mDraggingEdge->bandsTo1 << drag_bands.last();
+    mDraggingEdge->bandsTo1 << mDragBands.last();
   }
 
-  mDraggingEdge->band0to1 = drag_bands.first();
+  mDraggingEdge->band0to1 = mDragBands.first();
 
   mOverrideCadPoints.clear();
   mOverrideCadPoints << m.point() << m.point();
@@ -1181,12 +1181,12 @@ void QgsNodeTool2::deleteVertex()
 
 }
 
-void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &list_nodes )
+void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &listNodes )
 {
   qDeleteAll( mSelectedNodesMarkers );
   mSelectedNodesMarkers.clear();
 
-  Q_FOREACH ( const Vertex &node, list_nodes )
+  Q_FOREACH ( const Vertex &node, listNodes )
   {
     QgsGeometry geom = cachedGeometryForVertex( node );
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
@@ -1196,7 +1196,7 @@ void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &list_nodes )
     marker->setCenter( geom.vertexAt( node.vertexId ) );
     mSelectedNodesMarkers.append( marker );
   }
-  mSelectedNodes = list_nodes;
+  mSelectedNodes = listNodes;
 }
 
 void QgsNodeTool2::highlightAdjacentVertex( double offset )
