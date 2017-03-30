@@ -17,7 +17,8 @@
 #ifndef QGSEXCEPTION_H
 #define QGSEXCEPTION_H
 
-#include <QString>
+#include <QStringList>
+#include "qgsstacktrace.h"
 
 #include "qgis_core.h"
 
@@ -28,7 +29,10 @@ class CORE_EXPORT QgsException
 {
   public:
     QgsException( QString const &what )
-      : what_( what )
+      : mWhat( what )
+#ifdef QGISDEBUG
+      , mStack( QgsStacktrace::trace() )
+#endif
     {}
 
     virtual ~QgsException() throw()
@@ -37,13 +41,42 @@ class CORE_EXPORT QgsException
     //! @note not available in Python bindings
     QString what() const throw()
     {
-      return what_;
+      return mWhat;
     }
+
+#ifndef QGISDEBUG
+    QString stack() { return QStringLiteral( "Stack information not available in release." ); }
+#else
+    QString stack()
+    {
+      QString stack;
+      if ( mStack.isEmpty() )
+      {
+        stack = QStringLiteral( "Stack not available. Run a Debug build of QGIS to get more information." );
+      }
+      Q_FOREACH ( const QString &entry, mStack )
+      {
+        if ( entry.isNull() )
+        {
+          stack += QStringLiteral( "\n   Frame not available (possibly corrupted)" );
+        }
+        else
+        {
+          stack += entry;
+        }
+      }
+
+      return stack;
+    }
+#endif
 
   private:
 
     /// description of exception
-    QString what_;
+    QString mWhat;
+#ifdef QGISDEBUG
+    QStringList mStack;
+#endif
 
 }; // class QgsException
 

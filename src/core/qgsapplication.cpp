@@ -311,7 +311,16 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   {
     QgsDebugMsg( "Caught unhandled QgsException: " + e.what() );
     if ( qApp->thread() == QThread::currentThread() )
+    {
+#if QGISDEBUG
+      QgsMessageLog::logMessage( "Caught unhandled QgsException: " + e.what() + "\n\n" + e.stack(), QStringLiteral( "Exceptions" ), QgsMessageLog::CRITICAL );
+      QMessageBox msgBox( QMessageBox::Critical, tr( "Exception" ), e.what(), QMessageBox::Ok, activeWindow() );
+      msgBox.setInformativeText( e.stack() );
+      msgBox.exec();
+#else
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+#endif
+    }
   }
   catch ( std::exception &e )
   {
