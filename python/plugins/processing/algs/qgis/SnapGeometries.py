@@ -25,7 +25,8 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.analysis import QgsGeometrySnapper
+from qgis.analysis import (QgsGeometrySnapper,
+                           QgsInternalGeometrySnapper)
 from qgis.core import QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -43,7 +44,7 @@ class SnapGeometriesToLayer(GeoAlgorithm):
     BEHAVIOR = 'BEHAVIOR'
 
     def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Snap geometries to layer')
+        self.name, self.i18n_name = self.trAlgorithm('Snap geometries')
         self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
@@ -73,11 +74,22 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.feedback = feedback
         self.total = 100.0 / len(features)
 
-        snapper = QgsGeometrySnapper(reference_layer)
-        snapper.featureSnapped.connect(self.featureSnapped)
-        snapped_features = snapper.snapFeatures(features, tolerance, mode)
-        for f in snapped_features:
-            writer.addFeature(QgsFeature(f))
+        if self.getParameterValue(self.INPUT) != self.getParameterValue(self.REFERENCE_LAYER):
+            snapper = QgsGeometrySnapper(reference_layer)
+            snapper.featureSnapped.connect(self.featureSnapped)
+            snapped_features = snapper.snapFeatures(features, tolerance, mode)
+            for f in snapped_features:
+                writer.addFeature(QgsFeature(f))
+        else:
+            # snapping internally
+            snapper = QgsInternalGeometrySnapper(tolerance, mode)
+            processed = 0
+            for f in features:
+                out_feature = f
+                out_feature.setGeometry(snapper.snapFeature(f))
+                writer.addFeature(out_feature)
+                processed += 1
+                feedback.setProgress(processed * self.total)
 
         del writer
 
