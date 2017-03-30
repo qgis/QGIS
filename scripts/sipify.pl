@@ -174,7 +174,8 @@ while(!eof $header){
     # class declaration started
     if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?(\s+\w+)(\s*\:.*)?$/ ){
         do {no warnings 'uninitialized';
-            $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class $headerfile shoud be exported with appropriate [LIB]_EXPORT macro.";
+            my $classname = $3;
+            $line =~ m/\b[A-Z]+_EXPORT\b/ or die "Class$classname in $headerfile shoud be exported with appropriate [LIB]_EXPORT macro. If this should not be available in python, wrap it in a `#ifndef SIP_RUN` block.";
         };
         $line = "$1$3";
         # Inheritance
