@@ -1357,7 +1357,9 @@ EXPAND_AS_DEFINED      = "SIP_TRANSFER" \
                          "SIP_FACTORY" \
                          "SIP_KEEPREFERENCE" \
                          "SIP_PYNAME" \
-                         "SIP_SKIP" 
+                         "SIP_SKIP" \
+                         "SIP_PYDEFAULTVALUE" \
+                         "SIP_PYTYPE"
 
 # If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then
 # doxygen's preprocessor will remove all function-like macros that are alone

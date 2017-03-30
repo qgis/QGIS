@@ -98,6 +98,50 @@ else
   rm $ASTYLEDIFF
 fi
 
+
+
+# verify SIP files
+SIPIFYDIFF=sipify.$REV.diff
+>$SIPIFYDIFF
+for f in $MODIFIED; do
+  # if cpp header
+  if [[ $f =~ ^src\/(core|gui|analysis)\/.*\.h$ ]]; then
+    # look if corresponding SIP file
+    #echo $f
+    sip_include=$(sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
+    sip_file=$(sed -r 's/^src\/(core|gui|analysis)\///; s/\.h$/.sip/' <<<$f )
+    if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
+      #echo "in SIP"
+      sip_file=$(sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
+      # check it is not blacklisted (i.e. manualy SIP)
+      if ! grep -Fxq "$sip_file" python/auto_sip.blacklist; then
+        #echo "automatic file"
+        m=python/$sip_file.$REV.prepare
+        cp python/$sip_file $m
+        ${TOPLEVEL}/scripts/sipify.pl $f > $m
+        if diff -u $m python/$sip_file >>$SIPIFYDIFF; then
+          # no difference found
+          rm $m
+        else
+          echo "python/$sip_file is not up to date"
+        fi
+      fi
+    fi
+  fi
+done
+if [[ -s "$SIPIFYDIFF" ]]; then
+  if tty -s; then
+    # review astyle changes
+    colordiff <$SIPIFYDIFF | less -r
+  else
+    echo "Files changed (see $ASTYLEDIFF)"
+  fi
+  exit 1
+else
+  rm $SIPIFYDIFF
+fi
+
+
 exit 0
 
 # vim: set ts=8 noexpandtab :
