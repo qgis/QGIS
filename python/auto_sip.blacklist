@@ -3,12 +3,8 @@ core/qgsexception.sip
 core/qgis.sip
 core/qgsapplication.sip
 core/qgsaction.sip
-core/qgssettings.sip
 core/qgsactionmanager.sip
-core/qgsactionscope.sip
-core/qgsactionscoperegistry.sip
 core/qgsaggregatecalculator.sip
-core/qgsanimatedicon.sip
 core/qgsattributetableconfig.sip
 core/qgsattributeeditorelement.sip
 core/qgsbearingutils.sip

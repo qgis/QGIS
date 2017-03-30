@@ -45,10 +45,6 @@ class QgsAnnotationRegistry;
  * as theme paths, database paths etc.
  */
 
-#ifdef ANDROID
-typedef void XEvent;
-#endif
-
 class CORE_EXPORT QgsApplication : public QApplication
 {
     Q_OBJECT
@@ -470,15 +466,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note not available in Python bindings
      */
     static QgsAnnotationRegistry *annotationRegistry();
-
-#ifdef ANDROID
-    //dummy method to workaround sip generation issue issue
-    bool x11EventFilter( XEvent *event )
-    {
-      Q_UNUSED( event );
-      return 0;
-    }
-#endif
 
     /**
      * Returns the action scope registry.

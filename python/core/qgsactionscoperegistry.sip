@@ -1,84 +1,80 @@
-/***************************************************************************
-  qgsactionscoperegistry.h - QgsActionScopeRegistry
+/******************************************************************
+ * This file has been generated automatically by sipify.pl        *
+ * Do not edit manually ! Edit header file and generate it again. *
+ *****************************************************************/
 
- ---------------------
- begin                : 1.11.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/** \ingroup core
- * The action scope registry is an application wide registry that
- * contains a list of available action scopes.
- * Some scopes are available by default, additional ones can be registered
- * at runtime by plugins or custom applications.
- *
- * To get access use the QgsApplication:
- *
- * ```
- * QgsApplication::actionScopeRegistry()
- * ```
- *
- * @note Added in QGIS 3.0
- */
 class QgsActionScopeRegistry : QObject
 {
+%Docstring
+ \ingroup core
+ The action scope registry is an application wide registry that
+ contains a list of available action scopes.
+ Some scopes are available by default, additional ones can be registered
+ at runtime by plugins or custom applications.
+
+ To get access use the QgsApplication:
+
+ ```
+ QgsApplication::actionScopeRegistry()
+ ```
+
+ @note Added in QGIS 3.0
+%End
+
 %TypeHeaderCode
 #include "qgsactionscoperegistry.h"
 %End
 
   public:
-    /**
-     * Create a new QgsActionScopeRegistry.
-     * QGIS already creates a central registry. You will normally
-     * want to use QgsApplication::actionScopeRegistry() to get access
-     * to that one instead.
-     *
-     * @note Added in QGIS 3.0
-     */
-    explicit QgsActionScopeRegistry( QObject* parent = nullptr );
 
-    /**
-     * Get all registered action scopes.
-     *
-     * @note Added in QGIS 3.0
-     */
+    explicit QgsActionScopeRegistry( QObject *parent = 0 );
+%Docstring
+ Create a new QgsActionScopeRegistry.
+ QGIS already creates a central registry. You will normally
+ want to use QgsApplication::actionScopeRegistry() to get access
+ to that one instead.
+
+ @note Added in QGIS 3.0
+%End
+
     QSet<QgsActionScope> actionScopes() const;
+%Docstring
+ Get all registered action scopes.
 
-    /**
-     * Register an additional action scope.
-     *
-     * @note Added in QGIS 3.0
-     */
-    void registerActionScope( const QgsActionScope& actionScope );
+ @note Added in QGIS 3.0
+%End
 
-    /**
-     * Unregister an additional action scope.
-     *
-     * @note Added in QGIS 3.0
-     */
-    void unregisterActionScope( const QgsActionScope& actionScope );
+    void registerActionScope( const QgsActionScope &actionScope );
+%Docstring
+ Register an additional action scope.
 
-    /**
-     * Get an action scope by its id.
-     *
-     * @note Added in QGIS 3.0
-     */
-    QgsActionScope actionScope( const QString& id );
+ @note Added in QGIS 3.0
+%End
+
+    void unregisterActionScope( const QgsActionScope &actionScope );
+%Docstring
+ Unregister an additional action scope.
+
+ @note Added in QGIS 3.0
+%End
+
+    QgsActionScope actionScope( const QString &id );
+%Docstring
+ Get an action scope by its id.
+
+ @note Added in QGIS 3.0
+%End
 
   signals:
-    /**
-     * Emitted whenever a new action scope is registered or an action scope
-     * is unregistered.
-     *
-     * @note Added in QGIS 3.0
-     */
+
     void actionScopesChanged();
+%Docstring
+ Emitted whenever a new action scope is registered or an action scope
+ is unregistered.
+
+ @note Added in QGIS 3.0
+%End
+
 };
+
