@@ -447,3 +447,8 @@ typedef unsigned long long qgssize;
   * specify an alternative default value for SIP methods
   */
 #define SIP_PYDEFAULTVALUE(value)
+
+/**
+ * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
+ */
+#define SIP_RELEASEGIL

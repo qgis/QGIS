@@ -289,6 +289,7 @@ while(!eof $header){
     $line =~ s/\bSIP_KEEPREFERENCE\b/\/KeepReference\//;
     $line =~ s/\bSIP_TRANSFERTHIS\b/\/TransferThis\//;
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
+    $line =~ s/\bSIP_RELEASEGIL\b/\/ReleaseGIL\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;

@@ -19,6 +19,7 @@
 
 #include <QSettings>
 #include "qgis_core.h"
+#include "qgis.h"
 
 /** \ingroup core
  * \class QgsSettings
@@ -160,18 +161,38 @@ class CORE_EXPORT QgsSettings : public QObject
     void setArrayIndex( int i );
     //! Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
     //! An optional Section argument can be used to set a value to a specific Section.
-    void setValue( const QString &key, const QVariant &value, const Section section = Section::NoSection );
+    void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
 
     /** Returns the value for setting key. If the setting doesn't exist, it will be
      * searched in the Global Settings and if not found, returns defaultValue.
      * If no default value is specified, a default QVariant is returned.
      * An optional Section argument can be used to get a value from a specific Section.
      */
+#ifndef SIP_RUN
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                    const Section section = Section::NoSection ) const;
+                    const Section section = NoSection ) const;
+#else
+    SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
+                        SIP_PYOBJECT type = 0,
+                        QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
+    % MethodCode
+    typedef PyObject *( *pyqt5_from_qvariant_by_type )( QVariant &value, PyObject *type );
+    QVariant value;
+
+    // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
+    Py_BEGIN_ALLOW_THREADS
+    value = sipCpp->value( *a0, *a1, a3 );
+    Py_END_ALLOW_THREADS
+
+    pyqt5_from_qvariant_by_type f = ( pyqt5_from_qvariant_by_type ) sipImportSymbol( "pyqt5_from_qvariant_by_type" );
+    sipRes = f( value, a2 );
+
+    sipIsErr = !sipRes;
+    % End
+#endif
     //! Returns true if there exists a setting called key; returns false otherwise.
     //! If a group is set using beginGroup(), key is taken to be relative to that group.
-    bool contains( const QString &key, const Section section = Section::NoSection ) const;
+    bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
     QString fileName() const;
     //! Writes any unsaved changes to permanent storage, and reloads any settings that have been
@@ -182,7 +203,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Removes the setting key and any sub-settings of key.
     void remove( const QString &key );
     //! Return the sanitized and prefixed key
-    QString prefixedKey( const QString &key, const Section section ) const;
+    QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
     void clear();
 

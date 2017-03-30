@@ -125,6 +125,6 @@ class CORE_EXPORT QgsActionScope
     QgsExpressionContextScope mExpressionContextScope;
 };
 
-CORE_EXPORT uint qHash( const QgsActionScope &key, uint seed = 0 );
+CORE_EXPORT uint qHash( const QgsActionScope &key, uint seed = 0 ); // SIP_SKIP
 
 #endif // QGSACTIONSCOPE_H
