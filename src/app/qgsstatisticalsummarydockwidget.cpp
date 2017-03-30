@@ -86,11 +86,11 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mLayerComboBox->setLayer( mLayerComboBox->layer( 0 ) );
   mFieldExpressionWidget->setLayer( mLayerComboBox->layer( 0 ) );
 
-  connect( mLayerComboBox, SIGNAL( layerChanged( QgsMapLayer * ) ), this, SLOT( layerChanged( QgsMapLayer * ) ) );
-  connect( mFieldExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( refreshStatistics() ) );
-  connect( mSelectedOnlyCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshStatistics() ) );
-  connect( mButtonRefresh, SIGNAL( clicked( bool ) ), this, SLOT( refreshStatistics() ) );
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
+  connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsStatisticalSummaryDockWidget::layerChanged );
+  connect( mFieldExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
+  connect( mSelectedOnlyCheckBox, &QAbstractButton::toggled, this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
+  connect( mButtonRefresh, &QAbstractButton::clicked, this, &QgsStatisticalSummaryDockWidget::refreshStatistics );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsStatisticalSummaryDockWidget::layersRemoved );
 
   QgsSettings settings;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
@@ -101,7 +101,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
     action->setChecked( checked );
     action->setData( stat );
     mStatsActions.insert( stat, action );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( statActionTriggered( bool ) ) );
+    connect( action, &QAction::triggered, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
     mOptionsToolButton->addAction( action );
   }
 
@@ -112,7 +112,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   nullCountAction->setChecked( checked );
   nullCountAction->setData( MISSING_VALUES );
   mStatsActions.insert( MISSING_VALUES, nullCountAction );
-  connect( nullCountAction, SIGNAL( triggered( bool ) ), this, SLOT( statActionTriggered( bool ) ) );
+  connect( nullCountAction, &QAction::triggered, this, &QgsStatisticalSummaryDockWidget::statActionTriggered );
   mOptionsToolButton->addAction( nullCountAction );
 }
 

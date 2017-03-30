@@ -254,7 +254,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
       mComboBox->addItem( element.value, element.key );
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onValueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
   else if ( mListWidget )
   {
@@ -266,7 +266,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( onValueChanged() ) );
+    connect( mListWidget, &QListWidget::itemChanged, this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
   else if ( mLineEdit )
   {
@@ -281,7 +281,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
     QCompleter *completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( onValueChanged() ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
 }
 

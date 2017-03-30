@@ -35,7 +35,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   mClearButton->setCursor( Qt::ArrowCursor );
   mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
   mClearButton->hide();
-  connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( mClearButton, &QAbstractButton::clicked, this, &QgsDateTimeEdit::clear );
 
   mNullLabel = new QLineEdit( QgsApplication::nullRepresentation(), this );
   mNullLabel->setReadOnly( true );
@@ -48,7 +48,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
                   qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
 
-  connect( this, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( changed( QDateTime ) ) );
+  connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );

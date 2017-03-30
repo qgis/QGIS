@@ -68,11 +68,11 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mVersionInfo = new QgsVersionInfo();
   if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
   {
-    connect( mVersionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
+    connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomePage::versionInfoReceived );
     mVersionInfo->checkVersion();
   }
 
-  connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
+  connect( recentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::itemActivated );
 }
 
 QgsWelcomePage::~QgsWelcomePage()

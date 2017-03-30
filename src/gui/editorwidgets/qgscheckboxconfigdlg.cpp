@@ -20,8 +20,8 @@ QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 {
   setupUi( this );
 
-  connect( leCheckedState, SIGNAL( textEdited( QString ) ), this, SIGNAL( changed() ) );
-  connect( leUncheckedState, SIGNAL( textEdited( QString ) ), this, SIGNAL( changed() ) );
+  connect( leCheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
+  connect( leUncheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
 }
 
 QVariantMap QgsCheckBoxConfigDlg::config()

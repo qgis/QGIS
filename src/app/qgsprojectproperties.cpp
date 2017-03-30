@@ -108,17 +108,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   projectionSelector->setShowNoProjection( true );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
+  connect( this, &QDialog::accepted, this, &QgsProjectProperties::apply );
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, &QgsProjectProperties::srIdUpdated );
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::initialized, this, &QgsProjectProperties::projectionSelectorInitialized );
 
-  connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
+  connect( cmbEllipsoid, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectProperties::updateEllipsoidUI );
 
-  connect( radAutomatic, SIGNAL( toggled( bool ) ), spinBoxDP, SLOT( setDisabled( bool ) ) );
-  connect( radAutomatic, SIGNAL( toggled( bool ) ), labelDP, SLOT( setDisabled( bool ) ) );
-  connect( radManual, SIGNAL( toggled( bool ) ), spinBoxDP, SLOT( setEnabled( bool ) ) );
-  connect( radManual, SIGNAL( toggled( bool ) ), labelDP, SLOT( setEnabled( bool ) ) );
+  connect( radAutomatic, &QAbstractButton::toggled, spinBoxDP, &QWidget::setDisabled );
+  connect( radAutomatic, &QAbstractButton::toggled, labelDP, &QWidget::setDisabled );
+  connect( radManual, &QAbstractButton::toggled, spinBoxDP, &QWidget::setEnabled );
+  connect( radManual, &QAbstractButton::toggled, labelDP, &QWidget::setEnabled );
 
   QgsSettings settings;
 
@@ -233,7 +233,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       addScaleToScaleList( scale );
     }
   }
-  connect( lstScales, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( scaleItemChanged( QListWidgetItem * ) ) );
+  connect( lstScales, &QListWidget::itemChanged, this, &QgsProjectProperties::scaleItemChanged );
 
   grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
 
@@ -657,11 +657,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   populateStyles();
 
   // Color palette
-  connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeProjectColors, SLOT( copyColors() ) );
-  connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeProjectColors, SLOT( removeSelection() ) );
-  connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeProjectColors, SLOT( pasteColors() ) );
-  connect( mButtonImportColors, SIGNAL( clicked( bool ) ), mTreeProjectColors, SLOT( showImportColorsDialog() ) );
-  connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeProjectColors, SLOT( showExportColorsDialog() ) );
+  connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::copyColors );
+  connect( mButtonRemoveColor, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::removeSelection );
+  connect( mButtonPasteColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::pasteColors );
+  connect( mButtonImportColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::showImportColorsDialog );
+  connect( mButtonExportColors, &QAbstractButton::clicked, mTreeProjectColors, &QgsColorSchemeList::showExportColorsDialog );
 
   QList<QgsProjectColorScheme *> projectSchemes;
   QgsApplication::colorSchemeRegistry()->schemes( projectSchemes );

@@ -68,7 +68,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mEnabledAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) ) );
   mEnabledAction->setToolTip( tr( "Enable Snapping" ) );
   mEnabledAction->setObjectName( QStringLiteral( "EnableSnappingAction" ) );
-  connect( mEnabledAction, SIGNAL( toggled( bool ) ), this, SLOT( enableSnapping( bool ) ) );
+  connect( mEnabledAction, &QAction::toggled, this, &QgsSnappingWidget::enableSnapping );
 
   // mode button
   mModeButton = new QToolButton();
@@ -87,7 +87,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   {
     mModeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   }
-  connect( mModeButton, SIGNAL( triggered( QAction * ) ), this, SLOT( modeButtonTriggered( QAction * ) ) );
+  connect( mModeButton, &QToolButton::triggered, this, &QgsSnappingWidget::modeButtonTriggered );
 
   // type button
   mTypeButton = new QToolButton();
@@ -106,13 +106,13 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   {
     mTypeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   }
-  connect( mTypeButton, SIGNAL( triggered( QAction * ) ), this, SLOT( typeButtonTriggered( QAction * ) ) );
+  connect( mTypeButton, &QToolButton::triggered, this, &QgsSnappingWidget::typeButtonTriggered );
 
   // tolerance
   mToleranceSpinBox = new QDoubleSpinBox();
   mToleranceSpinBox->setToolTip( tr( "Snapping Tolerance in Defined Units" ) );
   mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
-  connect( mToleranceSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( changeTolerance( double ) ) );
+  connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
 
   // units
   mUnitsComboBox = new QComboBox();
@@ -120,7 +120,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mUnitsComboBox->addItem( QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() ), QgsTolerance::ProjectUnits );
   mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Map Units (mu)" ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
-  connect( mUnitsComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( changeUnit( int ) ) );
+  connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSnappingWidget::changeUnit );
 
   // topological editing button
   mTopologicalEditingAction = new QAction( tr( "topological editing" ), this );
@@ -128,7 +128,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mTopologicalEditingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconTopologicalEditing.svg" ) ) );
   mTopologicalEditingAction->setToolTip( tr( "Enable Topological Editing" ) );
   mTopologicalEditingAction->setObjectName( QStringLiteral( "TopologicalEditingAction" ) );
-  connect( mTopologicalEditingAction, SIGNAL( toggled( bool ) ), this, SLOT( enableTopologicalEditing( bool ) ) );
+  connect( mTopologicalEditingAction, &QAction::toggled, this, &QgsSnappingWidget::enableTopologicalEditing );
 
   // snapping on intersection button
   mIntersectionSnappingAction = new QAction( tr( "snapping on intersection" ), this );
@@ -136,7 +136,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mIntersectionSnappingAction->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingIntersection.svg" ) ) );
   mIntersectionSnappingAction->setToolTip( tr( "Enable Snapping on Intersection" ) );
   mIntersectionSnappingAction->setObjectName( QStringLiteral( "IntersectionSnappingAction" ) );
-  connect( mIntersectionSnappingAction, SIGNAL( toggled( bool ) ), this, SLOT( enableIntersectionSnapping( bool ) ) );
+  connect( mIntersectionSnappingAction, &QAction::toggled, this, &QgsSnappingWidget::enableIntersectionSnapping );
 
 
   // snapping on intersection button

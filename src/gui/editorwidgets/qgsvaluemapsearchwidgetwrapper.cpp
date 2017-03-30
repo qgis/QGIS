@@ -151,7 +151,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
         mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboBoxIndexChanged( int ) ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged );
   }
 }
 

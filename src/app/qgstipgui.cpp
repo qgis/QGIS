@@ -50,11 +50,11 @@ void QgsTipGui::init()
 
   QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "&Previous" ) );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( prevClicked() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsTipGui::prevClicked );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
 
   pb = new QPushButton( tr( "&Next" ) );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( nextClicked() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsTipGui::nextClicked );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
 }
 

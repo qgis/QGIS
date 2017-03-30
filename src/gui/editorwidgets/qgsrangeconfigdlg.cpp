@@ -62,17 +62,17 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
 
   valuesLabel->setText( text );
 
-  connect( rangeWidget, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rangeWidgetChanged( int ) ) );
+  connect( rangeWidget, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRangeConfigDlg::rangeWidgetChanged );
 
-  connect( minimumSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( maximumSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( stepSpinBox, SIGNAL( valueChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( minimumDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( changed() ) );
-  connect( maximumDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( changed() ) );
-  connect( stepDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SIGNAL( changed() ) );
-  connect( rangeWidget, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( allowNullCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( suffixLineEdit, SIGNAL( textChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( minimumSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( maximumSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( stepSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( minimumDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( maximumDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( stepDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( rangeWidget, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( allowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( suffixLineEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
 }
 
 QVariantMap QgsRangeConfigDlg::config()

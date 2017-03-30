@@ -30,7 +30,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
 
   mExpressionWidget->registerExpressionContextGenerator( vl );
 
-  connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SLOT( relationChanged( int ) ) );
+  connect( mComboRelation, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceConfigDlg::relationChanged );
 
   Q_FOREACH ( const QgsRelation &relation, vl->referencingRelations( fieldIdx ) )
   {
@@ -41,17 +41,17 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
     }
   }
 
-  connect( mCbxAllowNull, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mCbxOrderByValue, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mCbxShowForm, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mCbxMapIdentification, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mCbxReadOnly, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mComboRelation, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mCbxAllowAddFeatures, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFilterGroupBox, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFilterFieldsList, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SIGNAL( changed() ) );
-  connect( mCbxChainFilters, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SIGNAL( changed() ) );
+  connect( mCbxAllowNull, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mCbxOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mCbxShowForm, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mCbxMapIdentification, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mCbxReadOnly, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mComboRelation, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mCbxAllowAddFeatures, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFilterGroupBox, &QGroupBox::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFilterFieldsList, &QListWidget::itemChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mCbxChainFilters, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsEditorConfigWidget::changed );
 }
 
 void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )

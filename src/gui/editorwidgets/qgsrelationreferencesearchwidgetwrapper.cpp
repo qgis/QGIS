@@ -194,7 +194,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();
-  connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this, SLOT( onValueChanged( QVariant ) ) );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValueChanged );
 }
 
 

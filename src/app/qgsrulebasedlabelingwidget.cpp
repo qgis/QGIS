@@ -73,14 +73,14 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
 
-  connect( viewRules, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editRule( const QModelIndex & ) ) );
+  connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsRuleBasedLabelingWidget::* )( const QModelIndex & )>( &QgsRuleBasedLabelingWidget::editRule ) );
 
-  connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
-  connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
-  connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
-  connect( mCopyAction, SIGNAL( triggered( bool ) ), this, SLOT( copy() ) );
-  connect( mPasteAction, SIGNAL( triggered( bool ) ), this, SLOT( paste() ) );
-  connect( mDeleteAction, SIGNAL( triggered( bool ) ), this, SLOT( removeRule() ) );
+  connect( btnAddRule, &QAbstractButton::clicked, this, &QgsRuleBasedLabelingWidget::addRule );
+  connect( btnEditRule, &QAbstractButton::clicked, this, static_cast<void ( QgsRuleBasedLabelingWidget::* )()>( &QgsRuleBasedLabelingWidget::editRule ) );
+  connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsRuleBasedLabelingWidget::removeRule );
+  connect( mCopyAction, &QAction::triggered, this, &QgsRuleBasedLabelingWidget::copy );
+  connect( mPasteAction, &QAction::triggered, this, &QgsRuleBasedLabelingWidget::paste );
+  connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBasedLabelingWidget::removeRule );
 
   if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
@@ -95,9 +95,9 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   mModel = new QgsRuleBasedLabelingModel( mRootRule );
   viewRules->setModel( mModel );
 
-  connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBasedLabelingWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBasedLabelingWidget::widgetChanged );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBasedLabelingWidget::widgetChanged );
 }
 
 QgsRuleBasedLabelingWidget::~QgsRuleBasedLabelingWidget()
@@ -168,7 +168,7 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
   QgsLabelingRulePropsWidget *widget = new QgsLabelingRulePropsWidget( rule, mLayer, this, mCanvas );
   widget->setPanelTitle( tr( "Edit rule" ) );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted );
-  connect( widget, SIGNAL( widgetChanged() ), this, SLOT( liveUpdateRuleFromPanel() ) );
+  connect( widget, &QgsLabelingRulePropsWidget::widgetChanged, this, &QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel );
   openPanel( widget );
 }
 
@@ -635,14 +635,14 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   mLabelingGui->setLabelMode( QgsLabelingGui::Labels );
   mLabelingGui->setLayer( mLayer );
 
-  connect( btnExpressionBuilder, SIGNAL( clicked() ), this, SLOT( buildExpression() ) );
-  connect( btnTestFilter, SIGNAL( clicked() ), this, SLOT( testFilter() ) );
-  connect( editFilter, SIGNAL( textEdited( QString ) ), this, SIGNAL( widgetChanged() ) );
-  connect( editDescription, SIGNAL( textChanged( QString ) ), this, SIGNAL( widgetChanged() ) );
-  connect( groupScale, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mScaleRangeWidget, SIGNAL( rangeChanged( double, double ) ), this, SIGNAL( widgetChanged() ) );
-  connect( groupSettings, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mLabelingGui, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( btnExpressionBuilder, &QAbstractButton::clicked, this, &QgsLabelingRulePropsWidget::buildExpression );
+  connect( btnTestFilter, &QAbstractButton::clicked, this, &QgsLabelingRulePropsWidget::testFilter );
+  connect( editFilter, &QLineEdit::textEdited, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( editDescription, &QLineEdit::textChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( groupScale, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( groupSettings, &QGroupBox::toggled, this, &QgsLabelingRulePropsWidget::widgetChanged );
+  connect( mLabelingGui, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingRulePropsWidget::widgetChanged );
 }
 
 QgsLabelingRulePropsWidget::~QgsLabelingRulePropsWidget()

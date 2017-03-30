@@ -84,7 +84,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
-  connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeyChanged );
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value() const

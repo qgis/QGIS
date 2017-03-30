@@ -41,8 +41,8 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
                   qMax( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
-  connect( mLineEdit, SIGNAL( cleared() ), this, SLOT( clear() ) );
-  connect( this, SIGNAL( valueChanged( double ) ), this, SLOT( changed( double ) ) );
+  connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsDoubleSpinBox::clear );
+  connect( this, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )

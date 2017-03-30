@@ -113,7 +113,8 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
       mComboBox->addItem( element.value, element.key );
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mListWidget )
   {
@@ -125,7 +126,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( valueChanged() ) );
+    connect( mListWidget, &QListWidget::itemChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mLineEdit )
   {

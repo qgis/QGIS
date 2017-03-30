@@ -70,7 +70,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
                        QIcon::Normal, QIcon::On );
   keyIcon.addPixmap( style()->standardPixmap( QStyle::SP_FileIcon ) );
 
-  connect( &refreshTimer, SIGNAL( timeout() ), this, SLOT( maybeRefresh() ) );
+  connect( &refreshTimer, &QTimer::timeout, this, &QgsSettingsTree::maybeRefresh );
 }
 
 void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
@@ -125,8 +125,8 @@ void QgsSettingsTree::refresh()
   if ( !settings )
     return;
 
-  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
-              this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
+  disconnect( this, &QTreeWidget::itemChanged,
+              this, &QgsSettingsTree::updateSetting );
 
   settings->sync();
 
@@ -143,8 +143,8 @@ void QgsSettingsTree::refresh()
 
   updateChildItems( nullptr );
 
-  connect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
-           this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
+  connect( this, &QTreeWidget::itemChanged,
+           this, &QgsSettingsTree::updateSetting );
 }
 
 bool QgsSettingsTree::event( QEvent *event )

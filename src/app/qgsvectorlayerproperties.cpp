@@ -104,16 +104,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   m->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
   b->setMenu( m );
-  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );
+  connect( m, &QMenu::aboutToShow, this, &QgsVectorLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( b, QDialogButtonBox::ResetRole );
 
-  connect( lyr->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( syncToLayer() ) );
+  connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsVectorLayerProperties::syncToLayer );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( rejected() ), this, SLOT( onCancel() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorLayerProperties::apply );
+  connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
+  connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
 
-  connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
+  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged );
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
@@ -126,7 +126,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDisplayExpressionWidget->setLayer( lyr );
   mDisplayExpressionWidget->registerExpressionContextGenerator( this );
 
-  connect( mInsertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertFieldOrExpression() ) );
+  connect( mInsertExpressionButton, &QAbstractButton::clicked, this, &QgsVectorLayerProperties::insertFieldOrExpression );
 
   if ( !mLayer )
     return;
@@ -171,8 +171,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
-    QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction * ) ),
-                      this, SLOT( loadStyleMenuTriggered( QAction * ) ) );
+    connect( mLoadStyleMenu, &QMenu::triggered,
+             this, &QgsVectorLayerProperties::loadStyleMenuTriggered );
 
     //for saving
     QString providerName = mLayer->providerType();
@@ -185,8 +185,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
   }
 
-  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
-                    this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
+  connect( mSaveAsMenu, &QMenu::triggered,
+           this, &QgsVectorLayerProperties::saveStyleAsMenuTriggered );
 
   mFieldsPropertiesDialog = new QgsFieldsProperties( mLayer, mFieldsFrame );
   mFieldsPropertiesDialog->layout()->setMargin( 0 );
@@ -194,8 +194,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mFieldsFrame->layout()->setMargin( 0 );
   mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
 
-  connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
-  connect( this, SIGNAL( toggleEditing( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
+  connect( mFieldsPropertiesDialog, &QgsFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
+  connect( this, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
+  QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
 
   syncToLayer();
 
@@ -1231,7 +1232,7 @@ void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
   dlg->setLayout( new QVBoxLayout() );
   dlg->layout()->addWidget( panel );
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
-  connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
   dlg->layout()->addWidget( buttonBox );
   dlg->exec();
   settings.setValue( key, dlg->saveGeometry() );
@@ -1266,12 +1267,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog->setDockMode( false );
     mRendererDialog->setMapCanvas( QgisApp::instance()->mapCanvas() );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
-    connect( mRendererDialog, SIGNAL( layerVariablesChanged() ), this, SLOT( updateVariableEditor() ) );
+    connect( mRendererDialog, &QgsRendererPropertiesDialog::layerVariablesChanged, this, &QgsVectorLayerProperties::updateVariableEditor );
 
     // display the menu to choose the output format (fix #5136)
     mActionSaveStyleAs->setText( tr( "Save Style" ) );
     mActionSaveStyleAs->setMenu( mSaveAsMenu );
-    disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( saveStyleAs_clicked() ) );
+    disconnect( mActionSaveStyleAs, &QAction::triggered, this, &QgsVectorLayerProperties::saveStyleAs_clicked );
   }
   else
   {

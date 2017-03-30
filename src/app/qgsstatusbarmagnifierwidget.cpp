@@ -53,7 +53,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   mSpinBox->setClearValueMode( QgsDoubleSpinBox::CustomValue );
   mSpinBox->setClearValue( defaultFactor );
 
-  connect( mSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( setMagnification( double ) ) );
+  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsStatusBarMagnifierWidget::setMagnification );
 
   // layout
   mLayout = new QHBoxLayout( this );

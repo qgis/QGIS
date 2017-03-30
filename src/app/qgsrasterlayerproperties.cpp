@@ -100,43 +100,43 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   m->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
   b->setMenu( m );
-  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );
+  connect( m, &QMenu::aboutToShow, this, &QgsRasterLayerProperties::aboutToShowStyleMenu );
   buttonBox->addButton( b, QDialogButtonBox::ResetRole );
 
-  connect( lyr->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( syncToLayer() ) );
+  connect( lyr->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsRasterLayerProperties::syncToLayer );
 
-  connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( this, SIGNAL( rejected() ), this, SLOT( onCancel() ) );
+  connect( this, &QDialog::accepted, this, &QgsRasterLayerProperties::apply );
+  connect( this, &QDialog::rejected, this, &QgsRasterLayerProperties::onCancel );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsRasterLayerProperties::apply );
 
-  connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
+  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged );
 
-  connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsRasterLayerProperties::sliderTransparency_valueChanged );
 
   // brightness/contrast controls
-  connect( mSliderBrightness, SIGNAL( valueChanged( int ) ), mBrightnessSpinBox, SLOT( setValue( int ) ) );
-  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), mSliderBrightness, SLOT( setValue( int ) ) );
+  connect( mSliderBrightness, &QAbstractSlider::valueChanged, mBrightnessSpinBox, &QSpinBox::setValue );
+  connect( mBrightnessSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderBrightness, &QAbstractSlider::setValue );
 
-  connect( mSliderContrast, SIGNAL( valueChanged( int ) ), mContrastSpinBox, SLOT( setValue( int ) ) );
-  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), mSliderContrast, SLOT( setValue( int ) ) );
+  connect( mSliderContrast, &QAbstractSlider::valueChanged, mContrastSpinBox, &QSpinBox::setValue );
+  connect( mContrastSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderContrast, &QAbstractSlider::setValue );
 
   // Connect saturation slider and spin box
-  connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
-  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
+  connect( sliderSaturation, &QAbstractSlider::valueChanged, spinBoxSaturation, &QSpinBox::setValue );
+  connect( spinBoxSaturation, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), sliderSaturation, &QAbstractSlider::setValue );
 
   // Connect colorize strength slider and spin box
-  connect( sliderColorizeStrength, SIGNAL( valueChanged( int ) ), spinColorizeStrength, SLOT( setValue( int ) ) );
-  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), sliderColorizeStrength, SLOT( setValue( int ) ) );
+  connect( sliderColorizeStrength, &QAbstractSlider::valueChanged, spinColorizeStrength, &QSpinBox::setValue );
+  connect( spinColorizeStrength, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), sliderColorizeStrength, &QAbstractSlider::setValue );
 
   // enable or disable saturation slider and spin box depending on grayscale combo choice
-  connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
+  connect( comboGrayscale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerProperties::toggleSaturationControls );
 
   // enable or disable colorize colorbutton with colorize checkbox
-  connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
+  connect( mColorizeCheck, &QAbstractButton::toggled, this, &QgsRasterLayerProperties::toggleColorizeControls );
 
   // enable or disable Build Pyramids button depending on selection in pyramid list
-  connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
+  connect( lbxPyramidResolutions, &QListWidget::itemSelectionChanged, this, &QgsRasterLayerProperties::toggleBuildPyramidsButton );
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
@@ -162,7 +162,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   if ( mMapCanvas )
   {
     mPixelSelectorTool = new QgsMapToolEmitPoint( canvas );
-    connect( mPixelSelectorTool, SIGNAL( canvasClicked( const QgsPoint &, Qt::MouseButton ) ), this, SLOT( pixelSelected( const QgsPoint & ) ) );
+    connect( mPixelSelectorTool, &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterLayerProperties::pixelSelected );
   }
   else
   {
@@ -1028,7 +1028,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
-  connect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  connect( provider, &QgsRasterDataProvider::progressUpdate, mPyramidProgress, &QProgressBar::setValue );
   //
   // Go through the list marking any files that are selected in the listview
   // as true so that we can generate pyramids for them.
@@ -1060,7 +1060,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
-  disconnect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  disconnect( provider, &QgsRasterDataProvider::progressUpdate, mPyramidProgress, &QProgressBar::setValue );
   if ( !res.isNull() )
   {
     if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
@@ -1260,7 +1260,7 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
 
   if ( nBands == 1 && ( column == 0 || column == 1 ) )
   {
-    connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( transparencyCellTextEdited( const QString & ) ) );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerProperties::transparencyCellTextEdited );
   }
   tableTransparency->resizeColumnsToContents();
 }
