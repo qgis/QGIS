@@ -117,6 +117,7 @@ for f in $MODIFIED; do
       if ! grep -Fxq "$sip_file" python/auto_sip.blacklist; then
         #echo "automatic file"
         m=python/$sip_file.$REV.prepare
+        touch python/$sip_file
         cp python/$sip_file $m
         ${TOPLEVEL}/scripts/sipify.pl $f > $m
         if diff -u $m python/$sip_file >>$SIPIFYDIFF; then

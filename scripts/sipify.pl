@@ -172,7 +172,10 @@ while(!eof $header){
     }
 
     # class declaration started
-    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)(\s+\w+)(\s*\:.*)?$/ ){
+    if ( $line =~ m/^(\s*class)\s*([A-Z]+_EXPORT)?(\s+\w+)(\s*\:.*)?$/ ){
+        do {no warnings 'uninitialized';
+            $line =~ m/\bCORE_EXPORT\b/ or die 'Class shoud be exported with appropriate [LIB]_EXPORT macro.';
+        };
         $line = "$1$3";
         # Inheritance
         if ($4){

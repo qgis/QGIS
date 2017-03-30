@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
 
+DIR=$(git rev-parse --show-toplevel)
+
 # ARGUMENTS
-FORCE=NO
 SIPIFY=NO
-while getopts ":fs" opt; do
+while getopts ":s" opt; do
   case $opt in
     s)
       # sipify header
       SIPIFY=YES
-      ;;
-    f)
-      # force if sip is automatically generated
-      FORCE=YES
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -31,24 +28,35 @@ for file in $*; do
   header="src/$d/$f.h"
 
   if ! grep -Fxq "$d/$f.sip" python/auto_sip.blacklist; then
-    echo -e "\033[0;31m$d/$f.sip is automatically generated using sipify.pl script\033[0m"
-    echo "use following command to generate the SIP file:"
-    echo -e "   \033[0;32m./sripts/sipify.pl $header > $d/$f.sip\033[0m"
-    if [[ $FORCE =~ NO ]]; then
-      echo "use -f argument to force showing the diff"
-    fi
-    if [[ $(wc -w <<< "$input") -eq "1" ]]; then
-      read -n 1 -s -p "Press any key to continue"
+    echo -e "\033[0;31m$d/$f.sip is an automatically generated SIP file\033[0m"
+    echo -e "  g) \x1B[4mg\x1B[0menerate the SIP file \033[0;32m./sripts/sipify.pl $header > $d/$f.sip\033[0m"
+    echo -e "  s) \x1B[4ms\x1B[0mhow the diff"
+    SHOW=NO
+    while read -n 1 n; do
       echo ""
-    fi
-    if [[ $FORCE =~ NO ]]; then
+      case $n in
+        g)
+          echo "Genreating the SIP file ..."
+          ${DIR}/scripts/sipify.pl ${DIR}/$header > ${DIR}/python/$d/$f.sip
+          break
+          ;;
+        s)
+          SHOW=YES
+          break
+          ;;
+        *)
+         invalid option
+         ;;
+      esac
+    done
+    if [[ $SHOW =~ NO ]]; then
       continue
     fi
   fi
 
   if [[ $SIPIFY =~ YES ]]; then
-    tempfile=$(${GP}mktemp ${f}XXXX --suffix=.h)
-    ./scripts/sipify.pl $header > $tempfile
+    tempfile=$(mktemp ${DIR}/${f}XXXX --suffix=.h)
+    ${DIR}/scripts/sipify.pl ${DIR}/$header > $tempfile
   else
     tempfile=$header
   fi
