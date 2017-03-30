@@ -12,6 +12,11 @@
 
 typedef qint64 QgsFeatureId;
 
+typedef QSet<qint64 > QgsFeatureIds;
+typedef QMap<qint64 , QMap<int, QVariant>> QgsChangedAttributesMap;
+typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
+typedef QMap<qint64, QMap<int, QVariant>> QgsChangedAttributesMap;
+
 typedef QVector<QVariant> QgsSuperClass;
 
 %MappedType QgsSuperClass
@@ -80,6 +85,15 @@ Factory annotation
     void InOutParam( bool &ok = true /In,Out/ );
 
     void setDiagramRenderer( QgsDiagramRenderer *r /Transfer/ );
+
+    void differentDefaultValue( bool defaultValue = false , QWidget *parent = 0, QString msg = "hello"  );
+
+    void differentType( QList<qint64>  &list );
+
+    void complexDefaultValueAndType( QList<QPair<qint64 , QMap<int, QString>>> list = QList<QPair<qint64, QMap<int, QString>>> );
+%Docstring
+complex default value and type (i.e. containing commas) should be given as a string with single quotes
+%End
 
     inlineKeyWordShouldNotAppear();
 

@@ -293,7 +293,7 @@ class QgsFeature
  @note added in QGIS 3.0
 %End
 
-    void setFields( const QgsFields &fields, bool initAttributes = true );
+    void setFields( const QgsFields &fields, bool initAttributes = true  );
 %Docstring
  Assign a field map with the feature to allow attribute access by attribute name.
   @param fields The attribute fields which this feature holds
@@ -436,6 +436,7 @@ Allows direct construction of QVariants from features.
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
+
 
 typedef QSet<qint64> QgsFeatureIds;
 
