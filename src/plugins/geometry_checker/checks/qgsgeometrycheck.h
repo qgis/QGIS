@@ -105,15 +105,15 @@ class QgsGeometryCheckError
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
-    virtual ~QgsGeometryCheckError() = default;
+    virtual ~QgsGeometryCheckError() {}
 
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 
     const QgsGeometryCheck *check() const { return mCheck; }
     const QString &layerId() const { return mLayerId; }
     QgsFeatureId featureId() const { return mFeatureId; }
-    virtual QgsAbstractGeometry *geometry();
-    virtual QgsRectangle affectedAreaBBox() { return geometry() ? geometry()->boundingBox() : QgsRectangle(); }
+    virtual QgsAbstractGeometry *geometry() const;
+    virtual QgsRectangle affectedAreaBBox() const;
     virtual QString description() const { return mCheck->errorDescription(); }
     const QgsPoint &location() const { return mErrorLocation; }
     QVariant value() const { return mValue; }

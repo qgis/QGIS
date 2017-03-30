@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscrscache.h"
 #include "qgsgeometrychecker.h"
 #include "checks/qgsgeometrycheck.h"
 #include "utils/qgsfeaturepool.h"
@@ -111,6 +112,8 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( const QString &layerId : changes.keys() )
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = changes[layerId];
+    QgsFeaturePool *featurePool = mContext->featurePools[layerId];
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->crs );
     for ( QgsFeatureId id : layerChanges.keys() )
     {
       bool removed = false;
@@ -125,10 +128,10 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       if ( !removed )
       {
         QgsFeature f;
-        if ( mContext->featurePools[layerId]->get( id, f ) )
+        if ( featurePool->get( id, f ) )
         {
           recheckFeatures[layerId].insert( id );
-          recheckArea.combineExtentWith( f.geometry().boundingBox() );
+          recheckArea.combineExtentWith( t.transformBoundingBox( f.geometry().boundingBox() ) );
         }
       }
     }
@@ -149,7 +152,8 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( const QString &layerId : mContext->featurePools.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
-    recheckAreaFeatures[layerId] = featurePool->getIntersects( recheckArea );
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->crs, featurePool->getLayer()->crs().authid() );
+    recheckAreaFeatures[layerId] = featurePool->getIntersects( t.transform( recheckArea ) );
     // If only selected features were checked, confine the recheck areas to the selected features
     if ( featurePool->getSelectedOnly() )
     {

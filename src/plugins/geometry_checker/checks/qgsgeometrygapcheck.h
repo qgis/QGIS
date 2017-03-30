@@ -39,7 +39,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       delete mGeometry;
     }
 
-    QgsAbstractGeometry *geometry() override { return mGeometry->clone(); }
+    QgsAbstractGeometry *geometry() const override { return mGeometry->clone(); }
     const QgsFeatureIds &neighbors() const { return mNeighbors; }
 
     bool isEqual( QgsGeometryCheckError *other ) const override
@@ -70,7 +70,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
       return true;
     }
 
-    QgsRectangle affectedAreaBBox() override
+    QgsRectangle affectedAreaBBox() const override
     {
       return mGapAreaBBox;
     }

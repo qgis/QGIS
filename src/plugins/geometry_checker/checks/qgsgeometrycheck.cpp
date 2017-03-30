@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscrscache.h"
 #include "qgsgeometrycollection.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometrycheck.h"
@@ -41,7 +42,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, con
   , mStatus( StatusPending )
 {}
 
-QgsAbstractGeometry *QgsGeometryCheckError::geometry()
+QgsAbstractGeometry *QgsGeometryCheckError::geometry() const
 {
   QgsFeature f;
   if ( mCheck->getContext()->featurePools[ layerId() ]->get( featureId(), f ) && f.hasGeometry() )
@@ -51,6 +52,20 @@ QgsAbstractGeometry *QgsGeometryCheckError::geometry()
     return mVidx.part >= 0 ? QgsGeometryCheckerUtils::getGeomPart( geom, mVidx.part )->clone() : geom->clone();
   }
   return nullptr;
+}
+
+QgsRectangle QgsGeometryCheckError::affectedAreaBBox() const
+{
+  QgsAbstractGeometry *geom = geometry();
+  if ( !geom )
+  {
+    return QgsRectangle();
+  }
+  QString srcCrs = mCheck->getContext()->featurePools[ layerId() ]->getLayer()->crs().authid();
+  QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( srcCrs, mCheck->getContext()->crs );
+  QgsRectangle rect = t.transformBoundingBox( geom->boundingBox() );
+  delete geom;
+  return rect;
 }
 
 bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &changes )

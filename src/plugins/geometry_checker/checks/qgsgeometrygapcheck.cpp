@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscrscache.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometrycollection.h"
@@ -28,6 +29,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
   for ( const QString &layerId : featureIds.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->crs );
     if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
@@ -110,7 +112,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 
       // Get neighboring polygons
       QgsFeatureIds neighboringIds;
-      QgsRectangle gapAreaBBox = geom->boundingBox();
+      QgsRectangle gapAreaBBox = t.transform( geom->boundingBox() );
       QgsFeatureIds intersectIds = featurePool->getIntersects( geom->boundingBox() );
 
       for ( QgsFeatureId id : intersectIds )
@@ -125,7 +127,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
         if ( QgsGeometryCheckerUtils::sharedEdgeLength( geom, geom2, mContext->reducedTolerance ) > 0 )
         {
           neighboringIds.insert( feature.id() );
-          gapAreaBBox.unionRect( geom2->boundingBox() );
+          gapAreaBBox.unionRect( t.transform( geom2->boundingBox() ) );
         }
       }
       if ( neighboringIds.isEmpty() )
