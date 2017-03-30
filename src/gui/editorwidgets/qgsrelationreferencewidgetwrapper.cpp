@@ -46,7 +46,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setEditorContext( context(), mCanvas, mMessageBar );
 
-  bool showForm = config( QStringLiteral( "ShowForm" ), true ).toBool();
+  bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
   bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
   bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
   bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();

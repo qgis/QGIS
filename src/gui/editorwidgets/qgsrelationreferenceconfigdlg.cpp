@@ -58,7 +58,7 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
 {
   mCbxAllowNull->setChecked( config.value( QStringLiteral( "AllowNULL" ), false ).toBool() );
   mCbxOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ), false ).toBool() );
-  mCbxShowForm->setChecked( config.value( QStringLiteral( "ShowForm" ), true ).toBool() );
+  mCbxShowForm->setChecked( config.value( QStringLiteral( "ShowForm" ), false ).toBool() );
 
   if ( config.contains( QStringLiteral( "Relation" ) ) )
   {
