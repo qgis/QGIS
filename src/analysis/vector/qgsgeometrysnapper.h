@@ -23,6 +23,7 @@
 #include "qgsspatialindex.h"
 #include "qgsabstractgeometry.h"
 #include "qgspointv2.h"
+#include "qgsgeometry.h"
 #include "qgis_analysis.h"
 
 class QgsVectorLayer;
@@ -69,6 +70,11 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
      */
     QgsFeatureList snapFeatures( const QgsFeatureList &features, double snapTolerance, SnapMode mode = PreferNodes );
 
+    /**
+     * Snaps a single geometry against a list of reference geometries.
+     */
+    static QgsGeometry snapGeometry( const QgsGeometry &geometry, double snapTolerance, const QList<QgsGeometry> &referenceGeometries, SnapMode mode = PreferNodes );
+
   signals:
 
     //! Emitted each time a feature has been processed when calling snapFeatures()
@@ -99,7 +105,55 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
 
     void processFeature( QgsFeature &feature, double snapTolerance, SnapMode mode );
 
-    int polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing ) const;
+    static int polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing );
+
+};
+
+
+/**
+ * \class QgsInternalGeometrySnapper
+ * \ingroup analysis
+ * QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
+ *
+ * To use QgsInternalGeometrySnapper, first construct the snapper using the desired snap parameters. Then,
+ * features are fed to to the snapper one-by-one by calling snapFeature(). Each feature passed by calling
+ * snapFeature() will be snapped to any features which have already been processed by the snapper.
+ *
+ * After processing all desired features, the results can be fetched by calling snappedGeometries().
+ * The returned QgsGeometryMap can be passed to QgsVectorDataProvider::changeGeometryValues() to save
+ * the snapped geometries back to the source layer.
+ *
+ * \note added in QGIS 3.0
+ */
+class ANALYSIS_EXPORT QgsInternalGeometrySnapper
+{
+
+  public:
+
+    /**
+     * Constructor for QgsInternalGeometrySnapper. The \a snapTolerance and \a mode parameters dictate
+     * how geometries will be snapped by the snapper.
+     */
+    QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode = QgsGeometrySnapper::PreferNodes );
+
+    /**
+     * Snaps a single feature's geometry against all feature geometries already processed by
+     * calls to snapFeature() in this object, and returns the snapped geometry.
+     */
+    QgsGeometry snapFeature( const QgsFeature &feature );
+
+    /**
+     * Returns a QgsGeometryMap of all feature geometries snapped by this object.
+     */
+    QgsGeometryMap snappedGeometries() const { return mProcessedGeometries; }
+
+  private:
+
+    bool mFirstFeature = true;
+    double mSnapTolerance = 0;
+    QgsGeometrySnapper::SnapMode mMode = QgsGeometrySnapper::PreferNodes;
+    QgsSpatialIndex mProcessedIndex;
+    QgsGeometryMap mProcessedGeometries;
 };
 
 ///@cond PRIVATE

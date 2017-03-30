@@ -455,7 +455,9 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPointV2 &pos, double
 /// @endcond
 
 
-
+//
+// QgsGeometrySnapper
+//
 
 QgsGeometrySnapper::QgsGeometrySnapper( QgsVectorLayer *referenceLayer )
   : mReferenceLayer( referenceLayer )
@@ -479,11 +481,10 @@ void QgsGeometrySnapper::processFeature( QgsFeature &feature, double snapToleran
     feature.setGeometry( snapGeometry( feature.geometry(), snapTolerance, mode ) );
 }
 
+
+
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, double snapTolerance, SnapMode mode ) const
 {
-  QgsPointV2 center = dynamic_cast< const QgsPointV2 * >( geometry.geometry() ) ? *static_cast< const QgsPointV2 * >( geometry.geometry() ) :
-                      QgsPointV2( geometry.geometry()->boundingBox().center() );
-
   // Get potential reference features and construct snap index
   QList<QgsGeometry> refGeometries;
   mIndexMutex.lock();
@@ -503,9 +504,16 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   }
   mReferenceLayerMutex.unlock();
 
+  return snapGeometry( geometry, snapTolerance, refGeometries, mode );
+}
+
+QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, double snapTolerance, const QList<QgsGeometry> &referenceGeometries, QgsGeometrySnapper::SnapMode mode )
+{
+  QgsPointV2 center = dynamic_cast< const QgsPointV2 * >( geometry.geometry() ) ? *static_cast< const QgsPointV2 * >( geometry.geometry() ) :
+                      QgsPointV2( geometry.geometry()->boundingBox().center() );
 
   QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
-  Q_FOREACH ( const QgsGeometry &geom, refGeometries )
+  Q_FOREACH ( const QgsGeometry &geom, referenceGeometries )
   {
     refSnapIndex.addGeometry( geom.geometry() );
   }
@@ -600,7 +608,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   origSubjSnapIndex->addGeometry( origSubjGeom.get() );
 
   // Pass 2: add missing vertices to subject geometry
-  Q_FOREACH ( const QgsGeometry &refGeom, refGeometries )
+  Q_FOREACH ( const QgsGeometry &refGeom, referenceGeometries )
   {
     for ( int iPart = 0, nParts = refGeom.geometry()->partCount(); iPart < nParts; ++iPart )
     {
@@ -689,7 +697,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   return QgsGeometry( subjGeom );
 }
 
-int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing ) const
+int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing )
 {
   int nVerts = geom->vertexCount( iPart, iRing );
 
@@ -702,4 +710,48 @@ int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart
   }
 
   return nVerts;
+}
+
+
+
+
+
+//
+// QgsInternalGeometrySnapper
+//
+
+QgsInternalGeometrySnapper::QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode )
+  : mSnapTolerance( snapTolerance )
+  , mMode( mode )
+{}
+
+QgsGeometry QgsInternalGeometrySnapper::snapFeature( const QgsFeature &feature )
+{
+  if ( !feature.hasGeometry() )
+    return QgsGeometry();
+
+  QgsFeature feat = feature;
+  QgsGeometry geometry = feat.geometry();
+  if ( !mFirstFeature )
+  {
+    // snap against processed geometries
+    // Get potential reference features and construct snap index
+    QgsRectangle searchBounds = geometry.boundingBox();
+    searchBounds.grow( mSnapTolerance );
+    QgsFeatureIds refFeatureIds = mProcessedIndex.intersects( searchBounds ).toSet();
+    if ( !refFeatureIds.isEmpty() )
+    {
+      QList< QgsGeometry > refGeometries;
+      Q_FOREACH ( QgsFeatureId id, refFeatureIds )
+      {
+        refGeometries << mProcessedGeometries.value( id );
+      }
+
+      geometry = QgsGeometrySnapper::snapGeometry( geometry, mSnapTolerance, refGeometries, mMode );
+    }
+  }
+  mProcessedGeometries.insert( feat.id(), geometry );
+  mProcessedIndex.insertFeature( feat );
+  mFirstFeature = false;
+  return geometry;
 }
