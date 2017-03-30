@@ -36,7 +36,7 @@ for file in $*; do
       echo ""
       case $n in
         g)
-          echo "Genreating the SIP file ..."
+          echo "Generating the SIP file ..."
           ${DIR}/scripts/sipify.pl ${DIR}/$header > ${DIR}/python/$d/$f.sip
           break
           ;;
