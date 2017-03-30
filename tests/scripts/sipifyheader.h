@@ -40,6 +40,11 @@ typedef qint64 QgsFeatureId;
 typedef WhatEver ShouldNotBeDisplayed;
 #endif
 
+typedef QSet<QgsFeatureId SIP_PYTYPE( qint64 )> QgsFeatureIds;
+typedef QMap<QgsFeatureId SIP_PYTYPE( qint64 ), QgsAttributeMap SIP_PYTYPE( 'QMap<int, QVariant>' )> QgsChangedAttributesMap;
+typedef QMap<QgsFeatureId, QgsAttributeMap> SIP_PYTYPE( 'QMap<qint64, QMap<int, QVariant> >' ) QgsChangedAttributesMap;
+typedef QMap<QgsFeatureId, QPair<QMap<Something, Complex> >>  SIP_PYTYPE( 'QMap<qint64, QMap<int, QVariant>>' ) QgsChangedAttributesMap;
+
 /** \ingroup core
  * A super QGIS class
  */
@@ -117,6 +122,13 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
     void InOutParam( bool &ok = true SIP_INOUT );
 
     void setDiagramRenderer( QgsDiagramRenderer *r SIP_TRANSFER );
+
+    void differentDefaultValue( bool defaultValue = true SIP_PYDEFAULTVALUE( false ), QWidget *parent = nullptr, QString msg = QString() SIP_PYDEFAULTVALUE( "hello" ) );
+
+    void differentType( QList<QgsFeatureId> SIP_PYTYPE( QList<qint64> ) &list );
+
+    //! complex default value and type (i.e. containing commas) should be given as a string with single quotes
+    void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYDEFAULTVALUE( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
 
     inline inlineKeyWordShouldNotAppear();
 

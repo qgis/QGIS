@@ -287,6 +287,8 @@ while(!eof $header){
     $line =~ s/\bSIP_TRANSFERBACK\b/\/TransferBack\//;
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
+    $line =~ s/(\w+)(\<(?>[^<>]|(?2))*\>)?\s+SIP_PYTYPE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/$3/g;
+    $line =~ s/=\s+[^=]*?\s+SIP_PYDEFAULTVALUE\(\s*\'?([^()']+)(\(\s*(?:[^()]++|(?2))*\s*\))?\'?\s*\)/= $1/g;
 
     # fix astyle placing space after % character
     $line =~ s/\s*% (MappedType|TypeHeaderCode|ConvertFromTypeCode|ConvertToTypeCode|MethodCode|End)/%$1/;

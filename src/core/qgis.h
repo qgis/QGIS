@@ -437,3 +437,13 @@ typedef unsigned long long qgssize;
   * discard line
   */
 #define SIP_SKIP
+
+/**
+  * specify an alternative type for SIP methods
+  */
+#define SIP_PYTYPE(type)
+
+/**
+  * specify an alternative default value for SIP methods
+  */
+#define SIP_PYDEFAULTVALUE(value)

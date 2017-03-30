@@ -352,11 +352,7 @@ class CORE_EXPORT QgsFeature
      * @note added in QGIS 2.9
      * @see fields
      */
-#ifndef SIP_RUN
-    void setFields( const QgsFields &fields, bool initAttributes = false );
-#else
-    void setFields( const QgsFields &fields, bool initAttributes = true );
-#endif
+    void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYDEFAULTVALUE( true ) );
 
     /** Returns the field map associated with the feature.
      * @see setFields
@@ -517,6 +513,7 @@ typedef QMap<QgsFeatureId, QgsGeometry> QgsGeometryMap;
 #else
 typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 #endif
+
 
 #ifndef SIP_RUN
 typedef QSet<QgsFeatureId> QgsFeatureIds;
