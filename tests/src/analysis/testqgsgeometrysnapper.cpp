@@ -45,6 +45,7 @@ class TestQgsGeometrySnapper : public QObject
     void snapPointToLine();
     void snapPointToLinePreferNearest();
     void snapPointToPolygon();
+    void internalSnapper();
 };
 
 void  TestQgsGeometrySnapper::initTestCase()
@@ -407,6 +408,42 @@ void TestQgsGeometrySnapper::snapPointToPolygon()
   pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(10.6 -0.1)" ) );
   result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (10 0)" ) );
+}
+
+void TestQgsGeometrySnapper::internalSnapper()
+{
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 10 0, 10 10)" ) );
+  QgsFeature f1( 1 );
+  f1.setGeometry( refGeom );
+
+  QgsInternalGeometrySnapper snapper( 2 );
+  QgsGeometry result = snapper.snapFeature( f1 );
+  QCOMPARE( result.exportToWkt(), f1.geometry().exportToWkt() );
+
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(5 5, 10 11, 15 15)" ) );
+  QgsFeature f2( 2 );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (5 5, 10 10, 15 15)" ) );
+
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(20 20, 30 20)" ) );
+  QgsFeature f3( 3 );
+  f3.setGeometry( refGeom );
+  result = snapper.snapFeature( f3 );
+  QCOMPARE( result.exportToWkt(), f3.geometry().exportToWkt() );
+
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 -1, 5.5 5, 9.8 10, 14.5 14.8)" ) );
+  QgsFeature f4( 4 );
+  f4.setGeometry( refGeom );
+  result = snapper.snapFeature( f4 );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 5 5, 10 10, 15 15)" ) );
+
+  QgsGeometryMap res = snapper.snappedGeometries();
+  QCOMPARE( res.count(), 4 );
+  QCOMPARE( res.value( 1 ).exportToWkt(), f1.geometry().exportToWkt() );
+  QCOMPARE( res.value( 2 ).exportToWkt(), QStringLiteral( "LineString (5 5, 10 10, 15 15)" ) );
+  QCOMPARE( res.value( 3 ).exportToWkt(), f3.geometry().exportToWkt() );
+  QCOMPARE( res.value( 4 ).exportToWkt(), QStringLiteral( "LineString (0 0, 5 5, 10 10, 15 15)" ) );
 }
 
 

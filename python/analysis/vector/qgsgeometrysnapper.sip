@@ -47,4 +47,17 @@ class QgsGeometrySnapper : QObject
 
     //! Emitted each time a feature has been processed when calling snapFeatures()
     void featureSnapped();
+
+};
+
+class QgsInternalGeometrySnapper
+{
+%TypeHeaderCode
+#include <qgsgeometrysnapper.h>
+%End
+
+  public:
+    QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode = QgsGeometrySnapper::PreferNodes );
+    QgsGeometry snapFeature( const QgsFeature &feature );
+    QgsGeometryMap snappedGeometries() const;
 };
