@@ -36,7 +36,7 @@ class QgsPalLayerSettings;
 namespace pal
 {
   class LabelPosition;
-};
+}
 
 /** \ingroup core
  * \class QgsDxfExport
