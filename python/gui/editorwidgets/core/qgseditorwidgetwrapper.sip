@@ -176,7 +176,6 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
      */
     virtual void setValue( const QVariant& value ) = 0;
 
-  protected slots:
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
      * will be broadcasted. Helper for string type widgets.
