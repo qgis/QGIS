@@ -30,6 +30,10 @@
 
 #include <QRubberBand>
 
+uint qHash( const Vertex &v )
+{
+  return qHash( v.layer ) ^ qHash( v.fid ) ^ qHash( v.vertexId );
+}
 
 //
 // geomutils - may get moved elsewhere
@@ -173,12 +177,6 @@ QgsNodeTool2::QgsNodeTool2( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidge
   mEdgeCenterMarker->setPenWidth( 3 );
   mEdgeCenterMarker->setVisible( false );
 
-  mDragPointMarker = new QgsVertexMarker( canvas );
-  mDragPointMarker->setIconType( QgsVertexMarker::ICON_X );
-  mDragPointMarker->setColor( Qt::red );
-  mDragPointMarker->setPenWidth( 3 );
-  mDragPointMarker->setVisible( false );
-
   mFeatureBand = createRubberBand( QgsWkbTypes::LineGeometry );
   mFeatureBand->setVisible( false );
 
@@ -207,7 +205,6 @@ QgsNodeTool2::~QgsNodeTool2()
 {
   delete mSnapMarker;
   delete mEdgeCenterMarker;
-  delete mDragPointMarker;
   delete mFeatureBand;
   delete mVertexBand;
   delete mEdgeBand;
@@ -221,26 +218,61 @@ void QgsNodeTool2::deactivate()
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
-void QgsNodeTool2::addDragBand( const QgsPoint &v1, const QgsPoint &v2 )
+void QgsNodeTool2::addDragBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset )
 {
   QgsRubberBand *dragBand = createRubberBand( QgsWkbTypes::LineGeometry, true );
   dragBand->addPoint( v1 );
   dragBand->addPoint( v2 );
   mDragBands << dragBand;
+  mDragBandsOffset << offset;
+}
+
+void QgsNodeTool2::addDragMiddleBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset1, const QgsVector &offset2 )
+{
+  QgsRubberBand *dragBand = createRubberBand( QgsWkbTypes::LineGeometry, true );
+  dragBand->addPoint( v1 );
+  dragBand->addPoint( v2 );
+  mDragMiddleBands << dragBand;
+  mDragMiddleBandsOffset << qMakePair( offset1, offset2 );
 }
 
 void QgsNodeTool2::clearDragBands()
 {
   qDeleteAll( mDragBands );
   mDragBands.clear();
+  mDragBandsOffset.clear();
 
-  // for the case when standalone point geometry is being dragged
-  mDragPointMarker->setVisible( false );
+  qDeleteAll( mDragMiddleBands );
+  mDragMiddleBands.clear();
+  mDragMiddleBandsOffset.clear();
+
+  qDeleteAll( mDragPointMarkers );
+  mDragPointMarkers.clear();
+  mDragPointMarkersOffset.clear();
 }
 
 void QgsNodeTool2::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
-  setHighlightedNodes( QList<Vertex>() ); // reset selection
+  if ( !mDraggingVertex && !mSelectedNodes.isEmpty() )
+  {
+    // only remove highlight if not clicked on one of highlighted nodes
+    bool clickedOnHighlightedNode = false;
+    QgsPointLocator::Match m = snapToEditableLayer( e );
+    if ( m.hasVertex() )
+    {
+      Q_FOREACH ( const Vertex &selectedNode, mSelectedNodes )
+      {
+        if ( selectedNode.layer == m.layer() && selectedNode.fid == m.featureId() && selectedNode.vertexId == m.vertexIndex() )
+        {
+          clickedOnHighlightedNode = true;
+          break;
+        }
+      }
+    }
+
+    if ( !clickedOnHighlightedNode )
+      setHighlightedNodes( QList<Vertex>() ); // reset selection
+  }
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -396,13 +428,29 @@ void QgsNodeTool2::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
 
   mEdgeCenterMarker->setVisible( false );
 
-  Q_FOREACH ( QgsRubberBand *band, mDragBands )
-    band->movePoint( 1, e->mapPoint() );
+  // rubber bands with one end moving
+  for ( int i = 0; i < mDragBands.count(); ++i )
+  {
+    QgsRubberBand *band = mDragBands[i];
+    const QgsVector &offset = mDragBandsOffset[i];
+    band->movePoint( 1, e->mapPoint() + offset );
+  }
+
+  // rubber bands with both ends moving
+  for ( int i = 0; i < mDragMiddleBands.count(); ++i )
+  {
+    QgsRubberBand *band = mDragMiddleBands[i];
+    const QPair<QgsVector, QgsVector> &offset = mDragMiddleBandsOffset[i];
+    band->movePoint( 0, e->mapPoint() + offset.first );
+    band->movePoint( 1, e->mapPoint() + offset.second );
+  }
 
   // in case of moving of standalone point geometry
-  if ( mDragPointMarker->isVisible() )
+  for ( int i = 0; i < mDragPointMarkers.count(); ++i )
   {
-    mDragPointMarker->setCenter( e->mapPoint() );
+    QgsVertexMarker *marker = mDragPointMarkers[i];
+    QgsVector offset = mDragPointMarkersOffset[i];
+    marker->setCenter( e->mapPoint() + offset );
   }
 
   // make sure the temporary feature rubber band is not visible
@@ -762,67 +810,117 @@ void QgsNodeTool2::startDraggingMoveVertex( const QgsPoint &mapPoint, const QgsP
   // start dragging of snapped point of current layer
   mDraggingVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() ) );
   mDraggingVertexType = MovingVertex;
-  mDraggingTopo.clear();
+  mDraggingExtraVertices.clear();
+  mDraggingExtraVerticesOffset.clear();
 
-  int v0idx, v1idx;
-  geom.adjacentVertices( m.vertexIndex(), v0idx, v1idx );
-  if ( v0idx != -1 )
-  {
-    QgsPoint layerPoint0 = geom.vertexAt( v0idx );
-    QgsPoint mapPoint0 = toMapCoordinates( m.layer(), layerPoint0 );
-    addDragBand( mapPoint0, m.point() );
-  }
-  if ( v1idx != -1 )
-  {
-    QgsPoint layerPoint1 = geom.vertexAt( v1idx );
-    QgsPoint mapPoint1 = toMapCoordinates( m.layer(), layerPoint1 );
-    addDragBand( mapPoint1, m.point() );
-  }
+  setHighlightedNodesVisible( false );  // hide any extra highlight of vertices until we are done with moving
 
-  if ( v0idx == -1 && v1idx == -1 )
+  QgsPoint origDraggingVertexPoint = geom.vertexAt( mDraggingVertex->vertexId );
+
+  // if there are other highlighted nodes, they should be dragged as well with their offset
+  Q_FOREACH ( const Vertex &v, mSelectedNodes )
   {
-    // this is a standalone point - we need to use a marker for it
-    // to give some feedback to the user
-    mDragPointMarker->setCenter( mapPoint );
-    mDragPointMarker->setVisible( true );
+    if ( v != *mDraggingVertex )
+    {
+      // TODO: convert offset to destination layer's CRS
+      QgsPoint origPointV = cachedGeometryForVertex( v ).vertexAt( v.vertexId );
+      QgsVector offset( origPointV.x() - origDraggingVertexPoint.x(), origPointV.y() - origDraggingVertexPoint.y() );
+
+      mDraggingExtraVertices << v;
+      mDraggingExtraVerticesOffset << offset;
+    }
   }
 
   mOverrideCadPoints.clear();
   mOverrideCadPoints << m.point() << m.point();
 
-  if ( !QgsProject::instance()->topologicalEditing() )
-    return;   // we are done now
-
-  // support for topo editing - find extra features
-  Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+  if ( QgsProject::instance()->topologicalEditing() )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( !vlayer || !vlayer->isEditable() )
-      continue;
-
-    Q_FOREACH ( const QgsPointLocator::Match &otherMatch, layerVerticesSnappedToPoint( vlayer, mapPoint ) )
+    // support for topo editing - find extra features
+    // that have coincident point with the vertex being dragged
+    Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
     {
-      if ( otherMatch == m )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vlayer || !vlayer->isEditable() )
         continue;
 
-      QgsGeometry otherGeom = cachedGeometry( otherMatch.layer(), otherMatch.featureId() );
-
-      // start dragging of snapped point of current layer
-      mDraggingTopo << Vertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
-
-      otherGeom.adjacentVertices( otherMatch.vertexIndex(), v0idx, v1idx );
-      if ( v0idx != -1 )
+      Q_FOREACH ( const QgsPointLocator::Match &otherMatch, layerVerticesSnappedToPoint( vlayer, mapPoint ) )
       {
-        QgsPoint otherPoint0 = otherGeom.vertexAt( v0idx );
-        QgsPoint otherMapPoint0 = toMapCoordinates( otherMatch.layer(), otherPoint0 );
-        addDragBand( otherMapPoint0, otherMatch.point() );
+        if ( otherMatch.layer() == m.layer() &&
+             otherMatch.featureId() == m.featureId() &&
+             otherMatch.vertexIndex() == m.vertexIndex() )
+          continue;
+
+        // start dragging of snapped point of current layer
+        mDraggingExtraVertices << Vertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
+        mDraggingExtraVerticesOffset << QgsVector(); // topo vertices have the same position
       }
-      if ( v1idx != -1 )
+    }
+  }
+
+  // now build drag rubber bands for extra vertices
+
+  QSet<Vertex> movingVertices;
+  movingVertices << *mDraggingVertex;
+  Q_FOREACH ( const Vertex &v, mDraggingExtraVertices )
+    movingVertices << v;
+
+  QgsPoint dragVertexMapPoint = m.point();
+
+  Q_FOREACH ( const Vertex &v, movingVertices )
+  {
+    int v0idx, v1idx;
+    QgsGeometry geom = cachedGeometry( v.layer, v.fid );
+    QgsPoint pt = geom.vertexAt( v.vertexId );
+    geom.adjacentVertices( v.vertexId, v0idx, v1idx );
+    if ( v0idx != -1 )
+    {
+      Vertex v0( v.layer, v.fid, v0idx );
+      QgsPoint otherPoint0 = geom.vertexAt( v0idx );
+      QgsPoint otherMapPoint0 = toMapCoordinates( v.layer, otherPoint0 );
+      if ( !movingVertices.contains( v0 ) )
       {
-        QgsPoint otherPoint1 = otherGeom.vertexAt( v1idx );
-        QgsPoint otherMapPoint1 = toMapCoordinates( otherMatch.layer(), otherPoint1 );
-        addDragBand( otherMapPoint1, otherMatch.point() );
+        // rubber band that is fixed on one side and moving with mouse cursor on the other
+        addDragBand( otherMapPoint0, pt, pt - dragVertexMapPoint );
       }
+      else
+      {
+        // rubber band that has both endpoints moving with mouse cursor
+        if ( v0idx > v.vertexId )
+          addDragMiddleBand( otherMapPoint0, pt, otherMapPoint0 - dragVertexMapPoint, pt - dragVertexMapPoint );
+      }
+    }
+    if ( v1idx != -1 )
+    {
+      Vertex v1( v.layer, v.fid, v1idx );
+      QgsPoint otherPoint1 = geom.vertexAt( v1idx );
+      QgsPoint otherMapPoint1 = toMapCoordinates( v.layer, otherPoint1 );
+      if ( !movingVertices.contains( v1 ) )
+      {
+        // rubber band that is fixed on one side and moving with mouse cursor on the other
+        addDragBand( otherMapPoint1, pt, pt - dragVertexMapPoint );
+      }
+      else
+      {
+        // rubber band that has both endpoints moving with mouse cursor
+        if ( v1idx > v.vertexId )
+          addDragMiddleBand( otherMapPoint1, pt, otherMapPoint1 - dragVertexMapPoint, pt - dragVertexMapPoint );
+      }
+    }
+
+    if ( v0idx == -1 && v1idx == -1 )
+    {
+      // this is a standalone point - we need to use a marker for it
+      // to give some feedback to the user
+
+      QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
+      marker->setIconType( QgsVertexMarker::ICON_X );
+      marker->setColor( Qt::red );
+      marker->setPenWidth( 3 );
+      marker->setVisible( true );
+      marker->setCenter( toMapCoordinates( v.layer, pt ) );
+      mDragPointMarkers << marker;
+      mDragPointMarkersOffset << ( pt - dragVertexMapPoint );
     }
   }
 }
@@ -844,7 +942,8 @@ void QgsNodeTool2::startDraggingAddVertex( const QgsPointLocator::Match &m )
 
   mDraggingVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() + 1 ) );
   mDraggingVertexType = AddingVertex;
-  mDraggingTopo.clear();
+  mDraggingExtraVertices.clear();
+  mDraggingExtraVerticesOffset.clear();
 
   QgsGeometry geom = cachedGeometry( m.layer(), m.featureId() );
 
@@ -873,7 +972,8 @@ void QgsNodeTool2::startDraggingAddVertexAtEndpoint( const QgsPoint &mapPoint )
 
   mDraggingVertex.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId ) );
   mDraggingVertexType = AddingEndpoint;
-  mDraggingTopo.clear();
+  mDraggingExtraVertices.clear();
+  mDraggingExtraVerticesOffset.clear();
 
   QgsGeometry geom = cachedGeometry( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid );
   QgsPoint v0 = geom.vertexAt( mMouseAtEndpoint->vertexId );
@@ -896,7 +996,8 @@ void QgsNodeTool2::startDraggingEdge( const QgsPointLocator::Match &m, const Qgs
   setMode( CaptureLine );
 
   mDraggingEdge.reset( new Edge( m.layer(), m.featureId(), m.vertexIndex(), mapPoint ) );
-  mDraggingTopo.clear();
+  mDraggingExtraVertices.clear();
+  mDraggingExtraVerticesOffset.clear();
 
   QgsPoint edge_p0, edge_p1;
   m.edgePoints( edge_p0, edge_p1 );
@@ -946,6 +1047,8 @@ void QgsNodeTool2::stopDragging()
   mDraggingVertexType = NotDragging;
   mDraggingEdge.reset();
   clearDragBands();
+
+  setHighlightedNodesVisible( true );  // highlight can be shown again
 }
 
 QgsPoint QgsNodeTool2::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPoint &mapPoint, const QgsPointLocator::Match *match )
@@ -1048,9 +1151,13 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > edits; // dict { layer : { fid : geom } }
   edits[dragLayer][dragFid] = geom;
 
+  Q_ASSERT( mDraggingExtraVertices.count() == mDraggingExtraVerticesOffset.count() );
   // add moved vertices from other layers
-  Q_FOREACH ( const Vertex &topo, mDraggingTopo )
+  for ( int i = 0; i < mDraggingExtraVertices.count(); ++i )
   {
+    const Vertex &topo = mDraggingExtraVertices[i];
+    const QgsVector &offset = mDraggingExtraVerticesOffset[i];
+
     QHash<QgsFeatureId, QgsGeometry> &layerEdits = edits[topo.layer];
     QgsGeometry topoGeom;
     if ( layerEdits.contains( topo.fid ) )
@@ -1063,6 +1170,11 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
       point = layerPoint;
     else
       point = toLayerCoordinates( topo.layer, mapPoint );
+
+    if ( offset.x() || offset.y() )
+    {
+      point += offset;
+    }
 
     if ( !topoGeom.moveVertex( point.x(), point.y(), topo.vertexId ) )
     {
@@ -1089,6 +1201,9 @@ void QgsNodeTool2::moveVertex( const QgsPoint &mapPoint, const QgsPointLocator::
     layer->endEditCommand();
     layer->triggerRepaint();
   }
+
+  setHighlightedNodes( mSelectedNodes );  // update positions of existing highlighted nodes
+  setHighlightedNodesVisible( true );  // time to show highlighted nodes again
 }
 
 void QgsNodeTool2::deleteVertex()
@@ -1102,7 +1217,7 @@ void QgsNodeTool2::deleteVertex()
   {
     bool addingVertex = mDraggingVertexType == AddingVertex || mDraggingVertexType == AddingEndpoint;
     toDelete << *mDraggingVertex;
-    toDelete += mDraggingTopo;
+    toDelete += mDraggingExtraVertices;
     stopDragging();
 
     if ( addingVertex )
@@ -1197,6 +1312,12 @@ void QgsNodeTool2::setHighlightedNodes( const QList<Vertex> &listNodes )
     mSelectedNodesMarkers.append( marker );
   }
   mSelectedNodes = listNodes;
+}
+
+void QgsNodeTool2::setHighlightedNodesVisible( bool visible )
+{
+  Q_FOREACH ( QgsVertexMarker *marker, mSelectedNodesMarkers )
+    marker->setVisible( visible );
 }
 
 void QgsNodeTool2::highlightAdjacentVertex( double offset )

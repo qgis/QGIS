@@ -60,6 +60,7 @@ class TestQgsNodeTool : public QObject
     void testAddVertex();
     void testAddVertexAtEndpoint();
     void testDeleteVertex();
+    void testMoveMultipleVertices();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -449,6 +450,26 @@ void TestQgsNodeTool::testDeleteVertex()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
+}
+
+void TestQgsNodeTool::testMoveMultipleVertices()
+{
+  // select two vertices
+  mousePress( 0.5, 0.5, Qt::LeftButton );
+  mouseMove( 1.5, 3.5 );
+  mouseRelease( 1.5, 3.5, Qt::LeftButton );
+
+  // move them by -1,-1
+  mouseClick( 1, 1, Qt::LeftButton );
+  mouseClick( 0, 0, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->undoStack()->index(), 2 );
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0 0, 0 2)" ) );
+
+  mLayerLine->undoStack()->undo();
+  QCOMPARE( mLayerLine->undoStack()->index(), 1 );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 }
 
 QGSTEST_MAIN( TestQgsNodeTool )

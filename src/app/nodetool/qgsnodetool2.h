@@ -34,11 +34,22 @@ struct Vertex
     , fid( fid )
     , vertexId( vertexId ) {}
 
+  bool operator==( const Vertex &other ) const
+  {
+    return layer == other.layer && fid == other.fid && vertexId == other.vertexId;
+  }
+  bool operator!=( const Vertex &other ) const
+  {
+    return !operator==( other );
+  }
+
   QgsVectorLayer *layer;
   QgsFeatureId fid;
   int vertexId;
 };
 
+//! qHash implementation - we use Vertex in QSet
+uint qHash( const Vertex &v );
 
 //! helper structure for an edge being dragged
 struct Edge
@@ -97,7 +108,9 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
   private:
 
-    void addDragBand( const QgsPoint &v1, const QgsPoint &v2 );
+    void addDragBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset = QgsVector() );
+
+    void addDragMiddleBand( const QgsPoint &v1, const QgsPoint &v2, const QgsVector &offset1, const QgsVector &offset2 );
 
     void clearDragBands();
 
@@ -150,6 +163,8 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
 
     void setHighlightedNodes( const QList<Vertex> &listNodes );
 
+    void setHighlightedNodesVisible( bool visible );
+
     //! Allow moving back and forth selected vertex within a feature
     void highlightAdjacentVertex( double offset );
 
@@ -198,20 +213,38 @@ class APP_EXPORT QgsNodeTool2 : public QgsMapToolAdvancedDigitizing
       AddingEndpoint,
     };
 
-    //! marker for a point used only for moving standalone point geoetry
-    //! (there are no adjacent vertices so mDragBands is empty in that case)
-    QgsVertexMarker *mDragPointMarker = nullptr;
-    //! list of QgsRubberBand instances used when dragging
+    //! markers for points used only for moving standalone point geoetry
+    //! (there are no adjacent vertices so it is not used in mDragBands)
+    QList<QgsVertexMarker *> mDragPointMarkers;
+    //! companion array to mDragPointMarkers: for each marker it keeps offset
+    //! (in map units) from the position of the main vertex
+    QList<QgsVector> mDragPointMarkersOffset;
+    //! list of QgsRubberBand instances used when dragging. All rubber bands
+    //! have two points: first point is fixed, the other one is moved as mouse moves
     QList<QgsRubberBand *> mDragBands;
+    //! companion array to mDragBands: for each rubber band it keeps offset of the second
+    //! point (in map units) from the position of the main vertex (mDraggingVertex)
+    QList<QgsVector> mDragBandsOffset;
+    //! list of QgsRubberBand instances used when dragging multiple vertices - these rubber bands
+    //! compared to mDragBands have both points moving together with mouse cursor
+    QList<QgsRubberBand *> mDragMiddleBands;
+    //! companion array to mDragMiddleBands: for each rubber band it keeps offset of both
+    //! first and second point (in map units) from the position of the main vertex (mDraggingVertex)
+    QList< QPair<QgsVector, QgsVector> > mDragMiddleBandsOffset;
     //! instance of Vertex that is being currently moved or nothing
     std::unique_ptr<Vertex> mDraggingVertex;
     //! whether moving a vertex or adding one
     DraggingVertexType mDraggingVertexType = NotDragging;
     //! instance of Edge that is being currently moved or nothing
     std::unique_ptr<Edge> mDraggingEdge;
-    //! list of Vertex instances of other vertices that are topologically
-    //! connected to the vertex being currently dragged
-    QList<Vertex> mDraggingTopo;
+    //! list of Vertex instances of further vertices that are dragged together with
+    //! the main vertex (mDraggingVertex) - either topologically connected points
+    //! (if topo editing is allowed) or the ones coming from the highlight
+    QList<Vertex> mDraggingExtraVertices;
+    //! companion array to mDraggingExtraVertices: for each vertex in mDraggingExtraVertices
+    //! this is offset (in units of the layer) of the vertex from the position of the main
+    //! vertex (mDraggingVertex)
+    QList<QgsVector> mDraggingExtraVerticesOffset;
 
     // members for selection handling
 
