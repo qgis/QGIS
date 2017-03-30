@@ -18,8 +18,11 @@ class QgsGeometrySnapper : QObject
     //! Snapping modes
     enum SnapMode
     {
-      PreferNodes, //!< Prefer to snap to nodes, even when a segment may be closer than a node
-      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment
+      PreferNodes,
+      PreferClosest,
+      EndPointPreferNodes,
+      EndPointPreferClosest,
+      EndPointToEndPoint,
     };
 
     /**

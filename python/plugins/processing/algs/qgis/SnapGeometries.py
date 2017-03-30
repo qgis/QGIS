@@ -52,7 +52,10 @@ class SnapGeometriesToLayer(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), 0.00000001, 9999999999, default=10.0))
 
         self.modes = [self.tr('Prefer aligning nodes'),
-                      self.tr('Prefer closest point')]
+                      self.tr('Prefer closest point'),
+                      self.tr('Move end points only, prefer aligning nodes'),
+                      self.tr('Move end points only, prefer closest point'),
+                      self.tr('Snap end points to end points only')]
         self.addParameter(ParameterSelection(
             self.BEHAVIOR,
             self.tr('Behavior'),

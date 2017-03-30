@@ -45,6 +45,8 @@ class TestQgsGeometrySnapper : public QObject
     void snapPointToLine();
     void snapPointToLinePreferNearest();
     void snapPointToPolygon();
+    void endPointSnap();
+    void endPointToEndPoint();
     void internalSnapper();
 };
 
@@ -408,6 +410,57 @@ void TestQgsGeometrySnapper::snapPointToPolygon()
   pointGeom = QgsGeometry::fromWkt( QStringLiteral( "Point(10.6 -0.1)" ) );
   result = snapper.snapGeometry( pointGeom, 1 );
   QCOMPARE( result.exportToWkt(), QStringLiteral( "Point (10 0)" ) );
+}
+
+void TestQgsGeometrySnapper::endPointSnap()
+{
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsFeature ff( 0 );
+
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 100 0, 100 100, 0 100)" ) );
+  ff.setGeometry( refGeom );
+  QgsFeatureList flist;
+  flist << ff;
+  rl->dataProvider()->addFeatures( flist );
+
+  QgsGeometry lineGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 -1, 102 0, 98 102, 0 101)" ) );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( lineGeom, 10, QgsGeometrySnapper::EndPointPreferNodes );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 102 0, 98 102, 0 100)" ) );
+
+  QgsGeometry lineGeom2 = QgsGeometry::fromWkt( QStringLiteral( "LineString(50 0, 102 0, 98 102, 0 50)" ) );
+  result = snapper.snapGeometry( lineGeom2, 1, QgsGeometrySnapper::EndPointPreferNodes );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (50 0, 102 0, 98 102, 0 50)" ) );
+
+  QgsGeometry lineGeom3 = QgsGeometry::fromWkt( QStringLiteral( "LineString(50 -10, 50 -1)" ) );
+  result = snapper.snapGeometry( lineGeom3, 2, QgsGeometrySnapper::EndPointPreferNodes );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (50 -10, 50 0)" ) );
+}
+
+void TestQgsGeometrySnapper::endPointToEndPoint()
+{
+  QgsVectorLayer *rl = new QgsVectorLayer( QStringLiteral( "Linestring" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsFeature ff( 0 );
+
+  // closed linestrings
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 100 0, 100 100, 0 100)" ) );
+  ff.setGeometry( refGeom );
+  QgsFeatureList flist;
+  flist << ff;
+  rl->dataProvider()->addFeatures( flist );
+
+  QgsGeometry lineGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 -1, 102 0, 98 102, 0 101)" ) );
+  QgsGeometrySnapper snapper( rl );
+  QgsGeometry result = snapper.snapGeometry( lineGeom, 10, QgsGeometrySnapper::EndPointToEndPoint );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (0 0, 102 0, 98 102, 0 100)" ) );
+
+  QgsGeometry lineGeom2 = QgsGeometry::fromWkt( QStringLiteral( "LineString(50 0, 102 0, 98 102)" ) );
+  result = snapper.snapGeometry( lineGeom2, 1, QgsGeometrySnapper::EndPointToEndPoint );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (50 0, 102 0, 98 102)" ) );
+
+  QgsGeometry lineGeom3 = QgsGeometry::fromWkt( QStringLiteral( "LineString(50 -10, 50 -1)" ) );
+  result = snapper.snapGeometry( lineGeom3, 2, QgsGeometrySnapper::EndPointToEndPoint );
+  QCOMPARE( result.exportToWkt(), QStringLiteral( "LineString (50 -10, 50 -1)" ) );
 }
 
 void TestQgsGeometrySnapper::internalSnapper()

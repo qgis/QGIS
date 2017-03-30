@@ -29,8 +29,8 @@
 
 ///@cond PRIVATE
 
-QgsSnapIndex::PointSnapItem::PointSnapItem( const QgsSnapIndex::CoordIdx *_idx )
-  : SnapItem( QgsSnapIndex::SnapPoint )
+QgsSnapIndex::PointSnapItem::PointSnapItem( const QgsSnapIndex::CoordIdx *_idx, bool isEndPoint )
+  : SnapItem( isEndPoint ? QgsSnapIndex::SnapEndPoint : QgsSnapIndex::SnapPoint )
   , idx( _idx )
 {}
 
@@ -299,12 +299,12 @@ QgsSnapIndex::Cell &QgsSnapIndex::getCreateCell( int col, int row )
   }
 }
 
-void QgsSnapIndex::addPoint( const CoordIdx *idx )
+void QgsSnapIndex::addPoint( const CoordIdx *idx, bool isEndPoint )
 {
   QgsPointV2 p = idx->point();
   int col = qFloor( ( p.x() - mOrigin.x() ) / mCellSize );
   int row = qFloor( ( p.y() - mOrigin.y() ) / mCellSize );
-  getCreateCell( col, row ).append( new PointSnapItem( idx ) );
+  getCreateCell( col, row ).append( new PointSnapItem( idx, isEndPoint ) );
 }
 
 void QgsSnapIndex::addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo )
@@ -346,7 +346,7 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometry *geom )
         CoordIdx *idx1 = new CoordIdx( geom, QgsVertexId( iPart, iRing, iVert + 1 ) );
         mCoordIdxs.append( idx );
         mCoordIdxs.append( idx1 );
-        addPoint( idx );
+        addPoint( idx, iVert == 0 || iVert == nVerts - 1 );
         if ( iVert < nVerts - 1 )
           addSegment( idx, idx1 );
       }
@@ -398,7 +398,7 @@ QgsPointV2 QgsSnapIndex::getClosestSnapToPoint( const QgsPointV2 &p, const QgsPo
   return pMin;
 }
 
-QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPointV2 &pos, double tol, QgsSnapIndex::PointSnapItem **pSnapPoint, QgsSnapIndex::SegmentSnapItem **pSnapSegment ) const
+QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPointV2 &pos, double tol, QgsSnapIndex::PointSnapItem **pSnapPoint, QgsSnapIndex::SegmentSnapItem **pSnapSegment, bool endPointOnly ) const
 {
   int colStart = qFloor( ( pos.x() - tol - mOrigin.x() ) / mCellSize );
   int rowStart = qFloor( ( pos.y() - tol - mOrigin.y() ) / mCellSize );
@@ -421,7 +421,7 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPointV2 &pos, double
 
   Q_FOREACH ( QgsSnapIndex::SnapItem *item, items )
   {
-    if ( item->type == SnapPoint )
+    if ( ( ! endPointOnly && item->type == SnapPoint ) || item->type == SnapEndPoint )
     {
       double dist = QgsGeometryUtils::sqrDistance2D( item->getSnapPoint( pos ), pos );
       if ( dist < minDistPoint )
@@ -430,7 +430,7 @@ QgsSnapIndex::SnapItem *QgsSnapIndex::getSnapItem( const QgsPointV2 &pos, double
         snapPoint = static_cast<PointSnapItem *>( item );
       }
     }
-    else if ( item->type == SnapSegment )
+    else if ( item->type == SnapSegment && !endPointOnly )
     {
       QgsPointV2 pProj;
       if ( !static_cast<SegmentSnapItem *>( item )->getProjection( pos, pProj ) )
@@ -509,6 +509,10 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
 
 QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, double snapTolerance, const QList<QgsGeometry> &referenceGeometries, QgsGeometrySnapper::SnapMode mode )
 {
+  if ( QgsWkbTypes::geometryType( geometry.wkbType() ) == QgsWkbTypes::PolygonGeometry &&
+       ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint ) )
+    return geometry;
+
   QgsPointV2 center = dynamic_cast< const QgsPointV2 * >( geometry.geometry() ) ? *static_cast< const QgsPointV2 * >( geometry.geometry() ) :
                       QgsPointV2( geometry.geometry()->boundingBox().center() );
 
@@ -533,12 +537,19 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
 
       for ( int iVert = 0, nVerts = polyLineSize( subjGeom, iPart, iRing ); iVert < nVerts; ++iVert )
       {
+        if ( ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint ) &&
+             QgsWkbTypes::geometryType( subjGeom->wkbType() ) == QgsWkbTypes::LineGeometry && ( iVert > 0 && iVert < nVerts - 1 ) )
+        {
+          //endpoint mode and not at an endpoint, skip
+          subjPointFlags[iPart][iRing].append( Unsnapped );
+          continue;
+        }
 
         QgsSnapIndex::PointSnapItem *snapPoint = nullptr;
         QgsSnapIndex::SegmentSnapItem *snapSegment = nullptr;
         QgsVertexId vidx( iPart, iRing, iVert );
         QgsPointV2 p = subjGeom->vertexAt( vidx );
-        if ( !refSnapIndex.getSnapItem( p, snapTolerance, &snapPoint, &snapSegment ) )
+        if ( !refSnapIndex.getSnapItem( p, snapTolerance, &snapPoint, &snapSegment, mode == EndPointToEndPoint ) )
         {
           subjPointFlags[iPart][iRing].append( Unsnapped );
         }
@@ -547,6 +558,8 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
           switch ( mode )
           {
             case PreferNodes:
+            case EndPointPreferNodes:
+            case EndPointToEndPoint:
             {
               // Prefer snapping to point
               if ( snapPoint )
@@ -563,6 +576,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
             }
 
             case PreferClosest:
+            case EndPointPreferClosest:
             {
               QgsPointV2 nodeSnap, segmentSnap;
               double distanceNode = DBL_MAX;
@@ -597,6 +611,9 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
 
   //nothing more to do for points
   if ( dynamic_cast< const QgsPointV2 * >( subjGeom ) )
+    return QgsGeometry( subjGeom );
+  //or for end point snapping
+  if ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
     return QgsGeometry( subjGeom );
 
   // SnapIndex for subject feature

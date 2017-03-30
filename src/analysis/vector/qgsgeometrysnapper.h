@@ -47,6 +47,9 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     {
       PreferNodes = 0, //!< Prefer to snap to nodes, even when a segment may be closer than a node
       PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment
+      EndPointPreferNodes, //!< Only snap start/end points of lines (point features will also be snapped, polygon features will not be modified), prefer to snap to nodes
+      EndPointPreferClosest, //!< Only snap start/end points of lines (point features will also be snapped, polygon features will not be modified), snap to closest point
+      EndPointToEndPoint, //!< Only snap the start/end points of lines to other start/end points of lines
     };
 
     /**
@@ -172,7 +175,7 @@ class QgsSnapIndex
       QgsVertexId vidx;
     };
 
-    enum SnapType { SnapPoint, SnapSegment };
+    enum SnapType { SnapPoint, SnapEndPoint, SnapSegment };
 
     class SnapItem
     {
@@ -188,7 +191,7 @@ class QgsSnapIndex
     class PointSnapItem : public QgsSnapIndex::SnapItem
     {
       public:
-        explicit PointSnapItem( const CoordIdx *_idx );
+        explicit PointSnapItem( const CoordIdx *_idx, bool isEndPoint );
         QgsPointV2 getSnapPoint( const QgsPointV2 &/*p*/ ) const override;
         const CoordIdx *idx = nullptr;
     };
@@ -208,7 +211,7 @@ class QgsSnapIndex
     ~QgsSnapIndex();
     void addGeometry( const QgsAbstractGeometry *geom );
     QgsPointV2 getClosestSnapToPoint( const QgsPointV2 &p, const QgsPointV2 &q );
-    SnapItem *getSnapItem( const QgsPointV2 &pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr ) const;
+    SnapItem *getSnapItem( const QgsPointV2 &pos, double tol, PointSnapItem **pSnapPoint = nullptr, SegmentSnapItem **pSnapSegment = nullptr, bool endPointOnly = false ) const;
 
   private:
     typedef QList<SnapItem *> Cell;
@@ -235,7 +238,7 @@ class QgsSnapIndex
     QList<GridRow> mGridRows;
     int mRowsStartIdx;
 
-    void addPoint( const CoordIdx *idx );
+    void addPoint( const CoordIdx *idx, bool isEndPoint );
     void addSegment( const CoordIdx *idxFrom, const CoordIdx *idxTo );
     const Cell *getCell( int col, int row ) const;
     Cell &getCreateCell( int col, int row );
