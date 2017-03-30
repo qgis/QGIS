@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
 # ARGUMENTS
-REMOVE_COMMENTS=YES
-while getopts ":c" opt; do
+FORCE=NO
+SIPIFY=NO
+while getopts ":fs" opt; do
   case $opt in
-    c)
-      # keep comments
-      REMOVE_COMMENTS=NO
+    s)
+      # sipify header
+      SIPIFY=YES
+      ;;
+    f)
+      # force if sip is automatically generated
+      FORCE=YES
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -16,23 +21,39 @@ while getopts ":c" opt; do
 done
 shift $(expr $OPTIND - 1)
 
-# GNU prefix command for mac os support (gsed, gsplit)
-GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
-  GP=g
-fi
+
 
 for file in $*; do
   d=${file#*/}
   d=${d%/*}
   f=${file##*/}
   f=${f%.*}
+  header="src/$d/$f.h"
 
-  tempfile=$(${GP}mktemp ${f}XXXX --suffix=.h)
+  if ! grep -Fxq "$d/$f.sip" python/auto_sip.blacklist; then
+    echo -e "\033[0;31m$d/$f.sip is automatically generated using sipify.pl script\033[0m"
+    echo "use following command to generate the SIP file:"
+    echo -e "   \033[0;32m./sripts/sipify.pl $header > $d/$f.sip\033[0m"
+    if [[ $FORCE =~ NO ]]; then
+      echo "use -f argument to force showing the diff"
+    fi
+    if [[ $(wc -w <<< "$input") -eq "1" ]]; then
+      read -n 1 -s -p "Press any key to continue"
+      echo ""
+    fi
+    if [[ $FORCE =~ NO ]]; then
+      continue
+    fi
+  fi
 
-  ./scripts/sipify.pl "src/$d/$f.h" > $tempfile
-
+  if [[ $SIPIFY =~ YES ]]; then
+    tempfile=$(${GP}mktemp ${f}XXXX --suffix=.h)
+    ./scripts/sipify.pl $header > $tempfile
+  else
+    tempfile=$header
+  fi
   vimdiff $tempfile python/$d/$f.sip
 
   rm $tempfile
+
 done
