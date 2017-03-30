@@ -12,10 +12,10 @@
 void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
-  double tolerance = QgsGeometryCheckPrecision::tolerance();
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -23,7 +23,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -44,14 +44,19 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
           ring.append( geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ) );
           for ( int i = 1; i < n; ++i )
           {
+<<<<<<< HEAD
             QgsPoint p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
             if ( QgsGeometryUtils::sqrDistance2D( p, ring.last() ) > tolerance * tolerance )
+=======
+            QgsPoint p = geom->vertexAt( QgsVertexId( iPart, iRing, i ) );
+            if ( QgsGeometryUtils::sqrDistance2D( p, ring.last() ) > mContext->tolerance * mContext->tolerance )
+>>>>>>> [GeometryChecker] Introduce QgsGeometryCheckerContext
             {
               vtxMap.append( i );
               ring.append( p );
             }
           }
-          while ( QgsGeometryUtils::sqrDistance2D( ring.front(), ring.back() ) < tolerance * tolerance )
+          while ( QgsGeometryUtils::sqrDistance2D( ring.front(), ring.back() ) < mContext->tolerance * mContext->tolerance )
           {
             vtxMap.pop_back();
             ring.pop_back();
@@ -76,7 +81,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
               const QgsPoint &si = ring[i];
               const QgsPoint &sj = ring[j];
               QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
-              if ( QgsGeometryUtils::sqrDistance2D( p, q ) < tolerance * tolerance )
+              if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
               {
                 errors.append( new QgsGeometryCheckError( this, layerId, featureid, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
                 break; // No need to report same contact on different segments multiple times

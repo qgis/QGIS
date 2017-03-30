@@ -21,7 +21,8 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -29,7 +30,7 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -50,8 +51,9 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
 
 void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;

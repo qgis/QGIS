@@ -16,9 +16,8 @@
 #include "qgsgeometrysliverpolygoncheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-bool QgsGeometrySliverPolygonCheck::checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const
+bool QgsGeometrySliverPolygonCheck::checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const
 {
-  double mapToLayerUnits = getFeaturePool( layerId )->getMapToLayerUnits();
   double maxArea = mMaxAreaMapUnits * mapToLayerUnits * mapToLayerUnits;
   QgsRectangle bb = geom->boundingBox();
   double maxDim = qMax( bb.width(), bb.height() );

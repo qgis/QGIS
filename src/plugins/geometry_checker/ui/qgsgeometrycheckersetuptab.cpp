@@ -69,8 +69,8 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QW
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerSetupTab::updateLayers );
   connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.frameOutput, &QWidget::setEnabled );
   connect( ui.buttonGroupOutput, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerSetupTab::validateInput );
-  connect( ui.pushButtonOutputBrowse, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectOutputFile );
-  connect( ui.lineEditOutput, &QLineEdit::textChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
+  connect( ui.pushButtonOutputDirectory, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectOutputDirectory );
+  connect( ui.lineEditOutputDirectory, &QLineEdit::textChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( ui.checkBoxSliverPolygons, &QAbstractButton::toggled, ui.widgetSliverThreshold, &QWidget::setEnabled );
   connect( ui.checkBoxSliverArea, &QAbstractButton::toggled, ui.doubleSpinBoxSliverArea, &QWidget::setEnabled );
 
@@ -153,6 +153,7 @@ QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
 
 void QgsGeometryCheckerSetupTab::validateInput()
 {
+  QStringList layerCrs = QStringList() << mIface->mapCanvas()->mapSettings().destinationCrs().authid();
   QList<QgsVectorLayer *> layers = getSelectedLayers();
   int nApplicable = 0;
   if ( !layers.isEmpty() )
@@ -175,17 +176,27 @@ void QgsGeometryCheckerSetupTab::validateInput()
       {
         ++nPolygon;
       }
+      layerCrs.append( layer->crs().authid() );
     }
     for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
     {
       nApplicable += factory->checkApplicability( ui, nPoint, nLineString, nPolygon );
     }
   }
+  QString prevCrs = ui.comboBoxTopologyCrs->currentText();
+  ui.comboBoxTopologyCrs->clear();
+  ui.comboBoxTopologyCrs->addItems( layerCrs );
+  ui.comboBoxTopologyCrs->setCurrentIndex( ui.comboBoxTopologyCrs->findText( prevCrs ) );
+  if ( ui.comboBoxTopologyCrs->currentIndex() == -1 )
+  {
+    ui.comboBoxTopologyCrs->setCurrentIndex( 0 );
+  }
+
   bool outputOk = ui.radioButtonOutputModifyInput->isChecked() || !ui.lineEditOutputDirectory->text().isEmpty();
   mRunButton->setEnabled( !layers.isEmpty() && nApplicable > 0 && outputOk );
 }
 
-void QgsGeometryCheckerSetupTab::selectOutputFile()
+void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
@@ -397,19 +408,20 @@ void QgsGeometryCheckerSetupTab::runChecks()
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, mapToLayerUnits, selectedOnly ) );
   }
 
+  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), ui.comboBoxTopologyCrs->currentText(), featurePools );
+
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
-    QgsGeometryCheck *check = factory->createInstance( featurePools, ui );
+    QgsGeometryCheck *check = factory->createInstance( context, ui );
     if ( check )
     {
       checks.append( check );
     }
   }
-  QgsGeometryCheckPrecision::setPrecision( ui.spinBoxTolerance->value() );
-  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, featurePools );
+  QgsGeometryChecker *checker = new QgsGeometryChecker( checks, context );
 
-  emit checkerStarted( checker, featurePools );
+  emit checkerStarted( checker );
 
   // Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear)
   for ( QgsVectorLayer *layer : processLayers )

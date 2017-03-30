@@ -32,7 +32,7 @@ class QgsGeometryCheckerResultTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, const QMap<QString, QgsFeaturePool *> &featurePools, QTabWidget *tabWidget, QWidget *parent = nullptr );
+    QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, QTabWidget *tabWidget, QWidget *parent = nullptr );
     ~QgsGeometryCheckerResultTab();
     void finalize();
     bool isCloseable() const { return mCloseable; }
@@ -44,7 +44,6 @@ class QgsGeometryCheckerResultTab : public QWidget
     Ui::QgsGeometryCheckerResultTab ui;
     QgisInterface *mIface = nullptr;
     QgsGeometryChecker *mChecker = nullptr;
-    QMap<QString, QgsFeaturePool *> mFeaturePools;
     QList<QgsRubberBand *> mCurrentRubberBands;
     QMap<QgsGeometryCheckError *, QPersistentModelIndex> mErrorMap;
     QMap<QString, QPointer<QDialog>> mAttribTableDialogs;

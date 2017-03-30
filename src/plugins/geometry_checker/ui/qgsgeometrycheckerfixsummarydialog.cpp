@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerfixsummarydialog.h"
+#include "../qgsgeometrychecker.h"
 #include "../checks/qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 
-QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const QMap<QString, QgsFeaturePool *> &featurePools, const Statistics &stats, const QStringList &messages, QWidget *parent )
+QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent )
   : QDialog( parent )
-  , mFeaturePools( featurePools )
+  , mChecker( checker )
 {
   ui.setupUi( this );
 
@@ -53,20 +54,20 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const QM
   setupTable( ui.tableWidgetNotFixed );
   setupTable( ui.tableWidgetObsoleteErrors );
 
-  ui.plainTextEditMessages->setPlainText( messages.join( QStringLiteral( "\n" ) ) );
+  ui.plainTextEditMessages->setPlainText( checker->getMessages().join( QStringLiteral( "\n" ) ) );
 
   ui.groupBoxFixedErrors->setVisible( !stats.fixedErrors.isEmpty() );
   ui.groupBoxNewErrors->setVisible( !stats.newErrors.isEmpty() );
   ui.groupBoxNotFixed->setVisible( !stats.failedErrors.isEmpty() );
   ui.groupBoxObsoleteErrors->setVisible( !stats.obsoleteErrors.isEmpty() );
-  ui.groupBoxMessages->setVisible( !messages.isEmpty() );
+  ui.groupBoxMessages->setVisible( !checker->getMessages().isEmpty() );
 }
 
 void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeometryCheckError *error )
 {
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = 1. / mFeaturePools[error->layerId()]->getMapToLayerUnits();
+  double layerToMap = 1. / mChecker->getContext()->featurePools[error->layerId()]->getMapToLayerUnits();
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {

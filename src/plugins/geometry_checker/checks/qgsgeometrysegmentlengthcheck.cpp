@@ -22,17 +22,18 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
-    double mapToLayerUnits = getFeaturePool( layerId )->getMapToLayerUnits();
+    double mapToLayerUnits = featurePool->getMapToLayerUnits();
     double minLength = mMinLengthMapUnits * mapToLayerUnits;
     for ( QgsFeatureId featureid : featureIds[layerId] )
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -66,8 +67,9 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
 
 void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &/*changes*/ ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -95,7 +97,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
   QgsPoint pi = geom->vertexAt( error->vidx() );
   QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
   double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
-  double mapToLayerUnits = getFeaturePool( error->layerId() )->getMapToLayerUnits();
+  double mapToLayerUnits = featurePool->getMapToLayerUnits();
   double minLength = mMinLengthMapUnits * mapToLayerUnits;
   if ( dist >= minLength )
   {

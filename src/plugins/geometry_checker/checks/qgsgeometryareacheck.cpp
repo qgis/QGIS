@@ -23,7 +23,8 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -31,7 +32,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -44,7 +45,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
         for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
         {
           double value;
-          if ( checkThreshold( layerId, multiGeom->geometryN( i ), value ) )
+          if ( checkThreshold( featurePool->getMapToLayerUnits(), multiGeom->geometryN( i ), value ) )
           {
             errors.append( new QgsGeometryCheckError( this, layerId, featureid, multiGeom->geometryN( i )->centroid(), QgsVertexId( i ), value, QgsGeometryCheckError::ValueArea ) );
           }
@@ -53,7 +54,7 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
       else
       {
         double value;
-        if ( checkThreshold( layerId, geom, value ) )
+        if ( checkThreshold( featurePool->getMapToLayerUnits(), geom, value ) )
         {
           errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->centroid(), QgsVertexId( 0 ), value, QgsGeometryCheckError::ValueArea ) );
         }
@@ -64,12 +65,14 @@ void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
 
 void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
   }
+  double mapToLayerUnits = featurePool->getMapToLayerUnits();
   QgsGeometry g = feature.geometry();
   QgsAbstractGeometry *geom = g.geometry();
   QgsVertexId vidx = error->vidx();
@@ -85,7 +88,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
   if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
     double value;
-    if ( !checkThreshold( error->layerId(), static_cast<QgsGeometryCollection *>( geom )->geometryN( vidx.part ), value ) )
+    if ( !checkThreshold( mapToLayerUnits, static_cast<QgsGeometryCollection *>( geom )->geometryN( vidx.part ), value ) )
     {
       error->setObsolete();
       return;
@@ -94,7 +97,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
   else
   {
     double value;
-    if ( !checkThreshold( error->layerId(), geom, value ) )
+    if ( !checkThreshold( mapToLayerUnits, geom, value ) )
     {
       error->setObsolete();
       return;
@@ -129,16 +132,17 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
   }
 }
 
-bool QgsGeometryAreaCheck::checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const
+bool QgsGeometryAreaCheck::checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const
 {
   value = geom->area();
-  double mapToLayerUnits = getFeaturePool( layerId )->getMapToLayerUnits();
   double threshold = mThresholdMapUnits * mapToLayerUnits * mapToLayerUnits;
   return value < threshold;
 }
 
 bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+
   double maxVal = 0.;
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
@@ -147,10 +151,10 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   QgsAbstractGeometry *geom = g.geometry();
 
   // Search for touching neighboring geometries
-  for ( QgsFeatureId testId : getFeaturePool( layerId )->getIntersects( g.boundingBox() ) )
+  for ( QgsFeatureId testId : featurePool->getIntersects( g.boundingBox() ) )
   {
     QgsFeature testFeature;
-    if ( !getFeaturePool( layerId )->get( testId, testFeature ) )
+    if ( !featurePool->get( testId, testFeature ) )
     {
       continue;
     }
@@ -162,7 +166,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
       {
         continue;
       }
-      double len = QgsGeometryCheckerUtils::sharedEdgeLength( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), QgsGeometryCheckerUtils::getGeomPart( testGeom, testPartIdx ), QgsGeometryCheckPrecision::reducedTolerance() );
+      double len = QgsGeometryCheckerUtils::sharedEdgeLength( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), QgsGeometryCheckerUtils::getGeomPart( testGeom, testPartIdx ), mContext->reducedTolerance );
       if ( len > 0. )
       {
         if ( method == MergeLongestEdge || method == MergeLargestArea )
@@ -212,8 +216,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   // Merge geometries
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
-  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), QgsGeometryCheckPrecision::tolerance() );
-  QgsAbstractGeometry *combinedGeom = geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
+  QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), mContext->tolerance );
+  QgsAbstractGeometry *combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   delete geomEngine;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {

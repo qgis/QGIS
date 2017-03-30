@@ -50,8 +50,8 @@ class QgsGeometryContainedCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    explicit QgsGeometryContainedCheck( const QMap<QString, QgsFeaturePool *> &featurePools )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, featurePools ) {}
+    explicit QgsGeometryContainedCheck( QgsGeometryCheckerContext *context )
+      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context ) {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;

@@ -30,21 +30,13 @@ class QgsFeaturePool;
 
 #define FEATUREID_NULL std::numeric_limits<QgsFeatureId>::min()
 
-class QgsGeometryCheckPrecision
+struct QgsGeometryCheckerContext
 {
-  public:
-    static void setPrecision( int precision );
-    static int precision();
-    static int reducedPrecision();
-    static double tolerance();
-    static double reducedTolerance();
-
-  private:
-    QgsGeometryCheckPrecision();
-    static QgsGeometryCheckPrecision *get();
-
-    int mPrecision;
-    int mReducedPrecision;
+  QgsGeometryCheckerContext( int _precision, const QString &_crs, const QMap<QString, QgsFeaturePool *> &_featurePools );
+  const double tolerance;
+  const double reducedTolerance;
+  const QString crs;
+  const QMap<QString, QgsFeaturePool *> featurePools;
 };
 
 class QgsGeometryCheck : public QObject
@@ -71,10 +63,10 @@ class QgsGeometryCheck : public QObject
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<Change>>> Changes;
 
-    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, const QMap<QString, QgsFeaturePool *> &featurePools )
+    QgsGeometryCheck( CheckType checkType, const QList<QgsWkbTypes::GeometryType> &compatibleGeometryTypes, QgsGeometryCheckerContext *context )
       : mCheckType( checkType )
       , mCompatibleGeometryTypes( compatibleGeometryTypes )
-      , mFeaturePools( featurePools )
+      , mContext( context )
     {}
     virtual void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const = 0;
     virtual void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const = 0;
@@ -83,8 +75,7 @@ class QgsGeometryCheck : public QObject
     virtual QString errorName() const = 0;
     CheckType getCheckType() const { return mCheckType; }
     bool getCompatibility( QgsWkbTypes::GeometryType type ) const { return mCompatibleGeometryTypes.contains( type ); }
-    const QMap<QString, QgsFeaturePool *> &getFeaturePools() const { return mFeaturePools; }
-    QgsFeaturePool *getFeaturePool( const QString &layerId ) const { return mFeaturePools.value( layerId, nullptr ); }
+    QgsGeometryCheckerContext *getContext() const { return mContext; }
 
   protected:
     QMap<QString, QgsFeatureIds> allLayerFeatureIds() const;
@@ -95,7 +86,9 @@ class QgsGeometryCheck : public QObject
   private:
     const CheckType mCheckType;
     QList<QgsWkbTypes::GeometryType> mCompatibleGeometryTypes;
-    QMap<QString, QgsFeaturePool *> mFeaturePools;
+
+  protected:
+    QgsGeometryCheckerContext *mContext;
 };
 
 

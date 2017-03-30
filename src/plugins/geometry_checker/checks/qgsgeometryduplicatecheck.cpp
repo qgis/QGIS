@@ -24,7 +24,8 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -32,15 +33,15 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
       QgsGeometry featureGeom = feature.geometry();
-      QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+      QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), mContext->tolerance );
 
       QList<QgsFeatureId> duplicates;
-      QgsFeatureIds ids = getFeaturePool( layerId )->getIntersects( featureGeom.geometry()->boundingBox() );
+      QgsFeatureIds ids = featurePool->getIntersects( featureGeom.geometry()->boundingBox() );
       for ( QgsFeatureId id : ids )
       {
         // > : only report overlaps once
@@ -49,13 +50,13 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
           continue;
         }
         QgsFeature testFeature;
-        if ( !getFeaturePool( layerId )->get( id, testFeature ) )
+        if ( !featurePool->get( id, testFeature ) )
         {
           continue;
         }
         QString errMsg;
         QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry(), &errMsg );
-        if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
+        if ( diffGeom && diffGeom->area() < mContext->tolerance )
         {
           duplicates.append( id );
         }
@@ -77,8 +78,9 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
 
 void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -91,20 +93,20 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
   else if ( method == RemoveDuplicates )
   {
     QgsGeometry featureGeom = feature.geometry();
-    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), mContext->tolerance );
 
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
     for ( QgsFeatureId id : duplicateError->duplicates() )
     {
       QgsFeature testFeature;
-      if ( !getFeaturePool( error->layerId() )->get( id, testFeature ) )
+      if ( !featurePool->get( id, testFeature ) )
       {
         continue;
       }
-      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( testFeature.geometry().geometry() );
-      if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
+      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry() );
+      if ( diffGeom && diffGeom->area() < mContext->tolerance )
       {
-        getFeaturePool( error->layerId() )->deleteFeature( testFeature );
+        featurePool->deleteFeature( testFeature );
         changes[error->layerId()][id].append( Change( ChangeFeature, ChangeRemoved ) );
       }
 

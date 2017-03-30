@@ -18,43 +18,13 @@
 #include "qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-QgsGeometryCheckPrecision::QgsGeometryCheckPrecision()
-{
-  mPrecision = 10;
-  mReducedPrecision = 6;
-}
 
-QgsGeometryCheckPrecision *QgsGeometryCheckPrecision::get()
-{
-  static QgsGeometryCheckPrecision sInstance;
-  return &sInstance;
-}
-
-void QgsGeometryCheckPrecision::setPrecision( int tolerance )
-{
-  get()->mPrecision = tolerance;
-  get()->mReducedPrecision = tolerance / 2;
-}
-
-int QgsGeometryCheckPrecision::precision()
-{
-  return get()->mPrecision;
-}
-
-int QgsGeometryCheckPrecision::reducedPrecision()
-{
-  return get()->mReducedPrecision;
-}
-
-double QgsGeometryCheckPrecision::tolerance()
-{
-  return std::pow( 10, -get()->mPrecision );
-}
-
-double QgsGeometryCheckPrecision::reducedTolerance()
-{
-  return std::pow( 10, -get()->mReducedPrecision );
-}
+QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QString &_crs, const QMap<QString, QgsFeaturePool *> &_featurePools )
+  : tolerance( qPow( 10, -_precision ) )
+  , reducedTolerance( qPow( 10, -_precision / 2 ) )
+  , crs( _crs )
+  , featurePools( _featurePools )
+{}
 
 QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
     QgsFeatureId featureId,
@@ -74,7 +44,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, con
 QgsAbstractGeometry *QgsGeometryCheckError::geometry()
 {
   QgsFeature f;
-  if ( mCheck->getFeaturePool( layerId() )->get( featureId(), f ) && f.hasGeometry() )
+  if ( mCheck->getContext()->featurePools[ layerId() ]->get( featureId(), f ) && f.hasGeometry() )
   {
     QgsGeometry featureGeom = f.geometry();
     QgsAbstractGeometry *geom = featureGeom.geometry();
@@ -152,7 +122,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
 QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const
 {
   QMap<QString, QgsFeatureIds> featureIds;
-  for ( QgsFeaturePool *pool : mFeaturePools )
+  for ( QgsFeaturePool *pool : mContext->featurePools )
   {
     featureIds.insert( pool->getLayer()->id(), pool->getFeatureIds() );
   }
@@ -161,6 +131,7 @@ QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const
 
 void QgsGeometryCheck::replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
@@ -177,11 +148,12 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( const QString &layerId, QgsFe
     feature.setGeometry( QgsGeometry( newPartGeom ) );
     changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
   }
-  mFeaturePools[layerId]->updateFeature( feature );
+  featurePool->updateFeature( feature );
 }
 
 void QgsGeometryCheck::deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
@@ -189,25 +161,26 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( const QString &layerId, QgsFea
     static_cast<QgsGeometryCollection *>( geom )->removeGeometry( partIdx );
     if ( static_cast<QgsGeometryCollection *>( geom )->numGeometries() == 0 )
     {
-      mFeaturePools[layerId]->deleteFeature( feature );
+      featurePool->deleteFeature( feature );
       changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
     }
     else
     {
       feature.setGeometry( featureGeom );
-      mFeaturePools[layerId]->updateFeature( feature );
+      featurePool->updateFeature( feature );
       changes[layerId][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( partIdx ) ) );
     }
   }
   else
   {
-    mFeaturePools[layerId]->deleteFeature( feature );
+    featurePool->deleteFeature( feature );
     changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
   }
 }
 
 void QgsGeometryCheck::deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *partGeom = QgsGeometryCheckerUtils::getGeomPart( featureGeom.geometry(), partIdx );
   if ( dynamic_cast<QgsCurvePolygon *>( partGeom ) )
@@ -221,7 +194,7 @@ void QgsGeometryCheck::deleteFeatureGeometryRing( const QString &layerId, QgsFea
     {
       static_cast<QgsCurvePolygon *>( partGeom )->removeInteriorRing( ringIdx - 1 );
       feature.setGeometry( featureGeom );
-      mFeaturePools[layerId]->updateFeature( feature );
+      featurePool->updateFeature( feature );
       changes[layerId][feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( partIdx, ringIdx ) ) );
     }
   }

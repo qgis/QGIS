@@ -24,7 +24,7 @@
 
 typedef qint64 QgsFeatureId;
 typedef QSet<QgsFeatureId> QgsFeatureIds;
-class QgsFeaturePool;
+struct QgsGeometryCheckerContext;
 class QgsGeometryCheck;
 class QgsGeometryCheckError;
 class QgsMapLayer;
@@ -35,13 +35,14 @@ class QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, const QMap<QString, QgsFeaturePool *> &featurePools );
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context );
     ~QgsGeometryChecker();
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
     const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
     QStringList getMessages() const { return mMessages; }
     void setMergeAttributeIndices( const QMap<QString, int> &mergeAttributeIndices ) { mMergeAttributeIndices = mergeAttributeIndices; }
+    QgsGeometryCheckerContext *getContext() const { return mContext; }
 
   signals:
     void errorAdded( QgsGeometryCheckError *error );
@@ -59,7 +60,7 @@ class QgsGeometryChecker : public QObject
     };
 
     QList<QgsGeometryCheck *> mChecks;
-    QMap<QString, QgsFeaturePool *> mFeaturePools;
+    QgsGeometryCheckerContext *mContext;
     QList<QgsGeometryCheckError *> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;

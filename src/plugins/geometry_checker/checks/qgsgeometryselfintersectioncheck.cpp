@@ -65,7 +65,8 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -73,7 +74,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -84,7 +85,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
       {
         for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
         {
-          for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, QgsGeometryCheckPrecision::tolerance() ) )
+          for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, mContext->tolerance ) )
           {
             errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerId, featureid, inter.point, QgsVertexId( iPart, iRing ), inter ) );
           }
@@ -96,8 +97,9 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
 
 void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -127,7 +129,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
   QgsPoint p2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment1 + 1 ) % nVerts ) );
   QgsPoint q2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment2 + 1 ) % nVerts ) );
   QgsPoint s;
-  if ( !QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, s, QgsGeometryCheckPrecision::tolerance() ) )
+  if ( !QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, s, mContext->tolerance ) )
   {
     error->setObsolete();
     return;
@@ -202,7 +204,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeAdded, QgsVertexId( vidx.part, poly->ringCount() - 2 ) ) );
         changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeAdded, QgsVertexId( vidx.part, poly->ringCount() - 1 ) ) );
         feature.setGeometry( featureGeom );
-        getFeaturePool( error->layerId() )->updateFeature( feature );
+        featurePool->updateFeature( feature );
       }
       else
       {
@@ -214,8 +216,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QgsGeometryEngine *geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, QgsGeometryCheckPrecision::tolerance() );
-        QgsGeometryEngine *geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
+        QgsGeometryEngine *geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
+        QgsGeometryEngine *geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )
@@ -241,7 +243,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
             changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
             changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geom->partCount() - 1 ) ) );
             feature.setGeometry( featureGeom );
-            getFeaturePool( error->layerId() )->updateFeature( feature );
+            featurePool->updateFeature( feature );
           }
           // Otherwise, create multipolygon
           else
@@ -250,7 +252,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2 );
             feature.setGeometry( QgsGeometry( multiPoly ) );
-            getFeaturePool( error->layerId() )->updateFeature( feature );
+            featurePool->updateFeature( feature );
             changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
           }
         }
@@ -259,8 +261,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           QgsFeature newFeature;
           newFeature.setAttributes( feature.attributes() );
           newFeature.setGeometry( QgsGeometry( poly2 ) );
-          getFeaturePool( error->layerId() )->updateFeature( feature );
-          getFeaturePool( error->layerId() )->addFeature( newFeature );
+          featurePool->updateFeature( feature );
+          featurePool->addFeature( newFeature );
           changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
           changes[error->layerId()][newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
         }
@@ -276,7 +278,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
-          getFeaturePool( error->layerId() )->updateFeature( feature );
+          featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( vidx.part ) ) );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geomCollection->partCount() - 2 ) ) );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geomCollection->partCount() - 1 ) ) );
@@ -287,7 +289,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
           feature.setGeometry( QgsGeometry( geomCollection ) );
-          getFeaturePool( error->layerId() )->updateFeature( feature );
+          featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
         }
       }
@@ -299,20 +301,20 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1 );
           feature.setGeometry( featureGeom );
-          getFeaturePool( error->layerId() )->updateFeature( feature );
+          featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( vidx.part ) ) );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geomCollection->partCount() - 1 ) ) );
         }
         else
         {
           feature.setGeometry( QgsGeometry( ringGeom1 ) );
-          getFeaturePool( error->layerId() )->updateFeature( feature );
+          featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged, QgsVertexId( vidx.part ) ) );
         }
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
         newFeature.setGeometry( QgsGeometry( ringGeom2 ) );
-        getFeaturePool( error->layerId() )->addFeature( newFeature );
+        featurePool->addFeature( newFeature );
         changes[error->layerId()][newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
     }

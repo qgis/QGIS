@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-46</y>
+        <y>-106</y>
         <width>626</width>
-        <height>804</height>
+        <height>832</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -549,10 +549,7 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>2</number>
-            </property>
+           <layout class="QGridLayout" name="gridLayout_10">
             <property name="leftMargin">
              <number>2</number>
             </property>
@@ -565,14 +562,7 @@
             <property name="bottomMargin">
              <number>2</number>
             </property>
-            <item>
-             <widget class="QLabel" name="labelTolerance">
-              <property name="text">
-               <string>Tolerance</string>
-              </property>
-             </widget>
-            </item>
-            <item>
+            <item row="0" column="1">
              <widget class="QSpinBox" name="spinBoxTolerance">
               <property name="prefix">
                <string notr="true">1E-</string>
@@ -587,6 +577,23 @@
                <number>8</number>
               </property>
              </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="labelTolerance">
+              <property name="text">
+               <string>Tolerance</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="labelTopologyCrs">
+              <property name="text">
+               <string>CRS for topology checks:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="comboBoxTopologyCrs"/>
             </item>
            </layout>
           </item>

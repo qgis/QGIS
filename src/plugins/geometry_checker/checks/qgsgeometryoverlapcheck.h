@@ -39,8 +39,8 @@ class QgsGeometryOverlapCheckError : public QgsGeometryCheckError
              other->layerId() == layerId() &&
              other->featureId() == featureId() &&
              err->otherId() == otherId() &&
-             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), QgsGeometryCheckPrecision::reducedTolerance() ) &&
-             std::fabs( value().toDouble() - other->value().toDouble() ) < QgsGeometryCheckPrecision::reducedTolerance();
+             QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->getContext()->reducedTolerance ) &&
+             qAbs( value().toDouble() - other->value().toDouble() ) < mCheck->getContext()->reducedTolerance;
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
@@ -60,8 +60,8 @@ class QgsGeometryOverlapCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryOverlapCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double thresholdMapUnits )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, featurePools )
+    QgsGeometryOverlapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
+      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )
     , mThresholdMapUnits( thresholdMapUnits )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;

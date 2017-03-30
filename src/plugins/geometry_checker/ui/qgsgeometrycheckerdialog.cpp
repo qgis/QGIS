@@ -57,11 +57,11 @@ QgsGeometryCheckerDialog::~QgsGeometryCheckerDialog()
   s.setValue( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ), saveGeometry() );
 }
 
-void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker *checker, QMap<QString, QgsFeaturePool *> featurePools )
+void QgsGeometryCheckerDialog::onCheckerStarted( QgsGeometryChecker *checker )
 {
   delete mTabWidget->widget( 1 );
   mTabWidget->removeTab( 1 );
-  mTabWidget->addTab( new QgsGeometryCheckerResultTab( mIface, checker, featurePools, mTabWidget ), tr( "Result" ) );
+  mTabWidget->addTab( new QgsGeometryCheckerResultTab( mIface, checker, mTabWidget ), tr( "Result" ) );
   mTabWidget->setTabEnabled( 1, false );
   mButtonBox->button( QDialogButtonBox::Close )->setEnabled( false );
 }

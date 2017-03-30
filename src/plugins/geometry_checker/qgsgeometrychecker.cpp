@@ -24,9 +24,9 @@
 #include <QTimer>
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, const QMap<QString, QgsFeaturePool *> &featurePools )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context )
   : mChecks( checks )
-  , mFeaturePools( featurePools )
+  , mContext( context )
 {
 }
 
@@ -34,6 +34,13 @@ QgsGeometryChecker::~QgsGeometryChecker()
 {
   qDeleteAll( mCheckErrors );
   qDeleteAll( mChecks );
+  for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
+  {
+    if ( featurePool->getLayer() )
+      featurePool->getLayer()->setReadOnly( false );
+    delete featurePool;
+  }
+  delete mContext;
 }
 
 QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
@@ -43,7 +50,7 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
     *totalSteps = 0;
     for ( QgsGeometryCheck *check : mChecks )
     {
-      for ( const QgsFeaturePool *featurePool : mFeaturePools.values() )
+      for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
       {
         if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
         {
@@ -118,7 +125,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       if ( !removed )
       {
         QgsFeature f;
-        if ( mFeaturePools[layerId]->get( id, f ) )
+        if ( mContext->featurePools[layerId]->get( id, f ) )
         {
           recheckFeatures[layerId].insert( id );
           recheckArea.combineExtentWith( f.geometry().boundingBox() );
@@ -137,15 +144,16 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       }
     }
   }
-  recheckArea.grow( 10 * QgsGeometryCheckPrecision::tolerance() );
+  recheckArea.grow( 10 * mContext->tolerance );
   QMap<QString, QgsFeatureIds> recheckAreaFeatures;
-  for ( const QString &layerId : mFeaturePools.keys() )
+  for ( const QString &layerId : mContext->featurePools.keys() )
   {
-    recheckAreaFeatures[layerId] = mFeaturePools[layerId]->getIntersects( recheckArea );
+    QgsFeaturePool *featurePool = mContext->featurePools[layerId];
+    recheckAreaFeatures[layerId] = featurePool->getIntersects( recheckArea );
     // If only selected features were checked, confine the recheck areas to the selected features
-    if ( mFeaturePools[layerId]->getSelectedOnly() )
+    if ( featurePool->getSelectedOnly() )
     {
-      recheckAreaFeatures[layerId] = recheckAreaFeatures[layerId].intersect( mFeaturePools[layerId]->getLayer()->selectedFeatureIds() );
+      recheckAreaFeatures[layerId] = recheckAreaFeatures[layerId].intersect( featurePool->getLayer()->selectedFeatureIds() );
     }
   }
 
@@ -249,7 +257,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     for ( const QString &layerId : changes.keys() )
     {
-      mFeaturePools[layerId]->getLayer()->triggerRepaint();
+      mContext->featurePools[layerId]->getLayer()->triggerRepaint();
     }
   }
 

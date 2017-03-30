@@ -48,8 +48,8 @@ class QgsGeometryTypeCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryTypeCheck( const QMap<QString, QgsFeaturePool *> &featurePools, int allowedTypes )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, featurePools )
+    QgsGeometryTypeCheck( QgsGeometryCheckerContext *context, int allowedTypes )
+      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mAllowedTypes( allowedTypes )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;

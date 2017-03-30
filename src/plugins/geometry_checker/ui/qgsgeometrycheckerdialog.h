@@ -45,7 +45,7 @@ class QgsGeometryCheckerDialog : public QDialog
     void closeEvent( QCloseEvent *ev ) override;
 
   private slots:
-    void onCheckerStarted( QgsGeometryChecker *checker, QMap<QString, QgsFeaturePool *> featurePools );
+    void onCheckerStarted( QgsGeometryChecker *checker );
     void onCheckerFinished( bool successful );
     void showHelp();
 };

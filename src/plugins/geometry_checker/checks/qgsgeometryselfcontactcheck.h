@@ -15,8 +15,8 @@ class QgsGeometrySelfContactCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometrySelfContactCheck( const QMap<QString, QgsFeaturePool *> &featurePools )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, featurePools ) {}
+    QgsGeometrySelfContactCheck( QgsGeometryCheckerContext *context )
+      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context ) {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const;
     void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const;
     QStringList getResolutionMethods() const;

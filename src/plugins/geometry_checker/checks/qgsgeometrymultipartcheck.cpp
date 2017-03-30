@@ -21,7 +21,8 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -29,7 +30,7 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -47,8 +48,9 @@ void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &e
 
 void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -71,13 +73,13 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int meth
   else if ( method == ConvertToSingle )
   {
     feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
-    getFeaturePool( error->layerId() )->updateFeature( feature );
+    featurePool->updateFeature( feature );
     error->setFixed( method );
     changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
   }
   else if ( method == RemoveObject )
   {
-    getFeaturePool( error->layerId() )->deleteFeature( feature );
+    featurePool->deleteFeature( feature );
     error->setFixed( method );
     changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
   }

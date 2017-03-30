@@ -22,7 +22,8 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -30,7 +31,7 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -77,8 +78,9 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
 
 void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -140,14 +142,14 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
     else
     {
       changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );
-      if ( QgsGeometryUtils::sqrDistance2D( p1, p3 ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance()
-           && QgsGeometryCheckerUtils::canDeleteVertex( geometry, vidx.part, vidx.ring ) &&
+      if ( QgsGeometryUtils::sqrDistance2D( p1, p3 ) < mContext->tolerance &&
+           QgsGeometryCheckerUtils::canDeleteVertex( geometry, vidx.part, vidx.ring ) &&
            geometry->deleteVertex( error->vidx() ) ) // error->vidx points to p3 after removing p2
       {
         changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) ) );
       }
       feature.setGeometry( g );
-      getFeaturePool( error->layerId() )->updateFeature( feature );
+      featurePool->updateFeature( feature );
       error->setFixed( method );
     }
   }

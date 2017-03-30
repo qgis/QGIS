@@ -25,8 +25,8 @@ class QgsGeometryAreaCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryAreaCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double thresholdMapUnits )
-      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, featurePools )
+    QgsGeometryAreaCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
+      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, context )
     , mThresholdMapUnits( thresholdMapUnits )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
@@ -37,7 +37,7 @@ class QgsGeometryAreaCheck : public QgsGeometryCheck
   private:
     enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
 
-    virtual bool checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const;
+    virtual bool checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const;
     bool mergeWithNeighbor( const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const;
 
   protected:

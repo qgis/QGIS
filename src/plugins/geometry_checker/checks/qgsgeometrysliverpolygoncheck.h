@@ -23,8 +23,8 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
     Q_OBJECT
 
   public:
-    QgsGeometrySliverPolygonCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double threshold, double maxAreaMapUnits )
-      : QgsGeometryAreaCheck( featurePools, threshold )
+    QgsGeometrySliverPolygonCheck( QgsGeometryCheckerContext *context, double threshold, double maxAreaMapUnits )
+      : QgsGeometryAreaCheck( context, threshold )
       , mMaxAreaMapUnits( maxAreaMapUnits )
     {}
     QString errorDescription() const override { return tr( "Sliver polygon" ); }
@@ -33,7 +33,7 @@ class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
   private:
     double mMaxAreaMapUnits;
 
-    bool checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const override;
+    bool checkThreshold( double mapToLayerUnits, const QgsAbstractGeometry *geom, double &value ) const override;
 };
 
 #endif // QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H

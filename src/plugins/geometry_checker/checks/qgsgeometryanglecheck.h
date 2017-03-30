@@ -23,8 +23,8 @@ class QgsGeometryAngleCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryAngleCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double minAngle )
-      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, featurePools )
+    QgsGeometryAngleCheck( QgsGeometryCheckerContext *context, double minAngle )
+      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, context )
     , mMinAngle( minAngle )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;

@@ -23,7 +23,7 @@
 
 class QgisInterface;
 class QgsGeometryCheckError;
-class QgsFeaturePool;
+class QgsGeometryChecker;
 
 class QgsGeometryCheckerFixSummaryDialog : public QDialog
 {
@@ -41,14 +41,14 @@ class QgsGeometryCheckerFixSummaryDialog : public QDialog
       }
     };
 
-    QgsGeometryCheckerFixSummaryDialog( const QMap<QString, QgsFeaturePool *> &featurePools, const Statistics &stats, const QStringList &messages, QWidget *parent = nullptr );
+    QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent = nullptr );
 
   signals:
     void errorSelected( QgsGeometryCheckError *error );
 
   private:
     Ui::QgsGeometryCheckerFixSummaryDialog ui;
-    QMap<QString, QgsFeaturePool *> mFeaturePools;
+    QgsGeometryChecker *mChecker;
 
     void addError( QTableWidget *table, QgsGeometryCheckError *error );
     void setupTable( QTableWidget *table );

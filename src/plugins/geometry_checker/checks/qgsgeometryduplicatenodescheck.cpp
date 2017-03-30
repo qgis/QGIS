@@ -22,7 +22,8 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -30,7 +31,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -48,7 +49,7 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
           {
             QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
             QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-            if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
+            if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < mContext->tolerance )
             {
               errors.append( new QgsGeometryCheckError( this, layerId, featureid, pj, QgsVertexId( iPart, iRing, jVert ) ) );
             }
@@ -61,8 +62,9 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
 
 void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -80,14 +82,9 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int
 
   // Check if error still applies
   int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, vidx.part, vidx.ring );
-  if ( nVerts == 0 )
-  {
-    error->setObsolete();
-    return;
-  }
   QgsPoint pi = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + nVerts - 1 ) % nVerts ) );
   QgsPoint pj = geom->vertexAt( error->vidx() );
-  if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) >= QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
+  if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) >= mContext->tolerance )
   {
     error->setObsolete();
     return;
@@ -111,7 +108,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int
     else
     {
       feature.setGeometry( featureGeom );
-      getFeaturePool( error->layerId() )->updateFeature( feature );
+      featurePool->updateFeature( feature );
       error->setFixed( method );
       changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, error->vidx() ) );
     }

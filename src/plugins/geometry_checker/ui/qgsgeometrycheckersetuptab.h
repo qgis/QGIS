@@ -35,7 +35,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     ~QgsGeometryCheckerSetupTab();
 
   signals:
-    void checkerStarted( QgsGeometryChecker *checker, QMap<QString, QgsFeaturePool *> featurePools );
+    void checkerStarted( QgsGeometryChecker *checker );
     void checkerFinished( bool );
 
   private:
@@ -51,7 +51,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     void runChecks();
     void updateLayers();
     void validateInput();
-    void selectOutputFile();
+    void selectOutputDirectory();
     void showCancelFeedback();
 };
 

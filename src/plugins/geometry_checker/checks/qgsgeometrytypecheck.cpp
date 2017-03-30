@@ -28,7 +28,8 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   for ( const QString &layerId : featureIds.keys() )
   {
-    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
+    if ( !getCompatibility( featurePool->getLayer()->geometryType() ) )
     {
       continue;
     }
@@ -36,7 +37,7 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
     {
       if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      if ( !featurePool->get( featureid, feature ) )
       {
         continue;
       }
@@ -54,8 +55,9 @@ void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
 
 void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
+  QgsFeaturePool *featurePool = mContext->featurePools[ error->layerId() ];
   QgsFeature feature;
-  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
+  if ( !featurePool->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -87,12 +89,12 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
         newFeature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone() ) );
-        getFeaturePool( error->layerId() )->addFeature( newFeature );
+        featurePool->addFeature( newFeature );
         changes[error->layerId()][newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
       // Recycle feature for part 0
       feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
-      getFeaturePool( error->layerId() )->updateFeature( feature );
+      featurePool->updateFeature( feature );
       changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed
@@ -138,21 +140,21 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
         geomCollection->addGeometry( geom->clone() );
 
         feature.setGeometry( QgsGeometry( geomCollection ) );
-        getFeaturePool( error->layerId() )->updateFeature( feature );
+        featurePool->updateFeature( feature );
         changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
       }
     }
     // Delete feature
     else
     {
-      getFeaturePool( error->layerId() )->deleteFeature( feature );
+      featurePool->deleteFeature( feature );
       changes[error->layerId()][error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
     }
     error->setFixed( method );
   }
   else if ( method == Delete )
   {
-    getFeaturePool( error->layerId() )->deleteFeature( feature );
+    featurePool->deleteFeature( feature );
     error->setFixed( method );
     changes[error->layerId()][error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
   }

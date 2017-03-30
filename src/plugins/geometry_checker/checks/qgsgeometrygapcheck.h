@@ -45,7 +45,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), QgsGeometryCheckPrecision::reducedTolerance() ) && err->neighbors() == neighbors();
+      return err && QgsGeometryCheckerUtils::pointsFuzzyEqual( err->location(), location(), mCheck->getContext()->reducedTolerance ) && err->neighbors() == neighbors();
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override
@@ -86,8 +86,8 @@ class QgsGeometryGapCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryGapCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double thresholdMapUnits )
-      : QgsGeometryCheck( LayerCheck, {QgsWkbTypes::PolygonGeometry}, featurePools )
+    QgsGeometryGapCheck( QgsGeometryCheckerContext *context, double thresholdMapUnits )
+      : QgsGeometryCheck( LayerCheck, {QgsWkbTypes::PolygonGeometry}, context )
     , mThresholdMapUnits( thresholdMapUnits )
     {}
     void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
