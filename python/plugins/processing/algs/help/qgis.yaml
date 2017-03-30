@@ -520,8 +520,14 @@ qgis:smoothgeometry: >
 
   The maximum angle parameter can be used to prevent smoothing of nodes with large angles. Any node where the angle of the segments to either side is larger then this will not be smoothed. For example, setting the maximum angle to 90 degrees or lower would preserve right angles in the geometry.
 
-qgis:snapgeometriestolayer: >
-  This algorithm snaps the geometries in a layer to the geometries in another layer. A tolerance is specified in layer units to control how close vertices need to be to the reference layer geometries before they are snapped. Snapping occurs to both vertices and edges, but snapping to a vertex is preferred. Vertices will be inserted or removed as required to make the geometries match the reference geometries.
+qgis:snapgeometries: >
+  This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries from another layer, or to geometries within the same layer.
+
+  A tolerance is specified in layer units to control how close vertices need to be to the reference layer geometries before they are snapped.
+
+  Snapping occurs to both nodes and edges. Depending on the snapping behavior, either nodes or edges will be preferred.
+
+  Vertices will be inserted or removed as required to make the geometries match the reference geometries.
 
 qgis:snappointstogrid: >
   This algorithm modifies the position of points in a vector layer, so they fall in the coordinates of a grid.
