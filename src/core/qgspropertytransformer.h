@@ -175,9 +175,9 @@ class CORE_EXPORT QgsPropertyTransformer
     //! Transformer types
     enum Type
     {
-      GenericNumericTransformer, //!< Generic transformer for numeric values (QgsGenericNumericTransformer)
-      SizeScaleTransformer, //!< Size scaling transformer (QgsSizeScaleTransformer)
-      ColorRampTransformer, //!< Color ramp transformer (QgsColorRampTransformer)
+      GenericNumericTransformerType, //!< Generic transformer for numeric values (QgsGenericNumericTransformer)
+      SizeScaleTransformerType, //!< Size scaling transformer (QgsSizeScaleTransformer)
+      ColorRampTransformerType, //!< Color ramp transformer (QgsColorRampTransformer)
     };
 
     /**
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other );
     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
-    virtual Type transformerType() const override { return GenericNumericTransformer; }
+    virtual Type transformerType() const override { return GenericNumericTransformerType; }
     virtual QgsGenericNumericTransformer *clone() override;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other );
     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
-    virtual Type transformerType() const override { return SizeScaleTransformer; }
+    virtual Type transformerType() const override { return SizeScaleTransformerType; }
     virtual QgsSizeScaleTransformer *clone() override;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
@@ -625,7 +625,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
-    virtual Type transformerType() const override { return ColorRampTransformer; }
+    virtual Type transformerType() const override { return ColorRampTransformerType; }
     virtual QgsColorRampTransformer *clone() override;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
