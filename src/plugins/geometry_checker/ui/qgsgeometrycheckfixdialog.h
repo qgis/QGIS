@@ -32,7 +32,7 @@ class QgsGeometryCheckerFixDialog : public QDialog
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker, const QList<QgsGeometryCheckError *> &errors, QgisInterface *iface, QWidget *parent = nullptr );
+    QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker, const QList<QgsGeometryCheckError *> &errors, QWidget *parent = nullptr );
 
   signals:
     void currentErrorChanged( QgsGeometryCheckError *error );
@@ -40,7 +40,6 @@ class QgsGeometryCheckerFixDialog : public QDialog
   private:
     QgsGeometryChecker *mChecker = nullptr;
     QList<QgsGeometryCheckError *> mErrors;
-    QgisInterface *mIface = nullptr;
     QGroupBox *mResolutionsBox = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
     QLabel *mStatusLabel = nullptr;

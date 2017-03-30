@@ -32,7 +32,7 @@ class QgsGeometryCheckerResultTab : public QWidget
 {
     Q_OBJECT
   public:
-    QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget *parent = nullptr );
+    QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, const QMap<QString, QgsFeaturePool *> &featurePools, QTabWidget *tabWidget, QWidget *parent = nullptr );
     ~QgsGeometryCheckerResultTab();
     void finalize();
     bool isCloseable() const { return mCloseable; }
@@ -44,10 +44,10 @@ class QgsGeometryCheckerResultTab : public QWidget
     Ui::QgsGeometryCheckerResultTab ui;
     QgisInterface *mIface = nullptr;
     QgsGeometryChecker *mChecker = nullptr;
-    QgsFeaturePool *mFeaturePool = nullptr;
+    QMap<QString, QgsFeaturePool *> mFeaturePools;
     QList<QgsRubberBand *> mCurrentRubberBands;
     QMap<QgsGeometryCheckError *, QPersistentModelIndex> mErrorMap;
-    QDialog *mAttribTableDialog = nullptr;
+    QMap<QString, QPointer<QDialog>> mAttribTableDialogs;
     int mErrorCount;
     int mFixedCount;
     bool mCloseable;
@@ -71,7 +71,7 @@ class QgsGeometryCheckerResultTab : public QWidget
     void setDefaultResolutionMethods();
     void storeDefaultResolutionMethod( int ) const;
     void checkRemovedLayer( const QStringList &ids );
-    void clearAttribTableDialog() { mAttribTableDialog = nullptr; }
+    void updateMergeAttributeIndices();
 };
 
 #endif // QGS_GEOMETRY_CHECKER_RESULT_TAB_H

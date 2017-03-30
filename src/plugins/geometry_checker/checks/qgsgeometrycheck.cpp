@@ -56,12 +56,13 @@ double QgsGeometryCheckPrecision::reducedTolerance()
   return std::pow( 10, -get()->mReducedPrecision );
 }
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
+QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId,
     QgsFeatureId featureId,
     const QgsPoint &errorLocation,
     QgsVertexId vidx,
     const QVariant &value, ValueType valueType )
   : mCheck( check )
+  , mLayerId( layerId )
   , mFeatureId( featureId )
   , mErrorLocation( errorLocation )
   , mVidx( vidx )
@@ -73,7 +74,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 QgsAbstractGeometry *QgsGeometryCheckError::geometry()
 {
   QgsFeature f;
-  if ( mCheck->getFeaturePool()->get( featureId(), f ) && f.hasGeometry() )
+  if ( mCheck->getFeaturePool( layerId() )->get( featureId(), f ) && f.hasGeometry() )
   {
     QgsGeometry featureGeom = f.geometry();
     QgsAbstractGeometry *geom = featureGeom.geometry();
@@ -89,7 +90,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
     return false;
   }
 
-  Q_FOREACH ( const QgsGeometryCheck::Change &change, changes.value( featureId() ) )
+  for ( const QgsGeometryCheck::Change &change : changes.value( layerId() ).value( featureId() ) )
   {
     if ( change.what == QgsGeometryCheck::ChangeFeature )
     {
@@ -148,7 +149,17 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
   return true;
 }
 
-void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
+QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds() const
+{
+  QMap<QString, QgsFeatureIds> featureIds;
+  for ( QgsFeaturePool *pool : mFeaturePools )
+  {
+    featureIds.insert( pool->getLayer()->id(), pool->getFeatureIds() );
+  }
+  return featureIds;
+}
+
+void QgsGeometryCheck::replaceFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
 {
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.geometry();
@@ -157,19 +168,19 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( QgsFeature &feature, int part
     QgsGeometryCollection *GeomCollection = static_cast<QgsGeometryCollection *>( geom );
     GeomCollection->removeGeometry( partIdx );
     GeomCollection->addGeometry( newPartGeom );
-    changes[feature.id()].append( Change( ChangeFeature, ChangeRemoved, QgsVertexId( partIdx ) ) );
-    changes[feature.id()].append( Change( ChangeFeature, ChangeAdded, QgsVertexId( GeomCollection->partCount() - 1 ) ) );
+    changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved, QgsVertexId( partIdx ) ) );
+    changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeAdded, QgsVertexId( GeomCollection->partCount() - 1 ) ) );
     feature.setGeometry( featureGeom );
   }
   else
   {
     feature.setGeometry( QgsGeometry( newPartGeom ) );
-    changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
+    changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
   }
-  mFeaturePool->updateFeature( feature );
+  mFeaturePools[layerId]->updateFeature( feature );
 }
 
-void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partIdx, Changes &changes ) const
+void QgsGeometryCheck::deleteFeatureGeometryPart( const QString &layerId, QgsFeature &feature, int partIdx, Changes &changes ) const
 {
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.geometry();
@@ -178,24 +189,24 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( QgsFeature &feature, int partI
     static_cast<QgsGeometryCollection *>( geom )->removeGeometry( partIdx );
     if ( static_cast<QgsGeometryCollection *>( geom )->numGeometries() == 0 )
     {
-      mFeaturePool->deleteFeature( feature );
-      changes[feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
+      mFeaturePools[layerId]->deleteFeature( feature );
+      changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
     }
     else
     {
       feature.setGeometry( featureGeom );
-      mFeaturePool->updateFeature( feature );
-      changes[feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( partIdx ) ) );
+      mFeaturePools[layerId]->updateFeature( feature );
+      changes[layerId][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( partIdx ) ) );
     }
   }
   else
   {
-    mFeaturePool->deleteFeature( feature );
-    changes[feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
+    mFeaturePools[layerId]->deleteFeature( feature );
+    changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
   }
 }
 
-void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
+void QgsGeometryCheck::deleteFeatureGeometryRing( const QString &layerId, QgsFeature &feature, int partIdx, int ringIdx, Changes &changes ) const
 {
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *partGeom = QgsGeometryCheckerUtils::getGeomPart( featureGeom.geometry(), partIdx );
@@ -204,19 +215,19 @@ void QgsGeometryCheck::deleteFeatureGeometryRing( QgsFeature &feature, int partI
     // If we delete the exterior ring of a polygon, it makes no sense to keep the interiors
     if ( ringIdx == 0 )
     {
-      deleteFeatureGeometryPart( feature, partIdx, changes );
+      deleteFeatureGeometryPart( layerId, feature, partIdx, changes );
     }
     else
     {
       static_cast<QgsCurvePolygon *>( partGeom )->removeInteriorRing( ringIdx - 1 );
       feature.setGeometry( featureGeom );
-      mFeaturePool->updateFeature( feature );
-      changes[feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( partIdx, ringIdx ) ) );
+      mFeaturePools[layerId]->updateFeature( feature );
+      changes[layerId][feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( partIdx, ringIdx ) ) );
     }
   }
   // Other geometry types do not have rings, remove the entire part
   else
   {
-    deleteFeatureGeometryPart( feature, partIdx, changes );
+    deleteFeatureGeometryPart( layerId, feature, partIdx, changes );
   }
 }

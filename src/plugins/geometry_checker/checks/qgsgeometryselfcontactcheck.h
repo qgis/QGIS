@@ -15,10 +15,10 @@ class QgsGeometrySelfContactCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometrySelfContactCheck( QgsFeaturePool *featurePool )
-      : QgsGeometryCheck( FeatureNodeCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QgsFeatureIds &ids = QgsFeatureIds() ) const;
-    void fixError( QgsGeometryCheckError *error, int method, int, Changes & ) const;
+    QgsGeometrySelfContactCheck( const QMap<QString, QgsFeaturePool *> &featurePools )
+      : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, featurePools ) {}
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = 0, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const;
+    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes & ) const;
     QStringList getResolutionMethods() const;
     QString errorDescription() const { return tr( "Self contact" ); }
     QString errorName() const { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }

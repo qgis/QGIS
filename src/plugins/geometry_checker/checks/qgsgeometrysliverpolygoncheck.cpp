@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgeometrysliverpolygoncheck.h
+    qgsgeometryareacheck.cpp
     ---------------------
     begin                : September 2015
     copyright            : (C) 2014 by Sandro Mani / Sourcepole AG
@@ -13,27 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
-#define QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
+#include "qgsgeometrysliverpolygoncheck.h"
+#include "../utils/qgsfeaturepool.h"
 
-#include "qgsgeometryareacheck.h"
-
-class QgsGeometrySliverPolygonCheck : public QgsGeometryAreaCheck
+bool QgsGeometrySliverPolygonCheck::checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const
 {
-    Q_OBJECT
-
-  public:
-    QgsGeometrySliverPolygonCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double threshold, double maxAreaMapUnits )
-      : QgsGeometryAreaCheck( featurePools, threshold )
-      , mMaxAreaMapUnits( maxAreaMapUnits )
-    {}
-    QString errorDescription() const override { return tr( "Sliver polygon" ); }
-    QString errorName() const override { return QStringLiteral( "QgsGeometrySliverPolygonCheck" ); }
-
-  private:
-    double mMaxAreaMapUnits;
-
-    bool checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const override;
-};
-
-#endif // QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H
+  double mapToLayerUnits = getFeaturePool( layerId )->getMapToLayerUnits();
+  double maxArea = mMaxAreaMapUnits * mapToLayerUnits * mapToLayerUnits;
+  QgsRectangle bb = geom->boundingBox();
+  double maxDim = qMax( bb.width(), bb.height() );
+  double area = geom->area();
+  value = ( maxDim * maxDim ) / area;
+  if ( maxArea > 0. && area > maxArea )
+  {
+    return false;
+  }
+  return value > mThresholdMapUnits; // the sliver threshold is actually a map unit independent number, just abusing QgsGeometryAreaCheck::mThresholdMapUnits to store it
+}

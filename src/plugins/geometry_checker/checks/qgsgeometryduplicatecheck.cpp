@@ -19,59 +19,66 @@
 #include "qgsgeometry.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-    QgsGeometry featureGeom = feature.geometry();
-    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+    for ( QgsFeatureId featureid : featureIds[layerId] )
+    {
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      {
+        continue;
+      }
+      QgsGeometry featureGeom = feature.geometry();
+      QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
-    QList<QgsFeatureId> duplicates;
-    QgsFeatureIds ids = mFeaturePool->getIntersects( featureGeom.geometry()->boundingBox() );
-    Q_FOREACH ( QgsFeatureId id, ids )
-    {
-      // > : only report overlaps once
-      if ( id >= featureid )
+      QList<QgsFeatureId> duplicates;
+      QgsFeatureIds ids = getFeaturePool( layerId )->getIntersects( featureGeom.geometry()->boundingBox() );
+      for ( QgsFeatureId id : ids )
       {
-        continue;
+        // > : only report overlaps once
+        if ( id >= featureid )
+        {
+          continue;
+        }
+        QgsFeature testFeature;
+        if ( !getFeaturePool( layerId )->get( id, testFeature ) )
+        {
+          continue;
+        }
+        QString errMsg;
+        QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry(), &errMsg );
+        if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
+        {
+          duplicates.append( id );
+        }
+        else if ( !diffGeom )
+        {
+          messages.append( tr( "Duplicate check between features %1 and %2: %3" ).arg( feature.id() ).arg( testFeature.id() ).arg( errMsg ) );
+        }
+        delete diffGeom;
       }
-      QgsFeature testFeature;
-      if ( !mFeaturePool->get( id, testFeature ) )
+      if ( !duplicates.isEmpty() )
       {
-        continue;
+        std::sort( duplicates.begin(), duplicates.end() );
+        errors.append( new QgsGeometryDuplicateCheckError( this, layerId, featureid, feature.geometry().geometry()->centroid(), duplicates ) );
       }
-      QString errMsg;
-      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( testFeature.geometry().geometry(), &errMsg );
-      if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
-      {
-        duplicates.append( id );
-      }
-      else if ( !diffGeom )
-      {
-        messages.append( tr( "Duplicate check between features %1 and %2: %3" ).arg( feature.id() ).arg( testFeature.id() ).arg( errMsg ) );
-      }
-      delete diffGeom;
+      delete geomEngine;
     }
-    if ( !duplicates.isEmpty() )
-    {
-      std::sort( duplicates.begin(), duplicates.end() );
-      errors.append( new QgsGeometryDuplicateCheckError( this, featureid, feature.geometry().geometry()->centroid(), duplicates ) );
-    }
-    delete geomEngine;
   }
 }
 
-void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -87,18 +94,18 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
     QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
 
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
-    Q_FOREACH ( QgsFeatureId id, duplicateError->duplicates() )
+    for ( QgsFeatureId id : duplicateError->duplicates() )
     {
       QgsFeature testFeature;
-      if ( !mFeaturePool->get( id, testFeature ) )
+      if ( !getFeaturePool( error->layerId() )->get( id, testFeature ) )
       {
         continue;
       }
       QgsAbstractGeometry *diffGeom = geomEngine->symDifference( testFeature.geometry().geometry() );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
-        mFeaturePool->deleteFeature( testFeature );
-        changes[id].append( Change( ChangeFeature, ChangeRemoved ) );
+        getFeaturePool( error->layerId() )->deleteFeature( testFeature );
+        changes[error->layerId()][id].append( Change( ChangeFeature, ChangeRemoved ) );
       }
 
       delete diffGeom;

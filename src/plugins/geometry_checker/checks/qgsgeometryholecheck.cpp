@@ -16,35 +16,42 @@
 #include "qgsgeometryholecheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-
-    QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry *geom = featureGeom.geometry();
-    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      // Rings after the first one are interiors
-      for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
       {
-        errors.append( new QgsGeometryCheckError( this, featureid, QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
+        continue;
+      }
+
+      QgsGeometry featureGeom = feature.geometry();
+      QgsAbstractGeometry *geom = featureGeom.geometry();
+      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+      {
+        // Rings after the first one are interiors
+        for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+        {
+          errors.append( new QgsGeometryCheckError( this, layerId, featureid, QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid(), QgsVertexId( iPart, iRing ) ) );
+        }
       }
     }
   }
 }
 
-void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -67,7 +74,7 @@ void QgsGeometryHoleCheck::fixError( QgsGeometryCheckError *error, int method, i
   }
   else if ( method == RemoveHoles )
   {
-    deleteFeatureGeometryRing( feature, vidx.part, vidx.ring, changes );
+    deleteFeatureGeometryRing( error->layerId(), feature, vidx.part, vidx.ring, changes );
     error->setFixed( method );
   }
   else

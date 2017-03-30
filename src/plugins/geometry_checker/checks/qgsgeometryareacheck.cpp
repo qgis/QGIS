@@ -18,47 +18,54 @@
 #include "qgsgeometryareacheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryAreaCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-
-    QgsGeometry g = feature.geometry();
-    QgsAbstractGeometry *geom = g.geometry();
-    if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      QgsGeometryCollection *multiGeom = static_cast<QgsGeometryCollection *>( geom );
-      for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
       {
-        double value;
-        if ( checkThreshold( multiGeom->geometryN( i ), value ) )
+        continue;
+      }
+
+      QgsGeometry g = feature.geometry();
+      QgsAbstractGeometry *geom = g.geometry();
+      if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
+      {
+        QgsGeometryCollection *multiGeom = static_cast<QgsGeometryCollection *>( geom );
+        for ( int i = 0, n = multiGeom->numGeometries(); i < n; ++i )
         {
-          errors.append( new QgsGeometryCheckError( this, featureid, multiGeom->geometryN( i )->centroid(), QgsVertexId( i ), value, QgsGeometryCheckError::ValueArea ) );
+          double value;
+          if ( checkThreshold( layerId, multiGeom->geometryN( i ), value ) )
+          {
+            errors.append( new QgsGeometryCheckError( this, layerId, featureid, multiGeom->geometryN( i )->centroid(), QgsVertexId( i ), value, QgsGeometryCheckError::ValueArea ) );
+          }
         }
       }
-    }
-    else
-    {
-      double value;
-      if ( checkThreshold( geom, value ) )
+      else
       {
-        errors.append( new QgsGeometryCheckError( this, featureid, geom->centroid(), QgsVertexId( 0 ), value, QgsGeometryCheckError::ValueArea ) );
+        double value;
+        if ( checkThreshold( layerId, geom, value ) )
+        {
+          errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->centroid(), QgsVertexId( 0 ), value, QgsGeometryCheckError::ValueArea ) );
+        }
       }
     }
   }
 }
 
-void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const
+void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -78,7 +85,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, i
   if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
     double value;
-    if ( !checkThreshold( static_cast<QgsGeometryCollection *>( geom )->geometryN( vidx.part ), value ) )
+    if ( !checkThreshold( error->layerId(), static_cast<QgsGeometryCollection *>( geom )->geometryN( vidx.part ), value ) )
     {
       error->setObsolete();
       return;
@@ -87,7 +94,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, i
   else
   {
     double value;
-    if ( !checkThreshold( geom, value ) )
+    if ( !checkThreshold( error->layerId(), geom, value ) )
     {
       error->setObsolete();
       return;
@@ -101,13 +108,13 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, i
   }
   else if ( method == Delete )
   {
-    deleteFeatureGeometryPart( feature, vidx.part, changes );
+    deleteFeatureGeometryPart( error->layerId(), feature, vidx.part, changes );
     error->setFixed( method );
   }
   else if ( method == MergeLongestEdge || method == MergeLargestArea || method == MergeIdenticalAttribute )
   {
     QString errMsg;
-    if ( mergeWithNeighbor( feature,  vidx.part, method, mergeAttributeIndex, changes, errMsg ) )
+    if ( mergeWithNeighbor( error->layerId(), feature,  vidx.part, method, mergeAttributeIndices[error->layerId()], changes, errMsg ) )
     {
       error->setFixed( method );
     }
@@ -122,20 +129,28 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, i
   }
 }
 
-bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
+bool QgsGeometryAreaCheck::checkThreshold( const QString &layerId, const QgsAbstractGeometry *geom, double &value ) const
+{
+  value = geom->area();
+  double mapToLayerUnits = getFeaturePool( layerId )->getMapToLayerUnits();
+  double threshold = mThresholdMapUnits * mapToLayerUnits * mapToLayerUnits;
+  return value < threshold;
+}
+
+bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
 {
   double maxVal = 0.;
   QgsFeature mergeFeature;
   int mergePartIdx = -1;
   bool matchFound = false;
-  QgsGeometry g = feature.geometry();;
+  QgsGeometry g = feature.geometry();
   QgsAbstractGeometry *geom = g.geometry();
 
   // Search for touching neighboring geometries
-  Q_FOREACH ( QgsFeatureId testId, mFeaturePool->getIntersects( g.boundingBox() ) )
+  for ( QgsFeatureId testId : getFeaturePool( layerId )->getIntersects( g.boundingBox() ) )
   {
     QgsFeature testFeature;
-    if ( !mFeaturePool->get( testId, testFeature ) )
+    if ( !getFeaturePool( layerId )->get( testId, testFeature ) )
     {
       continue;
     }
@@ -210,9 +225,9 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( QgsFeature &feature, int partIdx, 
   {
     --mergePartIdx;
   }
-  replaceFeatureGeometryPart( mergeFeature, mergePartIdx, combinedGeom, changes );
+  replaceFeatureGeometryPart( layerId, mergeFeature, mergePartIdx, combinedGeom, changes );
   // Remove polygon from source geometry
-  deleteFeatureGeometryPart( feature, partIdx, changes );
+  deleteFeatureGeometryPart( layerId, feature, partIdx, changes );
 
   return true;
 }

@@ -24,10 +24,9 @@
 #include <QTimer>
 
 
-QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsFeaturePool *featurePool )
+QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, const QMap<QString, QgsFeaturePool *> &featurePools )
   : mChecks( checks )
-  , mFeaturePool( featurePool )
-  , mMergeAttributeIndex( -1 )
+  , mFeaturePools( featurePools )
 {
 }
 
@@ -42,16 +41,18 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
   if ( totalSteps )
   {
     *totalSteps = 0;
-    int nCheckFeatures = mFeaturePool->getFeatureIds().size();
-    Q_FOREACH ( QgsGeometryCheck *check, mChecks )
+    for ( QgsGeometryCheck *check : mChecks )
     {
-      if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
+      for ( const QgsFeaturePool *featurePool : mFeaturePools.values() )
       {
-        *totalSteps += nCheckFeatures;
-      }
-      else
-      {
-        *totalSteps += 1;
+        if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
+        {
+          *totalSteps += check->getCompatibility( featurePool->getLayer()->geometryType() ) ? featurePool->getFeatureIds().size() : 0;
+        }
+        else
+        {
+          *totalSteps += 1;
+        }
       }
     }
   }
@@ -74,7 +75,7 @@ void QgsGeometryChecker::emitProgressValue()
   emit progressValue( mProgressCounter );
 }
 
-bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
+bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint )
 {
   mMessages.clear();
   if ( error->status() >= QgsGeometryCheckError::StatusFixed )
@@ -85,7 +86,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
   QgsGeometryCheck::Changes changes;
   QgsRectangle recheckArea = error->affectedAreaBBox();
 
-  error->check()->fixError( error, method, mMergeAttributeIndex, changes );
+  error->check()->fixError( error, method, mMergeAttributeIndices, changes );
   emit errorUpdated( error, true );
   if ( error->status() != QgsGeometryCheckError::StatusFixed )
   {
@@ -99,30 +100,34 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
 
   // Determine what to recheck
   // - Collect all features which were changed, get affected area
-  QgsFeatureIds recheckFeatures;
-  Q_FOREACH ( QgsFeatureId id, changes.keys() )
+  QMap<QString, QSet<QgsFeatureId>> recheckFeatures;
+  for ( const QString &layerId : changes.keys() )
   {
-    bool removed = false;
-    Q_FOREACH ( const QgsGeometryCheck::Change &change, changes.value( id ) )
+    const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = changes[layerId];
+    for ( QgsFeatureId id : layerChanges.keys() )
     {
-      if ( change.what == QgsGeometryCheck::ChangeFeature && change.type == QgsGeometryCheck::ChangeRemoved )
+      bool removed = false;
+      for ( const QgsGeometryCheck::Change &change : layerChanges.value( id ) )
       {
-        removed = true;
-        break;
+        if ( change.what == QgsGeometryCheck::ChangeFeature && change.type == QgsGeometryCheck::ChangeRemoved )
+        {
+          removed = true;
+          break;
+        }
       }
-    }
-    if ( !removed )
-    {
-      QgsFeature f;
-      if ( mFeaturePool->get( id, f ) )
+      if ( !removed )
       {
-        recheckFeatures.insert( id );
-        recheckArea.combineExtentWith( f.geometry().boundingBox() );
+        QgsFeature f;
+        if ( mFeaturePools[layerId]->get( id, f ) )
+        {
+          recheckFeatures[layerId].insert( id );
+          recheckArea.combineExtentWith( f.geometry().boundingBox() );
+        }
       }
     }
   }
   // - Determine extent to recheck for gaps
-  Q_FOREACH ( QgsGeometryCheckError *err, mCheckErrors )
+  for ( QgsGeometryCheckError *err : mCheckErrors )
   {
     if ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -133,17 +138,20 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
     }
   }
   recheckArea.grow( 10 * QgsGeometryCheckPrecision::tolerance() );
-  QgsFeatureIds recheckAreaFeatures = mFeaturePool->getIntersects( recheckArea );
-
-  // If only selected features were checked, confine the recheck areas to the selected features
-  if ( mFeaturePool->getSelectedOnly() )
+  QMap<QString, QgsFeatureIds> recheckAreaFeatures;
+  for ( const QString &layerId : mFeaturePools.keys() )
   {
-    recheckAreaFeatures = recheckAreaFeatures.intersect( mFeaturePool->getLayer()->selectedFeatureIds() );
+    recheckAreaFeatures[layerId] = mFeaturePools[layerId]->getIntersects( recheckArea );
+    // If only selected features were checked, confine the recheck areas to the selected features
+    if ( mFeaturePools[layerId]->getSelectedOnly() )
+    {
+      recheckAreaFeatures[layerId] = recheckAreaFeatures[layerId].intersect( mFeaturePools[layerId]->getLayer()->selectedFeatureIds() );
+    }
   }
 
   // Recheck feature / changed area to detect new errors
   QList<QgsGeometryCheckError *> recheckErrors;
-  Q_FOREACH ( const QgsGeometryCheck *check, mChecks )
+  for ( const QgsGeometryCheck *check : mChecks )
   {
     if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -158,7 +166,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
   // Remove just-fixed error from newly-found errors if no changes occurred (needed in case error was fixed with "no change")
   if ( changes.isEmpty() )
   {
-    Q_FOREACH ( QgsGeometryCheckError *recheckErr, recheckErrors )
+    for ( QgsGeometryCheckError *recheckErr : recheckErrors )
     {
       if ( recheckErr->isEqual( error ) )
       {
@@ -170,7 +178,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
   }
 
   // Go through error list, update other errors of the checked feature
-  Q_FOREACH ( QgsGeometryCheckError *err, mCheckErrors )
+  for ( QgsGeometryCheckError *err : mCheckErrors )
   {
     if ( err == error || err->status() == QgsGeometryCheckError::StatusObsolete )
     {
@@ -190,7 +198,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
     // Check if this error now matches one found when rechecking the feature/area
     QgsGeometryCheckError *matchErr = nullptr;
     int nMatch = 0;
-    Q_FOREACH ( QgsGeometryCheckError *recheckErr, recheckErrors )
+    for ( QgsGeometryCheckError *recheckErr : recheckErrors )
     {
       if ( recheckErr->isEqual( err ) )
       {
@@ -219,7 +227,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
     if ( err->status() < QgsGeometryCheckError::StatusFixed &&
          (
            // it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked
-           ( err->check()->getCheckType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures.contains( err->featureId() ) ) ||
+           ( err->check()->getCheckType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures[err->layerId()].contains( err->featureId() ) ) ||
            // or if it is a LayerCheck error within the rechecked area
            ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck && recheckArea.contains( err->affectedAreaBBox() ) )
          )
@@ -231,18 +239,21 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method )
   }
 
   // Add new errors
-  Q_FOREACH ( QgsGeometryCheckError *recheckErr, recheckErrors )
+  for ( QgsGeometryCheckError *recheckErr : recheckErrors )
   {
     emit errorAdded( recheckErr );
     mCheckErrors.append( recheckErr );
   }
 
-  return true;
-}
+  if ( triggerRepaint )
+  {
+    for ( const QString &layerId : changes.keys() )
+    {
+      mFeaturePools[layerId]->getLayer()->triggerRepaint();
+    }
+  }
 
-QgsMapLayer *QgsGeometryChecker::getLayer() const
-{
-  return mFeaturePool->getLayer();
+  return true;
 }
 
 void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
@@ -255,7 +266,7 @@ void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
   mCheckErrors.append( errors );
   mMessages.append( messages );
   mErrorListMutex.unlock();
-  Q_FOREACH ( QgsGeometryCheckError *error, errors )
+  for ( QgsGeometryCheckError *error : errors )
   {
     emit errorAdded( error );
   }

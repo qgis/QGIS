@@ -35,16 +35,13 @@ class QgsGeometryChecker : public QObject
 {
     Q_OBJECT
   public:
-    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsFeaturePool *featurePool );
+    QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, const QMap<QString, QgsFeaturePool *> &featurePools );
     ~QgsGeometryChecker();
     QFuture<void> execute( int *totalSteps = nullptr );
-    bool fixError( QgsGeometryCheckError *error, int method );
-    QgsMapLayer *getLayer() const;
+    bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
     const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }
     QStringList getMessages() const { return mMessages; }
-
-  public slots:
-    void setMergeAttributeIndex( int mergeAttributeIndex ) { mMergeAttributeIndex = mergeAttributeIndex; }
+    void setMergeAttributeIndices( const QMap<QString, int> &mergeAttributeIndices ) { mMergeAttributeIndices = mergeAttributeIndices; }
 
   signals:
     void errorAdded( QgsGeometryCheckError *error );
@@ -62,11 +59,11 @@ class QgsGeometryChecker : public QObject
     };
 
     QList<QgsGeometryCheck *> mChecks;
-    QgsFeaturePool *mFeaturePool = nullptr;
+    QMap<QString, QgsFeaturePool *> mFeaturePools;
     QList<QgsGeometryCheckError *> mCheckErrors;
     QStringList mMessages;
     QMutex mErrorListMutex;
-    int mMergeAttributeIndex;
+    QMap<QString, int> mMergeAttributeIndices;
     QAtomicInt mProgressCounter;
 
     void runCheck( const QgsGeometryCheck *check );

@@ -33,12 +33,10 @@
 #include <QGridLayout>
 
 QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
-    const QList<QgsGeometryCheckError *> &errors,
-    QgisInterface *iface, QWidget *parent )
+    const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
   : QDialog( parent )
   , mChecker( checker )
   , mErrors( errors )
-  , mIface( iface )
 {
   setWindowTitle( tr( "Fix Errors" ) );
 
@@ -107,7 +105,7 @@ void QgsGeometryCheckerFixDialog::setupNextError()
 
   int id = 0;
   int checkedid = QgsSettings().value( QgsGeometryCheckerResultTab::sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-  Q_FOREACH ( const QString &method, error->check()->getResolutionMethods() )
+  for ( const QString &method : error->check()->getResolutionMethods() )
   {
     QRadioButton *radio = new QRadioButton( method );
     radio->setChecked( checkedid == id );
@@ -126,8 +124,7 @@ void QgsGeometryCheckerFixDialog::fixError()
   setCursor( Qt::WaitCursor );
 
   QgsGeometryCheckError *error = mErrors.at( 0 );
-  mChecker->fixError( error, mRadioGroup->checkedId() );
-  mChecker->getLayer()->triggerRepaint();
+  mChecker->fixError( error, mRadioGroup->checkedId(), true );
 
   unsetCursor();
 

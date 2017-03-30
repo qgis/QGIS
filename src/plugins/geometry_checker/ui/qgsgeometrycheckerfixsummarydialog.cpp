@@ -16,13 +16,13 @@
 
 #include "qgsgeometrycheckerfixsummarydialog.h"
 #include "../checks/qgsgeometrycheck.h"
+#include "../utils/qgsfeaturepool.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 
-QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInterface *iface, QgsVectorLayer *layer, const Statistics &stats, const QStringList &messages, QWidget *parent )
+QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const QMap<QString, QgsFeaturePool *> &featurePools, const Statistics &stats, const QStringList &messages, QWidget *parent )
   : QDialog( parent )
-  , mIface( iface )
-  , mLayer( layer )
+  , mFeaturePools( featurePools )
 {
   ui.setupUi( this );
 
@@ -31,19 +31,19 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInte
   ui.groupBoxNotFixed->setTitle( tr( "%1 errors were not fixed" ).arg( stats.failedErrors.count() ) );
   ui.groupBoxObsoleteErrors->setTitle( tr( "%1 errors are obsolete" ).arg( stats.obsoleteErrors.count() ) );
 
-  Q_FOREACH ( QgsGeometryCheckError *error, stats.fixedErrors )
+  for ( QgsGeometryCheckError *error : stats.fixedErrors )
   {
     addError( ui.tableWidgetFixedErrors, error );
   }
-  Q_FOREACH ( QgsGeometryCheckError *error, stats.newErrors )
+  for ( QgsGeometryCheckError *error : stats.newErrors )
   {
     addError( ui.tableWidgetNewErrors, error );
   }
-  Q_FOREACH ( QgsGeometryCheckError *error, stats.failedErrors )
+  for ( QgsGeometryCheckError *error : stats.failedErrors )
   {
     addError( ui.tableWidgetNotFixed, error );
   }
-  Q_FOREACH ( QgsGeometryCheckError *error, stats.obsoleteErrors )
+  for ( QgsGeometryCheckError *error : stats.obsoleteErrors )
   {
     addError( ui.tableWidgetObsoleteErrors, error );
   }
@@ -66,7 +66,7 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
 {
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mLayer );
+  double layerToMap = 1. / mFeaturePools[error->layerId()]->getMapToLayerUnits();
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {
@@ -116,7 +116,7 @@ void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSel
 {
   const QAbstractItemModel *model = qobject_cast<QItemSelectionModel *>( QObject::sender() )->model();
 
-  Q_FOREACH ( QTableWidget *table, QList<QTableWidget *>() << ui.tableWidgetFixedErrors << ui.tableWidgetNewErrors << ui.tableWidgetNotFixed << ui.tableWidgetObsoleteErrors )
+  for ( QTableWidget *table : QList<QTableWidget *>() << ui.tableWidgetFixedErrors << ui.tableWidgetNewErrors << ui.tableWidgetNotFixed << ui.tableWidgetObsoleteErrors )
     if ( table->model() != model )
     {
       table->selectionModel()->blockSignals( true );

@@ -23,32 +23,39 @@
 #include "../utils/qgsfeaturepool.h"
 
 
-void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryTypeCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-    QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry *geom = featureGeom.geometry();
-
-    QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
-    if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      errors.append( new QgsGeometryTypeCheckError( this, featureid, geom->centroid(), type ) );
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      {
+        continue;
+      }
+      QgsGeometry featureGeom = feature.geometry();
+      QgsAbstractGeometry *geom = featureGeom.geometry();
+
+      QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( ( mAllowedTypes & ( 1 << type ) ) == 0 )
+      {
+        errors.append( new QgsGeometryTypeCheckError( this, layerId, featureid, geom->centroid(), type ) );
+      }
     }
   }
 }
 
-void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -80,13 +87,13 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, i
         QgsFeature newFeature;
         newFeature.setAttributes( feature.attributes() );
         newFeature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->clone() ) );
-        mFeaturePool->addFeature( newFeature );
-        changes[newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
+        getFeaturePool( error->layerId() )->addFeature( newFeature );
+        changes[error->layerId()][newFeature.id()].append( Change( ChangeFeature, ChangeAdded ) );
       }
       // Recycle feature for part 0
       feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
-      mFeaturePool->updateFeature( feature );
-      changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
+      getFeaturePool( error->layerId() )->updateFeature( feature );
+      changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed
     else if ( QgsWkbTypes::isSingleType( type ) && ( ( 1 << QgsWkbTypes::multiType( type ) ) & mAllowedTypes ) != 0 )
@@ -131,23 +138,23 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, i
         geomCollection->addGeometry( geom->clone() );
 
         feature.setGeometry( QgsGeometry( geomCollection ) );
-        mFeaturePool->updateFeature( feature );
-        changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
+        getFeaturePool( error->layerId() )->updateFeature( feature );
+        changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
       }
     }
     // Delete feature
     else
     {
-      mFeaturePool->deleteFeature( feature );
-      changes[error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
+      getFeaturePool( error->layerId() )->deleteFeature( feature );
+      changes[error->layerId()][error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
     }
     error->setFixed( method );
   }
   else if ( method == Delete )
   {
-    mFeaturePool->deleteFeature( feature );
+    getFeaturePool( error->layerId() )->deleteFeature( feature );
     error->setFixed( method );
-    changes[error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
+    changes[error->layerId()][error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
   }
   else
   {

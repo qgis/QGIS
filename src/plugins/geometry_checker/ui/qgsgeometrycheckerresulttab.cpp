@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QComboBox>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QMessageBox>
@@ -27,6 +28,7 @@
 #include "../checks/qgsgeometrycheck.h"
 #include "../utils/qgsfeaturepool.h"
 
+#include "qgscrscache.h"
 #include "qgsgeometry.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
@@ -41,27 +43,35 @@
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
-QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, QgsFeaturePool *featurePool, QTabWidget *tabWidget, QWidget *parent )
+QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, const QMap<QString, QgsFeaturePool *> &featurePools, QTabWidget *tabWidget, QWidget *parent )
   : QWidget( parent )
   , mTabWidget( tabWidget )
   , mIface( iface )
   , mChecker( checker )
-  , mFeaturePool( featurePool )
+  , mFeaturePools( featurePools )
 {
   ui.setupUi( this );
   mErrorCount = 0;
   mFixedCount = 0;
   mCloseable = true;
-  mAttribTableDialog = nullptr;
 
-  for ( int i = 0, n = mFeaturePool->getLayer()->fields().count(); i < n; ++i )
+  for ( const QString &layerId : mFeaturePools.keys() )
   {
-    ui.comboBoxMergeAttribute->addItem( mFeaturePool->getLayer()->fields().at( i ).name() );
+    QTreeWidgetItem *item = new QTreeWidgetItem( ui.treeWidgetMergeAttribute, QStringList() << layerId << "" );
+    QComboBox *attribCombo = new QComboBox();
+    QgsVectorLayer *layer = mFeaturePools[layerId]->getLayer();
+    for ( int i = 0, n = layer->fields().count(); i < n; ++i )
+    {
+      attribCombo->addItem( layer->fields().at( i ).name() );
+    }
+    attribCombo->setCurrentIndex( 0 );
+    connect( attribCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateMergeAttributeIndices() ) );
+    ui.treeWidgetMergeAttribute->setItemWidget( item, 1, attribCombo );
   }
+  updateMergeAttributeIndices();
 
   connect( checker, &QgsGeometryChecker::errorAdded, this, &QgsGeometryCheckerResultTab::addError );
   connect( checker, &QgsGeometryChecker::errorUpdated, this, &QgsGeometryCheckerResultTab::updateError );
-  connect( ui.comboBoxMergeAttribute, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), checker, &QgsGeometryChecker::setMergeAttributeIndex );
   connect( ui.tableWidgetErrors->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsGeometryCheckerResultTab::onSelectionChanged );
   connect( ui.buttonGroupSelectAction, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerResultTab::highlightErrors );
   connect( ui.pushButtonOpenAttributeTable, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::openAttributeTable );
@@ -72,7 +82,16 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
-  if ( ( mFeaturePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+  bool allLayersEditable = true;
+  for ( const QgsFeaturePool *featurePool : mFeaturePools.values() )
+  {
+    if ( ( featurePool->getLayer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) == 0 )
+    {
+      allLayersEditable = false;
+      break;
+    }
+  }
+  if ( !allLayersEditable )
   {
     ui.pushButtonFixWithDefault->setEnabled( false );
     ui.pushButtonFixWithPrompt->setEnabled( false );
@@ -87,10 +106,13 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
 
 QgsGeometryCheckerResultTab::~QgsGeometryCheckerResultTab()
 {
-  if ( mFeaturePool->getLayer() )
-    mFeaturePool->getLayer()->setReadOnly( false );
+  for ( const QgsFeaturePool *featurePool : mFeaturePools.values() )
+  {
+    if ( featurePool->getLayer() )
+      featurePool->getLayer()->setReadOnly( false );
+    delete featurePool;
+  }
   delete mChecker;
-  delete mFeaturePool;
   qDeleteAll( mCurrentRubberBands );
 }
 
@@ -121,7 +143,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   int row = ui.tableWidgetErrors->rowCount();
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
+  double layerToMap = 1. / mFeaturePools[error->layerId()]->getMapToLayerUnits();
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {
@@ -169,7 +191,7 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   int row = mErrorMap.value( error ).row();
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
-  double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
+  double layerToMap = 1. / mFeaturePools[error->layerId()]->getMapToLayerUnits();
   QVariant value;
   if ( error->valueType() == QgsGeometryCheckError::ValueLength )
   {
@@ -221,7 +243,7 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
 void QgsGeometryCheckerResultTab::exportErrors()
 {
   QString initialdir;
-  QDir dir = QFileInfo( mFeaturePool->getLayer()->dataProvider()->dataSourceUri() ).dir();
+  QDir dir = QFileInfo( mFeaturePools.first()->getLayer()->dataProvider()->dataSourceUri() ).dir();
   if ( dir.exists() )
   {
     initialdir = dir.absolutePath();
@@ -241,6 +263,7 @@ void QgsGeometryCheckerResultTab::exportErrors()
 bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
 {
   QList< QPair<QString, QString> > attributes;
+  attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;10;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
 
@@ -255,7 +278,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, QStringLiteral( "ESRI Shapefile" ), mFeaturePool->getLayer()->dataProvider()->encoding(), QgsWkbTypes::Point, attributes, mFeaturePool->getLayer()->crs() ) )
+  if ( !createEmptyDataSource( file, QStringLiteral( "ESRI Shapefile" ), "UTF-8", QgsWkbTypes::Point, attributes, mIface->mapCanvas()->mapSettings().destinationCrs() ) )
   {
     return false;
   }
@@ -266,22 +289,26 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
     return false;
   }
 
+  int fieldLayer = layer->fields().lookupField( QStringLiteral( "Layer" ) );
   int fieldFeatureId = layer->fields().lookupField( QStringLiteral( "FeatureID" ) );
   int fieldErrDesc = layer->fields().lookupField( QStringLiteral( "ErrorDesc" ) );
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-
+    QgsVectorLayer *srcLayer = mFeaturePools[error->layerId()]->getLayer();
     QgsFeature f( layer->fields() );
+    f.setAttribute( fieldLayer, srcLayer->name() );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
-    f.setGeometry( QgsGeometry( error->location().clone() ) );
+    QgsGeometry geom( error->location().clone() );
+    geom.transform( QgsCoordinateTransformCache::instance()->transform( srcLayer->crs().authid(), layer->crs().authid() ) );
+    f.setGeometry( geom );
     layer->dataProvider()->addFeatures( QgsFeatureList() << f );
   }
 
   // Remove existing layer with same uri
   QStringList toRemove;
-  Q_FOREACH ( QgsMapLayer *maplayer, QgsProject::instance()->mapLayers() )
+  for ( QgsMapLayer *maplayer : QgsProject::instance()->mapLayers() )
   {
     if ( dynamic_cast<QgsVectorLayer *>( maplayer ) &&
          static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
@@ -326,16 +353,17 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
   {
     items.append( ui.tableWidgetErrors->selectedItems() );
   }
-  Q_FOREACH ( QTableWidgetItem *item, items )
+  for ( QTableWidgetItem *item : items )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( item->row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
+    QgsVectorLayer *layer = mFeaturePools[error->layerId()]->getLayer();
 
     QgsAbstractGeometry *geometry = error->geometry();
     if ( ui.checkBoxHighlight->isChecked() && geometry )
     {
       QgsRubberBand *featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
       QgsGeometry geom( geometry->clone() );
-      featureRubberBand->addGeometry( geom, mFeaturePool->getLayer() );
+      featureRubberBand->addGeometry( geom, layer );
       featureRubberBand->setWidth( 5 );
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );
@@ -350,7 +378,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     if ( ui.radioButtonError->isChecked() || current || error->status() == QgsGeometryCheckError::StatusFixed )
     {
       QgsRubberBand *pointRubberBand = new QgsRubberBand( mIface->mapCanvas(), QgsWkbTypes::PointGeometry );
-      QgsPointXY pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( mFeaturePool->getLayer(), QgsPointXY( error->location().x(), error->location().y() ) );
+      QgsPoint pos = mIface->mapCanvas()->mapSettings().layerToMapCoordinates( layer, QgsPointXY( error->location().x(), error->location().y() ) );
       pointRubberBand->addPoint( pos );
       pointRubberBand->setWidth( 20 );
       pointRubberBand->setColor( Qt::red );
@@ -359,7 +387,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     }
     else if ( ui.radioButtonFeature->isChecked() && geometry )
     {
-      QgsRectangle geomextent = mIface->mapCanvas()->mapSettings().layerExtentToOutputExtent( mFeaturePool->getLayer(), geometry->boundingBox() );
+      QgsRectangle geomextent = mIface->mapCanvas()->mapSettings().layerExtentToOutputExtent( layer, geometry->boundingBox() );
       if ( totextent.isEmpty() )
       {
         totextent = geomextent;
@@ -422,31 +450,33 @@ void QgsGeometryCheckerResultTab::onSelectionChanged( const QItemSelection &newS
 
 void QgsGeometryCheckerResultTab::openAttributeTable()
 {
-  QSet<int> ids;
-  Q_FOREACH ( QModelIndex idx, ui.tableWidgetErrors->selectionModel()->selectedRows() )
+  QMap<QString, QSet<QgsFeatureId>> ids;
+  for ( QModelIndex idx : ui.tableWidgetErrors->selectionModel()->selectedRows() )
   {
-    QgsFeatureId id = ui.tableWidgetErrors->item( idx.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>()->featureId();
+    QgsGeometryCheckError *error = ui.tableWidgetErrors->item( idx.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
+    QgsFeatureId id = error->featureId();
     if ( id >= 0 )
     {
-      ids.insert( id );
+      ids[error->layerId()].insert( id );
     }
   }
   if ( ids.isEmpty() )
   {
     return;
   }
-  QStringList expr;
-  Q_FOREACH ( int id, ids )
+  for ( const QString &layerId : ids.keys() )
   {
-    expr.append( QStringLiteral( "$id = %1 " ).arg( id ) );
+    QStringList expr;
+    for ( QgsFeatureId id : ids[layerId] )
+    {
+      expr.append( QStringLiteral( "$id = %1 " ).arg( id ) );
+    }
+    if ( mAttribTableDialogs[layerId] )
+    {
+      mAttribTableDialogs[layerId]->close();
+    }
+    mAttribTableDialogs[layerId] = mIface->showAttributeTable( mFeaturePools[layerId]->getLayer(), expr.join( QStringLiteral( " or " ) ) );
   }
-  if ( mAttribTableDialog )
-  {
-    disconnect( mAttribTableDialog, &QObject::destroyed, this, &QgsGeometryCheckerResultTab::clearAttribTableDialog );
-    mAttribTableDialog->close();
-  }
-  mAttribTableDialog = mIface->showAttributeTable( mFeaturePool->getLayer(), expr.join( QStringLiteral( " or " ) ) );
-  connect( mAttribTableDialog, &QObject::destroyed, this, &QgsGeometryCheckerResultTab::clearAttribTableDialog );
 }
 
 void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
@@ -460,7 +490,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   }
   QList<QgsGeometryCheckError *> errors;
-  Q_FOREACH ( const QModelIndex &index, rows )
+  for ( const QModelIndex &index : rows )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( index.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
     if ( error->status() < QgsGeometryCheckError::StatusFixed )
@@ -487,7 +517,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
   mCloseable = false;
   if ( prompt )
   {
-    QgsGeometryCheckerFixDialog fixdialog( mChecker, errors, mIface, mIface->mainWindow() );
+    QgsGeometryCheckerFixDialog fixdialog( mChecker, errors, mIface->mainWindow() );
     QEventLoop loop;
     connect( &fixdialog, &QgsGeometryCheckerFixDialog::currentErrorChanged, this, &QgsGeometryCheckerResultTab::highlightError );
     connect( &fixdialog, &QDialog::finished, &loop, &QEventLoop::quit );
@@ -502,7 +532,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( true );
     ui.progressBarFixErrors->setRange( 0, errors.size() );
 
-    Q_FOREACH ( QgsGeometryCheckError *error, errors )
+    for ( QgsGeometryCheckError *error : errors )
     {
       int fixMethod = QgsSettings().value( sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
       mChecker->fixError( error, fixMethod );
@@ -513,11 +543,14 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( false );
     unsetCursor();
   }
-  mChecker->getLayer()->triggerRepaint();
+  for ( const QString &layerId : mFeaturePools.keys() )
+  {
+    mFeaturePools[layerId]->getLayer()->triggerRepaint();
+  }
 
   if ( mStatistics.itemCount() > 0 )
   {
-    QgsGeometryCheckerFixSummaryDialog summarydialog( mIface, mFeaturePool->getLayer(), mStatistics, mChecker->getMessages(), mIface->mainWindow() );
+    QgsGeometryCheckerFixSummaryDialog summarydialog( mFeaturePools, mStatistics, mChecker->getMessages(), mIface->mainWindow() );
     QEventLoop loop;
     connect( &summarydialog, &QgsGeometryCheckerFixSummaryDialog::errorSelected, this, &QgsGeometryCheckerResultTab::highlightError );
     connect( &summarydialog, &QDialog::finished, &loop, &QEventLoop::quit );
@@ -559,7 +592,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
   QWidget *scrollAreaContents = new QWidget( scrollArea );
   QVBoxLayout *scrollAreaLayout = new QVBoxLayout( scrollAreaContents );
 
-  Q_FOREACH ( const QgsGeometryCheck *check, mChecker->getChecks() )
+  for ( const QgsGeometryCheck *check : mChecker->getChecks() )
   {
     QGroupBox *groupBox = new QGroupBox( scrollAreaContents );
     groupBox->setTitle( check->errorDescription() );
@@ -571,7 +604,7 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
     radioGroup->setProperty( "errorType", check->errorName() );
     int id = 0;
     int checkedId = QgsSettings().value( sSettingsGroup + check->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
-    Q_FOREACH ( const QString &method, check->getResolutionMethods() )
+    for ( const QString &method : check->getResolutionMethods() )
     {
       QRadioButton *radio = new QRadioButton( method, groupBox );
       radio->setChecked( id == checkedId );
@@ -598,15 +631,37 @@ void QgsGeometryCheckerResultTab::storeDefaultResolutionMethod( int id ) const
 
 void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
 {
-  if ( mFeaturePool->getLayer() && ids.contains( mFeaturePool->getLayer()->id() ) && isEnabled() )
+  bool requiredLayersRemoved = false;
+  for ( const QString &id : mFeaturePools.keys() )
+  {
+    if ( ids.contains( id ) && isEnabled() )
+    {
+      mFeaturePools[id]->clearLayer();
+      requiredLayersRemoved = true;
+    }
+  }
+  if ( requiredLayersRemoved )
   {
     if ( mTabWidget->currentWidget() == this )
     {
-      QMessageBox::critical( this, tr( "Layer removed" ), tr( "The layer has been removed." ) );
+      QMessageBox::critical( this, tr( "Layer removed" ), tr( "One or more layers have been removed." ) );
     }
     setEnabled( false );
-    mFeaturePool->clearLayer();
     qDeleteAll( mCurrentRubberBands );
     mCurrentRubberBands.clear();
   }
+}
+
+void QgsGeometryCheckerResultTab::updateMergeAttributeIndices()
+{
+  QMap<QString, int> mergeAttribIndices;
+  QTreeWidgetItemIterator it( ui.treeWidgetMergeAttribute );
+  while ( *it )
+  {
+    QTreeWidgetItem *item = *it;
+    QComboBox *combo = qobject_cast<QComboBox *>( ui.treeWidgetMergeAttribute->itemWidget( item, 1 ) );
+    mergeAttribIndices.insert( item->text( 0 ), combo->currentIndex() );
+    ++it;
+  }
+  mChecker->setMergeAttributeIndices( mergeAttribIndices );
 }

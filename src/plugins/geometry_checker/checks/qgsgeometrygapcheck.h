@@ -23,11 +23,12 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryGapCheckError( const QgsGeometryCheck *check,
+                              const QString &layerId,
                               QgsAbstractGeometry *geometry,
                               const QgsFeatureIds &neighbors,
                               double area,
                               const QgsRectangle &gapAreaBBox )
-      : QgsGeometryCheckError( check, FEATUREID_NULL, geometry->centroid(), QgsVertexId(), area, ValueArea )
+      : QgsGeometryCheckError( check, layerId, FEATUREID_NULL, geometry->centroid(), QgsVertexId(), area, ValueArea )
       , mNeighbors( neighbors )
       , mGapAreaBBox( gapAreaBBox )
     {
@@ -50,7 +51,7 @@ class QgsGeometryGapCheckError : public QgsGeometryCheckError
     bool closeMatch( QgsGeometryCheckError *other ) const override
     {
       QgsGeometryGapCheckError *err = dynamic_cast<QgsGeometryGapCheckError *>( other );
-      return err && err->neighbors() == neighbors();
+      return err && err->layerId() == layerId() && err->neighbors() == neighbors();
     }
 
     void update( const QgsGeometryCheckError *other ) override
@@ -85,12 +86,12 @@ class QgsGeometryGapCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryGapCheck( QgsFeaturePool *featurePool, double threshold )
-      : QgsGeometryCheck( LayerCheck, featurePool )
-      , mThreshold( threshold )
+    QgsGeometryGapCheck( const QMap<QString, QgsFeaturePool *> &featurePools, double thresholdMapUnits )
+      : QgsGeometryCheck( LayerCheck, {QgsWkbTypes::PolygonGeometry}, featurePools )
+    , mThresholdMapUnits( thresholdMapUnits )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Gap" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryGapCheck" ); }
@@ -98,7 +99,7 @@ class QgsGeometryGapCheck : public QgsGeometryCheck
   private:
     enum ResolutionMethod { MergeLongestEdge, NoChange };
 
-    double mThreshold;
+    double mThresholdMapUnits;
 
     bool mergeWithNeighbor( QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg ) const;
 };

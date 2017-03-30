@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>491</height>
+    <height>726</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-46</y>
         <width>626</width>
-        <height>726</height>
+        <height>804</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -66,9 +66,9 @@
            <number>2</number>
           </property>
           <item>
-           <widget class="QGroupBox" name="groupBoxInputLayer">
+           <widget class="QGroupBox" name="groupBoxInputLayers">
             <property name="title">
-             <string>Input vector layer</string>
+             <string>Input vector layers</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -90,7 +90,7 @@
               <number>2</number>
              </property>
              <item>
-              <widget class="QgsMapLayerComboBox" name="comboBoxInputLayer"/>
+              <widget class="QListWidget" name="listWidgetInputLayers"/>
              </item>
              <item>
               <widget class="QCheckBox" name="checkBoxInputSelectedOnly">
@@ -598,9 +598,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBoxOutputLayer">
+           <widget class="QGroupBox" name="groupBoxOutputLayers">
             <property name="title">
-             <string>Output vector layer</string>
+             <string>Output vector layers</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -621,20 +621,10 @@
              <property name="spacing">
               <number>2</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QRadioButton" name="radioButtonOutputModifyInput">
-               <property name="text">
-                <string>&amp;Modify input layer</string>
-               </property>
-               <attribute name="buttonGroup">
-                <string notr="true">buttonGroupOutput</string>
-               </attribute>
-              </widget>
-             </item>
              <item row="1" column="0">
               <widget class="QRadioButton" name="radioButtonOutputNew">
                <property name="text">
-                <string>Create &amp;new layer</string>
+                <string>Create &amp;new layers</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -644,32 +634,86 @@
                </attribute>
               </widget>
              </item>
-             <item row="1" column="1">
-              <widget class="QLineEdit" name="lineEditOutput">
-               <property name="readOnly">
-                <bool>true</bool>
+             <item row="0" column="0" colspan="3">
+              <widget class="QRadioButton" name="radioButtonOutputModifyInput">
+               <property name="text">
+                <string>&amp;Modify input layers</string>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroupOutput</string>
+               </attribute>
               </widget>
              </item>
-             <item row="1" column="2">
-              <widget class="QPushButton" name="pushButtonOutputBrowse">
-               <property name="text">
-                <string>Browse</string>
+             <item row="1" column="1">
+              <widget class="QFrame" name="frameOutput">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
                </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_9">
+                <property name="leftMargin">
+                 <number>2</number>
+                </property>
+                <property name="topMargin">
+                 <number>2</number>
+                </property>
+                <property name="rightMargin">
+                 <number>2</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>2</number>
+                </property>
+                <property name="spacing">
+                 <number>2</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="labelOutputFormat">
+                  <property name="text">
+                   <string>Format:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="labelOutputDirectory">
+                  <property name="text">
+                   <string>Output directory:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="lineEditOutputDirectory">
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QPushButton" name="pushButtonOutputDirectory">
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1" colspan="2">
+                 <widget class="QComboBox" name="comboBoxOutputFormat"/>
+                </item>
+               </layout>
               </widget>
              </item>
             </layout>
            </widget>
           </item>
          </layout>
-         <zorder>groupBoxInputLayer</zorder>
+         <zorder>groupBoxInputLayers</zorder>
          <zorder>groupBox_2</zorder>
          <zorder>groupBoxGeometryTypes</zorder>
          <zorder>groupBoxGeometryConditions</zorder>
          <zorder>line</zorder>
          <zorder>groupBoxGeometryProperties</zorder>
          <zorder>groupBoxTopology</zorder>
-         <zorder>groupBoxOutputLayer</zorder>
+         <zorder>groupBoxOutputLayers</zorder>
          <zorder>line_2</zorder>
          <zorder>line_3</zorder>
         </widget>
@@ -729,15 +773,9 @@
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>comboBoxInputLayer</tabstop>
   <tabstop>checkBoxInputSelectedOnly</tabstop>
   <tabstop>checkBoxSelfIntersections</tabstop>
   <tabstop>checkBoxDuplicateNodes</tabstop>
@@ -768,8 +806,6 @@
   <tabstop>spinBoxTolerance</tabstop>
   <tabstop>radioButtonOutputModifyInput</tabstop>
   <tabstop>radioButtonOutputNew</tabstop>
-  <tabstop>lineEditOutput</tabstop>
-  <tabstop>pushButtonOutputBrowse</tabstop>
  </tabstops>
  <resources>
   <include location="../pluginres.qrc"/>

@@ -21,6 +21,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QMap>
 #include <QTabWidget>
 
 class QgisInterface;
@@ -44,7 +45,7 @@ class QgsGeometryCheckerDialog : public QDialog
     void closeEvent( QCloseEvent *ev ) override;
 
   private slots:
-    void onCheckerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool );
+    void onCheckerStarted( QgsGeometryChecker *checker, QMap<QString, QgsFeaturePool *> featurePools );
     void onCheckerFinished( bool successful );
     void showHelp();
 };

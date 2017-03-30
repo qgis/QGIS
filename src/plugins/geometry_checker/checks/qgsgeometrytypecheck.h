@@ -22,10 +22,11 @@ class QgsGeometryTypeCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryTypeCheckError( const QgsGeometryCheck *check,
+                               const QString &layerId,
                                QgsFeatureId featureId,
                                const QgsPoint &errorLocation,
                                QgsWkbTypes::Type flatType )
-      : QgsGeometryCheckError( check, featureId, errorLocation )
+      : QgsGeometryCheckError( check, layerId, featureId, errorLocation )
     {
       mTypeName = QgsWkbTypes::displayString( flatType );
     }
@@ -47,12 +48,12 @@ class QgsGeometryTypeCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    QgsGeometryTypeCheck( QgsFeaturePool *featurePool, int allowedTypes )
-      : QgsGeometryCheck( FeatureCheck, featurePool )
-      , mAllowedTypes( allowedTypes )
+    QgsGeometryTypeCheck( const QMap<QString, QgsFeaturePool *> &featurePools, int allowedTypes )
+      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PointGeometry, QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry}, featurePools )
+    , mAllowedTypes( allowedTypes )
     {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Geometry type" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryTypeCheck" ); }

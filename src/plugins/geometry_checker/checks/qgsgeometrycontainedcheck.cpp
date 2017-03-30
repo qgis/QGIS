@@ -17,56 +17,63 @@
 #include "qgsgeometrycontainedcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-
-    QgsGeometry featureGeom = feature.geometry();
-    QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
-
-    QgsFeatureIds ids = mFeaturePool->getIntersects( featureGeom.geometry()->boundingBox() );
-    Q_FOREACH ( QgsFeatureId otherid, ids )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      if ( otherid == featureid )
-      {
-        continue;
-      }
-      QgsFeature otherFeature;
-      if ( !mFeaturePool->get( otherid, otherFeature ) )
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
       {
         continue;
       }
 
-      QString errMsg;
-      if ( geomEngine->within( otherFeature.geometry().geometry(), &errMsg ) )
+      QgsGeometry featureGeom = feature.geometry();
+      QgsGeometryEngine *geomEngine = QgsGeometryCheckerUtils::createGeomEngine( featureGeom.geometry(), QgsGeometryCheckPrecision::tolerance() );
+
+      QgsFeatureIds ids = getFeaturePool( layerId )->getIntersects( featureGeom.geometry()->boundingBox() );
+      for ( QgsFeatureId otherid : ids )
       {
-        errors.append( new QgsGeometryContainedCheckError( this, featureid, feature.geometry().geometry()->centroid(), otherid ) );
+        if ( otherid == featureid )
+        {
+          continue;
+        }
+        QgsFeature otherFeature;
+        if ( !getFeaturePool( layerId )->get( otherid, otherFeature ) )
+        {
+          continue;
+        }
+
+        QString errMsg;
+        if ( geomEngine->within( *otherFeature.geometry().geometry(), &errMsg ) )
+        {
+          errors.append( new QgsGeometryContainedCheckError( this, layerId, featureid, feature.geometry().geometry()->centroid(), otherid ) );
+        }
+        else if ( !errMsg.isEmpty() )
+        {
+          messages.append( tr( "Feature %1 within feature %2: %3" ).arg( feature.id() ).arg( otherFeature.id() ).arg( errMsg ) );
+        }
       }
-      else if ( !errMsg.isEmpty() )
-      {
-        messages.append( tr( "Feature %1 within feature %2: %3" ).arg( feature.id() ).arg( otherFeature.id() ).arg( errMsg ) );
-      }
+      delete geomEngine;
     }
-    delete geomEngine;
   }
 }
 
-void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsGeometryContainedCheckError *coverError = static_cast<QgsGeometryContainedCheckError *>( error );
 
   QgsFeature feature;
   QgsFeature otherFeature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) ||
-       !mFeaturePool->get( coverError->otherId(), otherFeature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) ||
+       !getFeaturePool( error->layerId() )->get( coverError->otherId(), otherFeature ) )
   {
     error->setObsolete();
     return;
@@ -91,8 +98,8 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
   }
   else if ( method == Delete )
   {
-    changes[feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
-    mFeaturePool->deleteFeature( feature );
+    changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
+    getFeaturePool( error->layerId() )->deleteFeature( feature );
     error->setFixed( method );
   }
   else

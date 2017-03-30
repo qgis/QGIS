@@ -22,11 +22,12 @@ class QgsGeometryContainedCheckError : public QgsGeometryCheckError
 {
   public:
     QgsGeometryContainedCheckError( const QgsGeometryCheck *check,
+                                    const QString &layerId,
                                     QgsFeatureId featureId,
                                     const QgsPoint &errorLocation,
                                     QgsFeatureId otherId
                                   )
-      : QgsGeometryCheckError( check, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
+      : QgsGeometryCheckError( check, layerId, featureId, errorLocation, QgsVertexId(), otherId, ValueOther )
       , mOtherId( otherId )
     { }
     QgsFeatureId otherId() const { return mOtherId; }
@@ -49,9 +50,10 @@ class QgsGeometryContainedCheck : public QgsGeometryCheck
     Q_OBJECT
 
   public:
-    explicit QgsGeometryContainedCheck( QgsFeaturePool *featurePool ) : QgsGeometryCheck( FeatureCheck, featurePool ) {}
-    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QgsFeatureIds &ids = QgsFeatureIds() ) const override;
-    void fixError( QgsGeometryCheckError *error, int method, int mergeAttributeIndex, Changes &changes ) const override;
+    explicit QgsGeometryContainedCheck( const QMap<QString, QgsFeaturePool *> &featurePools )
+      : QgsGeometryCheck( FeatureCheck, {QgsWkbTypes::PolygonGeometry}, featurePools ) {}
+    void collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter = nullptr, const QMap<QString, QgsFeatureIds> &ids = QMap<QString, QgsFeatureIds>() ) const override;
+    void fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Within" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }

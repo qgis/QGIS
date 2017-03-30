@@ -16,32 +16,39 @@
 #include "qgsgeometrymultipartcheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryMultipartCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-    QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry *geom = featureGeom.geometry();
-
-    QgsWkbTypes::Type type = geom->wkbType();
-    if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      errors.append( new QgsGeometryCheckError( this, featureid, geom->centroid() ) );
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
+      {
+        continue;
+      }
+      QgsGeometry featureGeom = feature.geometry();
+      QgsAbstractGeometry *geom = featureGeom.geometry();
+
+      QgsWkbTypes::Type type = geom->wkbType();
+      if ( geom->partCount() == 1 && QgsWkbTypes::isMultiType( type ) )
+      {
+        errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->centroid() ) );
+      }
     }
   }
 }
 
-void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -64,15 +71,15 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int meth
   else if ( method == ConvertToSingle )
   {
     feature.setGeometry( QgsGeometry( QgsGeometryCheckerUtils::getGeomPart( geom, 0 )->clone() ) );
-    mFeaturePool->updateFeature( feature );
+    getFeaturePool( error->layerId() )->updateFeature( feature );
     error->setFixed( method );
-    changes[feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
+    changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
   }
   else if ( method == RemoveObject )
   {
-    mFeaturePool->deleteFeature( feature );
+    getFeaturePool( error->layerId() )->deleteFeature( feature );
     error->setFixed( method );
-    changes[feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
+    changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
   }
   else
   {

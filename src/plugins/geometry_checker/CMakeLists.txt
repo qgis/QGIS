@@ -20,6 +20,7 @@ SET (geometrychecker_SRCS
     checks/qgsgeometrysegmentlengthcheck.cpp
     checks/qgsgeometryselfcontactcheck.cpp
     checks/qgsgeometryselfintersectioncheck.cpp
+    checks/qgsgeometrysliverpolygoncheck.cpp
     checks/qgsgeometrytypecheck.cpp
     ui/qgsgeometrycheckerdialog.cpp
     ui/qgsgeometrycheckersetuptab.cpp

@@ -25,9 +25,10 @@
 #include <QMutexLocker>
 #include <limits>
 
-QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )
+QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double mapToLayerUnits, bool selectedOnly )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
+  , mMapToLayerUnits( mapToLayerUnits )
   , mSelectedOnly( selectedOnly )
 {
   if ( selectedOnly )

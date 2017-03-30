@@ -16,36 +16,43 @@
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryDegeneratePolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-    QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry *geom = featureGeom.geometry();
-    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
       {
-        if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
+        continue;
+      }
+      QgsGeometry featureGeom = feature.geometry();
+      QgsAbstractGeometry *geom = featureGeom.geometry();
+      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+      {
+        for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
         {
-          errors.append( new QgsGeometryCheckError( this, featureid, geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsVertexId( iPart, iRing ) ) );
+          if ( QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing ) < 3 )
+          {
+            errors.append( new QgsGeometryCheckError( this, layerId, featureid, geom->vertexAt( QgsVertexId( iPart, iRing, 0 ) ), QgsVertexId( iPart, iRing ) ) );
+          }
         }
       }
     }
   }
 }
 
-void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -75,7 +82,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError *error, 
   }
   else if ( method == DeleteRing )
   {
-    deleteFeatureGeometryRing( feature, vidx.part, vidx.ring, changes );
+    deleteFeatureGeometryRing( error->layerId(), feature, vidx.part, vidx.ring, changes );
     error->setFixed( method );
   }
   else

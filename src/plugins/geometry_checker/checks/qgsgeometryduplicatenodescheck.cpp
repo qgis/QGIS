@@ -17,34 +17,41 @@
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-
-    QgsGeometry featureGeom = feature.geometry();
-    QgsAbstractGeometry *geom = featureGeom.geometry();
-    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
       {
-        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
-        if ( nVerts < 2 )
-          continue;
-        for ( int iVert = nVerts - 1, jVert = 0; jVert < nVerts; iVert = jVert++ )
+        continue;
+      }
+
+      QgsGeometry featureGeom = feature.geometry();
+      QgsAbstractGeometry *geom = featureGeom.geometry();
+      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+      {
+        for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
         {
-          QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-          if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
+          int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
+          if ( nVerts < 2 )
+            continue;
+          for ( int iVert = nVerts - 1, jVert = 0; jVert < nVerts; iVert = jVert++ )
           {
-            errors.append( new QgsGeometryCheckError( this, featureid, pj, QgsVertexId( iPart, iRing, jVert ) ) );
+            QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+            QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
+            if ( QgsGeometryUtils::sqrDistance2D( pi, pj ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance() )
+            {
+              errors.append( new QgsGeometryCheckError( this, layerId, featureid, pj, QgsVertexId( iPart, iRing, jVert ) ) );
+            }
           }
         }
       }
@@ -52,10 +59,10 @@ void QgsGeometryDuplicateNodesCheck::collectErrors( QList<QgsGeometryCheckError 
   }
 }
 
-void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -104,9 +111,9 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int
     else
     {
       feature.setGeometry( featureGeom );
-      mFeaturePool->updateFeature( feature );
+      getFeaturePool( error->layerId() )->updateFeature( feature );
       error->setFixed( method );
-      changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, error->vidx() ) );
+      changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, error->vidx() ) );
     }
   }
   else

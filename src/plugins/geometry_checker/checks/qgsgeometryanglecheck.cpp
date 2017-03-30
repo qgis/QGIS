@@ -17,50 +17,57 @@
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
 
-void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QgsFeatureIds &ids ) const
+void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
-  const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
-  Q_FOREACH ( QgsFeatureId featureid, featureIds )
+  QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  for ( const QString &layerId : featureIds.keys() )
   {
-    if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
-    QgsFeature feature;
-    if ( !mFeaturePool->get( featureid, feature ) )
+    if ( !getCompatibility( getFeaturePool( layerId )->getLayer()->geometryType() ) )
     {
       continue;
     }
-    QgsGeometry g = feature.geometry();
-    const QgsAbstractGeometry *geom = g.geometry();
-    for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+    for ( QgsFeatureId featureid : featureIds[layerId] )
     {
-      for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+      if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
+      QgsFeature feature;
+      if ( !getFeaturePool( layerId )->get( featureid, feature ) )
       {
-        int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
-        // Less than three points, no angles to check
-        if ( nVerts < 3 )
+        continue;
+      }
+      QgsGeometry g = feature.geometry();
+      const QgsAbstractGeometry *geom = g.geometry();
+      for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
+      {
+        for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
         {
-          continue;
-        }
-        for ( int iVert = 0; iVert < nVerts; ++iVert )
-        {
-          const QgsPoint &p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
-          const QgsPoint &p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
-          const QgsPoint &p3 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert + 1 ) % nVerts ) );
-          QgsVector v21, v23;
-          try
+          int nVerts = QgsGeometryCheckerUtils::polyLineSize( geom, iPart, iRing );
+          // Less than three points, no angles to check
+          if ( nVerts < 3 )
           {
-            v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normalized();
-            v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normalized();
-          }
-          catch ( const QgsException & )
-          {
-            // Zero length vectors
             continue;
           }
-
-          double angle = std::acos( v21 * v23 ) / M_PI * 180.0;
-          if ( angle < mMinAngle )
+          for ( int iVert = 0; iVert < nVerts; ++iVert )
           {
-            errors.append( new QgsGeometryCheckError( this, featureid, p2, QgsVertexId( iPart, iRing, iVert ), angle ) );
+            const QgsPoint &p1 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert - 1 + nVerts ) % nVerts ) );
+            const QgsPoint &p2 = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+            const QgsPoint &p3 = geom->vertexAt( QgsVertexId( iPart, iRing, ( iVert + 1 ) % nVerts ) );
+            QgsVector v21, v23;
+            try
+            {
+              v21 = QgsVector( p1.x() - p2.x(), p1.y() - p2.y() ).normalized();
+              v23 = QgsVector( p3.x() - p2.x(), p3.y() - p2.y() ).normalized();
+            }
+            catch ( const QgsException & )
+            {
+              // Zero length vectors
+              continue;
+            }
+
+            double angle = std::acos( v21 * v23 ) / M_PI * 180.0;
+            if ( angle < mMinAngle )
+            {
+              errors.append( new QgsGeometryCheckError( this, layerId, featureid, p2, QgsVertexId( iPart, iRing, iVert ), angle ) );
+            }
           }
         }
       }
@@ -68,10 +75,10 @@ void QgsGeometryAngleCheck::collectErrors( QList<QgsGeometryCheckError *> &error
   }
 }
 
-void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, int /*mergeAttributeIndex*/, Changes &changes ) const
+void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
   QgsFeature feature;
-  if ( !mFeaturePool->get( error->featureId(), feature ) )
+  if ( !getFeaturePool( error->layerId() )->get( error->featureId(), feature ) )
   {
     error->setObsolete();
     return;
@@ -132,15 +139,15 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
     }
     else
     {
-      changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );
+      changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, vidx ) );
       if ( QgsGeometryUtils::sqrDistance2D( p1, p3 ) < QgsGeometryCheckPrecision::tolerance() * QgsGeometryCheckPrecision::tolerance()
            && QgsGeometryCheckerUtils::canDeleteVertex( geometry, vidx.part, vidx.ring ) &&
            geometry->deleteVertex( error->vidx() ) ) // error->vidx points to p3 after removing p2
       {
-        changes[error->featureId()].append( Change( ChangeNode, ChangeRemoved, QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) ) );
+        changes[error->layerId()][error->featureId()].append( Change( ChangeNode, ChangeRemoved, QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex + 1 ) % n ) ) );
       }
       feature.setGeometry( g );
-      mFeaturePool->updateFeature( feature );
+      getFeaturePool( error->layerId() )->updateFeature( feature );
       error->setFixed( method );
     }
   }

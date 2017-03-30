@@ -35,7 +35,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     ~QgsGeometryCheckerSetupTab();
 
   signals:
-    void checkerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool );
+    void checkerStarted( QgsGeometryChecker *checker, QMap<QString, QgsFeaturePool *> featurePools );
     void checkerFinished( bool );
 
   private:
@@ -44,9 +44,8 @@ class QgsGeometryCheckerSetupTab : public QWidget
     QPushButton *mRunButton = nullptr;
     QPushButton *mAbortButton = nullptr;
     QMutex m_errorListMutex;
-    QString mOutputDriverName;
 
-    QgsVectorLayer *getSelectedLayer();
+    QList<QgsVectorLayer *> getSelectedLayers();
 
   private slots:
     void runChecks();
