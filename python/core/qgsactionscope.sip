@@ -4,9 +4,31 @@
  *****************************************************************/
 
 
-
 class QgsActionScope
 {
+%Docstring
+ \ingroup core
+ An action scope defines a "place" for an action to be shown and may add
+ additional expression variables.
+ Each QgsAction can be available in one or several action scopes.
+
+ Examples:
+ ---------
+
+ <dl>
+   <dt>Canvas</dt>
+   <dd>Show for canvas tools. Adds `@clicked_x` and `@clicked_y` in map coordinates.</dd>
+   <dt>Feature</dt>
+   <dd>Show in feature specific places like the attribute table or feature
+   form.</dd>
+   <dt>Field</dt>
+   <dd>Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.</dd>
+   <dt>Layer</dt>
+   <dd>Show in attribute table and work on the layer or selection.</dd>
+ </dl>
+
+ @note Added in QGIS 3.0
+%End
 
 %TypeHeaderCode
 #include "qgsactionscope.h"
