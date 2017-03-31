@@ -31,7 +31,7 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsSettings
+from qgis.core import QgsSettings, QgsMapLayer
 from .info_viewer import InfoViewer
 from .table_viewer import TableViewer
 from .layer_preview import LayerPreview
@@ -175,6 +175,11 @@ class DBManager(QMainWindow):
             return
 
         inLayer = table.toMapLayer()
+        if inLayer.type() != QgsMapLayer.VectorLayer:
+            self.infoBar.pushMessage(
+                self.tr("Select a vector or a tabular layer you want export."),
+                QgsMessageBar.WARNING, self.iface.messageTimeout())
+            return
 
         from .dlg_export_vector import DlgExportVector
 
