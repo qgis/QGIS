@@ -42,7 +42,6 @@
  *
  * @note Added in QGIS 3.0
  */
-
 class CORE_EXPORT QgsActionScope
 {
   public:
@@ -125,6 +124,6 @@ class CORE_EXPORT QgsActionScope
     QgsExpressionContextScope mExpressionContextScope;
 };
 
-CORE_EXPORT uint qHash( const QgsActionScope &key, uint seed = 0 ); // SIP_SKIP
+CORE_EXPORT uint qHash( const QgsActionScope &key, uint seed = 0 ) SIP_SKIP;
 
 #endif // QGSACTIONSCOPE_H
