@@ -22,10 +22,13 @@ my $nesting_index = 0;
 my $private_section_line = '';
 my $line;
 
-print "/******************************************************************\n";
-print " * This file has been generated automatically by sipify.pl        *\n";
-print " * Do not edit manually ! Edit header file and generate it again. *\n";
-print " *****************************************************************/\n";
+print  "/************************************************************************\n";
+print  " * This file has been generated automatically from                      *\n";
+print  " *                                                                      *\n";
+printf " * %-*s *\n", 68, $headerfile;
+print  " *                                                                      *\n";
+print  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+print  " ************************************************************************/\n";
 
 
 while(!eof $header){
@@ -325,3 +328,10 @@ while(!eof $header){
         $comment = '';
     }
 }
+print  "/************************************************************************\n";
+print  " * This file has been generated automatically from                      *\n";
+print  " *                                                                      *\n";
+printf " * %-*s *\n", 68, $headerfile;
+print  " *                                                                      *\n";
+print  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+print  " ************************************************************************/\n";

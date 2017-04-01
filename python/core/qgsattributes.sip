@@ -1,7 +1,10 @@
-/******************************************************************
- * This file has been generated automatically by sipify.pl        *
- * Do not edit manually ! Edit header file and generate it again. *
- *****************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsattributes.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
 
@@ -103,3 +106,10 @@ typedef QVector<QVariant> QgsAttributes;
 };
 
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsattributes.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

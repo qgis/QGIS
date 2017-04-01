@@ -1,7 +1,10 @@
-/******************************************************************
- * This file has been generated automatically by sipify.pl        *
- * Do not edit manually ! Edit header file and generate it again. *
- *****************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayer.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
 
@@ -1908,3 +1911,10 @@ Set the extent
     QgsVectorLayer( const QgsVectorLayer &rhs );
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayer.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
