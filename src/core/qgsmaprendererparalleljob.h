@@ -74,6 +74,10 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QgsRenderContext mLabelingRenderContext;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;
+
+  private slots:
+
+    void renderLayersFinishedWhenJobCanceled();
 };
 
 

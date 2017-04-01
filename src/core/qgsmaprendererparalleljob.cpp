@@ -141,7 +141,7 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   if ( mStatus == RenderingLayers )
   {
     disconnect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinished() ) );
-    connect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
+    connect( &mFutureWatcher, SIGNAL( finished() ), this, SLOT( renderLayersFinishedWhenJobCanceled() ) );
   }
 }
 
@@ -304,5 +304,13 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob* s
   }
 
   painter.end();
+}
+
+void QgsMapRendererParallelJob::renderLayersFinishedWhenJobCanceled()
+{
+  logRenderingTime( mLayerJobs );
+
+  cleanupJobs( mLayerJobs );
+  renderingFinished();
 }
 
