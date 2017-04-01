@@ -1,7 +1,10 @@
-/******************************************************************
- * This file has been generated automatically by sipify.pl        *
- * Do not edit manually ! Edit header file and generate it again. *
- *****************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsactionscoperegistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
 class QgsActionScopeRegistry : QObject
@@ -78,3 +81,10 @@ class QgsActionScopeRegistry : QObject
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsactionscoperegistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

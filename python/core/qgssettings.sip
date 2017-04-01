@@ -1,7 +1,10 @@
-/******************************************************************
- * This file has been generated automatically by sipify.pl        *
- * Do not edit manually ! Edit header file and generate it again. *
- *****************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettings.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
 
@@ -225,3 +228,10 @@ Removes all entries in the user settings
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssettings.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

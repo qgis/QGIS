@@ -1,7 +1,10 @@
-/******************************************************************
- * This file has been generated automatically by sipify.pl        *
- * Do not edit manually ! Edit header file and generate it again. *
- *****************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * tests/scripts/sipifyheader.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
 
@@ -129,3 +132,10 @@ A constructor with definition in header on several lines
 }
 
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * tests/scripts/sipifyheader.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
