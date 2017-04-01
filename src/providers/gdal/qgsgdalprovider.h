@@ -136,15 +136,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                            const QString &resamplingMethod = "NEAREST",
                            QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
-                           const QStringList &createOptions = QStringList() ) override;
+                           const QStringList &createOptions = QStringList(),
+                           QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
     //! \brief Close data set and release related data
     void closeDataset();
-
-    //! Emit a signal to notify of the progress event.
-    void emitProgress( int type, double value, const QString &message );
-    void emitProgressUpdate( int progress );
 
     static QMap<QString, QString> supportedMimes();
 

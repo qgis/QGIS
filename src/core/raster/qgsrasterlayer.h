@@ -323,9 +323,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
 
-    //! \brief [ data provider interface ] A wrapper function to emit a progress update signal
-    void showProgress( int value );
-
     //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     virtual QStringList subLayers() const override;
 
@@ -352,13 +349,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   public slots:
     void showStatusMessage( const QString &message );
-
-    //! \brief receive progress signal from provider
-    void onProgress( int, double, const QString & );
-
-  signals:
-    //! \brief Signal for notifying listeners of long running processes
-    void progressUpdate( int value );
 
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied

@@ -71,10 +71,11 @@ int CPL_STDCALL progressCallback( double dfComplete,
                                   const char *pszMessage,
                                   void *pProgressArg )
 {
+  Q_UNUSED( pszMessage );
+
   static double sDfLastComplete = -1.0;
 
   QgsGdalProgress *prog = static_cast<QgsGdalProgress *>( pProgressArg );
-  QgsGdalProvider *mypProvider = prog->provider;
 
   if ( sDfLastComplete > dfComplete )
   {
@@ -86,8 +87,6 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
   if ( floor( sDfLastComplete * 10 ) != floor( dfComplete * 10 ) )
   {
-    mypProvider->emitProgress( prog->type, dfComplete * 100, QString( pszMessage ) );
-    mypProvider->emitProgressUpdate( dfComplete * 100 );
     if ( prog->feedback )
       prog->feedback->setProgress( dfComplete * 100 );
   }
@@ -1454,7 +1453,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
  */
 QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                                         const QString &resamplingMethod, QgsRaster::RasterPyramidsFormat format,
-                                        const QStringList &configOptions )
+                                        const QStringList &configOptions, QgsRasterBlockFeedback *feedback )
 {
   //TODO: Consider making rasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated information
@@ -1465,10 +1464,6 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   // Otherwise reoopen it in read/write mode to stick overviews
   // into the same file (if supported)
   //
-
-
-  // TODO add signal and connect from rasterlayer
-  //emit drawingProgress( 0, 0 );
 
   if ( mGdalDataset != mGdalBaseDataset )
   {
@@ -1606,12 +1601,13 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
     QgsGdalProgress myProg;
     myProg.type = QgsRaster::ProgressPyramids;
     myProg.provider = this;
+    myProg.feedback = feedback;
     myError = GDALBuildOverviews( mGdalBaseDataset, method,
                                   myOverviewLevelsVector.size(), myOverviewLevelsVector.data(),
                                   0, nullptr,
                                   progressCallback, &myProg ); //this is the arg for the gdal progress callback
 
-    if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
+    if ( ( feedback && feedback->isCanceled() ) || myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
     {
       QgsDebugMsg( QString( "Building pyramids failed using resampling method [%1]" ).arg( method ) );
       //something bad happenend
@@ -1620,8 +1616,6 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
       mGdalBaseDataset = gdalOpen( dataSourceUri().toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
-
-      //emit drawingProgress( 0, 0 );
 
       // restore former configOptions
       for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
@@ -1633,6 +1627,9 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
       }
 
       // TODO print exact error message
+      if ( feedback && feedback->isCanceled() )
+        return QStringLiteral( "CANCELED" );
+
       return QStringLiteral( "FAILED_NOT_SUPPORTED" );
     }
     else
@@ -1846,16 +1843,6 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList( QList<int> overviewLi
 QStringList QgsGdalProvider::subLayers() const
 {
   return mSubLayers;
-}
-
-void QgsGdalProvider::emitProgress( int type, double value, const QString &message )
-{
-  emit progress( type, value, message );
-}
-
-void QgsGdalProvider::emitProgressUpdate( int progress )
-{
-  emit progressUpdate( progress );
 }
 
 /**

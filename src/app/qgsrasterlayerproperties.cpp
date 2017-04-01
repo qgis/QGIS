@@ -1028,7 +1028,9 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
 
-  connect( provider, &QgsRasterDataProvider::progressUpdate, mPyramidProgress, &QProgressBar::setValue );
+  std::unique_ptr< QgsRasterBlockFeedback > feedback( new QgsRasterBlockFeedback() );
+
+  connect( feedback.get(), &QgsRasterBlockFeedback::progressChanged, mPyramidProgress, &QProgressBar::setValue );
   //
   // Go through the list marking any files that are selected in the listview
   // as true so that we can generate pyramids for them.
@@ -1056,14 +1058,19 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QString res = provider->buildPyramids(
                   myPyramidList,
                   resamplingMethod,
-                  ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
+                  ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex(),
+                  QStringList(),
+                  feedback.get() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
-  disconnect( provider, &QgsRasterDataProvider::progressUpdate, mPyramidProgress, &QProgressBar::setValue );
   if ( !res.isNull() )
   {
-    if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
+    if ( res == QLatin1String( "CANCELED" ) )
+    {
+      // user canceled
+    }
+    else if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
     {
       QMessageBox::warning( this, tr( "Write access denied" ),
                             tr( "Write access denied. Adjust the file permissions and try again." ) );
