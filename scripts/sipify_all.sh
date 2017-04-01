@@ -36,9 +36,9 @@ while read -r sipfile; do
     fi
   fi
 done < <(
-sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
-sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
-sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis.sip
   )
 
 popd > /dev/null
