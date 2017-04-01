@@ -142,6 +142,8 @@ else
   rm $SIPIFYDIFF
 fi
 
+# If there are whitespace errors, print the offending file names and fail.
+exec git diff-index --check --cached HEAD --
 
 exit 0
 
