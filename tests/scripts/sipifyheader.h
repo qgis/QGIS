@@ -101,6 +101,16 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
      */
     QgsSipifyHeader( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    //! A constructor with no empty `()`
+    QgsSipifyHeader( bool a = true )
+      : mMember( nullptr )
+    {}
+
+    //! A constructor with some special character types
+    QgsSipifyHeader( QList<Point> a, const Issues &b = Issues::weDontHaveIssues(), QgsClass *b = nullptr )
+      : mMember( nullptr )
+    {}
+
     //! Default constructor
     QgsSipifyHeader() = default;
 
@@ -139,7 +149,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
 
     void differentDefaultValue( bool defaultValue = true SIP_PYDEFAULTVALUE( false ), QWidget *parent = nullptr, QString msg = QString() SIP_PYDEFAULTVALUE( "hello" ) );
 
-    void differentType( QList<QgsFeatureId> SIP_PYTYPE( QList<qint64> ) &list );
+    void differentType( QList<QgsFeatureId> SIP_PYTYPE( QList<qint64> ) & list );
 
     //! complex default value and type (i.e. containing commas) should be given as a string with single quotes
     void complexDefaultValueAndType( QList<QPair<QgsFeatureId SIP_PYTYPE( qint64 ), QMap<int, QString>>> list = QList<QPair<QgsFeatureId, QMap<int, QString>>>() SIP_PYDEFAULTVALUE( 'QList<QPair<qint64, QMap<int, QString>>>()' ) );
@@ -152,7 +162,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
 
     void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
-    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl ) { doSomething; return true; } // some comments
+    bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl ) { doSomething; return true; }   // some comments
 
     bool deletedFunction() = delete; // some comments
 
