@@ -13,7 +13,7 @@ class QgsSvgAnnotation: QgsAnnotation
 {
 %Docstring
  An annotation which renders the contents of an SVG file.
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

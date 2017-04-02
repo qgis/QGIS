@@ -29,7 +29,7 @@ class QgsActionScope
    <dd>Show in attribute table and work on the layer or selection.</dd>
  </dl>
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -41,7 +41,7 @@ class QgsActionScope
 %Docstring
  Creates a new invalid action scope.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     explicit QgsActionScope( const QString &id, const QString &title, const QString &description, const QgsExpressionContextScope &expressionContextScope = QgsExpressionContextScope() );
@@ -62,7 +62,7 @@ class QgsActionScope
  This can be an `field_name` for the attribute which was clicked or
  `clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
@@ -74,7 +74,7 @@ class QgsActionScope
 %Docstring
  A unique identifier for this action scope.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     void setId( const QString &id );
@@ -87,7 +87,7 @@ class QgsActionScope
  The title is a human readable and translated string that will be
  presented to the user in the properties dialog.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
     void setTitle( const QString &title );
 %Docstring
@@ -100,7 +100,7 @@ class QgsActionScope
  are available. It is not necessary to list the available expression variables
  in here, they are extracted automatically from the expressionContextScope().
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
     void setDescription( const QString &description );
 %Docstring
@@ -111,7 +111,7 @@ class QgsActionScope
 %Docstring
  Returns if this scope is valid.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 };

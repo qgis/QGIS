@@ -182,7 +182,7 @@ class QgsFeature
  @link attributes @endlink method.
  @returns list of feature's attributes
  @see setAttributes
- \since QGIS 2.9
+.. versionadded:: 2.9
 .. note::
 
    Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
@@ -280,7 +280,7 @@ class QgsFeature
 %Docstring
  Returns true if the feature has an associated geometry.
  @see geometry()
- \since QGIS 3.0.
+.. versionadded:: 3.0.
 %End
 
     QgsGeometry geometry() const;
@@ -304,7 +304,7 @@ class QgsFeature
  Removes any geometry associated with the feature.
  @see setGeometry()
  @see hasGeometry()
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     void setFields( const QgsFields &fields, bool initAttributes = true  );
@@ -314,7 +314,7 @@ class QgsFeature
   @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
                         C++: Defaults to false
                         Python: Defaults to true
- \since QGIS 2.9
+.. versionadded:: 2.9
  @see fields
 %End
 

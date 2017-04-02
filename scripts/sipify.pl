@@ -12,7 +12,7 @@ sub processDoxygenLine
     if ( $_[0] =~ m/[\\@](ingroup|class)/ ) {
         return ""
     }
-    if ( $_[0] =~ m/[\\@]note added .*?([\d\.]+)/i ) {
+    if ( $_[0] =~ m/\\since .*?([\d\.]+)/i ) {
         return ".. versionadded:: $1\n";
     }
     if ( $_[0] =~ m/[\\@]note (.*)/ ) {

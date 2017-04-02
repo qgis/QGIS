@@ -36,7 +36,7 @@ class QgsSettings : QObject
   - Misc
   - Auth
 
- \since QGIS 3
+.. versionadded:: 3
 %End
 
 %TypeHeaderCode

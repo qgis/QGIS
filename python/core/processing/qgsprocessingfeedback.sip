@@ -17,7 +17,7 @@ class QgsProcessingFeedback : QgsFeedback
  This base class implementation silently ignores all feedback reported by algorithms.
  Subclasses of QgsProcessingFeedback can be used to log this feedback or report
  it to users via the GUI.
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

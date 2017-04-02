@@ -51,7 +51,7 @@ Constructor
 %Docstring
  Remove an action by its id.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
@@ -82,7 +82,7 @@ Removes all actions
  Return a list of actions that are available in the given action scope.
  If no action scope is provided, all actions will be returned.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     QgsVectorLayer *layer() const;
@@ -104,7 +104,7 @@ Reads the actions in in XML format
 %Docstring
  Get an action by its id.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     void setDefaultAction( const QString &actionScope, const QUuid &actionId );
@@ -112,7 +112,7 @@ Reads the actions in in XML format
  Each scope can have a default action. This will be saved in the project
  file.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     QgsAction defaultAction( const QString &actionScope );
@@ -120,7 +120,7 @@ Reads the actions in in XML format
  Each scope can have a default action. This will be saved in the project
  file.
 
- \since QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 };
