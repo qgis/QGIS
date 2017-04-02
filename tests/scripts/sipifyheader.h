@@ -99,6 +99,9 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
      */
     QgsSipifyHeader( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    //! Default constructor
+    QgsSipifyHeader() = default;
+
     //! A multiline method signature
     void multilineMethod( const QgsPoint &startPoint,
                           QgsFeatureId featureId,

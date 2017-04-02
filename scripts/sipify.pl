@@ -232,6 +232,7 @@ while(!eof $header){
         $line =~ s/\s*override( SIP_\w+(\(.+\))?)?;/$1;/;
         $line =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $line =~ s/\bnullptr\b/0/g;
+        $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition
         if ( $line =~  m/^(\s*)?(explicit )?(\w+)\(([^()]*\([^()]*\)[^()]*)*\)(?!;)$/ ){

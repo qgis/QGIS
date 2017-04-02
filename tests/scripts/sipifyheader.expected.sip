@@ -63,6 +63,11 @@ A constructor with definition in header
  A classic constructor with arguments
 %End
 
+    QgsSipifyHeader();
+%Docstring
+Default constructor
+%End
+
     void multilineMethod( const QgsPoint &startPoint,
                           QgsFeatureId featureId,
                           QgsVectorLayer *vl,
