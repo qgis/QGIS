@@ -66,6 +66,17 @@ A constructor with definition in header
  A classic constructor with arguments
 %End
 
+    QgsSipifyHeader( bool a = true );
+%Docstring
+A constructor with no empty `()`
+%End
+
+    QgsSipifyHeader( QList<Point> a, const Issues &b = Issues::weDontHaveIssues(), QgsClass *b = 0 );
+%Docstring
+A constructor with some special character types
+%End
+    {}
+
     QgsSipifyHeader();
 %Docstring
 Default constructor
@@ -108,7 +119,7 @@ Factory annotation
 
     void differentDefaultValue( bool defaultValue = false , QWidget *parent = 0, QString msg = "hello"  );
 
-    void differentType( QList<qint64>  &list );
+    void differentType( QList<qint64>  & list );
 
     void complexDefaultValueAndType( QList<QPair<qint64 , QMap<int, QString>>> list = QList<QPair<qint64, QMap<int, QString>>> );
 %Docstring

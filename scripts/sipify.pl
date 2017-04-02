@@ -253,7 +253,7 @@ while(!eof $header){
         $line =~ s/\s*=\s*default\b//g;
 
         # remove constructor definition
-        if ( $line =~  m/^(\s*)?(explicit )?(\w+)\(([^()]*\([^()]*\)[^()]*)*\)(?!;)$/ ){
+        if ( $line =~  m/^(\s*)?(explicit )?(\w+)\([\w\=\(\)\s\,\&\*\<\>]*\)(?!;)$/ ){
             my $newline = $line =~ s/\n/;\n/r;
             my $nesting_index = 0;
             while(!eof $header){
