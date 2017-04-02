@@ -355,7 +355,7 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
 
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
-    segmentize( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points, tolerance, toleranceType );
+    QgsGeometryUtils::segmentizeArc( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points, tolerance, toleranceType, is3D(), isMeasure() );
   }
 
   line->setPoints( points );
@@ -485,150 +485,6 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
   }
 }
 
-void QgsCircularString::segmentize( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3, QgsPointSequence &points, double tolerance, SegmentationToleranceType toleranceType ) const
-{
-  bool clockwise = false;
-  int segSide = segmentSide( p1, p3, p2 );
-  if ( segSide == -1 )
-  {
-    clockwise = true;
-  }
-
-  QgsPointV2 circlePoint1 = clockwise ? p3 : p1;
-  QgsPointV2 circlePoint2 = p2;
-  QgsPointV2 circlePoint3 = clockwise ? p1 : p3 ;
-
-  //adapted code from postgis
-  double radius = 0;
-  double centerX = 0;
-  double centerY = 0;
-  QgsGeometryUtils::circleCenterRadius( circlePoint1, circlePoint2, circlePoint3, radius, centerX, centerY );
-
-
-  if ( circlePoint1 != circlePoint3 && ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) ) //points are colinear
-  {
-    points.append( p1 );
-    points.append( p2 );
-    points.append( p3 );
-    return;
-  }
-
-  double increment = tolerance; //one segment per degree
-  if ( toleranceType == QgsAbstractGeometry::MaximumDifference )
-  {
-    double halfAngle = acos( -tolerance / radius + 1 );
-    increment = 2 * halfAngle;
-  }
-
-  //angles of pt1, pt2, pt3
-  double a1 = atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
-  double a2 = atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
-  double a3 = atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
-
-  /* Adjust a3 up so we can increment from a1 to a3 cleanly */
-  if ( a3 <= a1 )
-    a3 += 2.0 * M_PI;
-  if ( a2 < a1 )
-    a2 += 2.0 * M_PI;
-
-  bool hasZ = is3D();
-  bool hasM = isMeasure();
-
-  double x, y;
-  double z = 0;
-  double m = 0;
-
-  QList<QgsPointV2> stringPoints;
-  stringPoints.insert( clockwise ? 0 : stringPoints.size(), circlePoint1 );
-  if ( circlePoint2 != circlePoint3 && circlePoint1 != circlePoint2 ) //draw straight line segment if two points have the same position
-  {
-    QgsWkbTypes::Type pointWkbType = QgsWkbTypes::Point;
-    if ( hasZ )
-      pointWkbType = QgsWkbTypes::addZ( pointWkbType );
-    if ( hasM )
-      pointWkbType = QgsWkbTypes::addM( pointWkbType );
-
-    //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
-    bool addP2 = true;
-    if ( qgsDoubleNear( circlePoint1.x(), circlePoint3.x() ) && qgsDoubleNear( circlePoint1.y(), circlePoint3.y() ) )
-    {
-      addP2 = false;
-    }
-
-    for ( double angle = a1 + increment; angle < a3; angle += increment )
-    {
-      if ( ( addP2 && angle > a2 ) )
-      {
-        stringPoints.insert( clockwise ? 0 : stringPoints.size(), circlePoint2 );
-        addP2 = false;
-      }
-
-      x = centerX + radius * cos( angle );
-      y = centerY + radius * sin( angle );
-
-      if ( !hasZ && !hasM )
-      {
-        stringPoints.insert( clockwise ? 0 : stringPoints.size(), QgsPointV2( x, y ) );
-        continue;
-      }
-
-      if ( hasZ )
-      {
-        z = interpolateArc( angle, a1, a2, a3, circlePoint1.z(), circlePoint2.z(), circlePoint3.z() );
-      }
-      if ( hasM )
-      {
-        m = interpolateArc( angle, a1, a2, a3, circlePoint1.m(), circlePoint2.m(), circlePoint3.m() );
-      }
-
-      stringPoints.insert( clockwise ? 0 : stringPoints.size(), QgsPointV2( pointWkbType, x, y, z, m ) );
-    }
-  }
-  stringPoints.insert( clockwise ? 0 : stringPoints.size(), circlePoint3 );
-  points.append( stringPoints );
-}
-
-int QgsCircularString::segmentSide( const QgsPointV2 &pt1, const QgsPointV2 &pt3, const QgsPointV2 &pt2 ) const
-{
-  double side = ( ( pt2.x() - pt1.x() ) * ( pt3.y() - pt1.y() ) - ( pt3.x() - pt1.x() ) * ( pt2.y() - pt1.y() ) );
-  if ( side == 0.0 )
-  {
-    return 0;
-  }
-  else
-  {
-    if ( side < 0 )
-    {
-      return -1;
-    }
-    if ( side > 0 )
-    {
-      return 1;
-    }
-    return 0;
-  }
-}
-
-double QgsCircularString::interpolateArc( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 ) const
-{
-  /* Counter-clockwise sweep */
-  if ( a1 < a2 )
-  {
-    if ( angle <= a2 )
-      return zm1 + ( zm2 - zm1 ) * ( angle - a1 ) / ( a2 - a1 );
-    else
-      return zm2 + ( zm3 - zm2 ) * ( angle - a2 ) / ( a3 - a2 );
-  }
-  /* Clockwise sweep */
-  else
-  {
-    if ( angle >= a2 )
-      return zm1 + ( zm2 - zm1 ) * ( a1 - angle ) / ( a1 - a2 );
-    else
-      return zm2 + ( zm3 - zm2 ) * ( a2 - angle ) / ( a2 - a3 );
-  }
-}
-
 void QgsCircularString::draw( QPainter &p ) const
 {
   QPainterPath path;
@@ -697,7 +553,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
     QgsPointSequence pt;
-    segmentize( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ), pt );
+    QgsGeometryUtils::segmentizeArc( QgsPointV2( mX[i], mY[i] ), QgsPointV2( mX[i + 1], mY[i + 1] ), QgsPointV2( mX[i + 2], mY[i + 2] ), pt );
     for ( int j = 1; j < pt.size(); ++j )
     {
       path.lineTo( pt.at( j ).x(), pt.at( j ).y() );

@@ -52,6 +52,12 @@ class QgsGeometryUtils
 
     static double circleTangentDirection( const QgsPointV2& tangentPoint, const QgsPointV2& cp1, const QgsPointV2& cp2, const QgsPointV2& cp3 );
 
+    static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3, QList<QgsPointV2> &points /Out/, double tolerance = M_PI_2 / 90, QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle, bool hasZ = false, bool hasM = false );
+
+    static int segmentSide( const QgsPointV2 &pt1, const QgsPointV2 &pt3, const QgsPointV2 &pt2 );
+
+    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 );
+
     static double normalizedAngle( double angle );
 
     static double lineAngle( double x1, double y1, double x2, double y2 );

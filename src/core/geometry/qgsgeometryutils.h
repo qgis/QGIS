@@ -171,6 +171,22 @@ class CORE_EXPORT QgsGeometryUtils
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
     static double circleTangentDirection( const QgsPointV2 &tangentPoint, const QgsPointV2 &cp1, const QgsPointV2 &cp2, const QgsPointV2 &cp3 );
 
+    /** Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
+     * @note added in 3.0
+     */
+    static void segmentizeArc( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &p3, QgsPointSequence &points, double tolerance = M_PI_2 / 90, QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle, bool hasZ = false, bool hasM = false );
+
+    /** For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
+     * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
+     * @note added in 3.0
+     */
+    static int segmentSide( const QgsPointV2 &pt1, const QgsPointV2 &pt3, const QgsPointV2 &pt2 );
+
+    /** Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
+     * @note added in 3.0
+     */
+    static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 );
+
     /** Returns a list of points contained in a WKT string.
      * @note not available in Python bindings
      */
