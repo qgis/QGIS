@@ -33,6 +33,7 @@ class QgsProcessingRegistry : QObject
 
     ~QgsProcessingRegistry();
 
+//     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
 
     QList<QgsProcessingProvider *> providers() const;
 %Docstring

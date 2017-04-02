@@ -31,6 +31,7 @@ class QgsProcessingProvider
 
     virtual ~QgsProcessingProvider();
 
+//     QgsProcessingProvider &operator=( const QgsProcessingProvider &other ) = delete;
 
     virtual QIcon icon() const;
 %Docstring
