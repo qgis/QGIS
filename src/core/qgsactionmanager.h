@@ -82,11 +82,11 @@ class CORE_EXPORT QgsActionManager
      */
     void removeAction( const QUuid &actionId );
 
-    /** Does the given values. defaultValueIndex is the index of the
+    /** Does the given action. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
-    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 );
+    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) SIP_PYNAME( doActionFeature );
 
     /** Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
