@@ -179,7 +179,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    //! @note available in python bindings as toMapCoordinatesV2
+    //! @note available in Python bindings as toMapCoordinatesV2
     QgsPointV2 toMapCoordinates( const QgsMapLayer *layer, const QgsPointV2 &point );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates

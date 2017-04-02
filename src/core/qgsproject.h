@@ -217,7 +217,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * a hierarchy of keys and corresponding values
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
-     * @note available in python bindings as writeEntryBool
+     * @note available in Python bindings as writeEntryBool
      */
     bool writeEntry( const QString &scope, const QString &key, bool value );
 
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * a hierarchy of keys and corresponding values
      *
      * @note The key string must be valid xml tag names in order to be saved to the file.
-     * @note available in python bindings as writeEntryDouble
+     * @note available in Python bindings as writeEntryDouble
      */
     bool writeEntry( const QString &scope, const QString &key, double value );
 
@@ -456,7 +456,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * QPair( providerKey, connString ) -> transactionGroup
      *
      * @note Added in QGIS 2.16
-     * @note Not available in python bindings
+     * @note Not available in Python bindings
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups();
 
@@ -580,7 +580,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                      layer you can set this parameter to false to hide it.
      * @param takeOwnership Ownership will be transferred to the layer registry.
      *                      If you specify false here you have take care of deleting
-     *                      the layers yourself. Not available in python.
+     *                      the layers yourself. Not available in Python.
      *
      * @return a list of the map layers that were added
      *         successfully. If a layer is invalid, or already exists in the registry,
@@ -611,7 +611,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *                    layer you can set this parameter to false to hide it.
      * @param takeOwnership Ownership will be transferred to the layer registry.
      *                      If you specify false here you have take care of deleting
-     *                      the layer yourself. Not available in python.
+     *                      the layer yourself. Not available in Python.
      *
      * @return nullptr if unable to add layer, otherwise pointer to newly added layer
      *
@@ -956,13 +956,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void clearError();
 
     //! Creates layer and adds it to maplayer registry
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     void initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group );
 
     QMap<QString, QgsMapLayer *> mMapLayers;

@@ -170,7 +170,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param hasStrokeOpacityParam will be true if stroke opacity param present in SVG
      * @param hasDefaultStrokeOpacity will be true if stroke opacity param has a default value specified
      * @param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
-     * @note available in python bindings as containsParamsV3
+     * @note available in Python bindings as containsParamsV3
      * @note added in QGIS 2.14
      */
     void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,

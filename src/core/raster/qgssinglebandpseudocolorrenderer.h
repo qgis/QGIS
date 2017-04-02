@@ -55,7 +55,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! Returns the raster shader
     QgsRasterShader *shader() { return mShader.get(); }
 
-    //! @note available in python as constShader
+    //! @note available in Python as constShader
     const QgsRasterShader *shader() const { return mShader.get(); }
 
     /** Creates a color ramp shader

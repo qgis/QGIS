@@ -191,7 +191,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void restoreState();
 
     /*!
-     * Reset the python macros
+     * Reset the Python macros
      */
     void resetPythonMacros();
 

@@ -384,20 +384,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QList<QgsComposerItem *> selectedComposerItems( const bool includeLockedItems = true );
 
     /** Returns pointers to all composer maps in the scene
-      @note available in python bindings only with PyQt >= 4.8.4
+      @note available in Python bindings only with PyQt >= 4.8.4
       */
     QList<const QgsComposerMap *> composerMapItems() const;
 
     /** Return composer items of a specific type
      * @param itemList list of item type to store matching items in
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     template<class T> void composerItems( QList<T *> &itemList );
 
     /** Return composer items of a specific type on a specified page
      * @param itemList list of item type to store matching items in
      * @param pageNumber page number (0 based)
-     * @note not available in python bindings
+     * @note not available in Python bindings
      * @note added in QGIS 2.5
      */
     template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const;
@@ -487,7 +487,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
      * @param pos item position. Optional, take position from xml if 0
      * @param pasteInPlace whether the position should be kept but mapped to the page origin. (the page is the page under to the mouse cursor)
-     * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in python bindings
+     * @note parameters mapsToRestore, addUndoCommands pos and pasteInPlace not available in Python bindings
      */
     void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
                           bool addUndoCommands = false, QPointF *pos = nullptr, bool pasteInPlace = false );
@@ -559,7 +559,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QList< QGraphicsLineItem * > *snapLines() {return &mSnapLines;}
 
     /** Returns pointer to selection handles
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     QgsComposerMouseHandles *selectionHandles() {return mSelectionHandles;}
 
@@ -569,7 +569,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void removeSnapLine( QGraphicsLineItem *line );
 
     /** Get nearest snap line
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     QGraphicsLineItem *nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > &snappedItems ) const;
 
@@ -596,7 +596,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void removeMultiFrame( QgsComposerMultiFrame *multiFrame );
 
     /** Adds an arrow item to the graphics scene and advises composer to create a widget for it (through signal)
-      @note not available in python bindings*/
+      @note not available in Python bindings*/
     void addComposerArrow( QgsComposerArrow *arrow );
     //! Adds label to the graphics scene and advises composer to create a widget for it (through signal)
     void addComposerLabel( QgsComposerLabel *label );

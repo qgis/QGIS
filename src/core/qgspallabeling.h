@@ -748,7 +748,7 @@ class CORE_EXPORT QgsPalLabeling
     //! @note added in 2.4
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
 
     //! load/save engine settings to project file

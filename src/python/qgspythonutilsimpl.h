@@ -36,22 +36,22 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     /* general purpose functions */
 
-    //! initialize python and import bindings
+    //! initialize Python and import bindings
     void initPython( QgisInterface *interface ) override;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! initialize python for server and import bindings
+    //! initialize Python for server and import bindings
     void initServerPython( QgsServerInterface *interface ) override;
     bool startServerPlugin( QString packageName ) override;
 #endif
 
-    //! close python interpreter
+    //! close Python interpreter
     void exitPython() override;
 
-    //! returns true if python support is ready to use (must be inited first)
+    //! returns true if Python support is ready to use (must be inited first)
     bool isEnabled() override;
 
-    //! returns path where QGIS python stuff is located
+    //! returns path where QGIS Python stuff is located
     QString pythonPath();
 
     //! run a statement (wrapper for PyRun_String)
@@ -70,24 +70,24 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QString getTypeAsString( PyObject *obj );
 
     //! get information about error to the supplied arguments
-    //! @return false if there was no python error
+    //! @return false if there was no Python error
     bool getError( QString &errorClassName, QString &errorText ) override;
 
     /* plugins related functions */
 
-    //! return current path for python plugins
+    //! return current path for Python plugins
     QString pluginsPath();
 
-    //! return current path for python in home directory
+    //! return current path for Python in home directory
     QString homePythonPath();
 
-    //! return current path for home directory python plugins
+    //! return current path for home directory Python plugins
     QString homePluginsPath();
 
     //! return a list of extra plugins paths passed with QGIS_PLUGINPATH environment variable
     QStringList extraPluginsPaths();
 
-    //! return list of all available python plugins
+    //! return list of all available Python plugins
     QStringList pluginList() override;
 
     //! return whether the plugin is loaded (active)
@@ -96,7 +96,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! return a list of active plugins
     virtual QStringList listActivePlugins() override;
 
-    //! load python plugin (import)
+    //! load Python plugin (import)
     bool loadPlugin( const QString &packageName ) override;
 
     //! start plugin: add to active plugins and call initGui()
@@ -138,7 +138,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     QString getTraceback();
 
-    //! convert python object to QString. If the object isn't unicode/str, it will be converted
+    //! convert Python object to QString. If the object isn't unicode/str, it will be converted
     QString PyObjectToQString( PyObject *obj );
 
     //! reference to module __main__
@@ -147,7 +147,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! dictionary of module __main__
     PyObject *mMainDict = nullptr;
 
-    //! flag determining that python support is enabled
+    //! flag determining that Python support is enabled
     bool mPythonEnabled;
 };
 

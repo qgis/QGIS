@@ -147,7 +147,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * Returns strings for all roles supported by this model.
      *
-     * @note Available only with Qt5 (python and c++)
+     * @note Available only with Qt5 (Python and c++)
      */
     QHash<int, QByteArray> roleNames() const override;
 

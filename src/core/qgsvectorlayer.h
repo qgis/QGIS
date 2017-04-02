@@ -441,7 +441,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorDataProvider *dataProvider();
 
     /** Returns the data provider in a const-correct manner
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsVectorDataProvider *dataProvider() const SIP_SKIP;
 
@@ -665,7 +665,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsFeatureRenderer *renderer() { return mRenderer; }
 
     /** Return const renderer.
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsFeatureRenderer *renderer() const SIP_SKIP { return mRenderer; }
 
@@ -914,7 +914,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Moves the vertex at the given position number,
      * ring and item (first number is index 0), and feature
      * to the given coordinates
-     * @note available in python as moveVertexV2
+     * @note available in Python as moveVertexV2
      */
     bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
@@ -953,7 +953,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  1 problem with feature type
      *  2 ring not closed
      *  6 layer not editable
-     * @note available in python as addCurvedRing
+     * @note available in Python as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
@@ -982,12 +982,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *   5 if several features are selected,
      *   6 if selected geometry not found
      *   7 layer not editable
-     * @note available in python bindings as addPartV2
+     * @note available in Python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
-    //! @note available in python as addCurvedPart
+    //! @note available in Python as addCurvedPart
     int addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
     /** Translates feature by dx, dy
@@ -1296,7 +1296,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     const QgsVectorLayerEditBuffer *editBuffer() const SIP_SKIP { return mEditBuffer; }
 
     /**
@@ -1528,7 +1528,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QString metadata() const override;
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }
 
     /** Set the simplification settings for fast rendering of features

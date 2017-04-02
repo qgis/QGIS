@@ -487,7 +487,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setLineSymbol
      * @see markerSymbol
      * @see style
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsLineSymbol *lineSymbol() const { return mGridLineSymbol; }
 
@@ -515,7 +515,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @see setMarkerSymbol
      * @see lineSymbol
      * @see style
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsMarkerSymbol *markerSymbol() const { return mGridMarkerSymbol; }
 

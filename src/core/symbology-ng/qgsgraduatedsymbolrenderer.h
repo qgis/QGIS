@@ -98,7 +98,7 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
     bool trimTrailingZeroes() const { return mTrimTrailingZeroes; }
     void setTrimTrailingZeroes( bool trimTrailingZeroes ) { mTrimTrailingZeroes = trimTrailingZeroes; }
 
-    //! @note labelForLowerUpper in python bindings
+    //! @note labelForLowerUpper in Python bindings
     QString labelForRange( double lower, double upper ) const;
     QString labelForRange( const QgsRendererRange &range ) const;
     QString formatNumber( double value ) const;
@@ -158,9 +158,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     bool updateRangeRenderState( int rangeIndex, bool render );
 
     void addClass( QgsSymbol *symbol );
-    //! @note available in python bindings as addClassRange
+    //! @note available in Python bindings as addClassRange
     void addClass( const QgsRendererRange &range );
-    //! @note available in python bindings as addClassLowerUpper
+    //! @note available in Python bindings as addClassLowerUpper
     void addClass( double lower, double upper );
 
     /** Add a breakpoint by splitting existing classes so that the specified

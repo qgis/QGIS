@@ -385,7 +385,7 @@ class CORE_EXPORT QgsExpressionContext
      * scope which contains a matching variable.
      * @param name variable name
      * @returns matching scope containing variable, or null if none found
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsExpressionContextScope *activeScopeForVariable( const QString &name ) const;
 

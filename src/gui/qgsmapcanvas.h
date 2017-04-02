@@ -139,7 +139,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * In almost all cases you do NOT want to call this, as it will hang the UI
      * until the rendering job is complete. It's included in API solely for
-     * unit testing and standalone python scripts.
+     * unit testing and standalone Python scripts.
      *
      * @note added in QGIS 3.0
      */
@@ -462,7 +462,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Returns a const reference to the expression context scope for the map canvas.
      * @note added in QGIS 2.12
      * @see setExpressionContextScope()
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; }
 

@@ -236,30 +236,30 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     bool prepareLabelCache() const;
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     LayerRenderJobs prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 );
 
     /**
      * Prepares a labeling job.
-     * @note not available in python bindings
+     * @note not available in Python bindings
      * @note added in QGIS 3.0
      */
     LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     static QImage composeImage( const QgsMapSettings &settings, const LayerRenderJobs &jobs, const LabelRenderJob &labelJob );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     void logRenderingTime( const LayerRenderJobs &jobs, const LabelRenderJob &labelJob );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     void cleanupJobs( LayerRenderJobs &jobs );
 
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
      * label results.
      * @note added in QGIS 3.0
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     void cleanupLabelJob( LabelRenderJob &job );
 

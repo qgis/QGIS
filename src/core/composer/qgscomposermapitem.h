@@ -234,7 +234,7 @@ class CORE_EXPORT QgsComposerMapItemStack
      * @returns reference to item if found
      * @see constItem
      * @see item
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     QgsComposerMapItem &operator[]( int idx );
 

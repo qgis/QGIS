@@ -57,7 +57,7 @@ class CORE_EXPORT QgsDataSourceUri
     QByteArray encodedUri() const;
 
     //! set complete encoded uri (generic mode)
-    // \note not available in python bindings
+    // \note not available in Python bindings
     void setEncodedUri( const QByteArray &uri );
 
     //! set complete encoded uri (generic mode)
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsDataSourceUri
     //! Set generic param (generic mode)
     // \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
-    //! @note available in python as setParamList
+    //! @note available in Python as setParamList
     void setParam( const QString &key, const QStringList &value );
 
     //! Remove generic param (generic mode)

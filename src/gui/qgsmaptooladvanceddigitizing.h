@@ -29,7 +29,7 @@ class QgsAdvancedDigitizingDockWidget;
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
  * An event filter can be set on the map tool to filter and modify the events in map coordinates (@see QgsMapToolMapEventFilter).
  * @note at the moment, the event filter is used by the CAD tools (@see QgsCadDocWidget).
- * @note the event filter definition is not exposed in python API to avoid any unexpected behavior.
+ * @note the event filter definition is not exposed in Python API to avoid any unexpected behavior.
  */
 class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {

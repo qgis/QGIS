@@ -36,7 +36,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
 
     ~QgsAppPluginManagerInterface();
 
-    //! remove python plugins from the metadata registry (c++ plugins stay)
+    //! remove Python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata() override;
 
     //! add a single plugin to the metadata registry

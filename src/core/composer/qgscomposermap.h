@@ -165,7 +165,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     const QgsRectangle *currentMapExtent() const;
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     QgsRectangle *currentMapExtent();
 
     /**

@@ -269,7 +269,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns a QList of integer/bool pairs, where the integer refers to the attribute index and
      * the bool to the sort order for the attribute. If true the attribute is sorted ascending,
      * if false, the attribute is sorted in descending order.
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     QList<QPair<int, bool> > sortAttributes() const;
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Queries the attribute table's vector layer for attributes to show in the table.
      * @param contents table content
      * @returns true if attributes were successfully fetched
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     bool getTableContents( QgsComposerTableContents &contents ) override;
 

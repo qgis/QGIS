@@ -46,9 +46,9 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual void stopRender( QgsRenderContext &context ) override;
-    //! @note symbolForFeature2 in python bindings
+    //! @note symbolForFeature2 in Python bindings
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    //! @note symbol2 in python bindings
+    //! @note symbol2 in Python bindings
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
     virtual QString dump() const override;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;

@@ -31,7 +31,7 @@
  * @note added in QGIS 3.0
  */
 
-// Note about design: this interface must be passed along to python and thus signatures methods must be
+// Note about design: this interface must be passed along to Python and thus signatures methods must be
 // compatible with pyQGIS/pyQT api and rules.
 
 class SERVER_EXPORT QgsServerRequest

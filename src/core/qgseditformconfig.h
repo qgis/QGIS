@@ -78,14 +78,14 @@ class CORE_EXPORT QgsEditFormConfig
     };
 
     /**
-     * The python init code source options.
+     * The Python init code source options.
      */
     enum PythonInitCodeSource
     {
-      CodeSourceNone = 0,             //!< Do not use python code at all
-      CodeSourceFile = 1,             //!< Load the python code from an external file
-      CodeSourceDialog = 2,           //!< Use the python code provided in the dialog
-      CodeSourceEnvironment = 3       //!< Use the python code available in the python environment
+      CodeSourceNone = 0,             //!< Do not use Python code at all
+      CodeSourceFile = 1,             //!< Load the Python code from an external file
+      CodeSourceDialog = 2,           //!< Use the Python code provided in the dialog
+      CodeSourceEnvironment = 3       //!< Use the Python code available in the Python environment
     };
 
     /**
@@ -208,52 +208,52 @@ class CORE_EXPORT QgsEditFormConfig
     // Python form init function stuff
 
     /**
-     * Get python function for edit form initialization.
-     * Will be looked up in a python file relative to the project folder if it
+     * Get Python function for edit form initialization.
+     * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the python code set with @link setInitCode @endlink.
+     * in the Python code set with @link setInitCode @endlink.
      */
     QString initFunction() const;
 
     /**
-     * Set python function for edit form initialization.
-     * Will be looked up in a python file relative to the project folder if it
+     * Set Python function for edit form initialization.
+     * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the python code set with @link setInitCode @endlink.
+     * in the Python code set with @link setInitCode @endlink.
      */
     void setInitFunction( const QString &function );
 
     /**
-     * Get python code for edit form initialization.
+     * Get Python code for edit form initialization.
      */
     QString initCode() const;
 
     /**
-     * Set python code for edit form initialization.
+     * Set Python code for edit form initialization.
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
     void setInitCode( const QString &code );
 
     /**
-     * Get python external file path for edit form initialization.
+     * Get Python external file path for edit form initialization.
      */
     QString initFilePath() const;
 
     /**
-     * Set python external file path for edit form initialization.
+     * Set Python external file path for edit form initialization.
      * Make sure that you also set the appropriate function name in
      * @link setInitFunction @endlink
      */
     void setInitFilePath( const QString &filePath );
 
-    /** Return python code source for edit form initialization
+    /** Return Python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
      *  provided dialog editor or inherited from the environment)
      */
     PythonInitCodeSource initCodeSource() const;
 
-    //! Set if python code shall be used for edit form initialization and its origin
+    //! Set if Python code shall be used for edit form initialization and its origin
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
 
     //! Type of feature form pop-up suppression after feature creation (overrides app setting)

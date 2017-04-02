@@ -35,7 +35,7 @@ class QgsServerException;
  */
 
 // Note:
-// This class is intended to be used from python code: method signatures and return types should be
+// This class is intended to be used from Python code: method signatures and return types should be
 // compatible with pyQGIS/pyQT types and rules.
 
 class SERVER_EXPORT QgsServerResponse
@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsServerResponse
      * to the underlying I/O device
      * @return the number of bytes written
      *
-     *  @note not available in python bindings
+     *  @note not available in Python bindings
      */
     virtual qint64 write( const char *data, qint64 maxsize );
 
@@ -126,7 +126,7 @@ class SERVER_EXPORT QgsServerResponse
      * to the underlying I/O device
      * @return the number of bytes written
      *
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     virtual qint64 write( const char *data );
 

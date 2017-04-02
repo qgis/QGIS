@@ -288,7 +288,7 @@ class CORE_EXPORT QgsDistanceArea
 
   protected:
     //! measures polygon area and perimeter, vertices are extracted from WKB
-    // @note not available in python bindings
+    // @note not available in Python bindings
     QgsConstWkbPtr measurePolygon( QgsConstWkbPtr feature, double *area, double *perimeter, bool hasZptr = false ) const;
 
     /**

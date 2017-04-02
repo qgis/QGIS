@@ -89,7 +89,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @param config    A configuration which should be used for the widget creation
      * @param editor    An editor widget which will be used instead of an autocreated widget
      * @param parent    The parent which will be used for the created wrapper and the created widget
-     * @param context   The editor context (not available in python bindings)
+     * @param context   The editor context (not available in Python bindings)
      *
      * @return A new widget wrapper
      */
@@ -109,7 +109,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * @param fieldIdx  The field index on the specified layer for which this widget will be created
      * @param editor    An editor widget which will be used instead of an autocreated widget
      * @param parent    The parent which will be used for the created wrapper and the created widget
-     * @param context   The editor context (not available in python bindings)
+     * @param context   The editor context (not available in Python bindings)
      *
      * @return A new widget wrapper
      */

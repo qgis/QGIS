@@ -112,7 +112,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      * @brief define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
      * @note custom actions will be shown in any case if they exist.
      * @note (1) attribute actions are defined by the user in the layer properties @see QgsAction
-     * @note (2) map layer actions are built-in c++ actions or actions which are defined by a python plugin @see QgsMapLayerActionRegistry
+     * @note (2) map layer actions are built-in c++ actions or actions which are defined by a Python plugin @see QgsMapLayerActionRegistry
      */
     void setShowFeatureActions( bool showFeatureActions ) { mShowFeatureActions = showFeatureActions; }
     bool showFeatureActions() { return mShowFeatureActions;}

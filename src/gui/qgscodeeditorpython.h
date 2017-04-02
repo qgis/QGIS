@@ -36,13 +36,13 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * Construct a new Python editor.
      *
      * @param parent The parent QWidget
-     * @param filenames The list of apis files to load for the python lexer
+     * @param filenames The list of apis files to load for the Python lexer
      * @note added in 2.6
      */
     QgsCodeEditorPython( QWidget *parent = nullptr, const QList<QString> &filenames = QList<QString>() );
 
     /** Load APIs from one or more files
-     * @param filenames The list of apis files to load for the python lexer
+     * @param filenames The list of apis files to load for the Python lexer
      */
     void loadAPIs( QList<QString> const &filenames );
 

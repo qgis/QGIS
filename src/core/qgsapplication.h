@@ -527,7 +527,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
   signals:
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     void preNotify( QObject *receiver, QEvent *event, bool *done );
 
     /**

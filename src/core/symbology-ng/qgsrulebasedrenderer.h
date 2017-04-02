@@ -147,10 +147,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool needsGeometry() const;
 
-        //! @note available in python bindings as symbol2
+        //! @note available in Python bindings as symbol2
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
-        //! @note not available in python bindings
+        //! @note not available in Python bindings
         QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const;
 
         //! @note added in 2.6
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QSet<int> collectZLevels();
 
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
-        //! @note not available in python bindings
+        //! @note not available in Python bindings
         void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels );
 
         /**

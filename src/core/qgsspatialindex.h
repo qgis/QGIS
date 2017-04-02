@@ -95,9 +95,9 @@ class CORE_EXPORT QgsSpatialIndex
     QAtomicInt refs() const;
 
   protected:
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id );
 
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()

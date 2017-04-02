@@ -289,7 +289,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param i       The number of already fetched features
      * @param cancel  A reference to a boolean variable. Set to true and the operation will be canceled.
      *
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     void progress( int i, bool &cancel );
 

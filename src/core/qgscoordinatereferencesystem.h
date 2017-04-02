@@ -461,12 +461,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Sets custom function to force valid CRS
      *  QGIS uses implementation in QgisGui::customSrsValidation
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     static void setCustomCrsValidation( CUSTOM_CRS_VALIDATION f );
 
     /** Gets custom function
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     static CUSTOM_CRS_VALIDATION customCrsValidation();
 

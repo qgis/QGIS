@@ -192,7 +192,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /** Gets the fill symbol used for drawing the overview extent.
      * @returns fill symbol for overview
      * @see setFrameSymbol
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     const QgsFillSymbol *frameSymbol() const { return mFrameSymbol; }
 

@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a tuple of group code and integer value
      * @param code group code
      * @param i integer value
-     * @note available in python bindings as writeGroupInt
+     * @note available in Python bindings as writeGroupInt
      */
     void writeGroup( int code, int i );
 
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a group code with a floating point value
      * @param code group code
      * @param d floating point value
-     * @note available in python bindings as writeGroupDouble
+     * @note available in Python bindings as writeGroupDouble
      */
     void writeGroup( int code, double d );
 
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsDxfExport
      * Write a group code with a point
      * @param code group code
      * @param p point value
-     * @note available in python bindings as writeGroupPointV2
+     * @note available in Python bindings as writeGroupPointV2
      * @note added in 2.15
      */
     void writeGroup( int code, const QgsPointV2 &p );
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsDxfExport
      * @param exactMatch group code to use if the color has an exact match in the dxf palette
      * @param rgbCode group code to use if the color doesn't have an exact match or has a transparency component
      * @param transparencyCode group code to use for transparency component
-     * @note available in python bindings as writeGroupPoint
+     * @note available in Python bindings as writeGroupPoint
      */
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 

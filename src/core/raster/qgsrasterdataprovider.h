@@ -228,7 +228,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param scale Optional parameter that is the Scale of the layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
-     * \note visibleExtent parameter added in 2.8 (no available in python bindings)
+     * \note visibleExtent parameter added in 2.8 (no available in Python bindings)
      */
     virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr )
     {
@@ -471,13 +471,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
   protected:
 
     /** Read block of data
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data )
     { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
 
     /** Read block of data using give extent and size
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     virtual void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr )
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); }

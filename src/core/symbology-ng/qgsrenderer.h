@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
 
     //! return a list of item text / symbol
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" );
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().

@@ -124,7 +124,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      * Reload the current symbol in the view.
      */
     void loadSymbol();
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
 
     /**
      * Load the given symbol into the widget..
@@ -143,7 +143,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void updateLockButton();
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     SymbolLayerItem *currentLayerItem();
 
     /**
@@ -277,14 +277,14 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void keyPressEvent( QKeyEvent *e ) override;
 
     void loadSymbol();
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     void loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent );
 
     void updateUi();
 
     void updateLockButton();
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     SymbolLayerItem *currentLayerItem();
     QgsSymbolLayer *currentLayer();
 

@@ -73,7 +73,7 @@ class GUI_EXPORT QgsMapCanvasSnapper
      */
     int snapToBackgroundLayers( QPoint p, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
-    // @note not available in python bindings
+    // @note not available in Python bindings
     int snapToBackgroundLayers( const QgsPoint &point, QList<QgsSnappingResult> &results, const QList<QgsPoint> &excludePoints = QList<QgsPoint>() );
 
     void setMapCanvas( QgsMapCanvas *canvas );

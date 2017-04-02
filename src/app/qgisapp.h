@@ -941,7 +941,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void decreaseContrast();
     //! plugin manager
     void showPluginManager();
-    //! load python support if possible
+    //! load Python support if possible
     void loadPythonSupport();
 
     /** Install plugin from ZIP file
@@ -1068,8 +1068,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! text)= of the given action.
     void openProject( QAction *action );
 
-    /** Attempts to run a python script
-     * @param filePath full path to python script
+    /** Attempts to run a Python script
+     * @param filePath full path to Python script
      * @note added in QGIS 2.7
      */
     void runScript( const QString &filePath );
@@ -1353,7 +1353,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! save current raster layer
     void saveAsRasterFile();
 
-    //! show python console
+    //! show Python console
     void showPythonDialog();
 
     //! Shows a warning when an old project file is read.

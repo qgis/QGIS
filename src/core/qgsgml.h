@@ -349,7 +349,7 @@ class CORE_EXPORT QgsGml : public QObject
      *  @param password password for authentication
      *  @param authcfg authentication configuration id
      *  @return 0 in case of success
-     *  @note available in python as getFeaturesUri
+     *  @note available in Python as getFeaturesUri
      */
     int getFeatures( const QString &uri,
                      QgsWkbTypes::Type *wkbType,

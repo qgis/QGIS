@@ -166,7 +166,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * If you want the form to be saved, leave the parameter untouched.
      *
      * @param ok  Set this parameter to false if you don't want the form to be saved
-     * @note not available  in python bindings
+     * @note not available  in Python bindings
      */
     void beforeSave( bool &ok );
 
@@ -365,7 +365,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QVector<ContainerInformation *> mContainerVisibilityInformation;
     QMap<QString, QVector<ContainerInformation *> > mContainerInformationDependency;
 
-    // Variables below are used for python
+    // Variables below are used for Python
     static int sFormCounter;
     int mFormNr;
     QString mPyFormVarName;

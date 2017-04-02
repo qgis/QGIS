@@ -87,8 +87,8 @@ class SERVER_EXPORT QgsServer
     QgsServerInterfaceImpl *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Initialize python
-    //! Note: not in python bindings
+    //! Initialize Python
+    //! Note: not in Python bindings
     void initPython( );
 #endif
 

@@ -86,7 +86,7 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry( const QgsGeometry & );
 
     /** Assignments will prompt a deep copy of the object
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     QgsGeometry &operator=( QgsGeometry const &rhs );
 
@@ -141,14 +141,14 @@ class CORE_EXPORT QgsGeometry
     /**
      * Set the geometry, feeding in a geometry in GEOS format.
      * This class will take ownership of the buffer.
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     void fromGeos( GEOSGeometry *geos );
 
     /**
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
       This class will take ownership of the buffer.
-      @note not available in python bindings
+      @note not available in Python bindings
      */
     void fromWkb( unsigned char *wkb, int length );
 
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsGeometry
     /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      *  @note added in 3.0
-     *  @note not available in python bindings
+     *  @note not available in Python bindings
      */
     GEOSGeometry *exportToGeos( double precision = 0 ) const;
 
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsGeometry
      * @param newPart part to add. Ownership is NOT transferred.
      * @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( GEOSGeometry *newPart );
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature
-     @note available in python bindings as addPartGeometry (added in 2.2)
+     @note available in Python bindings as addPartGeometry (added in 2.2)
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsGeometry &newPart );
@@ -771,7 +771,7 @@ class CORE_EXPORT QgsGeometry
     /** Exports the geometry to GeoJSON
      *  @return a QString representing the geometry as GeoJSON
      *  @note added in 1.8
-     *  @note python binding added in 1.9
+     *  @note Python binding added in 1.9
      *  @note precision parameter added in 2.4
      */
     QString exportToGeoJSON( int precision = 17 ) const;
@@ -868,7 +868,7 @@ class CORE_EXPORT QgsGeometry
      *          2 if avoid intersection would change the geometry type,
      *          3 other error during intersection removal
      *  @param avoidIntersectionsLayers list of layers to check for intersections
-     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in python bindings)
+     *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
      *  @note added in 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
@@ -907,7 +907,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Validate geometry and produce a list of geometry errors
      * @note added in 1.5
-     * @note python binding added in 1.6
+     * @note Python binding added in 1.6
      **/
     void validateGeometry( QList<Error> &errors );
 

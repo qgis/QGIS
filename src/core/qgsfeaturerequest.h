@@ -196,7 +196,7 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Get a copy as a list of OrderByClauses
          *
-         * This is only required in python where the inheritance
+         * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
          */
         QList<OrderByClause> CORE_EXPORT list() const;

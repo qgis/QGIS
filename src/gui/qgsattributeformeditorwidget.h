@@ -66,7 +66,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * @param widgetId id of the widget type to create a search wrapper for
      * @param fieldIdx index of field associated with widget
      * @param config configuration which should be used for the widget creation
-     * @param context editor context (not available in python bindings)
+     * @param context editor context (not available in Python bindings)
      */
     void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
                                      const QVariantMap &config,

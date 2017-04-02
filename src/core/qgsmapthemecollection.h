@@ -122,7 +122,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void addLayerRecord( const MapThemeLayerRecord &record );
 
         //! Return set with only records for valid layers
-        //! @note not available in python bindings
+        //! @note not available in Python bindings
         QHash<QgsMapLayer *, MapThemeLayerRecord> validLayerRecords() const;
 
       private:

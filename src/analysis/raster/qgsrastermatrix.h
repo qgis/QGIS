@@ -60,7 +60,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     //! Takes ownership of data array
     QgsRasterMatrix();
-    //! @note note available in python bindings
+    //! @note note available in Python bindings
     QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue );
     QgsRasterMatrix( const QgsRasterMatrix &m );
     ~QgsRasterMatrix();
@@ -70,10 +70,10 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     double number() const { return mData[0]; }
 
     //! Returns data array (but not ownership)
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     double *data() { return mData; }
     //! Returns data and ownership. Sets data and nrows, ncols of this matrix to 0
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     double *takeData();
 
     void setData( int cols, int rows, double *data, double nodataValue );

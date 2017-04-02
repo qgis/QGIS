@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRelation
      * The second element of each pair are the field names of the matching primary key.
      *
      * @param fieldPair A pair of two strings
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     void addFieldPair( const FieldPair &fieldPair );
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsRelation
      * @param attributes An attribute vector containing the foreign key
      *
      * @return A request the referenced feature
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
 

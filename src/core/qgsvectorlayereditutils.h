@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
-     *  @note available in python bindings as moveVertexV2
+     *  @note available in Python bindings as moveVertexV2
      */
     bool moveVertex( const QgsPointV2 &p, QgsFeatureId atFeatureId, int atVertex );
 
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  3 ring not valid,
      *  4 ring crosses existing rings,
      *  5 no feature found where ring can be inserted
-     * @note available in python bindings as addCurvedRing
+     * @note available in Python bindings as addCurvedRing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
@@ -123,12 +123,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  4 if no feature was selected,
      *  5 if several features are selected,
      *  6 if selected geometry not found
-     * @note available in python bindings as addPartV2
+     * @note available in Python bindings as addPartV2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
 
-    // @note available in python bindings as addCurvedPart
+    // @note available in Python bindings as addCurvedPart
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( QgsCurve *ring, QgsFeatureId featureId );
 

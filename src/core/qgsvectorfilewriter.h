@@ -459,7 +459,7 @@ class CORE_EXPORT QgsVectorFileWriter
     //! Add feature to the currently opened data source
     bool addFeature( QgsFeature &feature, QgsFeatureRenderer *renderer = nullptr, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
 
     //! Close opened shapefile for writing
@@ -497,7 +497,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * Get the ogr geometry type from an internal QGIS wkb type enum.
      *
      * Will drop M values and convert Z to 2.5D where required.
-     * @note not available in python bindings
+     * @note not available in Python bindings
      */
     static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type );
 
@@ -524,7 +524,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                            const QgsAttributeList &attributes );
 
   protected:
-    //! @note not available in python bindings
+    //! @note not available in Python bindings
     OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType );
 
     OGRDataSourceH mDS;
