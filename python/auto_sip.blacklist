@@ -7,7 +7,6 @@ core/qgsattributetableconfig.sip
 core/qgsattributeeditorelement.sip
 core/qgsbearingutils.sip
 core/qgsbrowsermodel.sip
-core/qgsclipper.sip
 core/qgscolorramp.sip
 core/qgscolorscheme.sip
 core/qgscolorschemeregistry.sip
