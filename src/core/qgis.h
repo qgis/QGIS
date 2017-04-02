@@ -388,29 +388,29 @@ typedef unsigned long long qgssize;
 #define FALLTHROUGH
 #endif
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Transfer
  *
  * Example QgsVectorLayer::setDiagramRenderer
  */
 #define SIP_TRANSFER
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferBack
  */
 #define SIP_TRANSFERBACK
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-TransferThis
  */
 #define SIP_TRANSFERTHIS
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-Out
  */
 #define SIP_OUT
 
-/**
+/*
  * Combination of
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-In
  * and
@@ -418,57 +418,57 @@ typedef unsigned long long qgssize;
  */
 #define SIP_INOUT
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-Factory
  */
 #define SIP_FACTORY
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-PyName
  */
 #define SIP_PYNAME(name)
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#argument-annotation-KeepReference
  */
 #define SIP_KEEPREFERENCE
 
-/**
+/*
   * discard line
   */
 #define SIP_SKIP
 
-/**
+/*
   * specify an alternative type for SIP methods
   */
 #define SIP_PYTYPE(type)
 
-/**
+/*
   * specify an alternative default value for SIP methods
   */
 #define SIP_PYDEFAULTVALUE(value)
 
-/**
+/*
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL
 
-/**
+/*
  * Will insert a `%Feature feature` directive in sip files
  */
 #define SIP_FEATURE(feature)
 
-/**
+/*
  * Will insert a `%If feature` directive in sip files
  */
 #define SIP_IF_FEATURE(feature)
 
-/**
+/*
  * Convert to subclass code
  */
 #define SIP_CONVERT_TO_SUBCLASS_CODE(code)
 
-/**
+/*
  * Will insert a `%End` directive in sip files
  */
 #define SIP_END
