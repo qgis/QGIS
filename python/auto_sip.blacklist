@@ -10,7 +10,6 @@ core/qgsbrowsermodel.sip
 core/qgscolorramp.sip
 core/qgscolorscheme.sip
 core/qgscolorschemeregistry.sip
-core/qgsconditionalstyle.sip
 core/qgscontexthelp.sip
 core/qgscoordinatereferencesystem.sip
 core/qgscoordinatetransform.sip
