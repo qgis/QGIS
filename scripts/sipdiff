@@ -62,6 +62,4 @@ for file in $*; do
   fi
   vimdiff $tempfile python/$d/$f.sip
 
-  rm $tempfile
-
 done
