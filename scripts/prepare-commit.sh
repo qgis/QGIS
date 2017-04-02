@@ -20,6 +20,12 @@ PATH=$TOPLEVEL/scripts:$PATH
 
 cd $TOPLEVEL
 
+# GNU prefix command for mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
+
 if ! type -p astyle.sh >/dev/null; then
   echo astyle.sh not found
   exit 1
@@ -40,7 +46,7 @@ fi
 set -e
 
 # determine changed files
-MODIFIED=$(git status --porcelain| sed -ne "s/^ *[MA]  *//p" | sort -u)
+MODIFIED=$(git status --porcelain| ${GP}sed -ne "s/^ *[MA]  *//p" | sort -u)
 
 if [ -z "$MODIFIED" ]; then
   echo nothing was modified
@@ -108,11 +114,11 @@ for f in $MODIFIED; do
   if [[ $f =~ ^src\/(core|gui|analysis)\/.*\.h$ ]]; then
     # look if corresponding SIP file
     #echo $f
-    sip_include=$(sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
-    sip_file=$(sed -r 's/^src\/(core|gui|analysis)\///; s/\.h$/.sip/' <<<$f )
+    sip_include=$(${GP}sed -r 's/^src\/(\w+)\/.*$/python\/\1\/\1.sip/' <<< $f )
+    sip_file=$(${GP}sed -r 's/^src\/(core|gui|analysis)\///; s/\.h$/.sip/' <<<$f )
     if grep -Exq "^\s*%Include $sip_file" ${TOPLEVEL}/$sip_include ; then
       #echo "in SIP"
-      sip_file=$(sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
+      sip_file=$(${GP}sed -r 's/^src\///; s/\.h$/.sip/' <<<$f )
       # check it is not blacklisted (i.e. manualy SIP)
       if ! grep -Fxq "$sip_file" python/auto_sip.blacklist; then
         #echo "automatic file"
