@@ -452,3 +452,23 @@ typedef unsigned long long qgssize;
  * http://pyqt.sourceforge.net/Docs/sip4/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL
+
+/**
+ * Will insert a `%Feature feature` directive in sip files
+ */
+#define SIP_FEATURE(feature)
+
+/**
+ * Will insert a `%If feature` directive in sip files
+ */
+#define SIP_IF_FEATURE(feature)
+
+/**
+ * Convert to subclass code
+ */
+#define SIP_CONVERT_TO_SUBCLASS_CODE(code)
+
+/**
+ * Will insert a `%End` directive in sip files
+ */
+#define SIP_END

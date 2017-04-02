@@ -82,6 +82,16 @@ typedef QVector<QVariant> QgsSuperClass;
  */
 class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseClass
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->headerType() == QgsSipifyHeader::Special )
+      sipType = sipType_QgsSpecialSipifyHeader;
+    else
+      sipType = sipType_QgsStandardSipifyHeader;
+    SIP_END
+#endif
+
   public:
     //! This is an enum
     enum MyEnum
@@ -113,6 +123,12 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
 
     //! Default constructor
     QgsSipifyHeader() = default;
+
+    //! Assignment operator should be removed in sip
+    QgsSipifyHeader &operator=( const QgsSipifyHeader other );
+
+    //! Comparison operator should be kept
+    bool operator==( const QgsSipifyHeader other );
 
     //! A multiline method signature
     void multilineMethod( const QgsPoint &startPoint,

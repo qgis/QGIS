@@ -49,6 +49,13 @@ class QgsSipifyHeader : QtClass<QVariant>
 %TypeHeaderCode
 #include "sipifyheader.h"
 %End
+
+%ConvertToSubClassCode
+    if ( sipCpp->headerType() == QgsSipifyHeader::Special )
+      sipType = sipType_QgsSpecialSipifyHeader;
+    else
+      sipType = sipType_QgsStandardSipifyHeader;
+%End
   public:
     enum MyEnum
     {
@@ -80,6 +87,13 @@ A constructor with some special character types
     QgsSipifyHeader();
 %Docstring
 Default constructor
+%End
+
+//     QgsSipifyHeader &operator=( const QgsSipifyHeader other );
+
+    bool operator==( const QgsSipifyHeader other );
+%Docstring
+Comparison operator should be kept
 %End
 
     void multilineMethod( const QgsPoint &startPoint,

@@ -53,6 +53,24 @@ while(!eof $header){
     $line = readline $header;
     #print $line;
 
+    if ($line =~ m/^\s*SIP_FEATURE\( (\w+) \)(.*)$/){
+        print "%Feature $1$2";
+        next;
+    }
+    if ($line =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
+        print "%If ($1)$2";
+        next;
+    }
+    if ($line =~ m/^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$/){
+        print "%ConvertToSubClassCode$1\n";
+        next;
+    }
+
+    if ($line =~ m/^\s*SIP_END(.*)$/){
+        print "%End$1";
+        next;
+    }
+
     # Skip preprocessor stuff
     if ($line =~ m/^\s*#/){
         if ( $line =~ m/^\s*#ifdef SIP_RUN/){
@@ -163,6 +181,12 @@ while(!eof $header){
                 next;
             }
         }
+    }
+
+    # Skip assignment operator
+    if ( $line =~ m/operator=\s*\(/ ){
+        print "// $line";
+        next;
     }
 
     # Detect comment block
