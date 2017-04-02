@@ -17,7 +17,7 @@
 
 #include "qgsprocessingregistry.h"
 
-QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent )
+QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
 {
 
