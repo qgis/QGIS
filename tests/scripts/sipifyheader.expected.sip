@@ -150,6 +150,7 @@ complex default value and type (i.e. containing commas) should be given as a str
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl );
 
+    virtual int overriddenProperty();
   protected:
     bool thisShouldBeListed();
 
