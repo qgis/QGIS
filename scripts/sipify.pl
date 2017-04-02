@@ -17,6 +17,17 @@ sub shouldSkipDoxygenLine
     }
 }
 
+sub processDoxygenLine
+{
+    if ( $_[0] =~ m/[\\@]note added .*?([\d\.]+)/i ) {
+        return ".. versionadded:: $1\n";
+    }
+    if ( $_[0] =~ m/[\\@]note (.*)/ ) {
+        return ".. note::\n\n   $1\n";
+    }
+    return $_[0];
+}
+
 
 my $headerfile = $ARGV[0];
 
@@ -163,7 +174,7 @@ while(!eof $header){
         do {no warnings 'uninitialized';
             if ( !shouldSkipDoxygenLine($line) )
             {
-                $comment = $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r;
+                $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r );
             }
         };
         $comment =~ s/^\s*$//;
@@ -171,7 +182,7 @@ while(!eof $header){
             $line = readline $header;
             if ( !shouldSkipDoxygenLine($line) )
             {
-               $comment .= $line =~ s/\s*\*?(.*?)(\/)?$/$1/r;
+               $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?$/$1/r );
             }
             if ( $line =~ m/\*\/$/ ){
                 last;
@@ -186,7 +197,7 @@ while(!eof $header){
     if ( $SIP_RUN == 0 ){
         if ( $line =~ m/^\s*\/\// && !shouldSkipDoxygenLine($line) ){
             $line =~ s/^\s*\/\/\!*\s*(.*)\n?$/$1/;
-            $comment = $line;
+            $comment = processDoxygenLine( $line );
             next;
         }
     }

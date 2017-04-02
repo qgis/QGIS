@@ -22,7 +22,9 @@ class QgsFeature
 %Docstring
  The feature class encapsulates a single feature including its id,
  geometry and a list of field/values attributes.
- \note QgsFeature objects are implicitly shared.
+.. note::
+
+   QgsFeature objects are implicitly shared.
  @author Gary E.Sherman
 %End
 
@@ -180,8 +182,10 @@ class QgsFeature
  @link attributes @endlink method.
  @returns list of feature's attributes
  @see setAttributes
- @note added in QGIS 2.9
- @note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+.. versionadded:: 2.9
+.. note::
+
+   Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
 %End
 
     void setAttributes( const QgsAttributes &attrs );
@@ -200,8 +204,12 @@ class QgsFeature
  @param field the index of the field to set
  @param attr the value of the attribute
  @return false, if the field index does not exist
- @note For Python: raises a KeyError exception instead of returning false
- @note Alternatively in Python: @code feature[field] = attr @endcode
+.. note::
+
+   For Python: raises a KeyError exception instead of returning false
+.. note::
+
+   Alternatively in Python: @code feature[field] = attr @endcode
  @see setAttributes
 %End
 %MethodCode
@@ -236,8 +244,12 @@ class QgsFeature
  Deletes an attribute and its value.
  @param field the index of the field
  @see setAttribute
- @note For Python: raises a KeyError exception if the field is not found
- @note Alternatively in Python: @code del feature[field] @endcode
+.. note::
+
+   For Python: raises a KeyError exception if the field is not found
+.. note::
+
+   Alternatively in Python: @code del feature[field] @endcode
 %End
 %MethodCode
     if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
@@ -268,7 +280,7 @@ class QgsFeature
 %Docstring
  Returns true if the feature has an associated geometry.
  @see geometry()
- @note added in QGIS 3.0.
+.. versionadded:: 3.0.
 %End
 
     QgsGeometry geometry() const;
@@ -292,7 +304,7 @@ class QgsFeature
  Removes any geometry associated with the feature.
  @see setGeometry()
  @see hasGeometry()
- @note added in QGIS 3.0
+.. versionadded:: 3.0
 %End
 
     void setFields( const QgsFields &fields, bool initAttributes = true  );
@@ -302,7 +314,7 @@ class QgsFeature
   @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
                         C++: Defaults to false
                         Python: Defaults to true
- @note added in QGIS 2.9
+.. versionadded:: 2.9
  @see fields
 %End
 
@@ -320,8 +332,12 @@ class QgsFeature
   @param name The name of the field to set
   @param value The value to set
   @return false if attribute name could not be converted to index (C++ only)
-  @note For Python: raises a KeyError exception instead of returning false
-  @note Alternatively in Python: @code feature[name] = attr @endcode
+.. note::
+
+   For Python: raises a KeyError exception instead of returning false
+.. note::
+
+   Alternatively in Python: @code feature[name] = attr @endcode
   @see setFields
 %End
 %MethodCode
@@ -350,8 +366,12 @@ class QgsFeature
   before this method can be used.
   @param name The name of the field to delete
   @return false if attribute name could not be converted to index (C++ only)
-  @note For Python: raises a KeyError exception instead of returning false
-  @note Alternatively in Python: @code del feature[name] @endcode
+.. note::
+
+   For Python: raises a KeyError exception instead of returning false
+.. note::
+
+   Alternatively in Python: @code del feature[name] @endcode
   @see setFields
 %End
 %MethodCode
@@ -375,8 +395,12 @@ class QgsFeature
   before this method can be used.
   @param name The name of the attribute to get
   @return The value of the attribute (C++: Invalid variant if no such name exists )
-  @note For Python: raises a KeyError exception if the field is not found
-  @note Alternatively in Python: @code feature[name] @endcode
+.. note::
+
+   For Python: raises a KeyError exception if the field is not found
+.. note::
+
+   Alternatively in Python: @code feature[name] @endcode
   @see setFields
 %End
 %MethodCode
@@ -399,8 +423,12 @@ class QgsFeature
   before this method can be used.
   @param fieldIdx The index of the attribute to get
   @return The value of the attribute (C++: Invalid variant if no such index exists )
-  @note For Python: raises a KeyError exception if the field is not found
-  @note Alternatively in Python: @code feature[fieldIdx] @endcode
+.. note::
+
+   For Python: raises a KeyError exception if the field is not found
+.. note::
+
+   Alternatively in Python: @code feature[fieldIdx] @endcode
   @see setFields
 %End
 %MethodCode

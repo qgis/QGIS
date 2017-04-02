@@ -15,7 +15,7 @@ class QgsProcessingProvider
  Abstract base class for processing providers. An algorithm provider is a set of
  related algorithms, typically from the same external application or related
  to a common area of analysis.
- \note added in QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

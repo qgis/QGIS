@@ -40,6 +40,10 @@ class QgsSipifyHeader : QtClass<QVariant>
 {
 %Docstring
  Documentation goes here
+.. versionadded:: 3.0
+.. note::
+
+   some other note
 %End
 
 %TypeHeaderCode
