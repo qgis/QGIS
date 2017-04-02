@@ -85,6 +85,8 @@ A multiline method signature
 Factory annotation
 %End
 
+    SomeObject *createAnother() /Factory/;
+
     void LongDocStringMethod();
 %Docstring
  My long doc string

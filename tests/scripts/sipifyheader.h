@@ -116,6 +116,8 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
     //! Factory annotation
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
+    SomeObject *createAnother() SIP_FACTORY { return something; }
+
     /**
      * My long doc string
      * is not very interesting!

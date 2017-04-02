@@ -291,7 +291,7 @@ while(!eof $header){
         }
 
         # remove function bodies
-        if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( const)?)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+        if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
             my $newline = "$1$2$3$4;\n";
             if ($line !~ m/\{.*?\}$/){
                 $line = readline $header;
