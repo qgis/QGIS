@@ -126,7 +126,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Return filtered list of active legend nodes attached to a particular layer node
     //! (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
     //! \since QGIS 2.6
-    //! @note skipNodeEmbeddedInParent added in 2.18
+    //! \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
     //! @see layerOriginalLegendNodes()
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
 

@@ -65,18 +65,18 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void setColor( const QColor &color );
 
     /** Set polygons fill color.
-     * @note: added in version 2.3 */
+     * \since QGIS 2.3 */
     void setFillColor( const QColor &fillColor );
 
     //! Set width. Ignored in feature mode.
     void setWidth( int width );
 
     /** Set line / stroke buffer in millimeters.
-     *  @note: added in version 2.3 */
+     *  \since QGIS 2.3 */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
     /** Set minimum line / stroke width in millimeters.
-     *  @note: added in version 2.3 */
+     *  \since QGIS 2.3 */
     void setMinWidth( double width ) { mMinWidth = width; }
 
     const QgsMapLayer *layer() const { return mLayer; }

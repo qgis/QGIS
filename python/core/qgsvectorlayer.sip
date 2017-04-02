@@ -414,7 +414,7 @@ Setup the coordinate system transformation for the layer
     QgsVectorLayerJoinBuffer *joinBuffer();
 %Docstring
  Accessor to the join buffer object
-.. versionadded:: 2.14.7
+ \since QGIS 2.14.7
 %End
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
 

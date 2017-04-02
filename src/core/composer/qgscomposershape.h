@@ -84,7 +84,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     void setUseSymbol( bool useSymbol );
 
     /** Depending on the symbol style, the bounding rectangle can be larger than the shape
-    @note this function was added in version 2.3*/
+    \since QGIS 2.3*/
     QRectF boundingRect() const override;
 
     /** Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from

@@ -411,7 +411,8 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature
-     @note available in Python bindings as addPartGeometry (added in 2.2)
+     \note available in Python bindings as addPartGeometry
+     \since QGIS 2.2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsGeometry &newPart );
@@ -458,7 +459,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Replaces a part of this geometry with another line
      * @return 0 in case of success
-     * @note: this function was added in version 1.3
+     * \since QGIS 1.3
      */
     int reshapeGeometry( const QList<QgsPoint> &reshapeWithLine );
 
@@ -763,7 +764,7 @@ class CORE_EXPORT QgsGeometry
     QByteArray exportToWkb() const;
 
     /** Exports the geometry to WKT
-     *  @note precision parameter added in 2.4
+     *  \note precision parameter added in QGIS 2.4
      *  @return true in case of success and false else
      */
     QString exportToWkt( int precision = 17 ) const;
@@ -771,8 +772,8 @@ class CORE_EXPORT QgsGeometry
     /** Exports the geometry to GeoJSON
      *  @return a QString representing the geometry as GeoJSON
      *  \since QGIS 1.8
-     *  @note Python binding added in 1.9
-     *  @note precision parameter added in 2.4
+     *  \note Available in Python bindings since QGIS 1.9
+     *  \note precision parameter added in QGIS 2.4
      */
     QString exportToGeoJSON( int precision = 17 ) const;
 
@@ -907,7 +908,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Validate geometry and produce a list of geometry errors
      * \since QGIS 1.5
-     * @note Python binding added in 1.6
+     * \note Available in Python bindings since QGIS 1.6
      **/
     void validateGeometry( QList<Error> &errors );
 

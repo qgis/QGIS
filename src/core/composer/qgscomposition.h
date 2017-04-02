@@ -754,7 +754,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Returns the items model attached to the composition
      * @returns QgsComposerModel for composition
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     QgsComposerModel *itemsModel() { return mItemsModel; }
 
@@ -841,7 +841,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * QgsComposerItem::AllProperties then all data defined properties for the composition will be
      * refreshed.
      * @param context expression context for evaluating data defined expressions
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr );
 
@@ -991,7 +991,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Check whether any data defined page settings are active.
      * @returns true if any data defined page settings are active.
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     bool ddPageSizeActive() const;
 

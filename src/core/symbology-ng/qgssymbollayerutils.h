@@ -152,7 +152,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param size target pixmap size
      * @param padding space between icon edge and symbol
      * @param customContext render context to use when rendering symbol
-     * @note customContext parameter added in 2.6
+     * \note Parameter customContext added in QGIS 2.6
      * @see symbolPreviewIcon()
      */
     static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );

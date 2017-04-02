@@ -86,8 +86,8 @@ class CORE_EXPORT QgsPluginLayerRegistry
     //! Return plugin layer type metadata or NULL if doesn't exist
     QgsPluginLayerType *pluginLayerType( const QString &typeName );
 
-    /** Return new layer if corresponding plugin has been found, else return NULL.
-     * @note optional param uri added in 2.10
+    /** Returns new layer if corresponding plugin has been found else returns a nullptr.
+     * \note parameter uri has been added in QGIS 2.10
      */
     QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() );
 

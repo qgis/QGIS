@@ -167,7 +167,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns page number for item, beginning on page 1
      * @see pagePos
      * @see updatePagePos
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     int page() const;
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns position relative to the page's top left corner.
      * @see page
      * @see updatePagePos
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     QPointF pagePos() const;
 
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param newPageHeight new height of the page in mm
      * @see page
      * @see pagePos
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     void updatePagePos( double newPageWidth, double newPageHeight );
 
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
-     * @note this method was added in version 2.1
+     * \since QGIS 2.1
      * @see setItemRotation
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
@@ -510,14 +510,14 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      * @see setCurrentExportLayer
      */
     virtual int numberExportLayers() const { return 0; }
 
     /** Sets the current layer to draw for exporting
      * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      * @see numberExportLayers
      */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param r item rotation in degrees
      * @param adjustPosition set to true if item should be shifted so that rotation occurs
      * around item center. If false, rotation occurs around item origin
-     * @note this method was added in version 2.1
+     * \since QGIS 2.1
      * @see itemRotation
      */
     virtual void setItemRotation( const double r, const bool adjustPosition = false );
@@ -567,7 +567,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
      * @param context expression context for evaluating data defined expressions
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
@@ -639,7 +639,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** The layer that needs to be exported
      * @note: if -1, all layers are to be exported
-     * @note: this member was added in version 2.4
+     * \since QGIS 2.4
      */
     int mCurrentExportLayer;
 
@@ -729,7 +729,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       *@param rotateAroundCenter set to true to rotate the item around its center rather
       * than its origin
       * @param context expression context for evaulating data defined rotation
-      * @note this method was added in version 2.5
+      * \since QGIS 2.5
      */
     void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
 
@@ -737,7 +737,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       * @param updateItem set to false to prevent the item being automatically updated
       * after the transparency is set
       * @param context expression context for evaulating data defined transparency
-      * @note this method was added in version 2.5
+      * \since QGIS 2.5
      */
     void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
@@ -756,7 +756,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void refreshBackgroundColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's blend mode, considering data defined blend mode
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     void refreshBlendMode( const QgsExpressionContext &context );
 

@@ -128,7 +128,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the doc/contributors.json file.
-     * @note this function was added in version 2.7 */
+     * \since QGIS 2.7 */
     static QString developersMapFilePath();
 
     //! Returns the path to the sponsors file.

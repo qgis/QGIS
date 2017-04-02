@@ -334,7 +334,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
                               bool saveFlag = true );
 
     /** Create layer group instance defined in an arbitrary project file.
-     * @note: added in version 2.4
+     * \since QGIS 2.4
      */
     QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
 

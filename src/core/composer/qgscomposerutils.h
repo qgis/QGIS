@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerUtils
     static bool decodePresetPaperSize( const QString &presetString, double &width, double &height );
 
     /** Reads all pre 3.0 data defined properties from an XML element.
-     * @note this method was added in version 3.0
+     * \since QGIS 3.0
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
      */
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsComposerUtils
         QgsPropertyCollection &dataDefinedProperties );
 
     /** Reads a pre 3.0 data defined property from an XML DOM element.
-     * @note this method was added in version 3.0
+     * \since QGIS 3.0
      * @see readDataDefinedPropertyMap
      */
     static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );

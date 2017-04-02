@@ -339,7 +339,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Sets rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item
-     * @note this function was added in version 2.1
+     * \since QGIS 2.1
      */
     void setMapRotation( double r );
 
@@ -428,7 +428,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     int numberExportLayers() const override;
 
@@ -625,7 +625,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Refresh the map's extents, considering data defined extent, scale and rotation
      * @param context expression context for evaluating data defined map parameters
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 

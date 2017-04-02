@@ -204,7 +204,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
      * @param context expression context for evaluating data defined expressions
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext *context = nullptr );
 

@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSymbol
 
     //! Draw icon of the symbol that occupyies area given by size using the painter.
     //! Optionally custom context may be given in order to get rendering of symbols that use map units right.
-    //! @note customContext parameter added in 2.6
+    //! \since QGIS 2.6
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
 
     //! export symbol as image format. PNG and SVG supported
