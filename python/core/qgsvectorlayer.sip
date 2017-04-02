@@ -891,7 +891,7 @@ on every call. Consider using {@link changeAttributeValue()} or
  to the given coordinates
 .. note::
 
-   available in python as moveVertexV2
+   available in Python as moveVertexV2
 %End
 
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -932,7 +932,7 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
 %Docstring
 .. note::
 
-   available in python as addCurvedPart
+   available in Python as addCurvedPart
 
 %End
 

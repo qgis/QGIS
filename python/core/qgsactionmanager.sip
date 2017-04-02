@@ -60,7 +60,7 @@ Constructor
   field to be used if the action has a $currfield placeholder.
 .. note::
 
-   available in python bindings as doActionFeature
+   available in Python bindings as doActionFeature
 %End
 
     void doAction( const QUuid &actionId, const QgsFeature &feature, const QgsExpressionContext &context );
