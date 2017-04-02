@@ -25,7 +25,7 @@ QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::Win
   setupUi( this );
   mCharWidget = new CharacterWidget( this );
   mCharSelectScrollArea->setWidget( mCharWidget );
-  connect( mCharWidget, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
+  connect( mCharWidget, &CharacterWidget::characterSelected, this, &QgsCharacterSelectorDialog::setCharacter );
 }
 
 const QChar &QgsCharacterSelectorDialog::selectCharacter( bool *gotChar, const QFont &font, const QString &style )
