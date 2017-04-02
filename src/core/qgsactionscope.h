@@ -49,7 +49,7 @@ class CORE_EXPORT QgsActionScope
     /**
      * Creates a new invalid action scope.
      *
-     * @note Added in QGSI 3.0
+     * @note Added in QGIS 3.0
      */
     explicit QgsActionScope();
 
