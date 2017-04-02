@@ -159,7 +159,7 @@ class QgsVectorLayerEditBuffer : QObject
     /** Emitted when an attribute has been renamed
      * @param idx attribute index
      * @param newName new attribute name
-     * @note added in QGSI 2.16
+     * @note added in QGIS 2.16
      */
     void attributeRenamed( int idx, const QString& newName );
 
