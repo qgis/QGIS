@@ -19,7 +19,7 @@
 #include <QDomDocument>
 #include <QPainter>
 
-QgsTextAnnotation::QgsTextAnnotation( QObject *parent SIP_TRANSFERTHIS )
+QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
   : QgsAnnotation( parent )
   , mDocument( new QTextDocument( QString() ) )
 {

@@ -36,7 +36,7 @@
 #include <QWidget>
 
 
-QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent SIP_TRANSFERTHIS )
+QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
   : QgsAnnotation( parent )
 {
   mWebPage = new QgsWebPage();
