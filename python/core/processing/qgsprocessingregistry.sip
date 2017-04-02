@@ -12,8 +12,6 @@
 class QgsProcessingRegistry : QObject
 {
 %Docstring
- \class QgsProcessingRegistry
- \ingroup core
  Registry for various processing components, including providers, algorithms
  and various parameters and outputs.
 

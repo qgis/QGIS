@@ -162,6 +162,11 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
 
 };
 
+/**
+ * \class ClassWithPrivateInheritanceOnly
+ * \ingroup core
+ * Documentation goes here
+ */
 class CORE_EXPORT ClassWithPrivateInheritanceOnly : private QgsBaseClass
 {
     //! A constructor with definition in header on several lines

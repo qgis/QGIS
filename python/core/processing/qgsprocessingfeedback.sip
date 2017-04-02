@@ -12,8 +12,6 @@
 class QgsProcessingFeedback : QgsFeedback
 {
 %Docstring
- \class QgsProcessingFeedback
- \ingroup core
  Base class for providing feedback from a processing algorithm.
 
  This base class implementation silently ignores all feedback reported by algorithms.

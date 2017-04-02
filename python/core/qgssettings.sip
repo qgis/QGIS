@@ -12,8 +12,6 @@
 class QgsSettings : QObject
 {
 %Docstring
- \ingroup core
- \class QgsSettings
 
  This class is a composition of two QSettings instances:
  - the main QSettings instance is the standard User Settings and

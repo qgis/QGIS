@@ -11,7 +11,6 @@
 class QgsAnimatedIcon : QObject
 {
 %Docstring
- \ingroup core
  Animated icon is keeping an animation running if there are listeners connected to frameChanged
 %End
 

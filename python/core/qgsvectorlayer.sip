@@ -22,7 +22,6 @@ typedef QList<QgsPointV2> QgsPointSequence;
 class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator
 {
 %Docstring
- \ingroup core
  Represents a vector layer which manages a vector based data sets.
 
  The QgsVectorLayer is instantiated by specifying the name of a data provider,

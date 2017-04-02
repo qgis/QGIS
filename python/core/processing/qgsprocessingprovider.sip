@@ -12,8 +12,6 @@
 class QgsProcessingProvider
 {
 %Docstring
- \class QgsProcessingProvider
- \ingroup core
  Abstract base class for processing providers. An algorithm provider is a set of
  related algorithms, typically from the same external application or related
  to a common area of analysis.

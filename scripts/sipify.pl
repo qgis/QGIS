@@ -7,6 +7,17 @@ use File::Basename;
 # "multiline function signatures"
 # docustrings for QgsFeature::QgsAttributes
 
+sub shouldSkipDoxygenLine
+{
+    do {no warnings 'uninitialized';
+        if ( $_[0] =~ m/[\\@](ingroup|class)/ ) {
+            return 1;
+        }
+        return 0;
+    }
+}
+
+
 my $headerfile = $ARGV[0];
 
 open(my $header, "<", $headerfile) || die "Couldn't open '".$headerfile."' for reading because: ".$!;
@@ -150,12 +161,18 @@ while(!eof $header){
     # Detect comment block
     if ($line =~ m/^\s*\/\*/){
         do {no warnings 'uninitialized';
-            $comment = $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r;
+            if ( !shouldSkipDoxygenLine($line) )
+            {
+                $comment = $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r;
+            }
         };
         $comment =~ s/^\s*$//;
         while(!eof $header){
             $line = readline $header;
-            $comment .= $line =~ s/\s*\*?(.*?)(\/)?$/$1/r;
+            if ( !shouldSkipDoxygenLine($line) )
+            {
+               $comment .= $line =~ s/\s*\*?(.*?)(\/)?$/$1/r;
+            }
             if ( $line =~ m/\*\/$/ ){
                 last;
             }
@@ -167,7 +184,7 @@ while(!eof $header){
 
     # save comments and do not print them, except in SIP_RUN
     if ( $SIP_RUN == 0 ){
-        if ( $line =~ m/^\s*\/\// ){
+        if ( $line =~ m/^\s*\/\// && !shouldSkipDoxygenLine($line) ){
             $line =~ s/^\s*\/\/\!*\s*(.*)\n?$/$1/;
             $comment = $line;
             next;

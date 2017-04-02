@@ -39,7 +39,6 @@ typedef QVector<QVariant> QgsSuperClass;
 class QgsSipifyHeader : QtClass<QVariant>
 {
 %Docstring
- \ingroup core
  Documentation goes here
 %End
 
@@ -125,6 +124,9 @@ complex default value and type (i.e. containing commas) should be given as a str
 
 class ClassWithPrivateInheritanceOnly
 {
+%Docstring
+ Documentation goes here
+%End
 
 %TypeHeaderCode
 #include "sipifyheader.h"
