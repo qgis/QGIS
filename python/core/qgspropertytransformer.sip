@@ -1,55 +1,141 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspropertytransformer.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsCurveTransform
 {
-%TypeHeaderCode
-#include <qgspropertytransformer.h>
-%End
 
+%TypeHeaderCode
+#include "qgspropertytransformer.h"
+%End
   public:
 
     QgsCurveTransform();
-    QgsCurveTransform( const QList< QgsPoint >& controlPoints );
-    ~QgsCurveTransform();
-    QgsCurveTransform( const QgsCurveTransform& other );
+%Docstring
+ Constructs a default QgsCurveTransform which linearly maps values
+ between 0 and 1 unchanged. I.e. y == x.
+%End
 
-    //QgsCurveTransform& operator=( const QgsCurveTransform& other );
+    QgsCurveTransform( const QList< QgsPoint > &controlPoints );
+%Docstring
+ Constructs a QgsCurveTransform using a specified list of \a controlPoints.
+ Behavior is undefined if duplicate x values exist in the control points
+ list.
+%End
+
+    ~QgsCurveTransform();
+
+    QgsCurveTransform( const QgsCurveTransform &other );
+%Docstring
+ Copy constructor
+%End
+
+//     QgsCurveTransform &operator=( const QgsCurveTransform &other );
 
     QList< QgsPoint > controlPoints() const;
+%Docstring
+ Returns a list of the control points for the transform.
+ @see setControlPoints()
+%End
 
-    void setControlPoints( const QList< QgsPoint >& points );
+    void setControlPoints( const QList< QgsPoint > &points );
+%Docstring
+ Sets the list of control points for the transform. Any existing
+ points are removed.
+ @see controlPoints()
+%End
 
     void addControlPoint( double x, double y );
+%Docstring
+ Adds a control point to the transform. Behavior is undefined if duplicate
+ x values exist in the control points list.
+ @see removeControlPoint()
+%End
 
     void removeControlPoint( double x, double y );
+%Docstring
+ Removes a control point from the transform. This will have no effect if a
+ matching control point does not exist.
+ @see addControlPoint()
+%End
 
     double y( double x ) const;
+%Docstring
+ Returns the mapped y value corresponding to the specified \a x value.
+%End
 
-    QVector< double > y( const QVector< double >& x ) const;
+    QVector< double > y( const QVector< double > &x ) const;
+%Docstring
+ Returns a list of y values corresponding to a list of \a x values.
+ Calling this method is faster then calling the double variant multiple
+ times.
+%End
 
-    bool readXml( const QDomElement& elem, const QDomDocument& doc );
+    bool readXml( const QDomElement &elem, const QDomDocument &doc );
+%Docstring
+ Reads the curve's state from an XML element.
+ @param elem source DOM element for transform's state
+ @param doc DOM document
+ @see writeXml()
+%End
 
-    bool writeXml( QDomElement& transformElem, QDomDocument& doc ) const;
+    bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
+%Docstring
+ Writes the current state of the transform into an XML element
+ @param transformElem destination element for the transform's state
+ @param doc DOM document
+ @see readXml()
+%End
 
     QVariant toVariant() const;
+%Docstring
+ Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
+ You can use QgsXmlUtils::writeVariant to save it to an XML document.
+
+ @see loadVariant()
+%End
 
     bool loadVariant( const QVariant &transformer );
+%Docstring
+ Load this curve transformer from a QVariantMap, wrapped in a QVariant.
+ You can use QgsXmlUtils::writeVariant to load it from an XML document.
+
+ @see toVariant()
+%End
+
 };
+
+
 class QgsPropertyTransformer
 {
+%Docstring
+ Abstract base class for objects which transform the calculated value of a property.
+ Possible uses include transformers which map a value into a scaled size or color from a gradient.
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgspropertytransformer.h>
+#include "qgspropertytransformer.h"
 %End
 
 %ConvertToSubClassCode
-  if (sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer)
-    sipType = sipType_QgsGenericNumericTransformer;
-  else if (sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer)
-    sipType = sipType_QgsSizeScaleTransformer;
-  else if (sipCpp->transformerType() == QgsPropertyTransformer::ColorRampTransformer)
-    sipType = sipType_QgsColorRampTransformer;
-  else
-    sipType = sipType_QgsPropertyTransformer;
+    if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
+      sipType = sipType_QgsGenericNumericTransformer;
+    else if ( sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer )
+      sipType = sipType_QgsSizeScaleTransformer;
+    else if ( sipCpp->transformerType() == QgsPropertyTransformer::ColorRampTransformer )
+      sipType = sipType_QgsColorRampTransformer;
+    else
+      sipType = sipType_QgsPropertyTransformer;
 %End
-
   public:
 
     enum Type
@@ -59,90 +145,267 @@ class QgsPropertyTransformer
       ColorRampTransformer,
     };
 
-    static QgsPropertyTransformer* create( Type type ) /Factory/;
+    static QgsPropertyTransformer *create( Type type ) /Factory/;
+%Docstring
+ Factory method for creating a new property transformer of the specified type.
+ @param type transformer type to create
+%End
 
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
+%Docstring
+ Constructor for QgsPropertyTransformer
+ @param minValue minimum expected value from source property
+ @param maxValue maximum expected value from source property
+%End
 
-    QgsPropertyTransformer( const QgsPropertyTransformer& other );
+    QgsPropertyTransformer( const QgsPropertyTransformer &other );
+%Docstring
+ Copy constructor.
+%End
+//     QgsPropertyTransformer &operator=( const QgsPropertyTransformer &other );
 
     virtual ~QgsPropertyTransformer();
 
     virtual Type transformerType() const = 0;
+%Docstring
+ Returns the transformer type.
+%End
 
-    virtual QgsPropertyTransformer* clone() = 0 /Factory/;
-    virtual bool loadVariant(const QVariant &transformer );
+    virtual QgsPropertyTransformer *clone() = 0 /Factory/;
+%Docstring
+ Returns a clone of the transformer.
+%End
+
+    virtual bool loadVariant( const QVariant &transformer );
+%Docstring
+ Loads this transformer from a QVariantMap, wrapped in a QVariant.
+ You can use QgsXmlUtils::writeVariant to save it to an XML document.
+
+ @see loadVariant()
+%End
 
     virtual QVariant toVariant() const;
+%Docstring
+ Saves this transformer to a QVariantMap, wrapped in a QVariant.
+ You can use QgsXmlUtils::writeVariant to save it to an XML document.
+
+ @see toVariant()
+%End
 
     double minValue() const;
+%Docstring
+ Returns the minimum value expected by the transformer.
+ @see maxValue()
+ @see setMinValue()
+%End
 
     void setMinValue( double min );
+%Docstring
+ Sets the minimum value expected by the transformer.
+ @param min minimum value
+ @see setMaxValue()
+ @see minValue()
+%End
 
     double maxValue() const;
+%Docstring
+ Returns the maximum value expected by the transformer.
+ @see minValue()
+ @see setMaxValue()
+%End
 
     void setMaxValue( double max );
+%Docstring
+ Sets the maximum value expected by the transformer.
+ @param max maximum value
+ @see setMinValue()
+ @see maxValue()
+%End
 
-    QgsCurveTransform* curveTransform() const;
+    QgsCurveTransform *curveTransform() const;
+%Docstring
+ Returns the curve transform applied to input values before they are transformed
+ by the individual transform subclasses.
+ @see setCurveTransform()
+%End
 
-    void setCurveTransform( QgsCurveTransform* transform /Transfer/ );
+    void setCurveTransform( QgsCurveTransform *transform /Transfer/ );
+%Docstring
+ Sets a curve transform to apply to input values before they are transformed
+ by the individual transform subclasses. Ownership of \a transform is transferred
+ to the property transformer.
+ @see curveTransform()
+%End
 
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const = 0;
-    virtual QString toExpression( const QString& baseExpression ) const = 0;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const = 0;
+%Docstring
+ Calculates the transform of a value. Derived classes must implement this to perform their transformations
+ on input values
+ @param context expression context
+ @param value input value to transform
+%End
 
-    static QgsPropertyTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
+    virtual QString toExpression( const QString &baseExpression ) const = 0;
+%Docstring
+ Converts the transformer to a QGIS expression string. The \a baseExpression string consists
+ of a sub-expression reflecting the parent property's state.
+%End
+
+    static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
+%Docstring
+ Attempts to parse an expression into a corresponding property transformer.
+ @param expression expression to parse
+ @param baseExpression will be set to the component of the source expression which
+ is used to calculate the input to the property transformer. This will be set to an
+ empty string if a field reference is the transformer input.
+ @param fieldName will be set to a field name which is used to calculate the input
+ to the property transformer. This will be set to an
+ empty string if an expression is the transformer input.
+ @returns corresponding property transformer, or nullptr if expression could not
+ be parsed to a transformer.
+%End
 
   protected:
 
     double transformNumeric( double input ) const;
+%Docstring
+ Applies base class numeric transformations. Derived classes should call this
+ to transform an \a input numeric value before they apply any transform to the result.
+ This applies any curve transforms which may exist on the transformer.
+%End
 };
+
+
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
-%TypeHeaderCode
-#include <qgspropertytransformer.h>
-%End
 
+%TypeHeaderCode
+#include "qgspropertytransformer.h"
+%End
   public:
+
     QgsGenericNumericTransformer( double minValue = 0.0,
                                   double maxValue = 1.0,
                                   double minOutput = 0.0,
                                   double maxOutput = 1.0,
                                   double nullOutput = 0.0,
                                   double exponent = 1.0 );
+%Docstring
+ Constructor for QgsGenericNumericTransformer.
+ @param minValue minimum expected input value
+ @param maxValue maximum expected input value
+ @param minOutput minimum value to return
+ @param maxOutput maximum value to return
+ @param nullOutput value to return for null inputs
+ @param exponent optional exponential for non-linear scaling
+%End
 
-    QgsGenericNumericTransformer( const QgsGenericNumericTransformer& other );
+    QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other );
+%Docstring
+ Copy constructor.
+%End
+//     QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
 
     virtual Type transformerType() const;
-    virtual QgsGenericNumericTransformer* clone() /Factory/;
+    virtual QgsGenericNumericTransformer *clone();
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
-    virtual QString toExpression( const QString& baseExpression ) const;
-    static QgsGenericNumericTransformer* fromExpression( const QString& expression, QString& baseExpression, QString& fieldName ) /Factory/;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+    virtual QString toExpression( const QString &baseExpression ) const;
+
+    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
+%Docstring
+ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+ @param expression expression to parse
+ @param baseExpression will be set to the component of the source expression which
+ is used to calculate the input to the property transformer. This will be set to an
+ empty string if a field reference is the transformer input.
+ @param fieldName will be set to a field name which is used to calculate the input
+ to the property transformer. This will be set to an
+ empty string if an expression is the transformer input.
+ @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+ be parsed to a size scale transformer.
+%End
+
     double value( double input ) const;
+%Docstring
+ Calculates the size corresponding to a specific \a input value.
+ @returns calculated size using size scale transformer's parameters and type
+%End
+
     double minOutputValue() const;
+%Docstring
+ Returns the minimum calculated size.
+ @see setMinSize()
+ @see maxSize()
+%End
+
     void setMinOutputValue( double size );
+%Docstring
+ Sets the minimum calculated size.
+ @param size minimum size
+ @see minSize()
+ @see setMaxSize()
+%End
+
     double maxOutputValue() const;
+%Docstring
+ Returns the maximum calculated size.
+ @see minSize()
+%End
+
     void setMaxOutputValue( double size );
+%Docstring
+ Sets the maximum calculated size.
+ @param size maximum size
+ @see maxSize()
+ @see setMinSize()
+%End
+
     double nullOutputValue() const;
+%Docstring
+ Returns the size value when an expression evaluates to NULL.
+ @see setNullSize()
+%End
+
     void setNullOutputValue( double size );
+%Docstring
+ Sets the size value for when an expression evaluates to NULL.
+ @param size null size
+ @see nullSize()
+%End
+
     double exponent() const;
+%Docstring
+ Returns the exponent for an exponential expression.
+ @see setExponent()
+ @see type()
+%End
+
     void setExponent( double exponent );
+%Docstring
+ Sets the exponent for an exponential expression.
+ @param exponent exponent
+ @see exponent()
+%End
 
 };
+
+
 class QgsSizeScaleTransformer : QgsPropertyTransformer
 {
+
 %TypeHeaderCode
-#include <qgspropertytransformer.h>
+#include "qgspropertytransformer.h"
 %End
   public:
 
-    //! Size scaling methods
     enum ScaleType
     {
-      Linear, /*!< Linear scaling */
-      Area, /*!< Area based scaling */
-      Flannery, /*!< Flannery scaling method */
-      Exponential, /*!< Scale using set exponent */
+      Linear,
+      Area,
+      Flannery,
+      Exponential,
     };
 
     QgsSizeScaleTransformer( ScaleType type = Linear,
@@ -152,80 +415,213 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
                              double maxSize = 1.0,
                              double nullSize = 0.0,
                              double exponent = 1.0 );
+%Docstring
+ Constructor for QgsSizeScaleTransformer.
+ @param type scaling type
+ @param minValue minimum expected value
+ @param maxValue maximum expected value
+ @param minSize minimum size to return
+ @param maxSize maximum size to return
+ @param nullSize size to return for null values
+ @param exponent exponent for Exponential scaling method
+%End
 
-    QgsSizeScaleTransformer( const QgsSizeScaleTransformer& other );
+    QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other );
+%Docstring
+ Copy constructor.
+%End
+//     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
     virtual Type transformerType() const;
-    virtual QgsSizeScaleTransformer* clone() /Factory/;
+    virtual QgsSizeScaleTransformer *clone() /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
-    virtual QString toExpression( const QString& baseExpression ) const;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+    virtual QString toExpression( const QString &baseExpression ) const;
 
-    static QgsSizeScaleTransformer* fromExpression( const QString& expression, QString& baseExpression /Out/, QString& fieldName /Out/ ) /Factory/;
+    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
+%Docstring
+ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+ @param expression expression to parse
+ @param baseExpression will be set to the component of the source expression which
+ is used to calculate the input to the property transformer. This will be set to an
+ empty string if a field reference is the transformer input.
+ @param fieldName will be set to a field name which is used to calculate the input
+ to the property transformer. This will be set to an
+ empty string if an expression is the transformer input.
+ @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
+ be parsed to a size scale transformer.
+%End
 
     double size( double value ) const;
+%Docstring
+ Calculates the size corresponding to a specific value.
+ @param value value to calculate size for
+ @returns calculated size using size scale transformer's parameters and type
+%End
 
     double minSize() const;
+%Docstring
+ Returns the minimum calculated size.
+ @see setMinSize()
+ @see maxSize()
+%End
 
     void setMinSize( double size );
+%Docstring
+ Sets the minimum calculated size.
+ @param size minimum size
+ @see minSize()
+ @see setMaxSize()
+%End
 
     double maxSize() const;
+%Docstring
+ Returns the maximum calculated size.
+ @see minSize()
+%End
 
     void setMaxSize( double size );
+%Docstring
+ Sets the maximum calculated size.
+ @param size maximum size
+ @see maxSize()
+ @see setMinSize()
+%End
 
     double nullSize() const;
+%Docstring
+ Returns the size value when an expression evaluates to NULL.
+ @see setNullSize()
+%End
 
     void setNullSize( double size );
+%Docstring
+ Sets the size value for when an expression evaluates to NULL.
+ @param size null size
+ @see nullSize()
+%End
 
     double exponent() const;
+%Docstring
+ Returns the exponent for an exponential expression.
+ @see setExponent()
+ @see type()
+%End
 
     void setExponent( double exponent );
+%Docstring
+ Sets the exponent for an exponential expression.
+ @param exponent exponent
+ @see exponent()
+%End
 
     ScaleType type() const;
+%Docstring
+ Returns the size transformer's scaling type (the method used to calculate
+ the size from a value).
+ @see setType()
+%End
 
     void setType( ScaleType type );
+%Docstring
+ Sets the size transformer's scaling type (the method used to calculate
+ the size from a value).
+ @param type scale type
+ @see type()
+%End
 
 };
 
+
 class QgsColorRampTransformer : QgsPropertyTransformer
 {
+
 %TypeHeaderCode
-#include <qgspropertytransformer.h>
+#include "qgspropertytransformer.h"
 %End
   public:
 
     QgsColorRampTransformer( double minValue = 0.0,
                              double maxValue = 1.0,
-                             QgsColorRamp* ramp /Transfer/ = 0,
-                             const QColor& nullColor = QColor( 0, 0, 0, 0 ) );
+                             QgsColorRamp *ramp /Transfer/ = 0,
+                             const QColor &nullColor = QColor( 0, 0, 0, 0 ) );
+%Docstring
+ Constructor for QgsColorRampTransformer.
+ @param minValue minimum expected value
+ @param maxValue maximum expected value
+ @param ramp source color ramp. Ownership is transferred to the transformer.
+ @param nullColor color to return for null values
+%End
 
-    QgsColorRampTransformer( const QgsColorRampTransformer& other );
+    QgsColorRampTransformer( const QgsColorRampTransformer &other );
+%Docstring
+Copy constructor
+%End
 
-    //QgsColorRampTransformer& operator=( const QgsColorRampTransformer& other );
-
-    ~QgsColorRampTransformer();
+//     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     virtual Type transformerType() const;
-    virtual QgsColorRampTransformer* clone() /Factory/;
+    virtual QgsColorRampTransformer *clone() /Factory/;
     virtual QVariant toVariant() const;
     virtual bool loadVariant( const QVariant &definition );
-    virtual QVariant transform( const QgsExpressionContext& context, const QVariant& value ) const;
-    virtual QString toExpression( const QString& baseExpression ) const;
+    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+    virtual QString toExpression( const QString &baseExpression ) const;
 
     QColor color( double value ) const;
+%Docstring
+ Calculates the color corresponding to a specific value.
+ @param value value to calculate color for
+ @returns calculated color using transformer's parameters and type
+%End
 
-    QgsColorRamp* colorRamp() const;
+    QgsColorRamp *colorRamp() const;
+%Docstring
+ Returns the color ramp used for calculating property colors.
+ @returns color ramp
+ @see setColorRamp()
+%End
 
-    void setColorRamp( QgsColorRamp* ramp /Transfer/ );
+    void setColorRamp( QgsColorRamp *ramp /Transfer/ );
+%Docstring
+ Sets the color ramp to use for calculating property colors.
+ @param ramp color ramp, ownership of ramp is transferred to the transformer.
+ @see colorRamp()
+%End
 
     QColor nullColor() const;
+%Docstring
+ Returns the color corresponding to a null value.
+ @see setNullColor()
+%End
 
-    void setNullColor( const QColor& color );
+    void setNullColor( const QColor &color );
+%Docstring
+ Sets the color corresponding to a null value.
+ @param color null color
+ @see nullSize()
+%End
 
     QString rampName() const;
+%Docstring
+ Returns the color ramp's name.
+ @see setRampName()
+%End
 
-    void setRampName( const QString& name );
+    void setRampName( const QString &name );
+%Docstring
+ Sets the color ramp's \a name. The ramp name must be set to match
+ a color ramp available in the style database for conversion to expression
+ to work correctly.
+ @see rampName()
+%End
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspropertytransformer.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

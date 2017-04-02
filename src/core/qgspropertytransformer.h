@@ -167,9 +167,22 @@ class CORE_EXPORT QgsCurveTransform
  * Possible uses include transformers which map a value into a scaled size or color from a gradient.
  * \note Added in version 3.0
  */
-
 class CORE_EXPORT QgsPropertyTransformer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
+      sipType = sipType_QgsGenericNumericTransformer;
+    else if ( sipCpp->transformerType() == QgsPropertyTransformer::SizeScaleTransformer )
+      sipType = sipType_QgsSizeScaleTransformer;
+    else if ( sipCpp->transformerType() == QgsPropertyTransformer::ColorRampTransformer )
+      sipType = sipType_QgsColorRampTransformer;
+    else
+      sipType = sipType_QgsPropertyTransformer;
+    SIP_END
+#endif
+
   public:
 
     //! Transformer types
@@ -184,7 +197,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * Factory method for creating a new property transformer of the specified type.
      * @param type transformer type to create
      */
-    static QgsPropertyTransformer *create( Type type );
+    static QgsPropertyTransformer *create( Type type ) SIP_FACTORY;
 
     /**
      * Constructor for QgsPropertyTransformer
@@ -209,7 +222,7 @@ class CORE_EXPORT QgsPropertyTransformer
     /**
      * Returns a clone of the transformer.
      */
-    virtual QgsPropertyTransformer *clone() = 0;
+    virtual QgsPropertyTransformer *clone() = 0 SIP_FACTORY;
 
     /**
      * Loads this transformer from a QVariantMap, wrapped in a QVariant.
@@ -270,7 +283,7 @@ class CORE_EXPORT QgsPropertyTransformer
      * to the property transformer.
      * @see curveTransform()
      */
-    void setCurveTransform( QgsCurveTransform *transform ) { mCurveTransform.reset( transform ); }
+    void setCurveTransform( QgsCurveTransform *transform SIP_TRANSFER ) { mCurveTransform.reset( transform ); }
 
     /**
      * Calculates the transform of a value. Derived classes must implement this to perform their transformations
@@ -298,10 +311,17 @@ class CORE_EXPORT QgsPropertyTransformer
      * @returns corresponding property transformer, or nullptr if expression could not
      * be parsed to a transformer.
      */
-    static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression, QString &fieldName );
+    static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
   protected:
 
+    /**
+     * Applies base class numeric transformations. Derived classes should call this
+     * to transform an \a input numeric value before they apply any transform to the result.
+     * This applies any curve transforms which may exist on the transformer.
+     */
+    double transformNumeric( double input ) const;
+#ifndef SIP_RUN
     //! Minimum value expected by the transformer
     double mMinValue;
 
@@ -310,13 +330,7 @@ class CORE_EXPORT QgsPropertyTransformer
 
     //! Optional curve transform
     std::unique_ptr< QgsCurveTransform > mCurveTransform;
-
-    /**
-     * Applies base class numeric transformations. Derived classes should call this
-     * to transform an \a input numeric value before they apply any transform to the result.
-     * This applies any curve transforms which may exist on the transformer.
-     */
-    double transformNumeric( double input ) const;
+#endif
 };
 
 /**
@@ -371,7 +385,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
      * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression, QString &fieldName );
+    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
     /**
      * Calculates the size corresponding to a specific \a input value.
@@ -489,7 +503,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
 
     virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual QgsSizeScaleTransformer *clone() override;
+    virtual QgsSizeScaleTransformer *clone() SIP_FACTORY override;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
@@ -507,7 +521,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
      * @returns corresponding QgsSizeScaleTransformer, or nullptr if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression, QString &fieldName );
+    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
     /**
      * Calculates the size corresponding to a specific value.
@@ -617,7 +631,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      */
     QgsColorRampTransformer( double minValue = 0.0,
                              double maxValue = 1.0,
-                             QgsColorRamp *ramp = nullptr,
+                             QgsColorRamp *ramp SIP_TRANSFER = nullptr,
                              const QColor &nullColor = QColor( 0, 0, 0, 0 ) );
 
     //! Copy constructor
@@ -626,7 +640,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
     virtual Type transformerType() const override { return ColorRampTransformer; }
-    virtual QgsColorRampTransformer *clone() override;
+    virtual QgsColorRampTransformer *clone() SIP_FACTORY override;
     virtual QVariant toVariant() const override;
     virtual bool loadVariant( const QVariant &definition ) override;
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
@@ -651,7 +665,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
      * @param ramp color ramp, ownership of ramp is transferred to the transformer.
      * @see colorRamp()
      */
-    void setColorRamp( QgsColorRamp *ramp );
+    void setColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
     /**
      * Returns the color corresponding to a null value.
