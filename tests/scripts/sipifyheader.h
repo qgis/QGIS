@@ -124,6 +124,13 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
      */
     void LongDocStringMethod();
 
+    /**
+     * \brief some brief
+     * My long doc string
+     * is not very interesting!
+     */
+    void LongDocStringMethodWithBrief();
+
     bool isOKwithErrMesg( QString &ErrMsg SIP_OUT );
 
     void InOutParam( bool &ok = true SIP_INOUT );

@@ -7,23 +7,19 @@ use File::Basename;
 # "multiline function signatures"
 # docustrings for QgsFeature::QgsAttributes
 
-sub shouldSkipDoxygenLine
-{
-    do {no warnings 'uninitialized';
-        if ( $_[0] =~ m/[\\@](ingroup|class)/ ) {
-            return 1;
-        }
-        return 0;
-    }
-}
-
 sub processDoxygenLine
 {
+    if ( $_[0] =~ m/[\\@](ingroup|class)/ ) {
+        return ""
+    }
     if ( $_[0] =~ m/[\\@]note added .*?([\d\.]+)/i ) {
         return ".. versionadded:: $1\n";
     }
     if ( $_[0] =~ m/[\\@]note (.*)/ ) {
         return ".. note::\n\n   $1\n";
+    }
+    if ( $_[0] =~ m/[\\@]brief (.*)/ ) {
+        return " $1\n";
     }
     return $_[0];
 }
@@ -172,18 +168,12 @@ while(!eof $header){
     # Detect comment block
     if ($line =~ m/^\s*\/\*/){
         do {no warnings 'uninitialized';
-            if ( !shouldSkipDoxygenLine($line) )
-            {
-                $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r );
-            }
+            $comment = processDoxygenLine( $line =~ s/^\s*\/\*(\*)?(.*)$/$2/r );
         };
         $comment =~ s/^\s*$//;
         while(!eof $header){
             $line = readline $header;
-            if ( !shouldSkipDoxygenLine($line) )
-            {
-               $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?$/$1/r );
-            }
+            $comment .= processDoxygenLine( $line =~ s/\s*\*?(.*?)(\/)?$/$1/r );
             if ( $line =~ m/\*\/$/ ){
                 last;
             }
@@ -195,7 +185,7 @@ while(!eof $header){
 
     # save comments and do not print them, except in SIP_RUN
     if ( $SIP_RUN == 0 ){
-        if ( $line =~ m/^\s*\/\// && !shouldSkipDoxygenLine($line) ){
+        if ( $line =~ m/^\s*\/\// ){
             $line =~ s/^\s*\/\/\!*\s*(.*)\n?$/$1/;
             $comment = processDoxygenLine( $line );
             next;

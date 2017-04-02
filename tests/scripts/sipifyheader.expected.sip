@@ -93,6 +93,13 @@ Factory annotation
  is not very interesting!
 %End
 
+    void LongDocStringMethodWithBrief();
+%Docstring
+ some brief
+ My long doc string
+ is not very interesting!
+%End
+
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );
 
     void InOutParam( bool &ok = true /In,Out/ );
