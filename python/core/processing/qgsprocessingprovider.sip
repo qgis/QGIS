@@ -1,56 +1,82 @@
-/**
- * \class QgsProcessingProvider
- * \ingroup core
- * Abstract base class for processing providers. An algorithm provider is a set of
- * related algorithms, typically from the same external application or related
- * to a common area of analysis.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingprovider.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsProcessingProvider
 {
+%Docstring
+ \class QgsProcessingProvider
+ \ingroup core
+ Abstract base class for processing providers. An algorithm provider is a set of
+ related algorithms, typically from the same external application or related
+ to a common area of analysis.
+ \note added in QGIS 3.0
+%End
+
 %TypeHeaderCode
-#include <qgsprocessingprovider.h>
+#include "qgsprocessingprovider.h"
 %End
 
   public:
 
     QgsProcessingProvider();
+%Docstring
+ Constructor for QgsProcessingProvider.
+%End
 
     virtual ~QgsProcessingProvider();
 
-    /**
-     * Returns an icon for the provider.
-     * @see svgIcon()
-     */
+
     virtual QIcon icon() const;
+%Docstring
+ Returns an icon for the provider.
+ @see svgIconPath()
+%End
 
-    /**
-     * Returns a path to an SVG version of the provider's icon.
-     * @see icon()
-     */
     virtual QString svgIconPath() const;
+%Docstring
+ Returns a path to an SVG version of the provider's icon.
+ @see icon()
+%End
 
-    /**
-     * Returns the unique provider id, used for identifying the provider. This string
-     * should be a unique, short, character only string, eg "qgis" or "gdal". This
-     * string should not be localised.
-     * @see name()
-     */
     virtual QString id() const = 0;
+%Docstring
+ Returns the unique provider id, used for identifying the provider. This string
+ should be a unique, short, character only string, eg "qgis" or "gdal". This
+ string should not be localised.
+ @see name()
+%End
 
-    /**
-     * Returns the full provider name, which is used to describe the provider within the GUI.
-     * This string should be localised.
-     * @see id()
-     */
     virtual QString name() const = 0;
+%Docstring
+ Returns the full provider name, which is used to describe the provider within the GUI.
+ This string should be localised.
+ @see id()
+%End
 
     virtual bool canBeActivated() const;
+%Docstring
+ Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
+ missing external dependencies).
+%End
 
   private:
-
-    //! Providers cannot be copied
-    QgsProcessingProvider( const QgsProcessingProvider& other );
-    //! Providers cannot be copied
-    //QgsProcessingProvider& operator=( const QgsProcessingProvider& other );
+    QgsProcessingProvider( const QgsProcessingProvider &other );
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/qgsprocessingprovider.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

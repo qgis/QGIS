@@ -79,6 +79,11 @@ class CORE_EXPORT QgsProcessingProvider
      */
     virtual bool canBeActivated() const { return true; }
 
+  private:
+
+#ifdef SIP_RUN
+    QgsProcessingProvider( const QgsProcessingProvider &other );
+#endif
 };
 
 #endif // QGSPROCESSINGPROVIDER_H

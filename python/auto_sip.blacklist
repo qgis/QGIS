@@ -243,9 +243,6 @@ core/layertree/qgslayertreemodellegendnode.sip
 core/layertree/qgslayertreenode.sip
 core/layertree/qgslayertreeregistrybridge.sip
 core/layertree/qgslayertreeutils.sip
-core/processing/qgsprocessingfeedback.sip
-core/processing/qgsprocessingprovider.sip
-core/processing/qgsprocessingregistry.sip
 core/raster/qgsbilinearrasterresampler.sip
 core/raster/qgsbrightnesscontrastfilter.sip
 core/raster/qgscliptominmaxenhancement.sip

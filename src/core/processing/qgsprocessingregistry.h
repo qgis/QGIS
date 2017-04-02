@@ -19,6 +19,7 @@
 #define QGSPROCESSINGREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsprocessingprovider.h"
 #include <QMap>
 
@@ -41,7 +42,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     /**
      * Constructor for QgsProcessingRegistry.
      */
-    QgsProcessingRegistry( QObject *parent = nullptr );
+    QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsProcessingRegistry();
 
@@ -61,7 +62,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * in the registry).
      * @see removeProvider()
      */
-    bool addProvider( QgsProcessingProvider *provider );
+    bool addProvider( QgsProcessingProvider *provider SIP_TRANSFER );
 
     /**
      * Removes a provider implementation from the registry (the provider object is deleted).
@@ -94,6 +95,10 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 
     //! Map of available providers by id. This class owns the pointers
     QMap<QString, QgsProcessingProvider *> mProviders;
+
+#ifdef SIP_RUN
+    QgsProcessingRegistry( const QgsProcessingRegistry &other );
+#endif
 };
 
 #endif // QGSPROCESSINGREGISTRY_H
