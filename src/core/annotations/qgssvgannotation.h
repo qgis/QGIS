@@ -37,7 +37,7 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsSvgAnnotation.
      */
-    QgsSvgAnnotation( QObject *parent = nullptr );
+    QgsSvgAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc ) const override;
     virtual void readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsSvgAnnotation object.
      */
-    static QgsSvgAnnotation *create() { return new QgsSvgAnnotation(); }
+    static QgsSvgAnnotation *create() SIP_FACTORY { return new QgsSvgAnnotation(); }
 
   protected:
 

@@ -40,7 +40,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsHtmlAnnotation.
      */
-    QgsHtmlAnnotation( QObject *parent = nullptr );
+    QgsHtmlAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsHtmlAnnotation() = default;
 
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsHtmlAnnotation object.
      */
-    static QgsHtmlAnnotation *create() { return new QgsHtmlAnnotation(); }
+    static QgsHtmlAnnotation *create() SIP_FACTORY { return new QgsHtmlAnnotation(); }
 
   protected:
 

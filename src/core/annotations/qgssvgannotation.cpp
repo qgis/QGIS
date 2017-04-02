@@ -21,7 +21,7 @@
 #include <QDomElement>
 
 
-QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
+QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent SIP_TRANSFERTHIS )
   : QgsAnnotation( parent )
 {
 

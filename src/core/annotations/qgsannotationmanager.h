@@ -17,6 +17,7 @@
 #define QGSANNOTATIONMANAGER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QObject>
 #include <QDomElement>
 
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Constructor for QgsAnnotationManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsAnnotationManager( QgsProject *project = nullptr );
+    explicit QgsAnnotationManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
 
     ~QgsAnnotationManager();
 
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * @see removeAnnotation()
      * @see annotationAdded()
      */
-    bool addAnnotation( QgsAnnotation *annotation );
+    bool addAnnotation( QgsAnnotation *annotation SIP_TRANSFER );
 
     /**
      * Removes an annotation from the manager. The annotation is deleted.

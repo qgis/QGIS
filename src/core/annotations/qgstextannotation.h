@@ -37,7 +37,7 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsTextAnnotation.
      */
-    QgsTextAnnotation( QObject *parent = nullptr );
+    QgsTextAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the text document which will be rendered
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
     /**
      * Returns a new QgsTextAnnotation object.
      */
-    static QgsTextAnnotation *create() { return new QgsTextAnnotation(); }
+    static QgsTextAnnotation *create() SIP_FACTORY { return new QgsTextAnnotation(); }
 
   protected:
 

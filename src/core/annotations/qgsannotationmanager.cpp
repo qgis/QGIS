@@ -18,7 +18,7 @@
 #include "qgsannotation.h"
 #include "qgsannotationregistry.h"
 
-QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
+QgsAnnotationManager::QgsAnnotationManager( QgsProject *project SIP_TRANSFERTHIS )
   : QObject( project )
   , mProject( project )
 {
