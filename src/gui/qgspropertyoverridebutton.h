@@ -41,7 +41,7 @@ class QgsMapCanvas;
  * which should be applied to a property of an object. Eg, this widget
  * is used for controlling data defined overrides in symbology, labeling
  * and composer.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton

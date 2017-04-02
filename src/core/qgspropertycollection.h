@@ -32,7 +32,7 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
  * \ingroup core
  * \class QgsAbstractPropertyCollection
  * \brief Abstract base class for QgsPropertyCollection like objects.
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsAbstractPropertyCollection
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
  * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
  * string creation and comparisons which would be required by a string key. The intended use case is that
  * a context specific enum is cast to int and used for the key value.
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
@@ -348,7 +348,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
  * \class QgsPropertyCollectionStack
  * \brief An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
  * priority over earlier collections.
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollection

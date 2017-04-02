@@ -106,7 +106,7 @@ struct LabelRenderJob
  * - QgsMapRendererParallelJob - renders map in multiple background threads to an image
  * - QgsMapRendererCustomPainterJob - renders map with given QPainter in one background thread
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererJob : public QObject
 {
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * If so, any previously stored labeling results (see takeLabelingResults())
      * should be retained.
      * @see takeLabelingResults()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool usedCachedLabels() const = 0;
 
@@ -152,14 +152,14 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     virtual QgsLabelingResults *takeLabelingResults() = 0;
 
-    //! @note Added in QGIS 3.0
+    //! \since QGIS 3.0
     //! Set the feature filter provider used by the QgsRenderContext of
     //! each LayerRenderJob.
     //! Ownership is not transferred and the provider must not be deleted
     //! before the render job.
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
-    //! @note Added in QGIS 3.0
+    //! \since QGIS 3.0
     //! Returns the feature filter provider used by the QgsRenderContext of
     //! each LayerRenderJob.
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Return map settings with which this job was started.
      * @return A QgsMapSettings instance with render settings
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     const QgsMapSettings &mapSettings() const;
 
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Rendering labels is not yet done. If the fully rendered layer including labels is required use
      * finished() instead.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void renderingLayersFinished();
 
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Prepares a labeling job.
      * @note not available in Python bindings
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     LabelRenderJob prepareLabelingJob( QPainter *painter, QgsLabelingEngine *labelingEngine2, bool canUseLabelCache = true );
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
      * label results.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @note not available in Python bindings
      */
     void cleanupLabelJob( LabelRenderJob &job );
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
  * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
 {

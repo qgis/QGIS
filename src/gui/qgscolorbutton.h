@@ -29,7 +29,7 @@ class QgsPanelWidget;
  * A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
  * Offers live updates to button from color chooser dialog. An attached drop down menu allows for copying
  * and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 
 class GUI_EXPORT QgsColorButton : public QToolButton
@@ -185,21 +185,21 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /** Sets whether a set to null (clear) option is shown in the button's drop down menu.
      * @param showNull set to true to show a null option
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see showNull()
      * @see isNull()
      */
     void setShowNull( bool showNull );
 
     /** Returns whether the set to null (clear) option is shown in the button's drop down menu.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setShowNull()
      * @see isNull()
      */
     bool showNull() const;
 
     /** Returns true if the current color is null.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setShowNull()
      * @see showNull()
      */
@@ -296,7 +296,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /** Sets color to null.
      * @see setToDefaultColor()
      * @see setToNoColor()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setToNull();
 

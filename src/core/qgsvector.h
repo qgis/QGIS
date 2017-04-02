@@ -59,25 +59,25 @@ class CORE_EXPORT QgsVector
 
     /**
      * Adds another vector to this vector.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsVector operator+( QgsVector other ) const;
 
     /**
      * Adds another vector to this vector in place.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsVector &operator+=( QgsVector other );
 
     /**
      * Subtracts another vector to this vector.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsVector operator-( QgsVector other ) const;
 
     /**
      * Subtracts another vector to this vector in place.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsVector &operator-=( QgsVector other );
 

@@ -89,7 +89,7 @@ class CORE_EXPORT Qgis
     };
 
     /** Identify search radius in mm
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
@@ -97,26 +97,26 @@ class CORE_EXPORT Qgis
 
     /** Default highlight color.  The transparency is expected to only be applied to polygon
      *  fill. Lines and outlines are rendered opaque.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
     /** Default highlight buffer in mm.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
     /** Default highlight line/stroke minimum width in mm.
-     *  @note added in 2.3 */
+     *  \since QGIS 2.3 */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
     /** Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
-     * @note added in 2.15*/
+     * \since QGIS 2.15*/
     static const double SCALE_PRECISION;
 
     /** Default Z coordinate value for 2.5d geometry
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-     *  @note added in 3.0 */
+     *  \since QGIS 3.0 */
     static const double DEFAULT_Z_COORDINATE;
 
 };
@@ -131,7 +131,7 @@ class CORE_EXPORT Qgis
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * @see whileBlocking()
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  * @note not available in Python bindings
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
@@ -170,7 +170,7 @@ template<class Object> class QgsSignalBlocker // clazy:exclude=rule-of-three
  *
  * No signals will be emitted when calling these methods.
  *
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  * @see QgsSignalBlocker
  * @note not available in Python bindings
  */
@@ -236,7 +236,7 @@ inline double qgsRound( double x )
 /**
  * Returns a double \a number, rounded (as close as possible) to the specified number of \a places.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 inline double qgsRound( double number, double places )
 {
@@ -249,7 +249,7 @@ inline double qgsRound( double number, double places )
  * @param string string to convert
  * @param ok will be set to true if conversion was successful
  * @returns string converted to double if possible
- * @note added in version 2.9
+ * \since QGIS 2.9
  * @see permissiveToInt
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
@@ -259,7 +259,7 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * @param string string to convert
  * @param ok will be set to true if conversion was successful
  * @returns string converted to int if possible
- * @note added in version 2.9
+ * \since QGIS 2.9
  * @see permissiveToDouble
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
@@ -298,7 +298,7 @@ void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
 void CORE_EXPORT qgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
- * @note added to replace GEOWkt
+ * \since QGIS GEOWkt
  */
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;

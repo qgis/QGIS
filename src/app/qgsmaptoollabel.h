@@ -54,7 +54,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     /** Returns true if layer has attribute field set up for diagrams
       @param showCol out: attribute column for data defined diagram showing
-      @note added in QGIS 2.16 */
+      \since QGIS 2.16 */
     bool diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const;
 
     /** Returns true if layer has attribute field set up
@@ -157,7 +157,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     /** Returns the pin status for the current label/diagram
       @return true if the label/diagram is pinned, false otherwise
-      @note added in QGIS 2.16
+      \since QGIS 2.16
       */
     bool isPinned();
 };

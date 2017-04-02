@@ -81,7 +81,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     /** Emitted when the scale range set in the widget is changed.
      * @param min minimum scale
      * @param max maximum scale
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void rangeChanged( double min, double max );
 

@@ -13,7 +13,7 @@
 class QgsAnnotationManager : QObject
 {
 %Docstring
-.. versionadded:: 3.0
+ \since QGIS 3.0
 
  Manages storage of a set of QgsAnnotation annotation objects.
 

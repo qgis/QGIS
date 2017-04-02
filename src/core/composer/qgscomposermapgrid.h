@@ -40,7 +40,7 @@ class QgsRenderContext;
  * \brief A collection of grids which is drawn above the map content in a
  * QgsComposerMap. The grid stack controls which grids are drawn and the
  * order they are drawn in.
- * \note added in QGIS 2.5
+ * \since QGIS 2.5
  * \see QgsComposerMapGrid
  */
 class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * @param right storage for right extension
      * @param bottom storage for bottom extension
      * @param left storage for left extension
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see maxGridExtension()
      */
     void calculateMaxGridExtension( double &top, double &right, double &bottom, double &left ) const;
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsComposerMap.
- * \note added in QGIS 2.5
+ * \since QGIS 2.5
  * \see QgsComposerMapGridStack
  */
 class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
@@ -335,7 +335,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param right storage for right extension
      * @param bottom storage for bottom extension
      * @param left storage for left extension
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see maxExtension()
      */
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left );
@@ -585,7 +585,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param display display mode for annotations
      * @param border side of map for annotations
      * @see annotationDisplay
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     void setAnnotationDisplay( const DisplayMode display, const BorderSide border );
 
@@ -595,7 +595,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param border side of map for annotations
      * @returns display mode for grid annotations
      * @see setAnnotationDisplay
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     DisplayMode annotationDisplay( const BorderSide border ) const;
 
@@ -663,7 +663,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * is QgsComposerMapGrid::CustomFormat.
      * @param expression expression for evaluating custom grid annotations
      * @see annotationExpression
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setAnnotationExpression( const QString &expression ) { mGridAnnotationExpressionString = expression; mGridAnnotationExpression.reset(); }
 
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * is QgsComposerMapGrid::CustomFormat.
      * @returns expression for evaluating custom grid annotations
      * @see setAnnotationExpression
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QString annotationExpression() const { return mGridAnnotationExpressionString; }
 
@@ -695,7 +695,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param divisions grid divisions for frame
      * @param border side of map for frame
      * @see frameDivisions
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     void setFrameDivisions( const DisplayMode divisions, const BorderSide border );
 
@@ -703,7 +703,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      * @param border side of map for frame
      * @returns grid divisions for frame
      * @see setFrameDivisions
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     DisplayMode frameDivisions( const BorderSide border ) const;
 

@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
      * @return 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPointV2 &layerPoint );
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /** Variant to supply more information in the case of snapping
      * @param mapPoint The vertex to add in map coordinates
      * @param match Data about the snapping match. Can be an invalid match, if point not snapped.
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     int addVertex( const QgsPoint &mapPoint, const QgsPointLocator::Match &match );
 

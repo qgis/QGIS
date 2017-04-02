@@ -39,7 +39,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
   public:
 
     //! Layer types the renderer is compatible with
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     enum LayerType
     {
       PointLayer = 1, //!< Compatible with point layers
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsRendererAbstractMetadata
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /** Returns flags indicating the types of layer the renderer is compatible with.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual LayerTypes compatibleLayerTypes() const { return All; }
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsRendererRegistry
 
     //! Returns a list of available renderers which are compatible with a specified layer.
     //! @param layer vector layer
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 
   private:

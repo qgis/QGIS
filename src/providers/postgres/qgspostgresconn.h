@@ -287,7 +287,7 @@ class QgsPostgresConn : public QObject
     /** Get the list of database schemas
      * @param schemas list to store schemas in
      * @returns true if schemas where fetched successfully
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
 

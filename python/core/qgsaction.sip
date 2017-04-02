@@ -71,14 +71,14 @@ The short title is used to label user interface elements like buttons
 %Docstring
  Returns a unique id for this action.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     bool isValid() const;
 %Docstring
  Returns true if this action was a default constructed one.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     QString iconPath() const;
@@ -97,7 +97,7 @@ The icon
  How the content is interpreted depends on the type() and
  the actionScope().
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     ActionType type() const;
@@ -119,14 +119,14 @@ Checks if the action is runable on the current platform
 %Docstring
  Run this action.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void run( const QgsExpressionContext &expressionContext ) const;
 %Docstring
  Run this action.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     QSet<QString> actionScopes() const;
@@ -136,7 +136,7 @@ Checks if the action is runable on the current platform
  coordinate.
 
  @see QgsActionScope
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void setActionScopes( const QSet<QString> &actionScopes );
@@ -145,7 +145,7 @@ Checks if the action is runable on the current platform
  Action scopes may offer additional variables like the clicked
  coordinate.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void readXml( const QDomNode &actionNode );
@@ -153,7 +153,7 @@ Checks if the action is runable on the current platform
  Reads an XML definition from actionNode
  into this object.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void writeXml( QDomNode &actionsNode ) const;
@@ -161,7 +161,7 @@ Checks if the action is runable on the current platform
  Appends an XML definition for this action as a new
  child node to actionsNode.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 };

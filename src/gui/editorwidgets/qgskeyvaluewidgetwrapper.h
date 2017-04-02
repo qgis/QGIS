@@ -23,7 +23,7 @@ class QgsKeyValueWidget;
 
 /** @ingroup gui
  * Wraps a key/value widget.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  * @note not available in Python bindings
  */
 class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper

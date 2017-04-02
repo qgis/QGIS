@@ -24,7 +24,7 @@
 /** \ingroup server
  * The QgsServerProjectUtils namespace provides a way to retrieve specific
  * entries from a QgsProject.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 namespace QgsServerProjectUtils
 {

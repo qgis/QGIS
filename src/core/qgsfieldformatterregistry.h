@@ -30,7 +30,7 @@ class QgsFieldFormatter;
  * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::fieldFormatterRegistry().
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 {

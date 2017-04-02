@@ -30,7 +30,7 @@ class QgsExpression;
  * Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
  * will be visible on the map - this is useful for content based legend.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapHitTest
 {
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsMapHitTest
     /** Tests whether a symbol is visible for a specified layer.
      * @param symbol symbol to find
      * @param layer vector layer
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see legendKeyVisible()
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMapHitTest
     /** Tests whether a given legend key is visible for a specified layer.
      * @param ruleKey legend rule key
      * @param layer vector layer
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see symbolVisible()
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsMapHitTest
      * @param usedSymbols set for storage of visible symbols
      * @param usedSymbolsRuleKey set of storage of visible legend rule keys
      * @param context render context
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @note not available in Python bindings
      */
     void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );

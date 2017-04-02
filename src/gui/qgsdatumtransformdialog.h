@@ -32,7 +32,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDatumTransformDialog();
 
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setDatumTransformInfo( const QString &srcCRSauthId, const QString &destCRSauthId );
 
     //! getter for selected datum transformations

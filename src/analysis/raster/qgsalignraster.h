@@ -35,7 +35,7 @@ typedef void *GDALDatasetH;
  * - cell size and raster size
  * - offset of the raster grid
  *
- * @note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 class ANALYSIS_EXPORT QgsAlignRaster
 {

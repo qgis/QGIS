@@ -77,7 +77,7 @@ typedef QVector<QVariant> QgsSuperClass;
 
 /** \ingroup core
  * Documentation goes here
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \note some other note
  */
 class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseClass

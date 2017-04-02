@@ -100,7 +100,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Sets the project's title.
      * @param title new title
-     * @note added in 2.4
+     * \since QGIS 2.4
      * @see title()
      */
     void setTitle( const QString &title );
@@ -131,13 +131,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Returns QFileInfo object for the project's associated file.
      * @see fileName()
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     QFileInfo fileInfo() const;
 
     /**
      * Returns the project's native coordinate reference system.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setCrs()
      * @see ellipsoid()
      */
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the project's native coordinate reference system.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see crs()
      * @see setEllipsoid()
      */
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
      * @see setEllipsoid()
      * @see crs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString ellipsoid() const;
 
@@ -163,12 +163,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
      * @see ellipsoid()
      * @see setCrs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setEllipsoid( const QString &ellipsoid );
 
     /** Clear the project - removes all settings and resets it back to an empty, default state.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void clear();
 
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note isDirty() will be set to false if project is successfully written
      * @returns true if project was written successfully
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool write( const QString &filename );
 
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /** Return path resolver object with considering whether the project uses absolute
      * or relative paths and using current project's path.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPathResolver pathResolver() const;
 
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool topologicalEditing() const;
 
     /** Convenience function to query default distance measurement units for project.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see setDistanceUnits()
      * @see areaUnits()
      */
@@ -353,21 +353,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Sets the default distance measurement units for the project.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see distanceUnits()
      * @see setAreaUnits()
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /** Convenience function to query default area measurement units for project.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see distanceUnits()
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /**
      * Sets the default area measurement units for the project.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see areaUnits()
      * @see setDistanceUnits()
      */
@@ -382,36 +382,36 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Returns the project's layout manager, which manages compositions within
      * the project.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     const QgsLayoutManager *layoutManager() const;
 
     /**
      * Returns the project's layout manager, which manages compositions within
      * the project.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsLayoutManager *layoutManager();
 
     /** Return pointer to the root (invisible) node of the project's layer tree
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     QgsLayerTree *layerTreeRoot() const;
 
     /** Return pointer to the helper class that synchronizes map layer registry with layer tree
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
     /** Returns pointer to the project's map theme collection.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
     QgsMapThemeCollection *mapThemeCollection();
 
     /**
      * Returns pointer to the project's annotation manager.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAnnotationManager *annotationManager();
 
@@ -435,7 +435,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool autoTransaction() const;
 
@@ -446,7 +446,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * Make sure that this is only called when all layers are not in edit mode.
      *
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setAutoTransaction( bool autoTransaction );
 
@@ -455,7 +455,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * QPair( providerKey, connString ) -> transactionGroup
      *
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      * @note Not available in Python bindings
      */
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups();
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Should default values be evaluated on provider side when requested and not when committed.
      *
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     bool evaluateDefaultValues() const;
 
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Defines if default values should be evaluated on provider side when requested and not when committed.
      *
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 
@@ -480,21 +480,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * The snapping configuration for this project.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsSnappingConfig snappingConfig() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList<QgsVectorLayer *> avoidIntersectionsLayers() const;
 
     /**
      * A list of layers with which intersections should be avoided.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 
@@ -548,7 +548,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
      *
      * @note not available in Python bindings
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see mapLayers()
      */
     template <typename T>
@@ -589,7 +589,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @note As a side-effect QgsProject is made dirty.
      * @note takeOwnership is not available in the Python bindings - the registry will always
      * take ownership
-     * @note added in QGIS 1.8
+     * \since QGIS 1.8
      * @see addMapLayer()
      */
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers,
@@ -635,7 +635,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * @param layerIds list of IDs of the layers to remove
      *
      * @note As a side-effect the QgsProject instance is marked dirty.
-     * @note added in QGIS 1.8
+     * \since QGIS 1.8
      * @see removeMapLayer()
      * @see removeAllMapLayers()
      */
@@ -761,14 +761,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void snappingConfigChanged( const QgsSnappingConfig &config );
 
     /** Emitted whenever the expression variables stored in the project have been changed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void customVariablesChanged();
 
     /**
      * Emitted when the CRS of the project has changed.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void crsChanged();
 
@@ -776,21 +776,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted whenever a new transaction group has been created or a
      * transaction group has been removed.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void transactionGroupsChanged();
 
     /**
      * Emitted when the topological editing flag has changed.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void topologicalEditingChanged();
 
     /**
      * Emitted whenever avoidIntersectionsLayers has changed.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void avoidIntersectionsLayersChanged();
 
@@ -803,7 +803,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * if you want to be notified about new map themes being added and
      * map themes being removed.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void mapThemeCollectionChanged();
 
@@ -913,7 +913,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * The snapping configuration for this project.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
@@ -921,7 +921,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Flag the project as dirty (modified). If this flag is set, the user will
      * be asked to save changes to the project before closing the current project.
      *
-     * @note added in 2.4
+     * \since QGIS 2.4
      * @note promoted to public slot in 2.16
      */
     void setDirty( bool b = true );

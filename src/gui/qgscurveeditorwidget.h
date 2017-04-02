@@ -132,7 +132,7 @@ class QgsHistogramValuesGatherer: public QThread
 /** \ingroup gui
  * \class QgsCurveEditorWidget
  * A widget for manipulating QgsCurveTransform curves.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 {

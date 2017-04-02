@@ -31,7 +31,7 @@
 /** \ingroup core
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsLineString: public QgsCurve
 {
@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * z and m types accordingly.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsLineString( const QVector<double> &x, const QVector<double> &y,
                    const QVector<double> &z = QVector<double>(),
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Construct a linestring from list of points.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsLineString( const QList<QgsPoint> &points );
 
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Extends the line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void extend( double startDistance, double endDistance );
 

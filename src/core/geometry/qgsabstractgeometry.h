@@ -40,7 +40,7 @@ typedef QList< QgsRingSequence > QgsCoordinateSequence;
 /** \ingroup core
  * \class QgsAbstractGeometry
  * \brief Abstract base class for all geometries
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /** Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).
      * For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
      * @returns boundary for geometry. May be null for some geometry types.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QgsAbstractGeometry *boundary() const = 0;
 
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @see asGML2
      * @see asGML3
      * @see asJSON
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     virtual QByteArray asWkb() const = 0;
 
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /** Adds a z-dimension to the geometry, initialized to a preset value.
      * @param zValue initial z-value for all nodes
      * @returns true on success
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see dropZValue()
      * @see addMValue()
      */
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsAbstractGeometry
     /** Adds a measure to the geometry, initialized to a preset value.
      * @param mValue initial m-value for all nodes
      * @returns true on success
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see dropMValue()
      * @see addZValue()
      */
@@ -363,7 +363,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * @returns true if Z values were present and have been removed
      * @see addZValue()
      * @see dropMValue()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual bool dropZValue() = 0;
 
@@ -371,13 +371,13 @@ class CORE_EXPORT QgsAbstractGeometry
      * @returns true if m-values were present and have been removed
      * @see addMValue()
      * @see dropZValue()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual bool dropMValue() = 0;
 
     /** Converts the geometry to a specified type.
      * @returns true if conversion was successful
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual bool convertTo( QgsWkbTypes::Type type );
 
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsAbstractGeometry
 /** \ingroup core
  * \class QgsVertexId
  * \brief Utility class for identifying a unique vertex within a geometry.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 struct CORE_EXPORT QgsVertexId
 {

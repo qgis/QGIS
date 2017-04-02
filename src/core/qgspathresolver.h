@@ -24,7 +24,7 @@
 /** \ingroup core
  * Resolves relative paths into absolute paths and vice versa. Used for writing
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPathResolver
 {

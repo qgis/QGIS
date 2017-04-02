@@ -46,18 +46,18 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     const QgsVectorLayer *vectorLayer() const { return mVectorLayer; }
 
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
      * Registers a data defined override button. Handles setting up connections
      * for the button and initializing the button to show the correct descriptions
      * and help text for the associated property.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 
@@ -247,7 +247,7 @@ class QgsFilledMarkerSymbolLayer;
 /** \ingroup gui
  * \class QgsFilledMarkerSymbolLayerWidget
  * \brief Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsFilledMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetFilledMarker
 {
@@ -651,7 +651,7 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void setColor( const QColor &color );
 
     /** Set stroke color.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setColorStroke( const QColor &color );
     void setSize( double size );
     void setAngle( double angle );

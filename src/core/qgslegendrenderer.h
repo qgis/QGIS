@@ -38,7 +38,7 @@ class QgsSymbol;
  *
  * All spacing and sizes are in millimeters.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendRenderer
 {

@@ -32,6 +32,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
   protected:
 
     /** Check if CaptureMode match layer type. Default is true.
-     * @note Added in 2.12 */
+     * \since QGIS 2.12 */
     bool mCheckGeometryType;
 };

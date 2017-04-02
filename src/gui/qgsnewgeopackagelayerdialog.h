@@ -37,7 +37,7 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 

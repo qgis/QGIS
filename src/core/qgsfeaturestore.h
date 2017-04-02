@@ -50,7 +50,7 @@ class CORE_EXPORT QgsFeatureStore
 
     /** Add feature. Feature's fields will be set to pointer to the store fields.
      * @param feature
-     * @note added in 2.1
+     * \since QGIS 2.1
      */
     void addFeature( const QgsFeature &feature );
 

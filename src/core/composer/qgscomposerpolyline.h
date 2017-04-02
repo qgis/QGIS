@@ -27,7 +27,7 @@ class QgsLineSymbol;
 
 /** \ingroup core
  * Composer item for polylines.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 {

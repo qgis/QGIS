@@ -28,7 +28,7 @@ class QgsGraduatedHistogramEventFilter;
  * \brief Graphical histogram for displaying distribution of field values and
  * editing range breaks for a QgsGraduatedSymbolRenderer renderer.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget

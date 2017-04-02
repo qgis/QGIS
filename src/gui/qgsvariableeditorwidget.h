@@ -35,7 +35,7 @@ class VariableEditorDelegate;
  * A tree based widget for editing expression context scope variables. The widget allows editing
  * variables from a QgsExpressionContextScope, and can optionally also show inherited
  * variables from a QgsExpressionContext.
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 
 class GUI_EXPORT QgsVariableEditorWidget : public QWidget

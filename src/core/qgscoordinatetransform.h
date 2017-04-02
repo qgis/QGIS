@@ -77,7 +77,7 @@ class CORE_EXPORT QgsCoordinateTransform
     /*!
      * Returns true if the coordinate transform is valid, ie both the source and destination
      * CRS have been set and are valid.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool isValid() const;
 

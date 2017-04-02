@@ -130,7 +130,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
         /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * @note added in QGIS 2.16
+         * \since QGIS 2.16
          * @see setRepeatingLock()
          */
         bool isRepeatingLock() const { return mRepeatingLock; }
@@ -158,7 +158,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * @param repeating set to true to set the lock to repeat automatically
-         * @note added in QGIS 2.16
+         * \since QGIS 2.16
          * @see isRepeatingLock()
          */
         void setRepeatingLock( bool repeating );

@@ -98,14 +98,14 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Set destination CRS
      * @see destinationCrs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Returns the destination CRS, or an invalid CRS if no reprojection will be done.
      * @see setDestinationCrs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsDxfExport
      * @param code group code
      * @param p point value
      * @note available in Python bindings as writeGroupPointV2
-     * @note added in 2.15
+     * \since QGIS 2.15
      */
     void writeGroup( int code, const QgsPointV2 &p );
 
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsDxfExport
      * @param color color to use
      * @param width line width to use
      * @note not available in Python bindings
-     * @note added in 2.15
+     * \since QGIS 2.15
      */
     void writePolyline( const QgsPointSequence &line, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
@@ -265,37 +265,37 @@ class CORE_EXPORT QgsDxfExport
      * @param hatchPattern hatchPattern to use
      * @param color color to use
      * @note not available in Python bindings
-     * @note added in 2.15
+     * \since QGIS 2.15
      */
     void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color );
 
     //! Write line (as a polyline)
-    //! @note added in 2.15
+    //! \since QGIS 2.15
     void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
     //! Write point
     //! @note available in Python bindings as writePointV2
-    //! @note added in 2.15
+    //! \since QGIS 2.15
     void writePoint( const QString &layer, const QColor &color, const QgsPointV2 &pt );
 
     //! Write filled circle (as hatch)
     //! @note available in Python bindings as writePointV2
-    //! @note added in 2.15
+    //! \since QGIS 2.15
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius );
 
     //! Write circle (as polyline)
     //! @note available in Python bindings as writeCircleV2
-    //! @note added in 2.15
+    //! \since QGIS 2.15
     void writeCircle( const QString &layer, const QColor &color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width );
 
     //! Write text (TEXT)
     //! @note available in Python bindings as writeTextV2
-    //! @note added in 2.15
+    //! \since QGIS 2.15
     void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor &color );
 
     //! Write mtext (MTEXT)
     //! @note available in Python bindings as writeMTextV2
-    //! @note added in 2.15
+    //! \since QGIS 2.15
     void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor &color );
 
     //! Calculates a scaling factor to convert from map units to a specified symbol unit.

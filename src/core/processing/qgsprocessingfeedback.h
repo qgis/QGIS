@@ -29,7 +29,7 @@
  * This base class implementation silently ignores all feedback reported by algorithms.
  * Subclasses of QgsProcessingFeedback can be used to log this feedback or report
  * it to users via the GUI.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
 {

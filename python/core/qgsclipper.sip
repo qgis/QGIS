@@ -58,7 +58,7 @@ class QgsClipper
 
 .. note::
 
-   not available in python bindings on android
+   not available in Python bindings on android
 %End
 
 %End

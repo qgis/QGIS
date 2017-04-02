@@ -77,7 +77,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     Q_DECLARE_FLAGS( LinePlacementFlags, LinePlacementFlag )
 
     /** Data definable properties.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     enum Property
     {
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Returns the diagram property definitions.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -116,21 +116,21 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Returns the diagram placement.
      * @see setPlacement()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     Placement placement() const { return mPlacement; }
 
     /** Sets the diagram placement.
      * @param value placement value
      * @see placement()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setPlacement( Placement value ) { mPlacement = value; }
 
     /** Returns the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * @see setLinePlacementFlags()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     LinePlacementFlags linePlacementFlags() const { return mPlacementFlags; }
 
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * is set to a line type.
      * @param flags placement value
      * @see getPlacement()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setLinePlacementFlags( LinePlacementFlags flags ) { mPlacementFlags = flags; }
 
@@ -147,14 +147,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @note placement priority is shared with labeling, so diagrams with a high priority may displace labels
      * and vice-versa
      * @see setPriority()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     int priority() const { return mPriority; }
 
     /** Sets the diagram priority.
      * @param value priority, where 0 = low and 10 = high
      * @see priority()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setPriority( int value ) { mPriority = value; }
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * @note z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
      * with a low z-index and vice-versa
      * @see setZIndex()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     double zIndex() const { return mZIndex; }
 
@@ -171,79 +171,79 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * with a lower z-index.
      * @param index diagram z-index
      * @see zIndex()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setZIndex( double index ) { mZIndex = index; }
 
     /** Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @see setIsObstacle()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool isObstacle() const { return mObstacle; }
 
     /** Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
      * @param isObstacle set to true for feature to act as obstacle
      * @see isObstacle()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setIsObstacle( bool isObstacle ) { mObstacle = isObstacle; }
 
     /** Returns the distance between the diagram and the feature (in mm).
      * @see setDistance()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     double distance() const { return mDistance; }
 
     /** Sets the distance between the diagram and the feature.
      * @param distance distance in mm
      * @see distance()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setDistance( double distance ) { mDistance = distance; }
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QgsDiagramRenderer *renderer() { return mRenderer; }
 
     /** Returns the diagram renderer associated with the layer.
      * @see setRenderer()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     const QgsDiagramRenderer *renderer() const { return mRenderer; }
 
     /** Sets the diagram renderer associated with the layer.
      * @param diagramRenderer diagram renderer. Ownership is transferred to the object.
      * @see renderer()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setRenderer( QgsDiagramRenderer *diagramRenderer );
 
     /** Returns the coordinate transform associated with the layer, or an
      * invalid transform if no transformation is required.
      * @see setCoordinateTransform()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QgsCoordinateTransform coordinateTransform() const { return mCt; }
 
     /** Sets the coordinate transform associated with the layer.
      * @param transform coordinate transform. Ownership is transferred to the object.
      * @see coordinateTransform()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setCoordinateTransform( const QgsCoordinateTransform &transform );
 
     /** Returns whether the layer should show all diagrams, including overlapping diagrams
      * @see setShowAllDiagrams()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool showAllDiagrams() const { return mShowAll; }
 
     /** Sets whether the layer should show all diagrams, including overlapping diagrams
      * @param showAllDiagrams set to true to show all diagrams
      * @see showAllDiagrams()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setShowAllDiagrams( bool showAllDiagrams ) { mShowAll = showAllDiagrams; }
 
@@ -263,31 +263,31 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Prepares the diagrams for a specified expression context. Calling prepare before rendering
      * multiple diagrams allows precalculation of expensive setup tasks such as parsing expressions.
      * Returns true if preparation was successful.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /** Returns the set of any fields referenced by the layer's diagrams.
      * @param context expression context the diagrams will be drawn using
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the diagram's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the diagram's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsDiagramSettings
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
-    //! @note added in 2.10
+    //! \since QGIS 2.10
     QList< QString > categoryLabels;
     QSizeF size; //size
 
@@ -389,17 +389,17 @@ class CORE_EXPORT QgsDiagramSettings
     QgsUnitTypes::RenderUnit sizeType;
 
     /** Diagram size unit scale
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     QgsMapUnitScale sizeScale;
 
     /** Line unit index
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     QgsUnitTypes::RenderUnit lineSizeUnit;
 
     /** Line unit scale
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     QgsMapUnitScale lineSizeScale;
 
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsDiagramSettings
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
-     * @note added in 2.10
+     * \since QGIS 2.10
      */
     QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const;
 
@@ -465,7 +465,7 @@ class CORE_EXPORT QgsDiagramRenderer
     virtual ~QgsDiagramRenderer();
 
     /** Returns new instance that is equivalent to this one
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     virtual QgsDiagramRenderer *clone() const = 0;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
@@ -478,7 +478,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Returns the set of any fields required for diagram rendering
      * @param context expression context the diagrams will be drawn using
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
@@ -509,12 +509,12 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Returns list of legend nodes for the diagram
      * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
-     * @note added in 2.10
+     * \since QGIS 2.10
      */
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const;
 
     /** Returns true if renderer will show legend items for diagram attributes.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setAttributeLegend()
      * @see sizeLegend()
      */
@@ -522,14 +522,14 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Sets whether the renderer will show legend items for diagram attributes.
      * @param enabled set to true to show diagram attribute legend
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see attributeLegend()
      * @see setSizeLegend()
      */
     void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 
     /** Returns true if renderer will show legend items for diagram sizes.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setSizeLegend()
      * @see attributeLegend()
      * @see sizeLegendSymbol()
@@ -538,7 +538,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Sets whether the renderer will show legend items for diagram sizes.
      * @param enabled set to true to show diagram size legend
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see sizeLegend()
      * @see setAttributeLegend()
      * @see setSizeLegendSymbol()
@@ -546,7 +546,7 @@ class CORE_EXPORT QgsDiagramRenderer
     void setSizeLegend( bool enabled ) { mShowSizeLegend = enabled; }
 
     /** Returns the marker symbol used for rendering the diagram size legend.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setSizeLegendSymbol()
      * @see sizeLegend()
      */
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /** Sets the marker symbol used for rendering the diagram size legend.
      * @param symbol marker symbol, ownership is transferred to the renderer.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see sizeLegendSymbol()
      * @see setSizeLegend()
      */
@@ -675,14 +675,14 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     /**
      * Returns the field name used for interpolating the diagram size.
      * @see setClassificationField()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString classificationField() const { return mInterpolationSettings.classificationField; }
 
     /**
      * Sets the field name used for interpolating the diagram size.
      * @see classificationField()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setClassificationField( const QString &field ) { mInterpolationSettings.classificationField = field; }
 

@@ -82,33 +82,33 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     /** Clears all items from z-order list and resets the model
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void clear();
 
     /** Returns the size of the z-order list, which includes items which may
      * have been removed from the composition.
      * @returns size of z-order list
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     int zOrderListSize() const;
 
     /** Rebuilds the z-order list, based on the current stacking of items in the composition.
      * This method should be called after adding multiple items to the composition.
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void rebuildZList();
 
     /** Adds an item to the top of the composition z stack.
      * @param item item to add. The item must not already exist in the z-order list.
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      * @see reorderItemToTop
      */
     void addItemAtTop( QgsComposerItem *item );
 
     /** Removes an item from the z-order list.
      * @param item item to remove
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void removeItem( QgsComposerItem *item );
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemDown
      * @see reorderItemToTop
      * @see reorderItemToBottom
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     bool reorderItemUp( QgsComposerItem *item );
 
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemUp
      * @see reorderItemToTop
      * @see reorderItemToBottom
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     bool reorderItemDown( QgsComposerItem *item );
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemUp
      * @see reorderItemDown
      * @see reorderItemToBottom
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     bool reorderItemToTop( QgsComposerItem *item );
 
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see reorderItemUp
      * @see reorderItemDown
      * @see reorderItemToTop
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     bool reorderItemToBottom( QgsComposerItem *item );
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @returns item above specified item. If no items were found, no item
      * will be returned.
      * @see getComposerItemBelow
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
 
@@ -174,14 +174,14 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @returns item below specified item. If no items were found, no item
      * will be returned.
      * @see getComposerItemAbove
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
 
     /** Returns the item z-order list. This list includes both items currently in the
      * composition and items which have been removed from the composition.
      * @returns item z-order list
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     QList<QgsComposerItem *> *zOrderList();
 
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * has been removed from the composition.
      * @param item to mark as removed from the composition
      * @see setItemRestored
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void setItemRemoved( QgsComposerItem *item );
 
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * from the composition is restored to the composition.
      * @param item to mark as restored to the composition
      * @see setItemRemoved
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void setItemRestored( QgsComposerItem *item );
 
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemLockStatus
      * @see updateItemVisibility
      * @see updateItemSelectStatus
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void updateItemDisplayName( QgsComposerItem *item );
 
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemDisplayName
      * @see updateItemVisibility
      * @see updateItemSelectStatus
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void updateItemLockStatus( QgsComposerItem *item );
 
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemDisplayName
      * @see updateItemLockStatus
      * @see updateItemSelectStatus
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void updateItemVisibility( QgsComposerItem *item );
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * @see updateItemDisplayName
      * @see updateItemVisibility
      * @see updateItemLockStatus
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void updateItemSelectStatus( QgsComposerItem *item );
 
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
 
     /** Sets an item as the current selection from a QModelIndex
      * @param index QModelIndex of item to set as selected
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void setSelected( const QModelIndex &index );
 
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
  * \class QgsComposerProxyModel
  * \ingroup core
  * \brief Allows for filtering a QgsComposerModel by item type.
- * \note added in 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
 {

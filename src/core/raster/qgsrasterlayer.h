@@ -259,7 +259,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual void reload() override;
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
 
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual QStringList subLayers() const override;
 
     /** \brief Draws a preview of the rasterlayer into a QImage
-     @note added in 2.4 */
+     \since QGIS 2.4 */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 

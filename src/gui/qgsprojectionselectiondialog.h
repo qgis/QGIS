@@ -45,7 +45,7 @@
  *
  * If you wish to embed the projection selector into an existing dialog
  * the you probably want to look at QgsProjectionSelectionWidget instead.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsGenericProjectionSelectorBase
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
 
     /**
      * Returns the CRS currently selected in the widget.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
@@ -80,14 +80,14 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
      * Sets whether a "no/invalid" projection option should be shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * @see showNoProjection()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setShowNoProjection( bool show );
 
     /**
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setShowNoProjection()
      */
     bool showNoProjection() const;
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
 
     /**
      * Sets the initial \a crs to show within the dialog.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );

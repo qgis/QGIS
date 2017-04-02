@@ -27,7 +27,7 @@ class QWidget;
 
 /** \ingroup gui
  * A text editor based on QScintilla2.
- * \note added in 2.6
+ * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditor : public QsciScintilla
@@ -43,7 +43,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * @param title The title to show in the code editor dialog
      * @param folding false: Enable folding for code editor
      * @param margin false: Enable margin for code editor
-     * @note added in 2.6
+     * \since QGIS 2.6
      */
     QgsCodeEditor( QWidget *parent = nullptr, const QString &title = "", bool folding = false, bool margin = false );
 

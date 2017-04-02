@@ -20,7 +20,7 @@
 
 /** \ingroup core
  * Assorted helper methods for unit testing.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 
 #define QGSCOMPARENEAR(value,expected,epsilon) { \

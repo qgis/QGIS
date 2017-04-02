@@ -29,7 +29,7 @@
 /** \ingroup core
  * Buffers information about expression fields for a vector layer.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsExpressionFieldBuffer
 {
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      * @param index The index of the expression to change
      * @param name   New name for field
      *
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void renameExpression( int index, const QString &name );
 
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsExpressionFieldBuffer
      * @param index The index of the expression to change
      * @param exp   The new expression to set
      *
-     * @note added in 2.9
+     * \since QGIS 2.9
      */
     void updateExpression( int index, const QString &exp );
 

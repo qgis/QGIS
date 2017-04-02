@@ -45,18 +45,18 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
     /** Returns the vector layer associated with the widget.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     const QgsVectorLayer *layer() const { return mLayer; }
 

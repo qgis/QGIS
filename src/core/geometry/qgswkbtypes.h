@@ -32,7 +32,7 @@
 /** \ingroup core
  * \class QgsWkbTypes
  * \brief Handles storage of information regarding WKB types and their properties.
- * \note Added in version 2.10
+ * \since QGIS 2.10
  */
 
 class CORE_EXPORT QgsWkbTypes
@@ -592,7 +592,7 @@ class CORE_EXPORT QgsWkbTypes
     }
 
     /** Returns true if the WKB type is a curved type or can contain curved geometries.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     static bool isCurvedType( Type type )
     {
@@ -633,7 +633,7 @@ class CORE_EXPORT QgsWkbTypes
     /** Returns the coordinate dimension of the geometry type as an integer. Returned value will
      * be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
      * Invalid geometry types will return a dimension of 0.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see wkbDimensions()
      */
     static int coordDimensions( Type type )
@@ -742,7 +742,7 @@ class CORE_EXPORT QgsWkbTypes
      * - No Geometry
      * - Invalid Geometry
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QString geometryDisplayString( GeometryType type );
 
@@ -840,7 +840,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /** Adds the z dimension to a WKB type and returns the new type
      * @param type original type
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see addM()
      * @see dropZ()
      * @see hasZ()
@@ -864,7 +864,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /** Adds the m dimension to a WKB type and returns the new type
      * @param type original type
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see addZ()
      * @see dropM()
      * @see hasM()
@@ -895,7 +895,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /** Drops the z dimension (if present) for a WKB type and returns the new type.
      * @param type original type
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see dropM()
      * @see addZ()
      */
@@ -912,7 +912,7 @@ class CORE_EXPORT QgsWkbTypes
 
     /** Drops the m dimension (if present) for a WKB type and returns the new type.
      * @param type original type
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see dropZ()
      * @see addM()
      */

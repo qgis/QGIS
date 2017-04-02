@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see setSegmentSizeMode
      * @see minBarWidth
      * @see maxBarWidth
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see segmentSizeMode
      * @see setMinBarWidth
      * @see setMaxBarWidth
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     void setSegmentSizeMode( SegmentSizeMode mode );
 
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see segmentSizeMode
      * @see setMinBarWidth
      * @see maxBarWidth
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     double minBarWidth() const { return mMinBarWidth; }
 
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see minBarWidth
      * @see setMaxBarWidth
      * @see setSegmentSizeMode
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     void setMinBarWidth( double minWidth );
 
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see segmentSizeMode
      * @see setMaxBarWidth
      * @see minBarWidth
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     double maxBarWidth() const { return mMaxBarWidth; }
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
      * @see minBarWidth
      * @see setMaxBarWidth
      * @see setSegmentSizeMode
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     void setMaxBarWidth( double maxWidth );
 
@@ -162,52 +162,52 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /** Returns the color used for fills in the scalebar.
      * @see setFillColor()
      * @see fillColor2()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QColor fillColor() const {return mFillColor;}
 
     /** Sets the color used for fills in the scalebar.
      * @see fillColor()
      * @see setFillColor2()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setFillColor( const QColor &color ) {mFillColor = color; mBrush.setColor( color ); }
 
     /** Returns the secondary color used for fills in the scalebar.
      * @see setFillColor2()
      * @see fillColor()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QColor fillColor2() const {return mFillColor2;}
 
     /** Sets the secondary color used for fills in the scalebar.
      * @see fillColor2()
      * @see setFillColor2()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setFillColor2( const QColor &color ) {mFillColor2 = color; mBrush2.setColor( color ); }
 
     /** Returns the color used for lines in the scalebar.
      * @see setLineColor()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QColor lineColor() const {return mLineColor;}
 
     /** Sets the color used for lines in the scalebar.
      * @see lineColor()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setLineColor( const QColor &color ) { mLineColor = color; mPen.setColor( mLineColor ); }
 
     /** Returns the line width in millimeters for lines in the scalebar.
      * @see setLineWidth()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double lineWidth() const {return mLineWidth;}
 
     /** Sets the line width in millimeters for lines in the scalebar.
      * @see lineWidth()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
 

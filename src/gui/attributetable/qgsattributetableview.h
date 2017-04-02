@@ -72,7 +72,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     /**
      * Set the attribute table config which should be used to control
      * the appearance of the attribute table.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
@@ -140,7 +140,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     /** Emitted when a column in the view has been resized.
      * @param column column index (starts at 0)
      * @param width new width in pixel
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void columnResized( int column, int width );
 

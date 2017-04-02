@@ -43,28 +43,28 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Writes the column's properties to xml for storage.
      * @param columnElem an existing QDomElement in which to store the column's properties.
      * @param doc QDomDocument for the destination xml.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see readXml
      */
     virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 
     /** Reads the column's properties from xml.
      * @param columnElem a QDomElement holding the column's desired properties.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see writeXml
      */
     virtual bool readXml( const QDomElement &columnElem );
 
     /** Returns the width for a column.
      * @returns column width in mm, or 0 if column width is automatically calculated.
-     * @note added in 2.5
+     * \since QGIS 2.5
      * @see setWidth
      */
     double width() const { return mWidth; }
 
     /** Sets the width for a column.
      * @param width column width in mm, or 0 if column width is to be automatically calculated.
-     * @note added in 2.5
+     * \since QGIS 2.5
      * @see width
      */
     void setWidth( const double width ) { mWidth = width; }
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Returns the heading for a column, which is the value displayed in the columns
      * header cell.
      * @returns Heading for column.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setHeading
      */
     QString heading() const { return mHeading; }
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Sets the heading for a column, which is the value displayed in the columns
      * header cell.
      * @param heading Heading for column.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see heading
      */
     void setHeading( const QString &heading ) { mHeading = heading; }
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Returns the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
      * @returns horizontal alignment.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setHAlignment
      * @see vAlignment
      */
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Sets the horizontal alignment for a column, which controls the alignment
      * used for drawing column values within cells.
      * @param alignment horizontal alignment for cell.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see hAlignment
      * @see setVAlignment
      */
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Returns the vertical alignment for a column, which controls the alignment
      * used for drawing column values within cells.
      * @returns vertical alignment.
-     * @note added in 2.12
+     * \since QGIS 2.12
      * @see setVAlignment
      * @see hAlignment
      */
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Sets the vertical alignment for a column, which controls the alignment
      * used for drawing column values within cells.
      * @param alignment vertical alignment for cell.
-     * @note added in 2.12
+     * \since QGIS 2.12
      * @see vAlignment
      * @see setHAlignment
      */
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Returns the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
      * @returns attribute name or expression text for column
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see setAttribute
      */
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Sets the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
      * @param attribute attribute name or expression text for column
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see attribute
      */
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Returns the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
      * @returns sort order for column
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see setSortOrder
      * @see sortByRank
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
     /** Sets the sort order for the column. This property is only used when the column
      * is part of a QgsComposerAttributeTable and when sortByRank is > 0.
      * @param sortOrder sort order for column
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see sortOrder
      * @see setSortByRank
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * is part of a QgsComposerAttributeTable.
      * @returns sort rank for column. If sort rank is <= 0 then the column is not being
      * sorted.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see setSortByRank
      * @see sortOrder
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * is part of a QgsComposerAttributeTable.
      * @param sortByRank sort rank for column. If sort rank is <= 0 then the column is not being
      * sorted.
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @note only applicable when used in a QgsComposerAttributeTable
      * @see sortByRank
      * @see setSortOrder
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     /** Creates a duplicate column which is a deep copy of this column.
      * @returns a new QgsComposerTableColumn with same properties as this column.
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     QgsComposerTableColumn *clone();
 

@@ -98,7 +98,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * @param feature feature
      * @param context render context
      * @return returns pointer to symbol or 0 if symbol was not found
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) = 0;
 
@@ -106,13 +106,13 @@ class CORE_EXPORT QgsFeatureRenderer
      * Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
      * symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
      * of a symbol for use in rendering.
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     /**
      * Return legend keys matching a specified feature.
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsFeatureRenderer
 
     /** Returns list of symbols used by the renderer.
      * @param context render context
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsSymbolList symbols( QgsRenderContext &context ) { Q_UNUSED( context ); return QgsSymbolList(); }
 
@@ -225,7 +225,7 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QDomElement save( QDomDocument &doc );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
 
     /** Create a new renderer according to the information contained in
@@ -251,21 +251,21 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! items of symbology items in legend should be checkable
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     virtual bool legendSymbolItemsCheckable() const;
 
     //! items of symbology items in legend is checked
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     virtual bool legendSymbolItemChecked( const QString &key );
 
     //! item in symbology was checked
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
     /** Sets the symbol to be used for a legend symbol item.
      * @param key rule key for legend symbol
      * @param symbol new symbol for legend item. Ownership is transferred to renderer.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
 
@@ -275,11 +275,11 @@ class CORE_EXPORT QgsFeatureRenderer
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation
-    //! @note added in 2.6
+    //! \since QGIS 2.6
     virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
 
     //! If supported by the renderer, return classification attribute for the use in legend
-    //! @note added in 2.6
+    //! \since QGIS 2.6
     virtual QString legendClassificationAttribute() const { return QString(); }
 
     //! set type and size of editing vertex markers for subsequent rendering
@@ -288,20 +288,20 @@ class CORE_EXPORT QgsFeatureRenderer
     /** Returns whether the renderer will render a feature or not.
      * Must be called between startRender() and stopRender() calls.
      * Default implementation uses symbolForFeature().
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Returns list of symbols used for rendering the feature.
      * For renderers that do not support MoreSymbolsPerFeature it is more efficient
      * to use symbolForFeature()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
     /** Equivalent of originalSymbolsForFeature() call
      * extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
@@ -309,26 +309,26 @@ class CORE_EXPORT QgsFeatureRenderer
      * @param extent reference to request's filter extent. Modify extent to change the
      * extent of feature request
      * @param context render context
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context ) { Q_UNUSED( extent ); Q_UNUSED( context ); }
 
     /** Returns the current paint effect for the renderer.
      * @returns paint effect
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see setPaintEffect
      */
     QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the renderer.
      * @param effect paint effect. Ownership is transferred to the renderer.
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect *effect );
 
     /** Returns whether the renderer must render as a raster.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setForceRasterRender
      */
     bool forceRasterRender() const { return mForceRaster; }
@@ -338,13 +338,13 @@ class CORE_EXPORT QgsFeatureRenderer
      * This may be desirable for highly detailed layers where rendering as a vector
      * would result in a large, complex vector output.
      * @see forceRasterRender
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
     /**
      * Get the order in which features shall be processed by this renderer.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @note this property has no effect if orderByEnabled() is false
      * @see orderByEnabled()
      */
@@ -353,14 +353,14 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Define the order in which features shall be processed by this renderer.
      * @note this property has no effect if orderByEnabled() is false
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see setOrderByEnabled()
      */
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
      * Returns whether custom ordering will be applied before features are processed by this renderer.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see orderBy()
      * @see setOrderByEnabled()
      */
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Sets whether custom ordering should be applied before features are processed by this renderer.
      * @param enabled set to true to enable custom feature ordering
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see setOrderBy()
      * @see orderByEnabled()
      */
@@ -379,14 +379,14 @@ class CORE_EXPORT QgsFeatureRenderer
      * does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
      * @param subRenderer the embedded renderer. Ownership will be transferred.
      * @see embeddedRenderer()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer ) { delete subRenderer; }
 
     /** Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
      * implementation does not use subrenderers and will always return null.
      * @see setEmbeddedRenderer()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual const QgsFeatureRenderer *embeddedRenderer() const { return nullptr; }
 

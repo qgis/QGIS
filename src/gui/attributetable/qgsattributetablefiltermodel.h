@@ -83,7 +83,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      *
      * @param sourceModel The model
      *
-     * @note added in 2.0
+     * \since QGIS 2.0
      */
     void setSourceModel( QgsAttributeTableModel *sourceModel );
 

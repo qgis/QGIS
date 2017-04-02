@@ -21,7 +21,7 @@ class QgsActionScopeRegistry : QObject
  QgsApplication::actionScopeRegistry()
  ```
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 %TypeHeaderCode
@@ -37,35 +37,35 @@ class QgsActionScopeRegistry : QObject
  want to use QgsApplication::actionScopeRegistry() to get access
  to that one instead.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     QSet<QgsActionScope> actionScopes() const;
 %Docstring
  Get all registered action scopes.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void registerActionScope( const QgsActionScope &actionScope );
 %Docstring
  Register an additional action scope.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void unregisterActionScope( const QgsActionScope &actionScope );
 %Docstring
  Unregister an additional action scope.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     QgsActionScope actionScope( const QString &id );
 %Docstring
  Get an action scope by its id.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
   signals:
@@ -75,7 +75,7 @@ class QgsActionScopeRegistry : QObject
  Emitted whenever a new action scope is registered or an action scope
  is unregistered.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 };

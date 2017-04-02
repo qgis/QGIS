@@ -54,11 +54,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QColor *colors() const;
 
     /** Return optional category label
-     *  @note added in 2.1 */
+     *  \since QGIS 2.1 */
     QString label( int idx ) const { return mLabels.value( idx ); }
 
     /** Set category label
-     *  @note added in 2.1 */
+     *  \since QGIS 2.1 */
     void setLabel( int idx, const QString &label );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;

@@ -41,7 +41,7 @@ class QgsCharacterSelectorDialog;
  * subclassing QgsTextFormatWidget and calling the protected constructor with a mode
  * of Labeling.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextFormatWidgetBase
@@ -204,7 +204,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
  * using QgsTextRenderer. The dialog includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatDialog : public QDialog
@@ -240,7 +240,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
  * using QgsTextRenderer. The dialog includes all settings contained within
  * a QgsTextFormat, including shadow, background and buffer.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper

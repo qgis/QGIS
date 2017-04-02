@@ -26,7 +26,7 @@
  * \class QgsFieldConstraints
  * \ingroup core
  * Stores information about constraints which may be present on a field.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsFieldConstraints

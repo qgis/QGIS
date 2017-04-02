@@ -102,13 +102,13 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
@@ -199,7 +199,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void lockLayer();
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     void duplicateLayer();
 
     /**
@@ -256,13 +256,13 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @param context symbol widget context
      * @see context()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
     /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * @see setContext()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
@@ -305,7 +305,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void lockLayer();
 
     //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-    //! @note added in QGIS 2.14
+    //! \since QGIS 2.14
     void duplicateLayer();
 
     void layerChanged();

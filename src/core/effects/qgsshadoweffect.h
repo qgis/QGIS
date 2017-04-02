@@ -27,7 +27,7 @@
  * \class QgsShadowEffect
  * \brief Base class for paint effects which offset, blurred shadows
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
  * \class QgsDropShadowEffect
  * \brief A paint effect which draws an offset and optionally blurred drop shadow
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
 {
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
  * \brief A paint effect which draws an offset and optionally blurred drop shadow
  * within a picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
 {

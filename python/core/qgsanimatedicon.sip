@@ -50,14 +50,14 @@ class QgsAnimatedIcon : QObject
  Connect to the frame changed signal with this method and not directly. This method
  makes sure the annimation is started.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     bool disconnectFrameChanged( const QObject *receiver, const char *method );
 %Docstring
  Convenience function to disconnect the same style that the frame change connection was established.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 
@@ -65,14 +65,14 @@ class QgsAnimatedIcon : QObject
 %Docstring
  The native width of the icon.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     int height() const;
 %Docstring
  The native height of the icon.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
   signals:

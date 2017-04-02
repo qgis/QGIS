@@ -96,7 +96,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     /**
       * Returns the matching data from the most recently snapped point.
       * @return the snapping data structure
-      * @note added in 2.14
+      * \since QGIS 2.14
       */
     QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
 

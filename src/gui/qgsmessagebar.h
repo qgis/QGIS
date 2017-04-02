@@ -117,7 +117,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * Pushes a success message with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void pushSuccess( const QString &title, const QString &message );
 
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * Pushes a information message with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void pushInfo( const QString &title, const QString &message );
 
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * Pushes a warning with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void pushWarning( const QString &title, const QString &message );
 
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      * Pushes a critical warning with default timeout to the message bar
      * @param title title string for message
      * @param message The message to be displayed
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void pushCritical( const QString &title, const QString &message );
 

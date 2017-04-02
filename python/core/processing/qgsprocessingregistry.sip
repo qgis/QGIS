@@ -17,7 +17,7 @@ class QgsProcessingRegistry : QObject
 
  QgsProcessingRegistry is not usually directly created, but rather accessed through
  QgsApplication::processingRegistry().
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 %TypeHeaderCode

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsDiagram
     virtual ~QgsDiagram() { clearCache(); }
 
     /** Returns an instance that is equivalent to this one
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     virtual QgsDiagram *clone() const = 0;
 
     void clearCache();
@@ -47,7 +47,7 @@ class CORE_EXPORT QgsDiagram
     /** Returns a prepared expression for the specified context.
      * @param expression expression string
      * @param context expression context
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsExpression *getExpression( const QString &expression, const QgsExpressionContext &context );
 
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsDiagram
      * @param value value to return legend item size for
      * @param s diagram settings
      * @param is interpolation settings
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
 
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsDiagram
      * @param value value to calculate corresponding circular size for
      * @param s diagram settings
      * @param is interpolation settings
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
 

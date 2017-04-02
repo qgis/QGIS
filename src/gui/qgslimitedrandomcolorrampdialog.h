@@ -25,7 +25,7 @@
 /** \ingroup gui
  * \class QgsLimitedRandomColorRampWidget
  * A widget which allows users to modify the properties of a QgsLimitedRandomColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, private Ui::QgsLimitedRandomColorRampWidgetBase
 {
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsLimitedRandomColorRampWidget : public QgsPanelWidget, privat
 /** \ingroup gui
  * \class QgsLimitedRandomColorRampDialog
  * A dialog which allows users to modify the properties of a QgsLimitedRandomColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
 {

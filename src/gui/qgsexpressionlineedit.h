@@ -42,7 +42,7 @@ class QgsCodeEditorSQL;
  * more space is available for the widget, but where QgsExpressionBuilderWidget
  * is too complex or large for use.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 {

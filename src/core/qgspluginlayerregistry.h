@@ -42,7 +42,7 @@ class CORE_EXPORT QgsPluginLayerType
     virtual QgsPluginLayer *createLayer();
 
     /** Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
-     * @note added in 2.10
+     * \since QGIS 2.10
      */
     virtual QgsPluginLayer *createLayer( const QString &uri );
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsPluginLayerRegistry
     QgsPluginLayerRegistry &operator=( const QgsPluginLayerRegistry &rh ) = delete;
 
     /** List all known layer types
-     *  \note added in v2.1 */
+     *  \since QGIS */
     QStringList pluginLayerTypes();
 
     //! Add plugin layer type (take ownership) and return true on success

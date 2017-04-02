@@ -125,21 +125,21 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * The project associated with the composition. Used to get access to layers, map themes,
      * relations and various other bits. It is never null.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsProject *project() const;
 
     /**
      * Returns the composition's name.
      * @see setName()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString name() const { return mName; }
 
     /**
      * Sets the composition's name.
      * @see name()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setName( const QString &name );
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param marginRight right margin  (millimeters)
      * @param marginBottom bottom margin  (millimeters)
      * @param marginLeft left margin (millimeters)
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setResizeToContentsMargins()
      * @see resizeToContentsMargins()
      */
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param marginRight right margin  (millimeters)
      * @param marginBottom bottom margin  (millimeters)
      * @param marginLeft left margin (millimeters)
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see resizePageToContents()
      * @see resizeToContentsMargins()
      */
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param marginRight reference for right margin  (millimeters)
      * @param marginBottom reference for bottom margin  (millimeters)
      * @param marginLeft reference for left margin (millimeters)
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see resizePageToContents()
      * @see setResizeToContentsMargins()
      */
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * paper item.
      * @param page page number, starting with 1
      * @returns true if page is empty
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      * @see numPages
      * @see setNumPages
      * @see shouldExportPage
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns whether a specified page number should be included in exports of the composition.
      * @param page page number, starting with 1
      * @returns true if page should be exported
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      * @see numPages
      * @see pageIsEmpty
      */
@@ -253,22 +253,22 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     QgsFillSymbol *pageStyleSymbol() { return mPageStyleSymbol; }
 
     /** Returns the position within a page of a point in the composition
-      @note Added in QGIS 2.1
+      \since QGIS 2.1
      */
     QPointF positionOnPage( QPointF position ) const;
 
     /** Returns the page number corresponding to a point in the composition
-      @note Added in QGIS 2.1
+      \since QGIS 2.1
      */
     int pageNumberForPoint( QPointF position ) const;
 
     /** Sets the status bar message for the composer window
-      @note Added in QGIS 2.1
+      \since QGIS 2.1
      */
     void setStatusMessage( const QString &message );
 
     /** Refreshes the composition when composer related options change
-     @note added in version 2.1
+     \since QGIS 2.1
      */
     void updateSettings();
 
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * them will prevent both display of the page boundaries in composer views and
      * will also prevent them from being rendered in composition exports.
      * @param visible set to true to show pages, false to hide pages
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see pagesVisible()
      */
     void setPagesVisible( bool visible );
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Returns whether the page items are be visible in the composition. This setting
      * effects both display of the page boundaries in composer views and
      * whether they will be rendered in composition exports.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setPagesVisible()
      */
     bool pagesVisible() const { return mPagesVisible; }
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * and the edges and centers of other items.
      * @param snapTolerance snap tolerance in pixels
      * @see alignmentSnapTolerance
-     * @note Added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void setSnapTolerance( const int snapTolerance ) { mSnapTolerance = snapTolerance; }
 
@@ -335,21 +335,21 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * and the edges and centers of other items.
      * @returns snap tolerance in pixels
      * @see setAlignmentSnapTolerance
-     * @note Added in QGIS 2.5
+     * \since QGIS 2.5
      */
     int snapTolerance() const { return mSnapTolerance; }
 
     /** Sets whether selection bounding boxes should be shown in the composition
      * @param boundsVisible set to true to show selection bounding box
      * @see boundingBoxesVisible
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     void setBoundingBoxesVisible( const bool boundsVisible );
 
     /** Returns whether selection bounding boxes should be shown in the composition
      * @returns true if selection bounding boxes should be shown
      * @see setBoundingBoxesVisible
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     bool boundingBoxesVisible() const { return mBoundingBoxesVisible; }
 
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param itemList list of item type to store matching items in
      * @param pageNumber page number (0 based)
      * @note not available in Python bindings
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const;
 
@@ -534,7 +534,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     /** Creates a new group from a list of composer items and adds it to the composition.
      * @param items items to include in group
      * @returns QgsComposerItemGroup of grouped items, if grouping was possible
-     * @note added in QGIS 2.6
+     * \since QGIS 2.6
      */
     QgsComposerItemGroup *groupItems( QList<QgsComposerItem *> items );
 
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param group item group to ungroup
      * @returns list of items removed from the group, or an empty list if ungrouping
      * was not successful
-     * @note added in QGIS 2.6
+     * \since QGIS 2.6
      */
     QList<QgsComposerItem *> ungroupItems( QgsComposerItemGroup *group );
 
@@ -678,7 +678,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param dpi optional dpi override, or 0 to use default composition print resolution. This
      * parameter has no effect if imageSize is specified.
      * @returns rendered image, or null image if image does not fit into available memory
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see printPageAsRaster()
      * @see renderRect()
      */
@@ -696,7 +696,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * to render sections of pages rather than full pages.
      * @param p destination painter
      * @param rect region of composition to render
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see renderPage()
      * @see renderRectAsRaster()
      */
@@ -709,7 +709,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition was
      * exported
      * @param dpi set to DPI of exported file, or leave as -1 to use composition's DPI.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void georeferenceOutput( const QString &file, QgsComposerMap *referenceMap = nullptr,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
@@ -727,7 +727,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param d
      * @param e
      * @param f
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void computeWorldFileParameters( const QRectF &exportRegion, double &a, double &b, double &c, double &d, double &e, double &f ) const;
 
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Return pages in the correct order
      * @note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
-     * @note added in version 2.4
+     * \since QGIS 2.4
      */
     QList< QgsPaperItem * > pages() { return mPages; }
 
@@ -764,7 +764,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see customProperty()
      * @see removeCustomProperty()
      * @see customProperties()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setCustomProperty( const QString &key, const QVariant &value );
 
@@ -775,7 +775,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see setCustomProperty()
      * @see removeCustomProperty()
      * @see customProperties()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
@@ -784,7 +784,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see setCustomProperty()
      * @see customProperty()
      * @see customProperties()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void removeCustomProperty( const QString &key );
 
@@ -792,14 +792,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @see setCustomProperty()
      * @see customProperty()
      * @see removeCustomProperty()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QStringList customProperties() const;
 
     /** Returns the bounding box of the items contained on a specified page.
      * @param pageNumber page number, where 0 is the first page
      * @param visibleOnly set to true to only include visible items
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QRectF pageItemBounds( int pageNumber, bool visibleOnly = false ) const;
 
@@ -814,25 +814,25 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void sendItemAddedSignal( QgsComposerItem *item );
 
     /** Updates the scene bounds of the composition
-    @note added in version 2.2*/
+    \since QGIS 2.2*/
     void updateBounds();
 
     /** Forces items in the composition to refresh. For instance, this causes maps to redraw
      * and rebuild cached images, html items to reload their source url, and attribute tables
      * to refresh their contents. Calling this also triggers a recalculation of all data defined
      * attributes within the composition.
-     * @note added in version 2.3*/
+     * \since QGIS 2.3*/
     void refreshItems();
 
     /** Clears any selected items and sets an item as the current selection.
      * @param item item to set as selected
-     * @note added in version 2.3*/
+     * \since QGIS 2.3*/
     void setSelectedItem( QgsComposerItem *item );
 
     /** Clears any selected items in the composition. Call this method rather than
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.
-     * @note added in version 2.5*/
+     * \since QGIS 2.5*/
     void setAllDeselected();
 
     /** Refreshes a data defined property for the composition by reevaluating the property's value
@@ -847,25 +847,25 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /** Creates an expression context relating to the compositions's current state. The context includes
      * scopes for global, project, composition and atlas properties.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsExpressionContext createExpressionContext() const override;
 
     /** Returns a reference to the composition's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the composition's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the composition's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
@@ -1001,7 +1001,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * @param exportRegion set to a valid rectangle to indicate that only part of the composition is
      * being exported
      * @param dpi allows overriding the default composition DPI, or leave as -1 to use composition's DPI.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     double *computeGeoTransform( const QgsComposerMap *referenceMap = nullptr, const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
@@ -1014,7 +1014,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /**
      * Emitted when the composition's name is changed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setName()
      */
     void nameChanged( const QString &name );
@@ -1030,7 +1030,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     /**
       * Is emitted when a new composer item has been added to the composition.
-      * @note added in QGIS 3.0
+      * \since QGIS 3.0
       */
     void itemAdded( QgsComposerItem *item );
 
@@ -1047,7 +1047,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void statusMsgChanged( const QString &message );
 
     /** Emitted whenever the expression variables stored in the composition have been changed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void variablesChanged();
 

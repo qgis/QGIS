@@ -27,7 +27,7 @@ class QgsLayerTreeLayer;
  *
  * Group names do not need to be unique within one tree nor within one parent.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void removeAllChildren();
 
     //! Find layer node representing the map layer. Searches recursively the whole sub-tree.
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     QgsLayerTreeLayer *findLayer( QgsMapLayer *layer ) const;
     //! Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
     QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     static QgsLayerTreeGroup *readXml( QDomElement &element );
     //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
     //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project );
 
     //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
@@ -102,19 +102,19 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     virtual QgsLayerTreeGroup *clone() const override;
 
     //! Calls resolveReferences() on child tree nodes
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     virtual void resolveReferences( const QgsProject *project ) override;
 
     //! Check or uncheck a node and all its children (taking into account exclusion rules)
     virtual void setItemVisibilityCheckedRecursive( bool checked ) override;
 
     //! Return whether the group is mutually exclusive (only one child can be checked at a time)
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     bool isMutuallyExclusive() const;
     //! Set whether the group is mutually exclusive (only one child can be checked at a time).
     //! The initial child index determines which child should be initially checked. The default value
     //! of -1 will determine automatically (either first one currently checked or none)
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
 
   protected slots:

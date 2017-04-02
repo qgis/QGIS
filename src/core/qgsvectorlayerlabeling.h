@@ -30,7 +30,7 @@ class QgsVectorLayerLabelProvider;
 /** \ingroup core
  * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
  *
- * @note added in 2.12
+ * \since QGIS 2.12
  * @note not available in Python bindings
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      * Returns true if drawing labels requires advanced effects like composition
      * modes, which could prevent it being used as an isolated cached image
      * or exported to a vector format.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool requiresAdvancedEffects( QgsVectorLayer *layer ) const = 0;
 
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
  *
  * The configuration is kept in layer's custom properties for backward compatibility.
  *
- * @note added in 2.12
+ * \since QGIS 2.12
  * @note not available in Python bindings
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  */

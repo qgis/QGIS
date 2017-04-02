@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
  * \brief A collection of map items which are drawn above the map content in a
  * QgsComposerMap. The item stack controls which items are drawn and the
  * order they are drawn in.
- * \note added in QGIS 2.5
+ * \since QGIS 2.5
  * \see QgsComposerMapItem
  */
 class CORE_EXPORT QgsComposerMapItemStack

@@ -31,7 +31,7 @@
 /** \ingroup core
  * \class QgsPointV2
  * \brief Point geometry type, with support for z-dimension and m-values.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
 {
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
     void setM( double m ) { clearCache(); mM = m; }
 
     /** Returns the point as a QPointF.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QPointF toQPointF() const;
 
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see distanceSquared()
     */
     double distance( double x, double y ) const;
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 2D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distance( const QgsPointV2 &other ) const;
 
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * @see distance()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distanceSquared( double x, double y ) const;
 
@@ -183,7 +183,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * @see distance()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distanceSquared( const QgsPointV2 &other ) const;
 
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see distanceSquared()
     */
     double distance3D( double x, double y, double z ) const;
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * Returns the 3D distance between this point and another point. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distance3D( const QgsPointV2 &other ) const;
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * @see distance()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distanceSquared3D( double x, double y, double z ) const;
 
@@ -218,13 +218,13 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      * this is faster than calling distance(), and may be useful in use cases such as comparing
      * distances where the extra expense of calling distance() is not required.
      * @see distance()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     double distanceSquared3D( const QgsPointV2 &other ) const;
 
     /**
      * Calculates azimuth between this point and other one (clockwise in degree, starting from north)
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double azimuth( const QgsPointV2 &other ) const;
 
@@ -253,37 +253,37 @@ class CORE_EXPORT QgsPointV2: public QgsAbstractGeometry
      *   pr = p.project (1, 0, 0 )
      *   # pr is a 3D point: 'PointZ (1 2 3)'
      * \endcode
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 project( double distance, double azimuth, double inclination = 90.0 ) const;
 
     /**
      * Calculates the vector obtained by subtracting a point from this point.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsVector operator-( const QgsPointV2 &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     /**
      * Adds a vector to this point in place.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 &operator+=( QgsVector v ) { mX += v.x(); mY += v.y(); return *this; }
 
     /**
      * Subtracts a vector from this point in place.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 &operator-=( QgsVector v ) { mX -= v.x(); mY -= v.y(); return *this; }
 
     /**
      * Adds a vector to this point.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 operator+( QgsVector v ) const { QgsPointV2 r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
 
     /**
      * Subtracts a vector from this point.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPointV2 operator-( QgsVector v ) const { QgsPointV2 r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 

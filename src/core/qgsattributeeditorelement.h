@@ -77,7 +77,7 @@ class CORE_EXPORT QgsAttributeEditorElement
     /**
      * Get the parent of this element.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAttributeEditorElement *parent() const { return mParent; }
 
@@ -93,21 +93,21 @@ class CORE_EXPORT QgsAttributeEditorElement
     /**
      * Returns a clone of this element. To be implemented by subclasses.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0;
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool showLabel() const;
 
     /**
      * Controls if this element should be labeled with a title (field, relation or groupname).
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setShowLabel( bool showLabel );
 
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsAttributeEditorElement
     /**
      * Should be implemented by subclasses to save type specific configuration.
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     virtual void saveConfiguration( QDomElement &elem ) const = 0;
 
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsAttributeEditorElement
      * All subclasses need to overwrite this method and return a type specific identifier.
      * Needs to be XML key compatible.
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     virtual QString typeIdentifier() const = 0;
 };
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     /**
      * Creates a deep copy of this element. To be implemented by subclasses.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override;
 
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * show or hide this container based on an expression incorporating
      * the field value controlled by editor widgets.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsOptionalExpression visibilityExpression() const;
 
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      * show or hide this container based on an expression incorporating
      * the field value controlled by editor widgets.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setVisibilityExpression( const QgsOptionalExpression &visibilityExpression );
 
@@ -340,28 +340,28 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     /**
      * Determines if the "link feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool showLinkButton() const;
 
     /**
      * Determines if the "link feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setShowLinkButton( bool showLinkButton );
 
     /**
      * Determines if the "unlink feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     bool showUnlinkButton() const;
 
     /**
      * Determines if the "unlink feature" button should be shown
      *
-     * @note Added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 

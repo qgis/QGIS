@@ -36,7 +36,7 @@ class QgsVectorLayer;
   * \ingroup core
   * Container for settings relating to a text buffer.
   * \note QgsTextBufferSettings objects are implicitly shared.
-  * \note added in QGIS 3.0
+  * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsTextBufferSettings
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsTextBufferSettings
   * \ingroup core
   * Container for settings relating to a text background object.
   * \note QgsTextBackgroundSettings objects are implicitly shared.
-  * \note added in QGIS 3.0
+  * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsTextBackgroundSettings
@@ -597,7 +597,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
   * \ingroup core
   * Container for settings relating to a text shadow.
   * \note QgsTextShadowSettings objects are implicitly shared.
-  * \note added in QGIS 3.0
+  * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsTextShadowSettings
@@ -849,7 +849,7 @@ class CORE_EXPORT QgsTextShadowSettings
   * \ingroup core
   * Container for all settings relating to text rendering.
   * \note QgsTextFormat objects are implicitly shared.
-  * \note added in QGIS 3.0
+  * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsTextFormat
@@ -1104,7 +1104,7 @@ class CORE_EXPORT QgsTextFormat
   * \ingroup core
   * Handles rendering text using rich formatting options, including drop shadows, buffers
   * and background shapes.
-  * \note added in QGIS 3.0
+  * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsTextRenderer

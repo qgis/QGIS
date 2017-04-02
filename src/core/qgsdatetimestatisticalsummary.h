@@ -38,7 +38,7 @@
  * are calculated by default. Statistics which require slower computations are only calculated by
  * specifying the statistic in the constructor or via @link setStatistics @endlink.
  *
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsDateTimeStatisticalSummary

@@ -473,7 +473,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
      * @returns false if a dependency cycle has been detected
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
 
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * as well as dependencies given by the provider
      *
      * @returns a set of QgsMapLayerDependency
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const override;
 
@@ -494,7 +494,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @return The index of the new field
      *
-     * @note added in 2.6, return value added in 2.9
+     * \since QGIS 2.9
      */
     int addExpressionField( const QString &exp, const QgsField &fld );
 
@@ -503,7 +503,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @param index The index of the field
      *
-     * @note added in 2.6
+     * \since QGIS 2.6
      */
     void removeExpressionField( int index );
 
@@ -514,7 +514,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @return The expression for the field at index
      *
-     * @note added in 2.9
+     * \since QGIS 2.9
      */
     QString expressionField( int index ) const;
 
@@ -525,7 +525,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @param exp The new expression to set
      *
-     * @note added in 2.9
+     * \since QGIS 2.9
      */
     void updateExpressionField( int index, const QString &exp );
 
@@ -559,7 +559,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param expression expression to evaluate to select features
      * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see selectByRect()
      * @see selectByIds()
      */
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param ids feature IDs to select
      * @param behavior selection type, allows adding to current selection, removing
      * from selection, etc.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see selectByRect()
      * @see selectByExpression()
      */
@@ -644,13 +644,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Returns whether the layer contains labels which are enabled and should be drawn.
      * @return true if layer contains enabled labels
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     bool labelsEnabled() const;
 
     /** Returns whether the layer contains diagrams which are enabled and should be drawn.
      * @return true if layer contains enabled diagrams
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     bool diagramsEnabled() const;
 
@@ -698,7 +698,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const override;
 
     /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void resolveReferences( QgsProject *project );
 
@@ -732,7 +732,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Delete a style from the database
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @param styleId the provider's layer_styles table id of the style to delete
      * @param msgError reference to string that will be updated with any error messages
      * @return true in case of success
@@ -810,7 +810,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param provider provider string
      * @param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
      * data source
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 
@@ -921,7 +921,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
@@ -1042,13 +1042,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult> &snapResults );
 
     /** Access to labeling configuration.
-     * @note added in 2.12
+     * \since QGIS 2.12
      * @note not available in Python bindings
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /** Set labeling configuration. Takes ownership of the object.
-     * @note added in 2.12
+     * \since QGIS 2.12
      * @note not available in Python bindings
      */
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling )  SIP_SKIP;
@@ -1085,7 +1085,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual void reload() override;
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
@@ -1170,21 +1170,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Sets an alias (a display name) for attributes to display in dialogs
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setFieldAlias( int index, const QString &aliasString );
 
     /**
      * Removes an alias (a display name) for attributes to display in dialogs
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void removeFieldAlias( int index );
 
     /** Renames an attribute field  (but does not commit it).
      * @param index attribute index
      * @param newName new name of field
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool renameAttribute( int index, const QString &newName );
 
@@ -1335,7 +1335,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param context optional expression context to evaluate expressions again. If not
      * specified, a default context will be created
      * @return calculated default value
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDefaultValueExpression()
      */
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
@@ -1345,7 +1345,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param index field index
      * @param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see defaultValue()
      * @see defaultValueExpression()
      */
@@ -1355,7 +1355,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param index field index
      * @returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see defaultValue()
      * @see setDefaultValueExpression()
      */
@@ -1365,7 +1365,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns any constraints which are present for a specified
      * field index. These constraints may be inherited from the layer's data provider
      * or may be set manually on the vector layer from within QGIS.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setFieldConstraint()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
@@ -1374,7 +1374,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Sets a constraint for a specified field index. Any constraints inherited from the layer's
      * data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
      * constraints to be added on top of the existing provider constraints.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see fieldConstraints()
      * @see removeFieldConstraint()
      */
@@ -1383,7 +1383,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Removes a constraint for a specified field index. Any constraints inherited from the layer's
      * data provider will be kept intact and cannot be removed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see fieldConstraints()
      * @see setFieldConstraint()
      */
@@ -1391,7 +1391,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the constraint expression for for a specified field index, if set.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see fieldConstraints()
      * @see constraintDescription()
      * @see setConstraintExpression()
@@ -1400,7 +1400,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the descriptive name for the constraint expression for a specified field index.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see constraints()
      * @see constraintExpression()
      * @see setConstraintExpression()
@@ -1410,7 +1410,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Set the constraint expression for the specified field index. An optional descriptive name for the constraint
      * can also be set. Setting an empty expression will clear any existing expression constraint.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see constraintExpression()
      * @see constraintDescription()
      * @see constraints()
@@ -1426,7 +1426,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * The editor widget setup defines which QgsFieldFormatter and editor widget will be used
      * for the field at `index`.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 
@@ -1484,7 +1484,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param context expression context for expressions and filters
      * @param ok if specified, will be set to true if aggregate calculation was successful
      * @return calculated aggregate value
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
                         const QString &fieldOrExpression,
@@ -1498,7 +1498,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param selectedOnly set to true to get values from selected features only
      * @param feedback optional feedback object to allow cancelation
      * @returns list of fetched values
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see getDoubleValues
      */
     QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr ) const;
@@ -1511,7 +1511,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @param nullCount optional pointer to integer to store number of null values encountered in
      * @param feedback optional feedback object to allow cancelation
      * @returns list of fetched values
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see getValues
      */
     QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr ) const;
@@ -1532,18 +1532,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     inline QgsGeometryCache *cache() SIP_SKIP { return mCache; }
 
     /** Set the simplification settings for fast rendering of features
-     *  @note added in 2.2
+     *  \since QGIS 2.2
      */
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod ) { mSimplifyMethod = simplifyMethod; }
 
     /** Returns the simplification settings for fast rendering of features
-     *  @note added in 2.2
+     *  \since QGIS 2.2
      */
     inline const QgsVectorSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /** Returns whether the VectorLayer can apply the specified simplification hint
      *  @note Do not use in 3rd party code - may be removed in future version!
-     *  @note added in 2.2
+     *  \since QGIS 2.2
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
@@ -1552,7 +1552,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * used to render conditional formatting in the attribute table.
      * @return Return a QgsConditionalLayerStyles object holding the conditional attribute
      * style information. Style information is generic and can be used for anything.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsConditionalLayerStyles *conditionalStyles() const;
 
@@ -1573,7 +1573,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * It may also contain embedded expressions.
      *
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     QString mapTipTemplate() const;
 
@@ -1582,7 +1582,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * It may also contain embedded expressions.
      *
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void setMapTipTemplate( const QString &mapTipTemplate );
 
@@ -1594,7 +1594,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @return The configuration of this layers' form
      *
-     * @note Added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QgsEditFormConfig editFormConfig() const;
 
@@ -1604,7 +1604,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * @return The configuration of this layers' form
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 
@@ -1860,14 +1860,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Emitted when the map tip changes
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void mapTipTemplateChanged();
 
     /**
      * Emitted when the display expression changes
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void displayExpressionChanged();
 
@@ -1879,7 +1879,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Will be emitted whenever the edit form configuration of this layer changes.
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void editFormConfigChanged();
 
@@ -1887,7 +1887,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Emitted when the read only state of this layer is changed.
      * Only applies to manually set readonly state, not to the edit mode.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void readOnlyChanged();
 

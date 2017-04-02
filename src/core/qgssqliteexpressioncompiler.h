@@ -26,7 +26,7 @@
  * \brief Expression compiler for translation to SQlite SQL WHERE clauses.
  *
  * This class is designed to be used by spatialite and OGR providers.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
  */

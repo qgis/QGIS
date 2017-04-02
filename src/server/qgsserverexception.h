@@ -28,7 +28,7 @@
  * \class  QgsServerException
  * \brief Exception base class for server exceptions.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerException : public QgsException
 {
@@ -61,7 +61,7 @@ class SERVER_EXPORT QgsServerException : public QgsException
  * Note that this exception is associated with a default return code 200 which may be
  * not appropriate in some situations.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsOgcServiceException : public QgsServerException
 {

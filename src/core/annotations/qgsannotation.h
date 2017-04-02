@@ -28,7 +28,7 @@
 
 /** \ingroup core
  * \class QgsAnnotation
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  *
  * \brief Abstract base class for annotation items which are drawn over a map.
  *

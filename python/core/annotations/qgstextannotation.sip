@@ -13,7 +13,7 @@ class QgsTextAnnotation: QgsAnnotation
 {
 %Docstring
  An annotation item that displays formatted text from a QTextDocument document.
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 %TypeHeaderCode

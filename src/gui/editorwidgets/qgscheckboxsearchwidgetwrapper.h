@@ -29,7 +29,7 @@ class QgsCheckboxWidgetFactory;
 /** \ingroup gui
  * \class QgsCheckboxSearchWidgetWrapper
  * Wraps a checkbox edit widget for searching.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper

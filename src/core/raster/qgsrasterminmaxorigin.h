@@ -26,7 +26,7 @@
 /** \ingroup core
  * This class describes the origin of min/max values. It does not store by
  * itself the min/max values.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {

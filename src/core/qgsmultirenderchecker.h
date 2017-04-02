@@ -46,7 +46,7 @@
  * For every control image, the allowed mismatch and color tolerance values will be calculated
  * individually.
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 
 class CORE_EXPORT QgsMultiRenderChecker

@@ -28,7 +28,7 @@
 
 /** \ingroup core
 Class for parsing SQL statements.
-* @note Added in QGIS 2.16
+* \since QGIS 2.16
 */
 
 class CORE_EXPORT QgsSQLStatement

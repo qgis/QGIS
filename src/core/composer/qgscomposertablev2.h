@@ -29,20 +29,20 @@ class QgsComposerTableColumn;
 /** \ingroup core
  * List of QVariants, representing a the contents of a single row in
  * a QgsComposerTable
- * \note Added in version 2.5
+ * \since QGIS 2.5
 */
 typedef QList< QVariant > QgsComposerTableRow;
 
 /** \ingroup core
  * List of QgsComposerTableRows, representing rows and column cell contents
  * for a QgsComposerTable
- * \note Added in version 2.5
+ * \since QGIS 2.5
 */
 typedef QList< QgsComposerTableRow > QgsComposerTableContents;
 
 /** \ingroup core
  * List of column definitions for a QgsComposerTable
- * \note Added in version 2.5
+ * \since QGIS 2.5
 */
 typedef QList<QgsComposerTableColumn *> QgsComposerTableColumns;
 
@@ -50,7 +50,7 @@ typedef QList<QgsComposerTableColumn *> QgsComposerTableColumns;
 /** \ingroup core
  *  \class QgsComposerTableStyle
  *  \brief Styling option for a composer table cell
- *  \note added in QGIS 2.12
+ *  \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsComposerTableStyle
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsComposerTableStyle
 /** A class to display a table in the print composer, and allow
  * the table to span over multiple frames
  * \ingroup core
- * @note added in QGIS 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 {
@@ -345,7 +345,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setGridStrokeWidth
      * @see setGridColor
      * @see setVerticalGrid
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setHorizontalGrid( const bool horizontalGrid );
 
@@ -355,7 +355,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setGridStrokeWidth
      * @see setGridColor
      * @see setVerticalGrid
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool horizontalGrid() const { return mHorizontalGrid; }
 
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setGridStrokeWidth
      * @see setGridColor
      * @see setHorizontalGrid
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setVerticalGrid( const bool verticalGrid );
 
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see setGridStrokeWidth
      * @see setGridColor
      * @see setHorizontalGrid
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool verticalGrid() const { return mVerticalGrid; }
 
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * automatically wrapped.
      * @param behavior wrap behavior
      * @see wrapBehavior
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setWrapBehavior( WrapBehavior behavior );
 
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * automatically wrapped.
      * @returns current wrap behavior
      * @see setWrapBehavior
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     WrapBehavior wrapBehavior() const { return mWrapBehavior; }
 
@@ -426,14 +426,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @param group group to set style for
      * @param style new cell style
      * @see cellStyle()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setCellStyle( CellStyleGroup group, const QgsComposerTableStyle &style );
 
     /** Returns the cell style for a cell group.
      * @param group group to retrieve style for
      * @see setCellStyle()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     const QgsComposerTableStyle *cellStyle( CellStyleGroup group ) const;
 
@@ -550,7 +550,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     virtual bool calculateMaxColumnWidths();
 
     /** Calculates the maximum height of text shown in rows.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual bool calculateMaxRowHeights();
 
@@ -577,7 +577,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * if the frame would include all table content rows and have space left for extra rows then setting this parameter
      * to true would also include a count of these extra blank rows.
      * @returns number of visible content rows (excluding header row)
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
 
@@ -588,14 +588,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * if the frame would include all table content rows and have space left for extra rows then setting this parameter
      * to true would also include a count of these extra blank rows.
      * @returns number of visible content rows (excludes header rows)
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
 
     /** Calculates a range of rows which should be visible in a given frame.
      * @param frameIndex index number for frame
      * @returns row range
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QPair<int, int> rowRange( const int frameIndex ) const;
 
@@ -606,7 +606,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * table, then the default row height will be used for the remaining rows.
      * @param drawHeaderLines set to true to include for the table header
      * @see drawVerticalGridLines
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
 
@@ -623,7 +623,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see drawVerticalGridLines
      * @see calculateMaxColumnWidths
      * @note not available in Python bindings
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const;
 

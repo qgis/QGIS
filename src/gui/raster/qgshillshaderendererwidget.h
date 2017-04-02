@@ -28,7 +28,7 @@
 /**
  * @brief Renderer widget for the hill shade renderer.
  * @ingroup gui
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, private Ui::QgsHillShadeWidget
 {

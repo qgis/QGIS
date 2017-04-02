@@ -425,7 +425,7 @@ Setup the coordinate system transformation for the layer
 
  @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
  @returns false if a dependency cycle has been detected
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
@@ -434,7 +434,7 @@ Setup the coordinate system transformation for the layer
  as well as dependencies given by the provider
 
  @returns a set of QgsMapLayerDependency
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     int addExpressionField( const QString &exp, const QgsField &fld );
@@ -446,7 +446,7 @@ Setup the coordinate system transformation for the layer
 
  @return The index of the new field
 
-.. versionadded:: 2.6
+ \since QGIS 2.9
 %End
 
     void removeExpressionField( int index );
@@ -455,7 +455,7 @@ Setup the coordinate system transformation for the layer
 
  @param index The index of the field
 
-.. versionadded:: 2.6
+ \since QGIS 2.6
 %End
 
     QString expressionField( int index ) const;
@@ -466,7 +466,7 @@ Setup the coordinate system transformation for the layer
 
  @return The expression for the field at index
 
-.. versionadded:: 2.9
+ \since QGIS 2.9
 %End
 
     void updateExpressionField( int index, const QString &exp );
@@ -477,7 +477,7 @@ Setup the coordinate system transformation for the layer
 
  @param exp The new expression to set
 
-.. versionadded:: 2.9
+ \since QGIS 2.9
 %End
 
     QgsActionManager *actions();
@@ -512,7 +512,7 @@ Setup the coordinate system transformation for the layer
  @param expression expression to evaluate to select features
  @param behavior selection type, allows adding to current selection, removing
  from selection, etc.
-.. versionadded:: 2.16
+ \since QGIS 2.16
  @see selectByRect()
  @see selectByIds()
 %End
@@ -524,7 +524,7 @@ Setup the coordinate system transformation for the layer
  @param ids feature IDs to select
  @param behavior selection type, allows adding to current selection, removing
  from selection, etc.
-.. versionadded:: 2.16
+ \since QGIS 2.16
  @see selectByRect()
  @see selectByExpression()
 %End
@@ -607,14 +607,14 @@ Returns the bounding box of the selected features. If there is no selection, Qgs
 %Docstring
  Returns whether the layer contains labels which are enabled and should be drawn.
  @return true if layer contains enabled labels
-.. versionadded:: 2.9
+ \since QGIS 2.9
 %End
 
     bool diagramsEnabled() const;
 %Docstring
  Returns whether the layer contains diagrams which are enabled and should be drawn.
  @return true if layer contains enabled diagrams
-.. versionadded:: 2.9
+ \since QGIS 2.9
 %End
 
     void setDiagramRenderer( QgsDiagramRenderer *r /Transfer/ );
@@ -677,7 +677,7 @@ Return the provider type for this layer
     void resolveReferences( QgsProject *project );
 %Docstring
  Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
@@ -711,7 +711,7 @@ Return the provider type for this layer
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
 %Docstring
  Delete a style from the database
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @param styleId the provider's layer_styles table id of the style to delete
  @param msgError reference to string that will be updated with any error messages
  @return true in case of success
@@ -793,7 +793,7 @@ Return the provider type for this layer
  @param provider provider string
  @param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
  data source
-.. versionadded:: 2.10
+ \since QGIS 2.10
 %End
 
     bool countSymbolFeatures( bool showProgress = true );
@@ -891,7 +891,7 @@ on every call. Consider using {@link changeAttributeValue()} or
  to the given coordinates
 .. note::
 
-   available in python as moveVertexV2
+   available in Python as moveVertexV2
 %End
 
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -899,7 +899,7 @@ on every call. Consider using {@link changeAttributeValue()} or
  Deletes a vertex from a feature.
  @param featureId ID of feature to remove vertex from
  @param vertex index of vertex to delete
-.. versionadded:: 2.14
+ \since QGIS 2.14
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0 );
@@ -932,7 +932,7 @@ TODO QGIS 3.0 returns an enum instead of a magic constant
 %Docstring
 .. note::
 
-   available in python as addCurvedPart
+   available in Python as addCurvedPart
 
 %End
 
@@ -1027,7 +1027,7 @@ Synchronises with changes in the datasource
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 %Docstring
  Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-.. versionadded:: 2.4
+ \since QGIS 2.4
 %End
 
     QgsRectangle extent() const;
@@ -1120,14 +1120,14 @@ Change feature's geometry
 %Docstring
  Sets an alias (a display name) for attributes to display in dialogs
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void removeFieldAlias( int index );
 %Docstring
  Removes an alias (a display name) for attributes to display in dialogs
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     bool renameAttribute( int index, const QString &newName );
@@ -1135,7 +1135,7 @@ Change feature's geometry
  Renames an attribute field  (but does not commit it).
  @param index attribute index
  @param newName new name of field
-.. versionadded:: 2.16
+ \since QGIS 2.16
 %End
 
     QString attributeAlias( int index ) const;
@@ -1309,7 +1309,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  @param context optional expression context to evaluate expressions again. If not
  specified, a default context will be created
  @return calculated default value
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see setDefaultValueExpression()
 %End
 
@@ -1319,7 +1319,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  @param index field index
  @param expression expression to evaluate when calculating default values for field. Pass
  an empty expression to clear the default.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see defaultValue()
  @see defaultValueExpression()
 %End
@@ -1330,7 +1330,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  @param index field index
  @returns expression evaluated when calculating default values for field, or an
  empty string if no default is set
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see defaultValue()
  @see setDefaultValueExpression()
 %End
@@ -1340,7 +1340,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Returns any constraints which are present for a specified
  field index. These constraints may be inherited from the layer's data provider
  or may be set manually on the vector layer from within QGIS.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see setFieldConstraint()
 %End
 
@@ -1349,7 +1349,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  Sets a constraint for a specified field index. Any constraints inherited from the layer's
  data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
  constraints to be added on top of the existing provider constraints.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see fieldConstraints()
  @see removeFieldConstraint()
 %End
@@ -1358,7 +1358,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
 %Docstring
  Removes a constraint for a specified field index. Any constraints inherited from the layer's
  data provider will be kept intact and cannot be removed.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see fieldConstraints()
  @see setFieldConstraint()
 %End
@@ -1366,7 +1366,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
     QString constraintExpression( int index ) const;
 %Docstring
  Returns the constraint expression for for a specified field index, if set.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see fieldConstraints()
  @see constraintDescription()
  @see setConstraintExpression()
@@ -1375,7 +1375,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
     QString constraintDescription( int index ) const;
 %Docstring
  Returns the descriptive name for the constraint expression for a specified field index.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see constraints()
  @see constraintExpression()
  @see setConstraintExpression()
@@ -1385,7 +1385,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
 %Docstring
  Set the constraint expression for the specified field index. An optional descriptive name for the constraint
  can also be set. Setting an empty expression will clear any existing expression constraint.
-.. versionadded:: 3.0
+ \since QGIS 3.0
  @see constraintExpression()
  @see constraintDescription()
  @see constraints()
@@ -1401,7 +1401,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  The editor widget setup defines which QgsFieldFormatter and editor widget will be used
  for the field at `index`.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 ) const;
@@ -1467,7 +1467,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  @param context expression context for expressions and filters
  @param ok if specified, will be set to true if aggregate calculation was successful
  @return calculated aggregate value
-.. versionadded:: 2.16
+ \since QGIS 2.16
 %End
 
     QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 ) const;
@@ -1478,7 +1478,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  @param selectedOnly set to true to get values from selected features only
  @param feedback optional feedback object to allow cancelation
  @returns list of fetched values
-.. versionadded:: 2.9
+ \since QGIS 2.9
  @see getDoubleValues
 %End
 
@@ -1492,7 +1492,7 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  @param nullCount optional pointer to integer to store number of null values encountered in
  @param feedback optional feedback object to allow cancelation
  @returns list of fetched values
-.. versionadded:: 2.9
+ \since QGIS 2.9
  @see getValues
 %End
 
@@ -1520,13 +1520,13 @@ Returns the current transparency for the vector layer
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
  Set the simplification settings for fast rendering of features
-.. versionadded:: 2.2
+  \since QGIS 2.2
 %End
 
     const QgsVectorSimplifyMethod &simplifyMethod() const;
 %Docstring
  Returns the simplification settings for fast rendering of features
-.. versionadded:: 2.2
+  \since QGIS 2.2
 %End
 
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
@@ -1535,7 +1535,7 @@ Returns the current transparency for the vector layer
 .. note::
 
    Do not use in 3rd party code - may be removed in future version!
-.. versionadded:: 2.2
+  \since QGIS 2.2
 %End
 
     QgsConditionalLayerStyles *conditionalStyles() const;
@@ -1544,7 +1544,7 @@ Returns the current transparency for the vector layer
  used to render conditional formatting in the attribute table.
  @return Return a QgsConditionalLayerStyles object holding the conditional attribute
  style information. Style information is generic and can be used for anything.
-.. versionadded:: 2.12
+ \since QGIS 2.12
 %End
 
     QgsAttributeTableConfig attributeTableConfig() const;
@@ -1565,7 +1565,7 @@ Returns the current transparency for the vector layer
 
  It may also contain embedded expressions.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void setMapTipTemplate( const QString &mapTipTemplate );
@@ -1574,7 +1574,7 @@ Returns the current transparency for the vector layer
 
  It may also contain embedded expressions.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     QgsExpressionContext createExpressionContext() const;
@@ -1586,7 +1586,7 @@ Returns the current transparency for the vector layer
 
  @return The configuration of this layers' form
 
-.. versionadded:: 2.14
+ \since QGIS 2.14
 %End
 
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
@@ -1596,7 +1596,7 @@ Returns the current transparency for the vector layer
 
  @return The configuration of this layers' form
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
   public slots:
@@ -1889,14 +1889,14 @@ Signal emitted when setLayerTransparency() is called
 %Docstring
  Emitted when the map tip changes
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void displayExpressionChanged();
 %Docstring
  Emitted when the display expression changes
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void raiseError( const QString &msg );
@@ -1908,7 +1908,7 @@ Signal emitted when setLayerTransparency() is called
 %Docstring
  Will be emitted whenever the edit form configuration of this layer changes.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
     void readOnlyChanged();
@@ -1916,7 +1916,7 @@ Signal emitted when setLayerTransparency() is called
  Emitted when the read only state of this layer is changed.
  Only applies to manually set readonly state, not to the edit mode.
 
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 

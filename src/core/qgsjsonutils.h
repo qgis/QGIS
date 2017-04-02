@@ -31,7 +31,7 @@ class QgsVectorLayer;
  *
  * Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
  * if either the source vector layer or source CRS is set.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsJSONExporter
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsJSONExporter
 /** \ingroup core
  * \class QgsJSONUtils
  * \brief Helper utilities for working with JSON and GeoJSON conversions.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsJSONUtils
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsJSONUtils
     /** Parse a simple array (depth=1).
      * @param json the JSON to parse
      * @param type the type of the elements
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QVariantList parseArray( const QString &json, QVariant::Type type );
 };

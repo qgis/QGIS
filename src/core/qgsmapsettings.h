@@ -51,7 +51,7 @@ class QgsMapRendererJob;
  * classes is that they separate the settings from the rendering and provide
  * asynchronous API for map rendering.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapSettings
 {
@@ -76,11 +76,11 @@ class CORE_EXPORT QgsMapSettings
 
     //! Return the rotation of the resulting map image
     //! Units are clockwise degrees
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     double rotation() const;
     //! Set the rotation of the resulting map image
     //! Units are clockwise degrees
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void setRotation( double degrees );
 
     //! Return DPI used for conversion between real world units (e.g. mm) and pixels
@@ -92,13 +92,13 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Set the magnification factor.
      * @param factor the factor of magnification
-     * @note added in 2.16
+     * \since QGIS 2.16
      * @see magnificationFactor()
      */
     void setMagnificationFactor( double factor );
 
     //! Return the magnification factor.
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     //! @see setMagnificationFactor()
     double magnificationFactor() const;
 
@@ -113,22 +113,22 @@ class CORE_EXPORT QgsMapSettings
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     QMap<QString, QString> layerStyleOverrides() const;
     //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /** Get custom rendering flags. Layers might honour these to alter their rendering.
      *  @returns custom flags strings, separated by ';'
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setCustomRenderFlags()
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * @param customRenderFlags custom flags strings, separated by ';'
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see customRenderFlags()
      */
     void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsMapSettings
     //! Return the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
     //! Return the visible area as a polygon (may be rotated)
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     QPolygonF visiblePolygon() const;
     //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
@@ -197,14 +197,14 @@ class CORE_EXPORT QgsMapSettings
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
      * @see expressionContext()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
      * @see setExpressionContext()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsMapSettings
     /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
      * @param layer The layer
      * @param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 

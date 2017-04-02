@@ -27,7 +27,7 @@ class QgsSymbol;
  * that can be used by legend model for rendering of legend.
  *
  * @see QgsSymbolLegendNode
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLegendSymbolItem
 {
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     int level() const { return mLevel; }
 
     //! Key of the parent legend node. For legends with tree hierarchy
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     QString parentRuleKey() const { return mParentKey; }
 
     //! Set symbol of the item. Takes ownership of symbol.

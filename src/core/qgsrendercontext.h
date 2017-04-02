@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRenderContext
     QgsRenderContext &operator=( const QgsRenderContext &rh );
 
     /** Enumeration of flags that affect rendering operations.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     enum Flag
     {
@@ -69,34 +69,34 @@ class CORE_EXPORT QgsRenderContext
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /** Set combination of flags that will be used for rendering.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setFlags( QgsRenderContext::Flags flags );
 
     /** Enable or disable a particular flag (other flags are not affected)
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setFlag( Flag flag, bool on = true );
 
     /** Return combination of flags used for rendering.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     Flags flags() const;
 
     /** Check whether a particular flag is enabled.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     bool testFlag( Flag flag ) const;
 
     //! create initialized QgsRenderContext instance from given QgsMapSettings
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 
     /**
      * Creates a default render context given a pixel based QPainter destination.
      * If no painter is specified or the painter has no device, then a default
      * DPI of 88 will be assumed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsRenderContext fromQPainter( QPainter *painter );
 
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsRenderContext
      * @returns true if selections should be shown
      * @see setShowSelection
      * @see selectionColor
-     * @note Added in QGIS v2.4
+     * \since QGIS v2.4
      */
     bool showSelection() const;
 
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsRenderContext
      * @param showSelection set to true if selections should be shown
      * @see showSelection
      * @see setSelectionColor
-     * @note Added in QGIS v2.4
+     * \since QGIS v2.4
      */
     void setShowSelection( const bool showSelection );
 
@@ -222,21 +222,21 @@ class CORE_EXPORT QgsRenderContext
     /** Sets the expression context. This context is used for all expression evaluation
      * associated with this render context.
      * @see expressionContext()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
     /** Gets the expression context. This context should be used for all expression evaluation
      * associated with this render context.
      * @see setExpressionContext()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsExpressionContext &expressionContext() { return mExpressionContext; }
 
     /** Gets the expression context (const version). This context should be used for all expression evaluation
      * associated with this render context.
      * @see setExpressionContext()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @note not available in Python bindings
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
@@ -248,14 +248,14 @@ class CORE_EXPORT QgsRenderContext
 
     /** Set a filter feature provider used for additional filtering of rendered features.
      * @param ffp the filter feature provider
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see featureFilterProvider()
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
     /** Get the filter feature provider used for additional filtering of rendered features.
      * @return the filter feature provider
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see setFeatureFilterProvider()
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const;
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsRenderContext
     /**
      * Converts a size from the specified units to painter units (pixels). The conversion respects the limits
      * specified by the optional scale parameter.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see convertToMapUnits()
      */
     double convertToPainterUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
@@ -285,14 +285,14 @@ class CORE_EXPORT QgsRenderContext
     /**
      * Converts a size from the specified units to map units. The conversion respects the limits
      * specified by the optional scale parameter.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see convertToPainterUnits()
      */
     double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
 
     /**
      * Converts a size from map units to the specified units.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see convertToMapUnits()
      */
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;

@@ -23,7 +23,7 @@
 /** \ingroup core
  * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
- * @note Added in QGIS 2.16
+ * \since QGIS 2.16
  * @note not available in Python bindings
  */
 class CORE_EXPORT QgsInterruptionChecker
@@ -67,13 +67,13 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @note not available in Python bindings
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
     /** Returns the status of expression compilation for filter expression requests.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
 
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * and a local order by will be triggered instead.
      * By default returns false
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Setup the orderby. Internally calls prepareOrderBy and if false is returned will
      * cache all features and order them with local expression evaluation.
      *
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setupOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys );
 };
@@ -232,13 +232,13 @@ class CORE_EXPORT QgsFeatureIterator
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @note not available in Python bindings
      */
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker );
 
     /** Returns the status of expression compilation for filter expression requests.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
 

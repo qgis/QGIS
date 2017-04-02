@@ -24,7 +24,7 @@
 /** \class QgsPointClusterRenderer
  * \ingroup core
  * A renderer that automatically clusters points with the same geographic position.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
 {

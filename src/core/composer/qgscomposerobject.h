@@ -100,7 +100,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
     /**
      * Returns the composer object property definitions.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -131,20 +131,20 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the object's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the objects's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see customProperty()
      * @see removeCustomProperty()
      * @see customProperties()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setCustomProperty( const QString &key, const QVariant &value );
 
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see setCustomProperty()
      * @see removeCustomProperty()
      * @see customProperties()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see setCustomProperty()
      * @see customProperty()
      * @see customProperties()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void removeCustomProperty( const QString &key );
 
@@ -183,13 +183,13 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * @see setCustomProperty()
      * @see customProperty()
      * @see removeCustomProperty()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QStringList customProperties() const;
 
     /** Creates an expression context relating to the objects' current state. The context includes
      * scopes for global, project and composition properties.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsExpressionContext createExpressionContext() const;
 

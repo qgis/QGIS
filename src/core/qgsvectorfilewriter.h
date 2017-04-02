@@ -179,7 +179,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** \ingroup core
      * Interface to convert raw field values to their user-friendly value.
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      */
     class CORE_EXPORT FieldValueConverter
     {
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Edition capability flags
-      * @note Added in QGIS 3.0 */
+      * \since QGIS 3.0 */
     enum EditionCapability
     {
       //! Flag to indicate that a new layer can be added to the dataset
@@ -221,11 +221,11 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
-      * @note Added in QGIS 3.0 */
+      * \since QGIS 3.0 */
     Q_DECLARE_FLAGS( EditionCapabilities, EditionCapability )
 
     /** Enumeration to describe how to handle existing files
-        @note Added in QGIS 3.0
+        \since QGIS 3.0
      */
     typedef enum
     {
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * @param includeZ set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
      * @param attributes attributes to export (empty means all unless skipAttributeCreation is set)
      * @param fieldValueConverter field value converter (added in QGIS 2.16)
-     * @note added in 2.2
+     * \since QGIS 2.2
      */
     static WriterError writeAsVectorFormat( QgsVectorLayer *layer,
                                             const QString &fileName,
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** \ingroup core
      * Options to pass to writeAsVectorFormat()
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     class CORE_EXPORT SaveVectorOptions
     {
@@ -406,7 +406,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * @param options options.
      * @param newFilename QString pointer which will contain the new file name created (in case it is different to fileName).
      * @param errorMessage pointer to buffer fo error message
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static WriterError writeAsVectorFormat( QgsVectorLayer *layer,
                                             const QString &fileName,
@@ -481,14 +481,14 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** Returns a list of the default dataset options for a specified driver.
      * @param driverName name of OGR driver
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see defaultLayerOptions()
      */
     static QStringList defaultDatasetOptions( const QString &driverName );
 
     /** Returns a list of the default layer options for a specified driver.
      * @param driverName name of OGR driver
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see defaultDatasetOptions()
      */
     static QStringList defaultLayerOptions( const QString &driverName );
@@ -503,20 +503,20 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /**
      * Return edition capabilities for an existing dataset name.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static EditionCapabilities editionCapabilities( const QString &datasetName );
 
     /**
      * Returns whether the target layer already exists.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static bool targetLayerExists( const QString &datasetName,
                                    const QString &layerName );
 
     /**
      * Returns whether there are among the attributes specified some that do not exist yet in the layer
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static bool areThereNewFieldsToCreate( const QString &datasetName,
                                            const QString &layerName,

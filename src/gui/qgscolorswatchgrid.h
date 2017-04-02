@@ -198,14 +198,14 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
      * stay open.
      * @see dismissOnColorSelection()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setDismissOnColorSelection( bool dismiss ) { mDismissOnColorSelection = dismiss; }
 
     /** Returns whether the parent menu will be dismissed after a color is selected from the
      * action's color widget.
      * @see setDismissOnColorSelection
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     bool dismissOnColorSelection() const { return mDismissOnColorSelection; }
 

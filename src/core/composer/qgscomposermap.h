@@ -99,7 +99,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void cache();
 
     /** Return map settings that would be used for drawing of the map
-     *  @note added in 2.6 */
+     *  \since QGIS 2.6 */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
 
     //! \brief Get identification number
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
      * @param point item point for zoom center
      * @param mode zoom mode
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
 
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * map scale.
      * @param extent new extent for the map
      * @see setNewExtent
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void zoomToExtent( const QgsRectangle &extent );
 
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * This will match the presetCrs() if that is set, or if a preset
      * CRS is not set then the map's CRS will follow the composition's
      * project's CRS.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see presetCrs()
      * @see setCrs()
      */
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * CRS will be used to render the map regardless of any project CRS
      * setting. If the returned CRS is not valid then the project CRS
      * will be used to render the map.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see crs()
      * @see setCrs()
      */
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * setting. If the CRS is not valid then the project CRS will be used to render the map.
      * @see crs()
      * @see presetCrs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -239,16 +239,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
-    //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
+    //! Getter for flag that determines if current styles of layers should be overridden by previously stored styles. \since QGIS 2.8
     bool keepLayerStyles() const { return mKeepLayerStyles; }
-    //! Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8
+    //! Setter for flag that determines if current styles of layers should be overridden by previously stored styles. \since QGIS 2.8
     void setKeepLayerStyles( bool enabled ) { mKeepLayerStyles = enabled; }
 
-    //! Getter for stored overrides of styles for layers. @note added in 2.8
+    //! Getter for stored overrides of styles for layers. \since QGIS 2.8
     QMap<QString, QString> layerStyleOverrides() const { return mLayerStyleOverrides; }
-    //! Setter for stored overrides of styles for layers. @note added in 2.8
+    //! Setter for stored overrides of styles for layers. \since QGIS 2.8
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
-    //! Stores the current layer styles into style overrides. @note added in 2.8
+    //! Stores the current layer styles into style overrides. \since QGIS 2.8
     void storeCurrentLayerStyles();
 
     /** Whether the map should follow a map theme. If true, the layers and layer styles
@@ -259,20 +259,20 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * at any time since they are alternative approaches - if both are enabled,
      * following map theme has higher priority. If neither is enabled (or if preset name is not set),
      * map will use the same configuration as the map canvas uses.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     bool followVisibilityPreset() const { return mFollowVisibilityPreset; }
 
     /** Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
 
     /** Preset name that decides which layers and layer styles are used for map rendering. It is only
      * used when followVisibilityPreset() returns true.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
 
     /** Sets preset name for map rendering. See followVisibilityPresetName() for more details.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
 
     // Set cache outdated
@@ -450,7 +450,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QPointF mapToItemCoords( QPointF mapCoords ) const;
 
     /** Calculates the extent to request and the yShift of the top-left point in case of rotation.
-     * @note added in 2.6 */
+     * \since QGIS 2.6 */
     void requestedExtent( QgsRectangle &extent ) const;
 
     virtual QgsExpressionContext createExpressionContext() const override;
@@ -466,7 +466,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /** Emitted when layer style overrides are changed... a means to let
      * associated legend items know they should update
-     * @note added in 2.10
+     * \since QGIS 2.10
      */
     void layerStyleOverridesChanged();
 

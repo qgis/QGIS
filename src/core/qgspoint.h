@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPoint
 
     /** Create a point from a QPointF
      * @param point QPointF source
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     QgsPoint( QPointF point )
       : mX( point.x() )
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsPoint
 
     /** Create a point from a QPoint
      * @param point QPoint source
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     QgsPoint( QPoint point )
       : mX( point.x() )
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsPoint
      * Create a new point.
      * Z and M values will be dropped.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPoint( const QgsPointV2 &point );
 
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsPoint
 
     /** Converts a point to a QPointF
      * @returns QPointF with same x and y values
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     QPointF toQPointF() const;
 
@@ -183,14 +183,14 @@ class CORE_EXPORT QgsPoint
      * @param x x-coordniate
      * @param y y-coordinate
      * @see sqrDist()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
     */
     double distance( double x, double y ) const;
 
     /** Returns the distance between this point and another point.
      * @param other other point
      * @see sqrDist()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
     */
     double distance( const QgsPoint &other ) const;
 
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsPoint
      * in a specified bearing.
      * @param distance distance to project
      * @param bearing angle to project in, clockwise in degrees starting from north
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QgsPoint project( double distance, double bearing ) const;
 
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsPoint
      * @param other point to compare with
      * @param epsilon maximum difference for coordinates between the points
      * @returns true if points are equal within specified tolerance
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
 

@@ -119,7 +119,7 @@ class QgsPropertyTransformer
 %Docstring
  Abstract base class for objects which transform the calculated value of a property.
  Possible uses include transformers which map a value into a scaled size or color from a gradient.
-.. versionadded:: 3.0
+ \since QGIS 3.0
 %End
 
 %TypeHeaderCode

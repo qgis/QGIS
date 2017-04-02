@@ -32,7 +32,7 @@ class QgsConditionalLayerStyles
  Set the conditional styles that apply to full rows of data in the attribute table.
  Each row will check be checked against each rule.
  @param styles The styles to assign to all the rows
-.. versionadded:: 2.12
+ \since QGIS 2.12
 %End
 
     void setFieldStyles( const QString &fieldName, const QList<QgsConditionalStyle> &styles );

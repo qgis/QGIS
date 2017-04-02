@@ -53,14 +53,14 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
      * map extent and other properties from the canvas.
      * @param canvas map canvas
      * @see mapCanvas()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
     /** Returns the map canvas associated with the widget.
      * @see setMapCanvas()
      * @see canvasExtent()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QgsMapCanvas *mapCanvas();
 

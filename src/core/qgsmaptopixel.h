@@ -43,7 +43,7 @@ class CORE_EXPORT QgsMapToPixel
      * @param widthPixels Output width, in pixels
      * @param heightPixels Output height, in pixels
      * @param rotation clockwise rotation in degrees
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsMapToPixel
      * @param dpi screen DPI
      * @param mapUnits map units
      * @returns matching QgsMapToPixel
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
 
@@ -137,13 +137,13 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Return current map width in pixels
      * The information is only known if setRotation was used
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     int mapWidth() const;
 
     /**
      * Return current map height in pixels
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     int mapHeight() const;
 
@@ -152,13 +152,13 @@ class CORE_EXPORT QgsMapToPixel
      * @param degrees clockwise rotation in degrees
      * @param cx X ordinate of map center in geographical units
      * @param cy Y ordinate of map center in geographical units
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void setMapRotation( double degrees, double cx, double cy );
 
     /**
      * Return current map rotation in degrees
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     double mapRotation() const;
 
@@ -170,7 +170,7 @@ class CORE_EXPORT QgsMapToPixel
      * @param widthPixels Output width, in pixels
      * @param heightPixels Output height, in pixels
      * @param rotation clockwise rotation in degrees
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 
@@ -181,13 +181,13 @@ class CORE_EXPORT QgsMapToPixel
 
     /** Returns the center x-coordinate for the transform.
      * @see yCenter()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double xCenter() const { return mXCenter; }
 
     /** Returns the center y-coordinate for the transform.
      * @see xCenter()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double yCenter() const { return mYCenter; }
 

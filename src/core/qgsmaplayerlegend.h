@@ -31,7 +31,7 @@ class QgsVectorLayer;
  * The QgsMapLayerLegend class is abstract interface for implementations
  * of legends for one map layer.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 /** \ingroup core
  * Miscellaneous utility functions for handling of map layer legend
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsMapLayerLegendUtils
 {
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 /** \ingroup core
  * Default legend implementation for vector layers
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
 /** \ingroup core
  * Default legend implementation for raster layers
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 
 /** \ingroup core
  * Default legend implementation for plugin layers
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
 {

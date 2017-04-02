@@ -35,7 +35,7 @@ class ScrollAreaFilter;
  * All QGIS code and plugins should use QgsScrollArea in place
  * of QScrollArea.
  *
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsScrollArea : public QScrollArea
 {

@@ -60,7 +60,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the singleton instance of the QgsApplication.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsApplication *instance();
 
@@ -217,31 +217,31 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QRegExp shortNameRegExp();
 
     /** Returns the user's operating system login account name.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see userFullName()
      */
     static QString userLoginName();
 
     /** Returns the user's operating system login account full display name.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see userLoginName()
      */
     static QString userFullName();
 
     /** Returns a string name of the operating system QGIS is running on.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see platform()
      */
     static QString osName();
 
     /** Returns the QGIS platform name, e.g., "desktop" or "server".
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see osName()
      */
     static QString platform();
 
     /** Returns the QGIS locale.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QString locale();
 
@@ -375,42 +375,42 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void applyGdalSkippedDrivers();
 
     /** Get maximum concurrent thread count
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
     /** Set maximum concurrent thread count
      * @note must be between 1 and \#cores, -1 means use all available cores
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     static void setMaxThreads( int maxThreads );
 
     /**
      * Returns the application's task manager, used for managing application
      * wide background task handling.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsTaskManager *taskManager();
 
     /**
      * Returns the application's color scheme registry, used for managing color schemes.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsColorSchemeRegistry *colorSchemeRegistry();
 
     /**
      * Returns the application's paint effect registry, used for managing paint effects.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsPaintEffectRegistry *paintEffectRegistry();
 
     /**
      * Returns the application's renderer registry, used for managing vector layer renderers.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsRendererRegistry *rendererRegistry();
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @note not available in Python bindings
      */
     static QgsRasterRendererRegistry *rasterRendererRegistry();
@@ -418,51 +418,51 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the application's data item provider registry, which keeps a list of data item
      * providers that may add items to the browser tree.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsDataItemProviderRegistry *dataItemProviderRegistry();
 
     /**
      * Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
      * within SVG files.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsSvgCache *svgCache();
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsGPSConnectionRegistry *gpsConnectionRegistry();
 
     /**
      * Returns the application's plugin layer registry, used for managing plugin layer types.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsPluginLayerRegistry *pluginLayerRegistry();
 
     /**
      * Returns the application's message log.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsMessageLog *messageLog();
 
     /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsProcessingRegistry *processingRegistry();
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @note not available in Python bindings
      */
     static QgsAnnotationRegistry *annotationRegistry();
@@ -470,13 +470,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Returns the action scope registry.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsActionScopeRegistry *actionScopeRegistry();
 
     /**
      * Returns the application runtime profiler.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsRuntimeProfiler *profiler();
 
@@ -505,7 +505,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * This does not include generated variables (like system name, user name etc.)
      *
      * \see QgsExpressionContextUtils::globalVariables().
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QVariantMap customVariables();
 
@@ -514,7 +514,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Do not include generated variables (like system name, user name etc.)
      *
      * \see QgsExpressionContextUtils::globalVariables().
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static void setCustomVariables( const QVariantMap &customVariables );
 
@@ -522,7 +522,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Set a single custom expression variable.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
 
@@ -532,7 +532,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Emitted whenever a custom global variable changes.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void customVariablesChanged();
 
@@ -576,11 +576,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QStringList ABISYM( mGdalSkipList );
 
     /**
-     * @note added in 2.4 */
+     * \since QGIS 2.4 */
     static int ABISYM( mMaxThreads );
 
     /**
-     * @note added in 2.12 */
+     * \since QGIS 2.12 */
     static QString ABISYM( mAuthDbDirPath );
 
     static QString sUserName;

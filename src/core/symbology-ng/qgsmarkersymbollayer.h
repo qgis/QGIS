@@ -36,7 +36,7 @@
  * \class QgsSimpleMarkerSymbolLayerBase
  * \brief Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
  * leaves the actual drawing of the symbols to subclasses.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 {
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
 
     /** Returns the marker's stroke style (e.g., solid, dashed, etc)
-     * @note added in 2.4
+     * \since QGIS 2.4
      * @see setStrokeStyle()
      * @see strokeColor()
      * @see penJoinStyle()
@@ -265,7 +265,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /** Sets the marker's stroke style (e.g., solid, dashed, etc)
      * @param strokeStyle style
-     * @note added in 2.4
+     * \since QGIS 2.4
      * @see strokeStyle()
      * @see setStrokeColor()
      * @see setPenJoinStyle()
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
     /** Returns the marker's stroke join style (e.g., miter, bevel, etc).
-     * @note added in 2.16
+     * \since QGIS 2.16
      * @see setPenJoinStyle()
      * @see strokeColor()
      * @see strokeStyle()
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /** Sets the marker's stroke join style (e.g., miter, bevel, etc).
      * @param style join style
-     * @note added in 2.16
+     * \since QGIS 2.16
      * @see penJoinStyle()
      * @see setStrokeColor()
      * @see setStrokeStyle()
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
  * \class QgsFilledMarkerSymbolLayer
  * \brief Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbol. This allows
  * the symbol to support advanced styling of the interior and stroke of the shape.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayerBase
 {
@@ -582,35 +582,35 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
 
     /** Get stroke width.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     double strokeWidth() const { return mStrokeWidth; }
 
     /** Set stroke width.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setStrokeWidth( double width ) { mStrokeWidth = width; }
 
     /** Get stroke width unit.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
     /** Set stroke width unit.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /** Get stroke width map unit scale.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
     /** Set stroke width map unit scale.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
 
     /** Get stroke join style.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /** Set stroke join style.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;

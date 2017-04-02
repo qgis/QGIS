@@ -99,7 +99,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @param errorMsg error messages emitted, if any
      * @return buffered geometry, or an nullptr if buffer could not be
      * calculated
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAbstractGeometry *singleSidedBuffer( double distance, int segments, int side,
                                             int joinStyle, double mitreLimit,
@@ -114,18 +114,18 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry mergeLines( QString *errorMsg = nullptr ) const;
 
     /** Returns the closest point on the geometry to the other geometry.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see shortestLine()
      */
     QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /** Returns the shortest line joining this geometry to the other geometry.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see closestPoint()
      */
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * unary union these geometries by calling combine() on the set of input geometries and then
      * pass the result to polygonize().
      * An empty geometry will be returned in the case of errors.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsGeometry polygonize( const QList<QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
 
@@ -165,7 +165,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * If \a edgesOnly is true than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry voronoiDiagram( const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * If \a edgesOnly is true than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 

@@ -28,7 +28,7 @@
  * \ingroup gui
  * A widget which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \see QgsSubstitutionListDialog
  */
 class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::QgsSubstitutionListWidgetBase
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
  * \ingroup gui
  * A dialog which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \see QgsSubstitutionListWidget
 */
 class GUI_EXPORT QgsSubstitutionListDialog : public QDialog

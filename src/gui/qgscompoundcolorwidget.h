@@ -25,7 +25,7 @@
  * \class QgsCompoundColorWidget
  * A custom QGIS widget for selecting a color, including options for selecting colors via
  * hue wheel, color swatches, and a color sampler.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     /** Sets whether the widget's color has been "discarded" and the selected color should not
      * be stored in the recent color list.
      * @param discarded set to true to avoid adding color to recent color list on widget destruction.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setDiscarded( bool discarded ) { mDiscarded = discarded; }
 

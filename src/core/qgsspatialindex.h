@@ -59,7 +59,7 @@ class CORE_EXPORT QgsSpatialIndex
     /** Constructor - creates R-tree and bulk loads it with features from the iterator.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi );
 

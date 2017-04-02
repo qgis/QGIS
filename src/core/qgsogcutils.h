@@ -74,7 +74,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /** Exports the geometry to GML
         @return QDomElement
-        @note Added in QGIS 2.16
+        \since QGIS 2.16
      */
     static QDomElement geometryToGML( const QgsGeometry *geometry, QDomDocument &doc,
                                       GMLVersion gmlVersion,
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /** Exports the rectangle to GML2 Box
         @return QDomElement
-        @note Added in QGIS 2.16
+        \since QGIS 2.16
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
                                           const QString &srsName,
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /** Exports the rectangle to GML3 Envelope
         @return QDomElement
-        @note Added in QGIS 2.16
+        \since QGIS 2.16
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
         const QString &srsName,
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsOgcUtils
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      * @note not available in Python bindings
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /** \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      * @note not available in Python bindings
      */
     class LayerProperties
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsOgcUtils
      *          custom functions
      * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
-     * @note Added in QGIS 2.16
+     * \since QGIS 2.16
      * @note not available in Python bindings
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,

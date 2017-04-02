@@ -36,7 +36,7 @@
  * are calculated by default. Statistics which require slower computations are only calculated by
  * specifying the statistic in the constructor or via @link setStatistics @endlink.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsStatisticalSummary
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * @see calculate()
      * @see addVariant()
      * @see finalize()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void addValue( double value );
 
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * @see addValue()
      * @see calculate()
      * @see finalize()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void addVariant( const QVariant &value );
 
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * any calculated statistics.
      * @see addValue()
      * @see addVariant()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void finalize();
 
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsStatisticalSummary
     int count() const { return mCount; }
 
     /** Returns the number of missing (null) values
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     int countMissing() const { return mMissing; }
 

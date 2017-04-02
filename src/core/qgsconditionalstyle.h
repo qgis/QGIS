@@ -30,7 +30,7 @@ class CORE_EXPORT QgsConditionalLayerStyles
      * @brief Set the conditional styles that apply to full rows of data in the attribute table.
      * Each row will check be checked against each rule.
      * @param styles The styles to assign to all the rows
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setRowStyles( const QList<QgsConditionalStyle> &styles );
 

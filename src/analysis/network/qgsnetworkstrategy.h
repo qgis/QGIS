@@ -25,7 +25,7 @@
 /**
  * \ingroup analysis
  * \class QgsNetworkStrategy
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \brief QgsNetworkStrategy defines strategy used for calculation of the edge cost. For example it can
  * take into account travel distance, amount of time or money. Currently there are two strategies
  * implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.

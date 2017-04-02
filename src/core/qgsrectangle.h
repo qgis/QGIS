@@ -88,7 +88,7 @@ class CORE_EXPORT QgsRectangle
     void include( const QgsPoint &p );
 
     /** Get rectangle enlarged by buffer.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     QgsRectangle buffer( double width );
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsRectangle
     bool isEmpty() const;
     //! test if the rectangle is null (all coordinates zero or after call to setMinimal()).
     //! Null rectangle is also an empty rectangle.
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isNull() const;
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;

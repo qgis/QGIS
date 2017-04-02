@@ -27,7 +27,7 @@ class QShortcut;
  * \class QgsShortcutsManager
  * Shortcuts manager is a class that contains a list of QActions and QShortcuts
   that have been registered and their shortcuts can be changed.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsShortcutsManager : public QObject
 {

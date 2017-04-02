@@ -25,7 +25,7 @@
 /** \ingroup core
  * \class QgsTriangle
  * \brief Triangle geometry type.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 {

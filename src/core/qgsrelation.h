@@ -162,7 +162,7 @@ class CORE_EXPORT QgsRelation
      * which have a foreign key pointing to the provided feature.
      * @param feature A feature from the referenced (parent) layer
      * @return expression filter string for all the referencing features
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see getRelatedFeatures()
      * @see getRelatedFeaturesRequest()
      */
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsRelation
 
     /**
      * Generate a (project-wide) unique id for this relation
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void generateId();
 
@@ -288,21 +288,21 @@ class CORE_EXPORT QgsRelation
      *
      * @param other The other relation
      * @return true if they are similar
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool hasEqualDefinition( const QgsRelation &other ) const;
 
     /**
      * Get the referenced field counterpart given a referencing field.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     Q_INVOKABLE QString resolveReferencedField( const QString &referencingField ) const;
 
     /**
      * Get the referencing field counterpart given a referenced field.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     Q_INVOKABLE QString resolveReferencingField( const QString &referencedField ) const;
 

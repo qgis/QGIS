@@ -24,7 +24,7 @@ class QgsTextEditWidgetFactory;
 /** \ingroup gui
  * \class QgsTextEditSearchWidgetWrapper
  * Wraps a text edit widget for searching.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  * \note not available in Python bindings
  */
 

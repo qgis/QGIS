@@ -28,7 +28,7 @@
  * is not an option because of some technical limitations (e.g. printing to printer on some
  * platforms).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {

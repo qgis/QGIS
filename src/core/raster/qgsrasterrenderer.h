@@ -80,7 +80,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /** Copies common properties like opacity / transparency data from other renderer.
      *  Useful when cloning renderers.
-     *  @note added in 2.16  */
+     *  \since QGIS 2.16  */
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
 
     //! Returns a list of band numbers used by the renderer

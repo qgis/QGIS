@@ -34,7 +34,7 @@ class QDomElement;
  * Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
  * only possible to read or write layer's current style.
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 class CORE_EXPORT QgsMapLayerStyle
 {
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsMapLayerStyle
  * The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
  * style followed by restoration of the original style (for example, when rendering a map with a different than current style).
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 {
