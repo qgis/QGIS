@@ -287,7 +287,7 @@ while(!eof $header){
 
     do {no warnings 'uninitialized';
         # remove keywords
-        $line =~ s/\s*override( SIP_\w+(\(.+\))?)?;/$1;/;
+        $line =~ s/\s*\boverride\b//;
         $line =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $line =~ s/\bnullptr\b/0/g;
         $line =~ s/\s*=\s*default\b//g;
@@ -321,7 +321,7 @@ while(!eof $header){
         }
 
         # remove function bodies
-        if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(override)?\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
+        if ( $line =~  m/^(\s*)?(const )?(virtual |static )?((\w+(<.*?>)?\s+(\*|&)?)?(\w+|operator.)\(.*?(\(.*\))*.*\)( (?:const|SIP_[A-Z_]*?))*)\s*(\{.*\})?(?!;)(\s*\/\/.*)?$/ ){
             my $newline = "$1$2$3$4;\n";
             if ($line !~ m/\{.*?\}$/){
                 $line = readline $header;
