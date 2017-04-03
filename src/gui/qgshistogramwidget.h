@@ -77,7 +77,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     QString sourceFieldExp() const { return mSourceFieldExp; }
 
     /** Sets the pen to use when drawing histogram bars. If set to Qt::NoPen then the
-     * pen will be automatically calculated. If ranges have been set using \link setGraduatedRanges \endlink
+     * pen will be automatically calculated. If ranges have been set using setGraduatedRanges()
      * then the pen and brush will have no effect.
      * \param pen histogram pen
      * \see pen
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      */
     QPen pen() const { return mPen; }
 
-    /** Sets the brush used for drawing histogram bars. If ranges have been set using \link setGraduatedRanges \endlink
+    /** Sets the brush used for drawing histogram bars. If ranges have been set using setGraduatedRanges()
      * then the pen and brush will have no effect.
      * \param brush histogram brush
      * \see brush
@@ -152,7 +152,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void refreshValues();
 
     /** Redraws the histogram. Calling this slot does not update the values
-     * for the histogram, use \link refreshValues \endlink to do this.
+     * for the histogram, use refreshValues() to do this.
      */
     void refresh();
 

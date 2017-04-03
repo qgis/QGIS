@@ -211,7 +211,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Get Python function for edit form initialization.
      * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the Python code set with \link setInitCode \endlink.
+     * in the Python code set with setInitCode().
      */
     QString initFunction() const;
 
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Set Python function for edit form initialization.
      * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the Python code set with \link setInitCode \endlink.
+     * in the Python code set with setInitCode().
      */
     void setInitFunction( const QString &function );
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set Python code for edit form initialization.
      * Make sure that you also set the appropriate function name in
-     * \link setInitFunction \endlink
+     * setInitFunction().
      */
     void setInitCode( const QString &code );
 
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Set Python external file path for edit form initialization.
      * Make sure that you also set the appropriate function name in
-     * \link setInitFunction \endlink
+     * setInitFunction().
      */
     void setInitFilePath( const QString &filePath );
 

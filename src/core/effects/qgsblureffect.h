@@ -56,7 +56,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     virtual QgsBlurEffect *clone() const override;
 
     /** Sets blur level (strength)
-     * \param level blur level. Depending on the current \link blurMethod \endlink, this parameter
+     * \param level blur level. Depending on the current blurMethod(), this parameter
      * has different effects
      * \see blurLevel
      * \see blurMethod
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
     /** Returns the blur level (strength)
-     * \returns blur level. Depending on the current \link blurMethod \endlink, this parameter
+     * \returns blur level. Depending on the current blurMethod(), this parameter
      * has different effects
      * \see setBlurLevel
      * \see blurMethod

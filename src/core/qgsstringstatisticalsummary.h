@@ -31,10 +31,10 @@
  * \class QgsStringStatisticalSummary
  * \brief Calculator for summary statistics and aggregates for a list of strings.
  *
- * Statistics are calculated by calling \link calculate \endlink and passing a list of strings. The
+ * Statistics are calculated by calling calculate() and passing a list of strings. The
  * individual statistics can then be retrieved using the associated methods. Note that not all statistics
  * are calculated by default. Statistics which require slower computations are only calculated by
- * specifying the statistic in the constructor or via \link setStatistics \endlink.
+ * specifying the statistic in the constructor or via setStatistics().
  *
  * \since QGIS 2.16
  */

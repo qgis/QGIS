@@ -53,7 +53,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     virtual void readProperties( const QgsStringMap &props ) override;
 
     /** Sets the spread distance for drawing the glow effect.
-     * \param spread spread distance. Units are specified via \link setSpreadUnit \endlink
+     * \param spread spread distance. Units are specified via setSpreadUnit()
      * \see spread
      * \see setSpreadUnit
      * \see setSpreadMapUnitScale
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
     void setSpread( const double spread ) { mSpread = spread; }
 
     /** Returns the spread distance used for drawing the glow effect.
-     * \returns spread distance. Units are retrieved via \link spreadUnit \endlink
+     * \returns spread distance. Units are retrieved via spreadUnit()
      * \see setSpread
      * \see spreadUnit
      * \see spreadMapUnitScale
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     double transparency() const { return mTransparency; }
 
-    /** Sets the color for the glow. This only applies if the \link colorType \endlink
+    /** Sets the color for the glow. This only applies if the colorType()
      * is set to SingleColor. The glow will fade between the specified color and
      * a totally transparent version of the color.
      * \param color glow color
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setColor( const QColor &color ) { mColor = color; }
 
-    /** Returns the color for the glow. This only applies if the \link colorType \endlink
+    /** Returns the color for the glow. This only applies if the colorType()
      * is set to SingleColor. The glow will fade between the specified color and
      * a totally transparent version of the color.
      * \returns glow color
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     QColor color() const { return mColor; }
 
-    /** Sets the color ramp for the glow. This only applies if the \link colorType \endlink
+    /** Sets the color ramp for the glow. This only applies if the colorType()
      * is set to ColorRamp. The glow will utilize colors from the ramp.
      * \param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
      * \see ramp
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     void setRamp( QgsColorRamp *ramp );
 
-    /** Returns the color ramp used for the glow. This only applies if the \link colorType \endlink
+    /** Returns the color ramp used for the glow. This only applies if the colorType()
      * is set to ColorRamp. The glow will utilize colors from the ramp.
      * \returns color ramp for glow
      * \see setRamp

@@ -36,10 +36,10 @@ class QgsAttributeTableConfig;
 
 /** \ingroup gui
  * \brief
- * Provides a table view of features of a \link QgsVectorLayer \endlink.
+ * Provides a table view of features of a QgsVectorLayer.
  *
  * This can either be used as a standalone widget. QgsBrowser features a reference implementation.
- * Or this can be used within the \link QgsDualView \endlink stacked widget.
+ * Or this can be used within the QgsDualView stacked widget.
  */
 
 class GUI_EXPORT QgsAttributeTableView : public QTableView
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * \brief
-     * Is called when the context menu will be shown. Emits a \link willShowContextMenu \endlink signal,
+     * Is called when the context menu will be shown. Emits a willShowContextMenu() signal,
      * so the menu can be populated by other parts of the application.
      *
      * \param event The associated event object.
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.
      * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
-     *                 In most cases, this will be a \link QgsAttributeTableFilterModel \endlink
+     *                 In most cases, this will be a QgsAttributeTableFilterModel
      */
     void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 

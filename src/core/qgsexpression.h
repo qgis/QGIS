@@ -98,7 +98,7 @@ Implicit sharing
 This class is implicitly shared, copying has a very low overhead.
 It is normally preferable to call `QgsExpression( otherExpression )` instead of
 `QgsExpression( otherExpression.expression() )`. A deep copy will only be made
-when {\link prepare()} is called. For usage this means mainly, that you should
+when prepare() is called. For usage this means mainly, that you should
 normally keep an unprepared master copy of a QgsExpression and whenever using it
 with a particular QgsFeatureIterator copy it just before and prepare it using the
 same context as the iterator.
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
-     * {\link prepare()} should always be called before every
+     * prepare() should always be called before every
      * loop in which this expression is used.
      */
     QgsExpression( const QString &expr );

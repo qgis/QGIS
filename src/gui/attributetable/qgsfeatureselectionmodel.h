@@ -34,7 +34,7 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     explicit QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionHandler, QObject *parent );
 
     /**
-     * Enables or disables synchronisation to the {\link QgsVectorLayer}
+     * Enables or disables synchronisation to the QgsVectorLayer
      * When synchronisation is disabled, any selection change will be buffered inside this selection model.
      * When enabled, any buffered changes are communicated to the layer and the buffer is emptied.
      * Mainly to be used for performance reasons, because selection change on the layer can cost time as it

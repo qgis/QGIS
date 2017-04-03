@@ -34,13 +34,13 @@ class QgsRenderContext;
  * either drawing a picture directly, or by intercepting drawing operations to a
  * render context.
  *
- * To directly draw a picture, use the \link render \endlink method with a source
+ * To directly draw a picture, use the render() method with a source
  * QPicture and destination render context.
  *
  * Intercepting drawing operations to a render context is achieved by first calling
- * the \link begin \endlink method, passing a render context. Any drawing operations
+ * the begin() method, passing a render context. Any drawing operations
  * performed on the render context will not directly affect the context's paint
- * device. When the drawing operations have been completed, call the \link end \endlink
+ * device. When the drawing operations have been completed, call the end()
  * method. This will perform the paint effect on the intercepted drawing operations
  * and render the result to the render context's paint device.
  *
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsPaintEffect
 
     /** Saves the current state of the effect to a DOM element. The default
      * behavior is to save the properties string map returned by
-     * \link properties \endlink.
+     * properties().
      * \param doc destination DOM document
      * \param element destination DOM element
      * \returns true if save was successful
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsPaintEffect
     virtual void render( QPicture &picture, QgsRenderContext &context );
 
     /** Begins intercepting paint operations to a render context. When the corresponding
-     * \link end \endlink member is called all intercepted paint operations will be
+     * end() member is called all intercepted paint operations will be
      * drawn to the render context after being modified by the effect.
      * \param context destination render context
      * \see end
@@ -146,14 +146,14 @@ class CORE_EXPORT QgsPaintEffect
     void setEnabled( const bool enabled );
 
     /** Returns the draw mode for the effect. This property only has an
-     * effect if the paint effect is used in a \link QgsEffectStack \endlink
+     * effect if the paint effect is used in a QgsEffectStack.
      * \returns draw mode for effect
      * \see setDrawMode
      */
     DrawMode drawMode() const { return mDrawMode; }
 
     /** Sets the draw mode for the effect. This property only has an
-     * effect if the paint effect is used in a \link QgsEffectStack \endlink
+     * effect if the paint effect is used in a QgsEffectStack.
      * \param drawMode draw mode for effect
      * \see drawMode
      */
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsPaintEffect
      */
     void drawSource( QPainter &painter );
 
-    /** Returns the source QPicture. The \link draw \endlink member can utilize this when
+    /** Returns the source QPicture. The draw() member can utilize this when
      * drawing the effect.
      * \returns source QPicture
      * \see drawSource
@@ -189,9 +189,9 @@ class CORE_EXPORT QgsPaintEffect
      */
     const QPicture *source() const { return mPicture; }
 
-    /** Returns the source QPicture rendered to a new QImage. The \link draw \endlink member can
+    /** Returns the source QPicture rendered to a new QImage. The draw() member can
      * utilize this when drawing the effect. The image will be padded or cropped from the original
-     * source QPicture by the results of the \link boundingRect \endlink method.
+     * source QPicture by the results of the boundingRect() method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
      * \returns source QPicture rendered to an image
      * \see drawSource

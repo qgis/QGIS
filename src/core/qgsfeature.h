@@ -228,7 +228,6 @@ class CORE_EXPORT QgsFeature
     void setId( QgsFeatureId id );
 
     /** Returns the feature's attributes.
-     * \link attributes \endlink method.
      * \returns list of feature's attributes
      * \see setAttributes
      * \since QGIS 2.9
@@ -359,7 +358,7 @@ class CORE_EXPORT QgsFeature
     QgsFields fields() const;
 
     /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
-     *  Field map must be associated using \link setFields \endlink before this method can be used.
+     *  Field map must be associated using setFields() before this method can be used.
      *  The feature will be valid if it was successful
      *  \param name The name of the field to set
      *  \param value The value to set
@@ -393,7 +392,7 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Removes an attribute value by field name. Field map must be associated using \link setFields \endlink
+    /** Removes an attribute value by field name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the field to delete
      *  \returns false if attribute name could not be converted to index (C++ only)
@@ -419,7 +418,7 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Lookup attribute value from attribute name. Field map must be associated using \link setFields \endlink
+    /** Lookup attribute value from attribute name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such name exists )
@@ -446,7 +445,7 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Lookup attribute value from its index. Field map must be associated using \link setFields \endlink
+    /** Lookup attribute value from its index. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldIdx The index of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such index exists )
@@ -474,7 +473,7 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Utility method to get attribute index from name. Field map must be associated using \link setFields \endlink
+    /** Utility method to get attribute index from name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldName name of field to get attribute index of
      *  \returns -1 if field does not exist or field map is not associated.

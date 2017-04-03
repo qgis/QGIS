@@ -69,7 +69,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     int offsetAngle() const { return mOffsetAngle; }
 
     /** Sets the distance for offsetting the shadow.
-     * \param distance offset distance. Units are specified via \link setOffsetUnit \endlink
+     * \param distance offset distance. Units are specified via setOffsetUnit()
      * \see offsetDistance
      * \see setOffsetUnit
      * \see setOffsetMapUnitScale
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
     void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
 
     /** Returns the distance used for offsetting the shadow.
-     * \returns offset distance. Distance units are retrieved via \link offsetUnit \endlink
+     * \returns offset distance. Distance units are retrieved via offsetUnit()
      * \see setOffsetDistance
      * \see offsetUnit
      * \see offsetMapUnitScale

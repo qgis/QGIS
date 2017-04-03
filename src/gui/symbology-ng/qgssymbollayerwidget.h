@@ -82,15 +82,15 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
     /**
      * Should be emitted whenever configuration changes happened on this symbol layer configuration.
-     * If the subsymbol is changed, {\link symbolChanged()} should be emitted instead.
+     * If the subsymbol is changed, symbolChanged() should be emitted instead.
      */
     void changed();
 
     /**
      * Should be emitted whenever the sub symbol changed on this symbol layer configuration.
-     * Normally {\link changed()} should be preferred.
+     * Normally changed() should be preferred.
      *
-     * \see {\link changed()}
+     * \see changed()
      */
     void symbolChanged();
 

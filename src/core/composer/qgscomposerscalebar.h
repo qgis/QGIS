@@ -95,8 +95,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setSegmentSizeMode( SegmentSizeMode mode );
 
     /** Returns the minimum size (in millimeters) for scale bar segments. This
-     * property is only effective if the \link segmentSizeMode \endlink is set
-     * to \link SegmentSizeFitWidth \endlink.
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
      * \see segmentSizeMode
      * \see setMinBarWidth
      * \see maxBarWidth
@@ -105,8 +105,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double minBarWidth() const { return mMinBarWidth; }
 
     /** Sets the minimum size (in millimeters) for scale bar segments. This
-     * property is only effective if the \link segmentSizeMode \endlink is set
-     * to \link SegmentSizeFitWidth \endlink.
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
      * \param minWidth minimum width in millimeters
      * \see minBarWidth
      * \see setMaxBarWidth
@@ -116,8 +116,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setMinBarWidth( double minWidth );
 
     /** Returns the maximum size (in millimeters) for scale bar segments. This
-     * property is only effective if the \link segmentSizeMode \endlink is set
-     * to \link SegmentSizeFitWidth \endlink.
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
      * \see segmentSizeMode
      * \see setMaxBarWidth
      * \see minBarWidth
@@ -126,8 +126,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double maxBarWidth() const { return mMaxBarWidth; }
 
     /** Sets the maximum size (in millimeters) for scale bar segments. This
-     * property is only effective if the \link segmentSizeMode \endlink is set
-     * to \link SegmentSizeFitWidth \endlink.
+     * property is only effective if the segmentSizeMode() is set
+     * to SegmentSizeFitWidth.
      * \param maxWidth maximum width in millimeters
      * \see minBarWidth
      * \see setMaxBarWidth

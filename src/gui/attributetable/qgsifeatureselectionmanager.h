@@ -24,7 +24,7 @@
 /** \ingroup gui
  * Is an interface class to abstract feature selection handling.
  *
- * e.g. { \link QgsVectorLayer } implements this interface to manage its selections.
+ * e.g. QgsVectorLayer implements this interface to manage its selections.
  */
 
 class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { \link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) } signal with the
+     * Will emit the selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) signal with the
      * clearAndSelect flag set.
      *
      * \param ids   The ids which will be the new selection
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     /**
      * Return reference to identifiers of selected features
      *
-     * \returns A list of { \link QgsFeatureId } 's
+     * \returns A list of QgsFeatureId's
      * \see selectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
