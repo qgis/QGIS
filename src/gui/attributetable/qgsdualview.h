@@ -32,7 +32,7 @@ class QgsMapLayerAction;
 class QgsScrollArea;
 
 /** \ingroup gui
- * This widget is used to show the attributes of a set of features of a {@link QgsVectorLayer}.
+ * This widget is used to show the attributes of a set of features of a {\link QgsVectorLayer}.
  * The attributes can be edited.
  * It supports two different layouts: the table layout, in which the attributes for the features
  * are shown in a table and the editor layout, where the features are shown as a selectable list
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *
      * \param layer      The layer which should be used to fetch features
      * \param mapCanvas  The mapCanvas (used for the FilterMode
-     *                   {@link QgsAttributeTableFilterModel::ShowVisible}
+     *                   {\link QgsAttributeTableFilterModel::ShowVisible}
      * \param request    Use a modified request to limit the shown features
      * \param context    The context in which this view is shown
      * \param loadFeatures whether to initially load all features into the view. If set to
@@ -205,7 +205,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   public slots:
 
     /**
-     * \brief Set the current edit selection in the {@link AttributeEditor} mode.
+     * \brief Set the current edit selection in the {\link AttributeEditor} mode.
      *
      * \param fids   A list of edited features (Currently only one at a time is supported)
      */

@@ -38,7 +38,7 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
      * \note If row is shorter than the number of columns in the table than blank cells
      * will be inserted at the end of the row. If row contains more strings then the number
      * of columns in the table then these extra strings will be ignored.
-     * \note if adding many rows, @link setContents @endlink is much faster
+     * \note if adding many rows, \link setContents \endlink is much faster
      */
     void addRow( const QStringList &row );
 

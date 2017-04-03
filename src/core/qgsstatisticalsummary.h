@@ -31,10 +31,10 @@
  * \class QgsStatisticalSummary
  * \brief Calculator for summary statistics for a list of doubles.
  *
- * Statistics are calculated by calling @link calculate @endlink and passing a list of doubles. The
+ * Statistics are calculated by calling \link calculate \endlink and passing a list of doubles. The
  * individual statistics can then be retrieved using the associated methods. Note that not all statistics
  * are calculated by default. Statistics which require slower computations are only calculated by
- * specifying the statistic in the constructor or via @link setStatistics @endlink.
+ * specifying the statistic in the constructor or via \link setStatistics \endlink.
  *
  * \since QGIS 2.9
  */

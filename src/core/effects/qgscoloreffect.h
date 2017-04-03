@@ -126,7 +126,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     bool colorizeOn() const { return mColorizeOn; }
 
     /** Sets the color used for colorizing a picture. This is only used if
-     * @link setColorizeOn @endlink is set to true.
+     * \link setColorizeOn \endlink is set to true.
      * \param colorizeColor colorization color
      * \see colorizeColor
      * \see setColorizeOn
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     void setColorizeColor( const QColor &colorizeColor );
 
     /** Returns the color used for colorizing a picture. This is only used if
-     * @link colorizeOn @endlink is set to true.
+     * \link colorizeOn \endlink is set to true.
      * \returns colorization color
      * \see setColorizeColor
      * \see colorizeOn
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     QColor colorizeColor() const { return mColorizeColor; }
 
     /** Sets the strength for colorizing a picture. This is only used if
-     * @link setColorizeOn @endlink is set to true.
+     * \link setColorizeOn \endlink is set to true.
      * \param colorizeStrength colorization strength, between 0 and 100
      * \see colorizeStrength
      * \see setColorizeOn
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
 
     /** Returns the strength used for colorizing a picture. This is only used if
-     * @link setColorizeOn @endlink is set to true.
+     * \link setColorizeOn \endlink is set to true.
      * \returns colorization strength, between 0 and 100
      * \see setColorizeStrengths
      * \see colorizeOn

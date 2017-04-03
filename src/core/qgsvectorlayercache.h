@@ -31,7 +31,7 @@ class QgsAbstractCacheIndex;
  * This class caches features of a given QgsVectorLayer.
  *
  * \brief
- * The cached features can be indexed by @link QgsAbstractCacheIndex @endlink.
+ * The cached features can be indexed by \link QgsAbstractCacheIndex \endlink.
  *
  * Proper indexing for a given use-case may speed up performance substantially.
  */
@@ -43,7 +43,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
   private:
 
     /**
-     * This is a wrapper class around a cached @link QgsFeature @endlink, which
+     * This is a wrapper class around a cached \link QgsFeature \endlink, which
      * will inform the cache, when it has been deleted, so indexes can be
      * updated that the wrapped feature needs to be fetched again if needed.
      */
@@ -157,8 +157,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     /**
      * \brief
-     * Adds a {@link QgsAbstractCacheIndex} to this cache. Cache indices know about features present
-     * in this cache and decide, if enough information is present in the cache to respond to a {@link QgsFeatureRequest}.
+     * Adds a {\link QgsAbstractCacheIndex} to this cache. Cache indices know about features present
+     * in this cache and decide, if enough information is present in the cache to respond to a {\link QgsFeatureRequest}.
      * The layer cache will take ownership of the index.
      *
      * \param cacheIndex  The cache index to add.
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * Query this VectorLayerCache for features.
      * If the VectorLayerCache (and moreover any of its indices) is able to satisfy
-     * the request, the returned {@link QgsFeatureIterator} will iterate over cached features.
+     * the request, the returned {\link QgsFeatureIterator} will iterate over cached features.
      * If it's not possible to fully satisfy the request from the cache, part or all of the features
      * will be requested from the data provider.
      * \param featureRequest  The request specifying filter and required data.
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * Please note, that this does not check, if the requested features are cached.
      *
      *
-     * \param featureRequest  The {@link QgsFeatureRequest} to be answered
+     * \param featureRequest  The {\link QgsFeatureRequest} to be answered
      * \returns                True if the information is being cached, false if not
      */
     bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
@@ -301,7 +301,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * \brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
      * signal is being emitted, but before the local reference to it has been set to NULL. So call to
-     * @link layer() @endlink will still return a valid pointer for cleanup purpose.
+     * \link layer() \endlink will still return a valid pointer for cleanup purpose.
      */
     void cachedLayerDeleted();
 

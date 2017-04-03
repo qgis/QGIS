@@ -422,7 +422,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
-     *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
+     *  Used e.g. in the attribute table feature list. Uses { \link QgsExpression }.
      *
      *  \param displayExpression The expression which will be used to preview features
      *                           for this layer
@@ -431,7 +431,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
-     *  Uses { @link QgsExpression }
+     *  Uses { \link QgsExpression }
      *
      *  \returns The expression which will be used to preview features for this layer
      */
@@ -611,7 +611,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Get a copy of the user-selected features
      *
-     * \returns A list of { @link QgsFeature } 's
+     * \returns A list of { \link QgsFeature } 's
      *
      * \see    selectedFeatureIds()
      * \see    selectedFeaturesIterator() which is more memory friendly when handling large selections
@@ -634,7 +634,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Return reference to identifiers of selected features
      *
-     * \returns A list of { @link QgsFeatureId } 's
+     * \returns A list of { \link QgsFeatureId } 's
      * \see selectedFeatures()
      */
     const QgsFeatureIds &selectedFeatureIds() const;
@@ -886,8 +886,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool addFeature( QgsFeature &feature, bool alsoUpdateExtent = true );
 
     /** Updates an existing feature. This method needs to query the datasource
-        on every call. Consider using {@link changeAttributeValue()} or
-        {@link changeGeometry()} instead.
+        on every call. Consider using {\link changeAttributeValue()} or
+        {\link changeGeometry()} instead.
         \param f  Feature to update
         \returns   True in case of success and False in case of error
      */
@@ -1103,7 +1103,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns the list of fields of this layer.
      * This also includes fields which have not yet been saved to the provider.
-     * Alias for {@link fields()}
+     * Alias for {\link fields()}
      *
      * \returns A list of fields
      */
@@ -1111,19 +1111,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-     * Alias for {@link attributeList()}
+     * Alias for {\link attributeList()}
      */
     inline QgsAttributeList pendingAllAttributesList() const { return mFields.allAttributesList(); }
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-     * Alias for {@link attributeList()}
+     * Alias for {\link attributeList()}
      */
     inline QgsAttributeList attributeList() const { return mFields.allAttributesList(); }
 
     /**
      * Returns list of attributes making up the primary key
-     * Alias for {@link pkAttributeList()}
+     * Alias for {\link pkAttributeList()}
      */
     inline QgsAttributeList pendingPkAttributesList() const { return pkAttributeList(); }
 
@@ -1132,7 +1132,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns feature count including changes which have not yet been committed
-     * Alias for {@link featureCount()}
+     * Alias for {\link featureCount()}
      */
     inline long pendingFeatureCount() const { return featureCount(); }
 
@@ -1661,8 +1661,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Make layer editable.
      * This starts an edit session on this layer. Changes made in this edit session will not
-     * be made persistent until {@link commitChanges()} is called and can be reverted by calling
-     * {@link rollBack()}.
+     * be made persistent until {\link commitChanges()} is called and can be reverted by calling
+     * {\link rollBack()}.
      */
     bool startEditing();
 
@@ -1704,7 +1704,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Will be emitted, when a new attribute has been added to this vector layer.
-     * Applies only to types {@link QgsFields::OriginEdit}, {@link QgsFields::OriginProvider} and {@link QgsFields::OriginExpression }
+     * Applies only to types {\link QgsFields::OriginEdit}, {\link QgsFields::OriginProvider} and {\link QgsFields::OriginExpression }
      *
      * \param idx The index of the new attribute
      *
@@ -1714,7 +1714,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Will be emitted, when an expression field is going to be added to this vector layer.
-     * Applies only to types {@link QgsFields::OriginExpression }
+     * Applies only to types {\link QgsFields::OriginExpression }
      *
      * \param fieldName The name of the attribute to be added
      */
@@ -1722,7 +1722,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Will be emitted, when an attribute has been deleted from this vector layer.
-     * Applies only to types {@link QgsFields::OriginEdit}, {@link QgsFields::OriginProvider} and {@link QgsFields::OriginExpression }
+     * Applies only to types {\link QgsFields::OriginEdit}, {\link QgsFields::OriginProvider} and {\link QgsFields::OriginExpression }
      *
      * \param idx The index of the deleted attribute
      *
@@ -1732,7 +1732,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Will be emitted, when an expression field is going to be deleted from this vector layer.
-     * Applies only to types {@link QgsFields::OriginExpression }
+     * Applies only to types {\link QgsFields::OriginExpression }
      *
      * \param idx The index of the attribute to be deleted
      */
@@ -1749,7 +1749,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Emitted when a feature has been deleted.
      *
      * If you do expensive operations in a slot connected to this, you should prever to use
-     * {@link featuresDeleted( const QgsFeatureIds& )}.
+     * {\link featuresDeleted( const QgsFeatureIds& )}.
      *
      * \param fid The id of the feature which has been deleted
      */
@@ -1824,14 +1824,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Signal emitted, when an edit command successfully ended
      * \note This does not mean it is also committed, only that it is written
-     * to the edit buffer. See {@link beforeCommitChanges()}
+     * to the edit buffer. See {\link beforeCommitChanges()}
      */
     void editCommandEnded();
 
     /**
      * Signal emitted, whan an edit command is destroyed
      * \note This is not a rollback, it is only related to the current edit command.
-     * See {@link beforeRollBack()}
+     * See {\link beforeRollBack()}
      */
     void editCommandDestroyed();
 

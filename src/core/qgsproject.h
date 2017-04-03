@@ -834,7 +834,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param layerId The ID of the layer to be removed.
      *
-     * \note Consider using {@link layersWillBeRemoved()} instead
+     * \note Consider using {\link layersWillBeRemoved()} instead
      * \see layersWillBeRemoved()
      * \see layerRemoved()
      */
@@ -845,7 +845,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param layer The layer to be removed.
      *
-     * \note Consider using {@link layersWillBeRemoved()} instead
+     * \note Consider using {\link layersWillBeRemoved()} instead
      * \see layersWillBeRemoved()
      * \see layerRemoved()
      */
@@ -864,14 +864,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param layerId The ID of the layer removed.
      *
-     * \note Consider using {@link layersRemoved()} instead
+     * \note Consider using {\link layersRemoved()} instead
      * \see layerWillBeRemoved()
      */
     void layerRemoved( const QString &layerId );
 
     /**
-     * Emitted when all layers are removed, before {@link layersWillBeRemoved()} and
-     * {@link layerWillBeRemoved()} signals are emitted. The layersWillBeRemoved() and
+     * Emitted when all layers are removed, before {\link layersWillBeRemoved()} and
+     * {\link layerWillBeRemoved()} signals are emitted. The layersWillBeRemoved() and
      * layerWillBeRemoved() signals will still be emitted following this signal.
      * You can use this signal to do easy (and fast) cleanup.
      */
@@ -893,7 +893,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a layer was added to the registry.
      *
-     * \note Consider using {@link layersAdded()} instead
+     * \note Consider using {\link layersAdded()} instead
      * \see layersAdded()
      */
     void layerWasAdded( QgsMapLayer *layer );
@@ -901,10 +901,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted, when a layer was added to the registry and the legend.
      * Layers can also be private layers, which are signalled by
-     * {@link layersAdded()} and {@link layerWasAdded()} but will not be
+     * {\link layersAdded()} and {\link layerWasAdded()} but will not be
      * advertised by this signal.
      *
-     * \param layers List of {@link QgsMapLayer}s which were added to the legend.
+     * \param layers List of {\link QgsMapLayer}s which were added to the legend.
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 

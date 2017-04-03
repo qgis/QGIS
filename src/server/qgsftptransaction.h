@@ -19,7 +19,7 @@
 
 /** A class for synchronous ftp access (using QFtp in background)
  *
- * @deprecated because of QFtp removal in Qt5.
+ * \deprecated because of QFtp removal in Qt5.
  */
 class QgsFtpTransaction: public QObject
 {

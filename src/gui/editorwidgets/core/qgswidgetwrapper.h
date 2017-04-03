@@ -176,7 +176,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * You should not do initialization stuff, which also has to be done for custom editor
      * widgets inside this method. Things like filling comboboxes and assigning other data which
      * will also be used to make widgets on forms created in the QtDesigner usable should be assigned
-     * in {@link initWidget(QWidget*)}.
+     * in {\link initWidget(QWidget*)}.
      *
      * \param parent You should set this parent on the created widget.
      * \returns A new widget

@@ -37,7 +37,7 @@ class QRect;
  *
  * \brief
  * Accepts a display expression to define the way, features are rendered.
- * Uses a {@link QgsFeatureListModel} as source model.
+ * Uses a {\link QgsFeatureListModel} as source model.
  *
  */
 class GUI_EXPORT QgsFeatureListView : public QListView
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsVectorLayerCache *layerCache();
 
     /**
-     * Set the {@link QgsFeatureListModel} which is used to retrieve information
+     * Set the {\link QgsFeatureListModel} which is used to retrieve information
      *
      * \param featureListModel  The model to use
      */

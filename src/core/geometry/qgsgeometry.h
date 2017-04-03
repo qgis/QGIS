@@ -72,8 +72,8 @@ struct QgsGeometryPrivate;
  * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
  * container class can also be stored inside a QVariant object.
  *
- * The actual geometry representation is stored as a @link QgsAbstractGeometry @endlink within the container, and
- * can be accessed via the @link geometry @endlink method or set using the @link setGeometry @endlink method.
+ * The actual geometry representation is stored as a \link QgsAbstractGeometry \endlink within the container, and
+ * can be accessed via the \link geometry \endlink method or set using the \link setGeometry \endlink method.
  */
 
 class CORE_EXPORT QgsGeometry
@@ -112,7 +112,7 @@ class CORE_EXPORT QgsGeometry
     void setGeometry( QgsAbstractGeometry *geometry );
 
     /** Returns true if the geometry is null (ie, contains no underlying geometry
-     * accessible via @link geometry @endlink).
+     * accessible via \link geometry \endlink).
      * \see geometry
      * \since QGIS 2.10
      * \see isEmpty()

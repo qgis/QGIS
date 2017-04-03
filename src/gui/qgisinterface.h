@@ -166,7 +166,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add a widget to the plugins toolbar.
-     * To remove this widget again, call {@link removeToolBarIcon}
+     * To remove this widget again, call {\link removeToolBarIcon}
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
@@ -179,7 +179,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add a widget to the raster toolbar.
-     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * To remove this widget again, call {\link removeRasterToolBarIcon}
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
@@ -198,7 +198,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add a widget to the vector toolbar.
-     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * To remove this widget again, call {\link removeVectorToolBarIcon}
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
@@ -214,7 +214,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add a widget to the database toolbar.
-     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * To remove this widget again, call {\link removeDatabaseToolBarIcon}
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
@@ -230,7 +230,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Add a widget to the web toolbar.
-     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * To remove this widget again, call {\link removeWebToolBarIcon}
      * with the returned QAction.
      *
      * \param widget widget to add. The toolbar will take ownership of this widget
@@ -427,7 +427,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \param url URL to open
      * \param useQgisDocDirectory If true, the URL will be formed by concatenating
      * url to the QGIS documentation directory path (prefix/share/doc)
-     * @deprecated
+     * \deprecated
      */
 #ifndef Q_MOC_RUN
     Q_DECL_DEPRECATED

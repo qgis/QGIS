@@ -55,7 +55,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) } signal with the
+     * Will emit the { \link selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) } signal with the
      * clearAndSelect flag set.
      *
      * \param ids   The ids which will be the new selection
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
     /**
      * Return reference to identifiers of selected features
      *
-     * \returns A list of { @link QgsFeatureIds }
+     * \returns A list of { \link QgsFeatureIds }
      * \see selectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const override;

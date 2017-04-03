@@ -52,7 +52,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
 
     /**
      * Override this in your implementation.
-     * Create a new editor widget wrapper. Call {@link QgsEditorWidgetRegistry::create()}
+     * Create a new editor widget wrapper. Call {\link QgsEditorWidgetRegistry::create()}
      * instead of calling this method directly.
      *
      * \param vl       The vector layer on which this widget will act

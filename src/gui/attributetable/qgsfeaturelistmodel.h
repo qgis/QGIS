@@ -83,9 +83,9 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     QgsAttributeTableModel *masterModel();
 
     /**
-     *  \param  expression   A {@link QgsExpression} compatible string.
+     *  \param  expression   A {\link QgsExpression} compatible string.
      *  \returns true if the expression could be set, false if there was a parse error.
-     *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
+     *          If it fails, the old expression will still be applied. Call {\link parserErrorString()}
      *          for a meaningful error message.
      */
     bool setDisplayExpression( const QString &expression );
