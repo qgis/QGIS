@@ -359,9 +359,29 @@
               <string>Add WCS</string>
              </property>
             </action>
+            <action name="mActionAddAms">
+             <property name="icon">
+              <iconset>
+               <normaloff>:/images/themes/default/mActionAddAmsLayer.svg</normaloff>:/images/themes/default/mActionAddAmsLayer.svg</iconset>
+             </property>
+             <property name="text">
+              <string>Add ArcGIS MapServer</string>
+             </property>
+            </action>
+            <action name="mActionAddAfs">
+             <property name="icon">
+              <iconset>
+               <normaloff>:/images/themes/default/mActionAddAfsLayer.svg</normaloff>:/images/themes/default/mActionAddAfsLayer.svg</iconset>
+             </property>
+             <property name="text">
+              <string>Add ArcGIS FeatureServer</string>
+             </property>
+            </action>
             <addaction name="mActionAddWms"/>
             <addaction name="mActionAddWfs"/>
             <addaction name="mActionAddWcs"/>
+            <addaction name="mActionAddAms"/>
+            <addaction name="mActionAddAfs"/>
            </widget>
           </item>
          </layout>
