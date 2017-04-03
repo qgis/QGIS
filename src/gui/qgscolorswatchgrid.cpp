@@ -362,10 +362,10 @@ QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme *scheme, QMen
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 
   setDefaultWidget( mColorSwatchGrid );
-  connect( mColorSwatchGrid, SIGNAL( colorChanged( QColor ) ), this, SLOT( setColor( QColor ) ) );
+  connect( mColorSwatchGrid, &QgsColorSwatchGrid::colorChanged, this, &QgsColorSwatchGridAction::setColor );
 
-  connect( this, SIGNAL( hovered() ), this, SLOT( onHover() ) );
-  connect( mColorSwatchGrid, SIGNAL( hovered() ), this, SLOT( onHover() ) );
+  connect( this, &QAction::hovered, this, &QgsColorSwatchGridAction::onHover );
+  connect( mColorSwatchGrid, &QgsColorSwatchGrid::hovered, this, &QgsColorSwatchGridAction::onHover );
 
   //hide the action if no colors to be shown
   setVisible( !mColorSwatchGrid->colors()->isEmpty() );

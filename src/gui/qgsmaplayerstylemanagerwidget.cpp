@@ -44,36 +44,37 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QToolBar *toolbar = new QToolBar( this );
   QAction *addAction = toolbar->addAction( tr( "Add" ) );
   addAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyAdd.svg" ) ) );
-  connect( addAction, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
+  connect( addAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::addStyle );
   QAction *removeAction = toolbar->addAction( tr( "Remove Current" ) );
   removeAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyRemove.svg" ) ) );
-  connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
+  connect( removeAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::removeStyle );
   QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
   loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
-  connect( loadFromFileAction, SIGNAL( triggered() ), this, SLOT( loadStyle() ) );
+  connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
   QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
-  connect( saveAsDefaultAction, SIGNAL( triggered() ), this, SLOT( saveAsDefault() ) );
+  connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore default" ) );
-  connect( loadDefaultAction, SIGNAL( triggered() ), this, SLOT( loadDefault() ) );
+  connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
 
   // Save style doesn't work correctly yet so just disable for now.
 //  QAction* saveToFileAction = toolbar->addAction( tr( "Save Style" ) );
 //  connect( saveToFileAction, SIGNAL( triggered() ), this, SLOT( saveStyle() ) );
 
-  connect( canvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateCurrent() ) );
+  //broken connect - not sure what the purpose of this was?
+//  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
 
-  connect( mStyleList, SIGNAL( clicked( QModelIndex ) ), this, SLOT( styleClicked( QModelIndex ) ) );
+  connect( mStyleList, &QAbstractItemView::clicked, this, &QgsMapLayerStyleManagerWidget::styleClicked );
 
   setLayout( new QVBoxLayout() );
   layout()->setContentsMargins( 0, 0, 0, 0 );
   layout()->addWidget( toolbar );
   layout()->addWidget( mStyleList );
 
-  connect( mLayer->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( currentStyleChanged( QString ) ) );
-  connect( mLayer->styleManager(), SIGNAL( styleAdded( QString ) ), this, SLOT( styleAdded( QString ) ) );
-  connect( mLayer->styleManager(), SIGNAL( styleremoved( QString ) ), this, SLOT( styleRemoved( QString ) ) );
-  connect( mLayer->styleManager(), SIGNAL( styleRenamed( QString, QString ) ), this, SLOT( styleRenamed( QString, QString ) ) );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleAdded, this, &QgsMapLayerStyleManagerWidget::styleAdded );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleRemoved, this, &QgsMapLayerStyleManagerWidget::styleRemoved );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapLayerStyleManagerWidget::styleRenamed );
 
   mModel->clear();
 

@@ -61,11 +61,11 @@ QgsHillshadeRendererWidget::QgsHillshadeRendererWidget( QgsRasterLayer *layer, c
 
   setFromRenderer( layer->renderer() );
 
-  connect( mLightAngle, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mLightAzimuth, SIGNAL( valueChanged( double ) ), this, SLOT( on_mLightAzimuth_updated( double ) ) );
-  connect( mLightAzimuthDial, SIGNAL( valueChanged( int ) ), this, SLOT( on_mLightAzimuthDail_updated( int ) ) );
-  connect( mZFactor, SIGNAL( valueChanged( double ) ), this, SIGNAL( widgetChanged() ) );
-  connect( mMultiDirection, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mLightAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
+  connect( mLightAzimuth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsHillshadeRendererWidget::on_mLightAzimuth_updated );
+  connect( mLightAzimuthDial, &QAbstractSlider::valueChanged, this, &QgsHillshadeRendererWidget::on_mLightAzimuthDail_updated );
+  connect( mZFactor, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
+  connect( mMultiDirection, &QAbstractButton::toggled, this, &QgsRasterRendererWidget::widgetChanged );
 }
 
 QgsRasterRenderer *QgsHillshadeRendererWidget::renderer()

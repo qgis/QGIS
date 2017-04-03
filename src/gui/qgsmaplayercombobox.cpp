@@ -23,9 +23,9 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );
 
-  connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
-  connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
-  connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
+  connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsMapLayerComboBox::indexChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsMapLayerComboBox::rowsChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsMapLayerComboBox::rowsChanged );
 }
 
 void QgsMapLayerComboBox::setExcludedProviders( const QStringList &providers )

@@ -110,10 +110,10 @@ void QgsMapTool::deactivate()
 void QgsMapTool::setAction( QAction *action )
 {
   if ( mAction )
-    disconnect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+    disconnect( mAction, &QObject::destroyed, this, &QgsMapTool::actionDestroyed );
   mAction = action;
   if ( mAction )
-    connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+    connect( mAction, &QObject::destroyed, this, &QgsMapTool::actionDestroyed );
 }
 
 void QgsMapTool::actionDestroyed()

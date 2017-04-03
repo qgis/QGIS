@@ -105,7 +105,7 @@ void QgsSlider::update()
     QSlider::setValue( qCeil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
-  connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
+  connect( this, &QSlider::valueChanged, this, &QgsSlider::onValueChanged );
 }
 
 QVariant QgsSlider::variantValue() const
@@ -113,7 +113,7 @@ QVariant QgsSlider::variantValue() const
   return mValue;
 }
 
-void QgsSlider::valueChanged( int value )
+void QgsSlider::onValueChanged( int value )
 {
   if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
   {

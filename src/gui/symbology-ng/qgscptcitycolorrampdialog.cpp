@@ -117,7 +117,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
 
   tabBar->blockSignals( false );
 
-  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
+  connect( this, &QDialog::finished, this, &QgsCptCityColorRampDialog::onFinished );
 
 }
 

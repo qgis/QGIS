@@ -34,8 +34,8 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( nullptr );
-  connect( this, SIGNAL( activated( const QString & ) ), this, SLOT( fixupScale() ) );
-  connect( lineEdit(), SIGNAL( editingFinished() ), this, SLOT( fixupScale() ) );
+  connect( this, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsScaleComboBox::fixupScale );
+  connect( lineEdit(), &QLineEdit::editingFinished, this, &QgsScaleComboBox::fixupScale );
   fixupScale();
 }
 

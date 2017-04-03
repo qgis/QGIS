@@ -28,10 +28,10 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
 {
   mMenu = new QMenu( this );
   mSetExpressionAction = new QAction( tr( "Edit filter expression" ), mMenu );
-  connect( mSetExpressionAction, SIGNAL( triggered( bool ) ), this, SLOT( onSetLegendFilterExpression() ) );
+  connect( mSetExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onSetLegendFilterExpression );
 
   mClearExpressionAction = new QAction( tr( "Clear filter expression" ), mMenu );
-  connect( mClearExpressionAction, SIGNAL( triggered( bool ) ), this, SLOT( onClearFilterExpression() ) );
+  connect( mClearExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onClearFilterExpression );
   mClearExpressionAction->setEnabled( false );
 
   mMenu->addAction( mSetExpressionAction );
@@ -43,7 +43,7 @@ QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
 
   setMenu( mMenu );
 
-  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( onToggle( bool ) ) );
+  connect( this, &QAbstractButton::toggled, this, &QgsLegendFilterButton::onToggle );
 }
 
 void QgsLegendFilterButton::onToggle( bool checked )

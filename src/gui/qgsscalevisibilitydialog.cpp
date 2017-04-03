@@ -47,8 +47,8 @@ QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QStri
   gbLayout->addWidget( mScaleWidget, 0, 0 );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal, this );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   dlgLayout->addWidget( mGroupBox, 0, 0 );
   dlgLayout->addWidget( buttonBox, 1, 0 );

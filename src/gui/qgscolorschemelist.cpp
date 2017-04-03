@@ -763,7 +763,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
       colorWidget->setPanelTitle( tr( "Select color" ) );
       colorWidget->setAllowAlpha( true );
       colorWidget->setProperty( "index", index );
-      connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( colorChanged() ) );
+      connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorSwatchDelegate::colorChanged );
       panel->openPanel( colorWidget );
       return true;
     }

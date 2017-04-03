@@ -61,10 +61,10 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   mRemoveButton->setToolTip( tr( "Remove variable" ) );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
-  connect( mRemoveButton, SIGNAL( clicked() ), this, SLOT( on_mRemoveButton_clicked() ) );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( on_mAddButton_clicked() ) );
-  connect( mTreeWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  connect( mTreeWidget, SIGNAL( scopeChanged() ), this, SIGNAL( scopeChanged() ) );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::on_mRemoveButton_clicked );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::on_mAddButton_clicked );
+  connect( mTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsVariableEditorWidget::selectionChanged );
+  connect( mTreeWidget, &QgsVariableEditorTree::scopeChanged, this, &QgsVariableEditorWidget::scopeChanged );
 
   //setContext clones context
   QgsExpressionContext *context = new QgsExpressionContext();

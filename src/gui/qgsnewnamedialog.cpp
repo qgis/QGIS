@@ -60,7 +60,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
     mLineEdit->setValidator( validator );
   }
   mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged() ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::nameChanged );
   layout()->addWidget( mLineEdit );
 
   mNamesLabel = new QLabel( QStringLiteral( " " ), this );

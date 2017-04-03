@@ -39,8 +39,8 @@ class GUI_EXPORT QgsDial : public QDial
   signals:
     void valueChanged( const QVariant & );
 
-  protected slots:
-    void valueChanged( int );
+  private slots:
+    void onValueChanged( int );
 
   protected:
     virtual void paintEvent( QPaintEvent *event ) override;

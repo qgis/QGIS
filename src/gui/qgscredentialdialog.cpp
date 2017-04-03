@@ -35,11 +35,11 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
 {
   setupUi( this );
   setInstance( this );
-  connect( this, SIGNAL( credentialsRequested( QString, QString *, QString *, QString, bool * ) ),
-           this, SLOT( requestCredentials( QString, QString *, QString *, QString, bool * ) ),
+  connect( this, &QgsCredentialDialog::credentialsRequested,
+           this, &QgsCredentialDialog::requestCredentials,
            Qt::BlockingQueuedConnection );
-  connect( this, SIGNAL( credentialsRequestedMasterPassword( QString *, bool, bool * ) ),
-           this, SLOT( requestCredentialsMasterPassword( QString *, bool, bool * ) ),
+  connect( this, &QgsCredentialDialog::credentialsRequestedMasterPassword,
+           this, &QgsCredentialDialog::requestCredentialsMasterPassword,
            Qt::BlockingQueuedConnection );
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   leMasterPass->setPlaceholderText( tr( "Required" ) );

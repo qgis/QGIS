@@ -45,15 +45,15 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
   syncToLayer();
 
-  connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-  connect( cboxTransparencyBand, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-  connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( cboxTransparencyBand, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( sliderTransparency, &QAbstractSlider::valueChanged, this, &QgsRasterTransparencyWidget::sliderTransparency_valueChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
   {
     mPixelSelectorTool = new QgsMapToolEmitPoint( mMapCanvas );
-    connect( mPixelSelectorTool, SIGNAL( canvasClicked( const QgsPoint &, Qt::MouseButton ) ), this, SLOT( pixelSelected( const QgsPoint & ) ) );
+    connect( mPixelSelectorTool, &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterTransparencyWidget::pixelSelected );
   }
   else
   {
@@ -630,14 +630,14 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
         break;
     }
     lineEdit->setText( valueString );
-    connect( lineEdit, SIGNAL( textEdited( QString ) ), this, SIGNAL( widgetChanged() ) );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
   }
   tableTransparency->setCellWidget( row, column, lineEdit );
   adjustTransparencyCellWidth( row, column );
 
   if ( nBands == 1 && ( column == 0 || column == 1 ) )
   {
-    connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( transparencyCellTextEdited( const QString & ) ) );
+    connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterTransparencyWidget::transparencyCellTextEdited );
   }
   tableTransparency->resizeColumnsToContents();
   emit widgetChanged();

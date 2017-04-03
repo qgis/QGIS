@@ -91,7 +91,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   if ( !mManagerMode )
   {
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available
     QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
     //convert CRS id to epsg
@@ -658,7 +658,7 @@ void QgsOWSSourceSelect::on_mSearchButton_clicked()
   QgsDebugMsg( url.toString() );
 
   QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
-  connect( r, SIGNAL( finished() ), SLOT( searchFinished() ) );
+  connect( r, &QNetworkReply::finished, this, &QgsOWSSourceSelect::searchFinished );
 }
 
 void QgsOWSSourceSelect::searchFinished()

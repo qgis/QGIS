@@ -50,12 +50,12 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load,
              this, &QgsMultiBandColorRendererWidget::loadMinMax );
 
-    connect( mRedBandComboBox, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( onBandChanged( int ) ) );
-    connect( mGreenBandComboBox, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( onBandChanged( int ) ) );
-    connect( mBlueBandComboBox, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( onBandChanged( int ) ) );
+    connect( mRedBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, &QgsMultiBandColorRendererWidget::onBandChanged );
+    connect( mGreenBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, &QgsMultiBandColorRendererWidget::onBandChanged );
+    connect( mBlueBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, &QgsMultiBandColorRendererWidget::onBandChanged );
 
     //fill available bands into combo boxes
     mRedBandComboBox->addItem( tr( "Not set" ), -1 );
@@ -80,7 +80,7 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     setFromRenderer( mRasterLayer->renderer() );
     onBandChanged( 0 ); // reset mMinMaxWidget bands
 
-    connect( mContrastEnhancementAlgorithmComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mContrastEnhancementAlgorithmComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   }
 }
 

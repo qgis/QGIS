@@ -86,10 +86,10 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
 
-  connect( mFieldNameEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( fieldNameChanged( QString ) ) );
-  connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
-  connect( mTableNameEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( checkOk() ) );
-  connect( mDatabaseEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( checkOk() ) );
+  connect( mFieldNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::fieldNameChanged );
+  connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewGeoPackageLayerDialog::selectionChanged );
+  connect( mTableNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::checkOk );
+  connect( mDatabaseEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::checkOk );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );

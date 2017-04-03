@@ -36,10 +36,10 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
   Q_UNUSED( statusBar )
   setupUi( this );
 
-  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
-           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ),
+           this, static_cast<void ( QgsMessageLogViewer::* )( QString, QString, QgsMessageLog::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
 
-  connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
+  connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 }
 
 void QgsMessageLogViewer::closeEvent( QCloseEvent *e )

@@ -28,7 +28,7 @@ QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
-  connect( mTableSubstitutions, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableChanged() ) );
+  connect( mTableSubstitutions, &QTableWidget::cellChanged, this, &QgsSubstitutionListWidget::tableChanged );
 }
 
 void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementCollection &substitutions )
@@ -190,12 +190,12 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &sub
   QCheckBox *caseSensitiveChk = new QCheckBox( this );
   caseSensitiveChk->setChecked( substitution.caseSensitive() );
   mTableSubstitutions->setCellWidget( row, 2, caseSensitiveChk );
-  connect( caseSensitiveChk, SIGNAL( toggled( bool ) ), this, SLOT( tableChanged() ) );
+  connect( caseSensitiveChk, &QAbstractButton::toggled, this, &QgsSubstitutionListWidget::tableChanged );
 
   QCheckBox *wholeWordChk = new QCheckBox( this );
   wholeWordChk->setChecked( substitution.wholeWordOnly() );
   mTableSubstitutions->setCellWidget( row, 3, wholeWordChk );
-  connect( wholeWordChk, SIGNAL( toggled( bool ) ), this, SLOT( tableChanged() ) );
+  connect( wholeWordChk, &QAbstractButton::toggled, this, &QgsSubstitutionListWidget::tableChanged );
 }
 
 
@@ -213,8 +213,8 @@ QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget *parent )
   mWidget = new QgsSubstitutionListWidget();
   vLayout->addWidget( mWidget );
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
 }

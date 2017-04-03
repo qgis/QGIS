@@ -126,12 +126,12 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   resetClassifyButton();
 
-  connect( mClassificationModeComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classify() ) );
+  connect( mClassificationModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSingleBandPseudoColorRendererWidget::classify );
   connect( mClassifyButton, &QPushButton::clicked, this, &QgsSingleBandPseudoColorRendererWidget::applyColorRamp );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsSingleBandPseudoColorRendererWidget::applyColorRamp );
-  connect( mNumberOfEntriesSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( classify() ) );
-  connect( mBandComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classify() ) );
-  connect( mClipCheckBox, SIGNAL( toggled( bool ) ), this, SIGNAL( widgetChanged() ) );
+  connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSingleBandPseudoColorRendererWidget::classify );
+  connect( mBandComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSingleBandPseudoColorRendererWidget::classify );
+  connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsRasterRendererWidget::widgetChanged );
 }
 
 QgsRasterRenderer *QgsSingleBandPseudoColorRendererWidget::renderer()
@@ -307,8 +307,8 @@ void QgsSingleBandPseudoColorRendererWidget::on_mAddEntryButton_clicked()
   newItem->setBackground( ColorColumn, QBrush( QColor( Qt::magenta ) ) );
   newItem->setText( LabelColumn, QString() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
-  connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem *, int ) ),
-           this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem *, int ) ) );
+  connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
+           this, &QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited );
   mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
   autoLabel();
   emit widgetChanged();
@@ -360,8 +360,8 @@ void QgsSingleBandPseudoColorRendererWidget::classify()
         newItem->setBackground( ColorColumn, QBrush( it->color ) );
         newItem->setText( LabelColumn, it->label );
         newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
-        connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem *, int ) ),
-                 this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem *, int ) ) );
+        connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
+                 this, &QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited );
       }
       mClipCheckBox->setChecked( colorRampShader->clip() );
     }
@@ -415,8 +415,8 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
     newItem->setBackground( ColorColumn, QBrush( it->color ) );
     newItem->setText( LabelColumn, it->label );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
-    connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem *, int ) ),
-             this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem *, int ) ) );
+    connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
+             this, &QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited );
   }
   setUnitFromLabels();
 }
@@ -682,8 +682,8 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
           newItem->setBackground( ColorColumn, QBrush( it->color ) );
           newItem->setText( LabelColumn, it->label );
           newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
-          connect( newItem, SIGNAL( itemEdited( QTreeWidgetItem *, int ) ),
-                   this, SLOT( mColormapTreeWidget_itemEdited( QTreeWidgetItem *, int ) ) );
+          connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
+                   this, &QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited );
         }
         setUnitFromLabels();
         mClipCheckBox->setChecked( colorRampShader->clip() );

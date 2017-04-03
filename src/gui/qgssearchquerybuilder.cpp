@@ -44,21 +44,21 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnTest_clicked() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::on_btnTest_clicked );
 
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnClear_clicked() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::on_btnClear_clicked );
 
   pbn = new QPushButton( tr( "&Save..." ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   pbn->setToolTip( tr( "Save query to an xml file" ) );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( saveQuery() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::saveQuery );
 
   pbn = new QPushButton( tr( "&Load..." ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   pbn->setToolTip( tr( "Load query from xml file" ) );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( loadQuery() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::loadQuery );
 
   if ( layer )
     lblDataUri->setText( layer->name() );

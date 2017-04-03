@@ -488,19 +488,19 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   }
   methodComboBox->blockSignals( false );
 
-  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
-  connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
-  connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
-  connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint & ) ),  this, SLOT( contextMenuViewCategories( const QPoint & ) ) );
+  connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsGraduatedSymbolRendererWidget::graduatedColumnChanged );
+  connect( viewGraduated, &QAbstractItemView::doubleClicked, this, &QgsGraduatedSymbolRendererWidget::rangesDoubleClicked );
+  connect( viewGraduated, &QAbstractItemView::clicked, this, &QgsGraduatedSymbolRendererWidget::rangesClicked );
+  connect( viewGraduated, &QTreeView::customContextMenuRequested,  this, &QgsGraduatedSymbolRendererWidget::contextMenuViewCategories );
 
-  connect( btnGraduatedClassify, SIGNAL( clicked() ), this, SLOT( classifyGraduated() ) );
-  connect( btnChangeGraduatedSymbol, SIGNAL( clicked() ), this, SLOT( changeGraduatedSymbol() ) );
-  connect( btnGraduatedDelete, SIGNAL( clicked() ), this, SLOT( deleteClasses() ) );
-  connect( btnDeleteAllClasses, SIGNAL( clicked() ), this, SLOT( deleteAllClasses() ) );
-  connect( btnGraduatedAdd, SIGNAL( clicked() ), this, SLOT( addClass() ) );
-  connect( cbxLinkBoundaries, SIGNAL( toggled( bool ) ), this, SLOT( toggleBoundariesLink( bool ) ) );
+  connect( btnGraduatedClassify, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( btnChangeGraduatedSymbol, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol );
+  connect( btnGraduatedDelete, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::deleteClasses );
+  connect( btnDeleteAllClasses, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::deleteAllClasses );
+  connect( btnGraduatedAdd, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::addClass );
+  connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
 
-  connect( mSizeUnitWidget, SIGNAL( changed() ), this, SLOT( on_mSizeUnitWidget_changed() ) );
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::on_mSizeUnitWidget_changed );
 
   connectUpdateHandlers();
 
@@ -516,8 +516,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   mHistogramWidget->setLayer( mLayer );
   mHistogramWidget->setRenderer( mRenderer );
-  connect( mHistogramWidget, SIGNAL( rangesModified( bool ) ), this, SLOT( refreshRanges( bool ) ) );
-  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), mHistogramWidget, SLOT( setSourceFieldExp( QString ) ) );
+  connect( mHistogramWidget, &QgsGraduatedHistogramWidget::rangesModified, this, &QgsGraduatedSymbolRendererWidget::refreshRanges );
+  connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), mHistogramWidget, &QgsHistogramWidget::setSourceFieldExp );
 
   mExpressionWidget->registerExpressionContextGenerator( this );
 }

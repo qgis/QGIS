@@ -100,7 +100,7 @@ void QgsDial::update()
     QDial::setValue( qCeil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
-  connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
+  connect( this, static_cast < void ( QDial::* )( int ) > ( &QDial::valueChanged ), this, &QgsDial::onValueChanged );
 }
 
 QVariant QgsDial::variantValue() const
@@ -108,7 +108,7 @@ QVariant QgsDial::variantValue() const
   return mValue;
 }
 
-void QgsDial::valueChanged( int value )
+void QgsDial::onValueChanged( int value )
 {
   if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
   {

@@ -61,12 +61,12 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
 
   // otherwise, use the traditional QLineEdit
   mLineEdit = new QgsFilterLineEdit( this );
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textEdited( QString ) ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsFileWidget::textEdited );
   layout->addWidget( mLineEdit, 1, 0 );
 
   mFileWidgetButton = new QToolButton( this );
   mFileWidgetButton->setText( QStringLiteral( "..." ) );
-  connect( mFileWidgetButton, SIGNAL( clicked() ), this, SLOT( openFileDialog() ) );
+  connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   layout->addWidget( mFileWidgetButton, 0, 1, 2, 1 );
 
   setLayout( layout );

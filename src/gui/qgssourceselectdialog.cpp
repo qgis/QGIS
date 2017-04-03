@@ -57,22 +57,22 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
 
   mAddButton = buttonBox->addButton( tr( "&Add" ), QDialogButtonBox::ActionRole );
   mAddButton->setEnabled( false );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addButtonClicked() ) );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::addButtonClicked );
 
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton = buttonBox->addButton( tr( "&Build query" ), QDialogButtonBox::ActionRole );
     mBuildQueryButton->setDisabled( true );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQueryButtonClicked() ) );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::buildQueryButtonClicked );
   }
 
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
-  connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
-  connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteEntryOfServerList() ) );
-  connect( btnConnect, SIGNAL( clicked() ), this, SLOT( connectToServer() ) );
-  connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCrs() ) );
-  connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( btnNew, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::addEntryToServerList );
+  connect( btnEdit, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::modifyEntryOfServerList );
+  connect( btnDelete, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::deleteEntryOfServerList );
+  connect( btnConnect, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::connectToServer );
+  connect( btnChangeSpatialRefSys, &QAbstractButton::clicked, this, &QgsSourceSelectDialog::changeCrs );
+  connect( lineFilter, &QLineEdit::textChanged, this, &QgsSourceSelectDialog::filterChanged );
   populateConnectionList();
   mProjectionSelector = new QgsProjectionSelectionDialog( this );
   mProjectionSelector->setMessage( QString() );
@@ -104,8 +104,8 @@ QgsSourceSelectDialog::QgsSourceSelectDialog( const QString &serviceName, Servic
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
 
-  connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( treeWidgetItemDoubleClicked( const QModelIndex & ) ) );
-  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( treeWidgetCurrentRowChanged( const QModelIndex &, const QModelIndex & ) ) );
+  connect( treeView, &QAbstractItemView::doubleClicked, this, &QgsSourceSelectDialog::treeWidgetItemDoubleClicked );
+  connect( treeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsSourceSelectDialog::treeWidgetCurrentRowChanged );
 }
 
 QgsSourceSelectDialog::~QgsSourceSelectDialog()

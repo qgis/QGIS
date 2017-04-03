@@ -58,7 +58,7 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   setLayout( layout );
 
-  connect( mFileWidget, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::loadDocument );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const

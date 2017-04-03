@@ -164,7 +164,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
 
   moveCanvasContents( true );
 
-  connect( &mMapUpdateTimer, SIGNAL( timeout() ), SLOT( mapUpdateTimeout() ) );
+  connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsMapCanvas::mapUpdateTimeout );
   mMapUpdateTimer.setInterval( 250 );
 
 #ifdef Q_OS_WIN

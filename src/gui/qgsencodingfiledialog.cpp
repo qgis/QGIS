@@ -66,7 +66,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
   selectNameFilter( nameFilters().at( 0 ) );
 
   // Connect our slot to get a signal when the user is done with the file dialog
-  connect( this, SIGNAL( accepted() ), this, SLOT( saveUsedEncoding() ) );
+  connect( this, &QDialog::accepted, this, &QgsEncodingFileDialog::saveUsedEncoding );
 }
 
 QString QgsEncodingFileDialog::encoding() const
@@ -87,7 +87,7 @@ void QgsEncodingFileDialog::addCancelAll()
   {
     mCancelAllButton = new QPushButton( tr( "Cancel &All" ), nullptr );
     layout()->addWidget( mCancelAllButton ); // Ownership transferred, no need to delete later on
-    connect( mCancelAllButton, SIGNAL( clicked() ), this, SLOT( pbnCancelAll_clicked() ) );
+    connect( mCancelAllButton, &QAbstractButton::clicked, this, &QgsEncodingFileDialog::pbnCancelAll_clicked );
   }
 }
 
