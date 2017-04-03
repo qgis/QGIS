@@ -1,7 +1,7 @@
 // ASLocalizer.cpp
-// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
-// License.txt describes the conditions under which this software may be distributed.
+// License.md describes the conditions under which this software may be distributed.
 //
 // File encoding for this file is UTF-8 WITHOUT a byte order mark (BOM).
 //    русский     中文（简体）    日本語     한국의
@@ -41,12 +41,6 @@
 
 #ifdef _WIN32
 	#include <windows.h>
-#endif
-
-#ifdef __DMC__
-	// digital mars doesn't have these
-	const size_t SUBLANG_CHINESE_MACAU = 5;
-	const size_t LANG_HINDI = 57;
 #endif
 
 #ifdef __VMS
@@ -96,11 +90,11 @@ ASLocalizer::ASLocalizer()
 	m_langID = "en";
 	m_lcid = 0;
 	m_subLangID.clear();
-	m_translation = NULL;
+	m_translation = nullptr;
 
 	// Not all compilers support the C++ function locale::global(locale(""));
 	char* localeName = setlocale(LC_ALL, "");
-	if (localeName == NULL)		// use the english (ascii) defaults
+	if (localeName == nullptr)		// use the english (ascii) defaults
 	{
 		fprintf(stderr, "\n%s\n\n", "Cannot set native locale, reverting to English");
 		setTranslationClass();
@@ -256,10 +250,10 @@ void ASLocalizer::setTranslationClass()
 {
 	assert(m_langID.length());
 	// delete previously set (--ascii option)
-	if (m_translation)
+	if (m_translation != nullptr)
 	{
 		delete m_translation;
-		m_translation = NULL;
+		m_translation = nullptr;
 	}
 	if (m_langID == "bg")
 		m_translation = new Bulgarian;
@@ -319,7 +313,7 @@ void Translation::addPair(const string& english, const wstring& translated)
 // Add a string pair to the translation vector.
 {
 	pair<string, wstring> entry(english, translated);
-	m_translation.push_back(entry);
+	m_translation.emplace_back(entry);
 }
 
 string Translation::convertToMultiByte(const wstring& wideStr) const
@@ -327,8 +321,8 @@ string Translation::convertToMultiByte(const wstring& wideStr) const
 // Return an empty string if an error occurs.
 {
 	static bool msgDisplayed = false;
-	// get length of the output excluding the NULL and validate the parameters
-	size_t mbLen = wcstombs(NULL, wideStr.c_str(), 0);
+	// get length of the output excluding the nullptr and validate the parameters
+	size_t mbLen = wcstombs(nullptr, wideStr.c_str(), 0);
 	if (mbLen == string::npos)
 	{
 		if (!msgDisplayed)
@@ -340,7 +334,7 @@ string Translation::convertToMultiByte(const wstring& wideStr) const
 	}
 	// convert the characters
 	char* mbStr = new (nothrow) char[mbLen + 1];
-	if (mbStr == NULL)
+	if (mbStr == nullptr)
 	{
 		if (!msgDisplayed)
 		{
