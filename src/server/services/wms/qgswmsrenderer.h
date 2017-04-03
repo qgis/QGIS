@@ -95,7 +95,7 @@ namespace QgsWms
       QImage *getMap( HitTest *hitTest = nullptr );
 
       /** Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
-        @note added in QGIS 3.0 */
+        \since QGIS 3.0 */
       QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
 
 

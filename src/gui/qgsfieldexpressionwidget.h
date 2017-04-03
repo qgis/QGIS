@@ -97,7 +97,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Returns the currently selected field or expression. If a field is currently selected, the returned
      * value will be converted to a valid expression referencing this field (ie enclosing the field name with
      * appropriate quotations).
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QString asExpression() const;
 
@@ -108,7 +108,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *
      * Alias for asExpression()
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString expression() const;
 
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * an expression context for the widget.
      * @param generator A QgsExpressionContextGenerator class that will be used to
      *                  create an expression context when required.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
@@ -154,7 +154,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      * Sets the current expression text and if applicable also the field.
      * Alias for setField.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setExpression( const QString &expression );
 

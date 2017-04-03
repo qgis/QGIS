@@ -38,7 +38,7 @@ class QgsSymbol;
  * \brief Expression function for use within a QgsExpressionContextScope. This differs from a
  * standard QgsExpression::Function in that it requires an implemented
  * clone() method.
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
     /**
      * Create a new QgsScopedExpressionFunction
      *
-     * @note Added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsScopedExpressionFunction( const QString &fnname,
                                  int params,
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
     /**
      * Create a new QgsScopedExpressionFunction using named parameters.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsScopedExpressionFunction( const QString &fnname,
                                  const QgsExpression::ParameterList &params,
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
  *
  * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContextScope objects.
  *
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsExpressionContextScope
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      * Returns true if the scope has a feature associated with it.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see feature()
      */
     bool hasFeature() const { return mHasFeature; }
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsExpressionContextScope
      * Sets the feature associated with the scope.
      * @see setFeature()
      * @see hasFeature()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsFeature feature() const { return mFeature; }
 
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      * Removes any feature associated with the scope.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setFeature()
      * @see hasFeature()
      */
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsExpressionContextScope
  *
  * See QgsExpressionContextUtils for helper methods for working with QgsExpressionContext objects.
  *
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsExpressionContext
 {
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsExpressionContext
 
     /** Initializes the context with given list of scopes.
      * Ownership of the scopes is transferred to the stack.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes );
 
@@ -353,7 +353,7 @@ class CORE_EXPORT QgsExpressionContext
     /**
      * Returns a map of variable name to value representing all the expression variables
      * contained by the context.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QVariantMap variablesToMap() const;
 
@@ -415,7 +415,7 @@ class CORE_EXPORT QgsExpressionContext
     /** Returns the index of the first scope with a matching name within the context.
      * @param scopeName name of scope to find
      * @returns index of scope, or -1 if scope was not found within the context.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     int indexOfScope( const QString &scopeName ) const;
 
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsExpressionContext
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scopes is transferred to the stack.
      * @param scopes scopes to append to context
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void appendScopes( const QList<QgsExpressionContextScope *> &scopes );
 
@@ -504,7 +504,7 @@ class CORE_EXPORT QgsExpressionContext
 
     /**
      * Returns true if the context has a feature associated with it.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see feature()
      */
     bool hasFeature() const;
@@ -530,7 +530,7 @@ class CORE_EXPORT QgsExpressionContext
     /** Sets the original value variable value for the context.
      * @param value value for original value variable. This usually represents the an original widget
      * value before any data defined overrides have been applied.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setOriginalValueVariable( const QVariant &value );
 
@@ -542,7 +542,7 @@ class CORE_EXPORT QgsExpressionContext
      * @see hasCachedValue()
      * @see cachedValue()
      * @see clearCachedValues()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setCachedValue( const QString &key, const QVariant &value ) const;
 
@@ -551,7 +551,7 @@ class CORE_EXPORT QgsExpressionContext
      * @see setCachedValue()
      * @see cachedValue()
      * @see clearCachedValues()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool hasCachedValue( const QString &key ) const;
 
@@ -562,7 +562,7 @@ class CORE_EXPORT QgsExpressionContext
      * @see setCachedValue()
      * @see hasCachedValue()
      * @see clearCachedValues()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QVariant cachedValue( const QString &key ) const;
 
@@ -570,7 +570,7 @@ class CORE_EXPORT QgsExpressionContext
      * @see setCachedValue()
      * @see hasCachedValue()
      * @see cachedValue()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void clearCachedValues() const;
 
@@ -609,7 +609,7 @@ class CORE_EXPORT QgsExpressionContext
  * \class QgsExpressionContextUtils
  * \brief Contains utilities for working with QgsExpressionContext objects, including methods
  * for creating scopes for specific uses (e.g., project scopes, layer scopes).
- * \note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 
 class CORE_EXPORT QgsExpressionContextUtils
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer );
 
     /** Creates a list of three scopes: global, layer's project and layer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer );
 
@@ -703,7 +703,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Updates a symbol scope related to a QgsSymbol to an expression context.
      * @param symbol symbol to extract properties from
      * @param symbolScope pointer to an existing scope to update
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
 

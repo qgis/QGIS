@@ -82,14 +82,14 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
      * @returns horizontal margin in mm
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     double marginX() const { return mMarginX; }
 
     /** Returns the vertical margin between the edge of the frame and the label
      * contents.
      * @returns vertical margin in mm
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     double marginY() const { return mMarginY; }
 
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @param margin horizontal margin in mm
      * @see setMargin
      * @see setMarginY
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     void setMarginX( const double margin );
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @param margin vertical margin in mm
      * @see setMargin
      * @see setMarginX
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     void setMarginY( const double margin );
 

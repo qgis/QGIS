@@ -22,7 +22,7 @@
 /** \ingroup core
  * Holder for the widget type and its configuration for a field.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsEditorWidgetSetup
 {

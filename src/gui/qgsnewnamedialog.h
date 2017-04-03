@@ -26,7 +26,7 @@ class QLineEdit;
 /** \ingroup gui
  * New name, for example new layer name dialog. If existing names are provided,
  * the dialog warns users if an entered name already exists.
- * @note added in 2.10
+ * \since QGIS 2.10
  */
 class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
@@ -52,40 +52,40 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * input box).
      * @param hintString hint text
      * @see hintString()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setHintString( const QString &hintString );
 
     /** Returns the hint string for the dialog (the text shown above the name
      * input box).
      * @see setHintString()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QString hintString() const;
 
     /** Sets whether users are permitted to overwrite existing names. If true, then
      * the dialog will reflect that the new name will overwrite an existing name. If false,
      * then the dialog will not accept names which already exist.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see overwriteEnabled()
      */
     void setOverwriteEnabled( bool enabled );
 
     /** Returns whether users are permitted to overwrite existing names.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setOverwriteEnabled()
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
     /** Sets the string used for warning users if a conflicting name exists.
      * @param string warning string. If empty a default warning string will be used.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see conflictingNameWarning()
      */
     void setConflictingNameWarning( const QString &string );
 
     /** Returns the string used for warning users if a conflicting name exists.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setConflictingNameWarning()
      */
     QString conflictingNameWarning() const { return mConflictingNameWarning; }

@@ -37,7 +37,7 @@ class QListView;
  * to the layer tree cause refresh of the list.
  *
  * @see QgsLayerTreeMapCanvasBridge
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {

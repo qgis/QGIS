@@ -69,14 +69,14 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     /**
      * @brief If true is specified, a NULL value will be injected
      * @param injectNull state of null value injection
-     * @note added in 2.9
+     * \since QGIS 2.9
      */
     void setInjectNull( bool injectNull );
 
     /**
      * @brief Returns the current state of null value injection
      * @return If a NULL value is added
-     * @note added in 2.9
+     * \since QGIS 2.9
      */
     bool injectNull();
 

@@ -44,7 +44,7 @@ typedef QPointF QwtDoublePoint;
  * \class QgsHistogramWidget
  * \brief Graphical histogram for displaying distributions of field values.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWidgetBase

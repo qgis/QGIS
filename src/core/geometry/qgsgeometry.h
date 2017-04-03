@@ -92,7 +92,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Creates a geometry from an abstract geometry object. Ownership of
      * geom is transferred.
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     explicit QgsGeometry( QgsAbstractGeometry *geom );
 
@@ -100,13 +100,13 @@ class CORE_EXPORT QgsGeometry
     ~QgsGeometry();
 
     /** Returns the underlying geometry store.
-    * @note added in QGIS 2.10
+    * \since QGIS 2.10
     * @see setGeometry
     */
     QgsAbstractGeometry *geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see geometry
      */
     void setGeometry( QgsAbstractGeometry *geometry );
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsGeometry
     /** Returns true if the geometry is null (ie, contains no underlying geometry
      * accessible via @link geometry @endlink).
      * @see geometry
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see isEmpty()
      */
     bool isNull() const;
@@ -154,13 +154,13 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Set the geometry, feeding in the buffer containing OGC Well-Known Binary
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void fromWkb( const QByteArray &wkb );
 
     /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  @param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
-     *  @note added in 3.0
+     *  \since QGIS 3.0
      *  @note not available in Python bindings
      */
     GEOSGeometry *exportToGeos( double precision = 0 ) const;
@@ -187,22 +187,22 @@ class CORE_EXPORT QgsGeometry
     bool isMultipart() const;
 
     /** Compares the geometry with another geometry using GEOS
-      @note added in 1.5
+      \since QGIS 1.5
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
     /** Checks validity of the geometry using GEOS
-      @note added in 1.5
+      \since QGIS 1.5
      */
     bool isGeosValid() const;
 
     /** Returns the area of the geometry using GEOS
-      @note added in 1.5
+      \since QGIS 1.5
      */
     double area() const;
 
     /** Returns the length of geometry using GEOS
-      @note added in 1.5
+      \since QGIS 1.5
      */
     double length() const;
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsGeometry
      * Returns the distance along this geometry from its first vertex to the specified vertex.
      * @param vertex vertex index to calculate distance to
      * @returns distance to vertex (following geometry), or -1 for invalid vertex numbers
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     double distanceToVertex( int vertex ) const;
 
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsGeometry
      * Returns the bisector angle for this geometry at the specified vertex.
      * @param vertex vertex index to calculate bisector angle at
      * @returns bisector angle, in radians clockwise from north
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see interpolateAngle()
      */
     double angleAtVertex( int vertex ) const;
@@ -329,13 +329,13 @@ class CORE_EXPORT QgsGeometry
     double sqrDistToVertexAt( QgsPoint &point, int atVertex ) const;
 
     /** Returns the nearest point on this geometry to another geometry.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see shortestLine()
      */
     QgsGeometry nearestPoint( const QgsGeometry &other ) const;
 
     /** Returns the shortest line joining this geometry to another geometry.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see nearestPoint()
      */
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
@@ -411,7 +411,8 @@ class CORE_EXPORT QgsGeometry
     /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature
-     @note available in Python bindings as addPartGeometry (added in 2.2)
+     \note available in Python bindings as addPartGeometry
+     \since QGIS 2.2
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addPart( const QgsGeometry &newPart );
@@ -420,7 +421,7 @@ class CORE_EXPORT QgsGeometry
      * Removes the interior rings from a (multi)polygon geometry. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
@@ -433,12 +434,12 @@ class CORE_EXPORT QgsGeometry
     int transform( const QgsCoordinateTransform &ct );
 
     /** Transform this geometry as described by QTransform ct
-     @note added in 2.8
+     \since QGIS 2.8
      @return 0 in case of success*/
     int transform( const QTransform &ct );
 
     /** Rotate this geometry around the Z axis
-         @note added in 2.8
+         \since QGIS 2.8
          @param rotation clockwise rotation in degrees
          @param center rotation center
          @return 0 in case of success*/
@@ -458,7 +459,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Replaces a part of this geometry with another line
      * @return 0 in case of success
-     * @note: this function was added in version 1.3
+     * \since QGIS 1.3
      */
     int reshapeGeometry( const QList<QgsPoint> &reshapeWithLine );
 
@@ -472,7 +473,7 @@ class CORE_EXPORT QgsGeometry
      * intersect the other geometry.
      * @param other geometry that should not be intersect
      * @return difference geometry, or empty geometry if difference could not be calculated
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry makeDifference( const QgsGeometry &other ) const;
 
@@ -486,7 +487,7 @@ class CORE_EXPORT QgsGeometry
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
      * rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
      * width and height of the rotated bounding box will also be returned.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see boundingBox()
      */
     QgsGeometry orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const;
@@ -497,7 +498,7 @@ class CORE_EXPORT QgsGeometry
      * either the vertices are within a specified tolerance of right angles or a set number of maximum
      * iterations is reached. The angle threshold parameter specifies how close to a right angle or
      * straight line an angle must be before it is attempted to be straightened.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
@@ -511,31 +512,31 @@ class CORE_EXPORT QgsGeometry
     bool contains( const QgsPoint *p ) const;
 
     /** Test for if geometry is contained in another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool contains( const QgsGeometry &geometry ) const;
 
     /** Test for if geometry is disjoint of another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool disjoint( const QgsGeometry &geometry ) const;
 
     /** Test for if geometry equals another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool equals( const QgsGeometry &geometry ) const;
 
     /** Test for if geometry touch another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool touches( const QgsGeometry &geometry ) const;
 
     /** Test for if geometry overlaps another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool overlaps( const QgsGeometry &geometry ) const;
 
     /** Test for if geometry is within another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool within( const QgsGeometry &geometry ) const;
 
     /** Test for if geometry crosses another (uses GEOS)
-     *  @note added in 1.5 */
+     *  \since QGIS 1.5 */
     bool crosses( const QgsGeometry &geometry ) const;
 
     //! Side of line to buffer
@@ -571,7 +572,7 @@ class CORE_EXPORT QgsGeometry
      * @param endCapStyle end cap style
      * @param joinStyle   join style for corners in geometry
      * @param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double mitreLimit ) const;
 
@@ -580,7 +581,7 @@ class CORE_EXPORT QgsGeometry
      * @param segments    for round joins, number of segments to approximate quarter-circle
      * @param joinStyle   join style for corners in geometry
      * @param mitreLimit  limit on the mitre ratio used for very sharp corners (JoinStyleMitre only)
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double mitreLimit ) const;
 
@@ -594,7 +595,7 @@ class CORE_EXPORT QgsGeometry
      * @param mitreLimit limit on the mitre ratio used for very sharp corners
      * @return buffered geometry, or an empty geometry if buffer could not be
      * calculated
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry singleSidedBuffer( double distance, int segments, BufferSide side,
                                    JoinStyle joinStyle = JoinStyleRound,
@@ -604,7 +605,7 @@ class CORE_EXPORT QgsGeometry
      * Extends a (multi)line geometry by extrapolating out the start or end of the line
      * by a specified distance. Lines are extended using the bearing of the first or last
      * segment in the line.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
 
@@ -617,7 +618,7 @@ class CORE_EXPORT QgsGeometry
      * If the geometry has z or m values present then these will be linearly interpolated
      * at the added nodes.
      * Curved geometry types are automatically segmentized by this routine.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see densifyByDistance()
      */
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
@@ -633,7 +634,7 @@ class CORE_EXPORT QgsGeometry
      * If the geometry has z or m values present then these will be linearly interpolated
      * at the added nodes.
      * Curved geometry types are automatically segmentized by this routine.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see densifyByCount()
      */
     QgsGeometry densifyByDistance( double distance ) const;
@@ -666,7 +667,7 @@ class CORE_EXPORT QgsGeometry
      * Optionally, the distance to the polygon boundary from the pole can be stored.
      * @see centroid()
      * @see pointOnSurface()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary = nullptr ) const;
 
@@ -686,7 +687,7 @@ class CORE_EXPORT QgsGeometry
      * If \a edgesOnly is true than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
 
@@ -697,13 +698,13 @@ class CORE_EXPORT QgsGeometry
      * If \a edgesOnly is true than line string boundary geometries will be returned
      * instead of polygons.
      * An empty geometry will be returned if the diagram could not be calculated.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false ) const;
 
     /**
      * Return interpolated point on line at distance
-     * @note added in 1.9
+     * \since QGIS 1.9
      * @see lineLocatePoint()
      */
     QgsGeometry interpolate( double distance ) const;
@@ -716,7 +717,7 @@ class CORE_EXPORT QgsGeometry
      * @return distance along line, or -1 on error
      * @note only valid for linestring geometries
      * @see interpolate()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double lineLocatePoint( const QgsGeometry &point ) const;
 
@@ -725,7 +726,7 @@ class CORE_EXPORT QgsGeometry
      * If the distance coincides precisely at a node then the average angle from the segment either side
      * of the node is returned.
      * @param distance distance along geometry
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see angleAtVertex()
      */
     double interpolateAngle( double distance ) const;
@@ -744,7 +745,7 @@ class CORE_EXPORT QgsGeometry
      * @returns a LineString or MultiLineString geometry, with any connected lines
      * joined. An empty geometry will be returned if the input geometry was not a
      * MultiLineString geometry.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry mergeLines() const;
 
@@ -758,21 +759,21 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry extrude( double x, double y );
 
     /** Export the geometry to WKB
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     QByteArray exportToWkb() const;
 
     /** Exports the geometry to WKT
-     *  @note precision parameter added in 2.4
+     *  \note precision parameter added in QGIS 2.4
      *  @return true in case of success and false else
      */
     QString exportToWkt( int precision = 17 ) const;
 
     /** Exports the geometry to GeoJSON
      *  @return a QString representing the geometry as GeoJSON
-     *  @note added in 1.8
-     *  @note Python binding added in 1.9
-     *  @note precision parameter added in 2.4
+     *  \since QGIS 1.8
+     *  \note Available in Python bindings since QGIS 1.9
+     *  \note precision parameter added in QGIS 2.4
      */
     QString exportToGeoJSON( int precision = 17 ) const;
 
@@ -780,7 +781,7 @@ class CORE_EXPORT QgsGeometry
      * @param destType the geometry type to be converted to
      * @param destMultipart determines if the output geometry will be multipart or not
      * @return the converted geometry or nullptr if the conversion fails.
-     * @note added in 2.2
+     * \since QGIS 2.2
      */
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const;
 
@@ -814,31 +815,31 @@ class CORE_EXPORT QgsGeometry
     QgsMultiPolygon asMultiPolygon() const;
 
     /** Return contents of the geometry as a list of geometries
-     @note added in version 1.1 */
+     \since QGIS 1.1 */
     QList<QgsGeometry> asGeometryCollection() const;
 
     /** Return contents of the geometry as a QPointF if wkbType is WKBPoint,
      * otherwise returns a null QPointF.
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     QPointF asQPointF() const;
 
     /** Return contents of the geometry as a QPolygonF. If geometry is a linestring,
      * then the result will be an open QPolygonF. If the geometry is a polygon,
      * then the result will be a closed QPolygonF of the geometry's exterior ring.
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     QPolygonF asQPolygonF() const;
 
     /** Delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
       @return true on success
-      @note added in version 1.2 */
+      \since QGIS 1.2 */
     bool deleteRing( int ringNum, int partNum = 0 );
 
     /** Delete part identified by the part number
       @return true on success
-      @note added in version 1.2 */
+      \since QGIS 1.2 */
     bool deletePart( int partNum );
 
     /**
@@ -869,7 +870,7 @@ class CORE_EXPORT QgsGeometry
      *          3 other error during intersection removal
      *  @param avoidIntersectionsLayers list of layers to check for intersections
      *  @param ignoreFeatures possibility to give a list of features where intersections should be ignored (not available in Python bindings)
-     *  @note added in 1.5
+     *  \since QGIS 1.5
      */
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
                             const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
@@ -884,7 +885,7 @@ class CORE_EXPORT QgsGeometry
      * Single polygons may become multi-geometries in case of self-intersections.
      * It preserves Z values, but M values will be dropped.
      * @return new valid QgsGeometry or null geometry on error
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsGeometry makeValid();
 
@@ -906,8 +907,8 @@ class CORE_EXPORT QgsGeometry
     };
 
     /** Validate geometry and produce a list of geometry errors
-     * @note added in 1.5
-     * @note Python binding added in 1.6
+     * \since QGIS 1.5
+     * \note Available in Python bindings since QGIS 1.6
      **/
     void validateGeometry( QList<Error> &errors );
 
@@ -923,39 +924,39 @@ class CORE_EXPORT QgsGeometry
      * at every common intersection of the geometries). The easiest way to ensure this is to first
      * call unaryUnion() on the set of input geometries and then pass the result to polygonize().
      * An empty geometry will be returned in the case of errors.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsGeometry polygonize( const QList< QgsGeometry> &geometries );
 
     /** Converts the geometry to straight line segments, if it is a curved geometry type.
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see requiresConversionToStraightSegments
      */
     void convertToStraightSegment();
 
     /** Returns true if the geometry is a curved geometry type which requires conversion to
      * display as straight line segments.
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see convertToStraightSegment
      */
     bool requiresConversionToStraightSegments() const;
 
     /** Transforms the geometry from map units to pixels in place.
      * @param mtp map to pixel transform
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     void mapToPixel( const QgsMapToPixel &mtp );
 
     // not implemented for 2.10
     /* Clips the geometry using the specified rectangle
      * @param rect clip rectangle
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     // void clip( const QgsRectangle& rect );
 
     /** Draws the geometry onto a QPainter
      * @param p destination QPainter
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     void draw( QPainter &p ) const;
 
@@ -963,7 +964,7 @@ class CORE_EXPORT QgsGeometry
      * @param nr vertex number
      * @param id reference to QgsVertexId for storing result
      * @returns true if vertex was found
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see vertexNrFromVertexId
      */
     bool vertexIdFromVertexNr( int nr, QgsVertexId &id ) const;
@@ -971,20 +972,20 @@ class CORE_EXPORT QgsGeometry
     /** Returns the vertex number corresponding to a vertex idd
      * @param i vertex id
      * @returns vertex number
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see vertexIdFromVertexNr
      */
     int vertexNrFromVertexId( QgsVertexId i ) const;
 
     /** Return GEOS context handle
-     * @note added in 2.6
+     * \since QGIS 2.6
      * @note not available in Python
      */
     static GEOSContextHandle_t getGEOSHandler();
 
     /** Construct geometry from a QPointF
      * @param point source QPointF
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     static QgsGeometry fromQPointF( QPointF point );
 
@@ -992,7 +993,7 @@ class CORE_EXPORT QgsGeometry
      * the resultant geometry will be a polygon, if it is open than the
      * geometry will be a polyline.
      * @param polygon source QPolygonF
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     static QgsGeometry fromQPolygonF( const QPolygonF &polygon );
 
@@ -1016,7 +1017,7 @@ class CORE_EXPORT QgsGeometry
      * @param epsilon maximum difference for coordinates between the polylines
      * @returns true if polylines have the same number of points and all
      * points are equal within the specified tolerance
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static bool compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
@@ -1026,7 +1027,7 @@ class CORE_EXPORT QgsGeometry
      * @param epsilon maximum difference for coordinates between the polygons
      * @returns true if polygons have the same number of rings, and each ring has the same
      * number of points and all points are equal within the specified tolerance
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static bool compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
@@ -1037,7 +1038,7 @@ class CORE_EXPORT QgsGeometry
      * @returns true if multipolygons have the same number of polygons, the polygons have the same number
      * of rings, and each ring has the same number of points and all points are equal within the specified
      * tolerance
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static bool compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
@@ -1050,7 +1051,7 @@ class CORE_EXPORT QgsGeometry
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @param minimumDistance minimum segment length to apply smoothing to
      * @param maxAngle maximum angle at node (0-180) at which smoothing will be applied
-     * @note added in 2.9
+     * \since QGIS 2.9
      */
     QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
@@ -1079,7 +1080,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns true if the geometry is non empty (ie, isNull() returns false),
      * or false if it is an empty, uninitialized geometry (ie, isNull() returns true).
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     operator bool() const;
 

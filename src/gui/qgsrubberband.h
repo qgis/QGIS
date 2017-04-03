@@ -85,7 +85,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Sets the fill color for the rubberband
      *  @param color  The color used to render this rubberband
-     *  @note Added in 2.6
+     *  \since QGIS 2.6
      */
     void setFillColor( const QColor &color );
 
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**
      * Sets the stroke color for the rubberband
      *  @param color  The color used to render this rubberband
-     *  @note Added in 2.6
+     *  \since QGIS 2.6
      */
     void setStrokeColor( const QColor &color );
 
@@ -110,7 +110,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
      * Set to an invalid color to avoid drawing the secondary stroke.
      *  @param color  The color used to render a secondary stroke color to this rubberband
-     *  @note Added in 3.0
+     *  \since QGIS 3.0
      */
     void setSecondaryStrokeColor( const QColor &color );
 
@@ -183,7 +183,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * first vertex.
      * @param doUpdate set to true to update the map canvas immediately
      * @param geometryIndex index of the feature part (in case of multipart geometries)
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void closePoints( bool doUpdate = true, int geometryIndex = 0 );
 

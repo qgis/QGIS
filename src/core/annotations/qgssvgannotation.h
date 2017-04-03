@@ -26,7 +26,7 @@
  * \class QgsSvgAnnotation
  * \ingroup core
  * An annotation which renders the contents of an SVG file.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSvgAnnotation: public QgsAnnotation
 {

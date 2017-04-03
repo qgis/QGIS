@@ -161,7 +161,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *addToolBar( const QString &name ) override;
 
     //! Add a toolbar
-    //! @note added in 2.3
+    //! \since QGIS 2.3
     void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) override;
 
     /** Open a url in the users browser. By default the QGIS doc directory is used
@@ -186,7 +186,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
 
@@ -293,14 +293,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
 
     /** Register a new custom drop handler.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /** Unregister a previously registered custom drop handler.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
@@ -314,7 +314,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QMenu *viewMenu() override;
     virtual QMenu *layerMenu() override;
     virtual QMenu *newLayerMenu() override;
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     virtual QMenu *addLayerMenu() override;
     virtual QMenu *settingsMenu() override;
     virtual QMenu *pluginMenu() override;

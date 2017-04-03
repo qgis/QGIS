@@ -82,7 +82,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     ~QgsMapCanvas();
 
     //! Returns the magnification factor
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     double magnificationFactor() const;
 
     /**
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * to first clear the theme association by calling setTheme() with an
      * empty string before setLayers() calls can be made.
      *
-     * @note added in 3.0
+     * \since QGIS 3.0
      * @see layers()
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
@@ -101,37 +101,37 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setCurrentLayer( QgsMapLayer *layer );
 
     //! Get access to properties used for map rendering
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     const QgsMapSettings &mapSettings() const;
 
     //! sets destination coordinate reference system
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Resets the \a flags for the canvas' map settings.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     //! Get access to the labeling results (may be null)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     const QgsLabelingResults *labelingResults() const;
 
     //! Set whether to cache images of rendered layers
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setCachingEnabled( bool enabled );
 
     //! Check whether images of rendered layers are curerently being cached
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isCachingEnabled() const;
 
     //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void clearCache();
 
     //! Reload all layers, clear the cache and refresh the canvas
-    //! @note added in 2.9
+    //! \since QGIS 2.9
     void refreshAllLayers();
 
     /**
@@ -141,24 +141,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * until the rendering job is complete. It's included in API solely for
      * unit testing and standalone Python scripts.
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void waitWhileRendering();
 
     //! Set whether the layers are rendered in parallel or sequentially
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setParallelRenderingEnabled( bool enabled );
 
     //! Check whether the layers are rendered in parallel or sequentially
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isParallelRenderingEnabled() const;
 
     //! Set how often map preview should be updated while it is being rendered (in milliseconds)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setMapUpdateInterval( int timeMilliseconds );
 
     //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     int mapUpdateInterval() const;
 
     //! Get the last reported scale of the canvas
@@ -176,19 +176,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setExtent( const QgsRectangle &r, bool magnified = false );
 
     //! Get the current map canvas rotation in clockwise degrees
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     double rotation() const;
 
     //! Set the rotation of the map canvas in clockwise degrees
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void setRotation( double degrees );
 
     //! Set the center of the map canvas, in geographical coordinates
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void setCenter( const QgsPoint &center );
 
     //! Get map center, in geographical coordinates
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     QgsPoint center() const;
 
     //! Zoom to the full extent of all layers
@@ -241,7 +241,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QColor canvasColor() const;
 
     //! Set color of selected vector features
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setSelectionColor( const QColor &color );
 
     //! Emits signal scaleChanged to update scale in main window
@@ -297,7 +297,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns the stored overrides of styles for layers.
-     * @note added in 2.12
+     * \since QGIS 2.12
      * @see setLayerStyleOverrides().
      */
     QMap<QString, QString> layerStyleOverrides() const;
@@ -310,7 +310,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * to first clear the theme association by calling setTheme() with an
      * empty string before setLayerStyleOverrides() calls can be made.
      *
-     * @note added in 2.12
+     * \since QGIS 2.12
      * @see layerStyleOverrides()
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
@@ -330,14 +330,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * If an empty string is passed then the current theme association will be
      * cleared.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see theme()
      */
     void setTheme( const QString &theme );
 
     /**
      * Returns the map's theme shown in the canvas, if set.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setTheme()
      */
     QString theme() const { return mTheme; }
@@ -369,7 +369,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomToFeatureExtent( QgsRectangle &rect );
 
     //! Returns whether the scale is locked, so zooming can be performed using magnication.
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     //! @see setScaleLocked()
     bool scaleLocked() const { return mScaleLocked;}
 
@@ -396,14 +396,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Enables a preview mode for the map canvas
      * @param previewEnabled set to true to enable a preview mode
      * @see setPreviewMode
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void setPreviewModeEnabled( bool previewEnabled );
 
     /** Returns whether a preview mode is enabled for the map canvas
      * @returns true if a preview mode is currently enabled
      * @see setPreviewModeEnabled
      * @see previewMode
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     bool previewModeEnabled() const;
 
     /** Sets a preview mode for the map canvas. This setting only has an effect if
@@ -412,7 +412,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * @see previewMode
      * @see setPreviewModeEnabled
      * @see previewModeEnabled
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /** Returns the current preview mode for the map canvas. This setting only has an effect if
@@ -420,7 +420,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * @returns preview mode for map canvas
      * @see setPreviewMode
      * @see previewModeEnabled
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
     /** Return snapping utility class that is associated with map canvas.
@@ -428,7 +428,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *  (so map tools do not need to test for existence of the instance).
      *
      * Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
-     *  @note added in 2.8
+     *  \since QGIS 2.8
      */
     QgsSnappingUtils *snappingUtils() const;
 
@@ -437,7 +437,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * For main canvas in QGIS, do not associate a different instance from the existing one (it is updated from
      * the project's snapping configuration).
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     void setSnappingUtils( QgsSnappingUtils *utils );
 
@@ -446,7 +446,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * expression evaluation for the map canvas render. This method will overwrite the existing expression
      * context scope for the canvas.
      * @param scope new expression context scope
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see expressionContextScope()
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope ) { mExpressionContextScope = scope; }
@@ -454,13 +454,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Returns a reference to the expression context scope for the map canvas. This scope is injected
      * into the expression context used for rendering the map, and can be used to apply specific variable
      * overrides for expression evaluation for the map canvas render.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setExpressionContextScope()
      */
     QgsExpressionContextScope &expressionContextScope() { return mExpressionContextScope; }
 
     /** Returns a const reference to the expression context scope for the map canvas.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setExpressionContextScope()
      * @note not available in Python bindings
      */
@@ -476,20 +476,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns a list of all annotation items in the canvas.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
 
     /**
      * Returns true if annotations are visible within the map canvas.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setAnnotationsVisible()
      */
     bool annotationsVisible() const { return mAnnotationsVisible; }
 
     /**
      * Sets whether annotations are \a visible in the canvas.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see annotationsVisible()
      */
     void setAnnotationsVisible( bool visible );
@@ -521,7 +521,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setRenderFlag( bool flag );
 
     //! stop rendering (if there is any right now)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void stopRendering();
 
     //! called to read map canvas settings from project
@@ -536,11 +536,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Sets the factor of magnification to apply to the map canvas. Indeed, we
     //! increase/decrease the DPI of the map settings according to this factor
     //! in order to render marker point, labels, ... bigger.
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     void setMagnificationFactor( double factor );
 
     //! Lock the scale, so zooming can be performed using magnication
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     //! @see scaleLocked()
     void setScaleLocked( bool isLocked );
 
@@ -576,11 +576,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void extentsChanged();
 
     //! Emitted when the rotation of the map changes
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void rotationChanged( double );
 
     //! Emitted when the scale of the map changes
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     void magnificationChanged( double );
 
     /** Emitted when the canvas has rendered.
@@ -613,7 +613,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void keyReleased( QKeyEvent *e );
 
     /** Emit map tool changed with the old tool
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
@@ -628,21 +628,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomNextStatusChanged( bool );
 
     //! Emitted when map CRS has changed
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void destinationCrsChanged();
 
     //! Emitted when the current layer is changed
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void currentLayerChanged( QgsMapLayer *layer );
 
     //! Emitted when the configuration of overridden layer styles changes
-    //! @note added in 2.12
+    //! \since QGIS 2.12
     void layerStyleOverridesChanged();
 
     /**
      * Emitted when the canvas has been assigned a different map theme.
      * @see setTheme()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void themeChanged( const QString &theme );
 
@@ -813,18 +813,18 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mAnnotationsVisible = true;
 
     //! Force a resize of the map canvas item
-    //! @note added in 2.16
+    //! \since QGIS 2.16
     void updateMapSize();
 
     /** Starts zooming via rectangle
      * @param pos start position for rectangle
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void beginZoomRect( QPoint pos );
 
     /** Ends zooming via rectangle
      * @param pos end position for rectangle
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void endZoomRect( QPoint pos );
 

@@ -58,7 +58,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );

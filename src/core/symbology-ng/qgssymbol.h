@@ -102,7 +102,7 @@ class CORE_EXPORT QgsSymbol
 
     /** Returns list of symbol layers contained in the symbol.
      * @returns symbol layers list
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      * @see symbolLayer
      * @see symbolLayerCount
      */
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSymbol
     /** Returns a specific symbol layers contained in the symbol.
      * @param layer layer number
      * @returns corresponding symbol layer
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      * @see symbolLayers
      * @see symbolLayerCount
      */
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsSymbol
 
     /** Returns total number of symbol layers contained in the symbol.
      * @returns count of symbol layers
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      * @see symbolLayers
      * @see symbolLayer
      */
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsSymbol
 
     //! Draw icon of the symbol that occupyies area given by size using the painter.
     //! Optionally custom context may be given in order to get rendering of symbols that use map units right.
-    //! @note customContext parameter added in 2.6
+    //! \since QGIS 2.6
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
 
     //! export symbol as image format. PNG and SVG supported
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsSymbol
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
      * @param clipFeaturesToExtent set to true to enable clipping (defaults to true)
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see clipFeaturesToExtent
      */
     void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsSymbol
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
      * @returns true if features will be clipped
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see setClipFeaturesToExtent
      */
     bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsSymbol
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     /** Returns whether the symbol utilizes any data defined properties.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     bool hasDataDefinedProperties() const;
 
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsSymbol
     void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context );
 
     //! Render editing vertex marker at specified point
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize );
 
     SymbolType mType;
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /** Sets the original value variable value for data defined symbology
      * @param value value for original value variable. This usually represents the symbol property value
      * before any data defined overrides have been applied.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setOriginalValueVariable( const QVariant &value );
 
@@ -437,7 +437,7 @@ class CORE_EXPORT QgsSymbolRenderContext
     /**
      * Sets the geometry type for the original feature geometry being rendered.
      * @see originalGeometryType()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setOriginalGeometryType( QgsWkbTypes::GeometryType type ) { mOriginalGeometryType = type; }
 
@@ -447,33 +447,33 @@ class CORE_EXPORT QgsSymbolRenderContext
      * simple line style will look different if the simple line is rendering a polygon feature
      * (a closed buffer) vs a line feature (an unclosed offset line).
      * @see originalGeometryType()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsWkbTypes::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
 
     //! Fields of the layer. Currently only available in startRender() calls
     //! to allow symbols with data-defined properties prepare the expressions
     //! (other times fields() returns null)
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     QgsFields fields() const { return mFields; }
 
     /** Part count of current geometry
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     int geometryPartCount() const { return mGeometryPartCount; }
 
     /** Sets the part count of current geometry
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setGeometryPartCount( int count ) { mGeometryPartCount = count; }
 
     /** Part number of current geometry
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     int geometryPartNum() const { return mGeometryPartNum; }
 
     /** Sets the part number of current geometry
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
 
@@ -546,13 +546,13 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /** Returns the marker angle for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the angle of
      * the first symbol layer.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setAngle()
      */
     double angle() const;
 
     /** Set data defined angle for whole symbol (including all symbol layers).
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedAngle()
      */
     void setDataDefinedAngle( const QgsProperty &property );
@@ -560,7 +560,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /** Returns data defined angle for whole symbol (including all symbol layers).
      * @returns data defined angle, or invalid property if angle is not set
      * at the marker level.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedAngle()
      */
     QgsProperty dataDefinedAngle() const;
@@ -569,7 +569,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
      * @param lineAngle Angle in degrees, valid values are between 0 and 360
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     void setLineAngle( double lineAngle );
 
@@ -592,7 +592,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
     /** Sets the size units for the whole symbol (including all symbol layers).
      * @param unit size units
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see sizeUnit()
      * @see setSizeMapUnitScale()
      * @see setSize()
@@ -601,7 +601,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
     /** Returns the size units for the whole symbol (including all symbol layers).
      * @returns size units, or mixed units if symbol layers have different units
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setSizeUnit()
      * @see sizeMapUnitScale()
      * @see size()
@@ -610,7 +610,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
     /** Sets the size map unit scale for the whole symbol (including all symbol layers).
      * @param scale map unit scale
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see sizeMapUnitScale()
      * @see setSizeUnit()
      * @see setSize()
@@ -620,7 +620,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /** Returns the size map unit scale for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the map unit scale
      * for the first symbol layer.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see setSizeMapUnitScale()
      * @see sizeUnit()
      * @see size()
@@ -628,7 +628,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     QgsMapUnitScale sizeMapUnitScale() const;
 
     /** Set data defined size for whole symbol (including all symbol layers).
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedSize()
      */
     void setDataDefinedSize( const QgsProperty &property );
@@ -636,7 +636,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /** Returns data defined size for whole symbol (including all symbol layers).
      * @returns data defined size, or invalid property if size is not set
      * at the marker level.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedSize
      */
     QgsProperty dataDefinedSize() const;
@@ -654,7 +654,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * @param feature feature being rendered at point (optional). If not specified, the bounds calculation will not
      * include data defined parameters such as offset and rotation
      * @returns approximate symbol bounds, in painter units
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 
@@ -686,14 +686,14 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 
     /** Set data defined width for whole symbol (including all symbol layers).
      * @see dataDefinedWidth()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setDataDefinedWidth( const QgsProperty &property );
 
     /** Returns data defined width for whole symbol (including all symbol layers).
      * @returns data defined width, or invalid property if size is not set
      * at the line level. Caller takes responsibility for deleting the returned object.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedWidth
      */
     QgsProperty dataDefinedWidth() const;

@@ -113,14 +113,14 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @returns expression string, or field name from coverage layer
      * @see setPageNameExpression
      * @see nameForPage
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QString pageNameExpression() const { return mPageNameExpression; }
 
     /** Sets the expression used for calculating the page name.
      * @param pageNameExpression expression string, or field name from coverage layer
      * @see pageNameExpression
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setPageNameExpression( const QString &pageNameExpression ) { mPageNameExpression = pageNameExpression; }
 
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @param pageNumber number of page, where 0 = first page
      * @returns page name
      * @see pageNameExpression
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QString nameForPage( int pageNumber ) const;
 
@@ -228,17 +228,17 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     int updateFeatures();
 
     /** Returns the current atlas feature. Must be called after prepareForFeature().
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsFeature feature() const { return mCurrentFeature; }
 
     /** Returns the name of the page for the current atlas feature. Must be called after prepareForFeature().
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QString currentPageName() const;
 
     /** Returns the current feature number, where a value of 0 corresponds to the first feature.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
 
@@ -251,7 +251,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
   public slots:
 
     /** Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void refreshFeature();
 
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     void featureChanged( QgsFeature *feature );
 
     /** Is emitted when the number of features for the atlas changes.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void numberFeaturesChanged( int numFeatures );
 

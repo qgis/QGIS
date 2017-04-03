@@ -33,7 +33,7 @@ class QResizeEvent;
  *
  * \see QgsProjectionSelectionDialog.
  * \see QgsProjectionSelectionWidget
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::QgsProjectionSelectorBase
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Returns the CRS currently selected in the widget.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setCrs()
      */
     QgsCoordinateReferenceSystem crs() const;
@@ -60,14 +60,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Sets whether a "no/invalid" projection option should be shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * @see showNoProjection()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setShowNoProjection( bool show );
 
     /**
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setShowNoProjection()
      */
     bool showNoProjection() const;
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Sets the initial \a crs to show within the dialog.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -117,13 +117,13 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Notifies others that the widget is now fully initialized, including deferred selection of projection.
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     void initialized();
 
     /**
      * Emitted when a projection is double clicked in the list.
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     void projectionDoubleClicked();
 

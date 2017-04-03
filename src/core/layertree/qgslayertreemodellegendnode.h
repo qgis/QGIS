@@ -39,7 +39,7 @@ class QgsRenderContext;
  * The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
  * and customized look.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
  * Implementation of legend node interface for displaying preview of vector symbols and their labels
  * and allowing interaction with the symbol / renderer.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -164,9 +164,9 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     virtual void invalidateMapBasedData() override;
 
     //! Set the icon size
-    //! @note added in 2.10
+    //! \since QGIS 2.10
     void setIconSize( QSize sz ) { mIconSize = sz; }
-    //! @note added in 2.10
+    //! \since QGIS 2.10
     QSize iconSize() const { return mIconSize; }
 
     /**
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * the size for multiple icons it is more efficient to create a single
      * render context in advance and use the variant which accepts a QgsRenderContext
      * argument.
-     * @note added in 2.10
+     * \since QGIS 2.10
      */
     QSize minimumIconSize() const;
 
@@ -182,13 +182,13 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * Calculates the minimum icon size to prevent cropping. When evaluating
      * the size for multiple icons it is more efficient to create a single
      * render context in advance and call this method instead of minimumIconSize().
-     * @note added in QGIS 2.18
+     * \since QGIS 2.18
      */
     QSize minimumIconSize( QgsRenderContext *context ) const;
 
     /** Returns the symbol used by the legend node.
      * @see setSymbol()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     const QgsSymbol *symbol() const;
 
@@ -196,20 +196,20 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      * to the associated vector layer's renderer.
      * @param symbol new symbol for node. Ownership is transferred.
      * @see symbol()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setSymbol( QgsSymbol *symbol );
 
   public slots:
 
     /** Checks all items belonging to the same layer as this node.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see uncheckAllItems()
      */
     void checkAllItems();
 
     /** Unchecks all items belonging to the same layer as this node.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see checkAllItems()
      */
     void uncheckAllItems();
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 /** \ingroup core
  * Implementation of legend node interface for displaying arbitrary label with icon.
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -262,7 +262,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
 /** \ingroup core
  * Implementation of legend node interface for displaying arbitrary raster image
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
 /** \ingroup core
  * Implementation of legend node interface for displaying raster legend entries
  *
- * @note added in 2.6
+ * \since QGIS 2.6
  */
 class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
 {
@@ -305,7 +305,7 @@ class QgsImageFetcher;
 /** \ingroup core
  * Implementation of legend node interface for displaying WMS legend entries
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
 {

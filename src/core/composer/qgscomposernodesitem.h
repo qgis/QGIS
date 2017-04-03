@@ -25,7 +25,7 @@
 /** \ingroup core
  * An abstract composer item that provides generic methods for nodes based
  * shapes such as polygon or polylines.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 {

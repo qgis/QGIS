@@ -77,7 +77,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /** Return the provider capabilities
         @param providerKey identificator of the provider
-        @note Added in 2.6
+        \since QGIS 2.6
      */
     int providerCapabilities( const QString &providerKey ) const;
 

@@ -27,7 +27,7 @@
 
 /** \ingroup core
  * List of colors paired with a friendly display name identifying the color
- * \note Added in version 2.5
+ * \since QGIS 2.5
 */
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 
@@ -38,7 +38,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
  * A color scheme for display in QgsColorButton. Color schemes return lists
  * of colors with an optional associated color name. The colors returned
  * can be generated using an optional base color.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsColorScheme
 {
@@ -110,7 +110,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
 /** \ingroup core
  * \class QgsGplColorScheme
  * \brief A color scheme which stores its colors in a gpl palette file.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 {
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
  * \class QgsUserColorScheme
  * \brief A color scheme which stores its colors in a gpl palette file within the "palettes"
  * subfolder off the user's QGIS settings folder.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 {
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     /** Sets whether a this scheme should be shown in color button menus.
      * @param show set to true to show in color button menus, or false to hide from menus
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setShowSchemeInMenu( bool show );
 
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 /** \ingroup core
  * \class QgsRecentColorScheme
  * \brief A color scheme which contains the most recently used colors.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 {
@@ -203,13 +203,13 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     /** Adds a color to the list of recent colors.
      * @param color color to add
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see lastUsedColor()
      */
     static void addRecentColor( const QColor &color );
 
     /** Returns the most recently used color.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see addRecentColor()
      */
     static QColor lastUsedColor();
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 /** \ingroup core
  * \class QgsCustomColorScheme
  * \brief A color scheme which contains custom colors set through QGIS app options dialog.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 {
@@ -243,7 +243,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 /** \ingroup core
  * \class QgsProjectColorScheme
  * \brief A color scheme which contains project specific colors set through project properties dialog.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 {

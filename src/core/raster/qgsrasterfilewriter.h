@@ -60,7 +60,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * Ownership of the returned provider is passed to the caller.
      * @note Does not work with tiled mode enabled.
      * @returns Instance of data provider in editing mode (on success) or null on error.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
         int width, int height,

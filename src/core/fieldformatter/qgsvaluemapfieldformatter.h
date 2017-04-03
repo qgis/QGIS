@@ -34,7 +34,7 @@
  * - 3 => "three"
  * - 5 => "(5)"
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsValueMapFieldFormatter : public QgsFieldFormatter
 {

@@ -23,7 +23,7 @@
 /** \ingroup gui
  * \class QgsDockWidget
  * QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
- * \note added in 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsDockWidget : public QDockWidget

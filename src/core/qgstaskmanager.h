@@ -46,7 +46,7 @@ typedef QList< QgsTask * > QgsTaskList;
  * has been canceled via some external event. If this flag is true then the task should
  * clean up and terminate at the earliest possible convenience.
  *
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTask : public QObject
 {
@@ -334,7 +334,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
  * or accessed via QgsApplication::taskManager().
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsTaskManager : public QObject
 {

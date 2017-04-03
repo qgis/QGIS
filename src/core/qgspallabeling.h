@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLabelPosition
     bool upsideDown;
     bool isDiagram;
     bool isPinned;
-    //! @note added in 2.14
+    //! \since QGIS 2.14
     QString providerID;
 };
 
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsPalLayerSettings
     //! copy operator - only copies the permanent members
     QgsPalLayerSettings &operator=( const QgsPalLayerSettings &s );
 
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     static QgsPalLayerSettings fromLayer( QgsVectorLayer *layer );
 
     /** Placement modes which determine how label candidates are generated for a feature.
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Returns the labeling property definitions.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * labels to be drawn for the layer itself. In this case drawLabels can be set
      * to false and obstacle set to true, which will result in the layer acting
      * as an obstacle but having no labels of its own.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     bool drawLabels;
 
@@ -526,44 +526,44 @@ class CORE_EXPORT QgsPalLayerSettings
     void writeToLayer( QgsVectorLayer *layer );
 
     /** Read settings from a DOM element
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     void readXml( QDomElement &elem );
 
     /** Write settings into a DOM element
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     QDomElement writeXml( QDomDocument &doc );
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the label's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the label's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
     /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @see setFormat()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     const QgsTextFormat &format() const { return mFormat; }
 
     /** Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
      * @param format label text format
      * @see format()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setFormat( const QgsTextFormat &format ) { mFormat = format; }
 
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsLabelCandidate
 
 /** \ingroup core
  * Class that stores computed placement from labeling engine.
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLabelingResults
 {
@@ -725,14 +725,14 @@ class CORE_EXPORT QgsPalLabeling
     bool isShowingPartialsLabels() const;
     void setShowingPartialsLabels( bool showing );
 
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     bool isDrawingOutlineLabels() const;
     void setDrawingOutlineLabels( bool outline );
 
     /** Returns whether the engine will only draw the outline rectangles of labels,
      * not the label contents themselves. Used for debugging and testing purposes.
      * @see setDrawLabelRectOnly
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     bool drawLabelRectOnly() const;
 
@@ -740,12 +740,12 @@ class CORE_EXPORT QgsPalLabeling
      * not the label contents themselves. Used for debugging and testing purposes.
      * @param drawRect set to true to enable rect drawing only
      * @see drawLabelRectOnly
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setDrawLabelRectOnly( bool drawRect );
 
     //! called to find out whether the layer is used for labeling
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
     //! @note not available in Python bindings
@@ -761,7 +761,7 @@ class CORE_EXPORT QgsPalLabeling
      * @param ct coordinate transform, or invalid transform if no transformation required
      * @param clipGeometry geometry to clip features to, if applicable
      * @returns prepared geometry
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
 
@@ -771,7 +771,7 @@ class CORE_EXPORT QgsPalLabeling
      * @param ct coordinate transform, or invalid transform if no transformation required
      * @param clipGeometry geometry to clip features to, if applicable
      * @returns true if geometry requires preparation
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, QgsGeometry *clipGeometry = nullptr );
 
@@ -780,7 +780,7 @@ class CORE_EXPORT QgsPalLabeling
      * @param text text string to split
      * @param wrapCharacter additional character to wrap on
      * @returns list of text split to lines
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static QStringList splitToLines( const QString &text, const QString &wrapCharacter );
 
@@ -789,7 +789,7 @@ class CORE_EXPORT QgsPalLabeling
      * allowed to be split apart (e.g., Arabic and Indic based scripts)
      * @param text string to split
      * @returns list of graphemes
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     static QStringList splitToGraphemes( const QString &text );
 
@@ -824,7 +824,7 @@ class CORE_EXPORT QgsPalLabeling
      * @param geom geometry
      * @param minSize minimum size for geometry
      * @returns true if geometry exceeds minimum size
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
 

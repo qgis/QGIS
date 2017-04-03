@@ -28,7 +28,7 @@ class QDomElement;
  * @brief The QgsDatumTransformStore class keeps track of datum transformations
  * as chosen by the user.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsDatumTransformStore
 {

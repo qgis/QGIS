@@ -42,7 +42,7 @@ namespace QgsMapToolSelectUtils
     the selection rubber band (otherwise intersection is enough).
    * @param singleSelect only selects the closest feature to the selectGeometry.
    * @returns list of features which match search geometry and parameters
-   * @note added in QGIS 2.16
+   * \since QGIS 2.16
    */
   QgsFeatureIds getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect );
 
@@ -56,7 +56,7 @@ namespace QgsMapToolSelectUtils
     @param doContains features will only be selected if fully contained within
     the selection rubber band (otherwise intersection is enough).
     @param singleSelect only selects the closest feature to the selectGeometry.
-    @note added in QGIS 2.16
+    \since QGIS 2.16
   */
   void setSelectedFeatures( QgsMapCanvas *canvas,
                             const QgsGeometry &selectGeometry,
@@ -72,7 +72,7 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     @param e MouseEvents are used to determine the current selection
     operations (add, subtract, contains)
-    @note added in QGIS 2.16
+    \since QGIS 2.16
     @see selectSingleFeature()
   */
   void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e );

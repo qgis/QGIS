@@ -25,7 +25,7 @@
  * A tool button widget which is displayed next to editor widgets in attribute forms, and
  * allows for controlling how the widget behaves and interacts with the form while in multi
  * edit mode.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 {

@@ -261,7 +261,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /** Handles updating the model when the conditional style for a field changes.
      * @param fieldName name of field whose conditional style has changed
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void fieldConditionalStyleChanged( const QString &fieldName );
 

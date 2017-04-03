@@ -53,14 +53,14 @@ namespace QgisGui
   /**
    * Minimum magnification level allowed in map canvases.
    * @see CANVAS_MAGNIFICATION_MAX
-   * @note added in QGIS 3.0
+   * \since QGIS 3.0
    */
   constexpr double CANVAS_MAGNIFICATION_MIN = 0.1;
 
   /**
    * Maximum magnification level allowed in map canvases.
    * @see CANVAS_MAGNIFICATION_MAX
-   * @note added in QGIS 3.0
+   * \since QGIS 3.0
    */
   // Must be a factor of 2, so zooming in to max from 100% then zooming back out will result in 100% mag
   constexpr double CANVAS_MAGNIFICATION_MAX = 16.0;

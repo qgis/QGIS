@@ -232,7 +232,7 @@ class CORE_EXPORT QgsFeature
      * @link attributes @endlink method.
      * @returns list of feature's attributes
      * @see setAttributes
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
      */
     QgsAttributes attributes() const;
@@ -319,7 +319,7 @@ class CORE_EXPORT QgsFeature
 
     /** Returns true if the feature has an associated geometry.
      * @see geometry()
-     * @note added in QGIS 3.0.
+     * \since QGIS 3.0.
      */
     bool hasGeometry() const;
 
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsFeature
     /** Removes any geometry associated with the feature.
      * @see setGeometry()
      * @see hasGeometry()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void clearGeometry();
 
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsFeature
      *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see fields
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYDEFAULTVALUE( true ) );

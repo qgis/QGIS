@@ -27,7 +27,7 @@ class QgsMapLayer;
 /** \ingroup gui
  * \class QgsMapLayerConfigWidget
  * \brief A panel widget that can be shown in the map style dock
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
 {

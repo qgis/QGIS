@@ -131,7 +131,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * if it is possible that both feature source and provider may need reading/writing to some shared data at the
      * same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
      *
-     * @note added in 2.4
+     * \since QGIS 2.4
      * @return new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
      */
     virtual QgsAbstractFeatureSource *featureSource() const = 0;
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param context expression context for filter
      * @param ok will be set to true if calculation was successfully performed by the data provider
      * @return calculated aggregate value
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
                                 int index,
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
      * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
      * @returns true in case of success and false in case of failure.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see deleteFeatures()
      */
     virtual bool truncate();
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * manually to ensure that the layer's field are correctly reported.
      * @param renamedAttributes map of attribute index to new attribute name
      * @return true in case of success and false in case of failure
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
 
@@ -325,14 +325,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * field index. These clauses are usually SQL fragments which must be evaluated by the
      * provider, e.g., sequence values.
      * @see defaultValue()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QString defaultValueClause( int fieldIndex ) const;
 
     /**
      * Returns any constraints which are present at the provider for a specified
      * field index.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see skipConstraintCheck()
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Returns true if a constraint check should be skipped for a specified field (e.g., if
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see fieldConstraints()
      */
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
@@ -506,7 +506,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param self the layer using this data provider.
      * @param layers the other layers.
      * @return the list of N-1 relations from this provider.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
 
@@ -536,7 +536,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Signals an error in this provider
      *
-     * @note Added const in QGIS 3.0
+     * \since QGIS 3.0
      */
     void raiseError( const QString &msg ) const;
 
@@ -560,7 +560,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *
      * For general debug information use QgsMessageLog::logMessage() instead.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void pushError( const QString &msg ) const;
 
@@ -574,14 +574,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Set the list of native types supported by this provider.
      * Usually done in the constructor.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setNativeTypes( const QList<NativeType> &nativeTypes );
 
     /**
      * Get this providers encoding
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QTextCodec *textEncoding() const;
 

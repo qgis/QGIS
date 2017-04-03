@@ -50,7 +50,7 @@ class QgsMapSettings;
 /**
  * \brief Handles asynchronous download of images
  * \ingroup core
- * \note added in 2.8
+ * \since QGIS 2.8
  */
 class CORE_EXPORT QgsImageFetcher : public QObject
 {
@@ -178,12 +178,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /** Read band scale for raster value
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ); return 1.0; }
 
     /** Read band offset for raster value
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ); return 0.0; }
 
@@ -228,7 +228,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param scale Optional parameter that is the Scale of the layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
-     * \note visibleExtent parameter added in 2.8 (no available in Python bindings)
+     * \note Parameter visibleExtent added in QGIS 2.8
+     * \note Not available in Python bindings
      */
     virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr )
     {
@@ -248,7 +249,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         legend at all. Ownership of the returned object is transferred
      *         to caller.
      *
-     * \note added in 2.8
+     * \since QGIS 2.8
      *
      */
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings )
@@ -355,7 +356,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
      * By default providers are not editable. Use setEditable() method to enable/disable editing.
      * @see setEditable(), writeBlock()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool isEditable() const { return false; }
 
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * value whether the operation was successful.
      * @returns true if the switch to/from editing mode was successful
      * @see isEditable(), writeBlock()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ); return false; }
 
@@ -396,7 +397,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * in order to allow write operations.
      * @see isEditable(), setEditable()
      * @returns true on success
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 
@@ -445,14 +446,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Step width for raster iterations.
      * @see stepHeight()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual int stepWidth() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH; }
 
     /**
      * Step height for raster iterations.
      * @see stepWidth()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual int stepHeight() const { return QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT; }
 
@@ -464,7 +465,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void progressUpdate( int progress );
 
     /** Emit a message to be displayed on status bar, usually used by network providers (WMS,WCS)
-     * @note added in 2.14
+     * \since QGIS 2.14
      */
     void statusChanged( const QString & ) const;
 

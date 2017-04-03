@@ -446,7 +446,7 @@ Setup the coordinate system transformation for the layer
 
  @return The index of the new field
 
-.. versionadded:: 2.6
+.. versionadded:: 2.9
 %End
 
     void removeExpressionField( int index );

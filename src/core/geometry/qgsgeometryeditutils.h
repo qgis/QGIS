@@ -27,7 +27,7 @@ class QgsVectorLayer;
 /** \ingroup core
  * \class QgsGeometryEditUtils
  * \brief Convenience functions for geometry editing
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  * \note not available in Python bindings
  */

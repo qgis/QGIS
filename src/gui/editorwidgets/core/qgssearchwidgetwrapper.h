@@ -43,7 +43,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
   public:
 
     //! Flags which indicate what types of filtering and searching is possible using the widget
-    //! @note added in QGIS 2.16
+    //! \since QGIS 2.16
     enum FilterFlag
     {
       EqualTo = 1 << 1, //!< Supports equal to
@@ -63,20 +63,20 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 
     /** Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see nonExclusiveFilterFlags()
      */
     static QList< FilterFlag > exclusiveFilterFlags();
 
     /** Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see exclusiveFilterFlags()
      */
     static QList< FilterFlag > nonExclusiveFilterFlags();
 
     /** Returns a translated string representing a filter flag.
      * @param flag flag to convert to string
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     static QString toString( FilterFlag flag );
 
@@ -90,13 +90,13 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
     /** Returns filter flags supported by the search widget.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see defaultFlags()
      */
     virtual FilterFlags supportedFlags() const;
 
     /** Returns the filter flags which should be set by default for the search widget.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see supportedFlags()
      */
     virtual FilterFlags defaultFlags() const;
@@ -122,7 +122,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * and the specified filter flags.
      * @param flags filter flags
      * @returns filter expression
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     // TODO QGIS 3.0 - make pure virtual
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
   public slots:
 
     /** Clears the widget's current value and resets it back to the default state
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual void clearWidget() {}
 
@@ -148,13 +148,13 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     void expressionChanged( const QString &exp );
 
     /** Emitted when a user changes the value of the search widget.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void valueChanged();
 
     /** Emitted when a user changes the value of the search widget back
      * to an empty, default state.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void valueCleared();
 

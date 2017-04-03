@@ -27,7 +27,7 @@
  * \ingroup gui
  * QLineEdit subclass with built in support for showing/hiding
  * entered password.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  **/
 class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 {

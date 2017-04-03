@@ -78,12 +78,12 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populated     //!< Children created
     };
 
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     State state() const;
 
     /** Set item state. It also take care about starting/stopping loading icon animation.
      * @param state
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     virtual void setState( State state );
 
@@ -133,14 +133,14 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Default implementation returns false.
      * A draggable item has to implement mimeUri() that will be used to pass data.
      * @see mimeUri()
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     virtual bool hasDragEnabled() const { return false; }
 
     /** Return mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * @see hasDragEnabled()
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
 
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     /**
      * Will request a repaint of this icon.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void updateIcon();
 
@@ -333,17 +333,17 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QString providerKey() const { return mProviderKey; }
 
     /** Returns the supported CRS
-     *  @note Added in 2.8
+     *  \since QGIS 2.8
      */
     QStringList supportedCrs() const { return mSupportedCRS; }
 
     /** Returns the supported formats
-     *  @note Added in 2.8
+     *  \since QGIS 2.8
      */
     QStringList supportedFormats() const { return mSupportFormats; }
 
     /** Returns comments of the layer
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     virtual QString comments() const { return QString(); }
 
@@ -495,7 +495,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 
 /** \ingroup core
  * Contains various Favorites directories
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 {

@@ -31,7 +31,7 @@ class QgsCoordinateReferenceSystem;
 /** \ingroup core
  * \class QgsCoordinateUtils
  * \brief Utilities for handling and formatting coordinates
- * \note added in QGIS 2.14
+ * \since QGIS 2.14
  */
 class CORE_EXPORT QgsCoordinateUtils
 {

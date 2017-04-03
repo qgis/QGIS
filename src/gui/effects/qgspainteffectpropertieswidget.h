@@ -26,7 +26,7 @@ class QgsPaintEffect;
  * \class QgsPaintEffectPropertiesWidget
  * \brief A widget which modifies the properties of a QgsPaintEffect
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::EffectPropertiesWidget

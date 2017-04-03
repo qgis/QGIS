@@ -21,7 +21,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    //! @note mode parameter added in QGIS 2.12
+    //! \since QGIS 2.12
     QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode = CaptureNone );
     virtual ~QgsMapToolAddFeature();
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -32,6 +32,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
   protected:
 
     /** Check if CaptureMode match layer type. Default is true.
-     * @note Added in 2.12 */
+     * \since QGIS 2.12 */
     bool mCheckGeometryType;
 };

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Data definable properties.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     enum Property
     {
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns the symbol layer property definitions.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns true if symbol layer is enabled and will be drawn.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setEnabled()
      */
     bool enabled() const { return mEnabled; }
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets whether symbol layer is enabled and should be drawn. Disabled
      * layers are not drawn, but remain part of the symbol and can be re-enabled
      * when desired.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see enabled()
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
@@ -144,19 +144,19 @@ class CORE_EXPORT QgsSymbolLayer
     virtual void setColor( const QColor &color ) { mColor = color; }
 
     /** Set stroke color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual void setStrokeColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /** Get stroke color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual QColor strokeColor() const { return QColor(); }
 
     /** Set fill color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual void setFillColor( const QColor &color ) { Q_UNUSED( color ); }
 
     /** Get fill color. Supported by marker and fill layers.
-     * @note added in 2.1 */
+     * \since QGIS 2.1 */
     virtual QColor fillColor() const { return QColor(); }
 
     /**
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /** Sets a data defined property for the layer. Any existing property with the same key
      * will be overwritten.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see getDataDefinedProperty
      * @see removeDataDefinedProperty
      */
@@ -273,14 +273,14 @@ class CORE_EXPORT QgsSymbolLayer
 
     /** Returns the current paint effect for the layer.
      * @returns paint effect
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see setPaintEffect
      */
     QgsPaintEffect *paintEffect() const;
 
     /** Sets the current paint effect for the layer.
      * @param effect paint effect. Ownership is transferred to the layer.
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect *effect );
@@ -288,25 +288,25 @@ class CORE_EXPORT QgsSymbolLayer
     /** Prepares all data defined property expressions for evaluation. This should
      * be called prior to evaluating data defined properties.
      * @param context symbol render context
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
 
     /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /** Returns a reference to the symbol layer's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
 
     /** Sets the symbol layer's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see properties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsSymbolLayer
     static const bool SELECT_FILL_STYLE = false;
 
     /** Restores older data defined properties from string map.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void restoreOldDataDefinedProperties( const QgsStringMap &stringMap );
 
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     /** Copies paint effect of this layer to another symbol layer
      * @param destLayer destination layer
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
@@ -414,7 +414,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
      * @param lineAngle Angle in degrees clockwise from north, valid values are between 0 and 360
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see setAngle()
      * @see angle()
      */
@@ -571,7 +571,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     /** Returns the approximate bounding box of the marker symbol layer, taking into account
      * any data defined overrides and offsets which are set for the marker layer.
      * @returns approximate symbol bounds, in painter units
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 

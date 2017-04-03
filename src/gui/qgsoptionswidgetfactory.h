@@ -22,7 +22,7 @@
 /** \ingroup gui
  * \class QgsOptionsPageWidget
  * Base class for widgets for pages included in the options dialog.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsOptionsPageWidget : public QWidget
 {
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
 /** \ingroup gui
  * \class QgsOptionsWidgetFactory
  * A factory class for creating custom options pages.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsOptionsWidgetFactory
 {

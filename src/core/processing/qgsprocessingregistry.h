@@ -31,7 +31,7 @@
  *
  * QgsProcessingRegistry is not usually directly created, but rather accessed through
  * QgsApplication::processingRegistry().
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingRegistry : public QObject
 {

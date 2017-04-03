@@ -26,7 +26,7 @@ class QgsPolygonV2;
 /** \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Removes the interior rings from the polygon. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see removeInteriorRing()
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );

@@ -56,7 +56,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     virtual void clear() override;
 
     /** Resets the widget to show no value (ie, an "unknown" state).
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setEmpty();
 

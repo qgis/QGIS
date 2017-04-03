@@ -30,7 +30,7 @@ class QgsSpatialIndex;
  * QgsPointDistanceRenderer handles calculation of point clusters using a distance based threshold.
  * Subclasses must implement drawGroup() to handle the rendering of individual point clusters
  * in the desired style.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
@@ -179,14 +179,14 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * @param unit tolerance distance units
      * @see setTolerance()
      * @see toleranceUnit()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setToleranceUnit( QgsUnitTypes::RenderUnit unit ) { mToleranceUnit = unit; }
 
     /** Returns the units for the tolerance distance.
      * @see tolerance()
      * @see setToleranceUnit()
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsUnitTypes::RenderUnit toleranceUnit() const { return mToleranceUnit; }
 

@@ -97,7 +97,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Returns the current view mode.
      * @see setView()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     ViewMode view() const;
 
@@ -222,19 +222,19 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void openConditionalStyles();
 
     /** Sets whether multi edit mode is enabled.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setMultiEditEnabled( bool enabled );
 
     /** Toggles whether search mode should be enabled in the form.
      * @param enabled set to true to switch on search mode
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void toggleSearchMode( bool enabled );
 
     /**
      * Copy the content of the selected cell in the clipboard.
-     * @note added in QGIS 1.16
+     * \since QGIS 1.16
      */
     void copyCellContent() const;
 
@@ -254,7 +254,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /** Is emitted when a filter expression is set using the view.
      * @param expression filter expression
      * @param type filter type
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
@@ -369,7 +369,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     /**
      * Create a new attribute table action.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QUuid &action, const QModelIndex &fieldIdx )
       : QAction( name, dualView )

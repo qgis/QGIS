@@ -29,7 +29,7 @@
 /**
   * QgsServerSettingsEnv provides some enum describing the environment
   * currently supported for configuration.
-  * @note added in QGIS 3.0
+  * \since QGIS 3.0
   */
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
@@ -62,7 +62,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 /** \ingroup server
  * QgsServerSettings provides a way to retrieve settings by prioritizing
  * according to environment variables, ini file and default values.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerSettings
 {

@@ -25,7 +25,7 @@
  * subclass and override methods like focusOutEvent to handle focus events. Using this class
  * as an event filter avoids the need to subclass objects and the focus events can be directly
  * caught using the emitted signals.
- * \note added in 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsFocusWatcher : public QObject

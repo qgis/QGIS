@@ -90,7 +90,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Set the display name of the layer
      * @param name new name for the layer
-     * @note added in 2.16
+     * \since QGIS 2.16
      * @see name()
      */
     void setName( const QString &name );
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void reload() {}
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.4
+     * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0;
 
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isEditable() const;
 
     /** Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual bool isSpatial() const { return true; }
 
@@ -466,7 +466,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param errorMsg this QString will be initialized on error
      * during the execution of readSymbology
      * @return true on success
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg );
 
@@ -546,7 +546,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @param node node that will contain the style definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
-     * @note added in 2.16
+     * \since QGIS 2.16
      * @note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage );
@@ -564,7 +564,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @param doc the document that will have the QDomNode added.
      *  @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
-     *  @note added in 2.16
+     *  \since QGIS 2.16
      *  @note To be implemented in subclasses. Default implementation does nothing and returns false.
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const;
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QUndoStack *undoStack();
 
     /** Return pointer to layer's style undo stack
-     *  @note added in 2.16
+     *  \since QGIS 2.16
      */
     QUndoStack *undoStackStyles();
 
@@ -586,26 +586,26 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Assign a legend controller to the map layer. The object will be responsible for providing legend items.
      * @param legend Takes ownership of the object. Can be null pointer
-     * @note added in 2.6
+     * \since QGIS 2.6
      */
     void setLegend( QgsMapLayerLegend *legend );
 
     /**
      * Can be null.
-     * @note added in 2.6
+     * \since QGIS 2.6
      */
     QgsMapLayerLegend *legend() const;
 
     /**
      * Get access to the layer's style manager. Style manager allows switching between multiple styles.
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     QgsMapLayerStyleManager *styleManager() const;
 
     /** Tests whether the layer should be visible at the specified scale.
      * @param scale scale denominator to test
      * @returns true if the layer is visible at the given scale.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see minimumScale()
      * @see maximumScale()
      * @see hasScaleBasedVisibility()
@@ -643,7 +643,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns true if auto refresh is enabled for the layer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see autoRefreshInterval()
      * @see setAutoRefreshEnabled()
      */
@@ -652,7 +652,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Returns the auto refresh interval (in milliseconds). Note that
      * auto refresh is only active when hasAutoRefreshEnabled() is true.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see autoRefreshEnabled()
      * @see setAutoRefreshInterval()
      */
@@ -665,7 +665,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * Note that auto refresh triggers deferred repaints of the layer. Any map
      * canvas must be refreshed separately in order to view the refreshed layer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see autoRefreshInterval()
      * @see setAutoRefreshEnabled()
      */
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets whether auto refresh is enabled for the layer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see hasAutoRefreshEnabled()
      * @see setAutoRefreshInterval()
      */
@@ -727,7 +727,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QDateTime timestamp() const { return QDateTime() ; }
 
     /** Triggers an emission of the styleChanged() signal.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void emitStyleChanged();
 
@@ -737,7 +737,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * @param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
      * @returns false if a dependency cycle has been detected
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 
@@ -746,7 +746,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * as well as dependencies given by the provider
      *
      * @returns a set of QgsMapLayerDependency
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
@@ -758,7 +758,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /**
      * Emitted when the name has been changed
      *
-     * @note added in 2.16
+     * \since QGIS 2.16
      */
     void nameChanged();
 
@@ -789,14 +789,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Signal emitted whenever a change affects the layer's style. Ie this may be triggered
      * by renderer changes, label style changes, or other style changes such as blend
      * mode or layer opacity changes.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see rendererChanged()
     */
     void styleChanged();
 
     /**
      * Signal emitted when legend of the layer has changed
-     * @note added in 2.6
+     * \since QGIS 2.6
      */
     void legendChanged();
 
@@ -815,14 +815,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Emitted in the destructor when the layer is about to be deleted,
      * but it is still in a perfectly valid state: the last chance for
      * other pieces of code for some cleanup if they use the layer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void willBeDeleted();
 
     /**
      * Emitted when the auto refresh interval changes.
      * @see setAutoRefreshInterval()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void autoRefreshIntervalChanged( int interval );
 
@@ -970,14 +970,14 @@ Q_DECLARE_METATYPE( QgsMapLayer * )
 
 /**
  * Weak pointer for QgsMapLayer
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  * @note not available in Python bindings
  */
 typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
 
 /**
  * A list of weak pointers to QgsMapLayers.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  * @note not available in Python bindings
  */
 typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;

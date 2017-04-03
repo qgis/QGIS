@@ -30,7 +30,7 @@
  * \brief Base class for paint effect which draw a glow inside or outside a
  * picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
  * \class QgsOuterGlowEffect
  * \brief A paint effect which draws a glow outside of a picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
  * \class QgsInnerGlowEffect
  * \brief A paint effect which draws a glow within a picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect

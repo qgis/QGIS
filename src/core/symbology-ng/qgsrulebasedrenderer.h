@@ -153,7 +153,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! @note not available in Python bindings
         QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, const QString &rule = "" ) const;
 
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         QgsLegendSymbolListV2 legendSymbolItemsV2( int currentLevel = -1 ) const;
 
         /**
@@ -206,10 +206,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         bool active() const { return mIsActive; }
 
         //! Unique rule identifier (for identification of rule within renderer)
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         QString ruleKey() const { return mRuleKey; }
         //! Override the assigned rule key (should be used just internally by rule-based renderer)
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
         //! set a new symbol (or NULL). Deletes old symbol.
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
         /** Returns which legend keys match the feature
-         * @note added in QGIS 2.14
+         * \since QGIS 2.14
          */
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         Rule *takeChildAt( int i );
 
         //! Try to find a rule given its unique key
-        //! @note added in 2.6
+        //! \since QGIS 2.6
         Rule *findRuleByKey( const QString &key );
 
         /**
@@ -466,7 +466,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     static void refineRuleScales( Rule *initialRule, QList<int> scales );
 
     //! creates a QgsRuleBasedRenderer from an existing renderer.
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     //! @returns a new renderer if the conversion was possible, otherwise 0.
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );
 

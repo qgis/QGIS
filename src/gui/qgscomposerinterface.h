@@ -30,7 +30,7 @@ class QgsComposition;
  * This interface can be used by plugins and scripts to interact with
  * open composer dialogs.
  *
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsComposerInterface: public QObject
 {

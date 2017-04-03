@@ -26,7 +26,7 @@ class QgsMapLayer;
 
 /** \ingroup core
  * @brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
- * @note added in 2.3
+ * \since QGIS 2.3
  */
 class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * @brief setFilters set flags that affect how layers are filtered
      * @param filters are Filter flags
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
     const Filters &filters() const { return mFilters; }
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 
     /**
      * Sets a list of data providers which should be excluded from the model.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see excludedProviders()
      */
     void setExcludedProviders( const QStringList &providers );
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * Returns the list of data providers which are excluded from the model.
      * @see setExcludedProviders()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QStringList excludedProviders() const { return mExcludedProviders; }
 

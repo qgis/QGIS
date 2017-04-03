@@ -34,7 +34,7 @@
  * Features are collected to form one "inverted" polygon
  * during renderFeature() and rendered on stopRender().
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 {
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
 
     /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
-     * @note added in 2.5
+     * \since QGIS 2.5
      * @returns a new renderer if the conversion was possible, otherwise 0.
      */
     static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer );

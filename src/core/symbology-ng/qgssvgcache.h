@@ -67,7 +67,7 @@ class CORE_EXPORT QgsSvgCacheEntry
     double widthScaleFactor;
 
     /** SVG viewbox size.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QSizeF viewboxSize;
 
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param strokeWidth width of stroke
      * @param widthScaleFactor width scale factor
      * @returns viewbox size set in SVG file
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor );
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * @param hasDefaultStrokeOpacity will be true if stroke opacity param has a default value specified
      * @param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
      * @note available in Python bindings as containsParamsV3
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void containsParams( const QString &path, bool &hasFillParam, bool &hasDefaultFillParam, QColor &defaultFillColor,
                          bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,

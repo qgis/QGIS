@@ -44,7 +44,7 @@ class QDomDocument;
  *
  * @note This class is used internally by QgsProject. It's generally recommended that the methods in
  * QgsProject are used to modify project properties rather than using these low-level classes.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectProperty
 {
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsProjectProperty
  * \class QgsProjectPropertyValue
  * \ingroup core
  * Project property value node, contains a QgsProjectPropertyKey's value.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 {
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
  * QgsProjectPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
  * that will contain a QgsProjectPropertyValue.
  *
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 {
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * The name of the property is used as identifier.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      * @see name()
      */
     void setName( const QString &name );

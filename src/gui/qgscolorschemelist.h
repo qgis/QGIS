@@ -186,7 +186,7 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     bool isDirty() const;
 
     /** Returns the scheme currently selected in the list.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setScheme()
      */
     QgsColorScheme *scheme();
@@ -223,13 +223,13 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     void copyColors();
 
     /** Displays a file picker dialog allowing users to import colors into the list from a file.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see showExportColorsDialog()
      */
     void showImportColorsDialog();
 
     /** Displays a file picker dialog allowing users to export colors from the list into a file.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see showImportColorsDialog()
      */
     void showExportColorsDialog();

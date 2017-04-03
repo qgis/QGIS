@@ -25,7 +25,7 @@ class QgsLineString;
 /** \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsGeometryUtils
 {
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param geom geometry
      * @param id vertex id to find distance to
      * @returns distance to vertex (following geometry)
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param nextVertex will be set to next vertex ID
      * @note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * @returns true if vertices were successfully retrieved
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
                                     double distance,
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param tolerance The tolerance to use
      * @return The list of self intersections
      * @note not available in Python bindings
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance );
 
@@ -287,7 +287,7 @@ class CORE_EXPORT QgsGeometryUtils
      *   pr = midpoint ( p, QgsPointV2( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
      *   # pr is a 3D point: 'PointZM (3 4 1 1)'
      * \endcode
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QgsPointV2 midpoint( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param pt1 first point.
      * @param pt2 second point.
      * @return The gradient of this linear entity, or infinity if vertical
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static double gradient( const QgsPointV2 &pt1, const QgsPointV2 &pt2 );
 
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsGeometryUtils
      * @param a Output parameter, a coefficient of the equation.
      * @param b Output parameter, b coefficient of the equation.
      * @param c Output parameter, c coefficient of the equation.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c );
 

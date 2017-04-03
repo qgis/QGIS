@@ -153,13 +153,13 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied.
      * @param scale factor to scale view by
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void scaleSafe( double scale );
 
     /** Sets whether a preview effect should be used to alter the view's appearance
      * @param enabled Set to true to enable the preview effect on the view
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
@@ -167,14 +167,14 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
      * @param mode PreviewMode to be used to draw the view
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setPreviewModeEnabled
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
     /** Sets the map canvas associated with the view. This allows the
      * view to retrieve map settings from the canvas.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see mapCanvas()
      */
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**
      * Returns the map canvas associated with the view.
      * @see setMapCanvas()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsMapCanvas *mapCanvas() const;
 

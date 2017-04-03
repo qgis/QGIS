@@ -32,7 +32,7 @@ class QString;
  *    of the following: QgsDataProider::Dir or QgsDataProvider::File. Passed path is the file
  *    or directory being inspected, parent item is a valid QgsDirectoryItem
  *
- * @note added in 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsDataItemProvider
 {

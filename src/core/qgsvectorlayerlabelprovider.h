@@ -29,7 +29,7 @@ class QgsSymbol;
  * for vector layers. Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
  *
- * @note added in QGIS 2.12
+ * \since QGIS 2.12
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
  */
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      * @param fet point feature
      * @param context render context
      * @param symbols symbols rendered for point feature
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     static QgsGeometry *getPointObstacleGeometry( QgsFeature &fet, QgsRenderContext &context, const QgsSymbolList &symbols );
 

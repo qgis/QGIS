@@ -52,7 +52,7 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
     /** Sets the message bar to display feedback from the form in. This is used in the search/filter
      * mode to display the count of selected features.
      * @param messageBar target message bar
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
 

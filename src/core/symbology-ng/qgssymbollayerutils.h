@@ -98,14 +98,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
     /** Encodes a QSizeF to a string.
      * @see decodeSize()
      * @see encodePoint()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QString encodeSize( QSizeF size );
 
     /** Decodes a QSizeF from a string.
      * @see encodeSize()
      * @see decodePoint()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QSizeF decodeSize( const QString &string );
 
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param size target pixmap size
      * @param padding space between icon edge and symbol
      * @param customContext render context to use when rendering symbol
-     * @note customContext parameter added in 2.6
+     * \note Parameter customContext added in QGIS 2.6
      * @see symbolPreviewIcon()
      */
     static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param size target size of preview picture
      * @param scale map unit scale for preview
      * @returns QPicture containing symbol layer preview
-     * @note added in QGIS 2.9
+     * \since QGIS 2.9
      * @see symbolLayerPreviewIcon()
      */
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /** Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     static QString symbolProperties( QgsSymbol *symbol );
 
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Returns a friendly display name for a color
      * @param color source color
      * @returns display name for color
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     static QString colorToName( const QColor &color );
 
@@ -393,7 +393,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * codes, rgb and rgba strings.
      * @param colorStr string representing the color list
      * @returns list of parsed colors
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     static QList< QColor > parseColorList( const QString &colorStr );
 
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * mime data's text with the color's hex code.
      * @param color color to encode as mime data
      * @see colorFromMimeData
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     static QMimeData *colorToMimeData( const QColor &color );
 
@@ -413,7 +413,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * an explicit alpha value
      * @returns valid color if mimedata could be interpreted as a color, otherwise an
      * invalid color
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha );
 
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Attempts to parse mime data as a list of named colors
      * @param data mime data to parse
      * @returns list of parsed colors
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
 
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param colorList list of named colors
      * @param allFormats set to true to include additional mime formats, include text/plain and application/x-color
      * @returns mime data containing encoded colors
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true );
 
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param colorStr string representing the color
      * @param strictEval set to true for stricter color parsing rules
      * @returns parsed color
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     static QColor parseColor( const QString &colorStr, bool strictEval = false );
 
@@ -471,7 +471,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * @param containsAlpha if colorStr contains an explicit alpha value then containsAlpha will be set to true
      * @param strictEval set to true for stricter color parsing rules
      * @returns parsed color
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     static QColor parseColorWithAlpha( const QString &colorStr, bool &containsAlpha, bool strictEval = false );
 
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static void blurImageInPlace( QImage &image, QRect rect, int radius, bool alphaOnly );
 
     /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     static void premultiplyColor( QColor &rgb, int alpha );
 
@@ -519,7 +519,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns null pointer.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
-     * @note added in 2.2
+     * \since QGIS 2.2
      */
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression );
 
@@ -527,44 +527,44 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *  Returns full expression string if the expression is more complex than just one field.
      *  Using just expression->expression() method may return quoted field name, but that is not
      *  wanted for saving (due to backward compatibility) or display in GUI.
-     * @note added in 2.2
+     * \since QGIS 2.2
      */
     static QString fieldOrExpressionFromExpression( QgsExpression *expression );
 
     /** Computes a sequence of about 'classes' equally spaced round values
      *  which cover the range of values from 'minimum' to 'maximum'.
      *  The values are chosen so that they are 1, 2 or 5 times a power of 10.
-     * @note added in 2.10
+     * \since QGIS 2.10
      */
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
     /** Rescales the given size based on the uomScale found in the props, if any is found, otherwise
      *  returns the value un-modified
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
 
     /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
 
     /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static QVector<qreal> rescaleUom( const QVector<qreal> &array, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
 
     /**
      * Checks if the properties contain scaleMinDenom and scaleMaxDenom, if available, they are added into the SE Rule element
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static void applyScaleDependency( QDomDocument &doc, QDomElement &ruleElem, QgsStringMap &props );
 
     /**
       * Merges the local scale limits, if any, with the ones already in the map, if any
-      * @note added in 3.0
+      * \since QGIS 3.0
       */
     static void mergeScaleDependencies( int mScaleMinDenom, int mScaleMaxDenom, QgsStringMap &props );
 
@@ -572,7 +572,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * Encodes a reference to a parametric SVG into SLD, as a succession of parametric SVG using URL parameters,
      * a fallback SVG without parameters, and a final fallback as a mark with the right colors and stroke for systems
      * that cannot do SVG at all
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static void parametricSvgToSld( QDomDocument &doc, QDomElement &graphicElem,
                                     const QString &path,
@@ -580,7 +580,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     /**
      * Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 

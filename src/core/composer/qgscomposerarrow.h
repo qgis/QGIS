@@ -109,7 +109,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @returns arrow head stroke color
      * @see arrowHeadFillColor
      * @see setArrowHeadStrokeColor
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     QColor arrowHeadStrokeColor() const { return mArrowHeadStrokeColor; }
 
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param color arrow head stroke color
      * @see setArrowHeadFillColor
      * @see arrowHeadStrokeColor
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setArrowHeadStrokeColor( const QColor &color );
 
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @returns arrow head fill color
      * @see arrowHeadStrokeColor
      * @see setArrowHeadFillColor
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     QColor arrowHeadFillColor() const { return mArrowHeadFillColor; }
 
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param color arrow head fill color
      * @see arrowHeadFillColor
      * @see setArrowHeadStrokeColor
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setArrowHeadFillColor( const QColor &color );
 
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @param width pen width for arrow head stroke
      * @see arrowHeadStrokeWidth
      * @see setArrowHeadStrokeColor
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setArrowHeadStrokeWidth( const double width );
 
@@ -149,21 +149,21 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      * @returns pen width for arrow head stroke
      * @see setArrowHeadStrokeWidth
      * @see arrowHeadStrokeColor
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
     /** Sets the line symbol used for drawing the line portion of the arrow
      * @param symbol line symbol
      * @see lineSymbol
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setLineSymbol( QgsLineSymbol *symbol );
 
     /** Returns the line symbol used for drawing the line portion of the arrow
      * @returns line symbol
      * @see setLineSymbol
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     QgsLineSymbol *lineSymbol() { return mLineSymbol; }
 
@@ -249,12 +249,12 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void init();
 
     /** Creates the default line symbol
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void createDefaultLineSymbol();
 
     /** Draws the arrow line
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void drawLine( QPainter *painter );
 };

@@ -27,7 +27,7 @@ class QgsPointClusterRenderer;
 /** \class QgsPointClusterRendererWidget
  * \ingroup gui
  * A widget which allows configuration of the properties for a QgsPointClusterRenderer.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, private Ui::QgsPointClusterRendererWidgetBase

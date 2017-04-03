@@ -52,7 +52,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Returns the editor widget property definitions.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
@@ -144,26 +144,26 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @return Validity status of this widget.
      *
-     * @note Added in 2.12
+     * \since QGIS 2.12
      */
     virtual bool valid() const = 0;
 
 
     /** Returns a reference to the editor widget's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; }
 
     /** Returns a reference to the editor widget's property collection, used for data defined overrides.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
 
     /** Sets the editor widget's property collection, used for data defined overrides.
      * @param collection property collection. Existing properties will be replaced.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }

@@ -23,7 +23,7 @@
 /** \ingroup core
  * \class QgsArrowSymbolLayer
  * \brief Line symbol layer used for representing lines as arrows.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer

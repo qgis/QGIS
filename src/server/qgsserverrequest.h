@@ -28,7 +28,7 @@
  * QgsServerRequest
  * Class defining request interface passed to services QgsService::executeRequest() method
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 // Note about design: this interface must be passed along to Python and thus signatures methods must be

@@ -59,7 +59,7 @@ class QgsMSLayerCache: public QObject
     /**
       * Set the maximum number of layers in cache.
       * @param maxCacheLayers the number of layers in cache
-      * @note added in QGIS 3.0
+      * \since QGIS 3.0
       */
     void setMaxCacheLayers( int maxCacheLayers );
 

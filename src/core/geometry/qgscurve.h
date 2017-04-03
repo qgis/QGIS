@@ -28,7 +28,7 @@ class QPainterPath;
 /** \ingroup core
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 {
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual bool pointAt( int node, QgsPointV2 &point, QgsVertexId::VertexType &type ) const = 0;
 
     /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     virtual QgsCurve *reversed() const = 0;
 

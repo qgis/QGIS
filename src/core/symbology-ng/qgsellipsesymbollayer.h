@@ -58,11 +58,11 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
     /** Get stroke join style.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /** Set stroke join style.
-     * @note added in 2.16 */
+     * \since QGIS 2.16 */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
     void setStrokeWidth( double w ) { mStrokeWidth = w; }

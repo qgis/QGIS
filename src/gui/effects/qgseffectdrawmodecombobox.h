@@ -24,7 +24,7 @@
  * \class QgsEffectDrawModeComboBox
  * \brief A combo box allowing selection of paint effect draw modes
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox

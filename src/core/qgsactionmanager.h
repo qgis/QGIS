@@ -78,7 +78,7 @@ class CORE_EXPORT QgsActionManager
     /**
      * Remove an action by its id.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void removeAction( const QUuid &actionId );
 
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsActionManager
      * Return a list of actions that are available in the given action scope.
      * If no action scope is provided, all actions will be returned.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList<QgsAction> actions( const QString &actionScope = QString() ) const;
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsActionManager
     /**
      * Get an action by its id.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAction action( const QUuid &id );
 
@@ -127,7 +127,7 @@ class CORE_EXPORT QgsActionManager
      * Each scope can have a default action. This will be saved in the project
      * file.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setDefaultAction( const QString &actionScope, const QUuid &actionId );
 
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsActionManager
      * Each scope can have a default action. This will be saved in the project
      * file.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsAction defaultAction( const QString &actionScope );
 

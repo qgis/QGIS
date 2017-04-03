@@ -28,7 +28,7 @@
  * \brief A paint effect which alters the colors (e.g., brightness, contrast) in a
  * source picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsColorEffect : public QgsPaintEffect

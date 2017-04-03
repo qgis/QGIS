@@ -36,7 +36,7 @@ class QgsLabelingEngine;
  *
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * @note not available in Python bindings
- * @note added in QGIS 2.12
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsAbstractLabelProvider
 {
@@ -160,7 +160,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  * (equivalent of pal::Layer) instead of subProviders(), label providers integrated
  * into feature loop vs providers with independent feature loop), split labeling
  * computation from drawing of labels, improved results class with label iterator).
- * @note added in QGIS 2.12
+ * \since QGIS 2.12
  * @note not available in Python bindings
  */
 class CORE_EXPORT QgsLabelingEngine
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsLabelingEngine
 
     /**
      * Returns a list of layers with providers in the engine.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > participatingLayers() const;
 
@@ -266,7 +266,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLabelingEngine::Flags )
  * @class QgsLabelingUtils
  * @brief Contains helper utilities for working with QGIS' labeling engine.
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
- * @note added in QGIS 2.14
+ * \since QGIS 2.14
  * @note not available in Python bindings
  */
 

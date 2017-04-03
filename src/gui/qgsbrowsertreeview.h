@@ -25,7 +25,7 @@
  * The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
  *
  * @see QgsBrowserModel
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {

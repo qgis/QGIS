@@ -45,7 +45,7 @@ class CORE_EXPORT QgsFontUtils
      * @param family The family to test
      * @param style The style to test for
      * @returns Whether family has style
-     * @note Added in QGIS 2.1
+     * \since QGIS 2.1
      */
     static bool fontFamilyHasStyle( const QString &family, const QString &style );
 
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsFontUtils
     static bool updateFontViaStyle( QFont &f, const QString &fontstyle, bool fallback = false );
 
     /** Get standard test font family
-     * @note Added in QGIS 2.1
+     * \since QGIS 2.1
      */
     static QString standardTestFontFamily();
 
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsFontUtils
      * @param loadstyles List of styles to load, e.g. All, Roman, Oblique, Bold, Bold Oblique
      * @returns Whether any font was loaded
      * @note Done by default on debug app/server startup to ensure fonts available for unit tests (Roman and Bold)
-     * @note Added in QGIS 2.1
+     * \since QGIS 2.1
      */
     static bool loadStandardTestFonts( const QStringList &loadstyles );
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsFontUtils
      * @param style Style to load, e.g. Roman, Oblique, Bold, Bold Oblique
      * @param pointsize Font point size to set
      * @returns QFont
-     * @note Added in QGIS 2.1
+     * \since QGIS 2.1
      */
     static QFont getStandardTestFont( const QString &style = "Roman", int pointsize = 12 );
 
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsFontUtils
      * @param document DOM document
      * @param elementName name for DOM element
      * @returns DOM element containing font settings
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see setFromXmlElement
      */
     static QDomElement toXmlElement( const QFont &font, QDomDocument &document, const QString &elementName );
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsFontUtils
      * @param font font to update
      * @param element DOM element
      * @returns true if properties were successfully read from element
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see toXmlElement
      * @see setFromXmlChildNode
      */
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsFontUtils
      * @param element DOM element
      * @param childNode name of child node
      * @returns true if child node exists and properties were successfully read from node
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      * @see setFromXmlElement
      * @see toXmlElement
      */
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsFontUtils
     /** Returns the localized named style of a font, if such a translation is available.
      * @param namedStyle a named style, i.e. "Bold", "Italic", etc
      * @returns The localized named style
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see untranslateNamedStyle
      */
     static QString translateNamedStyle( const QString &namedStyle );
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsFontUtils
     /** Returns the english named style of a font, if possible.
      * @param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
      * @returns The english named style
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see translateNamedStyle
      */
     static QString untranslateNamedStyle( const QString &namedStyle );
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsFontUtils
      * should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
      * destination DPI)
      * @returns partial CSS string, e.g., "font-family: Comic Sans; font-size: 12px;"
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     static QString asCSS( const QFont &font, double pointToPixelMultiplier = 1.0 );
 };

@@ -147,7 +147,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Loads field names and values from the specified map.
      *  @note The field values must be quoted appropriately if they are strings.
-     *  @note added in QGIS 2.12
+     *  \since QGIS 2.12
      */
     void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
 
@@ -164,7 +164,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Returns the expression context for the widget. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * @see setExpressionContext
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const { return mExpressionContext; }
 
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * preview result and for populating the list of available functions and variables.
      * @param context expression context
      * @see expressionContext
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context );
 

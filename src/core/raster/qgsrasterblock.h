@@ -138,14 +138,14 @@ class CORE_EXPORT QgsRasterBlock
     bool hasNoData() const;
 
     /** Sets cell value that will be considered as "no data".
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see noDataValue(), hasNoDataValue(), resetNoDataValue()
      */
     void setNoDataValue( double noDataValue );
 
     /** Reset no data value: if there was a no data value previously set,
      * it will be discarded.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see noDataValue(), hasNoDataValue(), setNoDataValue()
      */
     void resetNoDataValue();
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsRasterBlock
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  @param row row index
      *  @param column column index
-     *  @note added in QGIS 2.10 */
+     *  \since QGIS 2.10 */
     void setIsData( int row, int column );
 
     /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsRasterBlock
      * In this case it is possible to reset a pixel to flag it as having valid data using this
      * method. This method has no effect for raster blocks with an explicit no data value set.
      *  @param index data matrix index (long type in Python)
-     *  @note added in QGIS 2.10 */
+     *  \since QGIS 2.10 */
     void setIsData( qgssize index );
 
     /** Get access to raw data.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsRasterBlock
      * still exists. Writing to the returned QByteArray will not affect the original data:
      * a deep copy of the data will be made and only the local copy will be modified.
      * @note in Python the method returns ordinary bytes object as the
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QByteArray data() const;
 
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsRasterBlock
      * array, only the initial data from the input array will be used.
      * Optionally it is possible to set non-zero offset (in bytes) if the input data should
      * overwrite data somewhere in the middle of the internal buffer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setData( const QByteArray &data, int offset = 0 );
 
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsRasterBlock
      *         It is ensured that conversion back to float gives the same number.
      *  @param value the value to be printed
      *  @return string representing the value
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @note not available in Python bindings
      */
     static QString printValue( float value );
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsRasterBlock
     void applyNoDataValues( const QgsRasterRangeList &rangeList );
 
     /** Apply band scale and offset to raster block values
-     * @@note added in 2.3 */
+     * @\since QGIS 2.3 */
     void applyScaleOffset( double scale, double offset );
 
     //! \brief Get error
@@ -363,13 +363,13 @@ class CORE_EXPORT QgsRasterBlock
 
     /** Returns the width (number of columns) of the raster block.
      * @see height
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     int width() const { return mWidth; }
 
     /** Returns the height (number of rows) of the raster block.
      * @see width
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     int height() const { return mHeight; }
 

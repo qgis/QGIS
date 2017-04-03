@@ -29,7 +29,7 @@ class QgsVectorLayer;
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.
  * @see QgsMapLayerComboBox
- * @note added in 2.3
+ * \since QGIS 2.3
  */
 class GUI_EXPORT QgsFieldComboBox : public QComboBox
 {
@@ -55,14 +55,14 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     /**
      * Sets whether an optional empty field ("not set") option is shown in the combo box.
      * @see allowEmptyFieldName()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns true if the combo box allows the empty field ("not set") choice.
      * @see setAllowEmptyFieldName()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const;
 

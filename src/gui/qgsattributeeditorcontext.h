@@ -112,13 +112,13 @@ class GUI_EXPORT QgsAttributeEditorContext
     /** Sets the form mode.
      * @param mode form mode
      * @see formMode()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     inline void setFormMode( FormMode mode ) { mFormMode = mode; }
 
     /** Returns true if the attribute editor should permit use of custom UI forms.
      * @see setAllowCustomUi()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     bool allowCustomUi() const { return mAllowCustomUi; }
 
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * @param allow set to true to allow custom UI forms, or false to disable them and use default generated
      * QGIS forms
      * @see allowCustomUi()
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setAllowCustomUi( bool allow ) { mAllowCustomUi = allow; }
 

@@ -81,21 +81,21 @@ class CORE_EXPORT QgsRenderChecker
      */
     QString renderedImage() { return mRenderedImageFile; }
 
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     void setMapSettings( const QgsMapSettings &mapSettings );
 
     /** Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
      * @param colorTolerance is maximum difference for each color component
      * including alpha to be considered correct.
-     * @note added in 2.1
+     * \since QGIS 2.1
      */
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
     /** Sets the largest allowable difference in size between the rendered and the expected image.
      * @param xTolerance x tolerance in pixels
      * @param yTolerance y tolerance in pixels
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
 

@@ -36,7 +36,7 @@ class QgsExpressionContext;
  * from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
  * directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
  * to a data provider for remote calculation.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsAggregateCalculator
 {

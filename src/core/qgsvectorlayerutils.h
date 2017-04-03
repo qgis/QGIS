@@ -24,7 +24,7 @@
  * \class QgsVectorLayerUtils
  * \brief Contains utility methods for working with QgsVectorLayers.
  *
- * \note Added in version 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsVectorLayerUtils

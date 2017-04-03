@@ -44,7 +44,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Result of constraint checks.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     enum ConstraintResult
     {
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void setEnabled( bool enabled ) override;
 
     /** Sets the widget to display in an indeterminate "mixed value" state.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual void showIndeterminateState() {}
 
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * @param featureContext the feature to use to evaluate the constraint
      * @param constraintOrigin optional origin for constraints to check. This can be used to limit the constraints tested
      * to only provider or layer based constraints.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Get the current constraint status.
      * @return true if the constraint is valid or if there's no constraint,
      * false otherwise
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see constraintFailureReason()
      * @see isBlockingCommit()
      */
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Returns true if the widget is preventing the feature from being committed. This may be true as a result
      * of attribute values failing enforced field constraints.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see isValidConstraint()
      */
     bool isBlockingCommit() const;
@@ -159,7 +159,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns the reason why a constraint check has failed (or an empty string
      * if constraint check was successful).
      * @see isValidConstraint()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString constraintFailureReason() const;
 
@@ -263,7 +263,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @param status The current constraint status.
      *
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     virtual void updateConstraintWidgetStatus( ConstraintResult status );
 

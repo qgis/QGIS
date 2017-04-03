@@ -36,7 +36,7 @@ class QCheckBox;
 /**
  * \class QgsMapCanvasDockWidget
  * A dock widget with an embedded map canvas, for additional map views.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsMapCanvasDockWidgetBase
 {
@@ -176,7 +176,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
 /**
  * \class QgsMapSettingsAction
  * Allows embedding a scale, rotation and other map settings into a menu.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class QgsMapSettingsAction: public QWidgetAction

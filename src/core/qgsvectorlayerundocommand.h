@@ -221,7 +221,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
 /** \ingroup core
  * \class QgsVectorLayerUndoCommandRenameAttribute
  * \brief Undo command for renaming an existing attribute of a vector layer.
- * \note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLayerUndoCommand

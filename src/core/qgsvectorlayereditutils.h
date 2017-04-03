@@ -64,7 +64,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /** Deletes a vertex from a feature.
      * @param featureId ID of feature to remove vertex from
      * @param vertex index of vertex to delete
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 

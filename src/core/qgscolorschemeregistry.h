@@ -28,7 +28,7 @@
  *
  * A registry of QgsColorScheme color schemes. This class can be created directly, or
  * accessed via a QgsApplication::colorSchemeRegistry().
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsColorSchemeRegistry
 {

@@ -47,7 +47,7 @@
  *  - Misc
  *  - Auth
  *
- * @note added in QGIS 3
+ * \since QGIS 3
  */
 class CORE_EXPORT QgsSettings : public QObject
 {

@@ -29,7 +29,7 @@ class QgsGeometry;
  * more data to the instances that will be later used for drawing of labels.
  *
  * @note this class is not a part of public API yet. See notes in QgsLabelingEngine
- * @note added in QGIS 2.12
+ * \since QGIS 2.12
  * @note not available in Python bindings
  */
 class CORE_EXPORT QgsLabelFeature
@@ -52,13 +52,13 @@ class CORE_EXPORT QgsLabelFeature
      * buffer around a point geometry to prevent labels being placed too close to the
      * point itself. It not set, the feature's geometry is used for obstacle detection.
      * Ownership of obstacle geometry is transferred.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see obstacleGeometry()
      */
     void setObstacleGeometry( GEOSGeometry *obstacleGeom );
 
     /** Returns the label's obstacle geometry, if different to the feature geometry.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      * @see setObstacleGeometry()
      */
     GEOSGeometry *obstacleGeometry() const { return mObstacleGeometry; }
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsLabelFeature
      * are not contained within the zone.
      * @param geometry permissible zone geometry. If an invalid QgsGeometry is passed then no zone limit
      * will be applied to the label candidates (this is the default behavior).
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see permissibleZone()
      */
     void setPermissibleZone( const QgsGeometry &geometry );
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsLabelFeature
     /** Returns the label's permissible zone geometry. If a valid geometry is returned, the feature's label
      * MUST be fully contained within this zone, and the feature will not be labeled if no candidates can be
      * generated which are not contained within the zone.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setPermissibleZone()
      * @see permissibleZonePrepared()
      */
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsLabelFeature
 
     /** Returns a GEOS prepared geometry representing the label's permissibleZone().
      * @see permissibleZone()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     //TODO - remove when QgsGeometry caches GEOS preparedness
     const GEOSPreparedGeometry *permissibleZonePrepared() const { return mPermissibleZoneGeosPrepared; }
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsLabelFeature
     /** Returns the label's z-index. Higher z-index labels are rendered on top of lower
      * z-index labels.
      * @see setZIndex()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     double zIndex() const { return mZIndex; }
 
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsLabelFeature
      * z-index labels.
      * @param zIndex z-index for label
      * @see zIndex()
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     void setZIndex( double zIndex ) { mZIndex = zIndex; }
 

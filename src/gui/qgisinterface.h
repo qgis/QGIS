@@ -106,20 +106,20 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns a list of all map canvases open in the app.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QList< QgsMapCanvas * > mapCanvases() = 0;
 
     /**
      * Create a new map canvas with the specified unique \a name.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see closeMapCanvas()
      */
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
 
     /**
      * Closes the additional map canvas with matching \a name.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createNewMapCanvas()
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
@@ -245,7 +245,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *addToolBar( const QString &name ) = 0;
 
     //! Add a toolbar
-    //! @note added in 2.3
+    //! \since QGIS 2.3
     virtual void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     //! Return a pointer to the map canvas
@@ -254,7 +254,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Returns a pointer to the layer tree canvas bridge
      *
-     * @note added in 2.12
+     * \since QGIS 2.12
      */
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
 
@@ -272,7 +272,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns all currently open composer windows.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QList<QgsComposerInterface *> openComposers() = 0;
 
@@ -280,7 +280,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * Opens a new composer window for the specified \a composition, or
      * brings an already open composer window to the foreground if one
      * is already created for the composition.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see closeComposer()
      */
     virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
@@ -288,7 +288,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Closes an open composer window showing the specified \a composition.
      * The composition remains unaffected.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see openComposer()
      */
     virtual void closeComposer( QgsComposition *composition ) = 0;
@@ -296,7 +296,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Opens the options dialog. The \a currentPage argument can be used to force
      * the dialog to open at a specific page.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) = 0;
 
@@ -357,7 +357,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
     /** Advanced digitizing dock widget
-     *  @note Added in 2.12
+     *  \since QGIS 2.12
      */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 
@@ -382,40 +382,40 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
     /** Register a new tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /** Unregister a previously registered tab in the vector layer properties dialog.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      * @see registerMapLayerPropertiesFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /** Register a new tab in the options dialog.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterOptionsWidgetFactory() */
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /** Unregister a previously registered tab in the options dialog.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see registerOptionsWidgetFactory()
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /** Register a new custom drop handler.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * @see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /** Unregister a previously registered custom drop handler.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
@@ -445,7 +445,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
     virtual QMenu *newLayerMenu() = 0;
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     virtual QMenu *addLayerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
@@ -581,7 +581,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Returns the Hide Deselected Layers action.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QAction *actionHideDeselectedLayers() = 0;
     virtual QAction *actionShowSelectedLayers() = 0;
@@ -660,7 +660,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * This signal is emitted when a new composer window has been opened.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see composerWillBeClosed()
      */
     void composerOpened( QgsComposerInterface *composer );
@@ -668,7 +668,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * This signal is emitted before a composer window is going to be closed
      * and deleted.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see composerClosed()
      * @see composerOpened()
      */
@@ -676,7 +676,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * This signal is emitted after a composer window is closed.
-     * @note added in version 3.0
+     * \since QGIS 3.0
      * @see composerWillBeClosed()
      * @see composerOpened()
      */

@@ -27,7 +27,7 @@ namespace QgsWms
   /** \ingroup server
     * thiss class provides a proxy for sequential or parallel map render job by
     * reading qsettings.
-    * @note added in QGIS 3.0
+    * \since QGIS 3.0
     */
   class QgsMapRendererJobProxy
   {

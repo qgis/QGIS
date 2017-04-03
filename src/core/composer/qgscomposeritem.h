@@ -127,7 +127,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * from the composition are not deleted so that they can be restored via an undo
      * command.
      * @returns true if the item has been removed from the composition
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      * @see setIsRemoved
      */
     virtual bool isRemoved() const { return mRemovedFromComposition; }
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * from the composition are not deleted so that they can be restored via an undo
      * command.
      * @param removed set to true if the item has been removed from the composition
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      * @see isRemoved
      */
     void setIsRemoved( const bool removed ) { mRemovedFromComposition = removed; }
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
      * @param point item point for zoom center
      * @param mode zoom mode
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) { Q_UNUSED( factor ); Q_UNUSED( point ); Q_UNUSED( mode ); }
 
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns page number for item, beginning on page 1
      * @see pagePos
      * @see updatePagePos
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     int page() const;
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns position relative to the page's top left corner.
      * @see page
      * @see updatePagePos
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     QPointF pagePos() const;
 
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param newPageHeight new height of the page in mm
      * @see page
      * @see pagePos
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      */
     void updatePagePos( double newPageWidth, double newPageHeight );
 
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
-     * @note this method was added in version 2.1
+     * \since QGIS 2.1
      * @see setItemRotation
      */
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
@@ -464,7 +464,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @returns display name for item
      * @see id
      * @see setId
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     virtual QString displayName() const;
 
@@ -473,7 +473,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @note QGraphicsItem::setVisible should not be called directly
      * on a QgsComposerItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     virtual void setVisibility( const bool visible );
 
@@ -481,28 +481,28 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param valueType controls whether the returned value is the user specified value,
      * or the current evaluated value (which may be affected by data driven settings).
      * @returns true if item should be excluded
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see setExcludeFromExports
      */
     bool excludeFromExports( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 
     /** Sets whether the item should be excluded from composer exports and prints
      * @param exclude set to true to exclude the item from exports
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see excludeFromExports
      */
     virtual void setExcludeFromExports( const bool exclude );
 
     /** Returns whether this item is part of a group
      * @returns true if item is in a group
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see setIsGroupMember
      */
     bool isGroupMember() const { return mIsGroupMember; }
 
     /** Sets whether this item is part of a group
      * @param isGroupMember set to true if item is in a group
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see isGroupMember
      */
     void setIsGroupMember( const bool isGroupMember );
@@ -510,21 +510,21 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /** Get the number of layers that this item requires for exporting as layers
      * @returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      * @see setCurrentExportLayer
      */
     virtual int numberExportLayers() const { return 0; }
 
     /** Sets the current layer to draw for exporting
      * @param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
-     * @note this method was added in version 2.4
+     * \since QGIS 2.4
      * @see numberExportLayers
      */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
     /** Creates an expression context relating to the item's current state. The context includes
      * scopes for global, project, composition, atlas and item properties.
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual QgsExpressionContext createExpressionContext() const override;
 
@@ -533,7 +533,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * the item will not be redrawn. This can be used to prevent
      * multiple item updates when many settings for an item are
      * changed sequentially.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see updatesEnabled()
      */
     void setUpdatesEnabled( bool enabled ) { mUpdatesEnabled = enabled; }
@@ -543,7 +543,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * the item will not be redrawn. This can be used to prevent
      * multiple item updates when many settings for an item are
      * changed sequentially.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setUpdatesEnabled()
      */
     bool updatesEnabled() const { return mUpdatesEnabled; }
@@ -554,7 +554,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param r item rotation in degrees
      * @param adjustPosition set to true if item should be shifted so that rotation occurs
      * around item center. If false, rotation occurs around item origin
-     * @note this method was added in version 2.1
+     * \since QGIS 2.1
      * @see itemRotation
      */
     virtual void setItemRotation( const double r, const bool adjustPosition = false );
@@ -567,7 +567,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
      * @param context expression context for evaluating data defined expressions
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
@@ -639,7 +639,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /** The layer that needs to be exported
      * @note: if -1, all layers are to be exported
-     * @note: this member was added in version 2.4
+     * \since QGIS 2.4
      */
     int mCurrentExportLayer;
 
@@ -682,13 +682,13 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param context expression context for evaluating data defined expressions
      * @returns bounding box rectangle for item after data defined size and position have been
      * set and position mode has been accounted for
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext *context = nullptr );
 
     /** Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     bool shouldDrawItem() const;
 
@@ -729,7 +729,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       *@param rotateAroundCenter set to true to rotate the item around its center rather
       * than its origin
       * @param context expression context for evaulating data defined rotation
-      * @note this method was added in version 2.5
+      * \since QGIS 2.5
      */
     void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
 
@@ -737,7 +737,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       * @param updateItem set to false to prevent the item being automatically updated
       * after the transparency is set
       * @param context expression context for evaulating data defined transparency
-      * @note this method was added in version 2.5
+      * \since QGIS 2.5
      */
     void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
@@ -756,7 +756,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void refreshBackgroundColor( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's blend mode, considering data defined blend mode
-     * @note this method was added in version 2.5
+     * \since QGIS 2.5
      */
     void refreshBlendMode( const QgsExpressionContext &context );
 

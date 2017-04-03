@@ -31,7 +31,7 @@ class QgsProjectionSelectionDialog;
  * \class QgsProjectionSelectionWidget
  * \ingroup gui
  * \brief A widget for selecting a projection.
- * \note added in QGIS 2.7
+ * \since QGIS 2.7
  */
 class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /**
      * Returns whether the specified CRS option is visible in the widget.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setOptionVisible()
      */
     bool optionVisible( CrsOption option ) const;
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     /**
      * Sets the text to show for the not set option. Note that this option is not shown
      * by default and must be set visible by calling setOptionVisible().
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setNotSetText( const QString &text );
 
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     /**
      * Emitted when the not set option is selected.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void cleared();
 

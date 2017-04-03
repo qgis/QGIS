@@ -29,7 +29,7 @@ class QgsVectorLayer;
  * @brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
  * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
- * @note added in 2.3
+ * \since QGIS 2.3
  */
 class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 {
@@ -80,14 +80,14 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.
      * @see allowEmptyFieldName()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setAllowEmptyFieldName( bool allowEmpty );
 
     /**
      * Returns true if the model allows the empty field ("not set") choice.
      * @see setAllowEmptyFieldName()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool allowEmptyFieldName() const { return mAllowEmpty; }
 

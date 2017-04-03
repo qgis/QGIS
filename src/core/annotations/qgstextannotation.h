@@ -26,7 +26,7 @@
  * \class QgsTextAnnotation
  * \ingroup core
  * An annotation item that displays formatted text from a QTextDocument document.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsTextAnnotation: public QgsAnnotation
 {

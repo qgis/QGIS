@@ -73,7 +73,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @returns fixed size for frame. If the size has a width or height of 0, then
      * the frame size is not fixed in that direction and frames can have variable width
      * or height accordingly.
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see minFrameSize
      * @see recalculateFrameRects
      */
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param frameIndex frame number
      * @returns minimum size for frame. If the size has a width or height of 0, then
      * the frame size has no minimum in that direction.
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see fixedFrameSize
      * @see recalculateFrameRects
      */
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param painter destination painter
      * @param renderExtent visible extent of content to render into the painter.
      * @param frameIndex frame number for content
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     virtual void render( QPainter *painter, const QRectF &renderExtent, const int frameIndex ) = 0;
 
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param yPos maximum vertical position for break
      * @returns the optimal breakable position which occurs in the multi frame close
      * to and before the specified yPos
-     * @note added in version 2.3
+     * \since QGIS 2.3
      */
     virtual double findNearbyPageBreak( double yPos ) { return yPos; }
 
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Returns the index of a frame within the multiframe
      * @param frame frame to find index of
      * @returns index for frame if found, -1 if frame not found in multiframe
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see frame
      */
     int frameIndex( QgsComposerFrame *frame ) const;
@@ -219,13 +219,13 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      * @param pos position of top-left corner of the new frame
      * @param size size of the new frame
      * @returns new QgsComposerFrame
-     * @note added in version 2.3
+     * \since QGIS 2.3
      */
     QgsComposerFrame *createNewFrame( QgsComposerFrame *currentFrame, QPointF pos, QSizeF size );
 
     /** Get multiframe display name.
      * @returns display name for item
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     virtual QString displayName() const;
 
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
     /** Forces a recalculation of all the associated frame's scene rectangles. This
      * method is useful for multiframes which implement a minFrameSize() or
      * fixedFrameSize() method.
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see minFrameSize()
      * @see fixedFrameSize()
      * @see recalculateFrameSizes

@@ -91,7 +91,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Copy constructor
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsEditFormConfig( const QgsEditFormConfig &o );
     ~QgsEditFormConfig();
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Get the invisible root container for the drag and drop designer form (EditorLayout::TabLayout).
      *
-     * @note Added in QGIS 3
+     * \since QGIS 3
      */
     QgsAttributeEditorContainer *invisibleRootContainer();
 

@@ -23,7 +23,7 @@
 /** \ingroup gui
  * A CSS editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.6
+ * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
 {

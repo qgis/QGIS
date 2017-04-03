@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMessageOutput
     virtual void showMessage( bool blocking = true ) = 0;
 
     /** Display the blocking message to the user.
-     *  @note added in 2.10
+     *  \since QGIS 2.10
      */
     static void showMessage( const QString &title, const QString &message, MessageType msgType );
 

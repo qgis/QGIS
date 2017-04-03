@@ -261,7 +261,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param refresh set to true to force the table to refetch features from its vector layer
      * and immediately update the display of the table. This may result in the table changing size
      * to accommodate the new displayed feature attributes.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
 
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Sets a string to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @param wrapString string to replace with line break
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see wrapString
      */
     void setWrapString( const QString &wrapString );
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
      * be replaced by a line break.
      * @returns string which will be replaced with line break
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      * @see setWrapString
      */
     QString wrapString() const { return mWrapString; }

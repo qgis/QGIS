@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerUtils
     static bool decodePresetPaperSize( const QString &presetString, double &width, double &height );
 
     /** Reads all pre 3.0 data defined properties from an XML element.
-     * @note this method was added in version 3.0
+     * \since QGIS 3.0
      * @see readDataDefinedProperty
      * @see writeDataDefinedPropertyMap
      */
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsComposerUtils
         QgsPropertyCollection &dataDefinedProperties );
 
     /** Reads a pre 3.0 data defined property from an XML DOM element.
-     * @note this method was added in version 3.0
+     * \since QGIS 3.0
      * @see readDataDefinedPropertyMap
      */
     static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
@@ -143,14 +143,14 @@ class CORE_EXPORT QgsComposerUtils
      * to workaround QT font rendering bugs
      * @param font source font with size set in points
      * @returns font with size set in pixels
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     static QFont scaledFontPixelSize( const QFont &font );
 
     /** Calculate font ascent in millimeters, including workarounds for QT font rendering issues
      * @param font input font
      * @returns font ascent in millimeters
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see fontDescentMM
      * @see fontHeightMM
      * @see fontHeightCharacterMM
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsComposerUtils
     /** Calculate font descent in millimeters, including workarounds for QT font rendering issues
      * @param font input font
      * @returns font descent in millimeters
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontHeightMM
      * @see fontHeightCharacterMM
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsComposerUtils
      * The font height is the font ascent + descent + 1 (for the baseline).
      * @param font input font
      * @returns font height in millimeters
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontDescentMM
      * @see fontHeightCharacterMM
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param font input font
      * @param character character to calculate height for
      * @returns character height in millimeters
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontDescentMM
      * @see fontHeightMM
@@ -199,7 +199,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param font input font
      * @param text string to calculate width of
      * @returns string width in millimeters
-     * @note added in version 2.5
+     * \since QGIS 2.5
      * @see fontAscentMM
      * @see fontDescentMM
      * @see fontHeightMM
@@ -215,7 +215,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param text string to calculate height of
      * @param multiLineHeight line spacing factor
      * @returns string height in millimeters
-     * @note added in version 2.12
+     * \since QGIS 2.12
      * @see textWidthMM
      */
     static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param text string to draw
      * @param font font to use for drawing text
      * @param color color to draw text
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     static void drawText( QPainter *painter, QPointF pos, const QString &text, const QFont &font, const QColor &color = QColor() );
 
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsComposerUtils
      * @param halignment optional horizontal alignment
      * @param valignment optional vertical alignment
      * @param flags allows for passing Qt::TextFlags to control appearance of rendered text
-     * @note added in version 2.5
+     * \since QGIS 2.5
      */
     static void drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
 
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsComposerUtils
      * This method returns a new QgsRenderContext which matches the scale and settings of the
      * target map. If the \a dpi argument is not specified then the dpi will be taken from the destinatation
      * painter device.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createRenderContextForComposition()
      */
     static QgsRenderContext createRenderContextForMap( QgsComposerMap *map, QPainter *painter, double dpi = -1 );
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsComposerUtils
      * Creates a render context suitable for the specified \a composition and \a painter destination.
      * This method returns a new QgsRenderContext which matches the scale and settings from the composition's
      * QgsComposition::referenceMap().
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createRenderContextForMap()
      */
     static QgsRenderContext createRenderContextForComposition( QgsComposition *composition, QPainter *painter );

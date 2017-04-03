@@ -34,7 +34,7 @@ class QgsComposerMapOverview;
  * \brief A collection of overviews which are drawn above the map content in a
  * QgsComposerMap. The overview stack controls which overviews are drawn and the
  * order they are drawn in.
- * \note added in QGIS 2.5
+ * \since QGIS 2.5
  * \see QgsComposerMapOverview
  */
 class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
  * QgsComposerMap, and shows the extent of another QgsComposerMap.
- * \note added in QGIS 2.5
+ * \since QGIS 2.5
  * \see QgsComposerMapOverviewStack
  */
 class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem

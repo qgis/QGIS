@@ -45,7 +45,7 @@ class QgsFilterLineEdit;
  * If the widget type is handled, it is valid.
  * It can perform a text search in the widget and highlight it in case of success.
  * This uses stylesheets.
- * @note added in 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
 {
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * searchText searches for a text in all the pages of the stacked widget and highlight the results
      * @param text the text to search
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void searchText( const QString &text );
 
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * register widgets in the dialog to search for text in it
      * it is automatically called if a line edit has "mSearchLineEdit" as object name.
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     void registerTextSearchWidgets();
 

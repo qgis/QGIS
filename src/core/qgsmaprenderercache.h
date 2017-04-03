@@ -36,7 +36,7 @@
  *
  * The class is thread-safe (multiple classes can access the same instance safely).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCache : public QObject
 {
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     /**
      * Returns true if the cache contains an image with the specified \a cacheKey.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see cacheImage()
      */
     bool hasCacheImage( const QString &cacheKey ) const;
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     /**
      * Returns a list of map layers on which an image in the cache depends.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
 

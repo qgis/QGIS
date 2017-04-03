@@ -40,7 +40,7 @@ class QgsCoordinateReferenceSystem;
  * getAndStealReadyFeatures() to collect the features that have been completely
  * parsed.
  * @note not available in Python bindings
- * @note Added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsGmlStreamingParser
 {
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsGml : public QObject
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /** Returns features spatial reference system
-      @note Added in QGIS 2.1 */
+      \since QGIS 2.1 */
     QgsCoordinateReferenceSystem crs() const;
 
   private slots:

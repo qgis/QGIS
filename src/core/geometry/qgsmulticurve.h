@@ -22,7 +22,7 @@ email                : marco.hugentobler at sourcepole dot com
 /** \ingroup core
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     virtual bool addGeometry( QgsAbstractGeometry *g ) override;
 
     /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
-     * @note added in QGIS 2.14
+     * \since QGIS 2.14
      */
     QgsMultiCurve *reversed() const;
 

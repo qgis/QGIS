@@ -32,7 +32,7 @@ class QgsFeatureRequest;
  * Abstract interface for use by classes that filter the features of a layer.
  * A QgsFeatureFilterProvider provides a method for modifying a QgsFeatureRequest in place to apply
  * additional filters to the request.
- * \note added in QGIS 2.14
+ * \since QGIS 2.14
  **/
 
 class CORE_EXPORT QgsFeatureFilterProvider

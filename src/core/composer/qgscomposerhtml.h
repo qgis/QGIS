@@ -52,7 +52,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see contentMode
      * @see setUrl
      * @see setHtml
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setContentMode( ContentMode mode ) { mContentMode = mode; }
 
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see setContentMode
      * @see url
      * @see html
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     ContentMode contentMode() const { return mContentMode; }
 
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see html
      * @see contentMode
      * @see loadHtml
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setHtml( const QString &html );
 
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @returns HTML displayed in item
      * @see setHtml
      * @see contentMode
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     QString html() const { return mHtml; }
 
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * feature.
      * @returns true if html item will evaluate expressions in the content
      * @see setEvaluateExpressions
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     bool evaluateExpressions() const { return mEvaluateExpressions; }
 
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * feature.
      * @param evaluateExpressions set to true to evaluate expressions in the HTML content
      * @see evaluateExpressions
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void setEvaluateExpressions( bool evaluateExpressions );
 
@@ -146,7 +146,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * useSmartBreaks is true.
      * @param maxBreakDistance maximum amount of empty space to leave when calculating
      * page break locations
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see maxBreakDistance
      * @see setUseSmartBreaks
      */
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * at the bottom of a frame after calculating the optimum break location. This setting
      * is only effective if useSmartBreaks is true.
      * @returns maximum amount of empty space to leave when calculating page break locations
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setMaxBreakDistance
      * @see useSmartBreaks
      */
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @see userStylesheet
      * @see setUserStylesheetEnabled
      * @see loadHtml
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setUserStylesheet( const QString &stylesheet );
 
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @returns CSS rules for user stylesheet
      * @see setUserStylesheet
      * @see userStylesheetEnabled
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     QString userStylesheet() const { return mUserStylesheet; }
 
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @param stylesheetEnabled set to true to enable user stylesheets
      * @see userStylesheetEnabled
      * @see setUserStylesheet
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     void setUserStylesheetEnabled( const bool stylesheetEnabled );
 
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      * @returns true if user stylesheets are enabled
      * @see setUserStylesheetEnabled
      * @see userStylesheet
-     * @note added in 2.5
+     * \since QGIS 2.5
      */
     bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
 

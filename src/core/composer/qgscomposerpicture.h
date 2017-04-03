@@ -75,7 +75,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @param path path for the source image
      * @see usePictureExpression
      * @see picturePath
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     void setPicturePath( const QString &path );
 
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * @returns path for the source image
      * @see usePictureExpression
      * @see setPicturePath
-     * @note added in QGIS 2.5
+     * \since QGIS 2.5
      */
     QString picturePath() const;
 
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 
     /** Returns the rotation used for drawing the picture within the item's frame
      * @returns picture rotation in degrees
-     * @note added in 2.2
+     * \since QGIS 2.2
      * @see setPictureRotation
      * @see rotationMap
      */
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * Returns the mode used to align the picture to a map's North.
      * @see setNorthMode()
      * @see northOffset()
-     * @note added in QGIS 2.18
+     * \since QGIS 2.18
      */
     NorthMode northMode() const { return mNorthMode; }
 
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * Sets the mode used to align the picture to a map's North.
      * @see northMode()
      * @see setNorthOffset()
-     * @note added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setNorthMode( NorthMode mode );
 
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * Returns the offset added to the picture's rotation from a map's North.
      * @see setNorthOffset()
      * @see northMode()
-     * @note added in QGIS 2.18
+     * \since QGIS 2.18
      */
     double northOffset() const { return mNorthOffset; }
 
@@ -167,14 +167,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * Sets the offset added to the picture's rotation from a map's North.
      * @see northOffset()
      * @see setNorthMode()
-     * @note added in QGIS 2.18
+     * \since QGIS 2.18
      */
     void setNorthOffset( double offset );
 
     /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
      * @returns resize mode of picture
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setResizeMode
      */
     ResizeMode resizeMode() const { return mResizeMode; }
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Sets the picture's anchor point, which controls how it is placed
      * within the picture item's frame.
      * @param anchor anchor point for picture
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see pictureAnchor
      */
     void setPictureAnchor( QgsComposerItem::ItemPositionMode anchor );
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Returns the picture's current anchor, which controls how it is placed
      * within the picture item's frame.
      * @returns anchor point for picture
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see setPictureAnchor
      */
     ItemPositionMode pictureAnchor() const { return mPictureAnchor; }
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Returns the fill color used for parametrized SVG files.
      * @see setSvgFillColor()
      * @see svgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \since QGIS 2.14.1
      */
     QColor svgFillColor() const { return mSvgFillColor; }
 
@@ -208,14 +208,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * non-parametrized SVG files.
      * @see svgFillColor()
      * @see setSvgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \since QGIS 2.14.1
      */
     void setSvgFillColor( const QColor &color );
 
     /** Returns the stroke color used for parametrized SVG files.
      * @see setSvgStrokeColor()
      * @see svgFillColor()
-     * @note added in QGIS 2.14.1
+     * \since QGIS 2.14.1
      */
     QColor svgStrokeColor() const { return mSvgStrokeColor; }
 
@@ -225,14 +225,14 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * non-parametrized SVG files.
      * @see svgStrokelColor()
      * @see setSvgFillColor()
-     * @note added in QGIS 2.14.1
+     * \since QGIS 2.14.1
      */
     void setSvgStrokeColor( const QColor &color );
 
     /** Returns the stroke width (in mm) used for parametrized SVG files.
      * @see setSvgStrokeWidth()
      * @see svgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \since QGIS 2.14.1
      */
     double svgStrokeWidth() const { return mSvgStrokeWidth; }
 
@@ -242,13 +242,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * non-parametrized SVG files.
      * @see svgStrokeWidth()
      * @see setSvgStrokeColor()
-     * @note added in QGIS 2.14.1
+     * \since QGIS 2.14.1
      */
     void setSvgStrokeWidth( double width );
 
     /** Returns the current picture mode (image format).
      * @returns picture mode
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     Mode mode() const { return mMode; }
 
@@ -258,13 +258,13 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * the item's frame, only the way the picture is drawn within the item.
      * @param r rotation in degrees clockwise
      * @see pictureRotation
-     * @note added in 2.2
+     * \since QGIS 2.2
      */
     virtual void setPictureRotation( double r );
 
     /** Sets the resize mode used for drawing the picture within the item bounds.
      * @param mode ResizeMode to use for image file
-     * @note added in 2.3
+     * \since QGIS 2.3
      * @see resizeMode
      */
     virtual void setResizeMode( ResizeMode mode );
@@ -272,12 +272,12 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
      * @param context expression context for evaluating data defined picture sources
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     void refreshPicture( const QgsExpressionContext *context = nullptr );
 
     /** Forces a recalculation of the picture's frame size
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     void recalculateSize();
 

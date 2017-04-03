@@ -23,7 +23,7 @@
 
 /** \ingroup core
  * A text table item that reads text from string lists
- * @note added in QGIS 2.10
+ * \since QGIS 2.10
 */
 class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
 {

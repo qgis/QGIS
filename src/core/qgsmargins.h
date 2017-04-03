@@ -28,7 +28,7 @@
  * QgsMargins defines a set of four margins; left, top, right and bottom, that describe the size of the borders surrounding a rectangle.
  *
  * The isNull() function returns true only if all margins are set to zero.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 //This class was originally based off Qt's QgsMarginsF class

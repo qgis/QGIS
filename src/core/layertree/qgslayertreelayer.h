@@ -34,7 +34,7 @@ class QgsMapLayer;
  * however possible that temporarily a layer exists in one tree more than just
  * once, e.g. while reordering items with drag and drop.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 {
@@ -50,10 +50,10 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     QgsMapLayer *layer() const { return mRef.layer.data(); }
 
     //! Get layer's name
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     QString name() const override;
     //! Set layer's name
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void setName( const QString &n ) override;
 
     //! Read layer node from XML. Returns new instance.
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     static QgsLayerTreeLayer *readXml( QDomElement &element );
     //! Read layer node from XML. Returns new instance.
     //! Also resolves textual references to layers from the project (calls resolveReferences() internally).
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project );
 
     virtual void writeXml( QDomElement &parentElement ) override;
@@ -71,22 +71,22 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     virtual QgsLayerTreeLayer *clone() const override;
 
     //! Resolves reference to layer from stored layer ID (if it has not been resolved already)
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     virtual void resolveReferences( const QgsProject *project ) override;
 
   private slots:
     //! Emits a nameChanged() signal if layer's name has changed
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void layerNameChanged();
     //! Handles the event of deletion of the referenced layer
-    //! @note added in 3.0
+    //! \since QGIS 3.0
     void layerWillBeDeleted();
 
   signals:
     //! emitted when a previously unavailable layer got loaded
     void layerLoaded();
     //! emitted when a previously available layer got unloaded (from layer registry)
-    //! @note added in 2.6
+    //! \since QGIS 2.6
     void layerWillBeUnloaded();
 
   protected:

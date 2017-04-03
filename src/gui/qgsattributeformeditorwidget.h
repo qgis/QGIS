@@ -36,7 +36,7 @@ class QgsAttributeEditorContext;
  * of the editor widget depending on a number of possible modes. For instance, if the parent attribute
  * form is in the multi edit mode, this widget will show both the editor widget and a tool button for
  * controlling the multi edit results.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 {
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
     /** Creates an expression matching the current search filter value and
      * search properties represented in the widget.
-     * @note added in QGIS 2.16
+     * \since QGIS 2.16
      */
     QString currentFilterExpression() const;
 

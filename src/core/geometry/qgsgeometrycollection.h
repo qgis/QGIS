@@ -24,7 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 /** \ingroup core
  * \class QgsGeometryCollection
  * \brief Geometry collection
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QVector< QgsAbstractGeometry * > mGeometries;
 
     /** Returns whether child type names are omitted from Wkt representations of the collection
-     * @note added in QGIS 2.12
+     * \since QGIS 2.12
      */
     virtual bool wktOmitChildType() const { return false; }
 

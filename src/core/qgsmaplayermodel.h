@@ -29,7 +29,7 @@ class QgsMapLayer;
  * @brief The QgsMapLayerModel class is a model to display layers in widgets.
  * @see QgsMapLayerProxyModel to sort and/filter the layers
  * @see QgsFieldModel to combine in with a field selector.
- * @note added in 2.3
+ * \since QGIS 2.3
  */
 class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 {
@@ -74,28 +74,28 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * Sets whether an optional empty layer ("not set") option is present in the model.
      * @see allowEmptyLayer()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setAllowEmptyLayer( bool allowEmpty );
 
     /**
      * Returns true if the model allows the empty layer ("not set") choice.
      * @see setAllowEmptyLayer()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool allowEmptyLayer() const { return mAllowEmpty; }
 
     /**
      * Sets whether the CRS of layers is also included in the model's display role.
      * @see showCrs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setShowCrs( bool showCrs );
 
     /**
      * Returns true if the model includes layer's CRS in the display role.
      * @see setShowCrs()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool showCrs() const { return mShowCrs; }
 
@@ -116,14 +116,14 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * These may represent additional layers such as layers which are not included in the map
      * layer registry, or paths to layers which have not yet been loaded into QGIS.
      * @see additionalItems()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setAdditionalItems( const QStringList &items );
 
     /**
      * Return the list of additional (non map layer) items included at the end of the model.
      * @see setAdditionalItems()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QStringList additionalItems() const { return mAdditionalItems; }
 

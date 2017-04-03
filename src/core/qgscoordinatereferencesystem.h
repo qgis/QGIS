@@ -241,7 +241,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * returned values can be safely passed to fromSrsId() to create a new, valid
      * QgsCoordinateReferenceSystem object.
      * @see fromSrsId()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QList< long > validSrsIds();
 
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
      * @param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * @returns matching CRS, or an invalid CRS if string could not be matched
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createFromOgcWmsCrs()
     */
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
@@ -258,14 +258,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Creates a CRS from a given EPSG ID.
      * @param epsg epsg CRS ID
      * @returns matching CRS, or an invalid CRS if string could not be matched
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
     */
     Q_INVOKABLE static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
 
     /** Creates a CRS from a proj4 style formatted string.
      * @param proj4 proj4 format string
      * @returns matching CRS, or an invalid CRS if string could not be matched
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createFromProj4()
     */
     static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Creates a CRS from a WKT spatial ref sys definition string.
      * @param wkt WKT for the desired spatial reference system.
      * @returns matching CRS, or an invalid CRS if string could not be matched
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createFromWkt()
     */
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /** Creates a CRS from a specified QGIS SRS ID.
      * @param srsId internal QGIS SRS ID
      * @returns matching CRS, or an invalid CRS if ID could not be found
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see createFromSrsId()
      * @see validSrsIds()
     */
@@ -578,14 +578,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Returns a list of recently used projections
      * @returns list of srsid for recently used projections
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     static QStringList recentProjections();
 
     /** Clears the internal cache used to initialize QgsCoordinateReferenceSystem objects.
      * This should be called whenever the srs database has been modified in order to ensure
      * that outdated CRS objects are not created.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static void invalidateCache();
 

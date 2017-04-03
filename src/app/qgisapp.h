@@ -192,7 +192,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
 
     /** Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
-     * @note added in 2.8
+     * \since QGIS 2.8
      */
     QString crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const;
 
@@ -323,7 +323,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.
-     * @note added in 2.3
+     * \since QGIS 2.3
      */
     void addToolBar( QToolBar *toolBar, Qt::ToolBarArea area = Qt::TopToolBarArea );
 
@@ -466,7 +466,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
-    //! @note added in 2.4
+    //! \since QGIS 2.4
     QAction *actionSetLayerScaleVisibility() { return mActionSetLayerScaleVisibility; }
     QAction *actionSetLayerCrs() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCrsFromLayer() { return mActionSetProjectCRSFromLayer; }
@@ -514,7 +514,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
     QMenu *newLayerMenu() { return mNewLayerMenu; }
-    //! @note added in 2.5
+    //! \since QGIS 2.5
     QMenu *addLayerMenu() { return mAddLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
@@ -585,7 +585,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDecorationItem *> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
-    //! @note added in 2.1
+    //! \since QGIS 2.1
     static QString normalizedMenuName( const QString &name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
 
 #ifdef Q_OS_WIN
@@ -794,7 +794,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() );
 
     /** Refreshes the state of the layer actions toolbar action
-      * @note added in 2.1 */
+      * \since QGIS 2.1 */
     void refreshActionFeatureAction();
 
     QMenu *panelMenu() { return mPanelMenu; }
@@ -874,7 +874,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to show current map scale;
     void showScale( double scale );
     //! Slot to handle user rotation input;
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     void userRotation();
     //! Remove a layer from the map and legend
     void removeLayer();
@@ -945,7 +945,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void loadPythonSupport();
 
     /** Install plugin from ZIP file
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void installPluginFromZip();
     //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
@@ -1070,7 +1070,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Attempts to run a Python script
      * @param filePath full path to Python script
-     * @note added in QGIS 2.7
+     * \since QGIS 2.7
      */
     void runScript( const QString &filePath );
     //! Save the map view as an image - user is prompted for image name using a dialog
@@ -1429,23 +1429,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void deleteComposerManager();
 
     /** Disable any preview modes shown on the map canvas
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void disablePreviewMode();
 
     /** Enable a grayscale preview mode on the map canvas
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void activateGrayscalePreview();
 
     /** Enable a monochrome preview mode on the map canvas
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void activateMonoPreview();
 
     /** Enable a color blindness (protanope) preview mode on the map canvas
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void activateProtanopePreview();
 
     /** Enable a color blindness (deuteranope) preview mode on the map canvas
-     * @note added in 2.3 */
+     * \since QGIS 2.3 */
     void activateDeuteranopePreview();
 
     void toggleFilterLegendByExpression( bool );
@@ -1518,7 +1518,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void customCrsValidation( QgsCoordinateReferenceSystem &crs );
 
     /** This signal is emitted when a layer has been saved using save as
-       @note added in version 2.7
+       \since QGIS 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 

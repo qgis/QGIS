@@ -29,7 +29,7 @@
  *
  * QgsTreeWidgetItem allows for items to be sorted using a specified user role, and
  * also correctly handles sorting numeric or mixed text and numeric values.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 {
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 /** \ingroup gui
  * \class QgsTreeWidgetItemObject
  * Custom QgsTreeWidgetItem with extra signals when item is edited.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetItem
 {

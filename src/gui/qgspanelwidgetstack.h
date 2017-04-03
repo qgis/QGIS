@@ -82,7 +82,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
 
     /**
      * Returns the panel currently shown in the stack.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsPanelWidget *currentPanel();
 
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
      * Accepts all panel widgets open in the stack in turn until until only the mainPanel()
      * remains.
      * @see acceptCurrentPanel();
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void acceptAllPanels();
 

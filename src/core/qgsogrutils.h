@@ -28,7 +28,7 @@
  * \brief Utilities for working with OGR features and layers
  *
  * Contains helper utilities for assisting work with both OGR features and layers.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  * \note not available in Python bindings
  */
 class CORE_EXPORT QgsOgrUtils

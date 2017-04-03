@@ -27,7 +27,7 @@
  * Often it is used for configuration options which can be enabled or disabled but also have
  * more internal configuration information that should not be lost when disabling and re-enabling.
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  * @note For Python you need to use implementations for specific template classes
  */
 template<class T>
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsOptional
      * This will compare the enabled flag and call the == operator
      * of the contained class.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool operator== ( const QgsOptional<T> &other ) const
     {
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Check if this optional is enabled
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool enabled() const
     {
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Set if this optional is enabled
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setEnabled( bool enabled )
     {
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Access the payload data
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     const T *operator->() const
     {
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Access the payload data
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     T data() const
     {
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Set the payload data
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setData( const T &data )
     {

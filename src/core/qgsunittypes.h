@@ -30,7 +30,7 @@
 /** \ingroup core
  * \class QgsUnitTypes
  * \brief Helper functions for various unit types.
- * \note Added in version 2.14
+ * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsUnitTypes
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * A combination of distance value and unit.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     struct DistanceValue
     {
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsUnitTypes
     /**
      * A combination of area value and unit.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     struct AreaValue
     {
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param unit unit to convert to string
      * @see stringToDistanceUnit()
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
 
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param unit unit to convert to string
      * @see stringToAreaUnit()
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString toAbbreviatedString( AreaUnit unit );
 
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsUnitTypes
      * The value will also be rounded to \a decimals (be prepared that the returned value is still a double so it will require
      * further formatting when converting to a string).
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
 
@@ -304,7 +304,7 @@ class CORE_EXPORT QgsUnitTypes
      * The value will also be rounded to \a decimals (be prepared that the returned value is still a double so it will require
      * further formatting when converting to a string).
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
 
@@ -315,7 +315,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * @returns formatted distance string
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see formatArea()
      */
     Q_INVOKABLE static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsUnitTypes
      * @param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * @returns formatted area string
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see formatDistance()
      */
     Q_INVOKABLE static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );

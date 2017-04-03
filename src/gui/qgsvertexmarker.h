@@ -58,14 +58,14 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
      * Returns the stroke color for the marker.
      * @see setColor()
      * @see fillColor()
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QColor color() const { return mColor; }
 
     /**
      * Sets the fill \a color for the marker. This setting only
      * applies to some icon types.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see fillColor()
      * @see setColor()
      */
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
     /**
      * Returns the fill \a color for the marker. This setting only
      * applies to some icon types.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      * @see setFillColor()
      * @see color()
      */

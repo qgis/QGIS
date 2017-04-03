@@ -42,7 +42,7 @@ class QTreeView;
 /** \ingroup gui
  * \class QgsSvgSelectorLoader
  * Recursively loads SVG images from a path in a background thread.
- * \note added in QGIS 2.18
+ * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 {
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 /** \ingroup gui
  * \class QgsSvgGroupLoader
  * Recursively loads SVG paths in a background thread.
- * \note added in QGIS 2.18
+ * \since QGIS 2.18
  */
 class GUI_EXPORT QgsSvgGroupLoader : public QThread
 {

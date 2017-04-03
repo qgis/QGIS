@@ -23,7 +23,7 @@ class QgsListWidget;
 
 /** @ingroup gui
  * Wraps a list widget.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  * @note not available in Python bindings
  */
 class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
