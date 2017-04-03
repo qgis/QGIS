@@ -152,7 +152,7 @@ class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private QgsBaseCla
 
     /**
      * \brief some brief
-     * My long doc string
+     * My long doc \a string
      * is not very interesting!
      */
     void LongDocStringMethodWithBrief();

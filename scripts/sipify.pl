@@ -9,19 +9,22 @@ use File::Basename;
 
 sub processDoxygenLine
 {
-    if ( $_[0] =~ m/[\\@](ingroup|class)/ ) {
+    my $line = $_[0];
+    # remove \a formatting
+    $line =~ s/\\a //g;
+    if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
     }
-    if ( $_[0] =~ m/\\since .*?([\d\.]+)/i ) {
+    if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         return ".. versionadded:: $1\n";
     }
-    if ( $_[0] =~ m/[\\@]note (.*)/ ) {
+    if ( $line =~ m/[\\@]note (.*)/ ) {
         return ".. note::\n\n   $1\n";
     }
-    if ( $_[0] =~ m/[\\@]brief (.*)/ ) {
+    if ( $line =~ m/[\\@]brief (.*)/ ) {
         return " $1\n";
     }
-    return $_[0];
+    return $line;
 }
 
 

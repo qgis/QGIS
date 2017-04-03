@@ -58,7 +58,7 @@ class CharacterWidget : QWidget
 
     void setFont( const QFont &font );
 %Docstring
- Sets the \a font to show in the widget.
+ Sets the font to show in the widget.
  \see font()
 .. versionadded:: 3.0
 %End
@@ -85,7 +85,7 @@ class CharacterWidget : QWidget
 
     void setCharacter( QChar character );
 %Docstring
- Sets the currently selected \a character in the widget.
+ Sets the currently selected character in the widget.
  \see character()
  \see characterSelected()
 %End
