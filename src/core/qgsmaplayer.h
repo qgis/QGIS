@@ -493,7 +493,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * \returns a QString with any status messages
-     * @sa loadNamedStyle() and \see saveNamedStyle()
+     * \see loadNamedStyle() and \see saveNamedStyle()
      */
     virtual QString saveDefaultStyle( bool &resultFlag );
 
@@ -508,7 +508,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param resultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * \returns a QString with any status messages
-     * @sa saveDefaultStyle()
+     * \see saveDefaultStyle()
      */
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag );
 
