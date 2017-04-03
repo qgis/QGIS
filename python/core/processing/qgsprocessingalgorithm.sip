@@ -38,6 +38,8 @@ class QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm();
 
+//     QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
     virtual QString name() const = 0;
 %Docstring
  Returns the algorithm name, used for identifying the algorithm. This string
@@ -91,6 +93,8 @@ class QgsProcessingAlgorithm
  Returns the provider to which this algorithm belongs.
 %End
 
+  private:
+    QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 };
 QFlags<QgsProcessingAlgorithm::Flag> operator|(QgsProcessingAlgorithm::Flag f1, QFlags<QgsProcessingAlgorithm::Flag> f2);
 

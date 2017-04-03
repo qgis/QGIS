@@ -52,6 +52,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     virtual ~QgsProcessingAlgorithm() = default;
 
+    //! Algorithms cannot be copied
+    QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other ) = delete;
+    //! Algorithms cannot be copied
+    QgsProcessingAlgorithm &operator=( const QgsProcessingAlgorithm &other ) = delete;
+
     /**
      * Returns the algorithm name, used for identifying the algorithm. This string
      * should be fixed for the algorithm, and must not be localised. The name should
@@ -117,6 +122,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
     // friend class to access setProvider() - we do not want this public!
     friend class QgsProcessingProvider;
     friend class TestQgsProcessing;
+
+#ifdef SIP_RUN
+    QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
+#endif
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingAlgorithm::Flags )
