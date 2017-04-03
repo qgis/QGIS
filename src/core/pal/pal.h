@@ -113,7 +113,7 @@ namespace pal
        * \param toLabel the layer will be labeled only if toLablel is true
        * \param displayAll if true, all features will be labelled even though overlaps occur
        *
-       * @throws PalException::LayerExists
+       * \throws PalException::LayerExists
        *
        * @todo add symbolUnit
        */

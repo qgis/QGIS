@@ -223,7 +223,7 @@ namespace pal
        *
        * Does not take ownership of the label feature (it is owned by its provider).
        *
-       * @throws PalException::FeatureExists
+       * \throws PalException::FeatureExists
        *
        * \returns true on success (i.e. valid geometry)
        */

@@ -360,13 +360,13 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                                struct Cell_head *window );
 
     /** Read mapset current region (WIND)
-     * @throws QgsGrass::Exception
+     * \throws QgsGrass::Exception
      */
     static void region( const QString &gisdbase, const QString &location, const QString &mapset,
                         struct Cell_head *window );
 
     /** Read default mapset current region (WIND)
-     * @throws QgsGrass::Exception
+     * \throws QgsGrass::Exception
      */
     static void region( struct Cell_head *window );
 
@@ -417,7 +417,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * \param mapset if empty a first mapset owned by user will be used, if no mapset is owned
      *               by user, exception is thrown.
      * \param qgisModule append GRASS major version (for modules built in qgis)
-     * @throws QgsGrass::Exception */
+     * \throws QgsGrass::Exception */
     static QProcess *startModule( const QString &gisdbase, const QString  &location,
                                   const QString &mapset, const QString  &moduleName,
                                   const QStringList &arguments, QTemporaryFile &gisrcFile,
@@ -514,7 +514,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool isExternal( const QgsGrassObject &object );
 
     /** Adjust cell header, G_adjust_Cell_head wrapper
-     * @throws QgsGrass::Exception */
+     * \throws QgsGrass::Exception */
     static void adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag );
 
     //! Get map of vector types / names
