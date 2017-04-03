@@ -27,7 +27,7 @@
 
 /**
  * \class QgsDb2Provider
- * @brief Data provider for DB2 server.
+ * \brief Data provider for DB2 server.
  */
 class QgsDb2Provider : public QgsVectorDataProvider
 {

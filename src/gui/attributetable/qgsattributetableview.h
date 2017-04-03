@@ -35,7 +35,7 @@ class QProgressDialog;
 class QgsAttributeTableConfig;
 
 /** \ingroup gui
- * @brief
+ * \brief
  * Provides a table view of features of a @link QgsVectorLayer @endlink.
  *
  * This can either be used as a standalone widget. QgsBrowser features a reference implementation.
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
     /**
-     * @brief setFeatureSelectionManager
+     * \brief setFeatureSelectionManager
      * \param featureSelectionManager We will take ownership
      */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
@@ -111,7 +111,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void keyPressEvent( QKeyEvent *event ) override;
 
     /**
-     * @brief
+     * \brief
      * Is called when the context menu will be shown. Emits a @link willShowContextMenu @endlink signal,
      * so the menu can be populated by other parts of the application.
      *
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   signals:
 
     /**
-     * @brief
+     * \brief
      * Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.

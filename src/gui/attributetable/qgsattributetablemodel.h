@@ -39,7 +39,7 @@ class QgsFieldFormatter;
  * A model backed by a {@link QgsVectorLayerCache} which is able to provide
  * feature/attribute information to a QAbstractItemView.
  *
- * @brief
+ * \brief
  * Is able to generate editor widgets for its QModelIndexes as well.
  * Is mostly referred to as "master model" within this doc and the source.
  *

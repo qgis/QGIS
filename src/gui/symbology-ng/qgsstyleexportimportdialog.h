@@ -51,13 +51,13 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     ~QgsStyleExportImportDialog();
 
     /**
-     * @brief selectSymbols select symbols by name
+     * \brief selectSymbols select symbols by name
      * \param symbolNames list of symbol names
      */
     void selectSymbols( const QStringList &symbolNames );
 
     /**
-     * @brief deselectSymbols deselect symbols by name
+     * \brief deselectSymbols deselect symbols by name
      * \param symbolNames list of symbol names
      */
     void deselectSymbols( const QStringList &symbolNames );
@@ -66,17 +66,17 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void doExportImport();
 
     /**
-     * @brief selectByGroup open select by group dialog
+     * \brief selectByGroup open select by group dialog
      */
     void selectByGroup();
 
     /**
-     * @brief selectAll selects all symbols
+     * \brief selectAll selects all symbols
      */
     void selectAll();
 
     /**
-     * @brief clearSelection deselects all symbols
+     * \brief clearSelection deselects all symbols
      */
     void clearSelection();
 
@@ -93,13 +93,13 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void deselectTag( const QString &tagName );
 
     /**
-     * @brief selectSmartgroup selects all symbols from a smart group
+     * \brief selectSmartgroup selects all symbols from a smart group
      * \param groupName
      */
     void selectSmartgroup( const QString &groupName );
 
     /**
-     * @brief deselectSmartgroup deselects all symbols from a smart group
+     * \brief deselectSmartgroup deselects all symbols from a smart group
      * \param groupName
      */
     void deselectSmartgroup( const QString &groupName );

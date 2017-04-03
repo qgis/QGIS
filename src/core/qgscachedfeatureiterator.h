@@ -23,7 +23,7 @@
 class QgsVectorLayerCache;
 
 /** \ingroup core
- * @brief
+ * \brief
  * Delivers features from the cache
  *
  */
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 };
 
 /** \ingroup core
- * @brief
+ * \brief
  * Uses another iterator as backend and writes features to the cache
  *
  */

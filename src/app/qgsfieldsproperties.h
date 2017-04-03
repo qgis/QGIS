@@ -159,7 +159,7 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent );
 
     /**
-     * @brief setEditFormInit set the private ui fields
+     * \brief setEditFormInit set the private ui fields
      * \param editForm
      * \param initFunction
      * \param initCode

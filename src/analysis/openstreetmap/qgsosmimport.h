@@ -25,7 +25,7 @@
 class QXmlStreamReader;
 
 /** \ingroup analysis
- * @brief The QgsOSMXmlImport class imports OpenStreetMap XML format to our topological representation
+ * \brief The QgsOSMXmlImport class imports OpenStreetMap XML format to our topological representation
  * in a SQLite database (see QgsOSMDatabase for details).
  *
  * How to use the class:

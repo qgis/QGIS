@@ -66,14 +66,14 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     explicit QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     /**
-     * @brief Access the widget managed by this wrapper
+     * \brief Access the widget managed by this wrapper
      *
      * \returns The widget
      */
     QWidget *widget();
 
     /**
-     * @brief Access the widget managed by this wrapper and cast it to a given type
+     * \brief Access the widget managed by this wrapper and cast it to a given type
      * Example: QPushButton* pb = wrapper->widget<QPushButton*>();
      *
      * \returns The widget as template type or NULL, if it cannot be cast to this type.

@@ -32,7 +32,7 @@ class QLineEdit;
  */
 
 /**
- * @brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
+ * \brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
  */
 class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrapper
 {

@@ -33,7 +33,7 @@ namespace QgsGeometryCheckerUtils
   void filter1DTypes( QgsAbstractGeometry *geom );
 
   /**
-   * @brief Return the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
+   * \brief Return the number of points in a polyline, accounting for duplicate start and end point if the polyline is closed
    * \param polyLine The polyline
    * \returns The number of distinct points of the polyline
    */
@@ -60,7 +60,7 @@ namespace QgsGeometryCheckerUtils
   double sharedEdgeLength( const QgsAbstractGeometry *geom1, const QgsAbstractGeometry *geom2, double tol );
 
   /**
-     * @brief Determine whether two points are equal up to the specified tolerance
+     * \brief Determine whether two points are equal up to the specified tolerance
      * \param p1 The first point
      * \param p2 The second point
      * \param tol The tolerance

@@ -334,7 +334,7 @@ class CORE_EXPORT QgsExpression
     static double evaluateToDouble( const QString &text, const double fallbackValue );
 
     /**
-     * @brief list of unary operators
+     * \brief list of unary operators
      * \note if any change is made here, the definition of QgsExpression::UnaryOperatorText[] must be adapted.
      */
     enum UnaryOperator
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsExpression
     };
 
     /**
-     * @brief list of binary operators
+     * \brief list of binary operators
      * \note if any change is made here, the definition of QgsExpression::BinaryOperatorText[] must be adapted.
      */
     enum BinaryOperator

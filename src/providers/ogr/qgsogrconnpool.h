@@ -111,7 +111,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     static void cleanupInstance();
 
     /**
-     * @brief Increases the reference count on the connection pool for the specified connection.
+     * \brief Increases the reference count on the connection pool for the specified connection.
      * \param connInfo The connection string.
      * \note
      *     Any user of the connection pool needs to increase the reference count
@@ -130,7 +130,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     }
 
     /**
-     * @brief Decrease the reference count on the connection pool for the specified connection.
+     * \brief Decrease the reference count on the connection pool for the specified connection.
      * \param connInfo The connection string.
      */
     void unref( const QString &connInfo )

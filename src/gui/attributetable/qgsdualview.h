@@ -67,7 +67,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     };
 
     /**
-     * @brief Constructor
+     * \brief Constructor
      * \param parent  The parent widget
      */
     explicit QgsDualView( QWidget *parent = nullptr );
@@ -205,14 +205,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   public slots:
 
     /**
-     * @brief Set the current edit selection in the {@link AttributeEditor} mode.
+     * \brief Set the current edit selection in the {@link AttributeEditor} mode.
      *
      * \param fids   A list of edited features (Currently only one at a time is supported)
      */
     void setCurrentEditSelection( const QgsFeatureIds &fids );
 
     /**
-     * @brief saveEditChanges
+     * \brief saveEditChanges
      *
      * \returns true if the saving was ok. false is possible due to connected
      *         validation logic.

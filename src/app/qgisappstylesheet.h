@@ -24,7 +24,7 @@
 #include "qgis_app.h"
 
 /** \class QgisAppStyleSheet
- * @brief Adjustable stylesheet for the Qgis application
+ * \brief Adjustable stylesheet for the Qgis application
  */
 class APP_EXPORT QgisAppStyleSheet: public QObject
 {

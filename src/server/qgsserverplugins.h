@@ -25,7 +25,7 @@
 class QgsPythonUtils;
 
 /**
- * @brief Init Python server plugins and store a list of server plugin names
+ * \brief Init Python server plugins and store a list of server plugin names
  */
 class SERVER_EXPORT QgsServerPlugins
 {

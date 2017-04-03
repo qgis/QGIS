@@ -29,7 +29,7 @@ class QgsRasterInterface;
 
 /**
  * \ingroup core
- * @brief A renderer for generating live hillshade models.
+ * \brief A renderer for generating live hillshade models.
  * \since QGIS 2.16
  */
 class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
   public:
 
     /**
-     * @brief A renderer for generating live hillshade models.
+     * \brief A renderer for generating live hillshade models.
      * \param input The input raster interface
      * \param band The band in the raster to use
      * \param lightAzimuth The azimuth of the light source
@@ -48,7 +48,7 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     QgsHillshadeRenderer *clone() const override;
 
     /**
-     * @brief Factory method to create a new renderer
+     * \brief Factory method to create a new renderer
      * \param elem A DOM element to create the renderer from.
      * \param input The raster input interface.
      * \returns A new QgsHillshadeRenderer.
@@ -92,21 +92,21 @@ class CORE_EXPORT QgsHillshadeRenderer : public QgsRasterRenderer
     bool multiDirectional() const { return mMultiDirectional; }
 
     /**
-     * @brief Set the azimuth of the light source.
+     * \brief Set the azimuth of the light source.
      * \param azimuth The azimuth of the light source, between 0 and 360.0
      * \see azimuth()
      */
     void setAzimuth( double azimuth ) { mLightAzimuth = azimuth; }
 
     /**
-     * @brief Set the altitude of the light source
+     * \brief Set the altitude of the light source
      * \param altitude the altitude
      * \see altitude()
      */
     void setAltitude( double altitude ) { mLightAngle = altitude; }
 
     /**
-     * @brief Set the Z scaling factor of the result image.
+     * \brief Set the Z scaling factor of the result image.
      * \param zfactor The z factor
      * \see zFactor()
      */

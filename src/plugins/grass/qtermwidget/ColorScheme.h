@@ -314,7 +314,7 @@ public:
     /** Returns the global color scheme manager instance. */
     static ColorSchemeManager* instance();
 
-    /** @brief Loads a custom color scheme under given \em path.
+    /** \brief Loads a custom color scheme under given \em path.
      *
      * The \em path may refer to either KDE 4 .colorscheme or KDE 3
      * .schema file

@@ -26,7 +26,7 @@
 #include "qgis_gui.h"
 
 /**
- * @brief Renderer widget for the hill shade renderer.
+ * \brief Renderer widget for the hill shade renderer.
  * @ingroup gui
  * \since QGIS 2.16
  */
@@ -36,7 +36,7 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
   public:
 
     /**
-     * @brief Renderer widget for the hill shade renderer.
+     * \brief Renderer widget for the hill shade renderer.
      * \param layer The layer attached for this widget.
      * \param extent The current extent.
      */
@@ -48,13 +48,13 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsHillshadeRendererWidget( layer, extent ); }
 
     /**
-     * @brief The renderer for the widget.
+     * \brief The renderer for the widget.
      * \returns A new renderer for the the config in the widget
      */
     QgsRasterRenderer *renderer() override;
 
     /**
-     * @brief Set the widget state from the given renderer.
+     * \brief Set the widget state from the given renderer.
      * \param renderer The renderer to take the state from.
      */
     void setFromRenderer( const QgsRasterRenderer *renderer );
@@ -84,21 +84,21 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
   public slots:
 
     /**
-     * @brief Set the altitude of the light source
+     * \brief Set the altitude of the light source
      * \param altitude the altitude
      * \see altitude()
      */
     void setAltitude( double altitude );
 
     /**
-     * @brief Set the azimuth of the light source.
+     * \brief Set the azimuth of the light source.
      * \param azimuth The azimuth of the light source, between 0 and 360.0
      * \see azimuth()
      */
     void setAzimuth( double azimuth );
 
     /**
-     * @brief Set the Z scaling factor of the result image.
+     * \brief Set the Z scaling factor of the result image.
      * \param zfactor The z factor
      * \see zFactor()
      */

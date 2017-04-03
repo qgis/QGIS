@@ -30,7 +30,7 @@ class QgsCodeEditorSQL;
 
 /** \ingroup gui
  * \class QgsExpressionLineEdit
- * @brief The QgsExpressionLineEdit widget includes a line edit for entering expressions
+ * \brief The QgsExpressionLineEdit widget includes a line edit for entering expressions
  * together with a button to open the expression creation dialog.
  *
  * This widget is designed for use in contexts where no layer fields are available for
@@ -142,7 +142,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     void editExpression();
 
     /**
-     * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
+     * \brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
      * \param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */

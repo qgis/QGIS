@@ -20,7 +20,7 @@
 #include "qgis_gui.h"
 
 /** \ingroup gui
- * @brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
+ * \brief The QgsPixmapLabel class shows a pixmap and adjusts its size to the space given
  * to the widget by the layout and keeping its aspect ratio.
  */
 class GUI_EXPORT QgsPixmapLabel : public QLabel

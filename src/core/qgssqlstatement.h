@@ -100,7 +100,7 @@ class CORE_EXPORT QgsSQLStatement
     static QString quotedString( QString text );
 
     /**
-     * @brief list of unary operators
+     * \brief list of unary operators
      * \note if any change is made here, the definition of QgsSQLStatement::UnaryOperatorText[] must be adapted.
      */
     enum UnaryOperator
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     /**
-     * @brief list of binary operators
+     * \brief list of binary operators
      * \note if any change is made here, the definition of QgsSQLStatement::BinaryOperatorText[] must be adapted.
      */
     enum BinaryOperator
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsSQLStatement
     };
 
     /**
-     * @brief list of join types
+     * \brief list of join types
      * \note if any change is made here, the definition of QgsSQLStatement::JoinTypeText[] must be adapted.
      */
     enum JoinType

@@ -1548,7 +1548,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
     /**
-     * @brief Return the conditional styles that are set for this layer. Style information is
+     * \brief Return the conditional styles that are set for this layer. Style information is
      * used to render conditional formatting in the attribute table.
      * \returns Return a QgsConditionalLayerStyles object holding the conditional attribute
      * style information. Style information is generic and can be used for anything.

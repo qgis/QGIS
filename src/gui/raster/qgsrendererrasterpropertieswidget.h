@@ -65,7 +65,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void apply();
 
     /**
-     * @brief Sync the widget to the given layer.
+     * \brief Sync the widget to the given layer.
      * \param layer The layer to use for the widget
      */
     void syncToLayer( QgsRasterLayer *layer );

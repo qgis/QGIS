@@ -35,7 +35,7 @@ class QgsRectangle;
 #include "qgssqlstatement.h"
 
 /** \ingroup core
- * @brief The QgsOgcUtils class provides various utility functions for conversion between
+ * \brief The QgsOgcUtils class provides various utility functions for conversion between
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:

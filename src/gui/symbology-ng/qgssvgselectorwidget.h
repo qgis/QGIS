@@ -59,7 +59,7 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
 
     /** Starts the loader finding and generating previews for SVG images. foundSvgs() will be
      * emitted as the loader encounters SVG images.
-     * @brief run
+     * \brief run
      */
     virtual void run() override;
 
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     ~QgsSvgGroupLoader();
 
     /** Starts the loader finding folders for SVG images.
-     * @brief run
+     * \brief run
      */
     virtual void run() override;
 

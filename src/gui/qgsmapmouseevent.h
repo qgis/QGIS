@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**
-     * @brief snapPoint will snap the points using the map canvas snapping utils configuration
+     * \brief snapPoint will snap the points using the map canvas snapping utils configuration
      * \note if snapping did not succeeded, the map point will be reset to its original position
      */
     QgsPoint snapPoint( SnappingMode snappingMode );
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     bool isSnapped() const { return mSnapMatch.isValid(); }
 
     /**
-     * @brief mapPoint returns the point in coordinates
+     * \brief mapPoint returns the point in coordinates
      * \returns the point in map coordinates, after snapping if requested in the event.
      */
     inline QgsPoint mapPoint() const { return mMapPoint; }

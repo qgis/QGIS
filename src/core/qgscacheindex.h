@@ -23,7 +23,7 @@ class QgsFeatureRequest;
 class QgsFeatureIterator;
 
 /** \ingroup core
- * @brief
+ * \brief
  * Abstract base class for cache indices
  */
 
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsAbstractCacheIndex
     virtual void flush() = 0;
 
     /**
-     * @brief
+     * \brief
      * Implement this method to update the the indices, in case you need information contained by the request
      * to properly index. (E.g. spatial index)
      * Does nothing by default

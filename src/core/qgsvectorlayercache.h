@@ -30,7 +30,7 @@ class QgsAbstractCacheIndex;
 /** \ingroup core
  * This class caches features of a given QgsVectorLayer.
  *
- * @brief
+ * \brief
  * The cached features can be indexed by @link QgsAbstractCacheIndex @endlink.
  *
  * Proper indexing for a given use-case may speed up performance substantially.
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void setCacheSize( int cacheSize );
 
     /**
-     * @brief
+     * \brief
      * Returns the maximum number of features this cache will hold.
      * In case full caching is enabled, this number can change, as new features get added.
      *
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void setCacheAddedAttributes( bool cacheAddedAttributes );
 
     /**
-     * @brief
+     * \brief
      * This enables or disables full caching.
      * If enabled, all features will be held in the cache. The cache size will incrementally
      * be increased to offer space for all features.
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     bool hasFullCache() const { return mFullCache; }
 
     /**
-     * @brief
+     * \brief
      * Adds a {@link QgsAbstractCacheIndex} to this cache. Cache indices know about features present
      * in this cache and decide, if enough information is present in the cache to respond to a {@link QgsFeatureRequest}.
      * The layer cache will take ownership of the index.
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
   protected:
 
     /**
-     * @brief
+     * \brief
      * Gets called, whenever the full list of feature ids for a certain request is known.
      * Broadcasts this information to indices, so they can update their tables.
      *
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 
     /**
-     * @brief
+     * \brief
      * Gets called, whenever a feature has been removed.
      * Broadcasts this information to indices, so they can invalidate their cache if required.
      *
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void featureRemoved( QgsFeatureId fid );
 
     /**
-     * @brief
+     * \brief
      * Checks if the information required to complete the request is cached.
      * i.e. If all attributes required and the geometry is held in the cache.
      * Please note, that this does not check, if the requested features are cached.
@@ -299,14 +299,14 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void finished();
 
     /**
-     * @brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
+     * \brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
      * signal is being emitted, but before the local reference to it has been set to NULL. So call to
      * @link layer() @endlink will still return a valid pointer for cleanup purpose.
      */
     void cachedLayerDeleted();
 
     /**
-     * @brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
+     * \brief Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
      *        You should connect to this signal, to be sure, to not get a cached value if querying the cache.
      */
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );

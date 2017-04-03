@@ -35,7 +35,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
   public:
 
     /**
-       * @brief A panel widget that can be shown in the map style dock
+       * \brief A panel widget that can be shown in the map style dock
        * \param layer The layer active in the dock.
        * \param canvas The canvas object.
        * \param parent The parent of the widget.
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
   public slots:
 
     /**
-     * @brief Called when changes to the layer need to be made.
+     * \brief Called when changes to the layer need to be made.
      * Will be called when live update is enabled.
      */
     virtual void apply() = 0;

@@ -48,7 +48,7 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 class QgsAbstractFeatureSource;
 
 /** \ingroup core
- * @brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
+ * \brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
  * the labeling engine. Parameters for the diagrams are taken from the layer settings.
  *
  * \since QGIS 2.12

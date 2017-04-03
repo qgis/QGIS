@@ -33,7 +33,7 @@ class QgsVectorLayer;
 
 
 /** \ingroup gui
- * @brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
+ * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
  * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
  * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
   public:
 
     /**
-     * @brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
+     * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
     explicit QgsFieldExpressionWidget( QWidget *parent = nullptr );
 
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void setGeomCalculator( const QgsDistanceArea &da );
 
     /**
-     * @brief currentField returns the currently selected field or expression if allowed
+     * \brief currentField returns the currently selected field or expression if allowed
      * \param isExpression determines if the string returned is the name of a field or an expression
      * \param isValid determines if the expression (or field) returned is valid
      */
@@ -171,7 +171,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void currentFieldChanged();
 
     /**
-     * @brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
+     * \brief updateLineEditStyle will re-style (color/font) the line edit depending on content and status
      * \param expression if expression is given it will be evaluated for the given string, otherwise it takes
      * current expression from the model
      */

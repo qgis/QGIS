@@ -22,7 +22,7 @@
 
 /** \ingroup gui
  * \class QgsHelp
- * @brief Helper class for showing help topic URI for the given key.
+ * \brief Helper class for showing help topic URI for the given key.
  *
  * Help can be stored online, on the local directory or on the intranet
  * server. Location of the QGIS help can be configured in QGIS options.

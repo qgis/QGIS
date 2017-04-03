@@ -36,7 +36,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     //! set the map canvas which will be used for the current scale buttons
 
     /**
-     * @brief setMapCanvas set the map canvas which will be used for the current scale buttons
+     * \brief setMapCanvas set the map canvas which will be used for the current scale buttons
      * if not set, the buttons are hidden.
      */
     void setMapCanvas( QgsMapCanvas *mapCanvas );

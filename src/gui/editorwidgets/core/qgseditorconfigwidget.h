@@ -47,14 +47,14 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
 
     /**
-     * @brief Create a configuration from the current GUI state
+     * \brief Create a configuration from the current GUI state
      *
      * \returns A widget configuration
      */
     virtual QVariantMap config() = 0;
 
     /**
-     * @brief Update the configuration widget to represent the given configuration.
+     * \brief Update the configuration widget to represent the given configuration.
      *
      * \param config The configuration which should be represented by this widget
      */

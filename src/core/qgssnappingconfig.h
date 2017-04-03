@@ -65,7 +65,7 @@ class CORE_EXPORT QgsSnappingConfig
       public:
 
         /**
-         * @brief IndividualLayerSettings
+         * \brief IndividualLayerSettings
          * \param enabled
          * \param type
          * \param tolerance

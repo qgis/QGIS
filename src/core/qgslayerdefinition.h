@@ -31,7 +31,7 @@ class QgsPathResolver;
 class QgsProject;
 
 /** \ingroup core
- * @brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
+ * \brief The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
  *
  * QLR files are an export of the layer xml including the style and datasource location.  There is no link
  * to the QLR file once loaded.  Consider the QLR file a mini project file for layers and styles.  QLR

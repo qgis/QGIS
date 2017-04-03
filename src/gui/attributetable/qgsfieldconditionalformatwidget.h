@@ -68,13 +68,13 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     void reset();
 
     /**
-     * @brief Set the presets that can be used for quick pick
+     * \brief Set the presets that can be used for quick pick
      * \param styles A list of styles used as presets
      */
     void setPresets( const QList<QgsConditionalStyle> &styles );
 
     /**
-     * @brief The default presets for the widget.  Normally set when the widget is
+     * \brief The default presets for the widget.  Normally set when the widget is
      * created however called setPresets will override the default styles.
      * \returns List of default presets.
      */

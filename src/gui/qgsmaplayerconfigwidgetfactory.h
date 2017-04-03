@@ -41,7 +41,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     virtual ~QgsMapLayerConfigWidgetFactory() = default;
 
     /**
-     * @brief The icon that will be shown in the UI for the panel.
+     * \brief The icon that will be shown in the UI for the panel.
      * \returns A QIcon for the panel icon.
      */
     virtual QIcon icon() const { return mIcon; }
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     void setIcon( const QIcon &icon ) { mIcon = icon; }
 
     /**
-     * @brief The title of the panel.
+     * \brief The title of the panel.
      * \note This may or may not be shown to the user.
      * \returns Title of the panel
      */
@@ -92,13 +92,13 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
     void setSupportLayerPropertiesDialog( bool supports ) { mSupportsProperties = supports; }
 
     /**
-     * @brief Check if the layer is supported for this widget.
+     * \brief Check if the layer is supported for this widget.
      * \returns True if this layer is supported for this widget
      */
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 
     /**
-     * @brief Factory function to create the widget on demand as needed by the dock.
+     * \brief Factory function to create the widget on demand as needed by the dock.
      * \note This function is called each time the panel is selected. Keep it light for better UX.
      * \param layer The active layer in the dock.
      * \param canvas The map canvas.

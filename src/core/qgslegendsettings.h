@@ -26,7 +26,7 @@ class QRectF;
 
 
 /** \ingroup core
- * @brief The QgsLegendSettings class stores the appearance and layout settings
+ * \brief The QgsLegendSettings class stores the appearance and layout settings
  * for legend drawing with QgsLegendRenderer. The content of the legend is given
  * in QgsLegendModel class.
  *

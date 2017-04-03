@@ -103,7 +103,7 @@ class SERVER_EXPORT QgsServer
                                const QMap<QString, QString> &parameters );
 
     /**
-     * @brief QgsServer::printRequestParameters prints the request parameters
+     * \brief QgsServer::printRequestParameters prints the request parameters
      * \param parameterMap
      * \param logLevel
      */

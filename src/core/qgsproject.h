@@ -568,7 +568,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     }
 
     /**
-     * @brief
+     * \brief
      * Add a list of layers to the map of loaded layers.
      *
      * The layersAdded() and layerWasAdded() signals will always be emitted.
@@ -597,7 +597,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
                                        bool takeOwnership = true );
 
     /**
-     * @brief
+     * \brief
      * Add a layer to the map of loaded layers.
      *
      * The layersAdded() and layerWasAdded() signals will always be emitted.
@@ -626,7 +626,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true, bool takeOwnership = true );
 
     /**
-     * @brief
+     * \brief
      * Remove a set of layers from the registry by layer ID.
      *
      * The specified layers will be removed from the registry. If the registry has ownership
@@ -642,7 +642,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void removeMapLayers( const QStringList &layerIds );
 
     /**
-     * @brief
+     * \brief
      * Remove a set of layers from the registry.
      *
      * The specified layers will be removed from the registry. If the registry has ownership
@@ -658,7 +658,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 
     /**
-     * @brief
+     * \brief
      * Remove a layer from the registry by layer ID.
      *
      * The specified layer will be removed from the registry. If the registry has ownership
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void removeMapLayer( const QString &layerId );
 
     /**
-     * @brief
+     * \brief
      * Remove a layer from the registry.
      *
      * The specified layer will be removed from the registry. If the registry has ownership

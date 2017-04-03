@@ -174,7 +174,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     /**
      * Emit this signal when the constraint status changed.
-     * @brief constraintStatusChanged
+     * \brief constraintStatusChanged
      * \param constraint represented as a string
      * \param desc is the constraint description
      * \param err the error represented as a string. Empty if none.

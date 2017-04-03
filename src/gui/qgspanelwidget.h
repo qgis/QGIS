@@ -21,7 +21,7 @@
 #include "qgis_gui.h"
 
 /** \ingroup gui
- * @brief Base class for any widget that can be shown as a inline panel
+ * \brief Base class for any widget that can be shown as a inline panel
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
 {
@@ -29,7 +29,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
   public:
 
     /**
-     * @brief Base class for any widget that can be shown as a inline panel
+     * \brief Base class for any widget that can be shown as a inline panel
      * \param parent Parent widget.
      */
     QgsPanelWidget( QWidget *parent = 0 );
@@ -155,7 +155,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
   protected:
 
     /**
-     * @brief Overridden key press event to handle the esc event on the widget.
+     * \brief Overridden key press event to handle the esc event on the widget.
      * \param event The key event
      */
     void keyPressEvent( QKeyEvent *event );
@@ -169,7 +169,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
 
 
 /** \ingroup gui
- * @brief Wrapper widget for existing widgets which can't have
+ * \brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *
  * \note Generally you should use the QgsPanelWidget class if you can
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
   public:
 
     /**
-     * @brief Wrapper widget for existing widgets which can't have
+     * \brief Wrapper widget for existing widgets which can't have
      * the inheritance tree changed, e.g dialogs.
      * \param widget The widget to wrap.
      * \param parent The parent widget.

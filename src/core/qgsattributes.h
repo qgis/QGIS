@@ -88,7 +88,7 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
     {}
 
     /**
-     * @brief Compares two vectors of attributes.
+     * \brief Compares two vectors of attributes.
      * They are considered equal if all their members contain the same value and NULL flag.
      * This was introduced because the default Qt implementation of QVariant comparison does not
      * handle NULL values for certain types (like int).

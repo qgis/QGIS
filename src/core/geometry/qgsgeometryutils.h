@@ -77,7 +77,7 @@ class CORE_EXPORT QgsGeometryUtils
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon );
 
     /**
-     * @brief Compute the intersection between two lines
+     * \brief Compute the intersection between two lines
      * \param p1 Point on the first line
      * \param v Direction vector of the first line
      * \param q1 Point on the second line
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsGeometryUtils
     static bool lineIntersection( const QgsPointV2 &p1, QgsVector v, const QgsPointV2 &q1, QgsVector w, QgsPointV2 &inter );
 
     /**
-     * @brief Compute the intersection between two segments
+     * \brief Compute the intersection between two segments
      * \param p1 First segment start point
      * \param p2 First segment end point
      * \param q1 Second segment start point
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsGeometryUtils
     static bool segmentIntersection( const QgsPointV2 &p1, const QgsPointV2 &p2, const QgsPointV2 &q1, const QgsPointV2 &q2, QgsPointV2 &inter, double tolerance );
 
     /**
-     * @brief Project the point on a segment
+     * \brief Project the point on a segment
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     /**
-     * @brief Find self intersections in a polyline
+     * \brief Find self intersections in a polyline
      * \param geom The geometry to check
      * \param part The part of the geometry to check
      * \param ring The ring of the geometry part to check
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsGeometryUtils
     static void coefficients( const QgsPointV2 &pt1, const QgsPointV2 &pt2, double &a, double &b, double &c );
 
     /**
-     * @brief Create a perpendicular line segment from p to segment [s1, s2]
+     * \brief Create a perpendicular line segment from p to segment [s1, s2]
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point

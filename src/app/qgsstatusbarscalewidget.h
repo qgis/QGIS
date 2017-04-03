@@ -44,13 +44,13 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
     virtual ~QgsStatusBarScaleWidget();
 
     /**
-     * @brief setScale set the selected scale from double
+     * \brief setScale set the selected scale from double
      * \param scale
      */
     void setScale( double scale );
 
     /**
-     * @brief isLocked check if the scale should be locked to use magnifier instead of scale to zoom in/out
+     * \brief isLocked check if the scale should be locked to use magnifier instead of scale to zoom in/out
      * \returns True if the scale shall be locked
      */
     bool isLocked() const;

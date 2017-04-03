@@ -67,14 +67,14 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
-     * @brief If true is specified, a NULL value will be injected
+     * \brief If true is specified, a NULL value will be injected
      * \param injectNull state of null value injection
      * \since QGIS 2.9
      */
     void setInjectNull( bool injectNull );
 
     /**
-     * @brief Returns the current state of null value injection
+     * \brief Returns the current state of null value injection
      * \returns If a NULL value is added
      * \since QGIS 2.9
      */
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     bool setDisplayExpression( const QString &expression );
 
     /**
-     * @brief Returns a detailed message about errors while parsing a QgsExpression.
+     * \brief Returns a detailed message about errors while parsing a QgsExpression.
      * \returns A message containing information about the parser error.
      */
     QString parserErrorString();

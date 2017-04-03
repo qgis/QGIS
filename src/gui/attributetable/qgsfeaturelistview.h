@@ -35,7 +35,7 @@ class QRect;
 /** \ingroup gui
  * Shows a list of features and renders a edit button next to each feature.
  *
- * @brief
+ * \brief
  * Accepts a display expression to define the way, features are rendered.
  * Uses a {@link QgsFeatureListModel} as source model.
  *
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void setCurrentFeatureEdited( bool state );
 
     /**
-     * @brief setFeatureSelectionManager
+     * \brief setFeatureSelectionManager
      * \param featureSelectionManager We will take ownership
      */
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );

@@ -26,7 +26,7 @@ class QgsMapLayer;
 
 
 /** \ingroup core
- * @brief The QgsMapLayerModel class is a model to display layers in widgets.
+ * \brief The QgsMapLayerModel class is a model to display layers in widgets.
  * \see QgsMapLayerProxyModel to sort and/filter the layers
  * \see QgsFieldModel to combine in with a field selector.
  * \since QGIS 2.3
@@ -52,22 +52,22 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     };
 
     /**
-     * @brief QgsMapLayerModel creates a model to display layers in widgets.
+     * \brief QgsMapLayerModel creates a model to display layers in widgets.
      */
     explicit QgsMapLayerModel( QObject *parent = nullptr );
 
     /**
-     * @brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
+     * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      */
     explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr );
 
     /**
-     * @brief setItemsCheckable defines if layers should be selectable in the widget
+     * \brief setItemsCheckable defines if layers should be selectable in the widget
      */
     void setItemsCheckable( bool checkable );
 
     /**
-     * @brief checkAll changes the checkstate for all the layers
+     * \brief checkAll changes the checkstate for all the layers
      */
     void checkAll( Qt::CheckState checkState );
 
@@ -100,14 +100,14 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     bool showCrs() const { return mShowCrs; }
 
     /**
-     * @brief layersChecked returns the list of layers which are checked (or unchecked)
+     * \brief layersChecked returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
     //! returns if the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 
     /**
-     * @brief indexFromLayer returns the model index for a given layer
+     * \brief indexFromLayer returns the model index for a given layer
      */
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
 

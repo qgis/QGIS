@@ -64,7 +64,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void restoreGeometry();
 
     /**
-     * @brief setHighlight
+     * \brief setHighlight
      * \param h The highlight. Ownership is taken.
      */
     void setHighlight( QgsHighlight *h );

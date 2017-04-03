@@ -36,7 +36,7 @@ static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15;
 static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
 
 /** \ingroup gui
- * @brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
+ * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
  * by implementing filters called from QgsMapToolAdvancedDigitizing.
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     };
 
     /** \ingroup gui
-     * @brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
+     * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * \note Relative is not mandatory since it is not used for distance.
      */
@@ -395,7 +395,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void setCadEnabled( bool enabled );
 
     /**
-     * @brief updateCapacity updates the cad capacities depending on the point list and update the UI according to the capabilities.
+     * \brief updateCapacity updates the cad capacities depending on the point list and update the UI according to the capabilities.
      * \param updateUIwithoutChange if true, it will update the UI even if new capacities are not different from previous ones.
      */
     void updateCapacity( bool updateUIwithoutChange = false );

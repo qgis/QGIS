@@ -27,7 +27,7 @@ class QgsFilterLineEdit;
 #include "qgis_gui.h"
 
 /** \ingroup gui
- * @brief The QgsFileWidget class creates a widget for selecting a file or a folder.
+ * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
 {
@@ -44,7 +44,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
   public:
 
     /**
-     * @brief The StorageMode enum determines if the file picker should pick files or directories
+     * \brief The StorageMode enum determines if the file picker should pick files or directories
      */
     enum StorageMode
     {
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     };
 
     /**
-     * @brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
+     * \brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
      */
     enum RelativeStorage
     {
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     };
 
     /**
-     * @brief QgsFileWidget creates a widget for selecting a file or a folder.
+     * \brief QgsFileWidget creates a widget for selecting a file or a folder.
      */
     explicit QgsFileWidget( QWidget *parent = 0 );
 
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString dialogTitle() const;
 
     /**
-     * @brief setDialogTitle defines the open file dialog title
+     * \brief setDialogTitle defines the open file dialog title
      * \note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
      */
     void setDialogTitle( const QString &title );
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString filter() const;
 
     /**
-     * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
+     * \brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
      * \param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
      */
     void setFilter( const QString &filter );

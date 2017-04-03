@@ -450,7 +450,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
   public:
 
     /**
-     * @brief A data item holding a reference to a QGIS project file.
+     * \brief A data item holding a reference to a QGIS project file.
      * \param parent The parent data item.
      * \param name The name of the of the project. Displayed to the user.
      * \param path The full path to the project.

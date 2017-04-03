@@ -26,7 +26,7 @@ class QgsDb2LayerItem;
 
 /**
  * \class QgsDb2RootItem
- * @brief Browser Panel DB2 root object.
+ * \brief Browser Panel DB2 root object.
  */
 class QgsDb2RootItem : public QgsDataCollectionItem
 {
@@ -52,7 +52,7 @@ class QgsDb2RootItem : public QgsDataCollectionItem
 
 /**
  * \class QgsDb2ConnectionItem
- * @brief Browser Panel DB2 connection object (under root).
+ * \brief Browser Panel DB2 connection object (under root).
  */
 class QgsDb2ConnectionItem : public QgsDataCollectionItem
 {
@@ -126,7 +126,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
 
 /**
  * \class QgsDb2SchemaItem
- * @brief Browser Panel DB2 schema object (under connections).
+ * \brief Browser Panel DB2 schema object (under connections).
  */
 class QgsDb2SchemaItem : public QgsDataCollectionItem
 {
@@ -147,7 +147,7 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
 
 /**
  * \class QgsDb2LayerItem
- * @brief Browser Panel DB2 layer object (under schemas).
+ * \brief Browser Panel DB2 layer object (under schemas).
  */
 class QgsDb2LayerItem : public QgsLayerItem
 {
